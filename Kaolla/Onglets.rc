@@ -1,0 +1,155 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resourceOnglets.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// French (France) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_FRA)
+LANGUAGE LANG_FRENCH, SUBLANG_FRENCH
+#pragma code_page(1252)
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resourceOnglets.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_GENERAL DIALOGEX 0, 0, 286, 311
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_DISABLED | WS_CAPTION | WS_SYSMENU
+CAPTION "Général"
+FONT 8, "MS Shell Dlg", 400, 0, 0x0
+BEGIN
+    GROUPBOX        "Fichier",IDC_STATIC,12,19,259,50
+    LTEXT           "Nom du fichier",IDC_STATIC,23,31,46,14,SS_CENTERIMAGE
+    EDITTEXT        IDC_NOM_FICHIER,77,31,178,14,ES_AUTOHSCROLL
+    LTEXT           "Dossier",IDC_STATIC,23,50,24,14,SS_CENTERIMAGE
+    EDITTEXT        IDC_NOM_CHEMIN,77,50,146,14,ES_AUTOHSCROLL | ES_READONLY
+    PUSHBUTTON      "...",IDC_PARCOURIR_DOSSIER,227,50,28,14
+    GROUPBOX        "Echantillon",IDC_STATIC,13,79,258,54
+    LTEXT           "Nom de l'échantillon",IDC_STATIC,23,90,64,14,SS_CENTERIMAGE
+    EDITTEXT        IDC_NOM_ECHANTILLON,100,90,78,14,ES_AUTOHSCROLL
+    LTEXT           "Masse de l'échantillon",IDC_STATIC,23,113,70,14,SS_CENTERIMAGE
+    EDITTEXT        IDC_MASSE_ECHANTILLON,100,113,40,14,ES_AUTOHSCROLL
+    CONTROL         "",IDC_SPIN_MASSE_ECHANTILLON,"msctls_updown32",UDS_AUTOBUDDY | UDS_ARROWKEYS,140,113,11,14
+    LTEXT           "g",IDC_STATIC,157,113,19,14,SS_CENTERIMAGE
+    GROUPBOX        "Expérience",IDC_STATIC,13,144,258,73
+    LTEXT           "Nom de l'expérimentateur",IDC_STATIC,23,156,83,14,SS_CENTERIMAGE
+    COMBOBOX        IDC_COMBO_EXPERIMENTATEUR,120,157,75,56,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "Ajouter/Modifier",IDC_BUTTON_EXPERIMENTATEUR,205,156,62,14
+    LTEXT           "Gaz utilisé",IDC_STATIC,23,176,33,14,SS_CENTERIMAGE
+    COMBOBOX        IDC_COMBO_GAZ,120,176,75,89,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "Ajouter/Modifier",IDC_BUTTON_GAZ,205,176,62,14
+    LTEXT           "Température de l'expérience",IDC_STATIC,23,196,92,14,SS_CENTERIMAGE
+    EDITTEXT        IDC_TEMPERATURE_EXPERIENCE,156,196,28,14,ES_AUTOHSCROLL
+    CONTROL         "",IDC_SPIN_TEMPERATURE_EXPERIENCE,"msctls_updown32",UDS_AUTOBUDDY | UDS_ARROWKEYS,184,196,11,14
+    LTEXT           "T°C",IDC_STATIC,208,196,19,14,SS_CENTERIMAGE
+    GROUPBOX        "Commentaires",IDC_STATIC,13,228,261,69
+    EDITTEXT        IDC_COMMENTAIRES,20,244,247,46,ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_WANTRETURN | WS_VSCROLL
+END
+
+IDD_DIVERS DIALOGEX 0, 0, 294, 286
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_DISABLED | WS_CAPTION | WS_SYSMENU
+CAPTION "Divers"
+FONT 8, "MS Shell Dlg", 400, 0, 0x0
+BEGIN
+    GROUPBOX        "Cellule",IDC_STATIC,15,17,258,99
+    LTEXT           "Numero de cellule",IDC_STATIC,28,29,57,14,SS_CENTERIMAGE
+    COMBOBOX        IDC_COMBO_CELLULE,105,29,48,51,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "Ajouter/Modifier",IDC_BUTTON_CELLULE,182,29,62,14
+    LTEXT           "Volume total de la cellule",IDC_STATIC,28,63,79,14,SS_CENTERIMAGE
+    EDITTEXT        IDC_EDIT_VOLUME_TOTAL,147,63,40,14,ES_AUTOHSCROLL | ES_READONLY
+    LTEXT           "cm3",IDC_STATIC,199,63,14,14,SS_CENTERIMAGE
+    LTEXT           "Volume de la cellule dans le calo",IDC_STATIC,28,87,102,14,SS_CENTERIMAGE
+    EDITTEXT        IDC_EDIT_VOLUME_CALO,147,87,40,14,ES_AUTOHSCROLL | ES_READONLY
+    LTEXT           "cm3",IDC_STATIC,199,87,14,14,SS_CENTERIMAGE
+    GROUPBOX        "Ligne de base",IDC_STATIC,15,131,260,41
+    LTEXT           "Temps de ligne de base",IDC_STATIC,28,148,76,14,SS_CENTERIMAGE
+    EDITTEXT        IDC_EDIT_TEMPS_LIGNE_BASE,146,148,40,14,ES_AUTOHSCROLL
+    CONTROL         "",IDC_SPIN_TEMPS_LIGNE_BASE,"msctls_updown32",UDS_ARROWKEYS,186,148,11,14
+    LTEXT           "min",IDC_STATIC,207,148,12,14,SS_CENTERIMAGE
+    GROUPBOX        "Fin d'expérience",IDC_STATIC,14,184,263,63
+    CONTROL         "Mise sous vide en fin d'expérience",IDC_CHECK_MISE_SOUS_VIDE,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,28,199,125,14
+    LTEXT           "Temps de vide en fin d'expérience",IDC_STATIC_MISE_SOUS_VIDE,49,218,110,14,SS_CENTERIMAGE
+    EDITTEXT        IDC_EDIT_TEMPS_VIDE,168,218,40,14,ES_AUTOHSCROLL
+    CONTROL         "",IDC_SPIN_TEMPS_VIDE,"msctls_updown32",UDS_ARROWKEYS,208,218,11,14
+    LTEXT           "min",IDC_STATIC_MISE_SOUS_VIDE2,231,218,12,14,SS_CENTERIMAGE
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_GENERAL, DIALOG
+    BEGIN
+        LEFTMARGIN, 5
+        RIGHTMARGIN, 281
+        TOPMARGIN, 5
+        BOTTOMMARGIN, 306
+    END
+
+    IDD_DIVERS, DIALOG
+    BEGIN
+        LEFTMARGIN, 5
+        RIGHTMARGIN, 289
+        TOPMARGIN, 5
+        BOTTOMMARGIN, 281
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+#endif    // French (France) resources
+///////////////////////////////////////////////////////////////////////////
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
