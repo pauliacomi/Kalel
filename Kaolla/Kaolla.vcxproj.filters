@@ -49,9 +49,6 @@
     <Filter Include="Header Files\Define">
       <UniqueIdentifier>{045cb8c3-8d56-42b2-9919-fb488764a331}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\XML">
-      <UniqueIdentifier>{8ba33742-ab29-4bfd-a2ee-4e0d241affa6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\RS232">
       <UniqueIdentifier>{18ca9bec-3aab-43ec-91e0-a16ba38df627}</UniqueIdentifier>
     </Filter>
@@ -355,21 +352,6 @@
     </ClCompile>
     <ClCompile Include="KaollaView_Boutons_Vannes.cpp">
       <Filter>Source Files\Kaolla</Filter>
-    </ClCompile>
-    <ClCompile Include="ParserXML.cpp">
-      <Filter>Source Files\XML</Filter>
-    </ClCompile>
-    <ClCompile Include="tinystr.cpp">
-      <Filter>Source Files\XML</Filter>
-    </ClCompile>
-    <ClCompile Include="tinyxml.cpp">
-      <Filter>Source Files\XML</Filter>
-    </ClCompile>
-    <ClCompile Include="tinyxmlerror.cpp">
-      <Filter>Source Files\XML</Filter>
-    </ClCompile>
-    <ClCompile Include="tinyxmlparser.cpp">
-      <Filter>Source Files\XML</Filter>
     </ClCompile>
     <ClCompile Include="Keithley.cpp">
       <Filter>Source Files\RS232</Filter>

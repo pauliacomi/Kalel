@@ -340,7 +340,6 @@
     <ClCompile Include="Parametres.cpp" />
     <ClCompile Include="Parametres_appareil.cpp" />
     <ClCompile Include="Parametres_experience.cpp" />
-    <ClCompile Include="ParserXML.cpp" />
     <ClCompile Include="SpinBtnCtrl.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -350,10 +349,6 @@
     </ClCompile>
     <ClCompile Include="Temperature.cpp" />
     <ClCompile Include="threads.cpp" />
-    <ClCompile Include="tinystr.cpp" />
-    <ClCompile Include="tinyxml.cpp" />
-    <ClCompile Include="tinyxmlerror.cpp" />
-    <ClCompile Include="tinyxmlparser.cpp" />
     <ClCompile Include="Vannes.cpp" />
     <ClCompile Include="XSBrowseFolder.cpp" />
   </ItemGroup>
