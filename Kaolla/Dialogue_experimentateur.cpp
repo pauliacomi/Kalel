@@ -203,7 +203,7 @@ void CModifExperimentateur::ReinitialisationComboBox()
 	// On efface la contenance de m_CBModifExperimentateur
 	// Puis on le (ré)initialise
 	m_CBModifExperimentateur.ResetContent();
-	for(int i=0;i<list_modif_experimentateur.size();i++)
+	for(UINT i=0;i<list_modif_experimentateur.size();i++)
 	{
 		CString StrSurnom;
 		StrSurnom.Format(_T("%s"),list_modif_experimentateur[i].surnom.c_str());
@@ -315,7 +315,7 @@ void CSupprExperimentateur::ReinitialisationComboBox()
 	list_suppr_experimentateur=GetExperimentateurs();
 
 	m_CBSupprExperimentateur.ResetContent();
-	for(int i=0;i<list_suppr_experimentateur.size();i++)
+	for(UINT i=0;i<list_suppr_experimentateur.size();i++)
 	{
 		CString StrSurnom;
 		StrSurnom.Format(_T("%s"),list_suppr_experimentateur[i].surnom.c_str());

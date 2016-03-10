@@ -267,7 +267,7 @@ void CModifCellule::ReinitialisationComboBox()
 
 	// On réinitialise le ComboBox
 	m_CBModifCellule.ResetContent();  // On efface la contenance de m_CBModifCellule
-	for(int i=0;i<list_modif_cellule.size();i++)
+	for(UINT i=0;i<list_modif_cellule.size();i++)
 	{
 		CString StrNumero;
 		StrNumero.Format(_T("%s"),list_modif_cellule[i].numero.c_str());
@@ -386,7 +386,7 @@ void CSupprCellule::ReinitialisationComboBox()
 	list_suppr_cellule=GetCellules();
 
 	m_CBSupprNumeroCellule.ResetContent();
-	for(int i=0;i<list_suppr_cellule.size();i++)
+	for(UINT i=0;i<list_suppr_cellule.size();i++)
 	{
 		CString StrNumero;
 		StrNumero.Format(_T("%s"),list_suppr_cellule[i].numero.c_str());

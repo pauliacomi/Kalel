@@ -147,7 +147,6 @@ DWORD WINAPI CManip::ThreadProc_LectureBassePression(LPVOID lpParam)
 	
 	CManip *manipulation = reinterpret_cast<CManip *>(lpParam);
 	
-	int cool = manipulation->AppareilBP.index;
 
 	EnterCriticalSection(&Sync_view_instrument[manipulation->synchBP]);
 	manipulation->LectureBassePression();

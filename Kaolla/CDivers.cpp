@@ -78,7 +78,7 @@ BOOL CDivers::OnInitDialog()
 		m_IndexCellule=-1;
 	}
 
-	for(int i=0;i<list_cellule.size();i++)
+	for(UINT i=0;i<list_cellule.size();i++)
 	{
 		CString StrNumero;
 		//StrNumero.Format(_T("%d"),list_cellule[i].numero);
@@ -167,7 +167,7 @@ void CDivers::OnBnClickedButtonCellule()
 		m_IndexCellule=-1;
 	}
 
-	for(int i=0;i<list_cellule.size();i++)
+	for(UINT i=0;i<list_cellule.size();i++)
 	{
 		CString StrNumero;
 		//StrNumero.Format(_T("%d"),list_cellule[i].numero);
@@ -189,7 +189,7 @@ void CDivers::OnCancel()
 {
 	// remettre le bon index de la cellule
 	m_IndexCellule=-1;
-	for(int i=0;i<list_cellule.size();i++)
+	for(UINT i=0;i<list_cellule.size();i++)
 	{
 		if (list_cellule[i].numero == donnees_actuelles.cellule.numero)
 		{

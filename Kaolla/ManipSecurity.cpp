@@ -56,7 +56,7 @@ void CManip::SecuriteHautePressionManuelle()
 		}
 }
 
-DWORD WINAPI CManip::MesureSecuriteHautePression(LPVOID lpParam)
+DWORD WINAPI CManip::MesureSecuriteHautePression(LPVOID)
 {
 
 	WaitForSingleObject(hEventPression,INFINITE);
@@ -162,7 +162,7 @@ void CManip::SecuriteTemperaturesManuelle()
 
 
 
-DWORD WINAPI CManip::MesureSecuriteTemperatureElevee(LPVOID lpParam)
+DWORD WINAPI CManip::MesureSecuriteTemperatureElevee(LPVOID)
 {
 	WaitForSingleObject(hEventTemperatureElevee,INFINITE);
 	if (!TemperatureElevee)
@@ -183,7 +183,7 @@ DWORD WINAPI CManip::MesureSecuriteTemperatureElevee(LPVOID lpParam)
 	return 0;
 }
 
-DWORD WINAPI CManip::MesureSecuriteTemperatureFaible(LPVOID lpParam)
+DWORD WINAPI CManip::MesureSecuriteTemperatureFaible(LPVOID)
 {
 	WaitForSingleObject(hEventTemperatureFaible,INFINITE);
 	if (!TemperatureFaible)

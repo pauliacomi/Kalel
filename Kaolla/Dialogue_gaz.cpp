@@ -333,7 +333,7 @@ void CModifGaz::ReinitialisationComboBox()
 	// On efface la contenance de m_CBModifGaz
 	// Puis on le (ré)initialise
 	m_CBModifGaz.ResetContent();
-	for(int i=0;i<list_modif_gaz.size();i++)
+	for(UINT i=0;i<list_modif_gaz.size();i++)
 	{
 		CString StrSymbole;
 		StrSymbole.Format(_T("%s"),list_modif_gaz[i].symbole.c_str());
@@ -450,7 +450,7 @@ void CSupprGaz::ReinitialisationComboBox()
 	list_suppr_gaz=GetGazs();
 
 	m_CBSupprGaz.ResetContent();
-	for(int i=0;i<list_suppr_gaz.size();i++)
+	for(UINT i=0;i<list_suppr_gaz.size();i++)
 	{
 		CString StrSymbole;
 		StrSymbole.Format(_T("%s"),list_suppr_gaz[i].symbole.c_str());

@@ -11,7 +11,7 @@ public:
 
 private:
 	LARGE_INTEGER start, end, freq;
-	double temps;
+	float temps;
 	LARGE_INTEGER pause,reprise;
 	
 public:

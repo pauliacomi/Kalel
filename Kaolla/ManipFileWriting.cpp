@@ -20,7 +20,7 @@ string CManip::NomFichier(string extention)
 	}
 	else
 	{
-		if(general.experimentateur.surnom.c_str() == "")
+		if( strcmp(general.experimentateur.surnom.c_str(),"") )
 		{
 			sprintf_s(nom_fichier_char,"%s/Nouveau_Fichier",general.chemin.c_str());
 			if(!PathIsDirectory(_T(nom_fichier_char)))
@@ -55,7 +55,7 @@ string CManip::NomFichierEntete(string extention)
 	}
 	else
 	{
-		if(general.experimentateur.surnom.c_str() == "")
+		if( strcmp(general.experimentateur.surnom.c_str(), ""))
 		{
 			sprintf_s(nom_fichier_entete_char,"%s/Nouveau_Fichier",general.chemin.c_str());
 			if(!PathIsDirectory(_T(nom_fichier_entete_char)))

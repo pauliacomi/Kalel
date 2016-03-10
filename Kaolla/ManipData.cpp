@@ -29,7 +29,7 @@ void CManip::DonneesManuelleGrapheEtape()
 	int nb_secondes = nb_heures * 3600;
 
 	int coeff = (int)(temps_manip / nb_secondes);
-	int temps_min = coeff * nb_secondes;
+	float temps_min = coeff * nb_secondes;
 
 
 	if (m_Doc->NumeroEtape < coeff + 1)

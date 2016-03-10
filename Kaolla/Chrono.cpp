@@ -29,14 +29,14 @@ float CChrono::TempsActuel()
 	// Conversion en milliseconde 
 	// (plus précis que lorsqu'on calcul en secondes... on ne sait pas pourquoi) 
 	double elapsed = (1000.0 * (end.QuadPart - start.QuadPart)) / freq.QuadPart;
-	temps = elapsed/1000.0;
+	temps = static_cast<float>(elapsed) /1000.0;
 	return temps; //en secondes
 }
 
 float CChrono::TempsActuel(LARGE_INTEGER endEtranger)
 {
 	double elapsed = (1000.0 * (endEtranger.QuadPart - start.QuadPart)) / freq.QuadPart;
-	temps = elapsed/1000.0;
+	temps = static_cast<float>(elapsed)/1000.0;
 	return temps; //en secondes
 }
 

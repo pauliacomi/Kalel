@@ -62,7 +62,8 @@ bool CManip_AutoGaz::LireEcrireAfficher(LPVOID pParam)
 	::PostMessage((HWND) pParam, WM_THREADAFFICHAGE, 0, 0);
 
 	int i;
-	int FctArretDemande;
+	int FctArretDemande = NULL;
+
 	for(i=0;i<nb_etape;i++)
 	{
 		if(etape_en_cours==ListeEtape[i].Index)
