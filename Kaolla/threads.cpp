@@ -30,12 +30,29 @@ CWinThread * m_threadChangeBottle;
 
 // Main class that deals with the automatic functionality
 CManip_AutoGaz manip;
-
+CManip manualManip;
 
 
 // --------- Initialisation and destruction (kind of) THIS NEEDS TO BE PERFORMED LOCALLY WITHIN THREADS FOR EACH manip OBJECT -------
 
 void InitialisationManip()
+{
+	//pVanne = new CVannes();
+	//pTemperature = new CTemperature(GetPortTemperatures());
+
+	//pKaollaView = CKaollaView::GetView();
+	//pKaollaDoc = CKaollaDoc::GetDocument();
+
+	//manip = CManip_AutoGaz();
+	//manip.SetKaollaView(pKaollaView);
+	//manip.SetVannes(pVanne);
+	//manip.SetTemperature(pTemperature);
+
+	//manip.FermetureDeToutesLesVannes();
+	//manip.FermerLesValvesEtLaPompe();
+}
+
+void InitialisationManip2()
 {
 	pVanne = new CVannes();
 	pTemperature = new CTemperature(GetPortTemperatures());
@@ -43,13 +60,13 @@ void InitialisationManip()
 	pKaollaView = CKaollaView::GetView();
 	pKaollaDoc = CKaollaDoc::GetDocument();
 
-	manip = CManip_AutoGaz();
-	manip.SetKaollaView(pKaollaView);
-	manip.SetVannes(pVanne);
-	manip.SetTemperature(pTemperature);
+	manualManip = CManip_AutoGaz();
+	manualManip.SetKaollaView(pKaollaView);
+	manualManip.SetVannes(pVanne);
+	manualManip.SetTemperature(pTemperature);
 
-	manip.FermetureDeToutesLesVannes();
-	manip.FermerLesValvesEtLaPompe();
+	manualManip.FermetureDeToutesLesVannes();
+	manualManip.FermerLesValvesEtLaPompe();
 }
 
 void DeleteManip()
@@ -133,7 +150,7 @@ UINT LancerThreadProc(LPVOID pParam)
 	ASSERT(hMainFrame != NULL);
 
 	// Launch required functionality
-	manip.LancementExperience(pParam);
+	//manip.LancementExperience(pParam);
 
 	return 0;
 }
@@ -144,7 +161,7 @@ UINT ArretThreadProc(LPVOID pParam)
 	ASSERT(hMainFrame != NULL);
 
 	// Launch required functionality
-	manip.ArretExperience();
+	//manip.ArretExperience();
 
 	return 0;
 }
@@ -156,7 +173,7 @@ UINT ThreadMenuMiseSousVideAmpoule(LPVOID pParam)
 	ASSERT(hMainFrame != NULL);
 
 	// Launch required functionality
-	manip.MiseSousVideAmpoule();
+	//manip.MiseSousVideAmpoule();
 
 	// When thread finishes, let main window know to unlock menu
 	::PostMessage(hMainFrame, WM_THREADFINISHEDREG, NULL, NULL);
@@ -172,7 +189,7 @@ UINT ThreadMenuMiseSousVideBouteille(LPVOID pParam)
 	ASSERT(hMainFrame != NULL);
 
 	// Launch required functionality
-	manip.MiseSousVideBouteille();
+	//manip.MiseSousVideBouteille();
 
 	// When thread finishes, let main window know to unlock menu
 	::PostMessage(hMainFrame, WM_THREADFINISHEDREG, NULL, NULL);
@@ -188,7 +205,7 @@ UINT ThreadMenuChangementBouteille(LPVOID pParam)
 	ASSERT(hMainFrame != NULL);
 
 	// Launch required functionality
-	manip.ChangementBouteille();
+	//manip.ChangementBouteille();
 
 	// When thread finishes, let main window know to unlock menu
 	::PostMessage(hMainFrame, WM_THREADFINISHEDREG, NULL, NULL);
@@ -244,50 +261,50 @@ void RepriseThreads()
 
 bool DemandeOuvertureVanne(int num_vanne)
 {
-	manip.Ouverture_Vanne(num_vanne);
-	return manip.EstOuvert_Vanne(num_vanne);
+	manualManip.Ouverture_Vanne(num_vanne);
+	return manualManip.EstOuvert_Vanne(num_vanne);
 }
 
 bool DemandeFermetureVanne(int num_vanne)
 {
-	manip.Fermeture_Vanne(num_vanne);
-	return manip.EstFerme_Vanne(num_vanne);
+	manualManip.Fermeture_Vanne(num_vanne);
+	return manualManip.EstFerme_Vanne(num_vanne);
 }
 
 bool DemandeActivationEV1()
 {
-	manip.ActiverEV1();
-	return manip.EV1EstActive();
+	manualManip.ActiverEV1();
+	return manualManip.EV1EstActive();
 }
 
 bool DemandeDesactivationEV1()
 {
-	manip.DesactiverEV1();
-	return manip.EV1EstDesactive();
+	manualManip.DesactiverEV1();
+	return manualManip.EV1EstDesactive();
 }
 
 bool DemandeActivationEV2()
 {
-	manip.ActiverEV2();
-	return manip.EV2EstActive();
+	manualManip.ActiverEV2();
+	return manualManip.EV2EstActive();
 }
 
 bool DemandeDesactivationEV2()
 {
-	manip.DesactiverEV2();
-	return manip.EV2EstDesactive();
+	manualManip.DesactiverEV2();
+	return manualManip.EV2EstDesactive();
 }
 
 bool DemandeActivationPompe()
 {
-	manip.ActiverPompe();
-	return manip.PompeEstActive();
+	manualManip.ActiverPompe();
+	return manualManip.PompeEstActive();
 }
 
 bool DemandeDesactivationPompe()
 {
-	manip.DesactiverPompe();
-	return manip.PompeEstDesactive();
+	manualManip.DesactiverPompe();
+	return manualManip.PompeEstDesactive();
 }
 
 

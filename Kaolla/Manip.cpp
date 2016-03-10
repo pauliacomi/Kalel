@@ -22,8 +22,9 @@ CManip::CManip()
 
 CManip::~CManip()
 {
-	for (int i = 0; i<NB_OF_INSTRUMENTS; i++)
-		delete instrument[i];
+	for (int i = 0; i<NB_OF_INSTRUMENTS; i++){
+		//delete instrument[i];    // needed but throws an error currently
+	}
 }
 
 

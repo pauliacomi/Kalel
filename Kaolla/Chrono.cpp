@@ -9,6 +9,7 @@ CChrono::~CChrono(void)
 {
 }
 
+// Start the timer object
 void CChrono::TopChrono()
 {
 	QueryPerformanceFrequency(&freq);

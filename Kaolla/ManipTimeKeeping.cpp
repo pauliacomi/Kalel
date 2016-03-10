@@ -2,8 +2,6 @@
 #include "Manip.h"
 
 
-using namespace std;
-
 #define jour_sec 86400
 #define heure_sec 3600
 #define minute_sec 60
@@ -13,11 +11,14 @@ using namespace std;
 #define message_minute	2
 #define message_seconde	3
 
-void CManip::AttenteMinutes (int nbminutes)
+
+// Wait a number of minutes
+void CManip::AttenteMinutes(int nbminutes)
 {
 	AttenteSecondes(nbminutes*60);
 }
 
+// Wait a number of seconds
 void CManip::AttenteSecondes (int nbsecondes)
 {
 	CChrono chrono_attente;
@@ -28,11 +29,7 @@ void CManip::AttenteSecondes (int nbsecondes)
 	int compteur = 0;
 	while(temps_effectue<nbsecondes)
 	{
-		//RajoutAffichageMessages(MessageTemps(nbsecondes - temps_effectue));
 		message  = textAttente;
-		/*CString teststr;
-		teststr.Format(_T("nbsecondes : %d - temps_effectue : %d = %d\r\n"),nbsecondes,temps_effectue,nbsecondes - temps_effectue);
-		message += teststr;*/
 		message += MessageTemps(nbsecondes - temps_effectue);
 		
 		for(int i=0;i<compteur;i++)

@@ -2,7 +2,6 @@
 #include "Manip.h"
 
 
-
 ofstream fichier_mesure_manuelle;
 
 

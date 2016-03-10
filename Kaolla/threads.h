@@ -8,6 +8,7 @@
 
 // --------- Initialisation and destruction (kind of) -------
 void InitialisationManip();
+void InitialisationManip2();
 void DeleteManip();
 
 

@@ -176,6 +176,7 @@ void CKaollaView::OnInitialUpdate()
 
 	// Initialize manipulation class - this needs work
 	InitialisationManip();
+	InitialisationManip2();
 
 }
 

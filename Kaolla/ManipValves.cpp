@@ -2,9 +2,26 @@
 #include "Manip.h"
 #include "Define_Manip_Vannes.h"
 
-using namespace std;
 
+// Open a valve
+bool CManip::Ouverture_Vanne(int num_vanne)
+{
+	bool ouverture_reussie = g_pVanne->Ouvrir(num_vanne);
+	if (ouverture_reussie)
+		SignalerOuvertureVanne(num_vanne);
+	return ouverture_reussie;
+}
 
+// Close a valve
+bool CManip::Fermeture_Vanne(int num_vanne)
+{
+	bool fermeture_reussie = g_pVanne->Fermer(num_vanne);
+	if (fermeture_reussie)
+		SignalerFermetureVanne(num_vanne);
+	return fermeture_reussie;
+}
+
+// Open and close a valve
 bool CManip::OuvrirEtFermer_Vanne(int num_vanne)
 {
 	bool ouverture_reussie = Ouverture_Vanne(num_vanne);
@@ -16,31 +33,7 @@ bool CManip::OuvrirEtFermer_Vanne(int num_vanne)
 	return FALSE;
 }
 
-bool CManip::Ouverture_Vanne(int num_vanne)
-{
-	bool ouverture_reussie = g_pVanne->Ouvrir(num_vanne);
-	if(ouverture_reussie)
-		SignalerOuvertureVanne(num_vanne);
-	return ouverture_reussie;
-}
-
-bool CManip::Fermeture_Vanne(int num_vanne)
-{
-	bool fermeture_reussie = g_pVanne->Fermer(num_vanne);
-	if(fermeture_reussie)
-		SignalerFermetureVanne(num_vanne);
-	return fermeture_reussie;
-}
-
-bool CManip::FermetureDeToutesLesVannes()
-{
-	if(!g_pVanne->FermerToutesLesVannes())
-		return FALSE;
-	SignalerFermetureDeToutesLesVannes();
-	return TRUE;
-
-}
-
+// Activate EV1
 bool CManip::ActiverEV1()
 {
 	if(!g_pVanne->ActiverEV1())
@@ -49,6 +42,7 @@ bool CManip::ActiverEV1()
 	return TRUE;
 }
 
+// Deactivate EV1
 bool CManip::DesactiverEV1()
 {
 	if(!g_pVanne->DesactiverEV1())
@@ -57,6 +51,7 @@ bool CManip::DesactiverEV1()
 	return TRUE;
 }
 
+// Activate EV2
 bool CManip::ActiverEV2()
 {
 	if(!g_pVanne->ActiverEV2())
@@ -65,6 +60,7 @@ bool CManip::ActiverEV2()
 	return TRUE;
 }
 
+// Deactivate EV1
 bool CManip::DesactiverEV2()
 {
 	if(!g_pVanne->DesactiverEV2())
@@ -73,6 +69,7 @@ bool CManip::DesactiverEV2()
 	return TRUE;
 }
 
+// Activate pump
 bool CManip::ActiverPompe()
 {
 	if(!g_pVanne->ActiverPompe())
@@ -81,6 +78,7 @@ bool CManip::ActiverPompe()
 	return TRUE;
 }
 
+// Deactivate pump
 bool CManip::DesactiverPompe()
 {
 	if(!g_pVanne->DesactiverPompe())
@@ -89,6 +87,16 @@ bool CManip::DesactiverPompe()
 	return TRUE;
 }
 
+// Close all valves
+bool CManip::FermetureDeToutesLesVannes()
+{
+	if (!g_pVanne->FermerToutesLesVannes())
+		return FALSE;
+	SignalerFermetureDeToutesLesVannes();
+	return TRUE;
+}
+
+// Close the pump
 bool CManip::FermerLesValvesEtLaPompe()
 {
 	if(!g_pVanne->FermerLesValvesEtLaPompe())
@@ -97,6 +105,7 @@ bool CManip::FermerLesValvesEtLaPompe()
 	return TRUE;
 }
 
+// Close everything
 bool CManip::ToutFermer()
 {
 	if(!FermetureDeToutesLesVannes())
@@ -104,19 +113,17 @@ bool CManip::ToutFermer()
 	if(!FermerLesValvesEtLaPompe())
 		return FALSE;
 	return TRUE;
-
 }
 
+//------------ Below are functions to check for functionality being on or off
 
 bool CManip::EstOuvert_Vanne(int num_vanne)
 {
-	//return m_KaollaView->vanne.EstOuvert(num_vanne);
 	return g_pVanne->VanneEstOuvert(num_vanne);
 }
 
 bool CManip::EstFerme_Vanne(int num_vanne)
 {
-	//return m_KaollaView->vanne.EstFerme(num_vanne);
 	return g_pVanne->VanneEstFerme(num_vanne);
 }
 
@@ -150,6 +157,9 @@ bool CManip::PompeEstDesactive()
 	return g_pVanne->PompeEstDesactive();
 }
 
+
+
+/// these should be rewritten
 void CManip::SignalerOuvertureVanne(int num_vanne)
 {
 	m_KaollaView->MarquerTemoin(num_vanne, _T("Ouverte"));
@@ -164,7 +174,6 @@ void CManip::SignalerFermetureDeToutesLesVannes()
 {
 	m_KaollaView->MarquerTousLesTemoinsFermes();
 }
-
 
 void CManip::SignalerActivationEV1()
 {

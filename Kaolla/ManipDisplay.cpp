@@ -87,7 +87,7 @@ void CManip::AfficherTemperatures()
 	m_KaollaView->SetDlgItemText(IDC_TEMPERATURE_PIECE,m_KaollaView->m_StrTemperaturePiece);
 }
 
-// ------- Boite de dialogue ----------
+// ------- Dialogbox, replace by command ----------
 
 int CManip::MessageBoxConfirmation(CString message, UINT nType)
 {

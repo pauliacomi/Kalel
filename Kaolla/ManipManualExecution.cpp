@@ -2,11 +2,7 @@
 #include "Manip.h"
 
 
-using namespace std;
-
-
 CEvent g_eventFinAffichage;
-
 
 
 void CManip::ExecutionManuelle(LPVOID pParam)
