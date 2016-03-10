@@ -1,0 +1,146 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resourceParametresAppareil.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// Français (France) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_FRA)
+#ifdef _WIN32
+LANGUAGE LANG_FRENCH, SUBLANG_FRENCH
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resourceParametresAppareil.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_PARAMETRES_APPAREIL DIALOGEX 0, 0, 331, 494
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION
+CAPTION "Paramètres de l'appareil"
+FONT 8, "MS Shell Dlg", 400, 0, 0x0
+BEGIN
+    GROUPBOX        "Sensibilité",IDC_STATIC,18,16,295,89
+    LTEXT           "Sensibilité du Calo",IDC_STATIC,25,31,60,14,SS_CENTERIMAGE
+    EDITTEXT        IDC_EDIT_SENSIBILITE_CALO,154,31,65,14,ES_AUTOHSCROLL
+    CONTROL         "",IDC_SPIN_SENSIBILITE_CALO,"msctls_updown32",UDS_ARROWKEYS,219,31,11,14
+    LTEXT           "V/W",IDC_STATIC,241,31,23,14,SS_CENTERIMAGE
+    LTEXT           "Sensibilité du capteur de Basse Pression",IDC_STATIC,25,56,133,14,SS_CENTERIMAGE
+    EDITTEXT        IDC_EDIT_SENSIBILITE_CAPTEUR_BASSE_PRESSION,179,56,40,14,ES_AUTOHSCROLL
+    CONTROL         "",IDC_SPIN_SENSIBILITE_CAPTEUR_BASSE_PRESSION,
+                    "msctls_updown32",UDS_ARROWKEYS,219,56,11,14
+    LTEXT           "V/bar",IDC_STATIC,241,56,19,14,SS_CENTERIMAGE
+    LTEXT           "Sensibilité du capteur de Haute Pression",IDC_STATIC,25,82,129,14,SS_CENTERIMAGE
+    EDITTEXT        IDC_EDIT_SENSIBILITE_CAPTEUR_HAUTE_PRESSION,179,82,40,14,ES_AUTOHSCROLL
+    CONTROL         "",IDC_SPIN_SENSIBILITE_CAPTEUR_HAUTE_PRESSION,
+                    "msctls_updown32",UDS_ARROWKEYS,219,82,11,14
+    LTEXT           "V/bar",IDC_STATIC,241,82,19,14,SS_CENTERIMAGE
+    GROUPBOX        "Pression de sécurité",IDC_STATIC,18,122,295,111
+    LTEXT           "Pression de sécurité du capteur de Basse Pression",IDC_STATIC,25,160,162,14,SS_CENTERIMAGE
+    EDITTEXT        IDC_EDIT_PRESSION_SECURITE_CAPTEUR_BASSE_PRESSION,207,160,40,14,ES_AUTOHSCROLL
+    CONTROL         "",IDC_SPIN_PRESSION_SECURITE_CAPTEUR_BASSE_PRESSION,
+                    "msctls_updown32",UDS_ARROWKEYS,247,160,11,14
+    LTEXT           "bar",IDC_STATIC,270,160,19,14,SS_CENTERIMAGE
+    LTEXT           "Pression de sécurité du capteur de Haute Pression",IDC_STATIC,25,184,165,14,SS_CENTERIMAGE
+    EDITTEXT        IDC_EDIT_PRESSION_SECURITE_CAPTEUR_HAUTE_PRESSION,207,184,40,14,ES_AUTOHSCROLL
+    CONTROL         "",IDC_SPIN_PRESSION_SECURITE_CAPTEUR_HAUTE_PRESSION,
+                    "msctls_updown32",UDS_ARROWKEYS,247,184,11,14
+    LTEXT           "bar",IDC_STATIC,270,184,19,14,SS_CENTERIMAGE
+    LTEXT           "Pression limite du vide",IDC_STATIC,25,208,75,14,SS_CENTERIMAGE
+    EDITTEXT        IDC_EDIT_PRESSION_LIMITE_VIDE,207,208,40,14,ES_AUTOHSCROLL
+    CONTROL         "",IDC_SPIN_PRESSION_LIMITE_VIDE,"msctls_updown32",UDS_ARROWKEYS,247,208,11,14
+    LTEXT           "bar",IDC_STATIC,270,208,19,14,SS_CENTERIMAGE
+    GROUPBOX        "Volume",IDC_STATIC,18,303,295,67
+    LTEXT           "Volume référentiel (entre V7, V5, V4)",IDC_STATIC,25,317,121,14,SS_CENTERIMAGE
+    EDITTEXT        IDC_EDIT_VOLUME_REF,201,317,40,14,ES_AUTOHSCROLL
+    CONTROL         "",IDC_SPIN_VOLUME_REF,"msctls_updown32",UDS_ARROWKEYS,241,317,11,14
+    LTEXT           "cm3",IDC_STATIC,264,317,19,14,SS_CENTERIMAGE
+    LTEXT           "Volume P6 (volume dans le capteur de Basse Pression",IDC_STATIC,25,349,172,14,SS_CENTERIMAGE
+    EDITTEXT        IDC_EDIT_VOLUME_P6,201,349,40,14,ES_AUTOHSCROLL
+    CONTROL         "",IDC_SPIN_VOLUME_P6,"msctls_updown32",UDS_ARROWKEYS,241,349,11,14
+    LTEXT           "cm3",IDC_STATIC,264,349,19,14,SS_CENTERIMAGE
+    GROUPBOX        "Calorimètre",IDC_STATIC,18,384,295,66
+    LTEXT           "Nom du Calorimètre",IDC_STATIC,25,400,67,14,SS_CENTERIMAGE
+    PUSHBUTTON      "OK",IDOK,193,471,50,14
+    PUSHBUTTON      "Annuler",IDCANCEL,258,471,50,14
+    EDITTEXT        IDC_NOM_CALO,211,400,80,14,ES_AUTOHSCROLL
+    LTEXT           "Entête du nom du fichier",IDC_STATIC,25,426,79,14,SS_CENTERIMAGE
+    EDITTEXT        IDC_ENTETE_FICHIER,211,426,80,14,ES_AUTOHSCROLL
+    CONTROL         "Activation de la sécurité lors des manipulations automatiques",IDC_CHECK_ACTIVATION_SECURITE,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,25,140,210,10
+    GROUPBOX        "Tuyère sonique",IDC_STATIC,18,244,295,40
+    CONTROL         "Présence d'une tuyère sonique",IDC_CHECK_TUYERE_SONIQUE,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,25,260,115,10
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_PARAMETRES_APPAREIL, DIALOG
+    BEGIN
+        LEFTMARGIN, 5
+        RIGHTMARGIN, 326
+        TOPMARGIN, 5
+        BOTTOMMARGIN, 489
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+#endif    // Français (France) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

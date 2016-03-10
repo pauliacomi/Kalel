@@ -1,0 +1,516 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#ifndef APSTUDIO_INVOKED
+#include "targetver.h"
+#endif
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// Français (France) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_FRA)
+#ifdef _WIN32
+LANGUAGE LANG_FRENCH, SUBLANG_FRENCH
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#ifndef APSTUDIO_INVOKED\r\n"
+    "#include ""targetver.h""\r\n"
+    "#endif\r\n"
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_FRA)\r\n"
+    "LANGUAGE 12, 1\r\n"
+    "#pragma code_page(1252)\r\n"
+    "#include ""res\\Kaolla.rc2""  // ressources non modifiées par Microsoft Visual C++\r\n"
+    "#include ""Onglets.rc"" #include ""ConnectionPort.rc"" #include ""l.FRA\\afxres.rc""          // Composants standard\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON                    "res\\Kaolla.ico"
+IDR_KaollaTYPE          ICON                    "res\\KaollaDoc.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDR_MAINFRAME           BITMAP                  "res\\Toolbar.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Toolbar
+//
+
+IDR_MAINFRAME TOOLBAR  16, 15
+BEGIN
+    BUTTON      ID_FILE_NEW
+    BUTTON      ID_FILE_OPEN
+    BUTTON      ID_FILE_SAVE
+    SEPARATOR
+    BUTTON      ID_EDIT_CUT
+    BUTTON      ID_EDIT_COPY
+    BUTTON      ID_EDIT_PASTE
+    SEPARATOR
+    BUTTON      ID_FILE_PRINT
+    BUTTON      ID_APP_ABOUT
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MAINFRAME MENU 
+BEGIN
+    POPUP "&Fichier"
+    BEGIN
+        MENUITEM "&Nouveau\tCtrl+N",            ID_FILE_NEW
+        MENUITEM "&Ouvrir...\tCtrl+O",          ID_FILE_OPEN
+        MENUITEM "&Enregistrer\tCtrl+S",        ID_FILE_SAVE
+        MENUITEM "Enregistrer &sous...",        ID_FILE_SAVE_AS
+        MENUITEM SEPARATOR
+        MENUITEM "Fichier récent",              ID_FILE_MRU_FILE1
+        MENUITEM SEPARATOR
+        MENUITEM "&quitter",                    ID_APP_EXIT
+    END
+    POPUP "&Edition"
+    BEGIN
+        MENUITEM "&Annuler\tCtrl+Z",            ID_EDIT_UNDO
+        MENUITEM SEPARATOR
+        MENUITEM "&Couper\tCtrl+X",             ID_EDIT_CUT
+        MENUITEM "C&opier\tCtrl+C",             ID_EDIT_COPY
+        MENUITEM "Co&ller\tCtrl+V",             ID_EDIT_PASTE
+    END
+    POPUP "&Affichage"
+    BEGIN
+        MENUITEM "&barre d'outils",             ID_VIEW_TOOLBAR
+        MENUITEM "&barre d'état",               ID_VIEW_STATUS_BAR
+        MENUITEM "&Fractionner",                ID_WINDOW_SPLIT
+    END
+    POPUP "&Paramètres"
+    BEGIN
+        MENUITEM "Paramètres de l'&Appareil",   ID_PARAMATRES_APPAREIL
+        MENUITEM "Connection des &Ports",       ID_CONNECTION_PORTS
+    END
+    POPUP "E&xpérience"
+    BEGIN
+        MENUITEM "&Données",                    ID_DONNEES_EXPERIENCE
+    END
+    POPUP "F&onctionnalités"
+    BEGIN
+        MENUITEM "Mise sous vide sur l'&Ampoule", ID_MSV_AMPOULE
+        MENUITEM "Mise sous vide jusqu'à la &Bouteille", ID_MSV_BOUTEILLE
+        MENUITEM "&Changement de bouteille",    ID_CHANGEMENT_BOUTEILLE
+    END
+    POPUP "&Aide"
+    BEGIN
+        MENUITEM "&À propos de Kaolla...",      ID_APP_ABOUT
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Accelerator
+//
+
+IDR_MAINFRAME ACCELERATORS 
+BEGIN
+    "N",            ID_FILE_NEW,            VIRTKEY, CONTROL
+    "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL
+    "S",            ID_FILE_SAVE,           VIRTKEY, CONTROL
+    "Z",            ID_EDIT_UNDO,           VIRTKEY, CONTROL
+    "X",            ID_EDIT_CUT,            VIRTKEY, CONTROL
+    "C",            ID_EDIT_COPY,           VIRTKEY, CONTROL
+    "V",            ID_EDIT_PASTE,          VIRTKEY, CONTROL
+    VK_BACK,        ID_EDIT_UNDO,           VIRTKEY, ALT
+    VK_DELETE,      ID_EDIT_CUT,            VIRTKEY, SHIFT
+    VK_INSERT,      ID_EDIT_COPY,           VIRTKEY, CONTROL
+    VK_INSERT,      ID_EDIT_PASTE,          VIRTKEY, SHIFT
+    VK_F6,          ID_NEXT_PANE,           VIRTKEY 
+    VK_F6,          ID_PREV_PANE,           VIRTKEY, SHIFT
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUTBOX DIALOGEX 0, 0, 170, 62
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "À propos de Kaolla"
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    ICON            IDR_MAINFRAME,IDC_STATIC,14,14,21,20
+    LTEXT           "Kaolla, Version 1.0",IDC_STATIC,42,14,114,8,SS_NOPREFIX
+    LTEXT           "Copyright (C) 2009",IDC_STATIC,42,26,114,8
+    DEFPUSHBUTTON   "OK",IDOK,113,41,50,14,WS_GROUP
+END
+
+IDD_KAOLLA_FORM DIALOGEX 0, 0, 396, 543
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    LTEXT           "Vanne 1",IDC_STATIC,184,70,28,14,SS_CENTERIMAGE
+    PUSHBUTTON      "Ouvrir",IDC_OUVRIR1,225,70,41,14
+    PUSHBUTTON      "Fermer",IDC_FERMER1,285,70,41,14
+    LTEXT           "Vanne 2",IDC_STATIC,184,93,28,14,SS_CENTERIMAGE
+    PUSHBUTTON      "Ouvrir",IDC_OUVRIR2,225,93,41,14
+    PUSHBUTTON      "Fermer",IDC_FERMER2,285,93,41,14
+    LTEXT           "Vanne 3",IDC_STATIC,184,116,28,14,SS_CENTERIMAGE
+    PUSHBUTTON      "Ouvrir",IDC_OUVRIR3,225,116,41,14
+    PUSHBUTTON      "Fermer",IDC_FERMER3,285,116,41,14
+    LTEXT           "Vanne 4",IDC_STATIC,184,139,28,14,SS_CENTERIMAGE
+    PUSHBUTTON      "Ouvrir",IDC_OUVRIR4,225,139,41,14
+    PUSHBUTTON      "Fermer",IDC_FERMER4,285,139,41,14
+    LTEXT           "Vanne 5",IDC_STATIC,184,162,28,14,SS_CENTERIMAGE
+    PUSHBUTTON      "Ouvrir",IDC_OUVRIR5,225,162,41,14
+    PUSHBUTTON      "Fermer",IDC_FERMER5,285,162,41,14
+    LTEXT           "Vanne 6",IDC_STATIC,184,185,28,14,SS_CENTERIMAGE
+    PUSHBUTTON      "Ouvrir",IDC_OUVRIR6,225,185,41,14
+    PUSHBUTTON      "Fermer",IDC_FERMER6,285,185,41,14
+    LTEXT           "Vanne 7",IDC_STATIC,184,208,28,14,SS_CENTERIMAGE
+    PUSHBUTTON      "Ouvrir",IDC_OUVRIR7,225,208,41,14
+    PUSHBUTTON      "Fermer",IDC_FERMER7,285,208,41,14
+    LTEXT           "Vanne 8",IDC_STATIC,184,231,28,14,SS_CENTERIMAGE
+    PUSHBUTTON      "Ouvrir",IDC_OUVRIR8,225,231,41,14
+    PUSHBUTTON      "Fermer",IDC_FERMER8,285,231,41,14
+    LTEXT           "Messages :",IDC_STATIC,16,355,37,8
+    EDITTEXT        IDC_EDIT_MESSAGES,14,373,302,77,ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_WANTRETURN | WS_VSCROLL
+    LTEXT           "W",IDC_STATIC,153,70,19,14,SS_CENTERIMAGE
+    LTEXT           "Calorimètre",IDC_STATIC,13,70,38,14,SS_CENTERIMAGE
+    LTEXT           "Bar",IDC_STATIC,153,99,19,14,SS_CENTERIMAGE
+    LTEXT           "Basse Pression",IDC_STATIC,13,99,52,14,SS_CENTERIMAGE
+    LTEXT           "Bar",IDC_STATIC,153,128,19,14,SS_CENTERIMAGE
+    LTEXT           "Haute Pression",IDC_STATIC,13,128,51,14,SS_CENTERIMAGE
+    LTEXT           "°C",IDC_STATIC,138,165,19,14,SS_CENTERIMAGE
+    LTEXT           "Température Calo",IDC_STATIC,13,165,66,14,SS_CENTERIMAGE
+    LTEXT           "°C",IDC_STATIC,138,184,19,14,SS_CENTERIMAGE
+    LTEXT           "Température Cage",IDC_STATIC,13,184,66,14,SS_CENTERIMAGE
+    LTEXT           "°C",IDC_STATIC,138,203,19,14,SS_CENTERIMAGE
+    LTEXT           "Température Pièce",IDC_STATIC,13,203,66,14,SS_CENTERIMAGE
+    LTEXT           "s",IDC_STATIC,115,230,8,14,SS_CENTERIMAGE
+    LTEXT           "Temps",IDC_STATIC,13,230,22,14,SS_CENTERIMAGE
+    LTEXT           "Mesures :",IDC_STATIC,14,459,32,14,SS_CENTERIMAGE
+    EDITTEXT        IDC_CALO,71,70,77,14,ES_RIGHT | ES_AUTOHSCROLL
+    EDITTEXT        IDC_HAUTE_PRESSION,71,128,77,14,ES_RIGHT | ES_AUTOHSCROLL
+    EDITTEXT        IDC_BASSE_PRESSION,71,99,77,14,ES_RIGHT | ES_AUTOHSCROLL
+    EDITTEXT        IDC_TEMPERATURE_CAGE,85,184,50,14,ES_RIGHT | ES_AUTOHSCROLL
+    EDITTEXT        IDC_TEMPERATURE_CALO,85,165,50,14,ES_RIGHT | ES_AUTOHSCROLL
+    EDITTEXT        IDC_TEMPERATURE_PIECE,85,203,50,14,ES_RIGHT | ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_MESURES,14,477,303,52,ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_WANTRETURN | WS_VSCROLL
+    EDITTEXT        IDC_TEMPS,58,230,52,14,ES_RIGHT | ES_AUTOHSCROLL
+    PUSHBUTTON      "Lancer",IDC_LANCER,19,17,50,14
+    PUSHBUTTON      "Arrêter",IDC_ARRETER,89,17,50,14
+    PUSHBUTTON      "Paramètres",IDC_BUTTON_PARAMETRES_EXPERIENCE,325,17,50,14
+    LTEXT           "Etape : ",IDC_STATIC,16,325,22,14,SS_CENTERIMAGE
+    EDITTEXT        IDC_EDIT_ETAPE,50,325,335,22,ES_MULTILINE | ES_AUTOHSCROLL,WS_EX_LEFTSCROLLBAR
+    LTEXT           "Pression Initiale",IDC_STATIC,14,258,51,14,SS_CENTERIMAGE
+    EDITTEXT        IDC_PRESSION_INITIALE,74,258,81,14,ES_AUTOHSCROLL
+    LTEXT           "Bar",IDC_STATIC,162,258,12,14,SS_CENTERIMAGE
+    EDITTEXT        IDC_PRESSION_FINALE,74,278,81,14,ES_AUTOHSCROLL
+    LTEXT           "Pression Finale",IDC_STATIC,14,278,48,14,SS_CENTERIMAGE
+    LTEXT           "Bar",IDC_STATIC,162,278,12,14,SS_CENTERIMAGE
+    PUSHBUTTON      "||",IDC_PAUSE,19,38,29,14
+    PUSHBUTTON      "-> Dose",IDC_PROCHAINE_DOSE,194,38,50,14
+    PUSHBUTTON      "-> Etape",IDC_PROCHAINE_ETAPE,253,38,50,14
+    PUSHBUTTON      "Arret Sous Vide",IDC_ARRET_SOUS_VIDE,316,38,56,14
+    PUSHBUTTON      "Reprise",IDC_REPRISE,63,38,50,14
+    EDITTEXT        IDC_TEMOIN_VANNE1,339,70,45,14,ES_CENTER | ES_AUTOHSCROLL
+    EDITTEXT        IDC_TEMOIN_VANNE3,339,116,45,14,ES_CENTER | ES_AUTOHSCROLL
+    EDITTEXT        IDC_TEMOIN_VANNE2,339,93,45,14,ES_CENTER | ES_AUTOHSCROLL
+    EDITTEXT        IDC_TEMOIN_VANNE4,339,139,45,14,ES_CENTER | ES_AUTOHSCROLL
+    EDITTEXT        IDC_TEMOIN_VANNE5,339,162,45,14,ES_CENTER | ES_AUTOHSCROLL
+    EDITTEXT        IDC_TEMOIN_VANNE6,339,185,45,14,ES_CENTER | ES_AUTOHSCROLL
+    EDITTEXT        IDC_TEMOIN_VANNE7,339,208,45,14,ES_CENTER | ES_AUTOHSCROLL
+    EDITTEXT        IDC_TEMOIN_VANNE8,339,231,45,14,ES_CENTER | ES_AUTOHSCROLL
+    PUSHBUTTON      "Activer",IDC_ACTIVER_EV1,225,254,41,14
+    PUSHBUTTON      "Activer",IDC_ACTIVER_EV2,225,277,41,14
+    PUSHBUTTON      "Activer",IDC_ACTIVER_POMPE,225,300,41,14
+    PUSHBUTTON      "Désactiver",IDC_DESACTIVER_EV1,285,254,41,14
+    PUSHBUTTON      "Désactiver",IDC_DESACTIVER_EV2,285,277,41,14
+    PUSHBUTTON      "Désactiver",IDC_DESACTIVER_POMPE,285,300,41,14
+    EDITTEXT        IDC_TEMOIN_EV1,339,254,45,14,ES_CENTER | ES_AUTOHSCROLL
+    EDITTEXT        IDC_TEMOIN_EV2,339,277,45,14,ES_CENTER | ES_AUTOHSCROLL
+    EDITTEXT        IDC_TEMOIN_POMPE,339,300,45,14,ES_CENTER | ES_AUTOHSCROLL
+    LTEXT           "EV1",IDC_STATIC,184,254,28,14,SS_CENTERIMAGE
+    LTEXT           "EV2",IDC_STATIC,184,277,28,14,SS_CENTERIMAGE
+    LTEXT           "Pompe",IDC_STATIC,183,300,28,14,SS_CENTERIMAGE
+    PUSHBUTTON      "-> Commande",IDC_PROCHAINE_COMMANDE,131,38,52,14
+END
+
+IDD_DONNEES_EXPERIENCE DIALOGEX 0, 0, 320, 291
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Données de l'expérience"
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,263,270,50,14
+    EDITTEXT        IDC_EDIT_DONNEES_EXPERIENCE,27,28,264,223,ES_MULTILINE | ES_AUTOHSCROLL | ES_READONLY | ES_WANTRETURN | WS_VSCROLL
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040c04e4"
+        BEGIN
+            VALUE "CompanyName", "Madirel"
+            VALUE "FileDescription", "Kaolla Gaz"
+            VALUE "FileVersion", "1.0.0.1"
+            VALUE "InternalName", "Kaolla.exe"
+            VALUE "LegalCopyright", "(c) Madirel. Tous droits réservés."
+            VALUE "OriginalFilename", "Kaolla.exe"
+            VALUE "ProductName", "Kaolla"
+            VALUE "ProductVersion", "1.0.0.1"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x40c, 1252
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_ABOUTBOX, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 163
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 55
+    END
+
+    IDD_KAOLLA_FORM, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 389
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 536
+    END
+
+    IDD_DONNEES_EXPERIENCE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 313
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 284
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    IDP_OLE_INIT_FAILED     "Échec de l'initialisation d'OLE. Assurez-vous que vous utilisez la bonne version des bibliothèques OLE."
+END
+
+STRINGTABLE 
+BEGIN
+    IDR_MAINFRAME           "Kaolla\n\nKaolla\n\n\nKaolla.Document\nKaolla.Document"
+END
+
+STRINGTABLE 
+BEGIN
+    AFX_IDS_APP_TITLE       "Kaolla"
+    AFX_IDS_IDLEMESSAGE     "Prêt"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_INDICATOR_EXT        "EXT"
+    ID_INDICATOR_CAPS       "CAP"
+    ID_INDICATOR_NUM        "NUM"
+    ID_INDICATOR_SCRL       "SCRL"
+    ID_INDICATOR_OVR        "OVR"
+    ID_INDICATOR_REC        "REC"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_FILE_NEW             "Crée un nouveau document\nNouveau"
+    ID_FILE_OPEN            "Ouvre un document existant\nOuvrir"
+    ID_FILE_CLOSE           "Ferme le document actif\nFermer"
+    ID_FILE_SAVE            "Enregistre le document actif\nEnregistrer"
+    ID_FILE_SAVE_AS         "Enregistre le document actif sous un nouveau nom\nEnregistrer sous"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_APP_ABOUT            "Affiche des informations concernant le programme, le numéro de version et le copyright\nÀ propos de"
+    ID_APP_EXIT             "Quitte l'application et demande si les documents doivent être enregistrés\nQuitter"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_FILE_MRU_FILE1       "Ouvrir ce document"
+    ID_FILE_MRU_FILE2       "Ouvrir ce document"
+    ID_FILE_MRU_FILE3       "Ouvrir ce document"
+    ID_FILE_MRU_FILE4       "Ouvrir ce document"
+    ID_FILE_MRU_FILE5       "Ouvrir ce document"
+    ID_FILE_MRU_FILE6       "Ouvrir ce document"
+    ID_FILE_MRU_FILE7       "Ouvrir ce document"
+    ID_FILE_MRU_FILE8       "Ouvrir ce document"
+    ID_FILE_MRU_FILE9       "Ouvrir ce document"
+    ID_FILE_MRU_FILE10      "Ouvrir ce document"
+    ID_FILE_MRU_FILE11      "Ouvrir ce document"
+    ID_FILE_MRU_FILE12      "Ouvrir ce document"
+    ID_FILE_MRU_FILE13      "Ouvrir ce document"
+    ID_FILE_MRU_FILE14      "Ouvrir ce document"
+    ID_FILE_MRU_FILE15      "Ouvrir ce document"
+    ID_FILE_MRU_FILE16      "Ouvrir ce document"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_NEXT_PANE            "Bascule vers le volet de fenêtre suivant\nVolet suivant"
+    ID_PREV_PANE            "Bascule vers le volet de fenêtre précédent\nVolet précédent"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_WINDOW_SPLIT         "Fractionne la fenêtre active en volets\nFractionner"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_EDIT_CLEAR           "Efface la sélection\nEffacer"
+    ID_EDIT_CLEAR_ALL       "Efface tout\nEffacer tout"
+    ID_EDIT_COPY            "Copie la sélection et la place dans le Presse-papiers\nCopier"
+    ID_EDIT_CUT             "Coupe la sélection et la place dans le Presse-papiers\nCouper"
+    ID_EDIT_FIND            "Recherche le texte spécifié\nRechercher"
+    ID_EDIT_PASTE           "Insère le contenu du presse-papiers\nColler"
+    ID_EDIT_REPEAT          "Répète la dernière action\nRépéter"
+    ID_EDIT_REPLACE         "Remplace un texte spécifié par un texte différent\nRemplacer"
+    ID_EDIT_SELECT_ALL      "Sélectionne la totalité du document\nSélectionner tout"
+    ID_EDIT_UNDO            "Annule la dernière action\nAnnuler"
+    ID_EDIT_REDO            "Rétablit l'action précédemment annulée\nRétablir"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_VIEW_TOOLBAR         "Affiche ou masque la barre d'outils\nActiver/Désactiver Barre d'outils"
+    ID_VIEW_STATUS_BAR      "Affiche ou masque la barre d'état\nActiver/Désactiver Barre d'état"
+END
+
+STRINGTABLE 
+BEGIN
+    AFX_IDS_SCSIZE          "Modifie la taille de la fenêtre"
+    AFX_IDS_SCMOVE          "Modifie la position de la fenêtre"
+    AFX_IDS_SCMINIMIZE      "Affiche la fenêtre sous forme d'icône"
+    AFX_IDS_SCMAXIMIZE      "Affiche la fenêtre en plein écran"
+    AFX_IDS_SCNEXTWINDOW    "Bascule vers la fenêtre de document suivante"
+    AFX_IDS_SCPREVWINDOW    "Bascule vers la fenêtre de document précédente"
+    AFX_IDS_SCCLOSE         "Ferme la fenêtre active et demande si les documents doivent être enregistrés"
+END
+
+STRINGTABLE 
+BEGIN
+    AFX_IDS_SCRESTORE       "Restaure la fenêtre à sa taille normale"
+    AFX_IDS_SCTASKLIST      "Active la liste des tâches"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_PARAMETRES_APPAREIL  "Paramètres de l'appareil"
+    ID_PARAMATRES_APPAREIL  "Modifier les paramètres de l'appareil"
+    ID_CONNECTION_PORTS     "Modifier les connections des Ports USB et RS232"
+END
+
+#endif    // Français (France) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_FRA)
+LANGUAGE 12, 1
+#pragma code_page(1252)
+#include "res\Kaolla.rc2"  // ressources non modifiées par Microsoft Visual C++
+//#include "Onglets.rc" #include "ConnectionPort.rc" #include "l.FRA\afxres.rc"          // Composants standard
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
