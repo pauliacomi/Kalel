@@ -324,6 +324,9 @@
     <ClInclude Include="MessageBoxTexts.h">
       <Filter>Header Files\Resources</Filter>
     </ClInclude>
+    <ClInclude Include="MFCMessageHandler.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Mesure.cpp">
@@ -345,15 +348,6 @@
       <Filter>Source Files\Kaolla</Filter>
     </ClCompile>
     <ClCompile Include="GrapheView.cpp">
-      <Filter>Source Files\Kaolla</Filter>
-    </ClCompile>
-    <ClCompile Include="KaollaView_Affichage.cpp">
-      <Filter>Source Files\Kaolla</Filter>
-    </ClCompile>
-    <ClCompile Include="KaollaView_Boutons.cpp">
-      <Filter>Source Files\Kaolla</Filter>
-    </ClCompile>
-    <ClCompile Include="KaollaView_Boutons_Vannes.cpp">
       <Filter>Source Files\Kaolla</Filter>
     </ClCompile>
     <ClCompile Include="ParserXML.cpp">
@@ -420,30 +414,6 @@
       <Filter>Source Files\Manip</Filter>
     </ClCompile>
     <ClCompile Include="Manip.cpp">
-      <Filter>Source Files\Manip\Manip</Filter>
-    </ClCompile>
-    <ClCompile Include="Manip_Affichage.cpp">
-      <Filter>Source Files\Manip\Manip</Filter>
-    </ClCompile>
-    <ClCompile Include="Manip_Donnees.cpp">
-      <Filter>Source Files\Manip\Manip</Filter>
-    </ClCompile>
-    <ClCompile Include="Manip_ExecutionManuelle.cpp">
-      <Filter>Source Files\Manip\Manip</Filter>
-    </ClCompile>
-    <ClCompile Include="Manip_Fichier.cpp">
-      <Filter>Source Files\Manip\Manip</Filter>
-    </ClCompile>
-    <ClCompile Include="Manip_Mesure.cpp">
-      <Filter>Source Files\Manip\Manip</Filter>
-    </ClCompile>
-    <ClCompile Include="Manip_Securite.cpp">
-      <Filter>Source Files\Manip\Manip</Filter>
-    </ClCompile>
-    <ClCompile Include="Manip_Temps.cpp">
-      <Filter>Source Files\Manip\Manip</Filter>
-    </ClCompile>
-    <ClCompile Include="Manip_Vannes.cpp">
       <Filter>Source Files\Manip\Manip</Filter>
     </ClCompile>
     <ClCompile Include="Manip_Auto_Arret.cpp">
@@ -583,6 +553,42 @@
     </ClCompile>
     <ClCompile Include="FluxConverter.cpp">
       <Filter>Source Files\Parameters</Filter>
+    </ClCompile>
+    <ClCompile Include="MFCMessageHandler.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="ManipDisplay.cpp">
+      <Filter>Source Files\Manip\Manip</Filter>
+    </ClCompile>
+    <ClCompile Include="ManipData.cpp">
+      <Filter>Source Files\Manip\Manip</Filter>
+    </ClCompile>
+    <ClCompile Include="ManipManualExecution.cpp">
+      <Filter>Source Files\Manip\Manip</Filter>
+    </ClCompile>
+    <ClCompile Include="ManipFileWriting.cpp">
+      <Filter>Source Files\Manip\Manip</Filter>
+    </ClCompile>
+    <ClCompile Include="ManipMeasurement.cpp">
+      <Filter>Source Files\Manip\Manip</Filter>
+    </ClCompile>
+    <ClCompile Include="ManipSecurity.cpp">
+      <Filter>Source Files\Manip\Manip</Filter>
+    </ClCompile>
+    <ClCompile Include="ManipTimeKeeping.cpp">
+      <Filter>Source Files\Manip\Manip</Filter>
+    </ClCompile>
+    <ClCompile Include="ManipValves.cpp">
+      <Filter>Source Files\Manip\Manip</Filter>
+    </ClCompile>
+    <ClCompile Include="KaollaViewDisplay.cpp">
+      <Filter>Source Files\Kaolla</Filter>
+    </ClCompile>
+    <ClCompile Include="KaollaViewButtons.cpp">
+      <Filter>Source Files\Kaolla</Filter>
+    </ClCompile>
+    <ClCompile Include="KaollaViewButtonsValves.cpp">
+      <Filter>Source Files\Kaolla</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

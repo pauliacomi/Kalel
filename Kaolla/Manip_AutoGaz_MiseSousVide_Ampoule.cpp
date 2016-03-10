@@ -25,14 +25,15 @@ void CManip_AutoGaz::MiseSousVideAmpoule()
 	
 	InitialisationManip();
 
-	// Normalement, toutes les vannes sont fermées
-	// Mais on les ferme toutes par mesure de sécurité
+	// Usually all the valves are closed
+	// But we close them again as a security measure
 
 	ToutFermer();
 
-	// Mettre en route la pompe
+	// Turn on the pump
 	MettreEnRouteLaPompe();
 
+	// Open valve 5
 	Ouverture_Vanne(5);
 
 

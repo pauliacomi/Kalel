@@ -1,10 +1,10 @@
 #include "StdAfx.h"
 #include "Manip.h"
 
-
-using namespace std;
-
-// ---------- Mesures ----------------
+// This part of the CManip class deals with displaying everything on the main user interface
+// It should be re-written to use commands
+ 
+// ---------- Measurements ----------------
 
 void CManip::AffichageMesures()
 {
@@ -14,7 +14,6 @@ void CManip::AffichageMesures()
 	ostringstream message;
 	message << numero_mesure << ")  temps=" << temps_manip << "  ";
 	message << "calo=" << char_resultat_calo << "  bp=" << resultat_bp << "  hp=" << resultat_hp << "  ";
-	//message << "T°C calo=" << TempCalo << "  T°C cage=" << TempCage << "  T°C piece=" << TempPiece;
 	
 	CString rajout_mesure;
 	rajout_mesure.Format(_T("%s\r\n"),message.str().c_str());
@@ -58,7 +57,7 @@ void CManip::AncienAffichageEtape()
 }
 
 
-// -------- Pression, T°C -------------
+// -------- Pression, Temperature -------------
 void CManip::AfficherCalo()
 {
 	m_KaollaView->m_StrCalo.Format(_T("%.8E"),resultat_calo);

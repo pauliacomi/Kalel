@@ -1,3 +1,7 @@
+
+// KaollaView_Boutons.cpp : all the code for the valve buttons in the view
+//
+
 #include "stdafx.h"
 #include "Kaolla.h"
 
@@ -7,10 +11,9 @@
 #include "threads.h"
 
 
-using namespace std;
 
 
-// Lorsqu'on appuie sur un des boutons du type 'Ouvrir'
+// Clicking on "open" type buttons
 void CKaollaView::OnBnClickedOuvrir1()
 {	Ouverture(1);	}
 
@@ -36,7 +39,7 @@ void CKaollaView::OnBnClickedOuvrir8()
 {	Ouverture(8);	}
 
 
-// Lorsqu'on appuie sur un des boutons du type 'Fermer'
+// Clicking on "close" type buttons
 void CKaollaView::OnBnClickedFermer1()
 {	Fermeture(1);	}
 
@@ -62,7 +65,7 @@ void CKaollaView::OnBnClickedFermer8()
 {	Fermeture(8);	}
 
 
-
+// The other buttons
 void CKaollaView::OnBnClickedActiverEV1()
 {	ActivationEV1();	}
 
@@ -83,47 +86,55 @@ void CKaollaView::OnBnClickedDesactiverPompe()
 
 
 
-// fonction lancée par le clic sur le bouton 'Ouvrir' de la vanne i
+// Function to open a valve from an "open" type button, takes the valve number as argument
 void CKaollaView::Ouverture(int i)
 {
-	// On bloque ce bouton
+	// Block the button
 	GetDlgItem(idc_ouvrir[i-1])->EnableWindow(FALSE);
 
+	// Create the message string
+	CString message;
+
+	// Signal the threading that the valve is to be opened
 	if (DemandeOuvertureVanne(i))
 	{
-		MarquerTemoin(i,_T("Ouverte"));
+		message.Format(TEXT_OPENED);
+		MarquerTemoin(i, message);
 
-		// On rend accessible le bouton 'Fermer' de la vanne i
+		// Make the corresponding "close" button of valve i available
 		GetDlgItem(idc_fermer[i-1])->EnableWindow(TRUE);
 	}
 	else
 	{
-		// On écrit sur la boite de dialogue pour signaler une erreur
-		CString message;
-		message.Format(_T("Erreur, Impossible d'ouvrir la vanne %d\r\n"),i);
+		// Give an error in the text box
+		message.Format(ERROR_OPENVALVE,i);
 		AffichageMessages(message);
 		GetDlgItem(idc_ouvrir[i-1])->EnableWindow(TRUE);
 	}
 }
 
-// fonction lancée par le clic sur le bouton 'Fermer' de la vanne i
+// Function to open a valve from an "close" type button, takes the valve number as argument
 void CKaollaView::Fermeture(int i)
 {
-	// On bloque ce bouton
+	// Block the button
 	GetDlgItem(idc_fermer[i-1])->EnableWindow(FALSE);
 
+	// Create the message string
+	CString message;
+
+	// Signal the threading that the valve is to be closed
 	if (DemandeFermetureVanne(i))
 	{
-		MarquerTemoin(i,_T("Fermée"));
+		message.Format(TEXT_CLOSED);
+		MarquerTemoin(i, message);
 
-		// On rend accessible le bouton 'Ouvrir' de la vanne i
+		// Make the corresponding "open" button of valve i available
 		GetDlgItem(idc_ouvrir[i-1])->EnableWindow(TRUE);
 	}
 	else
 	{
-		// On écrit sur la boite de dialogue pour signaler une erreur
-		CString message;
-		message.Format(_T("Erreur, Impossible de fermer la vanne %d\r\n"),i);
+		// Give an error in the text box
+		message.Format(ERROR_CLOSEVALVE,i);
 		AffichageMessages(message);
 		GetDlgItem(idc_fermer[i-1])->EnableWindow(TRUE);
 	}
@@ -131,40 +142,52 @@ void CKaollaView::Fermeture(int i)
 
 void CKaollaView::ActivationEV1()
 {
-	// On bloque ce bouton
+	// Block the button
 	GetDlgItem(IDC_ACTIVER_EV1)->EnableWindow(FALSE);
 
+	// Create the message string
+	CString message;
+
+	// Signal the threading that the valve is to be opened
 	if (DemandeActivationEV1())
 	{
-		MarquerEV1(_T("Activée"));
+		message.Format(TEXT_ACTIVATED);
+		MarquerEV1(message);
 
-		// On rend accessible le bouton 'Fermer' de la vanne i
+		// Make the corresponding "close" button of valve i available
 		GetDlgItem(IDC_DESACTIVER_EV1)->EnableWindow(TRUE);
 	}
 	else
 	{
-		// On écrit sur la boite de dialogue pour signaler une erreur
-		AffichageMessages(_T("Erreur, Impossible d'activer la valve 1\r\n"));
+		// Give an error in the text box
+		message.Format(ERROR_OPENEV1);
+		AffichageMessages(message);
 		GetDlgItem(IDC_ACTIVER_EV1)->EnableWindow(TRUE);
 	}
 }
 
 void CKaollaView::DesactivationEV1()
 {
-	// On bloque ce bouton
+	// Block the button
 	GetDlgItem(IDC_DESACTIVER_EV1)->EnableWindow(FALSE);
 
+	// Create the message string
+	CString message;
+
+	// Signal the threading that the valve is to be opened
 	if (DemandeDesactivationEV1())
 	{
-		MarquerEV1(_T("Désactivée"));
+		message.Format(TEXT_DEACTIVATED);
+		MarquerEV1(message);
 
-		// On rend accessible le bouton 'Ouvrir' de la vanne i
+		// Make the corresponding "open" button of Evalve 1 available
 		GetDlgItem(IDC_ACTIVER_EV1)->EnableWindow(TRUE);
 	}
 	else
 	{
-		// On écrit sur la boite de dialogue pour signaler une erreur
-		AffichageMessages(_T("Erreur, Impossible de désactiver la valve 1\r\n"));
+		// Give an error in the text box
+		message.Format(ERROR_CLOSEEV1);
+		AffichageMessages(message);
 		GetDlgItem(IDC_DESACTIVER_EV1)->EnableWindow(TRUE);
 	}
 }
@@ -172,40 +195,50 @@ void CKaollaView::DesactivationEV1()
 
 void CKaollaView::ActivationEV2()
 {
-	// On bloque ce bouton
+	// Block the button
 	GetDlgItem(IDC_ACTIVER_EV2)->EnableWindow(FALSE);
+
+	// Create the message string
+	CString message;
 
 	if (DemandeActivationEV2())
 	{
-		MarquerEV2(_T("Activée"));
+		message.Format(TEXT_ACTIVATED);
+		MarquerEV2(message);
 
-		// On rend accessible le bouton 'Fermer' de la vanne i
+		// Make the corresponding "closed" button of Evalve 2 available
 		GetDlgItem(IDC_DESACTIVER_EV2)->EnableWindow(TRUE);
 	}
 	else
 	{
-		// On écrit sur la boite de dialogue pour signaler une erreur
-		AffichageMessages(_T("Erreur, Impossible d'activer la valve 1\r\n"));
+		// Give an error in the text box
+		message.Format(ERROR_OPENEV2);
+		AffichageMessages(message);
 		GetDlgItem(IDC_ACTIVER_EV2)->EnableWindow(TRUE);
 	}
 }
 
 void CKaollaView::DesactivationEV2()
 {
-	// On bloque ce bouton
+	// Block the button
 	GetDlgItem(IDC_DESACTIVER_EV2)->EnableWindow(FALSE);
+	
+	// Create the message string
+	CString message;
 
 	if (DemandeDesactivationEV2())
 	{
-		MarquerEV2(_T("Désactivée"));
+		message.Format(TEXT_DEACTIVATED);
+		MarquerEV2(message);
 
-		// On rend accessible le bouton 'Ouvrir' de la vanne i
+		// Make the corresponding "open" button of valve 2 available
 		GetDlgItem(IDC_ACTIVER_EV2)->EnableWindow(TRUE);
 	}
 	else
 	{
-		// On écrit sur la boite de dialogue pour signaler une erreur
-		AffichageMessages(_T("Erreur, Impossible de désactiver la valve 2\r\n"));
+		// Give an error in the text box
+		message.Format(ERROR_CLOSEEV2);
+		AffichageMessages(message);
 		GetDlgItem(IDC_DESACTIVER_EV2)->EnableWindow(TRUE);
 	}
 }
@@ -213,46 +246,56 @@ void CKaollaView::DesactivationEV2()
 
 void CKaollaView::ActivationPompe()
 {
-	// On bloque ce bouton
+	// Block the button
 	GetDlgItem(IDC_ACTIVER_POMPE)->EnableWindow(FALSE);
+
+	// Create the message string
+	CString message;
 
 	if (DemandeActivationPompe())
 	{
-		MarquerPompe(_T("Activée"));
+		message.Format(TEXT_ACTIVATED);
+		MarquerPompe(message);
 
-		// On rend accessible le bouton 'Fermer' de la vanne i
+		// Make the corresponding "deactivate" button of the pump available
 		GetDlgItem(IDC_DESACTIVER_POMPE)->EnableWindow(TRUE);
 	}
 	else
 	{
-		// On écrit sur la boite de dialogue pour signaler une erreur
-		AffichageMessages(_T("Erreur, Impossible d'activer la pompe\r\n"));
+		// Give an error in the text box
+		message.Format(ERROR_ACTIVATEPUMP);
+		AffichageMessages(message);
 		GetDlgItem(IDC_ACTIVER_POMPE)->EnableWindow(TRUE);
 	}
 }
 
 void CKaollaView::DesactivationPompe()
 {
-	// On bloque ce bouton
+	// Block the button
 	GetDlgItem(IDC_DESACTIVER_POMPE)->EnableWindow(FALSE);
+
+	// Create the message string
+	CString message;
 
 	if (DemandeDesactivationPompe())
 	{
-		MarquerPompe(_T("Désactivée"));
+		message.Format(TEXT_DEACTIVATED);
+		MarquerPompe(message);
 
-		// On rend accessible le bouton 'Ouvrir' de la vanne i
+		// Make the corresponding "activate" button of the pump available
 		GetDlgItem(IDC_ACTIVER_POMPE)->EnableWindow(TRUE);
 	}
 	else
 	{
-		// On écrit sur la boite de dialogue pour signaler une erreur
-		AffichageMessages(_T("Erreur, Impossible de désactiver la valve 1\r\n"));
+		// Give an error in the text box
+		message.Format(ERROR_DEACTIVATEPUMP);
+		AffichageMessages(message);
 		GetDlgItem(IDC_DESACTIVER_POMPE)->EnableWindow(TRUE);
 	}
 }
 
 
-
+// Mark all the valves as open or closed
 void CKaollaView::MarquerTemoin(int num_vanne, CString message)
 {
 	switch(num_vanne)
@@ -290,29 +333,34 @@ void CKaollaView::MarquerTemoin(int num_vanne, CString message)
 			SetDlgItemText(IDC_TEMOIN_VANNE8,m_StrTemoinVanne8);
 			break;
 		default:
-			AffichageMessages(_T("Erreur avec les vannes\r\n"));
+			CString messageDialog;
+			messageDialog.Format(ERROR_PROBLEMVALVES);
+			AffichageMessages(messageDialog);
 			break;
 	}
-
 }
 
 void CKaollaView::MarquerTousLesTemoinsFermes()
 {
-	m_StrTemoinVanne1 = _T("Fermée");
+	// Message for the text boxes
+	CString message;
+	message.Format(TEXT_CLOSED);
+
+	m_StrTemoinVanne1 = message;
 	SetDlgItemText(IDC_TEMOIN_VANNE1,m_StrTemoinVanne1);
-	m_StrTemoinVanne2 = _T("Fermée");
+	m_StrTemoinVanne2 = message;
 	SetDlgItemText(IDC_TEMOIN_VANNE2,m_StrTemoinVanne2);
-	m_StrTemoinVanne3 = _T("Fermée");
+	m_StrTemoinVanne3 = message;
 	SetDlgItemText(IDC_TEMOIN_VANNE3,m_StrTemoinVanne3);
-	m_StrTemoinVanne4 = _T("Fermée");
+	m_StrTemoinVanne4 = message;
 	SetDlgItemText(IDC_TEMOIN_VANNE4,m_StrTemoinVanne4);
-	m_StrTemoinVanne5 = _T("Fermée");
+	m_StrTemoinVanne5 = message;
 	SetDlgItemText(IDC_TEMOIN_VANNE5,m_StrTemoinVanne5);
-	m_StrTemoinVanne6 = _T("Fermée");
+	m_StrTemoinVanne6 = message;
 	SetDlgItemText(IDC_TEMOIN_VANNE6,m_StrTemoinVanne6);
-	m_StrTemoinVanne7 = _T("Fermée");
+	m_StrTemoinVanne7 = message;
 	SetDlgItemText(IDC_TEMOIN_VANNE7,m_StrTemoinVanne7);
-	m_StrTemoinVanne8 = _T("Fermée");
+	m_StrTemoinVanne8 = message;
 	SetDlgItemText(IDC_TEMOIN_VANNE8,m_StrTemoinVanne8);
 
 	for(int i=1;i<=8;i++)
@@ -321,7 +369,10 @@ void CKaollaView::MarquerTousLesTemoinsFermes()
 		GetDlgItem(idc_ouvrir[i-1])->EnableWindow(TRUE);
 	}
 
-
+	// Message for the main dialog
+	CString messageDialog;
+	messageDialog.Format(TEXT_ALLCLOSED);
+	AffichageMessages(messageDialog);
 }
 
 void CKaollaView::MarquerEV1(CString message)
@@ -344,13 +395,16 @@ void CKaollaView::MarquerPompe(CString message)
 
 void CKaollaView::MarquerValvesEtPompeDesactivees()
 {
-	m_StrTemoinEV1 = _T("Désactivée");
+	CString message;
+	message.Format(TEXT_DEACTIVATED);
+
+	m_StrTemoinEV1 = message;
 	SetDlgItemText(IDC_TEMOIN_EV1,m_StrTemoinEV1);
 
-	m_StrTemoinEV2 = _T("Désactivée");
+	m_StrTemoinEV2 = message;
 	SetDlgItemText(IDC_TEMOIN_EV2,m_StrTemoinEV2);
 
-	m_StrTemoinPompe = _T("Désactivée");
+	m_StrTemoinPompe = message;
 	SetDlgItemText(IDC_TEMOIN_POMPE,m_StrTemoinPompe);
 
 	GetDlgItem(IDC_DESACTIVER_EV1)->EnableWindow(FALSE);
@@ -359,6 +413,5 @@ void CKaollaView::MarquerValvesEtPompeDesactivees()
 	GetDlgItem(IDC_ACTIVER_EV2)->EnableWindow(TRUE);
 	GetDlgItem(IDC_DESACTIVER_POMPE)->EnableWindow(FALSE);
 	GetDlgItem(IDC_ACTIVER_POMPE)->EnableWindow(TRUE);
-
 }
 

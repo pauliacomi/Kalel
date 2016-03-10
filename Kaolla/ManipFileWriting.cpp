@@ -2,16 +2,12 @@
 #include "Manip.h"
 
 
-using namespace std;
 
 ofstream fichier_mesure_manuelle;
 
 
 string CManip::NomFichier(string extention)
 {
-
-
-	// Version 2
 
 	char nom_fichier_char[255];
 	sprintf_s(nom_fichier_char,"%s",general.chemin.c_str());
@@ -92,7 +88,6 @@ void CManip::EnregistrementFichierMesures()
 	{
 		fichier_mesure_manuelle << numero_mesure << ";" << temps_manip << ";";
 		fichier_mesure_manuelle << char_resultat_calo << ";" << resultat_bp << ";" << resultat_hp << ";";
-		//fichier_mesure_manuelle << TemperatureCalo << ";" << TemperatureCage << ";" << TemperaturePiece << ";" << endl;
 		fichier_mesure_manuelle << TemperatureCalo << ";" << TemperatureCage << ";" << TemperaturePiece << ";";
 
 		fichier_mesure_manuelle << EstOuvert_Vanne(6) << ";";
@@ -106,14 +101,11 @@ void CManip::EnregistrementFichierMesures()
 
 void CManip::OuvertureFichierMesures()
 {
-	//pDoc2 = m_KaollaView->GetDocument();
-
 	fichier_mesure_manuelle.open(NomFichier("csv").c_str(), ios_base::out /*| ios::trunc*/);
 	
 	// vider le ofstream fichier, pas le .csv, et on peut réitérer l'écriture en enlevant le caractère "fin de fichier"
 	fichier_mesure_manuelle.clear(); 
 	// Ecriture des noms des colonnes
-	//fichier_mesure_manuelle << "N°mesure;Temps(s);Calorimètre(W);Basse Pression(Bar);Haute Pression(Bar);T°C Calo;T°C Cage;T°C pièce" << endl;
 	fichier_mesure_manuelle << "N°mesure;Temps(s);Calorimètre(W);Basse Pression(Bar);Haute Pression(Bar);T°C Calo;T°C Cage;T°C pièce;Vanne 6" << endl;
 }
 
@@ -181,7 +173,6 @@ string CManip::EnteteGeneralCSV()
 void CManip::EcritureEntete()
 {
 	ofstream fichier_entete; 
-	//fichier_entete.open(CManip::NomFichier("txt").c_str(), ios::out | ios::trunc);
 	fichier_entete.open(CManip::NomFichierEntete("txt").c_str(), ios_base::out /*| ios::trunc*/);
 
 	fichier_entete.clear(); 

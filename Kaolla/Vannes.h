@@ -7,19 +7,14 @@
 #include <stdio.h>
 #include <tchar.h>
 
-//#include "NIDAQmxBase.h"
-#include "NIDAQmx.h"
-#include "Parametres.h"
-#include <stdio.h>
-#include <stdlib.h>
 #include "NI_USB_6008.h"
+
+#include "Parametres.h"
 
 
 class CVannes :
 	public NI_USB_6008
 {
-protected:
-
 public:
 	CVannes(void);
 	~CVannes(void);
@@ -38,14 +33,11 @@ public:
 	bool ActiverEV1();
 	bool ActiverEV2();
 	bool ActiverPompe();
-	//bool ActiverLaPompe();
 	bool DesactiverEV1();
 	bool DesactiverEV2();
 	bool DesactiverPompe();
-	//bool ArreterLaPompe();
 	bool FermerLesValvesEtLaPompe();
 	bool ToutFermer();
-	//bool InitialisationDesPorts();
 	int PortUSBVannes();
 };
 

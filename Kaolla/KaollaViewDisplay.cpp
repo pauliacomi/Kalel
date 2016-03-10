@@ -9,7 +9,7 @@
 
 // --------------- Affichages -----------------------------
 
-// Ecriture sur la boite de dialogue réservée aux messages
+// Write on the dialog box reserved for new messages
 void CKaollaView::AffichageMessages(CString message)
 {
 	// On rajoute le nouveau message 
@@ -18,7 +18,7 @@ void CKaollaView::AffichageMessages(CString message)
 	// pEditMessages : le CEdit lié à m_StrEditMessages
 	// On écrit dans l'Edit le contenu de m_StrEditMessages
 	pEditMessages.GetWindowText(m_StrEditMessages);
-	//UpdateData(FALSE);
+
 	// On met le curseur dans pEditMessages à la fin du contenu de M_StrEditMessages
 	// Ce qui permet d'être toujours sur la dernière ligne et voir le dernier message
 	pEditMessages.SetSel(m_StrEditMessages.GetLength(),-1);
@@ -34,7 +34,7 @@ void CKaollaView::RajoutAffichageMessages(CString rajout)
 	// pEditMessages : le CEdit lié à m_StrEditMessages
 	// On écrit dans l'Edit le contenu de m_StrEditMessages
 	pEditMessages.GetWindowText(StrtmpMessages);
-	//UpdateData(FALSE);
+
 	// On met le curseur dans pEditMessages à la fin du contenu de M_StrEditMessages
 	// Ce qui permet d'être toujours sur la dernière ligne et voir le dernier message
 	pEditMessages.SetSel(StrtmpMessages.GetLength(),-1);
@@ -87,8 +87,7 @@ LRESULT CKaollaView::OnThreadAffichage(WPARAM wParam, LPARAM lParam)
 	m_mainDocument = CKaollaDoc::GetDocument();
 	if(!m_mainDocument->experiment_running)
 	{
-		FinAffichageMesure();	
-		AfxBeginThread(LancerThreadProc, GetSafeHwnd());
+		FinAffichageMesure();
 	}
 
     return 0;

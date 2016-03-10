@@ -1,42 +1,45 @@
 #pragma once
-
 #ifndef THREADS_H
 #define THREADS_H
 
 #include "afxwin.h"
 #include <afxmt.h>
 
-#include "Dialogue_TypeExperience.h"
 
-
+// --------- Initialisation and destruction (kind of) -------
 void InitialisationManip();
 void DeleteManip();
+
+
+// --------- Changing the instrument parameters -------
+
 void ChangementDev(int dev_vanne, int dev_temp);
 
-UINT LancerThreadProc(LPVOID pParam);
-UINT ArretThreadProc(LPVOID pParam);
+
+// --------- Functions to return experiment information -------
 
 int GetEtapeEnCours();
 CString GetDonneesExperience();
 
-// --------- Menus ------------------
-void MiseSousVideAmpoule();
+// --------- Thread start functions --------------
+
+void LancementThreads(LPVOID pParam);
+void ArretThreads(LPVOID pParam);
+void MiseSousVideAmpoule(LPVOID pParam);
+void MiseSousVideBouteille(LPVOID pParam);
+void ChangementBouteille(LPVOID pParam);
+
+// --------- Threads ----------------------
+
+UINT LancerThreadProc(LPVOID pParam);
+UINT ArretThreadProc(LPVOID pParam);
 UINT ThreadMenuMiseSousVideAmpoule(LPVOID pParam);
-
-void MiseSousVideBouteille();
 UINT ThreadMenuMiseSousVideBouteille(LPVOID pParam);
-
-void ChangementBouteille();
 UINT ThreadMenuChangementBouteille(LPVOID pParam);
 
-// --------- Boutons ----------------
+// --------- Thread interaction / modification functions -------
 
 void DemandeModificationExperience();
-
-// Boutons de commande de la manip
-
-void LancementThreads();
-void ArretThreads();
 void FinAffichageMesure();
 void PauseThreads();
 void ArretSousVideThreads();
@@ -45,7 +48,7 @@ void ProchaineDoseThreads();
 void ProchaineEtapeThreads();
 void RepriseThreads();
 
-// Boutons des Vannes
+// --------- Direct instrument manipulation ----------------
 
 bool DemandeOuvertureVanne(int num_vanne);
 bool DemandeFermetureVanne(int num_vanne);
@@ -56,6 +59,6 @@ bool DemandeDesactivationEV2();
 bool DemandeActivationPompe();
 bool DemandeDesactivationPompe();
 
-// --------- Fin boutons ------------
+// --------- End ------------
 
 #endif

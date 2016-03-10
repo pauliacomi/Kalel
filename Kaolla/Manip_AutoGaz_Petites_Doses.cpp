@@ -69,7 +69,7 @@ void CManip_AutoGaz::PetitesDoses_InitialisationPressionInitiale()
 
 void CManip_AutoGaz::PetitesDoses_InjectionGaz()
 {
-	multiplicateur = 1.1;
+	multiplicateur = 1.1f;
 	int nb_tentatives = 1;
 	bool InjectionReussie = FALSE;
 	injection = 0;
@@ -101,7 +101,7 @@ void CManip_AutoGaz::PetitesDoses_InjectionGaz()
 		{
 			if (nb_tentatives >= tentatives_possible)
 			{
-				multiplicateur += 0.1;
+				multiplicateur += 0.1f;
 				nb_tentatives = 1;
 			}
 

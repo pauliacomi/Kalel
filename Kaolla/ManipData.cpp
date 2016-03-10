@@ -2,21 +2,19 @@
 #include "Manip.h"
 
 
-using namespace std;
 
-
+// Exchange the data between the class and the main window. This should be in a command format (rewrite)
 void CManip::EchangeDonnees()
 {
-	m_KaollaView->TemperatureCalo	= TemperatureCalo;
+	/*m_KaollaView->TemperatureCalo	= TemperatureCalo;
 	m_KaollaView->TemperatureCage	= TemperatureCage;
 	m_KaollaView->TemperaturePiece	= TemperaturePiece;
 	m_KaollaView->Calorimetre		= resultat_calo;
 	m_KaollaView->Basse_Pression	= resultat_bp;
-	m_KaollaView->Haute_Pression	= resultat_hp;
+	m_KaollaView->Haute_Pression	= resultat_hp;*/
 
 	m_KaollaView->m_StrCalo.Format(_T("%.8E"),resultat_calo);
 	m_KaollaView->m_StrBassePression.Format(_T("%f"),resultat_bp);
-
 	m_KaollaView->m_StrHautePression.Format(_T("%f"),resultat_hp);
 	m_KaollaView->m_StrTemperatureCalo.Format(_T("%f"),TemperatureCalo);	
 	m_KaollaView->m_StrTemperatureCage.Format(_T("%f"),TemperatureCage);
@@ -24,12 +22,12 @@ void CManip::EchangeDonnees()
 	m_KaollaView->m_StrTemps.Format(_T("%.2f"),temps_manip);
 }
 
-
+// Manually sets the graph data. The graph coefficients are defined here, although they shouldn't
 void CManip::DonneesManuelleGrapheEtape()
 {
 	int nb_heures = 2;
 	int nb_secondes = nb_heures * 3600;
-	//int nb_secondes = 60;
+
 	int coeff = (int)(temps_manip / nb_secondes);
 	int temps_min = coeff * nb_secondes;
 
@@ -40,7 +38,7 @@ void CManip::DonneesManuelleGrapheEtape()
 		m_Doc->MesureMinimum = numero_mesure-1;
 		m_Doc->NumeroEtape = coeff + 1;
 		CString titre;
-		titre.Format(_T("%dh - %dh d'expérience"),nb_heures*coeff,nb_heures*(coeff+1));
+		titre.Format(_T("%dh - %dh d'expérience"), nb_heures * coeff , nb_heures*(coeff+1) );
 		m_Doc->TitreGrapheEtape = titre;
 	}
 }
@@ -49,7 +47,7 @@ void CManip::DonneesManuelleGrapheEtape()
 
 Donnees_General CManip::DonneesActuellesGeneral()
 {	return m_proprietes_experience->m_general.donnees_actuelles;}
-/*
+
 Donnees_Divers CManip::DonneesActuellesDivers()
 {	return m_proprietes_experience->m_divers.donnees_actuelles;}
 
@@ -64,7 +62,6 @@ Donnees_Desorption CManip::DonneesActuellesDesorption()
 
 Donnees_Adsorption_Continue CManip::DonneesActuellesAdsorptionContinue()
 {	return m_proprietes_experience->m_adsorptioncontinue.donnees_actuelles;}
-*/
 
 
 
@@ -81,14 +78,14 @@ CString CManip::GetDonneesExperience()
 	switch(TypeExperience)
 	{
 		case EXPERIMENT_TYPE_UNDEF :
-			message = _T("Type d'expérience indéfini\r\n");
+			message.Format(ERROR_EXPUNDEF);
 			break;
 		case EXPERIMENT_TYPE_MANUAL :
 			message_stream << EnteteBase();
 			message = _T(message_stream.str().c_str());
 			break;
 		default :
-			message.Format(_T("Erreur dans l'identification de l'expérience : %d\r\n"),TypeExperience);			
+			message.Format(ERROR_EXPDEFNERR,TypeExperience);
 	}
 
 	return message;

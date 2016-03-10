@@ -1,3 +1,4 @@
+#pragma once
 #ifndef INFOETAPE_H
 #define INFOETAPE_H
 

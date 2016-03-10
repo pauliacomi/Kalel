@@ -87,14 +87,6 @@ void CManip::ExecutionManuelle(LPVOID pParam)
 			else
 				break;
 		}while(TRUE);
-		/*
-		while(temps_intermediaire.TempsActuel() < T_BETWEEN_MEASURE)
-		{
-			if (manip_en_cours == FALSE)
-				break;
-			Sleep(100);
-		}
-		*/
 	}
 }
 

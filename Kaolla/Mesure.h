@@ -1,5 +1,4 @@
 #pragma once
-
 #ifndef MESURE_H
 #define MESURE_H
 

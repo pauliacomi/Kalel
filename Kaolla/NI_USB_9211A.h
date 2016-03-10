@@ -2,13 +2,7 @@
 #ifndef NI_USB_9211A_H
 #define NI_USB_9211A_H
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <windows.h>
-
 #include "NIDAQmx.h"
-//#include "Parametres.h"
-
 #include <math.h>
 
 

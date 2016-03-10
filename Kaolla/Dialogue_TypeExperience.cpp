@@ -1,19 +1,20 @@
-// Dialogue_TypeExperience.cpp : fichier d'implémentation
+// Dialogue_TypeExperience.cpp : implementation
 //
 
 #include "stdafx.h"
 #include "Kaolla.h"
 #include "Dialogue_TypeExperience.h"
 
-////remove once done
+//// Included to check for the existence of 
 #include "Parametres.h"
 ////
 
 
-// Boîte de dialogue CDialogue_TypeExperience
+// Dialog box CDialogue_TypeExperience
 
 IMPLEMENT_DYNAMIC(CDialogue_TypeExperience, CDialog)
 
+// Constructor and destructor
 CDialogue_TypeExperience::CDialogue_TypeExperience(CWnd* pParent /*=NULL*/)
 	: CDialog(CDialogue_TypeExperience::IDD, pParent)
 	, m_bExperienceAuto(FALSE)
@@ -25,6 +26,7 @@ CDialogue_TypeExperience::~CDialogue_TypeExperience()
 {
 }
 
+// Data exchange and message map
 void CDialogue_TypeExperience::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
@@ -36,12 +38,13 @@ BEGIN_MESSAGE_MAP(CDialogue_TypeExperience, CDialog)
 END_MESSAGE_MAP()
 
 
-// Gestionnaires de messages de CDialogue_TypeExperience
+// Message management of CDialogue_TypeExperience
 
 BOOL CDialogue_TypeExperience::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 	
+	// Disable the buttons if there is no mention of available instruments in the parameters file
 	if(!GetMesureCalo() && !GetMesureBassePression() && !GetMesureHautePression())
 	{
 		GetDlgItem(IDC_RADIO_TYPE_EXPERIENCE)->EnableWindow(FALSE);
@@ -50,9 +53,11 @@ BOOL CDialogue_TypeExperience::OnInitDialog()
 		return TRUE;
 	}
 
+	// Enable the buttons
 	GetDlgItem(IDC_RADIO_TYPE_EXPERIENCE)->EnableWindow(TRUE);
 	GetDlgItem(IDOK)->EnableWindow(TRUE);
 
+	// I have no clue why this is duplicated ---------------------->
 	if(!GetMesureHautePression())
 	{
 		m_bExperienceAuto = FALSE;
@@ -64,7 +69,6 @@ BOOL CDialogue_TypeExperience::OnInitDialog()
 	GetDlgItem(IDC_RADIO2)->EnableWindow(TRUE);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
-	// EXCEPTION : les pages de propriétés OCX devraient retourner FALSE
 }
 
 void CDialogue_TypeExperience::OnOK()

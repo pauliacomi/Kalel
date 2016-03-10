@@ -83,10 +83,10 @@ void CGrapheView::OnDraw(CDC* pDC)
 		double min_calo=MINCALO;//0;
 		*/
 
-		int max_pression=MaxPressionEchelle(pDoc->max_pression);
+		int max_pression=MaxPressionEchelle(pDoc->maxPressure);
 		int min_pression = 0;//MINPRESSION;
-		double max_calo=pDoc->max_calo;
-		double min_calo=pDoc->min_calo;
+		double max_calo=pDoc->maxCalo;
+		double min_calo=pDoc->minCalo;
 
 		// Les graphes
 
@@ -245,25 +245,25 @@ void CGrapheView::trace_axe(CRect place_graphe, CRect axe_graphe, CDC *pDC, CKao
 							  place_graphe.bottom);
 
 	CString texte_max_pression;
-	texte_max_pression.Format(_T("Max : %0.2f Bar"),pDoc->max_pression);
+	texte_max_pression.Format(_T("Max : %0.2f Bar"),pDoc->maxPressure);
 	pDC->SetTextColor(RGB(0,0,0));
 	pDC->DrawText(texte_max_pression,enteteComplet,DT_LEFT);
 
 	CString texte_max_calo;
 	//texte_max_calo.Format(_T("Max : %0.2f W"),pDoc->max_calo);
-	texte_max_calo.Format(_T("Max : %0.2E W"),pDoc->max_calo);
+	texte_max_calo.Format(_T("Max : %0.2E W"),pDoc->maxCalo);
 	pDC->DrawText(texte_max_calo,enteteComplet,DT_RIGHT);
 
 	//affichage du titre
 	pDC->DrawText(titre,enteteComplet,DT_CENTER);
 
 	CString texte_min_pression;
-	texte_min_pression.Format(_T("Min : %0.2f Bar"),pDoc->min_pression);
+	texte_min_pression.Format(_T("Min : %0.2f Bar"),pDoc->minPressure);
 	pDC->DrawText(texte_min_pression,piedComplet,DT_LEFT);
 
 	CString texte_min_calo;
 	//texte_min_calo.Format(_T("Min : %0.2f W"),pDoc->min_calo);
-	texte_min_calo.Format(_T("Min : %0.2E W"),pDoc->min_calo);
+	texte_min_calo.Format(_T("Min : %0.2E W"),pDoc->minCalo);
 	pDC->DrawText(texte_min_calo,piedComplet,DT_RIGHT);
 }
 

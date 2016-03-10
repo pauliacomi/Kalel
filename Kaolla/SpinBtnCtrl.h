@@ -12,9 +12,10 @@
 
 class CSpinBtnCtrl : public CSpinButtonCtrl
 {
-// Construction
+// Constructor & Destructor
 public:
 	CSpinBtnCtrl();
+	virtual ~CSpinBtnCtrl();
 
 // Attributes
 public:
@@ -22,7 +23,7 @@ public:
 	double m_max;
 	double m_inc;
 	double m_pos;
-	//int m_nbDigits;
+	int m_nbDigits;
 	CString m_strFormat;
 
 // Operations
@@ -36,7 +37,7 @@ public:
 	double GetInc();
 	void SetInc(double inc);
 
-	//void SetFormat(int nbDigits);
+	void SetFormat(int nbDigits);
 	void SetFormat(CString strFormat);
 
 	void UpdateBuddy();
@@ -46,10 +47,6 @@ public:
 //{{AFX_VIRTUAL(CSpinBtnCtrl)
 //}}AFX_VIRTUAL
 
-// Implementation
-public:
-	virtual ~CSpinBtnCtrl();
-
 // Generated message map functions
 protected:
 	//{{AFX_MSG(CSpinBtnCtrl)
@@ -58,24 +55,6 @@ protected:
 
 DECLARE_MESSAGE_MAP()
 
-private:
-
-// on masque les fonctions héritées de CSpinButtonCtrl
-
-	//void SetRange(int lower,int upper) {};
-	void GetRange(int & lower,int & upper) const {};
-
-	//int SetPos(int pos) {};
-
-	DWORD GetRange() const {};
-	void GetRange32(int & lower,int &upper) const {};
-	void SetRange32(int lower,int upper) {};
-
-	int SetBase(int nBase) {};
-	UINT GetBase() const {};
-
-	BOOL SetAccel(int nAccel,UDACCEL* pAccel) {};
-	UINT GetAccel(int nAccel,UDACCEL* pAccel) const {};
 };
 
 /////////////////////////////////////////////////////////////////////////////

@@ -1,3 +1,4 @@
+#pragma once
 #ifndef LISTEETAPE_H
 #define LISTEETAPE_H
 

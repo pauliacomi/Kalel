@@ -6,8 +6,6 @@
 #pragma once
 
 #include "Mesure.h"
-#include "Parametres_appareil.h"
-#include "Connection_port.h"
 
 class CKaollaDoc : public CDocument
 {
@@ -19,17 +17,16 @@ protected: // create from serialization only
 public:	
 	bool experiment_running;	// TRUE when the experiment is running
 								// Allows to alert the user of possible loss of data
-
 	CArrayMesure m_TableauMesures;
-	double max_pression, min_pression, max_calo, min_calo;
+	CString TitreGrapheEtape;
+	double maxPressure, minPressure, maxCalo, minCalo;
 	float TempsMinimum;
 	int MesureMinimum, NumeroEtape;
-
-	CParametres_appareil param;
 
 // Operations
 public:
 	static CKaollaDoc * GetDocument();
+	CArrayMesure * GetTableauMesures();
 
 // Overrides
 public:
@@ -58,9 +55,7 @@ public:
 	void RajoutMesure(CMesure NouvellesMesures);
 	void RajoutMesure(int num, double tps, double calorimetre, double bpression, double hpression, double temp_calo, double temp_cage, double temp_piece);
 	void RajoutMesure(double tps, double calorimetre, double bpression, double hpression, double temp_calo, double temp_cage, double temp_piece);
-	CArrayMesure* GetTableauMesures(void);
-
-	CString TitreGrapheEtape;
+	
 
 #ifdef SHARED_HANDLERS
 	// Helper function that sets search content for a Search Handler

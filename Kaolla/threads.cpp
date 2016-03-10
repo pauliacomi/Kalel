@@ -10,267 +10,285 @@
 
 #include "Manip_AutoGaz.h"
 
-
+// Pointers to the view and document
 CKaollaView* pKaollaView;
 CKaollaDoc* pKaollaDoc;
 
+// Pointers for interfacing with the valves and temperature
 CVannes* pVanne;
 CTemperature* pTemperature;
 
-CEvent g_eventStartManip; 
-CEvent g_eventStopManip; 
-CEvent g_eventStartMiseSousVideAmpoule;
-CEvent g_eventStartMiseSousVideBouteille;
-CEvent g_eventStartChangementBouteille;
-///CEvent g_eventStopMiseSousVideAmpoule;
+// Events for the automatic functionality
+// -
 
+// Threads
+CWinThread * m_threadLaunchExperiment;
+CWinThread * m_threadStopExperiment;
+CWinThread * m_threadSampleUnderVaccuum;
+CWinThread * m_threadBottleUnderVaccuum;
+CWinThread * m_threadChangeBottle;
 
+// Main class that deals with the automatic functionality
 CManip_AutoGaz manip;
 
 
+
+// --------- Initialisation and destruction (kind of) THIS NEEDS TO BE PERFORMED LOCALLY WITHIN THREADS FOR EACH manip OBJECT -------
+
 void InitialisationManip()
 {
-	//pVanne = new CVannes();
-	//pTemperature = new CTemperature(GetPortTemperatures());
+	pVanne = new CVannes();
+	pTemperature = new CTemperature(GetPortTemperatures());
+
 	pKaollaView = CKaollaView::GetView();
 	pKaollaDoc = CKaollaDoc::GetDocument();
 
-	//manip = CManip_AutoGaz();
-	//manip.SetKaollaView(pKaollaView);
-	//manip.SetVannes(pVanne);
-	//manip.SetTemperature(pTemperature);
+	manip = CManip_AutoGaz();
+	manip.SetKaollaView(pKaollaView);
+	manip.SetVannes(pVanne);
+	manip.SetTemperature(pTemperature);
 
-	//manip.FermetureDeToutesLesVannes();
-	//manip.FermerLesValvesEtLaPompe();
+	manip.FermetureDeToutesLesVannes();
+	manip.FermerLesValvesEtLaPompe();
 }
 
 void DeleteManip()
 {
-	//pVanne->FermerToutesLesVannes();
+	pVanne->FermerToutesLesVannes();
 }
+
+
+// --------- Changing the instrument parameters -------
 
 void ChangementDev(int dev_vanne, int dev_temp)
 {
-	//pVanne->SetDevNI_USB_6008(dev_vanne);
-	//pTemperature->SetDevNI_USB_9211A(dev_temp);
-}
-
-UINT LancerThreadProc(LPVOID pParam)
-{
-	::WaitForSingleObject(g_eventStartManip, INFINITE);
-
-	//manip.LancementExperience(pParam);
-
-	return 0;
+	pVanne->SetDevNI_USB_6008(dev_vanne);
+	pTemperature->SetDevNI_USB_9211A(dev_temp);
 }
 
 
-UINT ArretThreadProc(LPVOID pParam)
-{
-	::WaitForSingleObject(g_eventStopManip, INFINITE);
-
-	//manip.ArretExperience();
-
-	return 0;
-}
-
+// --------- Functions to return experiment information -------
 
 int GetEtapeEnCours()
 {
-	return 1;//manip.etape_en_cours;
+	return manip.etape_en_cours;
 }
 
 
 CString GetDonneesExperience()
 {
-	return "";// manip.GetDonneesExperience();
+	return manip.GetDonneesExperience();
 }
 
-// --------- Menus ----------------------
 
+// --------- Thread start functions -------
 
-void MiseSousVideAmpoule()
+void LancementThreads(LPVOID pParam)
 {
+	m_threadLaunchExperiment = AfxBeginThread(LancerThreadProc, pParam);
+}
+
+void ArretThreads(LPVOID pParam)
+{
+	m_threadStopExperiment = AfxBeginThread(ArretThreadProc, pParam);
+}
+
+void MiseSousVideAmpoule(LPVOID pParam)
+{
+	// lock the menu
 	pKaollaDoc->experiment_running = TRUE;
 	pKaollaView->DebloqueMenu();
-	g_eventStartMiseSousVideAmpoule.SetEvent();
-//	::WaitForSingleObject(g_eventStopMiseSousVideAmpoule, INFINITE);
+	
+	//start thread
+	m_threadSampleUnderVaccuum = AfxBeginThread(ThreadMenuMiseSousVideAmpoule, pParam);
+}
+
+void MiseSousVideBouteille(LPVOID pParam)
+{
+	// lock the menu
+	pKaollaDoc->experiment_running = TRUE;
+	pKaollaView->DebloqueMenu();
+
+	//start thread
+	m_threadBottleUnderVaccuum = AfxBeginThread(ThreadMenuMiseSousVideBouteille, pParam);
+}
+
+void ChangementBouteille(LPVOID pParam)
+{
+	// lock the menu
+	pKaollaDoc->experiment_running = TRUE;
+	pKaollaView->DebloqueMenu();
+
+	//start thread
+	m_threadChangeBottle = AfxBeginThread(ThreadMenuChangementBouteille, pParam);
 }
 
 
-UINT ThreadMenuMiseSousVideAmpoule(LPVOID pParam)
+/// -----------------Threads------------------
+
+UINT LancerThreadProc(LPVOID pParam)
 {
-	::WaitForSingleObject(g_eventStartMiseSousVideAmpoule, INFINITE);
+	// Get window handler and check for validity
+	const HWND hMainFrame = reinterpret_cast<HWND>(pParam);
+	ASSERT(hMainFrame != NULL);
 
-	//manip.MiseSousVideAmpoule();
-	
-	pKaollaDoc->experiment_running = FALSE;
-	pKaollaView->DebloqueMenu();
-
-	pKaollaView->LancementThreadMSVAmpoule();
-
-	//g_eventStopMiseSousVideAmpoule.SetEvent();
+	// Launch required functionality
+	manip.LancementExperience(pParam);
 
 	return 0;
 }
 
-void MiseSousVideBouteille()
+UINT ArretThreadProc(LPVOID pParam)
 {
-	pKaollaDoc->experiment_running = TRUE;
-	pKaollaView->DebloqueMenu();
-	g_eventStartMiseSousVideBouteille.SetEvent();
-//	::WaitForSingleObject(g_eventStopMiseSousVideAmpoule, INFINITE);
+	const HWND hMainFrame = reinterpret_cast<HWND>(pParam);
+	ASSERT(hMainFrame != NULL);
+
+	// Launch required functionality
+	manip.ArretExperience();
+
+	return 0;
+}
+
+UINT ThreadMenuMiseSousVideAmpoule(LPVOID pParam)
+{
+	// Get window handler and check for validity
+	const HWND hMainFrame = reinterpret_cast<HWND>(pParam);
+	ASSERT(hMainFrame != NULL);
+
+	// Launch required functionality
+	manip.MiseSousVideAmpoule();
+
+	// When thread finishes, let main window know to unlock menu
+	::PostMessage(hMainFrame, WM_THREADFINISHEDREG, NULL, NULL);
+
+	return 0;
 }
 
 
 UINT ThreadMenuMiseSousVideBouteille(LPVOID pParam)
 {
-	::WaitForSingleObject(g_eventStartMiseSousVideBouteille, INFINITE);
+	// Get window handler and check for validity
+	const HWND hMainFrame = reinterpret_cast<HWND>(pParam);
+	ASSERT(hMainFrame != NULL);
 
-	//manip.MiseSousVideBouteille();
-	
-	pKaollaDoc->experiment_running = FALSE;
-	pKaollaView->DebloqueMenu();
+	// Launch required functionality
+	manip.MiseSousVideBouteille();
 
-	pKaollaView->LancementThreadMSVBouteille();
-
-	//g_eventStopMiseSousVideAmpoule.SetEvent();
+	// When thread finishes, let main window know to unlock menu
+	::PostMessage(hMainFrame, WM_THREADFINISHEDREG, NULL, NULL);
 
 	return 0;
-}
-
-void ChangementBouteille()
-{
-	pKaollaDoc->experiment_running = TRUE;
-	pKaollaView->DebloqueMenu();
-	g_eventStartChangementBouteille.SetEvent();
-//	::WaitForSingleObject(g_eventStopMiseSousVideAmpoule, INFINITE);
 }
 
 
 UINT ThreadMenuChangementBouteille(LPVOID pParam)
 {
-	::WaitForSingleObject(g_eventStartChangementBouteille, INFINITE);
+	// Get window handler and check for validity
+	const HWND hMainFrame = reinterpret_cast<HWND>(pParam);
+	ASSERT(hMainFrame != NULL);
 
-	//manip.ChangementBouteille();
-	
-	pKaollaDoc->experiment_running = FALSE;
-	pKaollaView->DebloqueMenu();
+	// Launch required functionality
+	manip.ChangementBouteille();
 
-	pKaollaView->LancementThreadChangementBouteille();
-
-	//g_eventStopMiseSousVideAmpoule.SetEvent();
+	// When thread finishes, let main window know to unlock menu
+	::PostMessage(hMainFrame, WM_THREADFINISHEDREG, NULL, NULL);
 
 	return 0;
 }
 
 
-// --------- Boutons --------------------
+// --------- Thread interaction / modification functions -------
 
 void DemandeModificationExperience()
 {
-	//manip.ModifierParametresExperience();
-}
-
-// Boutons commandes de la manip
-
-void LancementThreads()
-{
-	g_eventStartManip.SetEvent();
-}
-
-void ArretThreads()
-{
-	g_eventStopManip.SetEvent();
+	manip.ModifierParametresExperience();
 }
 
 void FinAffichageMesure()
 {
-	//manip.FinAffichage();
+	manip.FinAffichage();
 }
-
 
 void PauseThreads()
 {
-	//manip.DemandePause();
+	manip.DemandePause();
 }
 
 void ArretSousVideThreads()
 {
-	//manip.DemandeMiseSousVide();
+	manip.DemandeMiseSousVide();
 }
 
 void ProchaineCommandeThreads()
 {
-	//manip.ProchaineCommande();
+	manip.ProchaineCommande();
 }
 
 void ProchaineDoseThreads()
 {
-	//manip.ProchaineDose();
+	manip.ProchaineDose();
 }
 
 void ProchaineEtapeThreads()
 {
-	//manip.ProchaineEtape();
+	manip.ProchaineEtape();
 } 
 
 void RepriseThreads()
 {
-	//manip.Reprise();
+	manip.Reprise();
 }
 
 
-// Boutons des vannes
-
+// --------- Direct instrument manipulation ----------------
 
 bool DemandeOuvertureVanne(int num_vanne)
 {
-	//manip.Ouverture_Vanne(num_vanne);
-	return true;// manip.EstOuvert_Vanne(num_vanne);
+	manip.Ouverture_Vanne(num_vanne);
+	return manip.EstOuvert_Vanne(num_vanne);
 }
 
 bool DemandeFermetureVanne(int num_vanne)
 {
-	//manip.Fermeture_Vanne(num_vanne);
-	return true;// manip.EstFerme_Vanne(num_vanne);
+	manip.Fermeture_Vanne(num_vanne);
+	return manip.EstFerme_Vanne(num_vanne);
 }
 
 bool DemandeActivationEV1()
 {
-	//manip.ActiverEV1();
-	return true;// manip.EV1EstActive();
+	manip.ActiverEV1();
+	return manip.EV1EstActive();
 }
 
 bool DemandeDesactivationEV1()
 {
-	//manip.DesactiverEV1();
-	return true;// manip.EV1EstDesactive();
+	manip.DesactiverEV1();
+	return manip.EV1EstDesactive();
 }
 
 bool DemandeActivationEV2()
 {
-	//manip.ActiverEV2();
-	return true;// manip.EV2EstActive();
+	manip.ActiverEV2();
+	return manip.EV2EstActive();
 }
 
 bool DemandeDesactivationEV2()
 {
-	//manip.DesactiverEV2();
-	return true;// manip.EV2EstDesactive();
+	manip.DesactiverEV2();
+	return manip.EV2EstDesactive();
 }
 
 bool DemandeActivationPompe()
 {
-	//manip.ActiverPompe();
-	return true;// manip.PompeEstActive();
+	manip.ActiverPompe();
+	return manip.PompeEstActive();
 }
 
 bool DemandeDesactivationPompe()
 {
-	//manip.DesactiverPompe();
-	return true;// manip.PompeEstDesactive();
+	manip.DesactiverPompe();
+	return manip.PompeEstDesactive();
 }
 
 
-// ----------- Fin des Boutons ------------
+// --------- End ------------

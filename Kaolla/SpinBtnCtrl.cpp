@@ -15,11 +15,11 @@ static char THIS_FILE[] = __FILE__;
 
 CSpinBtnCtrl::CSpinBtnCtrl()
 {
-	m_min = 0;
-	m_max = 100;
-	m_inc = 1;
-	m_pos = 0;
-	//m_nbDigits = 1;
+	m_min = 0.0;
+	m_max = 100.0;
+	m_inc = 1.0;
+	m_pos = 0.0;
+	m_nbDigits = 1;
 	m_strFormat = "%.1f";
 }
 
@@ -34,6 +34,8 @@ BEGIN_MESSAGE_MAP(CSpinBtnCtrl, CSpinButtonCtrl)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
+
+
 /////////////////////////////////////////////////////////////////////////////
 // CSpinBtnCtrl message handlers
 
@@ -47,6 +49,7 @@ void CSpinBtnCtrl::GetRange(double & lower,double & upper) const
 	lower = m_min;
 	upper = m_max;
 }
+
 double CSpinBtnCtrl::SetPos(double pos)
 {
 	if ((pos >= m_min)&&(pos <= m_max))
@@ -59,11 +62,11 @@ double CSpinBtnCtrl::SetPos(double pos)
 	return m_pos;
 }
 
-
 double CSpinBtnCtrl::GetPos() const
 {
 	return m_pos;
 }
+
 double CSpinBtnCtrl::GetInc()
 {
 	return m_inc;
@@ -73,12 +76,10 @@ void CSpinBtnCtrl::SetInc(double inc)
 	m_inc = inc;
 }
 
-/*
 void CSpinBtnCtrl::SetFormat(int nbDigits)
 {
 	m_nbDigits = nbDigits > 0 ? nbDigits : 1;
 }
-*/
 
 void CSpinBtnCtrl::SetFormat(CString strFormat)
 {
