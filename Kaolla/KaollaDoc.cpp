@@ -30,9 +30,9 @@ END_MESSAGE_MAP()
 // CKaollaDoc construction/destruction
 
 CKaollaDoc::CKaollaDoc()
-: TitreGrapheEtape(_T(""))
-, experiment_running(FALSE)
 {
+	TitreGrapheEtape = _T("");
+	experiment_running = FALSE;
 	TempsMinimum = -1;
 	MesureMinimum = -1;
 	NumeroEtape = -1;
@@ -52,8 +52,6 @@ BOOL CKaollaDoc::OnNewDocument()
 
 	return TRUE;
 }
-
-
 
 
 // CKaollaDoc serialization
@@ -150,64 +148,69 @@ CKaollaDoc * CKaollaDoc::GetDocument()
 
 void CKaollaDoc::RajoutMesure(CMesure NouvellesMesures)
 {
-	int dernier = m_TableauMesures.GetUpperBound();
-	m_TableauMesures[dernier] = NouvellesMesures;
+	int lastMeasurement = m_TableauMesures.GetUpperBound();
+	m_TableauMesures[lastMeasurement] = NouvellesMesures;
 }
 
-void CKaollaDoc::RajoutMesure(int num, double tps, double calorimetre, double bpression, double hpression, double temp_calo, double temp_cage, double temp_piece)
+void CKaollaDoc::RajoutMesure(int num, double tps, double calorimeter, double lowPressure, double highPressure, double tempCalo, double tempCage, double tempPiece)
 {
-	//Mettre condition
+	// Set the maximum and minimums
 	if (m_TableauMesures.IsEmpty())
 	{
-		max_pression = max(bpression, hpression);
-		min_pression = min(bpression, hpression);
+		maxPressure = max(lowPressure, highPressure);
+		minPressure = min(lowPressure, highPressure);
 
-		max_calo = calorimetre;
-		min_calo = calorimetre;
+		maxCalo = calorimeter;
+		minCalo = calorimeter;
 	}
 	else
 	{
-		max_pression = max(max_pression, bpression);
-		max_pression = max(max_pression, hpression);
-		min_pression = min(min_pression, bpression);
-		min_pression = min(min_pression, hpression);
+		maxPressure = max(maxPressure, lowPressure);
+		maxPressure = max(maxPressure, highPressure);
 
-		max_calo = max(max_calo, calorimetre);
-		min_calo = min(min_calo, calorimetre);
+		minPressure = min(minPressure, lowPressure);
+		minPressure = min(minPressure, highPressure);
+
+		maxCalo = max(maxCalo, calorimeter);
+		minCalo = min(minCalo, calorimeter);
 	}
+
+	// Add measurement to the array
 	m_TableauMesures.SetSize(num);
-	m_TableauMesures[num - 1] = CMesure(num, tps, calorimetre, bpression, hpression, temp_calo, temp_cage, temp_piece);
+	m_TableauMesures[num - 1] = CMesure(num, tps, calorimeter, lowPressure, highPressure, tempCalo, tempCage, tempPiece);
+
+	//Debug code
+#ifdef _DEBUG
 	int j = num - 1;
 	TRACE("m_TableauMesures[%d]=CMesure(%d,%d,%f,%f,%f,%f,%f,%f)\n", j, m_TableauMesures[j].numero, m_TableauMesures[j].temps, m_TableauMesures[j].calo, m_TableauMesures[j].basse_pression,
 		m_TableauMesures[j].haute_pression, m_TableauMesures[j].temperature_calo, m_TableauMesures[j].temperature_cage,
 		m_TableauMesures[j].temperature_piece);
-	int a = m_TableauMesures[j].numero;
-	double b = m_TableauMesures[j].temps;
-	double c = m_TableauMesures[j].calo;
-	double d = m_TableauMesures[j].basse_pression;
-	int premier = 1;
+#endif // _DEBUG
+
 }
 
-void CKaollaDoc::RajoutMesure(double tps, double calorimetre, double bpression, double hpression, double temp_calo, double temp_cage, double temp_piece)
+void CKaollaDoc::RajoutMesure(double tps, double calorimeter, double lowPressure, double highPressure, double tempCalo, double tempCage, double tempPiece)
 {
-	int dernier;
+	int lastMeasurement;
 	if (m_TableauMesures.IsEmpty())
 	{
-		dernier = 1;
+		lastMeasurement = 1;
 		m_TableauMesures.SetSize(3);
 	}
 	else
-		dernier = m_TableauMesures.GetUpperBound();
-	m_TableauMesures[dernier - 1] = CMesure(dernier, tps, calorimetre, bpression, hpression, temp_calo, temp_cage, temp_piece);
-	int j = dernier - 1;
+		lastMeasurement = m_TableauMesures.GetUpperBound();
+	m_TableauMesures[lastMeasurement - 1] = CMesure(lastMeasurement, tps, calorimeter, lowPressure, highPressure, tempCalo, tempCage, tempPiece);
+	
+
+	//Debug code
+#ifdef _DEBUG
+	int j = lastMeasurement - 1;
 	TRACE("m_TableauMesures[%d]=CMesure(%d,%d,%f,%f,%f,%f,%f,%f)\n", j, m_TableauMesures[j].numero,
 		m_TableauMesures[j].temps, m_TableauMesures[j].calo, m_TableauMesures[j].basse_pression,
 		m_TableauMesures[j].haute_pression, m_TableauMesures[j].temperature_calo, m_TableauMesures[j].temperature_cage,
 		m_TableauMesures[j].temperature_piece);
-	int premier = 1;
+#endif // _DEBUG
 }
-
-
 
 CArrayMesure* CKaollaDoc::GetTableauMesures(void)
 {

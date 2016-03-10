@@ -19,16 +19,16 @@ void CManip_AutoGaz::LancementExperience(LPVOID pParam)
 {
 	if(DialogueTypeExperience->DoModal() == IDOK)
 	{
-		m_KaollaView->ConfirmationLancement();
+		m_KaollaView->UnblockStopButton();
 
 		switch(DialogueTypeExperience->TypeExperience)
 		{
 			case EXPERIMENT_TYPE_MANUAL:
-				SetManipManuelle();
+				SetManipType(EXPERIMENT_TYPE_MANUAL);
 				m_proprietes_experience->SetProprietesManuelle();
 				break;
 			case EXPERIMENT_TYPE_AUTO :
-				SetManipAuto();
+				SetManipType(EXPERIMENT_TYPE_AUTO);
 				m_proprietes_experience->SetProprietesAuto();
 				break;
 			default :

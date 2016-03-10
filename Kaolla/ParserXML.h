@@ -2,6 +2,7 @@
 // Modifié le 7 septembre 2009
 ////////////////////////////////////////////////
 
+#pragma once
 #ifndef PARSERXML_H
 #define PARSERXML_H
 
@@ -20,35 +21,6 @@
 #include "Classes_experiences.h"
 
 using namespace std;
-
-/*
-class experimentateur
-{
-	public :
-		std::string nom;
-		std::string surnom;
-};
-
-class gaz
-{
-public :
-	std::string nom;
-	std::string symbole;
-	double masse_moleculaire;
-	double temperature_critique;
-	double pression_critique;
-	double temperature_ebullition;
-	double omega;
-};
-
-class cellule
-{
-public :
-	std::string numero;
-	double volume_total;
-	double volume_calo;
-};
-*/
 
 // XML
 void Initialisation_XML();

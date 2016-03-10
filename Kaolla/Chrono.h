@@ -1,4 +1,7 @@
 #pragma once
+#ifndef CHRONO_H
+#define CHRONO_H
+
 
 class CChrono
 {
@@ -25,3 +28,5 @@ public:
 	void ArretTemps();
 	void RepriseTemps();
 };
+
+#endif // !CHRONO_H

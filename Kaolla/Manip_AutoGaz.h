@@ -28,7 +28,6 @@ public:
 
 	float multiplicateur;
 
-	//bool MesureBassePression;
 
 
 	// ----------- Fonctions ------------- //

@@ -1,7 +1,10 @@
 #pragma once
-
 #ifndef MANIP_H
 #define MANIP_H
+
+#define finl "\r\n" 
+
+#include "MessageBoxTexts.h"	// Resource for the text. Ideally only a variable that describes the error should be returned, but this is a compromise
 
 #include "Kaolla.h"
 #include "KaollaDoc.h"
@@ -24,73 +27,73 @@
 
 #include "Chrono.h"
 
-#include "shlwapi.h" // pour PathIsDirectory
-
 #include <string>
 
 #include <sstream>  //ostringstream
 
-
 #include <fstream>
 
-#define finl "\r\n" 
 
 class CManip
 {
+
+
+	// ------------------ Variables ------------------
+
 public:
 
-	// -------- Variables -----------
+	// Pointers to classes that will be used
 
-	CKaollaView* m_KaollaView;
-	CKaollaDoc* m_Doc;
-	bool manip_en_cours;
-	double temps_manip;                          //calcul du temps
-	Keithley* g_pKeithley;
-	Mensor* g_pMensor;
-	CVannes* g_pVanne;
-	//CInstrument instrument[3];
-	CInstrument* instrument[3];
-	CTemperature* g_pTemperature;
-	CProprietes_experience* m_proprietes_experience;
+	CKaollaView* m_KaollaView;							// Pointer to the main view
+	CKaollaDoc* m_Doc;									// Pointer to the main document
+	Keithley* g_pKeithley;								// Pointer to the class that deals with the Keithley
+	Mensor* g_pMensor;									// Pointer to the class that deals with the Mensor
+	CVannes* g_pVanne;									// Pointer to the valve opening class
+	CInstrument* instrument[NB_OF_INSTRUMENTS];			// Array of pointers that hold CInstrument classes
+	CTemperature* g_pTemperature;						// Pointer to the class that deals with temperature recording
+	CProprietes_experience* m_proprietes_experience;	// Pointer to the valve opening class
+
+	// Objects instantiated here
 
 	ConnectionMesure AppareilCalo, AppareilHP, AppareilBP;
+	CChrono temps_experience;							// Deals with 
+	CChrono temps_intermediaire;						//
+	FluxConverter fluxConverter;						//
+	Donnees_General general;							//
+	Donnees_Divers divers;								//
+
+	// Other variables
+
 	int synchCalo, synchHP, synchBP;
+	bool manip_en_cours;						// TRUE if the manipulation is running, might be replaced by main window flag
+	double temps_manip;                         // Calculation of time
+	
+	float TemperatureCalo;						// Result of the USB 9211 for the temperature
+	float TemperatureCage;						// Result of the USB 9211 for the temperature
+    float TemperaturePiece;						// Result of the USB 9211 for the temperature
 
-	float TemperatureCalo;
-	float TemperatureCage; 
-    float TemperaturePiece;       //Résultats de l'USB 9211 pour les températures
+	double resultat_calo;						//
+	double resultat_bp;							//
+	double resultat_hp;							//
 
-	double resultat_calo;
-	double resultat_bp;
-	double resultat_hp;
-
-	CChrono temps_experience;
-	CChrono temps_intermediaire;
-
-	FluxConverter fluxConverter;
-	Donnees_General general;
-	Donnees_Divers divers;
-
-	int numero_mesure;
-
-
-
-	int TypeExperience;
-	int GenreExperience;
+	int numero_mesure;							//
+	int TypeExperience;							//
+	int GenreExperience;						//
 
 	// Manip_Auto
 
-	int demande_arret;
-	int etape_en_cours;
-	int etape_perturbe;
+	int demande_arret;							//
+	int etape_en_cours;							//
+	int etape_perturbe;							//
 
 protected:
-	DWORD ThreadId;
-	HANDLE hThread[3];
+	DWORD ThreadId;								//
+	HANDLE hThread[3];							//
+
+
+	// ------------------ Functions ------------------
 
 public:
-
-	// ------- Fonctions --------
 
 	// Manip
 
@@ -106,9 +109,9 @@ public:
 	void InitialisationInstruments();
 	void InitialisationManip();
 
-	void SetManipManuelle();
-	void SetManipAuto();
-
+	void SetManipType(int experimentType);
+	
+	void DonneesGrapheEtape();
 	void ReinitialisationManuelle();
 protected:
 	void MiseAJour();
@@ -117,14 +120,13 @@ protected:
 	void RemettreBoutonLancer();
 
 
-public:
-	void DonneesGrapheEtape();
-
 
 	// Manip_Affichage
 
+public:
 	void AffichageMesures();
 	void AffichageMesures(CString rajout_mesure);
+
 protected:
 	void AffichageMessages(CString Message);
 	void RajoutAffichageMessages(CString rajout);
@@ -138,31 +140,35 @@ protected:
 	void AfficherHautePression();
 	void AfficherTemperatures();
 	int MessageBoxConfirmation(CString message, UINT nType);
-public:
-	// Manip_Donnees
+	
 
+	// Manip_Donnees
+public:
+
+	void RecuperationDonnees();
+	CString GetDonneesExperience();
 	void EchangeDonnees();
 	void DonneesManuelleGrapheEtape();
 
 protected:
 	Donnees_General DonneesActuellesGeneral();
-/*	Donnees_Divers DonneesActuellesDivers();
+	Donnees_Divers DonneesActuellesDivers();
 	Donnees_Petites_Doses DonneesActuellesPetitesDoses();
 	Donnees_Grandes_Doses DonneesActuellesGrandesDoses();
 	Donnees_Desorption DonneesActuellesDesorption();
-	Donnees_Adsorption_Continue DonneesActuellesAdsorptionContinue();*/
-public:
-	void RecuperationDonnees();
-	CString GetDonneesExperience();
-
+	Donnees_Adsorption_Continue DonneesActuellesAdsorptionContinue();
+	
+	
 	// Manip_ExecutionManuelle
 
+public:
 	void ExecutionManuelle(LPVOID pParam);
 	void FinAffichage();
 
+
 	// Manip_Fichier
 
-
+public:
 	std::string NomFichier(std::string extention);
 	std::string NomFichierEntete(std::string extention);
 
@@ -177,8 +183,10 @@ public:
 	void EcritureEntete();
 	void EcritureEnteteCSV();
 
+
 	// Manip_Mesure
 
+public:
 	void RajoutMesure();
 
 protected :
@@ -197,8 +205,10 @@ protected :
 	static DWORD WINAPI ThreadProc_LectureBassePression(LPVOID lpParam);
 	static DWORD WINAPI ThreadProc_LectureTemperature(LPVOID lpParam);
 
-public:
+
 	// Manip_Securite
+
+public:
 
 	void InitialisationMesureSecuriteManuelle();
 	void SecuriteHautePression();
@@ -212,17 +222,21 @@ protected:
 	static DWORD WINAPI MesureSecuriteHautePression(LPVOID lpParam);
 	static DWORD WINAPI MesureSecuriteTemperatureElevee(LPVOID lpParam);
 	static DWORD WINAPI MesureSecuriteTemperatureFaible(LPVOID lpParam);
-public:
+
 
 	// Manip_Temps
+
+public:
 
 	void AttenteMinutes (int nbminutes);
 	void AttenteSecondes (int nbsecondes);
 	CString MessageAttente(int nbsecondes);
 	CString MessageTemps(int duree);
 
+
 	// Manip_Vannes
 
+public:
 	bool OuvrirEtFermer_Vanne(int num_vanne);
 	bool Ouverture_Vanne(int num_vanne);
 	bool Fermeture_Vanne(int num_vanne);
@@ -261,9 +275,6 @@ public:
 	bool EV2EstDesactive();
 	bool PompeEstActive();
 	bool PompeEstDesactive();
-
-	// Autres
-
 
 };
 

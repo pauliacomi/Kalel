@@ -13,19 +13,12 @@ public:
 	// ---------- Variables --------------- //
 
 	Donnees_Divers divers;
-
-
-
-	double PressionInitiale, PressionFinale;
-
-
+	float PressionInitiale, PressionFinale;
 	float precedent_injection;
 	int compteur_injection;
 
 
-
 	// ----------- Fonctions ------------- //
-
 
 	// Manip_Auto_Arret
 
@@ -42,6 +35,7 @@ public:
 
 	bool ContinuerExperience();
 
+	
 	// Manip_Auto_Donnees
 
 	void DonneesAutoGrapheEtape();
@@ -50,14 +44,12 @@ public:
 	Donnees_Divers DonneesActuellesDivers();
 
 
-
 	// Manip_Auto_Fichier
 
 	std::string EnteteBase();
 	std::string EnteteBaseCSV();
 	std::string EnteteDivers();
 	std::string EnteteDiversCSV();
-	
 	
 	void RajoutFichierEntete(CString StrChangement);
 	void RajoutFichierEntete(std::string stringChangement);
@@ -109,8 +101,5 @@ public:
 	int VerificationVannes();
 	int VerificationPressionResiduelle();
 	int VerificationTemperature();
-
-
-
 
 };

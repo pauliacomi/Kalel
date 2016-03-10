@@ -31,7 +31,11 @@ const char * NomMois[] = { "janvier", "fevrier", "mars", "avril", "mai","juin",
 IMPLEMENT_DYNCREATE(CKaollaView, CFormView)
 
 BEGIN_MESSAGE_MAP(CKaollaView, CFormView)
+	// Custom messages for threads
 	ON_MESSAGE(WM_THREADAFFICHAGE, &CKaollaView::OnThreadAffichage)
+	ON_MESSAGE(WM_THREADFINISHEDREG, &CKaollaView::OnThreadAffichage)
+
+	// Messages for UI buttons
 	ON_BN_CLICKED(IDC_OUVRIR1, &CKaollaView::OnBnClickedOuvrir1)
 	ON_BN_CLICKED(IDC_OUVRIR2, &CKaollaView::OnBnClickedOuvrir2)
 	ON_BN_CLICKED(IDC_OUVRIR3, &CKaollaView::OnBnClickedOuvrir3)
@@ -65,8 +69,6 @@ BEGIN_MESSAGE_MAP(CKaollaView, CFormView)
 
 	ON_BN_CLICKED(IDC_BUTTON_PARAMETRES_EXPERIENCE, &CKaollaView::OnBnClickedButtonParametresExperience)
 
-	/*	ON_COMMAND(ID_MSV_AMPOULE, &CKaollaView::OnMsvAmpoule)
-	ON_UPDATE_COMMAND_UI(ID_MSV_AMPOULE, &CKaollaView::OnUpdateMsvAmpoule)*/
 END_MESSAGE_MAP()
 
 // CKaollaView construction/destruction
@@ -82,12 +84,12 @@ CKaollaView::CKaollaView()
 	, m_StrTemperaturePiece(_T(""))
 	, m_StrTemps(_T(""))
 	, m_StrEditMesures(_T(""))
-	, TemperatureCalo(0)
+	/*, TemperatureCalo(0)
 	, TemperatureCage(0)
 	, TemperaturePiece(0)
 	, Calorimetre(0)
 	, Basse_Pression(0)
-	, Haute_Pression(0)
+	, Haute_Pression(0)*/
 	, m_StrPressionInitiale(_T(""))
 	, m_StrPressionFinale(_T(""))
 	, m_StrEtape(_T(""))
@@ -103,22 +105,14 @@ CKaollaView::CKaollaView()
 	, m_StrTemoinEV2(_T(""))
 	, m_StrTemoinPompe(_T(""))
 {
-	// On initialise à vide car toutes les variables se rempliront
-	// Au fur et à mesure de l'expérience
-	m_parametres_appareil = new CParametres_appareil(this);
-	m_connection_port = new CConnection_port(this);
 }
 
 CKaollaView::~CKaollaView()
 {
-	// On détruit les boîtes de dialogue
-	delete m_parametres_appareil;
-	delete m_connection_port;
-
 	DeleteManip();
 }
 
-// Liaison entre les variables et les contrôles
+// Liaising between variables and controls
 void CKaollaView::DoDataExchange(CDataExchange* pDX)
 {
 	CFormView::DoDataExchange(pDX);
@@ -163,50 +157,26 @@ void CKaollaView::OnInitialUpdate()
 {
 	CFormView::OnInitialUpdate();
 	GetParentFrame()->RecalcLayout();
-	//ResizeParentToFit();
 
-	// En attendant que tout soit prêt
-	// On bloque les boutons (lancer, arrêter et les 'ouvrir' et 'fermer')
-	// Et lors de l'initialisations, on ferment les vannes
-	GetDlgItem(IDC_LANCER)->EnableWindow(FALSE);
+	// Get a pointer to the app itself for access to the menu availability
+	pApp = static_cast<CKaollaApp *>(AfxGetApp());
+
+	// Deactivate the buttons that should not be available
+	GetDlgItem(IDC_ARRETER)->EnableWindow(FALSE);
 	for (int i = 1; i <= 8; i++)
 	{
 		GetDlgItem(idc_fermer[i - 1])->EnableWindow(FALSE);
-		GetDlgItem(idc_ouvrir[i - 1])->EnableWindow(FALSE);
 	}
-	GetDlgItem(IDC_ACTIVER_EV1)->EnableWindow(FALSE);
-	GetDlgItem(IDC_ACTIVER_EV2)->EnableWindow(FALSE);
-	GetDlgItem(IDC_ACTIVER_POMPE)->EnableWindow(FALSE);
 	GetDlgItem(IDC_DESACTIVER_EV1)->EnableWindow(FALSE);
 	GetDlgItem(IDC_DESACTIVER_EV2)->EnableWindow(FALSE);
 	GetDlgItem(IDC_DESACTIVER_POMPE)->EnableWindow(FALSE);
 
-	GetDlgItem(IDC_ARRETER)->EnableWindow(FALSE);
+	// Check to see whether the parameters file has been created
+	VerifParametres();
 
-	VerifParametres();//////////////////////////////////////////////////////////////
-
+	// Initialize manipulation class - this needs work
 	InitialisationManip();
 
-	pApp = static_cast<CKaollaApp *>(AfxGetApp());
-	//AfxBeginThread(LancerThreadProc, GetSafeHwnd());
-	/*
-	AfxBeginThread(ThreadMenuMiseSousVideAmpoule, GetSafeHwnd());
-	AfxBeginThread(ThreadMenuMiseSousVideBouteille, GetSafeHwnd());
-	*/
-	LancementThreadMSVAmpoule();
-	LancementThreadMSVBouteille();
-	LancementThreadChangementBouteille();
-
-	// Tout est prêt, le bouton "Lancer" et les boutons 'Ouvrir'
-	// sont donc accessibles
-	for (int i = 1; i <= 8; i++)
-	{
-		GetDlgItem(idc_ouvrir[i - 1])->EnableWindow(TRUE);
-	}
-	GetDlgItem(IDC_ACTIVER_EV1)->EnableWindow(TRUE);
-	GetDlgItem(IDC_ACTIVER_EV2)->EnableWindow(TRUE);
-	GetDlgItem(IDC_ACTIVER_POMPE)->EnableWindow(TRUE);
-	GetDlgItem(IDC_LANCER)->EnableWindow(TRUE);
 }
 
 
@@ -244,23 +214,42 @@ CKaollaDoc* CKaollaView::GetDocument() const // non-debug version is inline
 #endif //_DEBUG
 
 
-// Returns a pointer to the view itself
+// Returns a pointer to the view itself or NULL if it fails
 CKaollaView * CKaollaView::GetView()
 {
-	CFrameWnd * pFrame = (CFrameWnd *)(AfxGetApp()->m_pMainWnd);
+	CDocTemplate* pTemplate;
+	POSITION pos = pApp->GetFirstDocTemplatePosition();
+	while (pos != NULL)
+	{
+		pTemplate = pApp->GetNextDocTemplate(pos);
+		ASSERT(pTemplate);
 
-	CView * pView = pFrame->GetActiveView();
+		// iterate through template documents
+		POSITION pos2 = pTemplate->GetFirstDocPosition();
+		while (pos2)
+		{
+			CDocument* pDoc = pTemplate->GetNextDoc(pos2);
+			ASSERT(pDoc);
 
-	if (!pView)
-		return NULL;
+			// iterate through views
+			POSITION pos3 = pDoc->GetFirstViewPosition();
+			while (pos3 != NULL)
+			{
+				CView* pView = pDoc->GetNextView(pos3);
+				ASSERT(pView);
+				if (::IsWindow(pView->GetSafeHwnd()))
+				{
+					if (pView->IsKindOf(RUNTIME_CLASS(CKaollaView)))
+					{
+						CKaollaView* pKV = static_cast<CKaollaView *>(pView);
+						return pKV;
+					}
+				}
+			}
+		}
+	}
 
-	// Fail if view is of wrong kind
-	// (this could occur with splitter windows, or additional
-	// views on a single document
-	if (!pView->IsKindOf(RUNTIME_CLASS(CKaollaView)))
-		return NULL;
-
-	return (CKaollaView *)pView;
+	return NULL;
 }
 
 
@@ -278,35 +267,39 @@ void CKaollaView::DoEvents(void)
 	}
 }
 
-
-void CKaollaView::ChargerDocument(void)
-{
-	GetDocument()->UpdateAllViews(this);
-}
-
-
 void CKaollaView::DebloqueMenu(void)
 {
 	m_mainDocument = CKaollaDoc::GetDocument();
-	pApp->disponibilite_menu = !m_mainDocument->experiment_running;
+	pApp->menuIsAvailable = !m_mainDocument->experiment_running;
 }
 
-void CKaollaView::MiseAJour()
+void CKaollaView::MiseAJour(void)
 {
 	UpdateData(FALSE);
 }
 
-void CKaollaView::LancementThreadMSVAmpoule()
+void CKaollaView::OnMsvAmpoule(void)
 {
-	AfxBeginThread(ThreadMenuMiseSousVideAmpoule, GetSafeHwnd());
+	MiseSousVideAmpoule(GetSafeHwnd());
 }
 
-void CKaollaView::LancementThreadMSVBouteille()
+void CKaollaView::OnMsvBouteille()
 {
-	AfxBeginThread(ThreadMenuMiseSousVideBouteille, GetSafeHwnd());
+	MiseSousVideBouteille(GetSafeHwnd());
 }
 
-void CKaollaView::LancementThreadChangementBouteille()
+void CKaollaView::OnChangementBouteille()
 {
-	AfxBeginThread(ThreadMenuChangementBouteille, GetSafeHwnd());
+	ChangementBouteille(GetSafeHwnd());
+}
+
+
+// Thread callback commands
+
+LRESULT CKaollaView::OnRegularThreadFinished(WPARAM wParam, LPARAM) {
+
+	GetDocument()->experiment_running = FALSE;
+	DebloqueMenu();
+	
+	return 0;
 }

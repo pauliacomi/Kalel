@@ -1,3 +1,4 @@
+#pragma once
 #ifndef CLASSES_EXPERIENCES_H
 #define CLASSES_EXPERIENCES_H
 
@@ -37,7 +38,7 @@ class cellule
 public :
 	std::string numero;
 	double volume_total;
-	double volume_calo;
+	float volume_calo;
 
 	cellule operator=(const cellule &cell);
 	bool operator!=(const cellule &cell);

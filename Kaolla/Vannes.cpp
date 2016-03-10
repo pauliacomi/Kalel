@@ -11,7 +11,6 @@ CVannes::CVannes(void) : NI_USB_6008()
 	NI_USB_6008::SetDevNI_USB_6008(PortUSBVannes());
 
 	ToutFermer();
-	//InitialisationDesPorts();
 }
 
 CVannes::~CVannes(void)
@@ -25,7 +24,6 @@ bool CVannes::VanneEstOuvert(int num)
 
 bool CVannes::VanneEstFerme(int num)
 {return NI_USB_6008::EstFermePort0(num-1);}
-
 
 bool CVannes::EV1EstActive()
 {return NI_USB_6008::EstOuvertPort1(0);}
@@ -84,9 +82,6 @@ bool CVannes::FermerToutesLesVannes()
 
 	return action_reussie;
 }
-
-
-
 
 
 
@@ -182,16 +177,12 @@ bool CVannes::FermerLesValvesEtLaPompe()
 }
 
 
-
-
 bool CVannes::ToutFermer()
 {
 	if(FermerToutesLesVannes() && FermerLesValvesEtLaPompe())
 		return TRUE;
 	return FALSE;
 }
-
-
 
 
 

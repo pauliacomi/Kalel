@@ -2,15 +2,14 @@
 #include "Manip.h"
 
 
-
-using namespace std;
-
+// ------------ Constructor and Destructor
 
 CManip::CManip()
 {
 	m_KaollaView = NULL;
 	manip_en_cours = FALSE;
-	//m_proprietes_experience = new CProprietes_experience("");
+	// this should most definately not be defined here, it's so wrong it hurts
+	// m_proprietes_experience = new CProprietes_experience("");
 	for(int i=0;i<NB_OF_INSTRUMENTS;i++)
 		instrument[i] = new CInstrument();
 	AppareilCalo.voie_mesure = VOIE_INDEF;
@@ -23,9 +22,13 @@ CManip::CManip()
 
 CManip::~CManip()
 {
+	for (int i = 0; i<NB_OF_INSTRUMENTS; i++)
+		delete instrument[i];
 }
 
 
+// -------------- Functions that set the pointers to external objects
+// This is most likely not thread safe so must rewrite
 
 void CManip::SetKaollaView(CKaollaView* pKV)
 {
@@ -54,6 +57,17 @@ void CManip::SetTemperature(CTemperature* pTemperature)
 
 
 
+// -------------- Initialisation functions
+
+void CManip::InitialisationManip()
+{
+	InitialisationInstruments();
+	OuvrirInstruments();
+	InitialisationDocument();
+}
+
+// This resets the graph values whenever a new experiment is initialized 
+// it might be better through a command as it uses direct write to the document
 void CManip::InitialisationDocument()
 {
 	m_Doc = m_KaollaView->GetDocument();
@@ -63,6 +77,8 @@ void CManip::InitialisationDocument()
 }
 
 
+// The instruments which the calorimeter uses are initialized here when the function is called
+// It looks good, might need some error detection. Canditate for new class.
 
 void CManip::InitialisationInstruments()
 {
@@ -184,45 +200,34 @@ void CManip::InitialisationInstruments()
 	}
 }
 
-void CManip::InitialisationManip()
+
+// Set the type of experiment being done (AUTOMATIC || MANUAL)
+void CManip::SetManipType(int experimentType)
 {
-	InitialisationInstruments();
-	OuvrirInstruments();
-	InitialisationDocument();
+	TypeExperience = experimentType;
+	GenreExperience = experimentType;
 }
 
 
-
-void CManip::SetManipManuelle()
-{
-	TypeExperience = EXPERIMENT_TYPE_MANUAL;
-	GenreExperience = EXPERIMENT_TYPE_MANUAL;
-}
-
-void CManip::SetManipAuto()
-{
-	TypeExperience = EXPERIMENT_TYPE_AUTO;
-	GenreExperience = EXPERIMENT_TYPE_AUTO;
-}
-
-
+// Tell the main view to update itself - this should be done by using a message command
 void CManip::MiseAJour()
 {
 	m_KaollaView->MiseAJour();
 }
 
-
+// Tell the main view to unlock the menu - this should be done by using a message command
 void CManip::DebloqueMenu()
 { 
 	m_KaollaView->DebloqueMenu();
 }
 
+// Tell the main view to unlock the launch button - this should be done by using a message command
 void CManip::RemettreBoutonLancer()
 {
 	m_KaollaView->GetDlgItem(IDC_LANCER)->EnableWindow(TRUE);
 }
 
-
+// Manually reinitialise the experimental properties
 void CManip::ReinitialisationManuelle()
 {
 	m_proprietes_experience->ReinitialisationManuelle();

@@ -98,10 +98,10 @@ BOOL CPetitesDoses::OnInitDialog()
 void CPetitesDoses::Reinitialisation()
 {
 	m_bPetitesDoses = FALSE;
-	m_fDeltaPressionPetitesDoses = 0.1;
+	m_fDeltaPressionPetitesDoses = 0.1f;
 	m_nTempsVolumePetitesDoses = 5;
 	m_nTempsAdsorptionPetitesDoses = 90;
-	m_fPressionFinalePetitesDoses = 1.0;
+	m_fPressionFinalePetitesDoses = 1.0f;
 
 	Check_PetitesDoses = UN_GREY_OUT;
 

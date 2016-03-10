@@ -37,7 +37,6 @@ static UINT indicators[] =
 
 CMainFrame::CMainFrame()
 {
-	// TODO: add member initialization code here
 }
 
 CMainFrame::~CMainFrame()
@@ -75,6 +74,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT /*lpcs*/,
 	CCreateContext* pContext)
 {
+	// Create the splitter and add the views to it
 	CRect rect;
 	GetClientRect(rect);
 	if (!m_wndSplitter.CreateStatic(this, 1, 2)){
@@ -86,7 +86,6 @@ BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT /*lpcs*/,
 		m_wndSplitter.DestroyWindow();
 		return FALSE;
 	}
-
 	return TRUE;
 }
 
@@ -136,7 +135,7 @@ void CMainFrame::OnSysCommand(UINT nID, LPARAM lParam)
 			{
 				pView->OnBnClickedArreter();
 			}
-			return; // pas de fermeture
+			return; // do not close
 		}
 	}
 

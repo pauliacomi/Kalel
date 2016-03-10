@@ -33,7 +33,6 @@ void CManip_AutoGaz::ExecutionAuto(LPVOID pParam)
 	numero_mesure = 1;
 	demande_arret = INACTIF;
 	etape_en_cours = STAGE_UNDEF;
-	//MesureBassePression = GetMesureBassePression();
 
 	if (Verifications() == IDCANCEL)
 	{

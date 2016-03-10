@@ -38,7 +38,7 @@ BOOL CDonnees_Experience::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
-	// m_StrDonneesExperience = GetDonneesExperience();
+	//m_StrDonneesExperience = GetDonneesExperience();
 
 	// UpdateData(FALSE);
 

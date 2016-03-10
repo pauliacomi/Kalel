@@ -13,6 +13,12 @@
 
 #include "threads.h"
 
+// Dialog Box includes
+#include "Parametres_appareil.h"
+#include "Connection_port.h"
+#include "Donnees_Experience.h"
+
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -29,9 +35,9 @@ BEGIN_MESSAGE_MAP(CKaollaApp, CWinApp)
 	ON_COMMAND(ID_PARAMATRES_APPAREIL, &CKaollaApp::OnParamatresAppareil)
 	ON_COMMAND(ID_CONNECTION_PORTS, &CKaollaApp::OnConnectionPorts)
 	ON_COMMAND(ID_DONNEES_EXPERIENCE, &CKaollaApp::OnDonneesExperience)
-	ON_COMMAND(ID_MSV_AMPOULE, &CKaollaApp::OnMsvAmpoule)
-	ON_COMMAND(ID_MSV_BOUTEILLE, &CKaollaApp::OnMsvBouteille)
-	ON_COMMAND(ID_CHANGEMENT_BOUTEILLE, &CKaollaApp::OnChangementBouteille)
+	ON_COMMAND(ID_MSV_AMPOULE, &CKaollaView::OnMsvAmpoule)
+	ON_COMMAND(ID_MSV_BOUTEILLE, &CKaollaView::OnMsvBouteille)
+	ON_COMMAND(ID_CHANGEMENT_BOUTEILLE, &CKaollaView::OnChangementBouteille)
 	// New update based commands
 	ON_UPDATE_COMMAND_UI(ID_PARAMATRES_APPAREIL, &CKaollaApp::OnUpdateParamatresAppareil)
 	ON_UPDATE_COMMAND_UI(ID_CONNECTION_PORTS, &CKaollaApp::OnUpdateConnectionPorts)
@@ -55,9 +61,9 @@ CKaollaApp::CKaollaApp()
 	System::Windows::Forms::Application::SetUnhandledExceptionMode(System::Windows::Forms::UnhandledExceptionMode::ThrowException);
 #endif
 
-	// TODO: replace application ID string below with unique ID string; recommended
+	// Application ID string
 	// format for string is CompanyName.ProductName.SubProduct.VersionInformation
-	SetAppID(_T("MADIREL.a.NoVersion"));
+	SetAppID(_T("MADIREL.Kalel.1"));
 
 	// TODO: add construction code here,
 	// Place all significant initialization in InitInstance
@@ -107,7 +113,7 @@ BOOL CKaollaApp::InitInstance()
 	// Change the registry key under which our settings are stored
 	// TODO: You should modify this string to be something appropriate
 	// such as the name of your company or organization
-	SetRegistryKey(_T("Local AppWizard-Generated Applications"));
+	SetRegistryKey(_T("MADIREL"));
 	LoadStdProfileSettings(4);  // Load standard INI file options (including MRU)
 
 
@@ -129,7 +135,6 @@ BOOL CKaollaApp::InitInstance()
 	ParseCommandLine(cmdInfo);
 
 
-
 	// Dispatch commands specified on the command line.  Will return FALSE if
 	// app was launched with /RegServer, /Register, /Unregserver or /Unregister.
 	if (!ProcessShellCommand(cmdInfo))
@@ -139,7 +144,9 @@ BOOL CKaollaApp::InitInstance()
 	m_pMainWnd->ShowWindow(SW_SHOW);
 	m_pMainWnd->UpdateWindow();
 
-	disponibilite_menu = TRUE;
+	// To keep track of the availability of the menu
+	menuIsAvailable = TRUE;
+	
 	return TRUE;
 }
 
@@ -151,6 +158,8 @@ int CKaollaApp::ExitInstance()
 	return CWinApp::ExitInstance();
 }
 
+
+///////////////////////////////
 // CKaollaApp message handlers
 
 
@@ -165,9 +174,6 @@ public:
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_ABOUTBOX };
 #endif
-
-// Données de boîte de dialogue
-enum { IDD = IDD_ABOUTBOX };
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
@@ -197,78 +203,59 @@ void CKaollaApp::OnAppAbout()
 }
 
 
-
-
-// CKaollaApp message handlers
+///////////////////////////////
+// Custom functions to process when menu buttons are pressed
 
 void CKaollaApp::OnParamatresAppareil()
 {
+	CParametres_appareil m_parametres_appareil;
 	m_parametres_appareil.DoModal();
 }
 
 void CKaollaApp::OnConnectionPorts()
 {
+	CConnection_port m_connection_ports;
 	m_connection_ports.DoModal();
 	ChangementDev(GetPortVannes(), GetPortTemperatures());
 }
 
-// Fonction activée lors l'utilisateur clique sur le menu 'paramètres'
-void CKaollaApp::OnUpdateParamatresAppareil(CCmdUI *pCmdUI)
-{
-	///// pCmdUI->Enable(pKaollaView->fin_experience);
-	pCmdUI->Enable(disponibilite_menu);
-}
-
-
-void CKaollaApp::OnUpdateConnectionPorts(CCmdUI *pCmdUI)
-{
-	/////pCmdUI->Enable(pKaollaView->fin_experience);
-	pCmdUI->Enable(disponibilite_menu);
-}
-
-
 void CKaollaApp::OnDonneesExperience()
 {
+	CDonnees_Experience m_donnees_experience;
 	m_donnees_experience.SetStrDonneesExperience(GetDonneesExperience());
 	m_donnees_experience.DoModal();
 }
 
-void CKaollaApp::OnUpdateDonneesExperience(CCmdUI *pCmdUI)
+
+// Make sure that the functionalities are only available when the experiment is not running
+
+void CKaollaApp::OnUpdateParamatresAppareil(CCmdUI *pCmdUI)
 {
-	pCmdUI->Enable(!disponibilite_menu);
+	pCmdUI->Enable(menuIsAvailable);
 }
 
-
-
-void CKaollaApp::OnMsvAmpoule()
+void CKaollaApp::OnUpdateConnectionPorts(CCmdUI *pCmdUI)
 {
-	///disponibilite_menu = false;
-	MiseSousVideAmpoule();
-	///disponibilite_menu = true;
+	pCmdUI->Enable(menuIsAvailable);
+}
+
+void CKaollaApp::OnUpdateDonneesExperience(CCmdUI *pCmdUI)
+{
+	pCmdUI->Enable(!menuIsAvailable);
 }
 
 void CKaollaApp::OnUpdateMsvAmpoule(CCmdUI *pCmdUI)
 {
-	pCmdUI->Enable(disponibilite_menu);
-}
-
-void CKaollaApp::OnMsvBouteille()
-{
-	MiseSousVideBouteille();
+	pCmdUI->Enable(menuIsAvailable);
 }
 
 void CKaollaApp::OnUpdateMsvBouteille(CCmdUI *pCmdUI)
 {
-	pCmdUI->Enable(disponibilite_menu);
-}
-
-void CKaollaApp::OnChangementBouteille()
-{
-	ChangementBouteille();
+	pCmdUI->Enable(menuIsAvailable);
 }
 
 void CKaollaApp::OnUpdateChangementBouteille(CCmdUI *pCmdUI)
 {
-	pCmdUI->Enable(disponibilite_menu);
+	pCmdUI->Enable(menuIsAvailable);
 }
 

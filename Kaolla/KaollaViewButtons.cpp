@@ -1,3 +1,7 @@
+
+// KaollaView_Boutons.cpp : all the code for the buttons in the view except the valve buttons
+//
+
 #include "stdafx.h"
 #include "Kaolla.h"
 
@@ -7,22 +11,15 @@
 #include "threads.h"
 
 
-using namespace std;
-
-
-
-// gestionnaires de messages pour CKaollaView
-
-// Lorsqu'on clique sur le bouton 'Lancer'
+// When clicking on the Launch button
 void CKaollaView::OnBnClickedLancer()
 {
-	// Le bouton 'Lancer' est bloqué
+	// the button is blocked
 	GetDlgItem(IDC_LANCER)->EnableWindow(FALSE);
 
 	m_mainDocument = CKaollaDoc::GetDocument();
 	m_mainDocument->experiment_running=TRUE;
 
-	//pApp->disponibilite_menu = fin_experience;
 	DebloqueMenu();
 
 
@@ -31,56 +28,54 @@ void CKaollaView::OnBnClickedLancer()
 	GetDocument()->TempsMinimum = -1;
 	GetDocument()->MesureMinimum = -1;
 	GetDocument()->NumeroEtape = -1;
-	// Réactualise cette View (ici KaollaView)
+
+	// Update the view (KaollaView)
 	GetDocument()->UpdateAllViews(this); 
 
-	LancementThreads();
+	// Launch the threads 
+	LancementThreads(GetSafeHwnd());
 
 }
 
-// Lorsqu'on clique sur le bouton 'Arreter'
+// When clicking on the Stop button
 void CKaollaView::OnBnClickedArreter()
 {
 
-	// On bloque le bouton d'arrêt
+	// the button is blocked
 	GetDlgItem(IDC_ARRETER)->EnableWindow(FALSE);
 
-	// On signale que c'ets la fin de l'expérience
+	// signal that this is the experiment end
 	m_mainDocument = CKaollaDoc::GetDocument();
 	m_mainDocument->experiment_running=FALSE;
 
-	ArretThreads();
+	// Stop the threads
+	ArretThreads(GetSafeHwnd());
 }
 
-void CKaollaView::ConfirmationLancement()
+// Unblock the stop button
+void CKaollaView::UnblockStopButton()
 {
-	//AfxBeginThread(ArretThreadProc, GetSafeHwnd());
-
-	// On débloque le bouton 'Arreter'
-	// L'expérience peut maintenant être arrêter à tout moment
 	GetDlgItem(IDC_ARRETER)->EnableWindow(TRUE);
 }
 
-
+// When the experiment is canceled
 void CKaollaView::Annuler()
 {
 	m_mainDocument = CKaollaDoc::GetDocument();
 	m_mainDocument->experiment_running=FALSE;  // FALSE : expérience en cours
-	//pApp->disponibilite_menu = fin_experience;
+
 	DebloqueMenu();
 
 	GetDlgItem(IDC_LANCER)->EnableWindow(TRUE);
 	GetDlgItem(IDC_ARRETER)->EnableWindow(FALSE);
-	AfxBeginThread(LancerThreadProc, GetSafeHwnd());
 }
 
 
-
+// Clicking the other buttons in the view
 void CKaollaView::OnBnClickedButtonParametresExperience()
 {
 	DemandeModificationExperience();
 }
-
 
 void CKaollaView::OnBnClickedArretSousVide()
 {
