@@ -3,10 +3,10 @@
 
 #include "Kaolla.h"
 #include "KaollaDoc.h"
-
 #include "KaollaView.h"
-
 #include "threads.h"
+
+#include "ManualActionParam.h"
 
 #include "Manip_AutoGaz.h"
 
@@ -22,6 +22,7 @@ CTemperature* pTemperature;
 // -
 
 // Threads
+CWinThread * m_threadManualAction;
 CWinThread * m_threadLaunchExperiment;
 CWinThread * m_threadStopExperiment;
 CWinThread * m_threadSampleUnderVaccuum;
@@ -52,7 +53,7 @@ void InitialisationManip()
 	//manip.FermerLesValvesEtLaPompe();
 }
 
-void InitialisationManip2()
+void InitializeObjects()
 {
 	pVanne = new CVannes();
 	pTemperature = new CTemperature(GetPortTemperatures());
@@ -60,7 +61,6 @@ void InitialisationManip2()
 	pKaollaView = CKaollaView::GetView();
 	pKaollaDoc = CKaollaDoc::GetDocument();
 
-	manualManip = CManip_AutoGaz();
 	manualManip.SetKaollaView(pKaollaView);
 	manualManip.SetVannes(pVanne);
 	manualManip.SetTemperature(pTemperature);
@@ -99,6 +99,16 @@ CString GetDonneesExperience()
 
 
 // --------- Thread start functions -------
+
+void ManualAction(LPVOID pParam)
+{
+	// lock the menu
+	pKaollaDoc->experiment_running = TRUE;
+	pKaollaView->DebloqueMenu();
+
+	//start thread
+	m_threadManualAction = AfxBeginThread(ThreadManualAction, pParam);
+}
 
 void LancementThreads(LPVOID pParam)
 {
@@ -142,6 +152,24 @@ void ChangementBouteille(LPVOID pParam)
 
 
 /// -----------------Threads------------------
+
+UINT ThreadManualAction(LPVOID pParam)
+{
+	// Get window handler and check for validity
+	ManualActionParam *maParam = static_cast<ManualActionParam*>(pParam);
+	ASSERT(maParam != NULL);
+
+	// Launch required functionality
+	switch (maParam->instrumentType)
+	{
+	case INSTRUMENT_VALVE:
+		manualManip.Ouverture_Vanne(maParam->instrumentNumber);
+	default:
+		break;
+	}
+
+	return 0;
+}
 
 UINT LancerThreadProc(LPVOID pParam)
 {

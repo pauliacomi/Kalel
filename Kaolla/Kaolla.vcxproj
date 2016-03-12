@@ -235,6 +235,7 @@
     <ClInclude Include="Manip.h" />
     <ClInclude Include="Manip_Auto.h" />
     <ClInclude Include="Manip_AutoGaz.h" />
+    <ClInclude Include="ManualActionParam.h" />
     <ClInclude Include="Mensor.h" />
     <ClInclude Include="Mesure.h" />
     <ClInclude Include="MFCMessageHandler.h" />
@@ -334,6 +335,7 @@
     <ClCompile Include="ManipSecurity.cpp" />
     <ClCompile Include="ManipTimeKeeping.cpp" />
     <ClCompile Include="ManipValves.cpp" />
+    <ClCompile Include="ManualActionParam.cpp" />
     <ClCompile Include="Mensor.cpp" />
     <ClCompile Include="Mesure.cpp" />
     <ClCompile Include="MFCMessageHandler.cpp" />

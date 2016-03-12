@@ -2,7 +2,7 @@
 #ifndef DEFINE_INSTRUMENT_H
 #define DEFINE_INSTRUMENT_H
 
-// type d'instrument
+// type of instrument
 #define INSTRUMENT_KEITHLEY		10
 #define INSTRUMENT_MENSOR		11
 #define INSTRUMENT_NONE			12
@@ -13,7 +13,7 @@
 #define READ_LP					0
 #define READ_HP					1
 
-// fonctions
+// functions
 #define CALO_V1_BP_V2_KEITHLEY			100
 #define CALO_V1_HP_V2_KEITHLEY			108
 #define CALO_V1_KEITHLEY				102
@@ -37,5 +37,11 @@
 #define INDEX_AUCUN						0
 #define INDEX_KEITHLEY					1
 #define INDEX_MENSOR					2
+
+// Controlled instruments
+
+#define INSTRUMENT_VALVE	1001
+#define INSTRUMENT_EV		1002
+#define INSTRUMENT_PUMP		1003
 
 #endif

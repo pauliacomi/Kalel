@@ -35,7 +35,7 @@ BEGIN_MESSAGE_MAP(CKaollaView, CFormView)
 	ON_MESSAGE(WM_THREADAFFICHAGE, &CKaollaView::OnThreadAffichage)
 	ON_MESSAGE(WM_THREADFINISHEDREG, &CKaollaView::OnThreadAffichage)
 
-	// Messages for UI buttons
+	// Messages for UI buttons used for simple instrument manipulation
 	ON_BN_CLICKED(IDC_OUVRIR1, &CKaollaView::OnBnClickedOuvrir1)
 	ON_BN_CLICKED(IDC_OUVRIR2, &CKaollaView::OnBnClickedOuvrir2)
 	ON_BN_CLICKED(IDC_OUVRIR3, &CKaollaView::OnBnClickedOuvrir3)
@@ -58,6 +58,8 @@ BEGIN_MESSAGE_MAP(CKaollaView, CFormView)
 	ON_BN_CLICKED(IDC_DESACTIVER_EV2, &CKaollaView::OnBnClickedDesactiverEV2)
 	ON_BN_CLICKED(IDC_ACTIVER_POMPE, &CKaollaView::OnBnClickedActiverPompe)
 	ON_BN_CLICKED(IDC_DESACTIVER_POMPE, &CKaollaView::OnBnClickedDesactiverPompe)
+
+	// Buttons which are used for automatic/advanced functionality
 	ON_BN_CLICKED(IDC_LANCER, &CKaollaView::OnBnClickedLancer)
 	ON_BN_CLICKED(IDC_ARRETER, &CKaollaView::OnBnClickedArreter)
 	ON_BN_CLICKED(IDC_REPRISE, &CKaollaView::OnBnClickedReprise)
@@ -176,7 +178,7 @@ void CKaollaView::OnInitialUpdate()
 
 	// Initialize manipulation class - this needs work
 	InitialisationManip();
-	InitialisationManip2();
+	InitializeObjects();
 
 }
 

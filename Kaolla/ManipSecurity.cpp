@@ -3,8 +3,6 @@
 #include "Define_Manip_Securite.h"
 
 
-using namespace std;
-
 
 bool PressionTropHaute; //SecuriteHautePressionManuelle()
 bool TemperatureElevee; //SecuriteTemperatureManuelle

@@ -8,7 +8,7 @@
 
 // --------- Initialisation and destruction (kind of) -------
 void InitialisationManip();
-void InitialisationManip2();
+void InitializeObjects();
 void DeleteManip();
 
 
@@ -24,6 +24,7 @@ CString GetDonneesExperience();
 
 // --------- Thread start functions --------------
 
+void ManualAction(LPVOID pParam);
 void LancementThreads(LPVOID pParam);
 void ArretThreads(LPVOID pParam);
 void MiseSousVideAmpoule(LPVOID pParam);
@@ -32,6 +33,8 @@ void ChangementBouteille(LPVOID pParam);
 
 // --------- Threads ----------------------
 
+
+UINT ThreadManualAction(LPVOID pParam);
 UINT LancerThreadProc(LPVOID pParam);
 UINT ArretThreadProc(LPVOID pParam);
 UINT ThreadMenuMiseSousVideAmpoule(LPVOID pParam);

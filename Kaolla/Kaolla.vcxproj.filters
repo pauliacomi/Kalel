@@ -327,6 +327,9 @@
     <ClInclude Include="MFCMessageHandler.h">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
+    <ClInclude Include="ManualActionParam.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Mesure.cpp">
@@ -589,6 +592,9 @@
     </ClCompile>
     <ClCompile Include="KaollaViewButtonsValves.cpp">
       <Filter>Source Files\Kaolla</Filter>
+    </ClCompile>
+    <ClCompile Include="ManualActionParam.cpp">
+      <Filter>Source Files\Utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

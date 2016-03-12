@@ -37,7 +37,7 @@ public:
 	int m_nPortInstrument2;
 	int m_nPortInstrument3;
 
-	BOOL m_bInstrument1KeithleyVoie1;
+	BOOL m_bInstrument1KeithleyVoie1;			// Used to be BOOL
 	BOOL m_bInstrument1KeithleyVoie2;
 	BOOL m_bInstrument2KeithleyVoie1;
 	BOOL m_bInstrument2KeithleyVoie2;

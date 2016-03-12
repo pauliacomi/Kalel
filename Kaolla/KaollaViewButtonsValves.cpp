@@ -10,6 +10,8 @@
 
 #include "threads.h"
 
+#include "ManualActionParam.h"		// The class that has the parameters inside
+#include "Define_Instrument.h"		// Definitions for instruments
 
 
 
@@ -92,25 +94,28 @@ void CKaollaView::Ouverture(int i)
 	// Block the button
 	GetDlgItem(idc_ouvrir[i-1])->EnableWindow(FALSE);
 
-	// Create the message string
-	CString message;
+	ManualActionParam * openAction = new ManualActionParam(GetSafeHwnd(), INSTRUMENT_VALVE, i, true);
+	ManualAction(openAction);
 
-	// Signal the threading that the valve is to be opened
-	if (DemandeOuvertureVanne(i))
-	{
-		message.Format(TEXT_OPENED);
-		MarquerTemoin(i, message);
+	//// Create the message string
+	//CString message;
 
-		// Make the corresponding "close" button of valve i available
-		GetDlgItem(idc_fermer[i-1])->EnableWindow(TRUE);
-	}
-	else
-	{
-		// Give an error in the text box
-		message.Format(ERROR_OPENVALVE,i);
-		AffichageMessages(message);
-		GetDlgItem(idc_ouvrir[i-1])->EnableWindow(TRUE);
-	}
+	//// Signal the threading that the valve is to be opened
+	//if (DemandeOuvertureVanne(i))
+	//{
+	//	message.Format(TEXT_OPENED);
+	//	MarquerTemoin(i, message);
+
+	//	// Make the corresponding "close" button of valve i available
+	//	GetDlgItem(idc_fermer[i-1])->EnableWindow(TRUE);
+	//}
+	//else
+	//{
+	//	// Give an error in the text box
+	//	message.Format(ERROR_OPENVALVE,i);
+	//	AffichageMessages(message);
+	//	GetDlgItem(idc_ouvrir[i-1])->EnableWindow(TRUE);
+	//}
 }
 
 // Function to open a valve from an "close" type button, takes the valve number as argument
