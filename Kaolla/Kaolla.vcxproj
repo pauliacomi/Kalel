@@ -204,6 +204,7 @@
     <ClInclude Include="CMoyennesDoses.h" />
     <ClInclude Include="ConnectionMesure.h" />
     <ClInclude Include="Connection_port.h" />
+    <ClInclude Include="DefinePostMessages.h" />
     <ClInclude Include="FluxConverter.h" />
     <ClInclude Include="CPetitesDoses.h" />
     <ClInclude Include="Define.h" />

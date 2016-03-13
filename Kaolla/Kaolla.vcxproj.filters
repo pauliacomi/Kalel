@@ -333,6 +333,9 @@
     <ClInclude Include="ListOfInstrumentButtons.h">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
+    <ClInclude Include="DefinePostMessages.h">
+      <Filter>Header Files\Define</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Mesure.cpp">

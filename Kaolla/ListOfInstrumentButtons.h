@@ -1,4 +1,4 @@
-// This is a small class which is used to keep a list of all the intruments which can be accessed
+// This is a small class which is used to return all the UI data regarding buttons
 
 #pragma once
 #ifndef LISTOFINTRUMENTBUTTONS_H
@@ -8,12 +8,24 @@ class ListOfInstrumentButtons
 {
 
 public:
-	ListOfInstrumentButtons();
+	ListOfInstrumentButtons(int instrumentType, int instrumentNumber, bool shouldBeActivated);
 	~ListOfInstrumentButtons();
 
+private:
+	int cButtonID;
+	int cOppositeButtonID;
+	int cTextboxID;
+	CString tempTextboxMessage;
+	CString textboxMessage;
+	CString errorMessage;;
+
 public:
-	int GetButtonID(int instrumentType, int instrumentNumber, bool shouldBeActivated);
-	int GetTextboxID(int instrumentType, int instrumentNumber);
+	int GetButtonID();
+	int GetOppositeButtonID();
+	int GetTextboxID();
+	CString GetTextboxMessage();
+	CString GetTempTextboxMessage();
+	CString GetErrorMessage();
 };
 
 #endif // !LISTOFINTRUMENTS_H

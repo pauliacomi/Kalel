@@ -246,23 +246,7 @@ public:
 	bool ActiverPompe();
 	bool DesactiverPompe();
 	bool FermerLesValvesEtLaPompe();
-	/*
-	bool MettreEnRouteLaPompe();
-	bool ArreterLaPompe();
-	*/
 	bool ToutFermer();
-
-	void SignalerOuvertureVanne(int num_vanne);
-	void SignalerFermetureVanne(int num_vanne);
-	void SignalerFermetureDeToutesLesVannes();
-
-	void SignalerActivationEV1();
-	void SignalerDesactivationEV1();
-	void SignalerActivationEV2();
-	void SignalerDesactivationEV2();
-	void SignalerActivationPompe();
-	void SignalerDesactivationPompe();
-	void SignalerDesactivationValvesEtPompe();
 
 	bool EstOuvert_Vanne(int num_vanne);
 	bool EstFerme_Vanne(int num_vanne);

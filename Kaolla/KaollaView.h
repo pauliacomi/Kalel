@@ -6,25 +6,10 @@
 
 #include "afxwin.h"
 #include <afxmt.h> // CEvent
-#include <list>	// For the linked list
+
+#include "DefinePostMessages.h"
 
 #include "Parametres.h"
-
-// Define windows message for threads
-#define WM_THREADAFFICHAGE			WM_USER + 6
-#define WM_THREADFINISHEDREG		WM_USER + 7
-#define WM_THREADFINISHED2			WM_USER + 8
-#define WM_UPDATEBUTTONS			WM_USER + 100
-
-// Table of ID's of buttons which are for opening and closing, don't ask why they're here
-const int idc_ouvrir[] = { IDC_OUVRIR1,IDC_OUVRIR2,IDC_OUVRIR3,IDC_OUVRIR4,
-IDC_OUVRIR5,IDC_OUVRIR6,IDC_OUVRIR7,IDC_OUVRIR8 };
-
-const int idc_fermer[] = { IDC_FERMER1,IDC_FERMER2,IDC_FERMER3,IDC_FERMER4,
-IDC_FERMER5,IDC_FERMER6,IDC_FERMER7,IDC_FERMER8 };
-
-const int idc_temoin[] = { IDC_TEMOIN_VANNE1,IDC_TEMOIN_VANNE2,IDC_TEMOIN_VANNE3,IDC_TEMOIN_VANNE4,
-IDC_TEMOIN_VANNE5,IDC_TEMOIN_VANNE6,IDC_TEMOIN_VANNE7,IDC_TEMOIN_VANNE8 };
 
 
 
@@ -37,6 +22,7 @@ public:
 	CKaollaView* m_mainView;
 
 	CEdit pEditMessages;
+	CEdit pEditMesures;
 	CString m_StrEditMessages;
 	CString m_StrCalo;
 	CString m_StrBassePression;
@@ -47,7 +33,6 @@ public:
 	CString m_StrTemps;
 	CButton m_ButtonLancer;
 	CButton m_ButtonArreter;
-	CEdit pEditMesures;
 	CString m_StrEditMesures;
 
 	// these seem to be useless
@@ -180,9 +165,6 @@ public:
 	afx_msg void OnBnClickedDesactiverEV2();
 	afx_msg void OnBnClickedActiverPompe();
 	afx_msg void OnBnClickedDesactiverPompe();
-
-	void MarquerTousLesTemoinsFermes();
-	void MarquerValvesEtPompeDesactivees();
 };
 
 

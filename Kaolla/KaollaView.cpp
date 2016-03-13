@@ -19,13 +19,6 @@
 
 CKaollaApp *pApp;
 
-//Pour donner la date exacte
-const char * NomJourSemaine[] = { "Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi" };
-
-const char * NomMois[] = { "janvier", "fevrier", "mars", "avril", "mai","juin",
-						"juillet", "aout", "septembre", "octobre", "novembre", "decembre" };
-
-
 // CKaollaView
 
 IMPLEMENT_DYNCREATE(CKaollaView, CFormView)
@@ -166,10 +159,14 @@ void CKaollaView::OnInitialUpdate()
 
 	// Deactivate the buttons that should not be available
 	GetDlgItem(IDC_ARRETER)->EnableWindow(FALSE);
-	for (int i = 1; i <= 8; i++)
-	{
-		GetDlgItem(idc_fermer[i - 1])->EnableWindow(FALSE);
-	}
+	GetDlgItem(IDC_FERMER1)->EnableWindow(FALSE);
+	GetDlgItem(IDC_FERMER2)->EnableWindow(FALSE);
+	GetDlgItem(IDC_FERMER3)->EnableWindow(FALSE);
+	GetDlgItem(IDC_FERMER4)->EnableWindow(FALSE);
+	GetDlgItem(IDC_FERMER5)->EnableWindow(FALSE);
+	GetDlgItem(IDC_FERMER6)->EnableWindow(FALSE);
+	GetDlgItem(IDC_FERMER7)->EnableWindow(FALSE);
+	GetDlgItem(IDC_FERMER8)->EnableWindow(FALSE);
 	GetDlgItem(IDC_DESACTIVER_EV1)->EnableWindow(FALSE);
 	GetDlgItem(IDC_DESACTIVER_EV2)->EnableWindow(FALSE);
 	GetDlgItem(IDC_DESACTIVER_POMPE)->EnableWindow(FALSE);
