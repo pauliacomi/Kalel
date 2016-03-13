@@ -52,17 +52,6 @@ void ProchaineDoseThreads();
 void ProchaineEtapeThreads();
 void RepriseThreads();
 
-// --------- Direct instrument manipulation ----------------
-
-bool DemandeOuvertureVanne(int num_vanne);
-bool DemandeFermetureVanne(int num_vanne);
-bool DemandeActivationEV1();
-bool DemandeDesactivationEV1();
-bool DemandeActivationEV2();
-bool DemandeDesactivationEV2();
-bool DemandeActivationPompe();
-bool DemandeDesactivationPompe();
-
 // --------- End ------------
 
 #endif

@@ -153,7 +153,7 @@ void ChangementBouteille(LPVOID pParam)
 
 /// -----------------Threads------------------
 
-UINT ThreadManualAction(LPVOID pParam)
+UINT ThreadManualAction(LPVOID pParam)													//return manualManip.EstOuvert_Vanne(num_vanne); <- these were returned as well in the same functions
 {
 	// Get custom parameter class, then check for validity
 	ManualActionParam *maParam = static_cast<ManualActionParam*>(pParam);
@@ -303,55 +303,5 @@ void RepriseThreads()
 {
 	manip.Reprise();
 }
-
-
-// --------- Direct instrument manipulation ----------------
-
-bool DemandeOuvertureVanne(int num_vanne)
-{
-	manualManip.Ouverture_Vanne(num_vanne);
-	return manualManip.EstOuvert_Vanne(num_vanne);
-}
-
-bool DemandeFermetureVanne(int num_vanne)
-{
-	manualManip.Fermeture_Vanne(num_vanne);
-	return manualManip.EstFerme_Vanne(num_vanne);
-}
-
-bool DemandeActivationEV1()
-{
-	return manualManip.EV1EstActive();
-}
-
-
-bool DemandeActivationEV2()
-{
-	return manualManip.EV2EstActive();
-}
-
-bool DemandeDesactivationEV1()
-{
-	return manualManip.EV1EstActive();
-}
-
-
-bool DemandeDesactivationEV2()
-{
-	return manualManip.EV2EstActive();
-}
-
-bool DemandeActivationPompe()
-{
-	manualManip.ActiverPompe();
-	return manualManip.PompeEstActive();
-}
-
-bool DemandeDesactivationPompe()
-{
-	manualManip.DesactiverPompe();
-	return manualManip.PompeEstDesactive();
-}
-
 
 // --------- End ------------
