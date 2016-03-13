@@ -52,47 +52,25 @@ bool CManip_Auto::OuvrirEtFermer_Vanne(int num_vanne)
 	return TRUE;
 }
 
-bool CManip_Auto::ActiverEV1()
+bool CManip_Auto::ActiverEV(int num_ev)
 {
-	if(!CManip::ActiverEV1())
+	if(!CManip::ActiverEV(num_ev))
 	{
 		// problem
 		return FALSE;
 	}
-	AffichageMessages(_T("Activation de la valve EV1\r\n"));
+	AffichageMessages(_T("Activation de la valve EVx\r\n")); 
 	return TRUE;
 }
 
-bool CManip_Auto::DesactiverEV1()
+bool CManip_Auto::DesactiverEV(int num_ev)
 {
-	if(!CManip::DesactiverEV1())
+	if(!CManip::DesactiverEV(num_ev))
 	{
 		// problem
 		return FALSE;
 	}
-	AffichageMessages(_T("Désactivation de la valve EV1\r\n"));
-	return TRUE;
-}
-
-bool CManip_Auto::ActiverEV2()
-{
-	if(!CManip::ActiverEV2())
-	{
-		// problem
-		return FALSE;
-	}
-	AffichageMessages(_T("Activation de la valve EV2\r\n"));
-	return TRUE;
-}
-
-bool CManip_Auto::DesactiverEV2()
-{
-	if(!CManip::DesactiverEV2())
-	{
-		// problem
-		return FALSE;
-	}
-	AffichageMessages(_T("Désactivation de la valve EV2\r\n"));
+	AffichageMessages(_T("Désactivation de la valve EVx\r\n"));
 	return TRUE;
 }
 
@@ -120,9 +98,9 @@ bool CManip_Auto::DesactiverPompe()
 
 bool CManip_Auto::MettreEnRouteLaPompe()
 {
-	if(!ActiverEV1())
+	if(!ActiverEV(1))
 		return FALSE;
-	if(!ActiverEV2())
+	if(!ActiverEV(2))
 		return FALSE;
 	if(!ActiverPompe())
 		return FALSE;
@@ -137,9 +115,9 @@ bool CManip_Auto::ArreterLaPompe()
 	if(!DesactiverPompe())
 		return FALSE;
 	Sleep(2000);
-	if(!DesactiverEV1())
+	if(!DesactiverEV(1))
 		return FALSE;
-	if(!DesactiverEV2())
+	if(!DesactiverEV(2))
 		return FALSE;
 	return TRUE;
 

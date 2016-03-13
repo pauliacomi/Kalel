@@ -241,10 +241,8 @@ public:
 	bool Ouverture_Vanne(int num_vanne);
 	bool Fermeture_Vanne(int num_vanne);
 	bool FermetureDeToutesLesVannes();
-	bool ActiverEV1();
-	bool DesactiverEV1();
-	bool ActiverEV2();
-	bool DesactiverEV2();
+	bool ActiverEV(int num_ev);
+	bool DesactiverEV(int num_ev);
 	bool ActiverPompe();
 	bool DesactiverPompe();
 	bool FermerLesValvesEtLaPompe();

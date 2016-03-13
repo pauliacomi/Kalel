@@ -231,6 +231,7 @@
     <ClInclude Include="Keithley.h" />
     <ClInclude Include="LiaisonRS232.h" />
     <ClInclude Include="ListeEtape.h" />
+    <ClInclude Include="ListOfInstrumentButtons.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="Manip.h" />
     <ClInclude Include="Manip_Auto.h" />
@@ -297,6 +298,7 @@
     <ClCompile Include="KaollaViewButtonsValves.cpp" />
     <ClCompile Include="Keithley.cpp" />
     <ClCompile Include="LiaisonRS232.cpp" />
+    <ClCompile Include="ListOfInstrumentButtons.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="Manip.cpp" />
     <ClCompile Include="ManipDisplay.cpp" />

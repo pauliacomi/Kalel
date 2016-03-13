@@ -83,30 +83,28 @@ bool CVannes::FermerToutesLesVannes()
 	return action_reussie;
 }
 
-
-
-bool CVannes::ActiverEV1()
+bool CVannes::ActiverEV(int num)
 {
 	int tentative = 0;
 	bool action_reussie;
 	do{
 		tentative++;
-		action_reussie = NI_USB_6008::OuvrirPort1(0);
+		action_reussie = NI_USB_6008::OuvrirPort1(0 + num);
 		Sleep(temps_ms);
 	}while(!action_reussie && tentative <= nb_essais);
 
 	return action_reussie;
 }
-	
-bool CVannes::ActiverEV2()
+
+bool CVannes::DesactiverEV(int num)
 {
 	int tentative = 0;
 	bool action_reussie;
-	do{
+	do {
 		tentative++;
-		action_reussie = NI_USB_6008::OuvrirPort1(1);
+		action_reussie = NI_USB_6008::FermerPort1(0 + num);
 		Sleep(temps_ms);
-	}while(!action_reussie && tentative <= nb_essais);
+	} while (!action_reussie && tentative <= nb_essais);
 
 	return action_reussie;
 }
@@ -118,32 +116,6 @@ bool CVannes::ActiverPompe()
 	do{
 		tentative++;
 		action_reussie = NI_USB_6008::OuvrirPort1(2);
-		Sleep(temps_ms);
-	}while(!action_reussie && tentative <= nb_essais);
-
-	return action_reussie;
-}
-
-bool CVannes::DesactiverEV1()
-{
-	int tentative = 0;
-	bool action_reussie;
-	do{
-		tentative++;
-		action_reussie = NI_USB_6008::FermerPort1(0);
-		Sleep(temps_ms);
-	}while(!action_reussie && tentative <= nb_essais);
-
-	return action_reussie;
-}
-
-bool CVannes::DesactiverEV2()
-{
-	int tentative = 0;
-	bool action_reussie;
-	do{
-		tentative++;
-		action_reussie = NI_USB_6008::FermerPort1(1);
 		Sleep(temps_ms);
 	}while(!action_reussie && tentative <= nb_essais);
 
@@ -175,7 +147,6 @@ bool CVannes::FermerLesValvesEtLaPompe()
 
 	return action_reussie;
 }
-
 
 bool CVannes::ToutFermer()
 {

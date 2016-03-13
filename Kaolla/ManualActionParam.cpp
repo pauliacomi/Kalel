@@ -6,12 +6,12 @@ ManualActionParam::ManualActionParam()
 {
 }
 
-ManualActionParam::ManualActionParam(HWND wHnd, int instrType, int instrNumber, bool instrIsActivated)
+ManualActionParam::ManualActionParam(HWND wHnd, int instrType, int instrNumber, bool shouldBeActive)
 {
 	windowHandle = wHnd;
 	instrumentType = instrType;
 	instrumentNumber = instrNumber;
-	instrumentIsActivated = instrIsActivated;
+	shouldBeActivated = shouldBeActive;
 }
 
 ManualActionParam::~ManualActionParam()

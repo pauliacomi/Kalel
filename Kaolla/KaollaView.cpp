@@ -33,7 +33,8 @@ IMPLEMENT_DYNCREATE(CKaollaView, CFormView)
 BEGIN_MESSAGE_MAP(CKaollaView, CFormView)
 	// Custom messages for threads
 	ON_MESSAGE(WM_THREADAFFICHAGE, &CKaollaView::OnThreadAffichage)
-	ON_MESSAGE(WM_THREADFINISHEDREG, &CKaollaView::OnThreadAffichage)
+	ON_MESSAGE(WM_THREADFINISHEDREG, &CKaollaView::OnRegularThreadFinished)
+	ON_MESSAGE(WM_UPDATEBUTTONS, &CKaollaView::OnThreadRequestButtonUpdate)
 
 	// Messages for UI buttons used for simple instrument manipulation
 	ON_BN_CLICKED(IDC_OUVRIR1, &CKaollaView::OnBnClickedOuvrir1)
@@ -299,7 +300,7 @@ void CKaollaView::OnChangementBouteille()
 
 // Thread callback commands
 
-LRESULT CKaollaView::OnRegularThreadFinished(WPARAM wParam, LPARAM) {
+LRESULT CKaollaView::OnRegularThreadFinished(WPARAM, LPARAM) {
 
 	GetDocument()->experiment_running = FALSE;
 	DebloqueMenu();

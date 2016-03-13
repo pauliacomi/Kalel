@@ -10,393 +10,161 @@
 
 #include "threads.h"
 
-#include "ManualActionParam.h"		// The class that has the parameters inside
-#include "Define_Instrument.h"		// Definitions for instruments
+#include "ManualActionParam.h"			// The class that has the parameters inside
+#include "Define_Instrument.h"			// Definitions for instruments
+#include "ListOfInstrumentButtons.h"	// The class containing a list of the instruments' buttons ID's
+
+
+// Single function to ask for thread start of manual controls
+
+void CKaollaView::AskThreadForManualCommand(int instrumentType, int instrumentNumber, bool shouldBeActivated) {
+
+	// Create a new list object
+	ListOfInstrumentButtons list;
+
+	// Block the required button
+	GetDlgItem(list.GetButtonID(instrumentType, instrumentNumber, shouldBeActivated))->EnableWindow(FALSE);
+
+	// Show that the action has started
+	CString message;
+	if (shouldBeActivated)
+		message.Format(TEXT_OPENING);
+	else
+		message.Format(TEXT_CLOSING);
+	SetDlgItemText(list.GetTextboxID(instrumentType, instrumentNumber), message);
+
+	// Create the storage object and then pass it to the threading function
+	ManualActionParam * maParam = new ManualActionParam(GetSafeHwnd(), instrumentType, instrumentNumber, shouldBeActivated);
+	ManualAction(maParam);
+}
+
+// Single function to update UI when receiving the command that the thread posted before finishing
+
+LRESULT CKaollaView::OnThreadRequestButtonUpdate(WPARAM wParam, LPARAM lParam) {
+
+	// Cast the parameters object
+	const ManualActionParam *maParam = reinterpret_cast<ManualActionParam*>(wParam);
+
+	// Create a new list object
+	ListOfInstrumentButtons list;
+
+	CString message;
+
+	if (lParam) {
+		// Disable required button
+		GetDlgItem(list.GetButtonID(maParam->instrumentType, maParam->instrumentNumber, maParam->shouldBeActivated))->EnableWindow(FALSE);
+
+		// Enable required button
+		GetDlgItem(list.GetButtonID(maParam->instrumentType, maParam->instrumentNumber, !maParam->shouldBeActivated))->EnableWindow(TRUE);
+
+		// Write message in the textbox
+		if (maParam->shouldBeActivated)
+			message.Format(TEXT_OPENED);
+		else
+			message.Format(TEXT_CLOSED);
+		SetDlgItemText(list.GetTextboxID(maParam->instrumentType, maParam->instrumentNumber), message);
+	}
+	else // need to work on this error
+	{
+		switch (maParam->instrumentType)
+		{
+		case INSTRUMENT_VALVE:
+			message.Format(ERROR_CLOSEVALVE, maParam->instrumentNumber);
+		case INSTRUMENT_EV:
+			message.Format(ERROR_OPENEV1, maParam->instrumentNumber);
+		case INSTRUMENT_PUMP:
+			message.Format(ERROR_CLOSEVALVE, maParam->instrumentNumber);
+		default:
+			break;
+		}
+		AffichageMessages(message);
+	}
+
+	delete maParam;
+	return 0;
+}
 
 
 
-// Clicking on "open" type buttons
+//-------------------- Individual functions for buttons ------------------
+
+
+// Clicking on valve "open" type buttons
 void CKaollaView::OnBnClickedOuvrir1()
-{	Ouverture(1);	}
+{	AskThreadForManualCommand(INSTRUMENT_VALVE,1,true);	}
 
 void CKaollaView::OnBnClickedOuvrir2()
-{	Ouverture(2);	}
+{	AskThreadForManualCommand(INSTRUMENT_VALVE,2,true);	}
 
 void CKaollaView::OnBnClickedOuvrir3()
-{	Ouverture(3);	}
+{	AskThreadForManualCommand(INSTRUMENT_VALVE,3,true);	}
 
 void CKaollaView::OnBnClickedOuvrir4()
-{	Ouverture(4);	}
+{	AskThreadForManualCommand(INSTRUMENT_VALVE,4,true);	}
 
 void CKaollaView::OnBnClickedOuvrir5()
-{	Ouverture(5);	}
+{	AskThreadForManualCommand(INSTRUMENT_VALVE,5,true);	}
 
 void CKaollaView::OnBnClickedOuvrir6()
-{	Ouverture(6);	}
+{	AskThreadForManualCommand(INSTRUMENT_VALVE,6,true);	}
 
 void CKaollaView::OnBnClickedOuvrir7()
-{	Ouverture(7);	}
+{	AskThreadForManualCommand(INSTRUMENT_VALVE,7,true);	}
 
 void CKaollaView::OnBnClickedOuvrir8()
-{	Ouverture(8);	}
+{	AskThreadForManualCommand(INSTRUMENT_VALVE,8,true);	}
 
 
-// Clicking on "close" type buttons
+// Clicking on valve "close" type buttons
 void CKaollaView::OnBnClickedFermer1()
-{	Fermeture(1);	}
+{	AskThreadForManualCommand(INSTRUMENT_VALVE, 1, false);	}
 
 void CKaollaView::OnBnClickedFermer2()
-{	Fermeture(2);	}
+{	AskThreadForManualCommand(INSTRUMENT_VALVE, 2, false);	}
 
 void CKaollaView::OnBnClickedFermer3()
-{	Fermeture(3);	}
+{	AskThreadForManualCommand(INSTRUMENT_VALVE, 3, false);	}
 
 void CKaollaView::OnBnClickedFermer4()
-{	Fermeture(4);	}
+{	AskThreadForManualCommand(INSTRUMENT_VALVE, 4, false);	}
 
 void CKaollaView::OnBnClickedFermer5()
-{	Fermeture(5);	}
+{	AskThreadForManualCommand(INSTRUMENT_VALVE, 5, false);	}
 
 void CKaollaView::OnBnClickedFermer6()
-{	Fermeture(6);	}
+{	AskThreadForManualCommand(INSTRUMENT_VALVE, 6, false);	}
 
 void CKaollaView::OnBnClickedFermer7()
-{	Fermeture(7);	}
+{	AskThreadForManualCommand(INSTRUMENT_VALVE, 7, false);	}
 
 void CKaollaView::OnBnClickedFermer8()
-{	Fermeture(8);	}
+{	AskThreadForManualCommand(INSTRUMENT_VALVE, 8, false);	}
 
 
 // The other buttons
 void CKaollaView::OnBnClickedActiverEV1()
-{	ActivationEV1();	}
-
-void CKaollaView::OnBnClickedActiverEV2()
-{	ActivationEV2();	}
-
-void CKaollaView::OnBnClickedActiverPompe()
-{	ActivationPompe();	}
+{	AskThreadForManualCommand(INSTRUMENT_EV, 1, true);	}
 
 void CKaollaView::OnBnClickedDesactiverEV1()
-{	DesactivationEV1();	}
+{	AskThreadForManualCommand(INSTRUMENT_EV, 1, false);	}
+
+void CKaollaView::OnBnClickedActiverEV2()
+{	AskThreadForManualCommand(INSTRUMENT_EV, 2, true);;	}
 
 void CKaollaView::OnBnClickedDesactiverEV2()
-{	DesactivationEV2();	}
+{	AskThreadForManualCommand(INSTRUMENT_EV, 2, false);	}
+
+void CKaollaView::OnBnClickedActiverPompe()
+{	AskThreadForManualCommand(INSTRUMENT_PUMP, 1, true);;	}
 
 void CKaollaView::OnBnClickedDesactiverPompe()
-{	DesactivationPompe();	}
+{	AskThreadForManualCommand(INSTRUMENT_PUMP, 1, false);	}
 
 
 
-// Function to open a valve from an "open" type button, takes the valve number as argument
-void CKaollaView::Ouverture(int i)
-{
-	// Block the button
-	GetDlgItem(idc_ouvrir[i-1])->EnableWindow(FALSE);
-
-	ManualActionParam * openAction = new ManualActionParam(GetSafeHwnd(), INSTRUMENT_VALVE, i, true);
-	ManualAction(openAction);
-
-	//// Create the message string
-	//CString message;
-
-	//// Signal the threading that the valve is to be opened
-	//if (DemandeOuvertureVanne(i))
-	//{
-	//	message.Format(TEXT_OPENED);
-	//	MarquerTemoin(i, message);
-
-	//	// Make the corresponding "close" button of valve i available
-	//	GetDlgItem(idc_fermer[i-1])->EnableWindow(TRUE);
-	//}
-	//else
-	//{
-	//	// Give an error in the text box
-	//	message.Format(ERROR_OPENVALVE,i);
-	//	AffichageMessages(message);
-	//	GetDlgItem(idc_ouvrir[i-1])->EnableWindow(TRUE);
-	//}
-}
-
-// Function to open a valve from an "close" type button, takes the valve number as argument
-void CKaollaView::Fermeture(int i)
-{
-	// Block the button
-	GetDlgItem(idc_fermer[i-1])->EnableWindow(FALSE);
-
-	// Create the message string
-	CString message;
-
-	// Signal the threading that the valve is to be closed
-	if (DemandeFermetureVanne(i))
-	{
-		message.Format(TEXT_CLOSED);
-		MarquerTemoin(i, message);
-
-		// Make the corresponding "open" button of valve i available
-		GetDlgItem(idc_ouvrir[i-1])->EnableWindow(TRUE);
-	}
-	else
-	{
-		// Give an error in the text box
-		message.Format(ERROR_CLOSEVALVE,i);
-		AffichageMessages(message);
-		GetDlgItem(idc_fermer[i-1])->EnableWindow(TRUE);
-	}
-}
-
-void CKaollaView::ActivationEV1()
-{
-	// Block the button
-	GetDlgItem(IDC_ACTIVER_EV1)->EnableWindow(FALSE);
-
-	// Create the message string
-	CString message;
-
-	// Signal the threading that the valve is to be opened
-	if (DemandeActivationEV1())
-	{
-		message.Format(TEXT_ACTIVATED);
-		MarquerEV1(message);
-
-		// Make the corresponding "close" button of valve i available
-		GetDlgItem(IDC_DESACTIVER_EV1)->EnableWindow(TRUE);
-	}
-	else
-	{
-		// Give an error in the text box
-		message.Format(ERROR_OPENEV1);
-		AffichageMessages(message);
-		GetDlgItem(IDC_ACTIVER_EV1)->EnableWindow(TRUE);
-	}
-}
-
-void CKaollaView::DesactivationEV1()
-{
-	// Block the button
-	GetDlgItem(IDC_DESACTIVER_EV1)->EnableWindow(FALSE);
-
-	// Create the message string
-	CString message;
-
-	// Signal the threading that the valve is to be opened
-	if (DemandeDesactivationEV1())
-	{
-		message.Format(TEXT_DEACTIVATED);
-		MarquerEV1(message);
-
-		// Make the corresponding "open" button of Evalve 1 available
-		GetDlgItem(IDC_ACTIVER_EV1)->EnableWindow(TRUE);
-	}
-	else
-	{
-		// Give an error in the text box
-		message.Format(ERROR_CLOSEEV1);
-		AffichageMessages(message);
-		GetDlgItem(IDC_DESACTIVER_EV1)->EnableWindow(TRUE);
-	}
-}
 
 
-void CKaollaView::ActivationEV2()
-{
-	// Block the button
-	GetDlgItem(IDC_ACTIVER_EV2)->EnableWindow(FALSE);
-
-	// Create the message string
-	CString message;
-
-	if (DemandeActivationEV2())
-	{
-		message.Format(TEXT_ACTIVATED);
-		MarquerEV2(message);
-
-		// Make the corresponding "closed" button of Evalve 2 available
-		GetDlgItem(IDC_DESACTIVER_EV2)->EnableWindow(TRUE);
-	}
-	else
-	{
-		// Give an error in the text box
-		message.Format(ERROR_OPENEV2);
-		AffichageMessages(message);
-		GetDlgItem(IDC_ACTIVER_EV2)->EnableWindow(TRUE);
-	}
-}
-
-void CKaollaView::DesactivationEV2()
-{
-	// Block the button
-	GetDlgItem(IDC_DESACTIVER_EV2)->EnableWindow(FALSE);
-	
-	// Create the message string
-	CString message;
-
-	if (DemandeDesactivationEV2())
-	{
-		message.Format(TEXT_DEACTIVATED);
-		MarquerEV2(message);
-
-		// Make the corresponding "open" button of valve 2 available
-		GetDlgItem(IDC_ACTIVER_EV2)->EnableWindow(TRUE);
-	}
-	else
-	{
-		// Give an error in the text box
-		message.Format(ERROR_CLOSEEV2);
-		AffichageMessages(message);
-		GetDlgItem(IDC_DESACTIVER_EV2)->EnableWindow(TRUE);
-	}
-}
-
-
-void CKaollaView::ActivationPompe()
-{
-	// Block the button
-	GetDlgItem(IDC_ACTIVER_POMPE)->EnableWindow(FALSE);
-
-	// Create the message string
-	CString message;
-
-	if (DemandeActivationPompe())
-	{
-		message.Format(TEXT_ACTIVATED);
-		MarquerPompe(message);
-
-		// Make the corresponding "deactivate" button of the pump available
-		GetDlgItem(IDC_DESACTIVER_POMPE)->EnableWindow(TRUE);
-	}
-	else
-	{
-		// Give an error in the text box
-		message.Format(ERROR_ACTIVATEPUMP);
-		AffichageMessages(message);
-		GetDlgItem(IDC_ACTIVER_POMPE)->EnableWindow(TRUE);
-	}
-}
-
-void CKaollaView::DesactivationPompe()
-{
-	// Block the button
-	GetDlgItem(IDC_DESACTIVER_POMPE)->EnableWindow(FALSE);
-
-	// Create the message string
-	CString message;
-
-	if (DemandeDesactivationPompe())
-	{
-		message.Format(TEXT_DEACTIVATED);
-		MarquerPompe(message);
-
-		// Make the corresponding "activate" button of the pump available
-		GetDlgItem(IDC_ACTIVER_POMPE)->EnableWindow(TRUE);
-	}
-	else
-	{
-		// Give an error in the text box
-		message.Format(ERROR_DEACTIVATEPUMP);
-		AffichageMessages(message);
-		GetDlgItem(IDC_DESACTIVER_POMPE)->EnableWindow(TRUE);
-	}
-}
-
-
-// Mark all the valves as open or closed
-void CKaollaView::MarquerTemoin(int num_vanne, CString message)
-{
-	switch(num_vanne)
-	{
-		case 1:
-			m_StrTemoinVanne1 = message;
-			SetDlgItemText(IDC_TEMOIN_VANNE1,m_StrTemoinVanne1);
-			break;
-		case 2:
-			m_StrTemoinVanne2 = message;
-			SetDlgItemText(IDC_TEMOIN_VANNE2,m_StrTemoinVanne2);
-			break;
-		case 3:
-			m_StrTemoinVanne3 = message;
-			SetDlgItemText(IDC_TEMOIN_VANNE3,m_StrTemoinVanne3);
-			break;
-		case 4:
-			m_StrTemoinVanne4 = message;
-			SetDlgItemText(IDC_TEMOIN_VANNE4,m_StrTemoinVanne4);
-			break;
-		case 5:
-			m_StrTemoinVanne5 = message;
-			SetDlgItemText(IDC_TEMOIN_VANNE5,m_StrTemoinVanne5);
-			break;
-		case 6:
-			m_StrTemoinVanne6 = message;
-			SetDlgItemText(IDC_TEMOIN_VANNE6,m_StrTemoinVanne6);
-			break;
-		case 7:
-			m_StrTemoinVanne7 = message;
-			SetDlgItemText(IDC_TEMOIN_VANNE7,m_StrTemoinVanne7);
-			break;
-		case 8:
-			m_StrTemoinVanne8 = message;
-			SetDlgItemText(IDC_TEMOIN_VANNE8,m_StrTemoinVanne8);
-			break;
-		default:
-			CString messageDialog;
-			messageDialog.Format(ERROR_PROBLEMVALVES);
-			AffichageMessages(messageDialog);
-			break;
-	}
-}
-
-void CKaollaView::MarquerTousLesTemoinsFermes()
-{
-	// Message for the text boxes
-	CString message;
-	message.Format(TEXT_CLOSED);
-
-	m_StrTemoinVanne1 = message;
-	SetDlgItemText(IDC_TEMOIN_VANNE1,m_StrTemoinVanne1);
-	m_StrTemoinVanne2 = message;
-	SetDlgItemText(IDC_TEMOIN_VANNE2,m_StrTemoinVanne2);
-	m_StrTemoinVanne3 = message;
-	SetDlgItemText(IDC_TEMOIN_VANNE3,m_StrTemoinVanne3);
-	m_StrTemoinVanne4 = message;
-	SetDlgItemText(IDC_TEMOIN_VANNE4,m_StrTemoinVanne4);
-	m_StrTemoinVanne5 = message;
-	SetDlgItemText(IDC_TEMOIN_VANNE5,m_StrTemoinVanne5);
-	m_StrTemoinVanne6 = message;
-	SetDlgItemText(IDC_TEMOIN_VANNE6,m_StrTemoinVanne6);
-	m_StrTemoinVanne7 = message;
-	SetDlgItemText(IDC_TEMOIN_VANNE7,m_StrTemoinVanne7);
-	m_StrTemoinVanne8 = message;
-	SetDlgItemText(IDC_TEMOIN_VANNE8,m_StrTemoinVanne8);
-
-	for(int i=1;i<=8;i++)
-	{
-		GetDlgItem(idc_fermer[i-1])->EnableWindow(FALSE);
-		GetDlgItem(idc_ouvrir[i-1])->EnableWindow(TRUE);
-	}
-
-	// Message for the main dialog
-	CString messageDialog;
-	messageDialog.Format(TEXT_ALLCLOSED);
-	AffichageMessages(messageDialog);
-}
-
-void CKaollaView::MarquerEV1(CString message)
-{
-	m_StrTemoinEV1 = message;
-	SetDlgItemText(IDC_TEMOIN_EV1,m_StrTemoinEV1);
-}
-
-void CKaollaView::MarquerEV2(CString message)
-{
-	m_StrTemoinEV2 = message;
-	SetDlgItemText(IDC_TEMOIN_EV2,m_StrTemoinEV2);
-}
-
-void CKaollaView::MarquerPompe(CString message)
-{
-	m_StrTemoinPompe = message;
-	SetDlgItemText(IDC_TEMOIN_POMPE,m_StrTemoinPompe);
-}
+//////////////// care about these
 
 void CKaollaView::MarquerValvesEtPompeDesactivees()
 {
@@ -420,3 +188,37 @@ void CKaollaView::MarquerValvesEtPompeDesactivees()
 	GetDlgItem(IDC_ACTIVER_POMPE)->EnableWindow(TRUE);
 }
 
+void CKaollaView::MarquerTousLesTemoinsFermes()
+{
+	// Message for the text boxes
+	CString message;
+	message.Format(TEXT_CLOSED);
+
+	m_StrTemoinVanne1 = message;
+	SetDlgItemText(IDC_TEMOIN_VANNE1, m_StrTemoinVanne1);
+	m_StrTemoinVanne2 = message;
+	SetDlgItemText(IDC_TEMOIN_VANNE2, m_StrTemoinVanne2);
+	m_StrTemoinVanne3 = message;
+	SetDlgItemText(IDC_TEMOIN_VANNE3, m_StrTemoinVanne3);
+	m_StrTemoinVanne4 = message;
+	SetDlgItemText(IDC_TEMOIN_VANNE4, m_StrTemoinVanne4);
+	m_StrTemoinVanne5 = message;
+	SetDlgItemText(IDC_TEMOIN_VANNE5, m_StrTemoinVanne5);
+	m_StrTemoinVanne6 = message;
+	SetDlgItemText(IDC_TEMOIN_VANNE6, m_StrTemoinVanne6);
+	m_StrTemoinVanne7 = message;
+	SetDlgItemText(IDC_TEMOIN_VANNE7, m_StrTemoinVanne7);
+	m_StrTemoinVanne8 = message;
+	SetDlgItemText(IDC_TEMOIN_VANNE8, m_StrTemoinVanne8);
+
+	for (int i = 1; i <= 8; i++)
+	{
+		GetDlgItem(idc_fermer[i - 1])->EnableWindow(FALSE);
+		GetDlgItem(idc_ouvrir[i - 1])->EnableWindow(TRUE);
+	}
+
+	// Message for the main dialog
+	CString messageDialog;
+	messageDialog.Format(TEXT_ALLCLOSED);
+	AffichageMessages(messageDialog);
+}

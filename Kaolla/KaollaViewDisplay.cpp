@@ -69,7 +69,7 @@ void CKaollaView::RajoutAffichageEtape(CString rajout)
 
 // ------------ Threads --------------
 
-LRESULT CKaollaView::OnThreadAffichage(WPARAM wParam, LPARAM lParam)
+LRESULT CKaollaView::OnThreadAffichage(WPARAM, LPARAM)
 {	
 	// On affiche les résultats
 	SetDlgItemText(IDC_CALO,m_StrCalo);

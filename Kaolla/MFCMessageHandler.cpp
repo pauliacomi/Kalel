@@ -13,7 +13,7 @@ MFCMessageHandler::~MFCMessageHandler()
 
 BOOL MFCMessageHandler::ResetDocumentGraph(LPVOID pParam)
 {
-	// Get vie handler and check for validity
+	// Get view handler and check for validity
 	const HWND hViewFrame = reinterpret_cast<HWND>(pParam);
 	ASSERT(hViewFrame != NULL);
 

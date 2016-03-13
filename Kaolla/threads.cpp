@@ -155,19 +155,39 @@ void ChangementBouteille(LPVOID pParam)
 
 UINT ThreadManualAction(LPVOID pParam)
 {
-	// Get window handler and check for validity
+	// Get custom parameter class, then check for validity
 	ManualActionParam *maParam = static_cast<ManualActionParam*>(pParam);
 	ASSERT(maParam != NULL);
+	bool actionSuccessful = false;
 
 	// Launch required functionality
 	switch (maParam->instrumentType)
 	{
 	case INSTRUMENT_VALVE:
-		manualManip.Ouverture_Vanne(maParam->instrumentNumber);
+		if(maParam->shouldBeActivated)
+			actionSuccessful = manualManip.Ouverture_Vanne(maParam->instrumentNumber);
+		else
+			actionSuccessful = manualManip.Fermeture_Vanne(maParam->instrumentNumber);
+	case INSTRUMENT_EV:
+		if (maParam->shouldBeActivated)
+			actionSuccessful = manualManip.ActiverEV(maParam->instrumentNumber);
+		else
+			actionSuccessful = manualManip.DesactiverEV(maParam->instrumentNumber);
+	case INSTRUMENT_PUMP:
+		if (maParam->shouldBeActivated)
+			actionSuccessful = manualManip.ActiverPompe();
+		else
+			actionSuccessful = manualManip.DesactiverPompe();
 	default:
 		break;
 	}
 
+	// Ask for the app to show the change
+	::PostMessage(maParam->windowHandle, WM_UPDATEBUTTONS, (WPARAM)maParam, actionSuccessful);
+
+	// Debug success
+	if (actionSuccessful == false)
+		return 404;
 	return 0;
 }
 
@@ -301,26 +321,24 @@ bool DemandeFermetureVanne(int num_vanne)
 
 bool DemandeActivationEV1()
 {
-	manualManip.ActiverEV1();
 	return manualManip.EV1EstActive();
+}
+
+
+bool DemandeActivationEV2()
+{
+	return manualManip.EV2EstActive();
 }
 
 bool DemandeDesactivationEV1()
 {
-	manualManip.DesactiverEV1();
-	return manualManip.EV1EstDesactive();
+	return manualManip.EV1EstActive();
 }
 
-bool DemandeActivationEV2()
-{
-	manualManip.ActiverEV2();
-	return manualManip.EV2EstActive();
-}
 
 bool DemandeDesactivationEV2()
 {
-	manualManip.DesactiverEV2();
-	return manualManip.EV2EstDesactive();
+	return manualManip.EV2EstActive();
 }
 
 bool DemandeActivationPompe()

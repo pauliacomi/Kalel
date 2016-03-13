@@ -30,11 +30,9 @@ public:
 	bool Ouvrir(int num);
 	bool Fermer(int num);
 	bool FermerToutesLesVannes();
-	bool ActiverEV1();
-	bool ActiverEV2();
+	bool ActiverEV(int num);
 	bool ActiverPompe();
-	bool DesactiverEV1();
-	bool DesactiverEV2();
+	bool DesactiverEV(int num);
 	bool DesactiverPompe();
 	bool FermerLesValvesEtLaPompe();
 	bool ToutFermer();

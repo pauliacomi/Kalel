@@ -6,6 +6,7 @@
 
 #include "afxwin.h"
 #include <afxmt.h> // CEvent
+#include <list>	// For the linked list
 
 #include "Parametres.h"
 
@@ -13,6 +14,7 @@
 #define WM_THREADAFFICHAGE			WM_USER + 6
 #define WM_THREADFINISHEDREG		WM_USER + 7
 #define WM_THREADFINISHED2			WM_USER + 8
+#define WM_UPDATEBUTTONS			WM_USER + 100
 
 // Table of ID's of buttons which are for opening and closing, don't ask why they're here
 const int idc_ouvrir[] = { IDC_OUVRIR1,IDC_OUVRIR2,IDC_OUVRIR3,IDC_OUVRIR4,
@@ -151,6 +153,9 @@ public:
 
 	//-------- KaollaView_Boutons_Vannes
 
+	void AskThreadForManualCommand(int instrument, int i, bool askToActivate);
+	LRESULT OnThreadRequestButtonUpdate(WPARAM wParam, LPARAM lParam);
+
 	afx_msg void OnBnClickedOuvrir1();
 	afx_msg void OnBnClickedOuvrir2();
 	afx_msg void OnBnClickedOuvrir3();
@@ -176,21 +181,7 @@ public:
 	afx_msg void OnBnClickedActiverPompe();
 	afx_msg void OnBnClickedDesactiverPompe();
 
-	void Ouverture(int i);
-	void Fermeture(int i);
-
-	void ActivationEV1();
-	void DesactivationEV1();
-	void ActivationEV2();
-	void DesactivationEV2();
-	void ActivationPompe();
-	void DesactivationPompe();
-
-	void MarquerTemoin(int num_vanne, CString message);
 	void MarquerTousLesTemoinsFermes();
-	void MarquerEV1(CString message);
-	void MarquerEV2(CString message);
-	void MarquerPompe(CString message);
 	void MarquerValvesEtPompeDesactivees();
 };
 

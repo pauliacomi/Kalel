@@ -17,7 +17,7 @@ public:
 	HWND windowHandle;
 	int instrumentType;
 	int instrumentNumber;
-	bool instrumentIsActivated;
+	bool shouldBeActivated;
 };
 
 
