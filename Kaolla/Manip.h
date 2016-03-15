@@ -105,14 +105,12 @@ public:
 	void SetVannes(CVannes* pVannes);
 	void SetTemperature(CTemperature* pTemperature);
 
-	void InitialisationDocument();
 	void InitialisationInstruments();
 	void InitialisationManip();
 
 	void SetManipType(int experimentType);
-	
-	void DonneesGrapheEtape();
 	void ReinitialisationManuelle();
+
 protected:
 	void MiseAJour();
 

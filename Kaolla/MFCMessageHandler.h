@@ -6,9 +6,8 @@
 #ifndef MFCMESSAGEHANDLER_H
 #define MFCMESSAGEHANDLER_H
 
-
 // Message definitions
-#define WM_RESETDOCUMENTGRAPH		WM_USER + 7
+#include "DefinePostMessages.h"
 
 
 class MFCMessageHandler

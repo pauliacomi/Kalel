@@ -9,11 +9,13 @@
 #include "Kaolla.h"
 #endif
 
+
 #include "KaollaDoc.h"
 
 #include <propkey.h>
 
 #include "Mesure.h"
+#include "DefinePostMessages.h"		// For message definitions
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -33,9 +35,7 @@ CKaollaDoc::CKaollaDoc()
 {
 	TitreGrapheEtape = _T("");
 	experiment_running = FALSE;
-	TempsMinimum = -1;
-	MesureMinimum = -1;
-	NumeroEtape = -1;
+	InitializeGraph(NULL, NULL);
 }
 
 CKaollaDoc::~CKaollaDoc()
@@ -144,14 +144,25 @@ CKaollaDoc * CKaollaDoc::GetDocument()
 	return (CKaollaDoc *)pFrame->GetActiveDocument();
 }
 
-// CKaollaDoc commands
+//-------------------- CKaollaDoc custom functions
 
+LRESULT CKaollaDoc::InitializeGraph(WPARAM wParam, LPARAM lParam)
+{
+	TempsMinimum = -1;
+	MesureMinimum = -1;
+	NumeroEtape = -1;
+
+	return 0;
+}
+
+// Add a measurement to the graph -- Regular
 void CKaollaDoc::RajoutMesure(CMesure NouvellesMesures)
 {
 	int lastMeasurement = m_TableauMesures.GetUpperBound();
 	m_TableauMesures[lastMeasurement] = NouvellesMesures;
 }
 
+// Add a measurement to the graph -- Overload 1
 void CKaollaDoc::RajoutMesure(int num, double tps, double calorimeter, double lowPressure, double highPressure, double tempCalo, double tempCage, double tempPiece)
 {
 	// Set the maximum and minimums
@@ -189,6 +200,7 @@ void CKaollaDoc::RajoutMesure(int num, double tps, double calorimeter, double lo
 
 }
 
+// Add a measurement to the graph -- Overload 2
 void CKaollaDoc::RajoutMesure(double tps, double calorimeter, double lowPressure, double highPressure, double tempCalo, double tempCage, double tempPiece)
 {
 	int lastMeasurement;
@@ -212,6 +224,7 @@ void CKaollaDoc::RajoutMesure(double tps, double calorimeter, double lowPressure
 #endif // _DEBUG
 }
 
+// ?
 CArrayMesure* CKaollaDoc::GetTableauMesures(void)
 {
 	return &m_TableauMesures;

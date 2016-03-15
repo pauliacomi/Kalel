@@ -1,27 +1,17 @@
-// Parametres_experience.cpp : fichier d'implémentation
+// Parametres_experience.cpp
 //
 
 #include "stdafx.h"
-#include "Kaolla.h"
 #include "Parametres_experience.h"
-
-//#include "ParserXML.h"
-
-#include "SpinBtnCtrl.h"
-
-#include <sstream>
-
-#include "time.h"
-
-using namespace std;
-
-
+#include "MessageBoxTexts.h"			// For the required strings
 
 /////////////////////////////////////////////////////////////////////////////////
 //
 // CProprietes_experience
 
 IMPLEMENT_DYNAMIC(CProprietes_experience, CPropertySheet)
+
+// Constructors and destrutor
 
 CProprietes_experience::CProprietes_experience(UINT nIDCaption, CWnd* pParentWnd, UINT iSelectPage)
 	:CPropertySheet(nIDCaption, pParentWnd, iSelectPage)
@@ -35,14 +25,14 @@ CProprietes_experience::CProprietes_experience(LPCTSTR pszCaption, CWnd* pParent
 	for(int i=0;i<nb_onglet;i++)
 		OngletDispo[i]=FALSE;
 
-	
-	//AddPage(&m_general); 
 	RajouterGeneral();
 
-	//DemandeExperience = EXPERIMENT_TYPE_MANUAL;
-	//TypeExperience = EXPERIMENT_TYPE_MANUAL;
 	TypeFenetre = EXPERIMENT_TYPE_MANUAL;
-	SetTitle("Paramètres de l'expérience manuelle");
+
+	// Set the name of the title
+	CString title;
+	title.Format(TITLE_MANUALPARAM);
+	SetTitle(title);
 }
 
 CProprietes_experience::~CProprietes_experience()
@@ -59,13 +49,14 @@ END_MESSAGE_MAP()
 
 void CProprietes_experience::SetProprietesManuelle(void)
 {
-
-	//if(TypeExperience != EXPERIMENT_TYPE_MANUAL)
 	if(TypeFenetre != EXPERIMENT_TYPE_MANUAL)
 	{
-		//TypeExperience = EXPERIMENT_TYPE_MANUAL;
 		TypeFenetre = EXPERIMENT_TYPE_MANUAL;
-		SetTitle("Paramètres de l'expérience manuelle");
+		
+		// Set the name of the title
+		CString title;
+		title.Format(TITLE_MANUALPARAM);
+		SetTitle(title);
 
 		ReinitialisationManuelle();
 
@@ -81,12 +72,14 @@ void CProprietes_experience::SetProprietesManuelle(void)
 
 void CProprietes_experience::SetProprietesAuto(void)
 {
-	//if(TypeExperience != EXPERIMENT_TYPE_AUTO)
 	if(TypeFenetre != EXPERIMENT_TYPE_AUTO)
 	{
-		//TypeExperience = EXPERIMENT_TYPE_AUTO;
+		// Set the name of the title
+		CString title;
+		title.Format(TITLE_AUTOPARAM);
+		SetTitle(title);
+
 		TypeFenetre = EXPERIMENT_TYPE_AUTO;
-		SetTitle("Paramètres de l'expérience automatique");	
 
 		EnleverTousLesOnglets();
 
@@ -99,9 +92,7 @@ void CProprietes_experience::SetProprietesAuto(void)
 		RajouterMoyennesDoses();
 		RajouterGrandesDoses();
 		RajouterDesorption();
-
 	}
-	
 }
 
 
@@ -170,7 +161,7 @@ void CProprietes_experience::ReinitialisationManuelle()
 
 
 
-/*--*/
+/*- Functions to add or to remove a particular tab depending on whether it is avaiable or not. Very ugly.-*/
 
 
 void CProprietes_experience::RajouterGeneral()
@@ -282,7 +273,6 @@ void CProprietes_experience::EnleverMoyennesDoses()
 }
 
 
-
 /*--*/
 
 void CProprietes_experience::RajouterGrandesDoses()
@@ -327,6 +317,7 @@ void CProprietes_experience::EnleverDesorption()
 
 /*--*/
 
+// Add all the tabs to the Property Sheet
 void CProprietes_experience::EnleverTousLesOnglets()
 {
 		EnleverGeneral();

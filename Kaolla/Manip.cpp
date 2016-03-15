@@ -1,6 +1,8 @@
 #include "StdAfx.h"
 #include "Manip.h"
 
+#include "MFCMessageHandler.h"		// Will handle all communication from base functionality to MFC
+
 
 // ------------ Constructor and Destructor
 
@@ -58,29 +60,18 @@ void CManip::SetTemperature(CTemperature* pTemperature)
 
 
 
-// -------------- Initialisation functions
+// -------------- Initialisation functions --------------------
 
+// Complete initialisation (Graph reset + Instrument definition)
 void CManip::InitialisationManip()
 {
 	InitialisationInstruments();
 	OuvrirInstruments();
-	InitialisationDocument();
-}
-
-// This resets the graph values whenever a new experiment is initialized 
-// it might be better through a command as it uses direct write to the document
-void CManip::InitialisationDocument()
-{
-	m_Doc = m_KaollaView->GetDocument();
-	m_Doc->TempsMinimum = -1;
-	m_Doc->MesureMinimum = -1;
-	m_Doc->NumeroEtape = -1;
 }
 
 
-// The instruments which the calorimeter uses are initialized here when the function is called
+// The instruments which the calorimeter uses are defined here
 // It looks good, might need some error detection. Canditate for new class.
-
 void CManip::InitialisationInstruments()
 {
 	int index_instr=0;

@@ -1,5 +1,8 @@
 #pragma once
+#ifndef PARAMETRES_EXPERIENCE_H
+#define PARAMETRES_EXPERIENCE_H
 
+/// Property pages include
 #include "CGeneral.h"
 #include "CDivers.h"
 #include "CPetitesDoses.h"
@@ -7,7 +10,6 @@
 #include "CGrandesDoses.h"
 #include "CDesorption.h"
 #include "CAdsorptionContinue.h"
-
 
 #define onglet_general				0
 #define onglet_divers				1
@@ -27,6 +29,7 @@ class CProprietes_experience : public CPropertySheet
 {
 	DECLARE_DYNAMIC(CProprietes_experience)
 public:
+	// PropertyPages declared 
 	CGeneral m_general;
 	CDivers m_divers;
 	CPetitesDoses m_petitesdoses;
@@ -34,6 +37,7 @@ public:
 	CGrandesDoses m_grandesdoses;
 	CDesorption m_desorption;
 	CAdsorptionContinue m_adsorptioncontinue;
+
 	//int TypeExperience;
 	int TypeFenetre;
 	//int DemandeExperience;
@@ -48,7 +52,6 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	//virtual BOOL OnInitDialog();
-
 
 	void SetProprietesManuelle(void);
 	void SetProprietesAuto(void);
@@ -75,3 +78,5 @@ public:
 	void EnleverTousLesOnglets();
 };
 
+
+#endif // !PARAMETRES_EXPERIENCE_H

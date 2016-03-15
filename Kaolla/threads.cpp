@@ -31,19 +31,12 @@ CWinThread * m_threadChangeBottle;
 
 // Main class that deals with the automatic functionality
 CManip_AutoGaz manip;
-CManip manualManip;
 
 
 // --------- Initialisation and destruction (kind of) THIS NEEDS TO BE PERFORMED LOCALLY WITHIN THREADS FOR EACH manip OBJECT -------
 
 void InitialisationManip()
 {
-	//pVanne = new CVannes();
-	//pTemperature = new CTemperature(GetPortTemperatures());
-
-	//pKaollaView = CKaollaView::GetView();
-	//pKaollaDoc = CKaollaDoc::GetDocument();
-
 	//manip = CManip_AutoGaz();
 	//manip.SetKaollaView(pKaollaView);
 	//manip.SetVannes(pVanne);
@@ -53,20 +46,13 @@ void InitialisationManip()
 	//manip.FermerLesValvesEtLaPompe();
 }
 
+// Initialisation for persistent variables
 void InitializeObjects()
 {
 	pVanne = new CVannes();
 	pTemperature = new CTemperature(GetPortTemperatures());
-
 	pKaollaView = CKaollaView::GetView();
 	pKaollaDoc = CKaollaDoc::GetDocument();
-
-	manualManip.SetKaollaView(pKaollaView);
-	manualManip.SetVannes(pVanne);
-	manualManip.SetTemperature(pTemperature);
-
-	manualManip.FermetureDeToutesLesVannes();
-	manualManip.FermerLesValvesEtLaPompe();
 }
 
 void DeleteManip()
@@ -159,6 +145,12 @@ UINT ThreadManualAction(LPVOID pParam)													//return manualManip.EstOuver
 	ManualActionParam *maParam = static_cast<ManualActionParam*>(pParam);
 	ASSERT(maParam != NULL);
 	bool actionSuccessful = false;
+
+	// Create the temporary class to deal with the command
+	CManip manualManip;
+	manualManip.SetKaollaView(pKaollaView);
+	manualManip.SetVannes(pVanne);
+	manualManip.SetTemperature(pTemperature);
 
 	// Launch required functionality
 	switch (maParam->instrumentType)

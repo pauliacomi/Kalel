@@ -25,9 +25,11 @@ IMPLEMENT_DYNCREATE(CKaollaView, CFormView)
 
 BEGIN_MESSAGE_MAP(CKaollaView, CFormView)
 	// Custom messages for threads
-	ON_MESSAGE(WM_THREADAFFICHAGE, &CKaollaView::OnThreadAffichage)
-	ON_MESSAGE(WM_THREADFINISHEDREG, &CKaollaView::OnRegularThreadFinished)
-	ON_MESSAGE(WM_UPDATEBUTTONS, &CKaollaView::OnThreadRequestButtonUpdate)
+	ON_MESSAGE(WM_THREADAFFICHAGE, &CKaollaView::OnThreadAffichage)					// Calls to display
+	ON_MESSAGE(WM_THREADFINISHEDREG, &CKaollaView::OnRegularThreadFinished)			// Calls when manual functionality ends
+	ON_MESSAGE(WM_UPDATEBUTTONS, &CKaollaView::OnThreadRequestButtonUpdate)			// Calls to update a specific button pair and associated display
+	//ON_MESSAGE(WM_RESETDOCUMENTGRAPH, &CKaollaView::OnThreadRequestButtonUpdate)	//
+	//ON_MESSAGE(WM_RESETDOCUMENTGRAPH, &CKaollaDoc::InitializeGraph)
 
 	// Messages for UI buttons used for simple instrument manipulation
 	ON_BN_CLICKED(IDC_OUVRIR1, &CKaollaView::OnBnClickedOuvrir1)

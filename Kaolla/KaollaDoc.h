@@ -52,6 +52,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 public:
+	LRESULT InitializeGraph(WPARAM wParam, LPARAM lParam);
 	void RajoutMesure(CMesure NouvellesMesures);
 	void RajoutMesure(int num, double tps, double calorimetre, double bpression, double hpression, double temp_calo, double temp_cage, double temp_piece);
 	void RajoutMesure(double tps, double calorimetre, double bpression, double hpression, double temp_calo, double temp_cage, double temp_piece);

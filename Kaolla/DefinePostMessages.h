@@ -8,6 +8,9 @@
 #define WM_THREADFINISHED2			WM_USER + 8
 #define WM_UPDATEBUTTONS			WM_USER + 100
 
+// Calls to Document
+#define WM_RESETDOCUMENTGRAPH		WM_USER + 9
+
 #endif // !DEFINEPOSTMESSAGES_H
 
 
