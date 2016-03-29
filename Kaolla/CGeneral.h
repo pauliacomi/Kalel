@@ -14,7 +14,7 @@
 
 #include "Parametres.h"
 
-#include "Define.h"
+#include "ResourceOnglets.h"
 
 
 ////////////////////////////////////////////////////////////////////////
@@ -47,8 +47,6 @@ public:
 	float m_fMasseEchantillon;
 	std::string Date_Experience;
 	virtual BOOL OnInitDialog();
-	//afx_msg void OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
-	//afx_msg void OnEnChangeMasseEchantillon();
 	CSpinBtnCtrl pSpinMasseEchantillon;
 
 	int m_nTemperatureExperience;

@@ -19,12 +19,6 @@
     <Filter Include="Source Files\Utils">
       <UniqueIdentifier>{9e00bc48-72f1-4a77-8a51-b338ab37a64c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Kaolla">
-      <UniqueIdentifier>{8c1edfac-6d83-46a2-88eb-dbcc4558b9ac}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Kaolla">
-      <UniqueIdentifier>{4f4953aa-6c4a-4d1a-b771-52a7a7f87598}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Manip">
       <UniqueIdentifier>{c6bd3aa8-2811-4fff-920c-8278501ba5b4}</UniqueIdentifier>
     </Filter>
@@ -46,9 +40,6 @@
     <Filter Include="Header Files\RS232">
       <UniqueIdentifier>{45a6839d-1ded-4ae2-af12-69bfce5d5a95}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Define">
-      <UniqueIdentifier>{045cb8c3-8d56-42b2-9919-fb488764a331}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\XML">
       <UniqueIdentifier>{8ba33742-ab29-4bfd-a2ee-4e0d241affa6}</UniqueIdentifier>
     </Filter>
@@ -67,12 +58,6 @@
     <Filter Include="Source Files\Utils\MFC Utils">
       <UniqueIdentifier>{d9c78f29-e452-4ed4-830e-27746c3880f9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Dialogs">
-      <UniqueIdentifier>{6dcab2d7-bc04-40e8-b59a-8dd68d5f07e3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Dialogs">
-      <UniqueIdentifier>{2cad08cf-60a9-49ee-b00e-540950be69bb}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Manip\Manip">
       <UniqueIdentifier>{8a80b201-801f-4928-9dd0-e751e4c12c8d}</UniqueIdentifier>
     </Filter>
@@ -88,29 +73,44 @@
     <Filter Include="Source Files\Manip\Manip_AutoGaz\MSV">
       <UniqueIdentifier>{f37a788e-6f5a-480b-964a-205ef26bb2a8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Dialogs\Experimental Parameters">
-      <UniqueIdentifier>{0d2de8f3-e9b8-41a6-8110-e7f1365de972}</UniqueIdentifier>
+    <Filter Include="Header Files\GUI">
+      <UniqueIdentifier>{8c1edfac-6d83-46a2-88eb-dbcc4558b9ac}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Dialogs\Experimental Parameters\Base Data">
-      <UniqueIdentifier>{b56bfbc8-4c46-4ccc-a046-b5810373e574}</UniqueIdentifier>
+    <Filter Include="Source Files\GUI">
+      <UniqueIdentifier>{4f4953aa-6c4a-4d1a-b771-52a7a7f87598}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Dialogs\Experimental Parameters\Tabs">
-      <UniqueIdentifier>{d67e7c8e-39e0-49a9-8413-62147908061e}</UniqueIdentifier>
+    <Filter Include="Source Files\GUI\Dialogs">
+      <UniqueIdentifier>{6dcab2d7-bc04-40e8-b59a-8dd68d5f07e3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Dialogs\Experiment Parameters">
+    <Filter Include="Source Files\GUI\Dialogs\Experiment Parameters">
       <UniqueIdentifier>{0e8e0212-cbd1-445a-af00-cbec1019fcf3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Dialogs\Connection Port">
-      <UniqueIdentifier>{c60397cb-a9fb-48bf-8ba0-4007cf653a55}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Dialogs\Experiment Parameters\Tabs">
+    <Filter Include="Source Files\GUI\Dialogs\Experiment Parameters\Tabs">
       <UniqueIdentifier>{72b9ecbd-d296-43ad-899d-8e7aea0b8862}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Dialogs\Experiment Parameters\Base Data">
+    <Filter Include="Source Files\GUI\Dialogs\Experiment Parameters\Base Data">
       <UniqueIdentifier>{2becea59-6e89-4f33-ab11-05baf2ed04cb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Dialogs\Connection Port">
+    <Filter Include="Source Files\GUI\Dialogs\Connection Port">
+      <UniqueIdentifier>{c60397cb-a9fb-48bf-8ba0-4007cf653a55}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GUI\Dialogs">
+      <UniqueIdentifier>{2cad08cf-60a9-49ee-b00e-540950be69bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GUI\Dialogs\Experimental Parameters">
+      <UniqueIdentifier>{0d2de8f3-e9b8-41a6-8110-e7f1365de972}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GUI\Dialogs\Experimental Parameters\Base Data">
+      <UniqueIdentifier>{b56bfbc8-4c46-4ccc-a046-b5810373e574}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GUI\Dialogs\Experimental Parameters\Tabs">
+      <UniqueIdentifier>{d67e7c8e-39e0-49a9-8413-62147908061e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GUI\Dialogs\Connection Port">
       <UniqueIdentifier>{ee1b43fb-d5e8-4df2-a9dd-ae3f1c4db1fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Resources\Define">
+      <UniqueIdentifier>{045cb8c3-8d56-42b2-9919-fb488764a331}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -121,25 +121,25 @@
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
     <ClInclude Include="targetver.h">
-      <Filter>Header Files\Kaolla</Filter>
+      <Filter>Header Files\GUI</Filter>
     </ClInclude>
     <ClInclude Include="Kaolla.h">
-      <Filter>Header Files\Kaolla</Filter>
+      <Filter>Header Files\GUI</Filter>
     </ClInclude>
     <ClInclude Include="KaollaDoc.h">
-      <Filter>Header Files\Kaolla</Filter>
+      <Filter>Header Files\GUI</Filter>
     </ClInclude>
     <ClInclude Include="KaollaView.h">
-      <Filter>Header Files\Kaolla</Filter>
+      <Filter>Header Files\GUI</Filter>
     </ClInclude>
     <ClInclude Include="MainFrm.h">
-      <Filter>Header Files\Kaolla</Filter>
+      <Filter>Header Files\GUI</Filter>
     </ClInclude>
     <ClInclude Include="stdafx.h">
-      <Filter>Header Files\Kaolla</Filter>
+      <Filter>Header Files\GUI</Filter>
     </ClInclude>
     <ClInclude Include="GrapheView.h">
-      <Filter>Header Files\Kaolla</Filter>
+      <Filter>Header Files\GUI</Filter>
     </ClInclude>
     <ClInclude Include="Resource.h">
       <Filter>Header Files\Resources</Filter>
@@ -229,13 +229,10 @@
       <Filter>Header Files\Utils\MFC Utils</Filter>
     </ClInclude>
     <ClInclude Include="Define.h">
-      <Filter>Header Files\Define</Filter>
+      <Filter>Header Files\Resources\Define</Filter>
     </ClInclude>
     <ClInclude Include="Define_Instrument.h">
-      <Filter>Header Files\Define</Filter>
-    </ClInclude>
-    <ClInclude Include="threads.h">
-      <Filter>Header Files\Manip</Filter>
+      <Filter>Header Files\Resources\Define</Filter>
     </ClInclude>
     <ClInclude Include="Define_Manip_Auto_Probleme_Injection.h">
       <Filter>Header Files\Manip</Filter>
@@ -268,55 +265,55 @@
       <Filter>Header Files\Manip</Filter>
     </ClInclude>
     <ClInclude Include="Connection_port.h">
-      <Filter>Header Files\Dialogs\Connection Port</Filter>
+      <Filter>Header Files\GUI\Dialogs\Connection Port</Filter>
     </ClInclude>
     <ClInclude Include="Dialogue_TypeExperience.h">
-      <Filter>Header Files\Dialogs</Filter>
+      <Filter>Header Files\GUI\Dialogs</Filter>
     </ClInclude>
     <ClInclude Include="Donnees_Experience.h">
-      <Filter>Header Files\Dialogs</Filter>
+      <Filter>Header Files\GUI\Dialogs</Filter>
     </ClInclude>
     <ClInclude Include="Parametres_appareil.h">
-      <Filter>Header Files\Dialogs</Filter>
+      <Filter>Header Files\GUI\Dialogs</Filter>
     </ClInclude>
     <ClInclude Include="Parametres_experience.h">
-      <Filter>Header Files\Dialogs\Experimental Parameters</Filter>
+      <Filter>Header Files\GUI\Dialogs\Experimental Parameters</Filter>
     </ClInclude>
     <ClInclude Include="Dialogue_cellule.h">
-      <Filter>Header Files\Dialogs\Experimental Parameters\Base Data</Filter>
+      <Filter>Header Files\GUI\Dialogs\Experimental Parameters\Base Data</Filter>
     </ClInclude>
     <ClInclude Include="Dialogue_experimentateur.h">
-      <Filter>Header Files\Dialogs\Experimental Parameters\Base Data</Filter>
+      <Filter>Header Files\GUI\Dialogs\Experimental Parameters\Base Data</Filter>
     </ClInclude>
     <ClInclude Include="Dialogue_gaz.h">
-      <Filter>Header Files\Dialogs\Experimental Parameters\Base Data</Filter>
+      <Filter>Header Files\GUI\Dialogs\Experimental Parameters\Base Data</Filter>
     </ClInclude>
     <ClInclude Include="CDesorption.h">
-      <Filter>Header Files\Dialogs\Experimental Parameters\Tabs</Filter>
+      <Filter>Header Files\GUI\Dialogs\Experimental Parameters\Tabs</Filter>
     </ClInclude>
     <ClInclude Include="CDivers.h">
-      <Filter>Header Files\Dialogs\Experimental Parameters\Tabs</Filter>
+      <Filter>Header Files\GUI\Dialogs\Experimental Parameters\Tabs</Filter>
     </ClInclude>
     <ClInclude Include="CGeneral.h">
-      <Filter>Header Files\Dialogs\Experimental Parameters\Tabs</Filter>
+      <Filter>Header Files\GUI\Dialogs\Experimental Parameters\Tabs</Filter>
     </ClInclude>
     <ClInclude Include="CGrandesDoses.h">
-      <Filter>Header Files\Dialogs\Experimental Parameters\Tabs</Filter>
+      <Filter>Header Files\GUI\Dialogs\Experimental Parameters\Tabs</Filter>
     </ClInclude>
     <ClInclude Include="CMoyennesDoses.h">
-      <Filter>Header Files\Dialogs\Experimental Parameters\Tabs</Filter>
+      <Filter>Header Files\GUI\Dialogs\Experimental Parameters\Tabs</Filter>
     </ClInclude>
     <ClInclude Include="CPetitesDoses.h">
-      <Filter>Header Files\Dialogs\Experimental Parameters\Tabs</Filter>
+      <Filter>Header Files\GUI\Dialogs\Experimental Parameters\Tabs</Filter>
     </ClInclude>
     <ClInclude Include="CAdsorptionContinue.h">
-      <Filter>Header Files\Dialogs\Experimental Parameters\Tabs</Filter>
+      <Filter>Header Files\GUI\Dialogs\Experimental Parameters\Tabs</Filter>
     </ClInclude>
     <ClInclude Include="Define_Stages.h">
-      <Filter>Header Files\Define</Filter>
+      <Filter>Header Files\Resources\Define</Filter>
     </ClInclude>
     <ClInclude Include="Define_Experiment_Type.h">
-      <Filter>Header Files\Define</Filter>
+      <Filter>Header Files\Resources\Define</Filter>
     </ClInclude>
     <ClInclude Include="FluxConverter.h">
       <Filter>Header Files\Parameters</Filter>
@@ -334,7 +331,13 @@
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
     <ClInclude Include="DefinePostMessages.h">
-      <Filter>Header Files\Define</Filter>
+      <Filter>Header Files\Resources\Define</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadManager.h">
+      <Filter>Header Files\Manip</Filter>
+    </ClInclude>
+    <ClInclude Include="MainThread.h">
+      <Filter>Header Files\Manip</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -342,22 +345,22 @@
       <Filter>Source Files\Utils</Filter>
     </ClCompile>
     <ClCompile Include="Kaolla.cpp">
-      <Filter>Source Files\Kaolla</Filter>
+      <Filter>Source Files\GUI</Filter>
     </ClCompile>
     <ClCompile Include="KaollaDoc.cpp">
-      <Filter>Source Files\Kaolla</Filter>
+      <Filter>Source Files\GUI</Filter>
     </ClCompile>
     <ClCompile Include="KaollaView.cpp">
-      <Filter>Source Files\Kaolla</Filter>
+      <Filter>Source Files\GUI</Filter>
     </ClCompile>
     <ClCompile Include="MainFrm.cpp">
-      <Filter>Source Files\Kaolla</Filter>
+      <Filter>Source Files\GUI</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
-      <Filter>Source Files\Kaolla</Filter>
+      <Filter>Source Files\GUI</Filter>
     </ClCompile>
     <ClCompile Include="GrapheView.cpp">
-      <Filter>Source Files\Kaolla</Filter>
+      <Filter>Source Files\GUI</Filter>
     </ClCompile>
     <ClCompile Include="ParserXML.cpp">
       <Filter>Source Files\XML</Filter>
@@ -418,9 +421,6 @@
     </ClCompile>
     <ClCompile Include="XSBrowseFolder.cpp">
       <Filter>Source Files\Utils\MFC Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="threads.cpp">
-      <Filter>Source Files\Manip</Filter>
     </ClCompile>
     <ClCompile Include="Manip.cpp">
       <Filter>Source Files\Manip\Manip</Filter>
@@ -510,55 +510,55 @@
       <Filter>Source Files\Manip\Manip_AutoGaz\MSV</Filter>
     </ClCompile>
     <ClCompile Include="Dialogue_TypeExperience.cpp">
-      <Filter>Source Files\Dialogs</Filter>
+      <Filter>Source Files\GUI\Dialogs</Filter>
     </ClCompile>
     <ClCompile Include="Donnees_Experience.cpp">
-      <Filter>Source Files\Dialogs</Filter>
+      <Filter>Source Files\GUI\Dialogs</Filter>
     </ClCompile>
     <ClCompile Include="Parametres_appareil.cpp">
-      <Filter>Source Files\Dialogs</Filter>
+      <Filter>Source Files\GUI\Dialogs</Filter>
     </ClCompile>
     <ClCompile Include="Connection_port.cpp">
-      <Filter>Source Files\Dialogs\Connection Port</Filter>
+      <Filter>Source Files\GUI\Dialogs\Connection Port</Filter>
     </ClCompile>
     <ClCompile Include="Connection_port_fct.cpp">
-      <Filter>Source Files\Dialogs\Connection Port</Filter>
+      <Filter>Source Files\GUI\Dialogs\Connection Port</Filter>
     </ClCompile>
     <ClCompile Include="Connection_port_Verifications.cpp">
-      <Filter>Source Files\Dialogs\Connection Port</Filter>
+      <Filter>Source Files\GUI\Dialogs\Connection Port</Filter>
     </ClCompile>
     <ClCompile Include="CAdsorptionContinue.cpp">
-      <Filter>Source Files\Dialogs\Experiment Parameters\Tabs</Filter>
+      <Filter>Source Files\GUI\Dialogs\Experiment Parameters\Tabs</Filter>
     </ClCompile>
     <ClCompile Include="CDesorption.cpp">
-      <Filter>Source Files\Dialogs\Experiment Parameters\Tabs</Filter>
+      <Filter>Source Files\GUI\Dialogs\Experiment Parameters\Tabs</Filter>
     </ClCompile>
     <ClCompile Include="CDivers.cpp">
-      <Filter>Source Files\Dialogs\Experiment Parameters\Tabs</Filter>
+      <Filter>Source Files\GUI\Dialogs\Experiment Parameters\Tabs</Filter>
     </ClCompile>
     <ClCompile Include="CGeneral.cpp">
-      <Filter>Source Files\Dialogs\Experiment Parameters\Tabs</Filter>
+      <Filter>Source Files\GUI\Dialogs\Experiment Parameters\Tabs</Filter>
     </ClCompile>
     <ClCompile Include="CGrandesDoses.cpp">
-      <Filter>Source Files\Dialogs\Experiment Parameters\Tabs</Filter>
+      <Filter>Source Files\GUI\Dialogs\Experiment Parameters\Tabs</Filter>
     </ClCompile>
     <ClCompile Include="CMoyennesDoses.cpp">
-      <Filter>Source Files\Dialogs\Experiment Parameters\Tabs</Filter>
+      <Filter>Source Files\GUI\Dialogs\Experiment Parameters\Tabs</Filter>
     </ClCompile>
     <ClCompile Include="CPetitesDoses.cpp">
-      <Filter>Source Files\Dialogs\Experiment Parameters\Tabs</Filter>
+      <Filter>Source Files\GUI\Dialogs\Experiment Parameters\Tabs</Filter>
     </ClCompile>
     <ClCompile Include="Dialogue_cellule.cpp">
-      <Filter>Source Files\Dialogs\Experiment Parameters\Base Data</Filter>
+      <Filter>Source Files\GUI\Dialogs\Experiment Parameters\Base Data</Filter>
     </ClCompile>
     <ClCompile Include="Dialogue_gaz.cpp">
-      <Filter>Source Files\Dialogs\Experiment Parameters\Base Data</Filter>
+      <Filter>Source Files\GUI\Dialogs\Experiment Parameters\Base Data</Filter>
     </ClCompile>
     <ClCompile Include="Dialogue_experimentateur.cpp">
-      <Filter>Source Files\Dialogs\Experiment Parameters\Base Data</Filter>
+      <Filter>Source Files\GUI\Dialogs\Experiment Parameters\Base Data</Filter>
     </ClCompile>
     <ClCompile Include="Parametres_experience.cpp">
-      <Filter>Source Files\Dialogs\Experiment Parameters</Filter>
+      <Filter>Source Files\GUI\Dialogs\Experiment Parameters</Filter>
     </ClCompile>
     <ClCompile Include="FluxConverter.cpp">
       <Filter>Source Files\Parameters</Filter>
@@ -591,19 +591,25 @@
       <Filter>Source Files\Manip\Manip</Filter>
     </ClCompile>
     <ClCompile Include="KaollaViewDisplay.cpp">
-      <Filter>Source Files\Kaolla</Filter>
+      <Filter>Source Files\GUI</Filter>
     </ClCompile>
     <ClCompile Include="KaollaViewButtons.cpp">
-      <Filter>Source Files\Kaolla</Filter>
+      <Filter>Source Files\GUI</Filter>
     </ClCompile>
     <ClCompile Include="KaollaViewButtonsValves.cpp">
-      <Filter>Source Files\Kaolla</Filter>
+      <Filter>Source Files\GUI</Filter>
     </ClCompile>
     <ClCompile Include="ManualActionParam.cpp">
       <Filter>Source Files\Utils</Filter>
     </ClCompile>
     <ClCompile Include="ListOfInstrumentButtons.cpp">
       <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="ThreadManager.cpp">
+      <Filter>Source Files\Manip</Filter>
+    </ClCompile>
+    <ClCompile Include="MainThread.cpp">
+      <Filter>Source Files\Manip</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

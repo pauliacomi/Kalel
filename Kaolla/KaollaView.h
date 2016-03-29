@@ -10,6 +10,7 @@
 #include "DefinePostMessages.h"
 
 #include "Parametres.h"
+#include "ThreadManager.h" // The threading functionality
 
 
 
@@ -20,6 +21,7 @@ public:
 	// pointer to the main document
 	CKaollaDoc* m_mainDocument;
 	CKaollaView* m_mainView;
+
 
 	CEdit pEditMessages;
 	CEdit pEditMesures;
@@ -110,8 +112,11 @@ public:
 	// Thread callbacks
 	LRESULT OnRegularThreadFinished(WPARAM wParam, LPARAM);
 
+protected:
+
 	//-------- KaollaView_Affichage
 
+public:
 	void AffichageMessages(CString message);
 	void RajoutAffichageMessages(CString rajout);
 	void AffichageMesures(CString mesure);
@@ -122,10 +127,9 @@ public:
 	int MessageBoxConfirmation(CString message, UINT nType);
 
 	//-------- KaollaView_Boutons
-
+public:
 	afx_msg void OnBnClickedLancer();
 	afx_msg void OnBnClickedArreter();
-	void UnblockStopButton();
 	void Annuler();
 
 	afx_msg void OnBnClickedButtonParametresExperience();
@@ -137,7 +141,7 @@ public:
 	afx_msg void OnBnClickedReprise();
 
 	//-------- KaollaView_Boutons_Vannes
-
+public:
 	void AskThreadForManualCommand(int instrument, int i, bool askToActivate);
 	LRESULT OnThreadRequestButtonUpdate(WPARAM wParam, LPARAM lParam);
 

@@ -5,7 +5,7 @@
 using namespace std;
 
 
-void CManip_AutoGaz::InitialisationDialogueTypeExperience()
+void CManip_AutoGaz::InitialisationDialogueTypeExperience() // must remove
 {
 	DialogueTypeExperience = new CDialogue_TypeExperience();
 }

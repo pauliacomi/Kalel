@@ -19,7 +19,6 @@ void CManip_AutoGaz::LancementExperience(LPVOID pParam)
 {
 	if(DialogueTypeExperience->DoModal() == IDOK)
 	{
-		m_KaollaView->UnblockStopButton();
 
 		switch(DialogueTypeExperience->TypeExperience)
 		{

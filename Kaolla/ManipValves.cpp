@@ -1,7 +1,11 @@
+
+// This file contains Manip functions that are used to interface with the valves object, 
+// as well as functions which check whether a valve is opened or not
+
+
 #include "StdAfx.h"
 #include "Manip.h"
 #include "Define_Manip_Vannes.h"
-
 
 // Open a valve
 bool CManip::Ouverture_Vanne(int num_vanne)

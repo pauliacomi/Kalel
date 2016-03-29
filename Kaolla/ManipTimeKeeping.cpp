@@ -1,3 +1,8 @@
+
+// This file contains Manip functions that are used to make the system wait
+// The functions here also build the string that is returned to the main display - perhaps a good idea to move it to the GUI
+
+
 #include "StdAfx.h"
 #include "Manip.h"
 
@@ -15,7 +20,7 @@
 // Wait a number of minutes
 void CManip::AttenteMinutes(int nbminutes)
 {
-	AttenteSecondes(nbminutes*60);
+	AttenteSecondes(nbminutes * 60);
 }
 
 // Wait a number of seconds
@@ -45,13 +50,13 @@ void CManip::AttenteSecondes (int nbsecondes)
 		
 		RajoutAffichageMessages(message);
 		
-		Sleep(995);
+		Sleep(995); // why?
 		temps_effectue = chrono_attente.TempsActuel();
 	}
 	
 }
 
-CString CManip::MessageAttente(int nbsecondes)
+CString CManip::MessageAttente(int nbsecondes) // should build just a time object to be passed 
 {
 	CString result;
 	if (nbsecondes >= jour_sec)
@@ -129,7 +134,6 @@ CString CManip::MessageTemps(int duree)
 				tmp.Format(_T("%ds"),duree_restante);
 			else
 				tmp.Format(_T("%02ds"),duree_restante);
-			//duree_restante = duree_restante%minute_sec;
 			temps_attente += tmp;
 	}
 	return temps_attente;

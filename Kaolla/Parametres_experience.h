@@ -38,9 +38,7 @@ public:
 	CDesorption m_desorption;
 	CAdsorptionContinue m_adsorptioncontinue;
 
-	//int TypeExperience;
 	int TypeFenetre;
-	//int DemandeExperience;
 	bool OngletDispo[nb_onglet];
 
 public:

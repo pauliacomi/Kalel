@@ -8,7 +8,7 @@
 #include "KaollaDoc.h"
 #include "KaollaView.h"
 
-#include "threads.h"
+#include "ThreadManager.h"
 
 #include "ManualActionParam.h"			// The class that has the parameters inside
 #include "Define_Instrument.h"			// Definitions for instruments

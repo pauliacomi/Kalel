@@ -31,8 +31,8 @@ CGeneral::~CGeneral()
 
 void CGeneral::DoDataExchange(CDataExchange* pDX)
 {
-	TRACE("Entering CGeneral::DoDataExchange -- %d\n",
-		pDX->m_bSaveAndValidate);
+	//TRACE("Entering CGeneral::DoDataExchange -- %d\n",
+		//pDX->m_bSaveAndValidate);
 
 	CPropertyPage::DoDataExchange(pDX);
 
@@ -40,18 +40,16 @@ void CGeneral::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_NOM_CHEMIN, m_strChemin);
 	DDX_Text(pDX, IDC_NOM_ECHANTILLON, m_strNomEchantillon);
 	DDX_Text(pDX, IDC_MASSE_ECHANTILLON, m_fMasseEchantillon);
-	//DDV_MinMaxFloat(pDX, m_fMasseEchantillon, 0, 5);
+	DDX_Text(pDX, IDC_TEMPERATURE_EXPERIENCE, m_nTemperatureExperience);
+	DDX_Text(pDX, IDC_COMMENTAIRES, m_StrCommentaires);
+
 	DDX_Control(pDX, IDC_SPIN_MASSE_ECHANTILLON, pSpinMasseEchantillon);
 	DDX_Control(pDX, IDC_COMBO_GAZ, m_CBGaz);
 	DDX_CBIndex(pDX, IDC_COMBO_GAZ, m_nIndexGaz);
-	DDX_Text(pDX, IDC_TEMPERATURE_EXPERIENCE, m_nTemperatureExperience);
-	//DDV_MinMaxFloat(pDX, m_nTemperatureExperience, 20, 150);
 	DDX_Control(pDX, IDC_SPIN_TEMPERATURE_EXPERIENCE, pSpinTemperatureExperience);
 	DDX_Control(pDX, IDC_COMMENTAIRES, m_EditCommentaires);
-	DDX_Text(pDX, IDC_COMMENTAIRES, m_StrCommentaires);
 	DDX_Control(pDX, IDC_COMBO_EXPERIMENTATEUR, m_CBExperimentateur);
 	DDX_CBIndex(pDX, IDC_COMBO_EXPERIMENTATEUR, m_nIndexExperimentateur);
-	//DDX_Control(pDX, IDC_TEMPERATURE_EXPERIENCE, m_EditTemperatureExperience);
 }
 
 BOOL CGeneral::OnCommand(WPARAM wParam, LPARAM lParam)
@@ -104,14 +102,12 @@ BOOL CGeneral::OnInitDialog()
 	}
 
 
-	//pSpinMasseEchantillon.SetRange(0,5);
 	pSpinMasseEchantillon.SetRange(0,1000000);
 	pSpinMasseEchantillon.SetPos(1);
 	pSpinMasseEchantillon.SetInc(-0.0001);
 	pSpinMasseEchantillon.SetFormat("%1.4f");
 	pSpinMasseEchantillon.UpdateBuddy();
 
-	//pSpinTemperatureExperience.SetRange(20,150);
 	pSpinTemperatureExperience.SetRange(0,300);
 	pSpinTemperatureExperience.SetPos(30);
 	pSpinTemperatureExperience.SetInc(-1);
@@ -149,7 +145,6 @@ void CGeneral::Reinitialisation(void)
 	ActualiserDate();
 	m_strNomFichier = _T("Nouveau_fichier_") + StrDate;
 
-	//m_strChemin=_T("C:/Experiences calo");
 	m_strChemin=_T(GetCheminFichierGeneral().c_str());
 	m_strNomEchantillon=_T("Echantillon");
 	
@@ -179,33 +174,6 @@ void CGeneral::Reinitialisation(void)
 
 	Enregistrement_donnees_actuelles();
 
-	/*
-	donnees_actuelles.chemin = "";
-	donnees_actuelles.commentaires = "";
-	donnees_actuelles.date_experience = "";
-
-	//donnees_actuelles.experimentateur = "";
-	donnees_actuelles.experimentateur.nom = "";
-	donnees_actuelles.experimentateur.surnom = "";
-
-	donnees_actuelles.fichier = "";
-
-	//donnees_actuelles.gaz = "";
-	donnees_actuelles.gaz.nom = "";
-	donnees_actuelles.gaz.symbole = "";
-	donnees_actuelles.gaz.masse_moleculaire = 0;
-	donnees_actuelles.gaz.pression_critique = 0;
-	donnees_actuelles.gaz.temperature_critique = 0;
-	donnees_actuelles.gaz.temperature_ebullition = 0;
-
-	
-	donnees_actuelles.masse_echantillon = 1;
-	donnees_actuelles.nom_echantillon = "Echantillon";
-	
-	//donnees_actuelles.masse_echantillon = 0;
-	//donnees_actuelles.nom_echantillon = "";
-	donnees_actuelles.temperature_experience = 30;
-	*/
 }
 
 
@@ -230,7 +198,6 @@ void CGeneral::OnCbnSelchangeComboGaz()
 
 	UpdateData(FALSE);
 }
-
 
 
 void CGeneral::OnCbnSelchangeComboExperimentateur()
@@ -379,7 +346,7 @@ void CGeneral::OnBnClickedButtonGaz()
 
 void CGeneral::OnBnClickedParcourirDossier()
 {
-		// Create class
+	// Create class
 	CXSBrowseFolder BoiteDialogueParcourir;
 
 	// Use the new style

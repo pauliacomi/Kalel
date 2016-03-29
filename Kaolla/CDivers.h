@@ -8,8 +8,7 @@
 
 #include "Dialogue_cellule.h"
 
-
-#include "Define.h"
+#include "ResourceOnglets.h"
 
 /////////////////////////////////////////////////////////////////
 //

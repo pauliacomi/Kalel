@@ -4,11 +4,14 @@
 #include "Kaolla.h"
 #include "KaollaDoc.h"
 #include "KaollaView.h"
-#include "threads.h"
+#include "ThreadManager.h"
 
 #include "ManualActionParam.h"
 
 #include "Manip_AutoGaz.h"
+
+#include "MainThread.h" // Custom thread event
+
 
 // Pointers to the view and document
 CKaollaView* pKaollaView;
@@ -18,8 +21,8 @@ CKaollaDoc* pKaollaDoc;
 CVannes* pVanne;
 CTemperature* pTemperature;
 
-// Events for the automatic functionality
-// -
+
+HANDLE		m_hStartMainThreadEvent;					// Handle for giving the main thread the go-ahead
 
 // Threads
 CWinThread * m_threadManualAction;
@@ -33,35 +36,150 @@ CWinThread * m_threadChangeBottle;
 CManip_AutoGaz manip;
 
 
-// --------- Initialisation and destruction (kind of) THIS NEEDS TO BE PERFORMED LOCALLY WITHIN THREADS FOR EACH manip OBJECT -------
+// --------- Initialisation and destruction -------
 
-void InitialisationManip()
+ThreadManager::ThreadManager(LPVOID pParam)
+	: m_threadMainControlLoop(NULL)
+	, m_hShutdownEvent(::CreateEvent(NULL, TRUE, FALSE, NULL))
 {
-	//manip = CManip_AutoGaz();
-	//manip.SetKaollaView(pKaollaView);
-	//manip.SetVannes(pVanne);
-	//manip.SetTemperature(pTemperature);
-
-	//manip.FermetureDeToutesLesVannes();
-	//manip.FermerLesValvesEtLaPompe();
-}
-
-// Initialisation for persistent variables
-void InitializeObjects()
-{
+	// Create the required objects. Might be better to be done in the manip directly
 	pVanne = new CVannes();
 	pTemperature = new CTemperature(GetPortTemperatures());
-	pKaollaView = CKaollaView::GetView();
-	pKaollaDoc = CKaollaDoc::GetDocument();
+
+	// Instantiate the handle of the event for giving the thread a go-ahead
+	m_hStartMainThreadEvent = ::CreateEvent(NULL, TRUE, FALSE, NULL);
+
+	//Create the thread
+	CreateMainThread(pParam);
 }
 
-void DeleteManip()
+ThreadManager::~ThreadManager()
 {
+	// close all valves
 	pVanne->FermerToutesLesVannes();
+
+	// signal the thread to exit
+	ShutdownThread();
+	CloseHandle(m_hShutdownEvent);
 }
+
+
+// --------- Thread creation and destruction -------
+
+// A function that will create the main thread.
+// This should not run if the thread is running, consider adding a check for it.
+HRESULT ThreadManager::CreateMainThread(LPVOID pParam)
+{
+	HRESULT hr = S_OK;
+	
+	m_threadMainControlLoop = CreateThread(NULL, NULL, ThreadMainWorker, pParam, NULL, NULL);
+
+	return hr;
+}
+
+// ShutdownThread function will check if thread is running and then send it the shutdown command
+// If the thread does not quit in a short time it will be forcefully closed. Check if this is an error when using the function.
+HRESULT ThreadManager::ShutdownThread()
+{
+	HRESULT hr = S_OK;
+
+	// Close the worker thread
+	if (NULL != m_threadMainControlLoop)
+	{
+		// Signal the thread to exit
+		SetEvent(m_threadMainControlLoop);
+
+		// thread may be suspended, so resume before shutting down
+		ResumeThread(m_threadMainControlLoop);
+
+		// Wait for the thread to exit. If it doesn't shut down
+		// on its own, force it closed with Terminate thread
+		if (WAIT_TIMEOUT == WaitForSingleObject(m_threadMainControlLoop, 1000))
+		{
+			TerminateThread(m_threadMainControlLoop, -1000);
+			hr = S_FALSE;
+		}
+
+		// Close the handle and NULL it out
+		CloseHandle(m_threadMainControlLoop);
+		m_threadMainControlLoop = NULL;
+	}
+
+	// Reset the shutdown event
+	ResetEvent(m_hShutdownEvent);
+
+	return hr;
+}
+
+
+// --------- Thread functions -------
+
+DWORD WINAPI ThreadManager::ThreadMainWorker(LPVOID pParam) // please redo in MFC
+{
+	// Get custom parameter class, then check for validity
+	HWND maParam = static_cast<HWND>(pParam);
+	ASSERT(maParam != NULL);
+	bool actionSuccessful = false;
+
+	// Create the class to deal with the automatic functionality
+	CManip_AutoGaz manipAuto;
+	manipAuto.SetKaollaView(pKaollaView);
+	manipAuto.SetVannes(pVanne);
+	manipAuto.SetTemperature(pTemperature);
+
+	// Wait for the required event
+	WaitForSingleObject(m_hStartMainThreadEvent, INFINITE);
+
+	// Launch required functionality
+	
+
+	// Reset and end thread
+	return 0;
+}
+
+
+// ----------------------- END -----------------------
+
+
+
 
 
 // --------- Changing the instrument parameters -------
+
+void ThreadManager::ChangementDev(int dev_vanne, int dev_temp)
+{
+	pVanne->SetDevNI_USB_6008(dev_vanne);
+	pTemperature->SetDevNI_USB_9211A(dev_temp);
+}
+
+
+// --------- Functions to return experiment information -------
+
+int ThreadManager::GetEtapeEnCours()
+{
+	return manip.etape_en_cours;
+}
+
+
+CString ThreadManager::GetDonneesExperience()
+{
+	return manip.GetDonneesExperience();
+}
+
+
+
+////// below this line is the old implementation
+
+//void InitialisationManip()
+//{
+//	//manip = CManip_AutoGaz();
+//	//manip.SetKaollaView(pKaollaView);
+//	//manip.SetVannes(pVanne);
+//	//manip.SetTemperature(pTemperature);
+//
+//	//manip.FermetureDeToutesLesVannes();
+//	//manip.FermerLesValvesEtLaPompe();
+//}
 
 void ChangementDev(int dev_vanne, int dev_temp)
 {
@@ -82,7 +200,6 @@ CString GetDonneesExperience()
 {
 	return manip.GetDonneesExperience();
 }
-
 
 // --------- Thread start functions -------
 
@@ -171,6 +288,7 @@ UINT ThreadManualAction(LPVOID pParam)													//return manualManip.EstOuver
 		else
 			actionSuccessful = manualManip.DesactiverPompe();
 	default:
+		ASSERT(0); // Should never reach this
 		break;
 	}
 
@@ -190,7 +308,7 @@ UINT LancerThreadProc(LPVOID pParam)
 	ASSERT(hMainFrame != NULL);
 
 	// Launch required functionality
-	//manip.LancementExperience(pParam);
+	manip.LancementExperience(pParam);
 
 	return 0;
 }

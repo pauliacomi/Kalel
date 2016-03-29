@@ -8,23 +8,28 @@
 #include "KaollaDoc.h"
 #include "KaollaView.h"
 
-#include "threads.h"
+#include "ThreadManager.h"
+
+#include "Dialogue_TypeExperience.h"	// The dialog asking the user for the experiment type
+#include "Parametres_experience.h"		// The dialog asking the user to input the experiment parameters
 
 
 // When clicking on the Launch button
 void CKaollaView::OnBnClickedLancer()
 {
-	// the button is blocked
+	// the start button is blocked
 	GetDlgItem(IDC_LANCER)->EnableWindow(FALSE);
+	// the stop button is activated
+	GetDlgItem(IDC_ARRETER)->EnableWindow(TRUE);
 
+	// set one flag to true
 	m_mainDocument = CKaollaDoc::GetDocument();
 	m_mainDocument->experiment_running=TRUE;
-
+	
+	// set another flag to true
 	DebloqueMenu();
 
-
-	// Pour le graphe 'par étape' ainsi pour l'instant
-
+	// Reset the graph
 	GetDocument()->TempsMinimum = -1;
 	GetDocument()->MesureMinimum = -1;
 	GetDocument()->NumeroEtape = -1;
@@ -32,9 +37,32 @@ void CKaollaView::OnBnClickedLancer()
 	// Update the view (KaollaView)
 	GetDocument()->UpdateAllViews(this); 
 
-	// Launch the threads 
-	LancementThreads(GetSafeHwnd());
+	// Create the experiment type window
+	CDialogue_TypeExperience * dialogExperimentType = new CDialogue_TypeExperience();
+	if (dialogExperimentType->DoModal() == IDOK)
+	{
+		// Create the experiment parameter window
+		CProprietes_experience * dialogExperimentProperties = new CProprietes_experience(_T(""));
 
+		// Instantiate the correct type of dialog
+		switch (dialogExperimentType->TypeExperience)
+		{
+		case EXPERIMENT_TYPE_MANUAL:
+			dialogExperimentProperties->SetProprietesManuelle();
+			break;
+		case EXPERIMENT_TYPE_AUTO:
+			dialogExperimentProperties->SetProprietesAuto();
+			break;
+		default:
+			ASSERT(0);  // Should never be reached
+		}
+
+		if (dialogExperimentProperties->DoModal() == IDOK)
+		{
+			// Launch the threads 
+			LancementThreads(GetSafeHwnd());
+		}
+	}
 }
 
 // When clicking on the Stop button
@@ -50,12 +78,6 @@ void CKaollaView::OnBnClickedArreter()
 
 	// Stop the threads
 	ArretThreads(GetSafeHwnd());
-}
-
-// Unblock the stop button
-void CKaollaView::UnblockStopButton()
-{
-	GetDlgItem(IDC_ARRETER)->EnableWindow(TRUE);
 }
 
 // When the experiment is canceled

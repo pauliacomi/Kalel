@@ -11,7 +11,7 @@
 #include "KaollaDoc.h"
 #include "KaollaView.h"
 
-#include "threads.h"
+#include "ThreadManager.h"
 
 // Dialog Box includes
 #include "Parametres_appareil.h"

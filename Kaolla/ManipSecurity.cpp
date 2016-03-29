@@ -1,7 +1,10 @@
+
+// This function contains checks for high pressure and other security related checks
+// Threads in here are really badly implemented 
+
 #include "StdAfx.h"
 #include "Manip.h"
 #include "Define_Manip_Securite.h"
-
 
 
 bool PressionTropHaute; //SecuriteHautePressionManuelle()
@@ -11,7 +14,6 @@ bool TemperatureFaible;
 HANDLE hEventPression,hEventTemperatureElevee,hEventTemperatureFaible;
 
 
-
 void CManip::SecuriteHautePression()
 {
 	if(GenreExperience == EXPERIMENT_TYPE_MANUAL)
@@ -19,7 +21,6 @@ void CManip::SecuriteHautePression()
 	if(GenreExperience == EXPERIMENT_TYPE_AUTO)
 		SecuriteHautePressionAuto();
 }
-
 
 void CManip::InitialisationMesureSecuriteManuelle()
 {
@@ -31,7 +32,6 @@ void CManip::InitialisationMesureSecuriteManuelle()
 
 void CManip::SecuriteHautePressionManuelle()
 {
-
 	// Mesure de sécurité
 	if(resultat_hp >= GetPressionSecuriteHautePression())
 	{

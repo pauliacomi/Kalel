@@ -11,7 +11,6 @@
 
 #include "KaollaDoc.h"
 #include "KaollaView.h"
-#include "threads.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -82,12 +81,6 @@ CKaollaView::CKaollaView()
 	, m_StrTemperaturePiece(_T(""))
 	, m_StrTemps(_T(""))
 	, m_StrEditMesures(_T(""))
-	/*, TemperatureCalo(0)
-	, TemperatureCage(0)
-	, TemperaturePiece(0)
-	, Calorimetre(0)
-	, Basse_Pression(0)
-	, Haute_Pression(0)*/
 	, m_StrPressionInitiale(_T(""))
 	, m_StrPressionFinale(_T(""))
 	, m_StrEtape(_T(""))
@@ -105,9 +98,9 @@ CKaollaView::CKaollaView()
 {
 }
 
+
 CKaollaView::~CKaollaView()
 {
-	DeleteManip();
 }
 
 // Liaising between variables and controls
@@ -176,10 +169,7 @@ void CKaollaView::OnInitialUpdate()
 	// Check to see whether the parameters file has been created
 	VerifParametres();
 
-	// Initialize manipulation class - this needs work
-	InitialisationManip();
-	InitializeObjects();
-
+	ThreadManager threadManager(GetSafeHwnd());  // the class dealing with managing threads
 }
 
 
@@ -258,7 +248,6 @@ CKaollaView * CKaollaView::GetView()
 
 // CKaollaView message handlers
 
-
 void CKaollaView::DoEvents(void)
 {
 	MSG msg;
@@ -270,7 +259,7 @@ void CKaollaView::DoEvents(void)
 	}
 }
 
-void CKaollaView::DebloqueMenu(void)
+void CKaollaView::DebloqueMenu(void) // pretty useless, must centralize the experiment running flag
 {
 	m_mainDocument = CKaollaDoc::GetDocument();
 	pApp->menuIsAvailable = !m_mainDocument->experiment_running;
