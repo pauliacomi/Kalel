@@ -7,9 +7,6 @@
 
 #include "time.h"
 
-using namespace std;
-
-
 ///////////////////////////////////////////////////////////////////
 //
 // Boîte de dialogue CGeneral
@@ -177,13 +174,10 @@ void CGeneral::Reinitialisation(void)
 }
 
 
-
-
 void CGeneral::RajoutSymboleCombo(CString StrSymbole)
 {
 	m_CBGaz.InsertString(-1,StrSymbole);
 }
-
 
 
 void CGeneral::OnCbnSelchangeComboGaz()

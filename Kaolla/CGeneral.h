@@ -54,8 +54,6 @@ public:
 
 	Donnees_General donnees_actuelles;
 
-	
-
 	vector<gaz> list_gaz;
 	gaz gaz_exp;
 
