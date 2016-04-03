@@ -196,18 +196,13 @@
   <ItemGroup>
     <ClInclude Include="CAdsorptionContinue.h" />
     <ClInclude Include="CDesorption.h" />
-    <ClInclude Include="CDivers.h" />
-    <ClInclude Include="CGeneral.h" />
-    <ClInclude Include="CGrandesDoses.h" />
     <ClInclude Include="Chrono.h" />
     <ClInclude Include="Classes_experiences.h" />
-    <ClInclude Include="CMoyennesDoses.h" />
     <ClInclude Include="ConnectionMesure.h" />
     <ClInclude Include="Connection_port.h" />
     <ClInclude Include="DefinePostMessages.h" />
     <ClInclude Include="ExperimentPropertySheet.h" />
     <ClInclude Include="FluxConverter.h" />
-    <ClInclude Include="CPetitesDoses.h" />
     <ClInclude Include="Define.h" />
     <ClInclude Include="Define_Stages.h" />
     <ClInclude Include="Define_Instrument.h" />
@@ -248,7 +243,6 @@
     <ClInclude Include="NI_USB_9211A.h" />
     <ClInclude Include="Parametres.h" />
     <ClInclude Include="Parametres_appareil.h" />
-    <ClInclude Include="Parametres_experience.h" />
     <ClInclude Include="ParserXML.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="MessageBoxTexts.h" />
@@ -276,19 +270,14 @@
   <ItemGroup>
     <ClCompile Include="CAdsorptionContinue.cpp" />
     <ClCompile Include="CDesorption.cpp" />
-    <ClCompile Include="CDivers.cpp" />
-    <ClCompile Include="CGeneral.cpp" />
-    <ClCompile Include="CGrandesDoses.cpp" />
     <ClCompile Include="Chrono.cpp" />
     <ClCompile Include="Classes_experiences.cpp" />
-    <ClCompile Include="CMoyennesDoses.cpp" />
     <ClCompile Include="ConnectionMesure.cpp" />
     <ClCompile Include="Connection_port.cpp" />
     <ClCompile Include="Connection_port_fct.cpp" />
     <ClCompile Include="Connection_port_Verifications.cpp" />
     <ClCompile Include="ExperimentPropertySheet.cpp" />
     <ClCompile Include="FluxConverter.cpp" />
-    <ClCompile Include="CPetitesDoses.cpp" />
     <ClCompile Include="Dialogue_cellule.cpp" />
     <ClCompile Include="Dialogue_experimentateur.cpp" />
     <ClCompile Include="Dialogue_gaz.cpp" />
@@ -353,7 +342,6 @@
     <ClCompile Include="NI_USB_9211A.cpp" />
     <ClCompile Include="Parametres.cpp" />
     <ClCompile Include="Parametres_appareil.cpp" />
-    <ClCompile Include="Parametres_experience.cpp" />
     <ClCompile Include="ParserXML.cpp" />
     <ClCompile Include="SpinBtnCtrl.cpp" />
     <ClCompile Include="stdafx.cpp">
