@@ -125,7 +125,31 @@ bool Donnees_Divers::operator!=(const Donnees_Divers &divers)
 }
 
 
+/// General doses class
+Donnees_Doses Donnees_Doses::operator=(const Donnees_Doses &STAGE_DOSES)
+{
+	a_effectuer = STAGE_DOSES.a_effectuer;
+	delta_pression = STAGE_DOSES.delta_pression;
+	pression_finale = STAGE_DOSES.pression_finale;
+	temps_adsorption = STAGE_DOSES.temps_adsorption;
+	temps_volume = STAGE_DOSES.temps_volume;
 
+	return *this;
+}
+
+bool Donnees_Doses::operator!=(const Donnees_Doses &STAGE_DOSES)
+{
+	if (a_effectuer != STAGE_DOSES.a_effectuer ||
+		delta_pression != STAGE_DOSES.delta_pression ||
+		pression_finale != STAGE_DOSES.pression_finale ||
+		temps_adsorption != STAGE_DOSES.temps_adsorption ||
+		temps_volume != STAGE_DOSES.temps_volume)
+		return TRUE;
+	return FALSE;
+}
+
+
+/// Small doses class - is replaced
 
 Donnees_Petites_Doses Donnees_Petites_Doses::operator=(const Donnees_Petites_Doses &STAGE_SMALL_DOSES)
 {

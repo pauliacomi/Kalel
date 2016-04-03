@@ -13,13 +13,11 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// Français (France) resources
+// French (France) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_FRA)
-#ifdef _WIN32
 LANGUAGE LANG_FRENCH, SUBLANG_FRENCH
 #pragma code_page(1252)
-#endif //_WIN32
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -66,7 +64,7 @@ BEGIN
     EDITTEXT        IDC_EDIT_AJOUT_VOLUME_CALO,139,90,40,14,ES_AUTOHSCROLL
     CONTROL         "",IDC_SPIN_AJOUT_VOLUME_CALO,"msctls_updown32",UDS_AUTOBUDDY | UDS_ARROWKEYS,179,90,10,14
     EDITTEXT        IDC_EDIT_MESSAGE_AJOUT_CELLULE,22,115,166,28,ES_MULTILINE | ES_AUTOHSCROLL | ES_READONLY | ES_WANTRETURN
-    PUSHBUTTON      "Ajouter",IDC_AJOUTER,139,159,50,14
+    PUSHBUTTON      "Ajouter",IDC_ADD_CELL,139,159,50,14
 END
 
 IDD_MODIF_CELLULE DIALOGEX 0, 0, 211, 180
@@ -85,7 +83,7 @@ BEGIN
     EDITTEXT        IDC_EDIT_MODIF_VOLUME_CALO,139,90,40,14,ES_AUTOHSCROLL
     CONTROL         "",IDC_SPIN_MODIF_VOLUME_CALO,"msctls_updown32",UDS_AUTOBUDDY | UDS_ARROWKEYS,179,90,10,14
     EDITTEXT        IDC_EDIT_MESSAGE_MODIF_CELLULE,22,115,166,28,ES_AUTOHSCROLL | ES_READONLY | ES_WANTRETURN
-    PUSHBUTTON      "Modifier",IDC_MODIFIER,139,159,50,14
+    PUSHBUTTON      "Modifier",IDC_MODIFY_CELL,139,159,50,14
 END
 
 IDD_SUPPR_CELLULE DIALOGEX 0, 0, 211, 180
@@ -100,7 +98,7 @@ BEGIN
     LTEXT           "Volume de la cellule dans le calo",IDC_STATIC,19,90,102,14,SS_CENTERIMAGE
     EDITTEXT        IDC_EDIT_SUPPR_VOLUME_CALO,139,90,40,14,ES_AUTOHSCROLL | ES_READONLY
     EDITTEXT        IDC_EDIT_MESSAGE_SUPPR_CELLULE,22,115,166,28,ES_AUTOHSCROLL | ES_READONLY | ES_WANTRETURN
-    PUSHBUTTON      "Supprimer",IDC_SUPPRIMER,139,159,50,14
+    PUSHBUTTON      "Supprimer",IDC_DELETE_CELL,139,159,50,14
 END
 
 
@@ -110,7 +108,7 @@ END
 //
 
 #ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO 
+GUIDELINES DESIGNINFO
 BEGIN
     IDD_AJOUT_CELLULE, DIALOG
     BEGIN
@@ -138,7 +136,85 @@ BEGIN
 END
 #endif    // APSTUDIO_INVOKED
 
-#endif    // Français (France) resources
+#endif    // French (France) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// English (United Kingdom) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENG)
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_UK
+#pragma code_page(1252)
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_TABGENERAL DIALOG 0, 0, 320, 200
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dialog"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,209,179,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,263,179,50,14
+END
+
+IDD_TABDIVERS DIALOG 0, 0, 320, 200
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dialog"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,209,179,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,263,179,50,14
+END
+
+IDD_TABDOSES DIALOG 0, 0, 320, 200
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dialog"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,209,179,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,263,179,50,14
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_TABGENERAL, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 313
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 193
+    END
+
+    IDD_TABDIVERS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 313
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 193
+    END
+
+    IDD_TABDOSES, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 313
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 193
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+#endif    // English (United Kingdom) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

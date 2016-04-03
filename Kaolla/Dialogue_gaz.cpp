@@ -397,7 +397,7 @@ END_MESSAGE_MAP()
 
 // Gestionnaires de messages de CSupprGaz
 
-// Comme dans 'MODIFY_WINDOW', on réinitialise le ComboBox
+// Comme dans 'EXPERIMENT_TYPE_MODIFY', on réinitialise le ComboBox
 BOOL CSupprGaz::OnSetActive()
 {
 	ReinitialisationComboBox();

@@ -112,6 +112,12 @@
     <Filter Include="Header Files\Resources\Define">
       <UniqueIdentifier>{045cb8c3-8d56-42b2-9919-fb488764a331}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\GUI\Dialogs\Experimental Parameters\TabsNew">
+      <UniqueIdentifier>{c2f3920c-056e-4c6f-9fa9-65c03e393e14}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GUI\Dialogs\Experiment Parameters\TabsNew">
+      <UniqueIdentifier>{4d4336e8-a13f-4388-8c9a-ea7f631adb05}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -338,6 +344,18 @@
     </ClInclude>
     <ClInclude Include="MainThread.h">
       <Filter>Header Files\Manip</Filter>
+    </ClInclude>
+    <ClInclude Include="TabGeneral.h">
+      <Filter>Header Files\GUI\Dialogs\Experimental Parameters\TabsNew</Filter>
+    </ClInclude>
+    <ClInclude Include="ExperimentPropertySheet.h">
+      <Filter>Header Files\GUI\Dialogs\Experimental Parameters</Filter>
+    </ClInclude>
+    <ClInclude Include="TabDivers.h">
+      <Filter>Header Files\GUI\Dialogs\Experimental Parameters\TabsNew</Filter>
+    </ClInclude>
+    <ClInclude Include="TabDoses.h">
+      <Filter>Header Files\GUI\Dialogs\Experimental Parameters\TabsNew</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -610,6 +628,18 @@
     </ClCompile>
     <ClCompile Include="MainThread.cpp">
       <Filter>Source Files\Manip</Filter>
+    </ClCompile>
+    <ClCompile Include="TabGeneral.cpp">
+      <Filter>Source Files\GUI\Dialogs\Experiment Parameters\TabsNew</Filter>
+    </ClCompile>
+    <ClCompile Include="TabDivers.cpp">
+      <Filter>Source Files\GUI\Dialogs\Experiment Parameters\TabsNew</Filter>
+    </ClCompile>
+    <ClCompile Include="TabDoses.cpp">
+      <Filter>Source Files\GUI\Dialogs\Experiment Parameters\TabsNew</Filter>
+    </ClCompile>
+    <ClCompile Include="ExperimentPropertySheet.cpp">
+      <Filter>Source Files\GUI\Dialogs\Experiment Parameters</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

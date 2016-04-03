@@ -2,6 +2,7 @@
 //
 
 #include "stdafx.h"
+#include "Kaolla.h"
 #include "Parametres_experience.h"
 #include "MessageBoxTexts.h"			// For the required strings
 
@@ -99,7 +100,7 @@ void CProprietes_experience::SetProprietesAuto(void)
 
 void CProprietes_experience::SetProprietesModif(int etape_en_cours)
 {
-	TypeFenetre = MODIFY_WINDOW;
+	TypeFenetre = EXPERIMENT_TYPE_MODIFY;
 
 	SetTitle("Modifications en cours d'expérience");
 

@@ -1,5 +1,7 @@
-#include "stdafx.h"
 
+// This file should be rewritten as a class in the future
+
+#include "stdafx.h"
 #include "Parametres.h"
 
 

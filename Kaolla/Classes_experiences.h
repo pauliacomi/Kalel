@@ -54,7 +54,7 @@ public:
 	std::string commentaires;
 	std::string chemin;
 	std::string fichier;
-	int temperature_experience;
+	float temperature_experience;
 	std::string date_experience;
 
 	Donnees_General operator=(const Donnees_General &general);
@@ -73,6 +73,22 @@ public:
 	bool operator!=(const Donnees_Divers &divers);
 };
 
+/// General doses class
+class Donnees_Doses
+{
+public:
+	bool a_effectuer;
+	float delta_pression;
+	float pression_finale;
+	int temps_adsorption;
+	int temps_volume;
+
+	Donnees_Doses operator=(const Donnees_Doses &petites_doses);
+	bool operator!=(const Donnees_Doses &petites_doses);
+};
+
+
+/// Other doses classes - are replaced
 class Donnees_Petites_Doses
 {
 public:

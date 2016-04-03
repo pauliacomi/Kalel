@@ -11,7 +11,7 @@
 #include "ThreadManager.h"
 
 #include "Dialogue_TypeExperience.h"	// The dialog asking the user for the experiment type
-#include "Parametres_experience.h"		// The dialog asking the user to input the experiment parameters
+#include "ExperimentPropertySheet.h"		// The dialog asking the user to input the experiment parameters
 
 
 // When clicking on the Launch button
@@ -42,16 +42,16 @@ void CKaollaView::OnBnClickedLancer()
 	if (dialogExperimentType->DoModal() == IDOK)
 	{
 		// Create the experiment parameter window
-		CProprietes_experience * dialogExperimentProperties = new CProprietes_experience(_T(""));
+		ExperimentPropertySheet * dialogExperimentProperties = new ExperimentPropertySheet(_T(""));
 
 		// Instantiate the correct type of dialog
 		switch (dialogExperimentType->TypeExperience)
 		{
 		case EXPERIMENT_TYPE_MANUAL:
-			dialogExperimentProperties->SetProprietesManuelle();
+			dialogExperimentProperties->SetProprietiesManual();
 			break;
 		case EXPERIMENT_TYPE_AUTO:
-			dialogExperimentProperties->SetProprietesAuto();
+			dialogExperimentProperties->SetProprietiesAuto();
 			break;
 		default:
 			ASSERT(0);  // Should never be reached
@@ -61,6 +61,11 @@ void CKaollaView::OnBnClickedLancer()
 		{
 			// Launch the threads 
 			LancementThreads(GetSafeHwnd());
+		}
+		else
+		{
+			// Roll back by calling stop function
+			OnBnClickedArreter();
 		}
 	}
 }

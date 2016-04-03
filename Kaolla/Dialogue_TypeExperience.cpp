@@ -9,7 +9,6 @@
 #include "Parametres.h"
 ////
 
-
 // Dialog box CDialogue_TypeExperience
 
 IMPLEMENT_DYNAMIC(CDialogue_TypeExperience, CDialog)
@@ -30,7 +29,7 @@ CDialogue_TypeExperience::~CDialogue_TypeExperience()
 void CDialogue_TypeExperience::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	DDX_Radio(pDX, IDC_RADIO_TYPE_EXPERIENCE, m_bExperienceAuto);
+	DDX_Radio(pDX, IDC_RADIO_TYPE_EXPERIENCE_AUTO, m_bExperienceAuto);
 }
 
 
@@ -47,14 +46,14 @@ BOOL CDialogue_TypeExperience::OnInitDialog()
 	// Disable the buttons if there is no mention of available instruments in the parameters file
 	if(!GetMesureCalo() && !GetMesureBassePression() && !GetMesureHautePression())
 	{
-		GetDlgItem(IDC_RADIO_TYPE_EXPERIENCE)->EnableWindow(FALSE);
-		GetDlgItem(IDC_RADIO2)->EnableWindow(FALSE);
+		GetDlgItem(IDC_RADIO_TYPE_EXPERIENCE_AUTO)->EnableWindow(FALSE);
+		GetDlgItem(IDC_RADIO_TYPE_EXPERIENCE_MANUAL)->EnableWindow(FALSE);
 		GetDlgItem(IDOK)->EnableWindow(FALSE);
 		return TRUE;
 	}
 
 	// Enable the buttons
-	GetDlgItem(IDC_RADIO_TYPE_EXPERIENCE)->EnableWindow(TRUE);
+	GetDlgItem(IDC_RADIO_TYPE_EXPERIENCE_AUTO)->EnableWindow(TRUE);
 	GetDlgItem(IDOK)->EnableWindow(TRUE);
 
 	// I have no clue why this is duplicated ---------------------->
@@ -62,11 +61,11 @@ BOOL CDialogue_TypeExperience::OnInitDialog()
 	{
 		m_bExperienceAuto = FALSE;
 		UpdateData(FALSE);
-		GetDlgItem(IDC_RADIO2)->EnableWindow(FALSE);
+		GetDlgItem(IDC_RADIO_TYPE_EXPERIENCE_MANUAL)->EnableWindow(FALSE);
 		return TRUE;
 	}
 	
-	GetDlgItem(IDC_RADIO2)->EnableWindow(TRUE);
+	GetDlgItem(IDC_RADIO_TYPE_EXPERIENCE_MANUAL)->EnableWindow(TRUE);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 }
