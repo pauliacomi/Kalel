@@ -12,9 +12,14 @@
 
 IMPLEMENT_DYNAMIC(TabDoses, CMFCPropertyPage)
 
-TabDoses::TabDoses()
+TabDoses::TabDoses(CString i)
 	: CMFCPropertyPage(TabDoses::IDD)
 {
+	// Set title from its initialisation
+	m_caption = i;
+	m_psp.pszTitle = m_caption;
+	m_psp.dwFlags |= PSP_USETITLE;
+
 	Reinitialisation();
 }
 

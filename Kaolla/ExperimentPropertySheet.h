@@ -4,21 +4,24 @@
 
 // ExperimentPropertySheet
 
-/// Property pages include
+// Property pages include
 #include "TabGeneral.h"
 #include "TabDivers.h"
 #include "TabDoses.h"
+#include "TabDesorption.h"
+#include "TabContinuousAdsorption.h"
+
+// Other includes
+#include <vector>		// Using a vector to keep the collection of tabs in
 
 
 /// Defines
 #define tab_general				0
 #define tab_divers				1
-#define tab_adsorption_continue	2
-#define tab_petites_doses		3
-#define tab_moyennes_doses		4
-#define tab_grandes_doses		5
-#define tab_desorption			6
+#define tab_adsorption_continue	6
+#define tab_desorption			5
 
+#define nb_ads_tabs 3
 #define nb_tabs 7
 
 class ExperimentPropertySheet : public CMFCPropertySheet
@@ -30,13 +33,6 @@ public:
 	ExperimentPropertySheet(LPCTSTR pszCaption, CWnd* pParentWnd = NULL, UINT iSelectPage = 0);
 	virtual ~ExperimentPropertySheet();
 
-	void SetProprietiesManual(void);
-	void SetProprietiesAuto(void);
-	void SetProprietiesModif(int etape_en_cours);
-
-	void ReinitialisationAuto();
-	void ReinitialisationManual();
-
 protected:
 	DECLARE_MESSAGE_MAP()
 
@@ -46,19 +42,18 @@ protected:
 	// PropertyPages declared
 	TabGeneral m_general;
 	TabDivers m_divers;
-	TabDoses m_smalldoses;
-	TabDoses m_mediumdoses;
-	TabDoses m_bigdoses;
-	// desorption
-	// continued adsorption
+	TabDoses * p_dose;
+	TabDesorption m_desorption;
+	TabContinuousAdsorption m_continuousAdsorption;
+	vector<TabDoses*> adsorptionTabs;
 
-	CPropertyPage * p_general;
-	CPropertyPage * p_divers;
-	CPropertyPage * p_smalldoses;
-	CPropertyPage * p_mediumdoses;
-	CPropertyPage * p_bigdoses;
-	CPropertyPage * p_desorption;
-	CPropertyPage * p_adsorptioncontinue;
+	// Pointers for class polymorphism
+	CPropertyPage * p_generalPP;
+	CPropertyPage * p_diversPP;
+	CPropertyPage * p_dosePP;
+	CPropertyPage * p_desorptionPP;
+	CPropertyPage * p_adsorptioncontinuePP;
+	vector<CPropertyPage*> adsorptionTabPointers;
 
 public:
 	int experimentType;
@@ -67,10 +62,25 @@ public:
 // custom functions
 
 public:
-	void AddAllTabs();
-	void RemoveAllTabs();
-	void AddTab(CPropertyPage * tab, int checkTab);
-	void RemoveTab(CPropertyPage * tab, int checkTab);
+	void AddAllTabs();		// Asks all the tabs to be added
+	void RemoveAllTabs();	// Asks all the tabs to be removed
+	void AddTab(CPropertyPage * tab, int checkTab);			// Adds a tab, checking if it is available first
+	void RemoveTab(CPropertyPage * tab, int checkTab);		// Removes a tab, checking if it is available first
+
+	// Sets the experiment type as manual
+	// It allows only the general tab to be viewed
+	void SetProprietiesManual(void);
+
+	// Sets the experiment type as automatic
+	// It allows all the tabs to be viewed
+	void SetProprietiesAuto(void);
+
+	// Sets the experiment type as modified
+	// It allows only the tabs which have parameters that can be mofified to be showed
+	void SetProprietiesModif(int etape_en_cours);
+
+	void ReinitialisationAuto();		// Reinitialise the data in all the tabs
+	void ReinitialisationManual();		// Reinitialise the data only in the general tab
 
 };
 

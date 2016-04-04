@@ -357,6 +357,12 @@
     <ClInclude Include="TabDoses.h">
       <Filter>Header Files\GUI\Dialogs\Experimental Parameters\TabsNew</Filter>
     </ClInclude>
+    <ClInclude Include="TabDesorption.h">
+      <Filter>Header Files\GUI\Dialogs\Experimental Parameters\TabsNew</Filter>
+    </ClInclude>
+    <ClInclude Include="TabContinuousAdsorption.h">
+      <Filter>Header Files\GUI\Dialogs\Experimental Parameters\TabsNew</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Mesure.cpp">
@@ -640,6 +646,12 @@
     </ClCompile>
     <ClCompile Include="ExperimentPropertySheet.cpp">
       <Filter>Source Files\GUI\Dialogs\Experiment Parameters</Filter>
+    </ClCompile>
+    <ClCompile Include="TabDesorption.cpp">
+      <Filter>Source Files\GUI\Dialogs\Experiment Parameters\TabsNew</Filter>
+    </ClCompile>
+    <ClCompile Include="TabContinuousAdsorption.cpp">
+      <Filter>Source Files\GUI\Dialogs\Experiment Parameters\TabsNew</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

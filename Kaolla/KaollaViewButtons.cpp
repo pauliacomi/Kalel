@@ -65,7 +65,7 @@ void CKaollaView::OnBnClickedLancer()
 		else
 		{
 			// Roll back by calling stop function
-			OnBnClickedArreter();
+			Annuler();
 		}
 	}
 }
@@ -73,7 +73,6 @@ void CKaollaView::OnBnClickedLancer()
 // When clicking on the Stop button
 void CKaollaView::OnBnClickedArreter()
 {
-
 	// the button is blocked
 	GetDlgItem(IDC_ARRETER)->EnableWindow(FALSE);
 

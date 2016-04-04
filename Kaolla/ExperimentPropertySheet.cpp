@@ -24,41 +24,44 @@ ExperimentPropertySheet::ExperimentPropertySheet(UINT nIDCaption, CWnd* pParentW
 ExperimentPropertySheet::ExperimentPropertySheet(LPCTSTR pszCaption, CWnd* pParentWnd, UINT iSelectPage)
 	:CMFCPropertySheet(pszCaption, pParentWnd, iSelectPage)
 {
-	// Link the pointers
-	p_general = &m_general;
-	p_divers = &m_divers;
-	p_smalldoses = &m_smalldoses;
-	p_mediumdoses = &m_mediumdoses;
-	p_bigdoses = &m_bigdoses;
-
-	/*
-	p_desorption = &m_desorption;
-	p_adsorptioncontinue = &m_adsorptioncontinue;*/
-
-	for (int i = 0; i<nb_tabs; i++)
-		availableTabs[i] = FALSE;
-
-	AddTab(p_general, tab_general);
-
-	///
-	AddAllTabs();
-	///
-	
-	experimentType = EXPERIMENT_TYPE_MANUAL;
-
 	// Choose the view of the property page
 	SetLook(CMFCPropertySheet::PropSheetLook_List, 150);
 
-	// Set the name of the title
-	CString title;
-	title.Format(TITLE_MANUALPARAM);
-	SetTitle(title);
+	// Link the pointers
+	p_generalPP = &m_general;
+	p_diversPP = &m_divers;
+	p_desorptionPP = &m_desorption;
+	p_adsorptioncontinuePP = &m_continuousAdsorption;
+
+	// Dynamically generate the tabs
+	CString tabtitle;
+	for (int i = 0; i < nb_ads_tabs; i++)
+	{
+		tabtitle.Format(_T("Adsorption %d"), i+1);
+		p_dose = new TabDoses(tabtitle);
+		adsorptionTabs.push_back(p_dose);
+		adsorptionTabPointers.push_back(adsorptionTabs[i]);
+	}
+
+	for (int i = 0; i<nb_tabs; i++) //////redo
+		availableTabs[i] = FALSE;
+	
+	// Instantiate the property sheet as a manual experiment no matter what the user chooses afterwards
+	SetProprietiesManual();
 }
 
 ExperimentPropertySheet::~ExperimentPropertySheet()
 {
+	// Must delete all created tabs
+	for (int i = 0; i < adsorptionTabs.size(); i++)
+	{
+		delete adsorptionTabs[i];
+	}
 }
 
+
+// Sets the experiment type as manual
+// It allows only the general tab to be viewed
 void ExperimentPropertySheet::SetProprietiesManual(void)
 {
 	if (experimentType != EXPERIMENT_TYPE_MANUAL)
@@ -70,33 +73,40 @@ void ExperimentPropertySheet::SetProprietiesManual(void)
 		title.Format(TITLE_MANUALPARAM);
 		SetTitle(title);
 
+		// Remove any existing tabs and add the general tab
 		RemoveAllTabs();
-		AddTab(p_general, tab_general);
+		AddTab(p_generalPP, tab_general);
 
+		// Make sure the tab data is blank
 		ReinitialisationManual();
 	}
 
 }
 
+// Sets the experiment type as automatic
+// It allows all the tabs to be viewed
 void ExperimentPropertySheet::SetProprietiesAuto(void)
 {
 	if (experimentType != EXPERIMENT_TYPE_AUTO)
 	{
+		experimentType = EXPERIMENT_TYPE_AUTO;
+
 		// Set the name of the title
 		CString title;
 		title.Format(TITLE_AUTOPARAM);
 		SetTitle(title);
 
-		experimentType = EXPERIMENT_TYPE_AUTO;
-
+		// Remove any existing tabs and re-add all the tabs
 		RemoveAllTabs();
 		AddAllTabs();
 
+		// Make sure the tab data is blanks
 		ReinitialisationAuto();
 	}
 }
 
-
+// Sets the experiment type as modified
+// It allows only the tabs which have parameters that can be mofified to be showed
 void ExperimentPropertySheet::SetProprietiesModif(int etape_en_cours)
 {
 	experimentType = EXPERIMENT_TYPE_MODIFY;
@@ -106,8 +116,10 @@ void ExperimentPropertySheet::SetProprietiesModif(int etape_en_cours)
 	title.Format(TITLE_MODIFPARAM);
 	SetTitle(title);
 
+	// Remove any existing tabs
 	RemoveAllTabs();
 
+	// Add only allowed tabs
 	/*switch (etape_en_cours)
 	{
 	case STAGE_TEMP:
@@ -145,43 +157,54 @@ void ExperimentPropertySheet::SetProprietiesModif(int etape_en_cours)
 	}*/
 }
 
+// Reinitialise the data in all the tabs
 void ExperimentPropertySheet::ReinitialisationAuto()
 {
 	m_general.Reinitialisation();
 	m_divers.Reinitialisation();
-
-	/*m_petitesdoses.Reinitialisation();
-	m_moyennesdoses.Reinitialisation();
-	m_grandesdoses.Reinitialisation();
+	for (int i = 0; i < adsorptionTabs.size(); i++)
+	{
+		adsorptionTabs[i]->Reinitialisation();
+	}
 	m_desorption.Reinitialisation();
-	m_adsorptioncontinue.Reinitialisation()*/;
+
+	/*m_adsorptioncontinue.Reinitialisation()*/;
 }
 
+// Reinitialise the data only in the general tab
 void ExperimentPropertySheet::ReinitialisationManual()
 {
 	m_general.Reinitialisation();
 }
 
 
-BEGIN_MESSAGE_MAP(ExperimentPropertySheet, CMFCPropertySheet)
-END_MESSAGE_MAP()
-
-
+// Asks all the tabs to be added
 void ExperimentPropertySheet::AddAllTabs() {
-	AddTab(p_general, tab_general);
-	AddTab(p_divers, tab_divers);
-	AddTab(p_smalldoses, tab_adsorption_continue);
-	AddTab(p_mediumdoses, tab_petites_doses);
-	AddTab(p_bigdoses, tab_moyennes_doses);
-
-	/*AddTab(p_desorption, tab_grandes_doses);
-	AddTab(p_adsorptioncontinue, tab_desorption);*/
+	AddTab(p_generalPP, tab_general);
+	AddTab(p_diversPP, tab_divers);
+	for (int i = 0; i < adsorptionTabs.size(); i++)
+	{
+		AddTab(adsorptionTabs[i], tab_divers + i + 1);
+	}
+	AddTab(p_desorptionPP, tab_desorption);
+	AddTab(p_adsorptioncontinuePP, tab_adsorption_continue);
 }
 
+// Asks all the tabs to be removed
 void ExperimentPropertySheet::RemoveAllTabs()
 {
+	RemoveTab(p_generalPP, tab_general);
+	RemoveTab(p_diversPP, tab_divers);
+	for (int i = 0; i < adsorptionTabs.size(); i++)
+	{
+		RemoveTab(adsorptionTabs[i], tab_divers + i + 1);
+	}
+	RemoveTab(p_diversPP, tab_divers);
+	RemoveTab(p_desorptionPP, tab_desorption);
+	RemoveTab(p_adsorptioncontinuePP, tab_adsorption_continue);
 }
 
+// Adds a tab, checking if it is available first
 void ExperimentPropertySheet::AddTab(CPropertyPage * tab, int checkTab) {
 	if (availableTabs[checkTab] == FALSE)
 	{
@@ -190,6 +213,7 @@ void ExperimentPropertySheet::AddTab(CPropertyPage * tab, int checkTab) {
 	}
 }
 
+// Removes a tab, checking if it is available first
 void ExperimentPropertySheet::RemoveTab(CPropertyPage * tab, int checkTab) {
 	if (availableTabs[checkTab] == TRUE)
 	{
@@ -198,5 +222,8 @@ void ExperimentPropertySheet::RemoveTab(CPropertyPage * tab, int checkTab) {
 	}
 }
 
+
+BEGIN_MESSAGE_MAP(ExperimentPropertySheet, CMFCPropertySheet)
+END_MESSAGE_MAP()
 
 // ExperimentPropertySheet message handlers

@@ -13,7 +13,7 @@ class TabDoses : public CMFCPropertyPage
 	DECLARE_DYNAMIC(TabDoses)
 
 public:
-	TabDoses();
+	TabDoses(CString i);
 	virtual ~TabDoses();
 
 	// Dialog Data
@@ -31,6 +31,8 @@ protected:
 
 // Variables
 protected:
+	CString m_caption;	// Title of the page
+
 	BOOL m_bDoses;
 	bool checkDoses;
 
@@ -58,13 +60,9 @@ protected:
 	void EnableDoses(BOOL active);
 
 	void GreyOut();
-
 	void UnGreyOut();
-
 	void CheckGreyOut();
-
 	void CheckUnGreyOut();
-
 	void ActionCheck_Doses();
 
 // Message Handlers

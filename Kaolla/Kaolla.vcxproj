@@ -262,6 +262,8 @@
     <ClInclude Include="ResourceTypeExperience.h" />
     <ClInclude Include="SpinBtnCtrl.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="TabContinuousAdsorption.h" />
+    <ClInclude Include="TabDesorption.h" />
     <ClInclude Include="TabDivers.h" />
     <ClInclude Include="TabDoses.h" />
     <ClInclude Include="TabGeneral.h" />
@@ -362,6 +364,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="TabContinuousAdsorption.cpp" />
+    <ClCompile Include="TabDesorption.cpp" />
     <ClCompile Include="TabDivers.cpp" />
     <ClCompile Include="TabDoses.cpp" />
     <ClCompile Include="TabGeneral.cpp" />
