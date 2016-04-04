@@ -10,10 +10,10 @@
 
 // TabDoses dialog
 
-IMPLEMENT_DYNAMIC(TabDoses, CPropertyPage)
+IMPLEMENT_DYNAMIC(TabDoses, CMFCPropertyPage)
 
 TabDoses::TabDoses()
-	: CPropertyPage(TabDoses::IDD)
+	: CMFCPropertyPage(TabDoses::IDD)
 {
 	Reinitialisation();
 }
@@ -24,7 +24,7 @@ TabDoses::~TabDoses()
 
 void TabDoses::DoDataExchange(CDataExchange* pDX)
 {
-	CPropertyPage::DoDataExchange(pDX);
+	CMFCPropertyPage::DoDataExchange(pDX);
 
 	DDX_Control(pDX, IDC_CHECK_DOSES, m_CheckDoses);
 	DDX_Check(pDX, IDC_CHECK_DOSES, m_bDoses);
@@ -41,12 +41,12 @@ void TabDoses::DoDataExchange(CDataExchange* pDX)
 BOOL TabDoses::OnCommand(WPARAM wParam, LPARAM lParam)
 {
 	SetModified(TRUE);
-	return CPropertyPage::OnCommand(wParam, lParam);
+	return CMFCPropertyPage::OnCommand(wParam, lParam);
 }
 
 BOOL TabDoses::OnInitDialog()
 {
-	CPropertyPage::OnInitDialog();
+	CMFCPropertyPage::OnInitDialog();
 
 	m_SpinDeltaPressureDoses.SetRange(0, 1000000);
 	m_SpinDeltaPressureDoses.SetPos(0.100);
@@ -81,7 +81,7 @@ BOOL TabDoses::OnInitDialog()
 BOOL TabDoses::OnApply()
 {
 	WriteData();
-	return CPropertyPage::OnApply();
+	return CMFCPropertyPage::OnApply();
 }
 
 void TabDoses::OnCancel()
@@ -92,13 +92,13 @@ void TabDoses::OnCancel()
 	m_nTimeAdsorptionDoses = allSettings.temps_adsorption;
 	m_nTimeVolumeDoses = allSettings.temps_volume;
 
-	CPropertyPage::OnCancel();
+	CMFCPropertyPage::OnCancel();
 }
 
 void TabDoses::OnOK()
 {
 	WriteData();
-	CPropertyPage::OnOK();
+	CMFCPropertyPage::OnOK();
 }
 
 void TabDoses::Reinitialisation()
@@ -174,7 +174,7 @@ void TabDoses::ActionCheck_Doses()
 		UnGreyOut();
 }
 
-BEGIN_MESSAGE_MAP(TabDoses, CPropertyPage)
+BEGIN_MESSAGE_MAP(TabDoses, CMFCPropertyPage)
 	ON_BN_CLICKED(IDC_CHECK_DOSES, &TabDoses::OnBnClickedCheckDoses)
 END_MESSAGE_MAP()
 

@@ -21,7 +21,7 @@
 
 #define nb_tabs 7
 
-class ExperimentPropertySheet : public CPropertySheet
+class ExperimentPropertySheet : public CMFCPropertySheet
 {
 	DECLARE_DYNAMIC(ExperimentPropertySheet)
 

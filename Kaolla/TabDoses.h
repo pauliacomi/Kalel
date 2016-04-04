@@ -8,7 +8,7 @@
 #include "Classes_experiences.h"	// Definitions for all classes used in this file
 
 
-class TabDoses : public CPropertyPage
+class TabDoses : public CMFCPropertyPage
 {
 	DECLARE_DYNAMIC(TabDoses)
 

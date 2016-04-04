@@ -8,7 +8,7 @@
 #include <vector>					// Using the vector class
 
 
-class TabGeneral : public CPropertyPage
+class TabGeneral : public CMFCPropertyPage
 {
 	DECLARE_DYNAMIC(TabGeneral)
 

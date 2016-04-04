@@ -11,10 +11,10 @@
 #include "ParserXML.h"						// XML builder
 
 
-IMPLEMENT_DYNAMIC(TabDivers, CPropertyPage)
+IMPLEMENT_DYNAMIC(TabDivers, CMFCPropertyPage)
 
 TabDivers::TabDivers()
-	: CPropertyPage(TabDivers::IDD)
+	: CMFCPropertyPage(TabDivers::IDD)
 {
 	Reinitialisation();
 }
@@ -25,7 +25,7 @@ TabDivers::~TabDivers()
 
 void TabDivers::DoDataExchange(CDataExchange* pDX)
 {
-	CPropertyPage::DoDataExchange(pDX);
+	CMFCPropertyPage::DoDataExchange(pDX);
 
 	DDX_Control(pDX, IDC_COMBO_CELLULE, m_CBCellule);
 	DDX_CBIndex(pDX, IDC_COMBO_CELLULE, m_IndexCellule);
@@ -45,7 +45,7 @@ void TabDivers::DoDataExchange(CDataExchange* pDX)
 
 BOOL TabDivers::OnInitDialog()
 {
-	CPropertyPage::OnInitDialog();
+	CMFCPropertyPage::OnInitDialog();
 
 	cellList = GetCellules();
 	if (cellList.size() == 0)
@@ -81,13 +81,13 @@ BOOL TabDivers::OnInitDialog()
 BOOL TabDivers::OnCommand(WPARAM wParam, LPARAM lParam)
 {
 	SetModified(TRUE);
-	return CPropertyPage::OnCommand(wParam, lParam);
+	return CMFCPropertyPage::OnCommand(wParam, lParam);
 }
 
 BOOL TabDivers::OnApply()
 {
 	WriteData();
-	return CPropertyPage::OnApply();
+	return CMFCPropertyPage::OnApply();
 }
 
 void TabDivers::OnCancel()
@@ -125,13 +125,13 @@ void TabDivers::OnCancel()
 	m_nTempsVide = allSettings.temps_vide;
 	m_SpinTempsVide.SetPos(m_nTempsVide);
 
-	CPropertyPage::OnCancel();
+	CMFCPropertyPage::OnCancel();
 }
 
 void TabDivers::OnOK()
 {
 	WriteData();
-	CPropertyPage::OnOK();
+	CMFCPropertyPage::OnOK();
 }
 
 void TabDivers::Reinitialisation()
@@ -167,7 +167,7 @@ void TabDivers::EnableMiseSousVide(BOOL active)
 }
 
 
-BEGIN_MESSAGE_MAP(TabDivers, CPropertyPage)
+BEGIN_MESSAGE_MAP(TabDivers, CMFCPropertyPage)
 	ON_CBN_SELCHANGE(IDC_COMBO_CELLULE, &TabDivers::OnCbnSelchangeComboCellule)
 	ON_BN_CLICKED(IDC_CHECK_MISE_SOUS_VIDE, &TabDivers::OnBnClickedCheckMiseSousVide)
 	ON_BN_CLICKED(IDC_BUTTON_CELLULE, &TabDivers::OnBnClickedButtonCellule)

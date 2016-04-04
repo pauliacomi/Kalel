@@ -7,7 +7,7 @@
 #include "Classes_experiences.h"	// Definitions for all classes used in this file
 #include <vector>					// Using the vector class
 
-class TabDivers : public CPropertyPage
+class TabDivers : public CMFCPropertyPage
 {
 	DECLARE_DYNAMIC(TabDivers)
 

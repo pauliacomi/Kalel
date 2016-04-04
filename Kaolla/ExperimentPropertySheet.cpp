@@ -13,16 +13,16 @@
 
 // ExperimentPropertySheet
 
-IMPLEMENT_DYNAMIC(ExperimentPropertySheet, CPropertySheet)
+IMPLEMENT_DYNAMIC(ExperimentPropertySheet, CMFCPropertySheet)
 
 ExperimentPropertySheet::ExperimentPropertySheet(UINT nIDCaption, CWnd* pParentWnd, UINT iSelectPage)
-	:CPropertySheet(nIDCaption, pParentWnd, iSelectPage)
+	:CMFCPropertySheet(nIDCaption, pParentWnd, iSelectPage)
 {
 
 }
 
 ExperimentPropertySheet::ExperimentPropertySheet(LPCTSTR pszCaption, CWnd* pParentWnd, UINT iSelectPage)
-	:CPropertySheet(pszCaption, pParentWnd, iSelectPage)
+	:CMFCPropertySheet(pszCaption, pParentWnd, iSelectPage)
 {
 	// Link the pointers
 	p_general = &m_general;
@@ -45,6 +45,9 @@ ExperimentPropertySheet::ExperimentPropertySheet(LPCTSTR pszCaption, CWnd* pPare
 	///
 	
 	experimentType = EXPERIMENT_TYPE_MANUAL;
+
+	// Choose the view of the property page
+	SetLook(CMFCPropertySheet::PropSheetLook_List, 150);
 
 	// Set the name of the title
 	CString title;
@@ -160,7 +163,7 @@ void ExperimentPropertySheet::ReinitialisationManual()
 }
 
 
-BEGIN_MESSAGE_MAP(ExperimentPropertySheet, CPropertySheet)
+BEGIN_MESSAGE_MAP(ExperimentPropertySheet, CMFCPropertySheet)
 END_MESSAGE_MAP()
 
 

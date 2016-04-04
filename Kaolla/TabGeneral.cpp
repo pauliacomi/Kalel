@@ -15,10 +15,10 @@
 
 // TabGeneral dialog
 
-IMPLEMENT_DYNAMIC(TabGeneral, CPropertyPage)
+IMPLEMENT_DYNAMIC(TabGeneral, CMFCPropertyPage)
 
 TabGeneral::TabGeneral()
-	: CPropertyPage(TabGeneral::IDD)
+	: CMFCPropertyPage(TabGeneral::IDD)
 {
 	Reinitialisation();
 }
@@ -29,7 +29,7 @@ TabGeneral::~TabGeneral()
 
 void TabGeneral::DoDataExchange(CDataExchange* pDX)
 {
-	CPropertyPage::DoDataExchange(pDX);
+	CMFCPropertyPage::DoDataExchange(pDX);
 
 	DDX_Text(pDX, IDC_NOM_FICHIER, m_FileName);
 	DDX_Text(pDX, IDC_NOM_CHEMIN, m_Path);
@@ -50,7 +50,7 @@ void TabGeneral::DoDataExchange(CDataExchange* pDX)
 
 BOOL TabGeneral::OnInitDialog()
 {
-	CPropertyPage::OnInitDialog();
+	CMFCPropertyPage::OnInitDialog();
 
 	// If there's no configuration, initialise the XML file
 	if (!ConfigsExists()){
@@ -92,13 +92,13 @@ BOOL TabGeneral::OnInitDialog()
 BOOL TabGeneral::OnCommand(WPARAM wParam, LPARAM lParam)
 {
 	SetModified(TRUE);
-	return CPropertyPage::OnCommand(wParam, lParam);
+	return CMFCPropertyPage::OnCommand(wParam, lParam);
 }
 
 BOOL TabGeneral::OnApply()
 {
 	WriteData();
-	return CPropertyPage::OnApply();
+	return CMFCPropertyPage::OnApply();
 }
 
 void TabGeneral::OnCancel()
@@ -139,7 +139,7 @@ void TabGeneral::OnCancel()
 	StrEchantillon = m_SampleName;
 	StrGaz = _T(gasExp.symbole.c_str());
 
-	CPropertyPage::OnCancel();
+	CMFCPropertyPage::OnCancel();
 }
 
 void TabGeneral::OnOK()
@@ -151,7 +151,7 @@ void TabGeneral::OnOK()
 	}
 	WriteData();
 
-	CPropertyPage::OnOK();
+	CMFCPropertyPage::OnOK();
 }
 
 
@@ -226,7 +226,7 @@ void TabGeneral::WriteData()
 }
 
 
-BEGIN_MESSAGE_MAP(TabGeneral, CPropertyPage)
+BEGIN_MESSAGE_MAP(TabGeneral, CMFCPropertyPage)
 	ON_CBN_SELCHANGE(IDC_COMBO_GAZ, &TabGeneral::OnCbnSelchangeComboGaz)
 	ON_CBN_SELCHANGE(IDC_COMBO_EXPERIMENTATEUR, &TabGeneral::OnCbnSelchangeComboExperimentateur)
 	ON_EN_CHANGE(IDC_NOM_ECHANTILLON, &TabGeneral::OnEnChangeNomEchantillon)
