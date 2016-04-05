@@ -15,6 +15,7 @@ public:
 	// Public interface methods
 public:
 	HRESULT CreateMainThread(LPVOID pParam);
+	HRESULT SetStartEvent();
 	HRESULT ShutdownThread();
 	void ChangementDev(int dev_vanne, int dev_temp);
 	int GetEtapeEnCours();
@@ -25,6 +26,8 @@ private:
 	static DWORD WINAPI ThreadMainWorker(LPVOID pParam);	// Main worker thread
 
 	HANDLE      m_threadMainControlLoop;					// Main worker thread handle
+
+	static HANDLE m_hStartMainThreadEvent;					// Event handle for giving the main thread the go-ahead
 	HANDLE      m_hShutdownEvent;							// Shutdown Event handle
 															// (causes thread to exit
 
@@ -32,6 +35,12 @@ private:
 					  // send progress and completed messages)
 
 };
+
+
+
+
+
+
 
 /// Old implementation
 
@@ -54,7 +63,6 @@ void MiseSousVideBouteille(LPVOID pParam);
 void ChangementBouteille(LPVOID pParam);
 
 // --------- Threads ----------------------
-
 
 UINT ThreadManualAction(LPVOID pParam);
 UINT LancerThreadProc(LPVOID pParam);

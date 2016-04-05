@@ -59,8 +59,8 @@ void CKaollaView::OnBnClickedLancer()
 
 		if (dialogExperimentProperties->DoModal() == IDOK)
 		{
-			// Launch the threads 
-			LancementThreads(GetSafeHwnd());
+			// Launch the threads
+			threadManager->SetStartEvent();
 		}
 		else
 		{

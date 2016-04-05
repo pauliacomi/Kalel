@@ -21,6 +21,7 @@ public:
 	// pointer to the main document
 	CKaollaDoc* m_mainDocument;
 	CKaollaView* m_mainView;
+	ThreadManager* threadManager;
 
 
 	CEdit pEditMessages;
@@ -36,15 +37,6 @@ public:
 	CButton m_ButtonLancer;
 	CButton m_ButtonArreter;
 	CString m_StrEditMesures;
-
-	// these seem to be useless
-	/*float TemperatureCalo;
-	float TemperatureCage;
-	float TemperaturePiece;
-	double Calorimetre; 
-	double Basse_Pression;
-	double Haute_Pression;*/
-	//////
 
 	CString m_StrPressionInitiale;
 	CString m_StrPressionFinale;

@@ -101,6 +101,7 @@ CKaollaView::CKaollaView()
 
 CKaollaView::~CKaollaView()
 {
+	delete threadManager;
 }
 
 // Liaising between variables and controls
@@ -169,7 +170,7 @@ void CKaollaView::OnInitialUpdate()
 	// Check to see whether the parameters file has been created
 	VerifParametres();
 
-	ThreadManager threadManager(GetSafeHwnd());  // the class dealing with managing threads
+	threadManager = new ThreadManager(GetSafeHwnd());;  // the class dealing with managing threads
 }
 
 

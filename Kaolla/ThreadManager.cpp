@@ -22,7 +22,6 @@ CVannes* pVanne;
 CTemperature* pTemperature;
 
 
-HANDLE		m_hStartMainThreadEvent;					// Handle for giving the main thread the go-ahead
 
 // Threads
 CWinThread * m_threadManualAction;
@@ -73,6 +72,17 @@ HRESULT ThreadManager::CreateMainThread(LPVOID pParam)
 	HRESULT hr = S_OK;
 	
 	m_threadMainControlLoop = CreateThread(NULL, NULL, ThreadMainWorker, pParam, NULL, NULL);
+
+	return hr;
+}
+
+HRESULT ThreadManager::SetStartEvent() {
+
+	HRESULT hr = S_OK;
+
+	if (::SetEvent(m_hStartMainThreadEvent) == FALSE) {
+		hr = S_FALSE;
+	}
 
 	return hr;
 }
@@ -263,7 +273,7 @@ UINT ThreadManualAction(LPVOID pParam)													//return manualManip.EstOuver
 	ASSERT(maParam != NULL);
 	bool actionSuccessful = false;
 
-	// Create the temporary class to deal with the command
+	// Create the temporary class to deal with the command, can use pVanne directly but should be careful about any security machanisms
 	CManip manualManip;
 	manualManip.SetKaollaView(pKaollaView);
 	manualManip.SetVannes(pVanne);
