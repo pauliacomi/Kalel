@@ -27,7 +27,6 @@ private:
 
 	HANDLE      m_threadMainControlLoop;					// Main worker thread handle
 
-	static HANDLE m_hStartMainThreadEvent;					// Event handle for giving the main thread the go-ahead
 	HANDLE      m_hShutdownEvent;							// Shutdown Event handle
 															// (causes thread to exit
 

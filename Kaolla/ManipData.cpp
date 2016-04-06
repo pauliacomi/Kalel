@@ -6,13 +6,6 @@
 // Exchange the data between the class and the main window. This should be in a command format (rewrite)
 void CManip::EchangeDonnees()
 {
-	/*m_KaollaView->TemperatureCalo	= TemperatureCalo;
-	m_KaollaView->TemperatureCage	= TemperatureCage;
-	m_KaollaView->TemperaturePiece	= TemperaturePiece;
-	m_KaollaView->Calorimetre		= resultat_calo;
-	m_KaollaView->Basse_Pression	= resultat_bp;
-	m_KaollaView->Haute_Pression	= resultat_hp;*/
-
 	m_KaollaView->m_StrCalo.Format(_T("%.8E"),resultat_calo);
 	m_KaollaView->m_StrBassePression.Format(_T("%f"),resultat_bp);
 	m_KaollaView->m_StrHautePression.Format(_T("%f"),resultat_hp);

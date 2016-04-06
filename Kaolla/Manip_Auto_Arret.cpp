@@ -9,42 +9,42 @@ CEvent EventReprise;
 
 void CManip_Auto::DemandePause()
 {
-	AffichageMessages(_T("Demande Pause\r\n"));
+	messageHandler.DisplayMessage(_T("Demande Pause\r\n"));
 	demande_arret=PAUSE;
 	etape_perturbe=etape_en_cours;
 }
 
 void CManip_Auto::DemandeMiseSousVide()
 {
-	AffichageMessages(_T("Demande d'arrêt sous vide\r\n"));
+	messageHandler.DisplayMessage(_T("Demande d'arrêt sous vide\r\n"));
 	demande_arret=ARRET_SOUSVIDE;
 	etape_perturbe=etape_en_cours;
 }
 
 void CManip_Auto::ArretImmediat()
 {
-	AffichageMessages(_T("Demande d'arrêt immédiat\r\n"));
+	messageHandler.DisplayMessage(_T("Demande d'arrêt immédiat\r\n"));
 	demande_arret=ARRET_IMMEDIAT;
 	etape_perturbe=etape_en_cours;
 }
 
 void CManip_Auto::ProchaineCommande()
 {
-	AffichageMessages(_T("Demande d'arrêt de la commande\r\n"));
+	messageHandler.DisplayMessage(_T("Demande d'arrêt de la commande\r\n"));
 	demande_arret=ARRET_COMMANDE;
 	etape_perturbe=etape_en_cours;
 }
 
 void CManip_Auto::ProchaineEtape()
 {
-	AffichageMessages(_T("Prochaine Etape demandée\r\n"));
+	messageHandler.DisplayMessage(_T("Prochaine Etape demandée\r\n"));
 	demande_arret=ARRET_ETAPE;
 	etape_perturbe=etape_en_cours;
 }
 
 void CManip_Auto::ProchaineDose()
 {
-	AffichageMessages(_T("Prochaine Dose demandée\r\n"));
+	messageHandler.DisplayMessage(_T("Prochaine Dose demandée\r\n"));
 	demande_arret=ARRET_DOSE;
 	etape_perturbe=etape_en_cours;
 }
@@ -53,14 +53,14 @@ void CManip_Auto::MiseEnPause()
 {
 	if (demande_arret == PAUSE)
 	{
-		AffichageMessages(_T("Pause\r\n"));
-		RajoutAffichageEtape(_T("  |  Pause"));
+		messageHandler.DisplayMessage(_T("Pause\r\n"));
+		messageHandler.DisplaAddStep(_T("  |  Pause"));
 		temps_intermediaire.ArretTemps();
 		WaitForSingleObject(EventReprise,INFINITE);
 		//UN_GREY_OUT
 		temps_intermediaire.RepriseTemps();
-		AffichageMessages(_T("Reprise\r\n"));
-		AncienAffichageEtape();
+		messageHandler.DisplayMessage(_T("Reprise\r\n"));
+		messageHandler.DisplayPreviousStep();
 	}
 }
 
@@ -136,7 +136,7 @@ void CManip_Auto::AffichageArret()
 		}
 
 		// Emmettre un son peut-être
-		AffichageMessages(message);
+		messageHandler.DisplayMessage(message);
 
 	}	
 

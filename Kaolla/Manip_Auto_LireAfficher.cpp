@@ -8,19 +8,19 @@ using namespace std;
 void CManip_Auto::LireAfficherBassePression()
 {
 	LectureBassePression();
-	AfficherBassePression();
+	messageHandler.DisplayLowPressure();
 }
 
 void CManip_Auto::LireAfficherHautePression()
 {
 	LectureHautePression();
-	AfficherHautePression();
+	messageHandler.DisplayHighPressure();
 }
 
 void CManip_Auto::LireAfficherCalo()
 {
 	LectureCalo();
-	AfficherCalo();
+	messageHandler.DisplayCalorimeter();
 }
 
 

@@ -36,7 +36,7 @@ void CManip_AutoGaz::ExecutionAuto(LPVOID pParam)
 
 	if (Verifications() == IDCANCEL)
 	{
-		AffichageMessages(_T("Expérience annulée\r\n"));
+		messageHandler.DisplayMessage(_T("Expérience annulée\r\n"));
 		//GREY_OUT les boutons
 
 		FermerInstruments();
@@ -88,7 +88,7 @@ void CManip_AutoGaz::ExecutionAuto(LPVOID pParam)
 	ReinitialisationAuto();
 
 	DebloqueMenu();
-	AffichageMessages(_T("Expérience terminée\r\n"));
+	messageHandler.DisplayMessage(_T("Expérience terminée\r\n"));
 
 	AfxMessageBox(_T("Expérience terminée\t\n"), MB_ICONEXCLAMATION | MB_OK);
 }

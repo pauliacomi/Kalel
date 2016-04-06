@@ -33,11 +33,10 @@
 
 #include <fstream>
 
+#include "MFCMessageHandler.h"
 
 class CManip
 {
-
-
 	// ------------------ Variables ------------------
 
 public:
@@ -54,6 +53,7 @@ public:
 	CProprietes_experience* m_proprietes_experience;	// Pointer to the valve opening class
 
 	// Objects instantiated here
+	MFCMessageHandler messageHandler;					// This class will send all the messages to the GUI using MFC's message pump
 
 	ConnectionMesure AppareilCalo, AppareilHP, AppareilBP;
 	CChrono temps_experience;							// Deals with 
@@ -117,28 +117,10 @@ protected:
 	void DebloqueMenu();
 	void RemettreBoutonLancer();
 
-
-
 	// Manip_Affichage
 
 public:
-	void AffichageMesures();
-	void AffichageMesures(CString rajout_mesure);
-
-protected:
-	void AffichageMessages(CString Message);
-	void RajoutAffichageMessages(CString rajout);
-
-	void AffichageEtape(CString etape);
-	void RajoutAffichageEtape(CString rajout);
-	void AncienAffichageEtape();
-
-	void AfficherCalo();
-	void AfficherBassePression();
-	void AfficherHautePression();
-	void AfficherTemperatures();
-	int MessageBoxConfirmation(CString message, UINT nType);
-	
+	void AffichageMesures();	
 
 	// Manip_Donnees
 public:

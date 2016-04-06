@@ -39,8 +39,8 @@ int CManip_Auto::VerificationVannes()
 {
 	// vérification de l'état initial des vannes
 	// Normalement, toutes les vannes sont fermées...
-	AffichageMessages(_T("Vérification de l'état initial\r\n"));
-	AffichageEtape(_T("Vérification de l'état initial"));
+	messageHandler.DisplayMessage(_T("Vérification de l'état initial\r\n"));
+	messageHandler.DisplayStep(_T("Vérification de l'état initial"));
 	CString MessageInBox;
 	MessageInBox = _T("Vérifier que toutes les électrovannes sont en automatique et fermés\t\n");
 	MessageInBox +=_T("et que la vanne sur l'ampoule est ouverte\t");
@@ -62,8 +62,8 @@ int CManip_Auto::VerificationPressionResiduelle()
 {
 	CString MessageInBox;
 	// Vérification de la pression résiduelle
-	AffichageMessages(_T("Vérification de la pression résiduelle\r\n"));
-	AffichageEtape(_T("Vérification de la pression résiduelle"));
+	messageHandler.DisplayMessage(_T("Vérification de la pression résiduelle\r\n"));
+	messageHandler.DisplayStep(_T("Vérification de la pression résiduelle"));
 
 	LireAfficherHautePression();
 
@@ -71,16 +71,16 @@ int CManip_Auto::VerificationPressionResiduelle()
 	if (resultat_hp < GetPressionSecuriteBassePression() && GetMesureBassePression() && GetMesureHautePression())
 	{
 		mess.Format(_T("Haute Pression : %f  Possibilité d'ouvrir la vanne 6\r\n"),resultat_hp);
-		AffichageMessages(mess);
+		messageHandler.DisplayMessage(mess);
 		Ouverture_Vanne(6);
 		mess.Format(_T("Attente de %d secondes..."),Intervalle1/1000);//convertion en secondes
-		AffichageMessages(mess);
+		messageHandler.DisplayMessage(mess);
 		//Sleep(Intervalle1);
 		AttenteSecondes(Intervalle1/1000);
 	}
 	Ouverture_Vanne(5);
 	mess.Format(_T("Attente de %d secondes..."),Intervalle1/1000);//convertion en secondes
-	AffichageMessages(mess);
+	messageHandler.DisplayMessage(mess);
 	//Sleep(Intervalle1);
 	AttenteSecondes(Intervalle1/1000);
 
@@ -104,14 +104,13 @@ int CManip_Auto::VerificationTemperature()
 {
 	CString MessageInBox;
 	// Vérification des températures
-	AffichageMessages(_T("Vérification des températures\r\n"));
-	AffichageEtape(_T("Vérification des températures"));
+	messageHandler.DisplayMessage(_T("Vérification des températures\r\n"));
+	messageHandler.DisplayStep(_T("Vérification des températures"));
 
 	etape_en_cours = STAGE_TEMP;
 
 	LectureTemperatures();
-	AfficherTemperatures();
-
+	messageHandler.DisplayTemperatures();
 
 	float Texp = general.temperature_experience;
 	// préciser quelle température dans la boite de dialogue ???
@@ -125,7 +124,7 @@ int CManip_Auto::VerificationTemperature()
 			return IDCANCEL;
 		if(verif_temperatures == IDYES)
 		{
-			AffichageMessages(_T("Attente de la température\r\n"));
+			messageHandler.DisplayMessage(_T("Attente de la température\r\n"));
 
 			while( (TemperatureCalo < Texp-1) || (TemperatureCalo > Texp+1) ||
 				   (TemperatureCage < Texp-1) || (TemperatureCage > Texp+1) )
@@ -138,7 +137,7 @@ int CManip_Auto::VerificationTemperature()
 					Sleep(attente_pause);
 				}
 				LectureTemperatures();
-				AfficherTemperatures();
+				messageHandler.DisplayTemperatures();
 			}
 		}
 	}

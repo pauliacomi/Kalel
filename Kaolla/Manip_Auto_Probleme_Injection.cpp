@@ -36,7 +36,7 @@ void CManip_Auto::VerificationInjection()
 		hThreadInjection=CreateThread(NULL,NULL,PauseInjection,this,NULL,&ThreadInjectionId);
 		SetEvent(hEventInjection);
 		//WaitForSingleObject(hThreadPression,INFINITE);
-		AffichageMessages(_T("Problème d'injection - demande de pause\r\n"));
+		messageHandler.DisplayMessage(_T("Problème d'injection - demande de pause\r\n"));
 		CString message;
 		message = _T("ATTENTION !!! problème de gaz !!!\t\n");
 		message+= _T("(gaz moteur ou gaz d'analyse)\t\n");

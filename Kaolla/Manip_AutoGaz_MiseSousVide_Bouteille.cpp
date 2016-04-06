@@ -15,15 +15,15 @@ void CManip_AutoGaz::MiseSousVideBouteille()
 
 	InitialisationManip();
 	
-	if(MessageBoxConfirmation(_T("Fermer la bouteille !\tPuis appuyer sur OK\n"), MB_OKCANCEL | MB_ICONQUESTION)==IDCANCEL)
+	if(messageHandler.DisplayMessageBox(_T("Fermer la bouteille !\tPuis appuyer sur OK\n"), MB_OKCANCEL | MB_ICONQUESTION)==IDCANCEL)
 	{
 		ToutFermer();
 		FermerInstruments();
 		return;
 	}
 
-	AffichageMessages(_T("Mise sous vide jusqu'à la bouteille\r\n"));
-	AffichageEtape(_T("Mise sous vide jusqu'à la bouteille"));
+	messageHandler.DisplayMessage(_T("Mise sous vide jusqu'à la bouteille\r\n"));
+	messageHandler.DisplayStep(_T("Mise sous vide jusqu'à la bouteille"));
 
 	
 	ProcedureMiseSousVideBouteille();
@@ -35,13 +35,13 @@ void CManip_AutoGaz::MiseSousVideBouteille()
 
 	ToutFermer();
 	FermerInstruments();
-	AffichageEtape(_T("\r\n"));
+	messageHandler.DisplayStep(_T("\r\n"));
 }
 
 
 void CManip_AutoGaz::ProcedureMiseSousVideBouteille()
 {
-	AffichageMessages(_T("Procédure Mise sous vide de la bouteille\r\n"));
+	messageHandler.DisplayMessage(_T("Procédure Mise sous vide de la bouteille\r\n"));
 	// Mettre en route la pompe
 	MettreEnRouteLaPompe();
 
@@ -81,12 +81,12 @@ void CManip_AutoGaz::ProcedureMiseSousVideBouteille()
 	AttenteMinutes(10);
 
 	ToutFermer();
-	AffichageMessages(_T("Fin de la procédure Mise sous vide de la bouteille\r\n"));
+	messageHandler.DisplayMessage(_T("Fin de la procédure Mise sous vide de la bouteille\r\n"));
 }
 
 void CManip_AutoGaz::ProcedureMiseSousVideBouteille2()
 {
-	AffichageMessages(_T("Procédure Mise sous vide de la bouteille\r\n"));
+	messageHandler.DisplayMessage(_T("Procédure Mise sous vide de la bouteille\r\n"));
 	// Mettre en route la pompe
 	MettreEnRouteLaPompe();
 
@@ -121,7 +121,7 @@ void CManip_AutoGaz::ProcedureMiseSousVideBouteille2()
 	
 
 	ToutFermer();
-	AffichageMessages(_T("Fin de la procédure Mise sous vide de la bouteille\r\n"));
+	messageHandler.DisplayMessage(_T("Fin de la procédure Mise sous vide de la bouteille\r\n"));
 }
 
 

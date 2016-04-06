@@ -24,10 +24,10 @@ void CManip_AutoGaz::ChangementBouteille()
 	
 	InitialisationManip();
 
-	AffichageMessages(_T("Changement de bouteille\r\n"));
-	AffichageEtape(_T("Changement de bouteille\r\n"));
+	messageHandler.DisplayMessage(_T("Changement de bouteille\r\n"));
+	messageHandler.DisplayStep(_T("Changement de bouteille\r\n"));
 	
-	if(MessageBoxConfirmation(_T("Fermer la bouteille !\t\nPuis appuyer sur OK\t\n"), MB_OKCANCEL)==IDCANCEL)
+	if(messageHandler.DisplayMessageBox(_T("Fermer la bouteille !\t\nPuis appuyer sur OK\t\n"), MB_OKCANCEL)==IDCANCEL)
 	{
 		ToutFermer();
 		FermerInstruments();
@@ -36,7 +36,7 @@ void CManip_AutoGaz::ChangementBouteille()
 
 	ProcedureMiseSousVideBouteille();
 	
-	if(MessageBoxConfirmation(_T("Changer la bouteille -> Ouvrir le manomètre\t\nPuis appuyer sur OK\t\n"), MB_OKCANCEL)==IDCANCEL)
+	if(messageHandler.DisplayMessageBox(_T("Changer la bouteille -> Ouvrir le manomètre\t\nPuis appuyer sur OK\t\n"), MB_OKCANCEL)==IDCANCEL)
 	{
 		ToutFermer();
 		FermerInstruments();
@@ -47,7 +47,7 @@ void CManip_AutoGaz::ChangementBouteille()
 	
 	for(int i=1; i<=3; i++)
 	{
-		if(MessageBoxConfirmation(_T("Fermer le manomètre\t\nOuvrir puis fermer la bouteille\t\nOuvrir le manomètre 1 bar\t\n"), MB_OKCANCEL)==IDCANCEL)
+		if(messageHandler.DisplayMessageBox(_T("Fermer le manomètre\t\nOuvrir puis fermer la bouteille\t\nOuvrir le manomètre 1 bar\t\n"), MB_OKCANCEL)==IDCANCEL)
 		{
 			ToutFermer();
 			FermerInstruments();
@@ -56,16 +56,16 @@ void CManip_AutoGaz::ChangementBouteille()
 		
 		if(i==1)
 		{
-			AffichageMessages(_T("Changement de bouteille : 1er rinçage\r\n"));
-			AffichageEtape(_T("Changement de bouteille : 1er rinçage\r\n"));
+			messageHandler.DisplayMessage(_T("Changement de bouteille : 1er rinçage\r\n"));
+			messageHandler.DisplayStep(_T("Changement de bouteille : 1er rinçage\r\n"));
 		}
 		
 		else
 		{
 			CString text;
 			text.Format(_T("Changement de bouteille : %deme rinçage\r\n"),i);
-			AffichageMessages(text);
-			AffichageEtape(text);
+			messageHandler.DisplayMessage(text);
+			messageHandler.DisplayStep(text);
 		}
 		
 		ProcedureMiseSousVideBouteille();
@@ -75,7 +75,7 @@ void CManip_AutoGaz::ChangementBouteille()
 	
 	AfxMessageBox(_T("Changement de bouteille terminé\t\n"), MB_OK);
 
-	AffichageMessages(_T("Fin de changement de bouteille\r\n"));
+	messageHandler.DisplayMessage(_T("Fin de changement de bouteille\r\n"));
 
 
 	// Normalement, toutes les vannes sont fermées
@@ -83,6 +83,6 @@ void CManip_AutoGaz::ChangementBouteille()
 
 	ToutFermer();
 	FermerInstruments();
-	AffichageEtape(_T("\r\n"));
+	messageHandler.DisplayStep(_T("\r\n"));
 }
 

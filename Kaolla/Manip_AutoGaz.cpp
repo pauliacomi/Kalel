@@ -50,7 +50,7 @@ void CManip_AutoGaz::ArretExperience()
 {
 	if(DialogueTypeExperience->TypeExperience == EXPERIMENT_TYPE_MANUAL)
 	{
-		AffichageMessages(_T("Demande d'arrêt\r\n"));
+		messageHandler.DisplayMessage(_T("Demande d'arrêt\r\n"));
 		manip_en_cours = FALSE;
 	}
 	else

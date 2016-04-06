@@ -18,7 +18,7 @@ void CManip_AutoGaz::LireEcrireAfficher(int duree_evenement,CString nom_etape,LP
 
 	CString message;
 	message.Format(_T("Début %s\r\n"),nom_etape);
-	AffichageMessages(message);
+	messageHandler.DisplayMessage(message);
 
 	temps_intermediaire.TopChrono();
 	CString Etape;
@@ -28,7 +28,7 @@ void CManip_AutoGaz::LireEcrireAfficher(int duree_evenement,CString nom_etape,LP
 	do{
 		Etape.Format(_T("%s   %s / %d min"), 
 			nom_etape,temps_intermediaire.StrTempsActuel(), duree_evenement);
-		AffichageEtape(Etape);
+		messageHandler.DisplayStep(Etape);
 
 		continuer = LireEcrireAfficher(pParam);
 
@@ -38,8 +38,8 @@ void CManip_AutoGaz::LireEcrireAfficher(int duree_evenement,CString nom_etape,LP
 	Etape.Format(_T("%s   Terminé"),nom_etape);
 	message.Format(_T("Fin %s\r\n"),nom_etape);
 
-	AffichageEtape(Etape);
-	AffichageMessages(message);
+	messageHandler.DisplayStep(Etape);
+	messageHandler.DisplayMessage(message);
 
 }
 
@@ -79,7 +79,7 @@ bool CManip_AutoGaz::LireEcrireAfficher(LPVOID pParam)
 		{
 			CString message_alerte;
 			message_alerte.Format(_T("ERREUR PROGRAMMATION : ETAPE %d NON DEFINIE DANS LireEcrireAfficher\r\n"),etape_en_cours);
-			AffichageMessages(message_alerte);
+			messageHandler.DisplayMessage(message_alerte);
 			verif_existance_etape = TRUE;
 		}
 	}
@@ -108,7 +108,7 @@ bool CManip_AutoGaz::LireEcrireAfficher(LPVOID pParam)
 					{
 						CString message_alerte;
 						message_alerte.Format(_T("ERREUR : DEMANDE ARRET %d NON DEFINIE DANS LireEcrireAfficher\r\n"),FctArretDemande);
-						AffichageMessages(message_alerte);
+						messageHandler.DisplayMessage(message_alerte);
 						verif_existance_arret = TRUE;
 					}
 			}

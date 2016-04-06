@@ -22,7 +22,7 @@ bool CManip_Auto::Ouverture_Vanne(int num_vanne)
 
 	CString message;
 	message.Format(_T("Vanne %d ouverte\r\n"),num_vanne);
-	AffichageMessages(message);
+	messageHandler.DisplayMessage(message);
 	return TRUE;
 }
 
@@ -35,7 +35,7 @@ bool CManip_Auto::Fermeture_Vanne(int num_vanne)
 	}
 	CString message;
 	message.Format(_T("Vanne %d fermée\r\n"),num_vanne);
-	AffichageMessages(message);
+	messageHandler.DisplayMessage(message);
 	return TRUE;
 }
 
@@ -48,7 +48,7 @@ bool CManip_Auto::OuvrirEtFermer_Vanne(int num_vanne)
 	}
 	CString message;
 	message.Format(_T("Ouverture et fermeture de la Vanne %d\r\n"),num_vanne);
-	AffichageMessages(message);
+	messageHandler.DisplayMessage(message);
 	return TRUE;
 }
 
@@ -59,7 +59,7 @@ bool CManip_Auto::ActiverEV(int num_ev)
 		// problem
 		return FALSE;
 	}
-	AffichageMessages(_T("Activation de la valve EVx\r\n")); 
+	messageHandler.DisplayMessage(_T("Activation de la valve EVx\r\n")); 
 	return TRUE;
 }
 
@@ -70,7 +70,7 @@ bool CManip_Auto::DesactiverEV(int num_ev)
 		// problem
 		return FALSE;
 	}
-	AffichageMessages(_T("Désactivation de la valve EVx\r\n"));
+	messageHandler.DisplayMessage(_T("Désactivation de la valve EVx\r\n"));
 	return TRUE;
 }
 
@@ -81,7 +81,7 @@ bool CManip_Auto::ActiverPompe()
 		// problem
 		return FALSE;
 	}
-	AffichageMessages(_T("Activation de la valve Pompe\r\n"));
+	messageHandler.DisplayMessage(_T("Activation de la valve Pompe\r\n"));
 	return TRUE;
 }
 
@@ -92,7 +92,7 @@ bool CManip_Auto::DesactiverPompe()
 		// problem
 		return FALSE;
 	}
-	AffichageMessages(_T("Désactivation de la valve Pompe\r\n"));
+	messageHandler.DisplayMessage(_T("Désactivation de la valve Pompe\r\n"));
 	return TRUE;
 }
 

@@ -7,8 +7,8 @@ CEvent g_eventFinAffichage;
 
 void CManip::ExecutionManuelle(LPVOID pParam)
 {
-	AffichageMessages(_T("Début de l'expérience\r\n"));
-	AffichageMesures(_T("***************************************************************\r\n"));
+	messageHandler.DisplayMessage(_T("Début de l'expérience\r\n"));
+	messageHandler.DisplayMeasurement(_T("***************************************************************\r\n"));
 
 	InitialisationManip();
 
@@ -67,7 +67,7 @@ void CManip::ExecutionManuelle(LPVOID pParam)
 			ReinitialisationManuelle();
 			FermetureFichierMesures();
 			DebloqueMenu();
-			AffichageMessages(_T("Expérience terminée\r\n"));
+			messageHandler.DisplayMessage(_T("Expérience terminée\r\n"));
 			RemettreBoutonLancer();
 			break;
 		}

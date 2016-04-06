@@ -17,9 +17,31 @@ public:
 	MFCMessageHandler();
 	virtual ~MFCMessageHandler();
 	
-	// PostMessage functions
+	// Window handle for message postback
+	HWND windowHandle;
+
 public:
+
+	// PostMessage functions
 	BOOL ResetDocumentGraph(LPVOID pParam);
+	BOOL DisplayMeasurement(CString pParam);
+	BOOL DisplayMessage(CString pParam);
+	BOOL DisplayAddMessage(CString pParam);
+
+	// Steps
+	BOOL DisplayStep(CString pParam);
+	BOOL DisplaAddStep(CString pParam);
+	BOOL DisplayPreviousStep();
+
+	// Data
+	BOOL DisplayCalorimeter();
+	BOOL DisplayHighPressure();
+	BOOL DisplayLowPressure();
+	BOOL DisplayTemperatures();
+
+	// Messageboxes
+	BOOL DisplayMessageBox(CString message, UINT nType);
+
 };
 
 

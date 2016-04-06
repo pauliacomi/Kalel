@@ -12,7 +12,7 @@ void CManip_AutoGaz::PetitesDoses(LPVOID pParam)
 
 	DonneesAutoGrapheEtape();
 
-	AffichageMessages(_T("Début des petites doses\r\n"));
+	messageHandler.DisplayMessage(_T("Début des petites doses\r\n"));
 	Fermeture_Vanne(5);
 
 	ToutFermer();
@@ -25,7 +25,7 @@ void CManip_AutoGaz::PetitesDoses(LPVOID pParam)
 		RecuperationDonneesPetitesDoses();
 
 		goto_message.Format(_T("Début de la petite dose %d\r\n"), dose);
-		AffichageMessages(goto_message);
+		messageHandler.DisplayMessage(goto_message);
 
 		PetitesDoses_InitialisationPressionInitiale(); PointArretFonction();
 
@@ -37,17 +37,17 @@ void CManip_AutoGaz::PetitesDoses(LPVOID pParam)
 
 
 	FinDose:
-		AffichageMessages(_T("Isolation de l'échantillon\r\n"));
+		messageHandler.DisplayMessage(_T("Isolation de l'échantillon\r\n"));
 		Fermeture_Vanne(5);
 
 		goto_message.Format(_T("Fin de la petite dose %d\r\n"), dose);
-		AffichageMessages(goto_message);
+		messageHandler.DisplayMessage(goto_message);
 
 		//Vérification de la limite basse pression
 	} while (PressionFinale < petites_doses.pression_finale);
 
-	AffichageEtape(_T("Fin des petites doses\r\n"));
-	AffichageMessages(_T("Fin des petites doses\r\n"));
+	messageHandler.DisplayStep(_T("Fin des petites doses\r\n"));
+	messageHandler.DisplayMessage(_T("Fin des petites doses\r\n"));
 
 }
 
@@ -56,8 +56,8 @@ void CManip_AutoGaz::PetitesDoses_InitialisationPressionInitiale()
 {
 	CString etape;
 	etape.Format(_T("Petites Doses %d : Initialisation de la Pression Initiale"), dose);
-	AffichageEtape(etape);
-	AffichageMessages(_T("Initialisation de la Pression Initiale\r\n"));
+	messageHandler.DisplayStep(etape);
+	messageHandler.DisplayMessage(_T("Initialisation de la Pression Initiale\r\n"));
 	Fermeture_Vanne(6);
 
 	LireAfficherBassePression();
@@ -80,7 +80,7 @@ void CManip_AutoGaz::PetitesDoses_InjectionGaz()
 		injection++;
 		CString temp_mess;
 		temp_mess.Format(_T("Multiplicateur = %f\r\n"), multiplicateur);
-		AffichageMessages(temp_mess);
+		messageHandler.DisplayMessage(temp_mess);
 		ReinitialisationVerificationInjection();
 		do {
 			PetitesDoses_Injection();
@@ -121,15 +121,15 @@ void CManip_AutoGaz::PetitesDoses_InjectionGaz()
 
 	if (resultat_hp < GetPressionSecuriteBassePression())
 	{
-		AffichageMessages(_T("La Haute Pression est inférieure à la sécurité de la Basse Pression\r\n"));
-		AffichageMessages(_T("Possibilité d'ouvrir la vanne 6\r\n"));
+		messageHandler.DisplayMessage(_T("La Haute Pression est inférieure à la sécurité de la Basse Pression\r\n"));
+		messageHandler.DisplayMessage(_T("Possibilité d'ouvrir la vanne 6\r\n"));
 		Ouverture_Vanne(6);
-		AffichageMessages(_T("Attente de 5 secondes\r\n"));
+		messageHandler.DisplayMessage(_T("Attente de 5 secondes\r\n"));
 		//Sleep(5000);
 		AttenteSecondes(5);
 	}
 
-	AffichageMessages(_T("Injection réussie\r\n"));
+	messageHandler.DisplayMessage(_T("Injection réussie\r\n"));
 }
 
 
@@ -139,10 +139,10 @@ void CManip_AutoGaz::PetitesDoses_Injection()
 {
 	CString message;
 	message.Format(_T("Début Injection dans le volume de référence %d\r\n"), injection);
-	AffichageMessages(message);
+	messageHandler.DisplayMessage(message);
 	CString etape;
 	etape.Format(_T("Petites Doses %d : Injection dans le volume de référence %d"), dose, injection);
-	AffichageEtape(etape);
+	messageHandler.DisplayStep(etape);
 
 	//Injection basse pression
 
@@ -156,16 +156,16 @@ void CManip_AutoGaz::PetitesDoses_Injection()
 
 
 	message.Format(_T("Pression Initiale = %f\r\n"), PressionInitiale);
-	AffichageMessages(message);
+	messageHandler.DisplayMessage(message);
 	message.Format(_T("Pression Finale = %f\r\n"), PressionFinale);
-	AffichageMessages(message);
+	messageHandler.DisplayMessage(message);
 	message.Format(_T("Pression Finale - Pression Initiale = %f\r\n"), PressionFinale - PressionInitiale);
-	AffichageMessages(message);
+	messageHandler.DisplayMessage(message);
 	message.Format(_T("delta pression = %f\r\n"), (petites_doses.delta_pression));
-	AffichageMessages(message);
+	messageHandler.DisplayMessage(message);
 
 	message.Format(_T("Fin injection %d\r\n"), injection);
-	AffichageMessages(message);
+	messageHandler.DisplayMessage(message);
 
 	VerificationInjection();
 
@@ -179,22 +179,22 @@ void CManip_AutoGaz::PetitesDoses_EnlevementGaz()
 
 	CString message;
 	message.Format(_T("Debut enlèvement de gaz %d\r\n"), injection);
-	AffichageMessages(message);
+	messageHandler.DisplayMessage(message);
 	CString etape;
 	etape.Format(_T("Petites Doses %d : Enlèvement de gaz %d"), dose, injection);
-	AffichageEtape(etape);
+	messageHandler.DisplayStep(etape);
 
 	CString temp_mess;
 	temp_mess.Format("Pression Initiale = %f\r\n", PressionInitiale);
-	AffichageMessages(temp_mess);
+	messageHandler.DisplayMessage(temp_mess);
 	temp_mess.Format("Pression Finale = %f\r\n", PressionFinale);
-	AffichageMessages(temp_mess);
+	messageHandler.DisplayMessage(temp_mess);
 	temp_mess.Format(_T("Pression Finale - Pression Initiale = %f\r\n"), PressionFinale - PressionInitiale);
-	AffichageMessages(temp_mess);
+	messageHandler.DisplayMessage(temp_mess);
 	temp_mess.Format(_T("multiplicateur(%f) * delta pression = %f\r\n"), multiplicateur, multiplicateur*(petites_doses.delta_pression));
-	AffichageMessages(temp_mess);
+	messageHandler.DisplayMessage(temp_mess);
 	temp_mess.Format(_T("0.9 * delta pression = %f\r\n"), 0.9*(petites_doses.delta_pression));
-	AffichageMessages(temp_mess);
+	messageHandler.DisplayMessage(temp_mess);
 
 	do {
 		OuvrirEtFermer_Vanne(8);
@@ -205,13 +205,13 @@ void CManip_AutoGaz::PetitesDoses_EnlevementGaz()
 		InitialiserAfficherPressionFinale(resultat_hp);
 
 		temp_mess.Format("Pression Initiale = %f\r\n", PressionInitiale);
-		AffichageMessages(temp_mess);
+		messageHandler.DisplayMessage(temp_mess);
 		temp_mess.Format("Pression Finale = %f\r\n", PressionFinale);
-		AffichageMessages(temp_mess);
+		messageHandler.DisplayMessage(temp_mess);
 		temp_mess.Format(_T("Pression Finale - Pression Initiale = %f\r\n"), PressionFinale - PressionInitiale);
-		AffichageMessages(temp_mess);
+		messageHandler.DisplayMessage(temp_mess);
 		temp_mess.Format(_T("multiplicateur(%f) * delta pression = %f\r\n"), multiplicateur, multiplicateur*(petites_doses.delta_pression));
-		AffichageMessages(temp_mess);
+		messageHandler.DisplayMessage(temp_mess);
 
 		PointArretSousFonction();
 
@@ -220,7 +220,7 @@ void CManip_AutoGaz::PetitesDoses_EnlevementGaz()
 	} while (PressionFinale - PressionInitiale > multiplicateur*(petites_doses.delta_pression));
 
 	message.Format(_T("Fin enlèvement de gaz %d\r\n"), injection);
-	AffichageMessages(message);
+	messageHandler.DisplayMessage(message);
 
 	//ArreterLaPompe();
 }
@@ -230,22 +230,22 @@ void CManip_AutoGaz::PetitesDoses_EnlevementGaz()
 
 void CManip_AutoGaz::PetitesDoses_EquilibreDansVolumeRef(LPVOID pParam)
 {
-	AffichageMessages(_T("Equilibre dans le volume de référence\r\n"));
+	messageHandler.DisplayMessage(_T("Equilibre dans le volume de référence\r\n"));
 	CString nom_etape;
 	nom_etape.Format(_T("Petites Doses %d : Equilibre dans le volume de référence"), dose);
 	LireEcrireAfficher(petites_doses.temps_volume, nom_etape, pParam);
-	AffichageMessages(_T("Fin Equilibre dans le volume de référence\r\n"));
+	messageHandler.DisplayMessage(_T("Fin Equilibre dans le volume de référence\r\n"));
 }
 
 
 void CManip_AutoGaz::PetitesDoses_AdsorptionBassePression(LPVOID pParam)
 {
-	AffichageMessages(_T("Adsorption Basse Pression\r\n"));
-	AffichageMessages(_T("Demande d'ouverture de la vanne 5 pour l'adsorption\r\n"));
+	messageHandler.DisplayMessage(_T("Adsorption Basse Pression\r\n"));
+	messageHandler.DisplayMessage(_T("Demande d'ouverture de la vanne 5 pour l'adsorption\r\n"));
 	Ouverture_Vanne(5);
 
 	CString nom_etape;
 	nom_etape.Format(_T("Petites Doses %d : Adsorption Basse Pression"), dose);
 	LireEcrireAfficher(petites_doses.temps_adsorption, nom_etape, pParam);
-	AffichageMessages(_T("Fin Adsorption Basse Pression\r\n"));
+	messageHandler.DisplayMessage(_T("Fin Adsorption Basse Pression\r\n"));
 }

@@ -22,6 +22,7 @@ CVannes* pVanne;
 CTemperature* pTemperature;
 
 
+HANDLE m_hStartMainThreadEvent;					// Event handle for giving the main thread the go-ahead. THIS SHOULD NOT BE HERE DUH
 
 // Threads
 CWinThread * m_threadManualAction;

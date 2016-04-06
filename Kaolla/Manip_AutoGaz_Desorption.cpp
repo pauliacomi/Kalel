@@ -9,7 +9,7 @@ void CManip_AutoGaz::Desorption(LPVOID pParam)
 	etape_en_cours = STAGE_DESORPTION;
 	DonneesAutoGrapheEtape();
 
-	AffichageMessages(_T("Début de la désorption\r\n"));
+	messageHandler.DisplayMessage(_T("Début de la désorption\r\n"));
 	ToutFermer();
 
 	tentative = 0;
@@ -20,7 +20,7 @@ void CManip_AutoGaz::Desorption(LPVOID pParam)
 		RecuperationDonneesDesorption();
 
 		goto_message.Format(_T("Début de la tentative %d\r\n"), tentative);
-		AffichageMessages(goto_message);
+		messageHandler.DisplayMessage(goto_message);
 
 		Desorption_InitialisationPressionInitiale(); PointArretFonction();
 
@@ -36,11 +36,11 @@ void CManip_AutoGaz::Desorption(LPVOID pParam)
 
 
 	FinDose:
-		AffichageMessages(_T("Isolation de l'échantillon\r\n"));
+		messageHandler.DisplayMessage(_T("Isolation de l'échantillon\r\n"));
 		Fermeture_Vanne(5);
 
 		goto_message.Format(_T("Fin de la tentative %d\r\n"), tentative);
-		AffichageMessages(goto_message);
+		messageHandler.DisplayMessage(goto_message);
 
 	} while (PressionFinale >= desorption.pression_finale && !derniere_dose);
 
@@ -51,8 +51,8 @@ void CManip_AutoGaz::Desorption(LPVOID pParam)
 
 	PointArretFonction();
 
-	AffichageEtape(_T("Fin de la désorption\r\n"));
-	AffichageMessages(_T("Fin de la désorption\r\n"));
+	messageHandler.DisplayStep(_T("Fin de la désorption\r\n"));
+	messageHandler.DisplayMessage(_T("Fin de la désorption\r\n"));
 }
 
 
@@ -60,8 +60,8 @@ void CManip_AutoGaz::Desorption_InitialisationPressionInitiale()
 {
 	CString etape;
 	etape.Format(_T("Désorption %d : Initialisation de la Pression Initiale"), tentative);
-	AffichageEtape(etape);
-	AffichageMessages(_T("Initialisation de la Pression Initiale\r\n"));
+	messageHandler.DisplayStep(etape);
+	messageHandler.DisplayMessage(_T("Initialisation de la Pression Initiale\r\n"));
 
 	LireAfficherBassePression();
 	LireAfficherHautePression();
@@ -84,10 +84,10 @@ void CManip_AutoGaz::Desorption_EnlevementGaz()
 
 	do {
 		enlevement++;
-		AffichageMessages(_T("Début Enlèvement de gaz dans le volume de référence\r\n"));
+		messageHandler.DisplayMessage(_T("Début Enlèvement de gaz dans le volume de référence\r\n"));
 		CString etape;
 		etape.Format(_T("Désorption %d : Enlèvement de gaz dans le volume de référence %d"), tentative, enlevement);
-		AffichageEtape(etape);
+		messageHandler.DisplayStep(etape);
 
 		OuvrirEtFermer_Vanne(8);
 		OuvrirEtFermer_Vanne(7);
@@ -97,16 +97,16 @@ void CManip_AutoGaz::Desorption_EnlevementGaz()
 
 		CString temp_mess;
 		temp_mess.Format(_T("Pression Initiale = %f\r\n"), PressionInitiale);
-		AffichageMessages(temp_mess);
+		messageHandler.DisplayMessage(temp_mess);
 		temp_mess.Format(_T("Pression Finale = %f\r\n"), PressionFinale);
-		AffichageMessages(temp_mess);
+		messageHandler.DisplayMessage(temp_mess);
 		temp_mess.Format(_T("Pression Finale - Pression Initiale = %f\r\n"), PressionFinale - PressionInitiale);
-		AffichageMessages(temp_mess);
+		messageHandler.DisplayMessage(temp_mess);
 		temp_mess.Format(_T("delta pression = %f\r\n"), (delta_pression_demande));
-		AffichageMessages(temp_mess);
+		messageHandler.DisplayMessage(temp_mess);
 
 		temp_mess.Format(_T("Fin enlèvement de gaz %d\r\n"), enlevement);
-		AffichageMessages(temp_mess);
+		messageHandler.DisplayMessage(temp_mess);
 
 		VerificationInjection();
 
@@ -118,25 +118,25 @@ void CManip_AutoGaz::Desorption_EnlevementGaz()
 
 void CManip_AutoGaz::Desorption_EquilibreDansVolumeRef(LPVOID pParam)
 {
-	AffichageMessages(_T("Equilibre dans le volume de référence\r\n"));
+	messageHandler.DisplayMessage(_T("Equilibre dans le volume de référence\r\n"));
 
 
 
 	CString nom_etape;
 	nom_etape.Format(_T("Désorption %d : Equilibre dans le volume de référence"), tentative);
 	LireEcrireAfficher(desorption.temps_volume, nom_etape, pParam);
-	AffichageMessages(_T("Fin Equilibre dans le volume de référence\r\n"));
+	messageHandler.DisplayMessage(_T("Fin Equilibre dans le volume de référence\r\n"));
 }
 
 
 void CManip_AutoGaz::Desorption_DesorptionEchantillonEtEquilibre(LPVOID pParam)
 {
-	AffichageMessages(_T("Désorption de l'échantillon et équilibre\r\n"));
+	messageHandler.DisplayMessage(_T("Désorption de l'échantillon et équilibre\r\n"));
 	Ouverture_Vanne(5);
 	CString nom_etape;
 	nom_etape.Format(_T("Désorption %d : Désorption de l'échantillon et équilibre"), tentative);
 	LireEcrireAfficher(desorption.temps_desorption, nom_etape, pParam);
-	AffichageMessages(_T("Fin Désorption de l'échantillon et équilibre\r\n"));
+	messageHandler.DisplayMessage(_T("Fin Désorption de l'échantillon et équilibre\r\n"));
 }
 
 void CManip_AutoGaz::Desorption_DerniereEtape(LPVOID pParam)
@@ -152,10 +152,10 @@ void CManip_AutoGaz::Desorption_DerniereEtape(LPVOID pParam)
 
 	PointArretSousFonction();
 
-	AffichageMessages(_T("Equilibre dans le volume de référence dans la dernière étape 1\r\n"));
+	messageHandler.DisplayMessage(_T("Equilibre dans le volume de référence dans la dernière étape 1\r\n"));
 	CString nom_etape = _T("Désorption Dernière Etape : Equilibre dans le volume de référence 1");
 	LireEcrireAfficher(desorption.temps_volume, nom_etape, pParam);
-	AffichageMessages(_T("Fin Equilibre dans le volume de référence dans la dernière étape 1\r\n"));
+	messageHandler.DisplayMessage(_T("Fin Equilibre dans le volume de référence dans la dernière étape 1\r\n"));
 
 	ArreterLaPompe();
 	Fermeture_Vanne(8);
@@ -163,10 +163,10 @@ void CManip_AutoGaz::Desorption_DerniereEtape(LPVOID pParam)
 
 	PointArretSousFonction();
 
-	AffichageMessages(_T("Equilibre dans le volume de référence dans la dernière étape 2\r\n"));
+	messageHandler.DisplayMessage(_T("Equilibre dans le volume de référence dans la dernière étape 2\r\n"));
 	/*CString*/ nom_etape = _T("Désorption Dernière Etape : Equilibre dans le volume de référence 2");
 	LireEcrireAfficher(desorption.temps_volume, nom_etape, pParam);
-	AffichageMessages(_T("Fin Equilibre dans le volume de référence dans la dernière étape 2\r\n"));
+	messageHandler.DisplayMessage(_T("Fin Equilibre dans le volume de référence dans la dernière étape 2\r\n"));
 
 	PointArretSousFonction();
 
@@ -174,10 +174,10 @@ void CManip_AutoGaz::Desorption_DerniereEtape(LPVOID pParam)
 
 	PointArretSousFonction();
 
-	AffichageMessages(_T("Désorption de l'échantillon et équilibre dans la dernière étape \r\n"));
+	messageHandler.DisplayMessage(_T("Désorption de l'échantillon et équilibre dans la dernière étape \r\n"));
 	/*CString*/ nom_etape = _T("Désorption Dernière Etape : Désorption de l'échantillon et équilibre");
 	LireEcrireAfficher(desorption.temps_desorption, nom_etape, pParam);
-	AffichageMessages(_T("Fin Désorption de l'échantillon et équilibre dans la dernière étape \r\n"));
+	messageHandler.DisplayMessage(_T("Fin Désorption de l'échantillon et équilibre dans la dernière étape \r\n"));
 
 	PointArretSousFonction();
 

@@ -48,7 +48,7 @@ void CManip::AttenteSecondes (int nbsecondes)
 			compteur++;
 		message += _T("\r\n");
 		
-		RajoutAffichageMessages(message);
+		messageHandler.DisplayAddMessage(message);
 		
 		Sleep(995); // why?
 		temps_effectue = chrono_attente.TempsActuel();

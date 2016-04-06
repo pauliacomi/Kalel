@@ -41,14 +41,14 @@ void CManip::SecuriteHautePressionManuelle()
 		hThreadPression=CreateThread(NULL,NULL,MesureSecuriteHautePression,NULL,NULL,&ThreadPressionId);
 		SetEvent(hEventPression);
 		//WaitForSingleObject(hThreadPression,INFINITE);
-		AffichageMessages(_T("Haute Pression trop élevée\r\n"));
+		messageHandler.DisplayMessage(_T("Haute Pression trop élevée\r\n"));
 
 		CloseHandle(hEventPression);
 	}
 	else
 		if(PressionTropHaute)
 		{
-			AffichageMessages(_T("Haute Pression revenue à la normale\r\n"));
+			messageHandler.DisplayMessage(_T("Haute Pression revenue à la normale\r\n"));
 			MessageBeep(MB_ICONINFORMATION);
 			PressionTropHaute = FALSE;
 		}
@@ -96,7 +96,7 @@ void CManip::SecuriteHautePressionAuto()
 						resultat_hp,GetPressionSecuriteBassePression());
 					mess +=_T("PAR MESURE DE SECURITE, FERMETURE DE LA VANNE 6\r\n");
 
-					AffichageMessages(mess);
+					messageHandler.DisplayMessage(mess);
 					Fermeture_Vanne(6);
 				}
 			}
@@ -125,14 +125,14 @@ void CManip::SecuriteTemperaturesManuelle()
 		hEventTemperatureElevee=CreateEvent(NULL,TRUE,FALSE,NULL);
 		hThreadTemperatureElevee=CreateThread(NULL,NULL,MesureSecuriteTemperatureElevee,NULL,NULL,&ThreadTemperatureEleveeId);
 		SetEvent(hEventTemperatureElevee);
-		AffichageMessages(_T("Température du Calorimètre trop élevée\r\n"));
+		messageHandler.DisplayMessage(_T("Température du Calorimètre trop élevée\r\n"));
 
 		CloseHandle(hEventTemperatureElevee);
 	}
 	else
 		if(TemperatureElevee)
 		{
-			AffichageMessages(_T("Température du Calorimètre redescendue à la normale\r\n"));
+			messageHandler.DisplayMessage(_T("Température du Calorimètre redescendue à la normale\r\n"));
 			MessageBeep(MB_ICONINFORMATION);
 			TemperatureElevee = FALSE;
 		}
@@ -144,14 +144,14 @@ void CManip::SecuriteTemperaturesManuelle()
 		hEventTemperatureFaible=CreateEvent(NULL,TRUE,FALSE,NULL);
 		hThreadTemperatureFaible=CreateThread(NULL,NULL,MesureSecuriteTemperatureFaible,NULL,NULL,&ThreadTemperatureFaibleId);
 		SetEvent(hEventTemperatureFaible);
-		AffichageMessages(_T("Température du Calorimètre trop faible\r\n"));
+		messageHandler.DisplayMessage(_T("Température du Calorimètre trop faible\r\n"));
 
 		CloseHandle(hEventTemperatureFaible);
 	}
 	else
 		if(TemperatureFaible)
 		{
-			AffichageMessages(_T("Température du Calorimètre remontée à la normale\r\n"));
+			messageHandler.DisplayMessage(_T("Température du Calorimètre remontée à la normale\r\n"));
 			MessageBeep(MB_ICONINFORMATION);
 			TemperatureFaible = FALSE;
 		}
@@ -215,14 +215,14 @@ void CManip::SecuriteTemperaturesAuto()
 			{
 				mess.Format(_T("Arrêt de l'expérience : La température du Calo étant trop élevée (supérieure à %d°C)\r\n"),
 																			general.temperature_experience + securite_temperature);
-				AffichageMessages(mess);
+				messageHandler.DisplayMessage(mess);
 				demande_arret = ARRET_URGENCE_TCH;
 			}
 			if(TemperatureCalo <= (float)general.temperature_experience - securite_temperature)//2)//5)
 			{
 				mess.Format(_T("Arrêt de l'expérience : La température du Calo étant trop faible (inférieure à %d°C)\r\n"),
 																			general.temperature_experience - securite_temperature);
-				AffichageMessages(mess);
+				messageHandler.DisplayMessage(mess);
 				demande_arret = ARRET_URGENCE_TCB;
 			}
 		}

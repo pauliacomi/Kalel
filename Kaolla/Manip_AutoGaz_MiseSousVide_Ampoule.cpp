@@ -21,7 +21,7 @@ void CManip_AutoGaz::MiseSousVideAmpoule()
 		return;
 	}
 	
-	AffichageMessages(_T("Début de la mise sous vide sur l'ampoule\r\n"));
+	messageHandler.DisplayMessage(_T("Début de la mise sous vide sur l'ampoule\r\n"));
 	
 	InitialisationManip();
 
@@ -37,8 +37,8 @@ void CManip_AutoGaz::MiseSousVideAmpoule()
 	Ouverture_Vanne(5);
 
 
-	AffichageMessages(_T("Début Mise sous vide de la haute pression\r\n"));
-	AffichageEtape(_T("Mise sous vide : Haute Pression"));
+	messageHandler.DisplayMessage(_T("Début Mise sous vide de la haute pression\r\n"));
+	messageHandler.DisplayStep(_T("Mise sous vide : Haute Pression"));
 
 	do{
 		OuvrirEtFermer_Vanne(8);
@@ -47,10 +47,10 @@ void CManip_AutoGaz::MiseSousVideAmpoule()
 		LireAfficherHautePression();
 	}while(resultat_hp >= GetPressionSecuriteBassePression());
 
-	AffichageMessages(_T("Fin Mise sous vide de la haute pression\r\n"));
+	messageHandler.DisplayMessage(_T("Fin Mise sous vide de la haute pression\r\n"));
 
-	AffichageMessages(_T("Début Mise sous vide de la basse pression\r\n"));
-	AffichageEtape(_T("Mise sous vide : Basse Pression"));
+	messageHandler.DisplayMessage(_T("Début Mise sous vide de la basse pression\r\n"));
+	messageHandler.DisplayStep(_T("Mise sous vide : Basse Pression"));
 
 	Ouverture_Vanne(6);
 
@@ -61,12 +61,12 @@ void CManip_AutoGaz::MiseSousVideAmpoule()
 		LireAfficherBassePression();
 	}while(resultat_hp >= pression_pompe);
 
-	AffichageMessages(_T("Fin Mise sous vide de la basse pression\r\n"));
+	messageHandler.DisplayMessage(_T("Fin Mise sous vide de la basse pression\r\n"));
 
 	Ouverture_Vanne(8);
 	Ouverture_Vanne(7);
 
-	AffichageEtape(_T("Fin de la Mise Sous Vide sur l'ampoule\r\n"));
+	messageHandler.DisplayStep(_T("Fin de la Mise Sous Vide sur l'ampoule\r\n"));
 	
 
 	hEventDebutAttente=CreateEvent(NULL,TRUE,FALSE,NULL);
@@ -86,7 +86,7 @@ void CManip_AutoGaz::MiseSousVideAmpoule()
 
 	ToutFermer();
 	FermerInstruments();
-	AffichageEtape(_T("\r\n"));
+	messageHandler.DisplayStep(_T("\r\n"));
 
 }
 
