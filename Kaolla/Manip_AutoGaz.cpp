@@ -41,7 +41,7 @@ void CManip_AutoGaz::LancementExperience(LPVOID pParam)
 		}
 	}
 
-	m_KaollaView->Annuler();
+	messageHandler.CancelExperiment();
 
 }
 

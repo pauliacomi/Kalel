@@ -134,7 +134,6 @@ DWORD WINAPI ThreadManager::ThreadMainWorker(LPVOID pParam) // please redo in MF
 
 	// Create the class to deal with the automatic functionality
 	CManip_AutoGaz manipAuto;
-	manipAuto.SetKaollaView(pKaollaView);
 	manipAuto.SetVannes(pVanne);
 	manipAuto.SetTemperature(pTemperature);
 
@@ -218,7 +217,7 @@ void ManualAction(LPVOID pParam)
 {
 	// lock the menu
 	pKaollaDoc->experiment_running = TRUE;
-	pKaollaView->DebloqueMenu();
+	pKaollaView->DebloqueMenu(NULL, NULL);
 
 	//start thread
 	m_threadManualAction = AfxBeginThread(ThreadManualAction, pParam);
@@ -238,7 +237,7 @@ void MiseSousVideAmpoule(LPVOID pParam)
 {
 	// lock the menu
 	pKaollaDoc->experiment_running = TRUE;
-	pKaollaView->DebloqueMenu();
+	pKaollaView->DebloqueMenu(NULL, NULL);
 	
 	//start thread
 	m_threadSampleUnderVaccuum = AfxBeginThread(ThreadMenuMiseSousVideAmpoule, pParam);
@@ -248,7 +247,7 @@ void MiseSousVideBouteille(LPVOID pParam)
 {
 	// lock the menu
 	pKaollaDoc->experiment_running = TRUE;
-	pKaollaView->DebloqueMenu();
+	pKaollaView->DebloqueMenu(NULL, NULL);
 
 	//start thread
 	m_threadBottleUnderVaccuum = AfxBeginThread(ThreadMenuMiseSousVideBouteille, pParam);
@@ -258,7 +257,7 @@ void ChangementBouteille(LPVOID pParam)
 {
 	// lock the menu
 	pKaollaDoc->experiment_running = TRUE;
-	pKaollaView->DebloqueMenu();
+	pKaollaView->DebloqueMenu(NULL, NULL);
 
 	//start thread
 	m_threadChangeBottle = AfxBeginThread(ThreadMenuChangementBouteille, pParam);
@@ -276,7 +275,6 @@ UINT ThreadManualAction(LPVOID pParam)													//return manualManip.EstOuver
 
 	// Create the temporary class to deal with the command, can use pVanne directly but should be careful about any security machanisms
 	CManip manualManip;
-	manualManip.SetKaollaView(pKaollaView);
 	manualManip.SetVannes(pVanne);
 	manualManip.SetTemperature(pTemperature);
 

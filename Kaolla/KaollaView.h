@@ -95,8 +95,9 @@ public:
 	//------- KaollaView
 
 	void DoEvents(void);
-	void DebloqueMenu(void);
-	void MiseAJour(void);
+	LRESULT DebloqueMenu(WPARAM wParam, LPARAM lParam);
+	LRESULT MiseAJour(WPARAM wParam, LPARAM lParam);
+	LRESULT UnlockStartButton(WPARAM wParam, LPARAM lParam);
 	void OnMsvAmpoule(void);
 	void OnMsvBouteille(void);
 	void OnChangementBouteille(void);
@@ -109,58 +110,67 @@ protected:
 	//-------- KaollaView_Affichage
 
 public:
-	void AffichageMessages(CString message);
-	void RajoutAffichageMessages(CString rajout);
-	void AffichageMesures(CString mesure);
-	void AffichageEtape(CString etape);
-	void RajoutAffichageEtape(CString rajout);
+	LRESULT AffichageMessages(WPARAM wParam, LPARAM lParam);
+	LRESULT AffichageMessages(CString message);								// Temporary overload
+	LRESULT RajoutAffichageMessages(WPARAM wParam, LPARAM lParam);
+	LRESULT AffichageMesures(WPARAM wParam, LPARAM lParam);
+	LRESULT AffichageEtape(WPARAM wParam, LPARAM lParam);
+	LRESULT RajoutAffichageEtape(WPARAM wParam, LPARAM lParam);
+	LRESULT DisplayPreviousStep(WPARAM wParam, LPARAM lParam);
+	LRESULT DisplayCalorimeter(WPARAM wParam, LPARAM lParam);
+	LRESULT DisplayLowPressure(WPARAM wParam, LPARAM lParam);
+	LRESULT DisplayHighPressure(WPARAM wParam, LPARAM lParam);
+	LRESULT DisplayTemperatures(WPARAM wParam, LPARAM lParam);
+	LRESULT DisplayInitialPressure(WPARAM wParam, LPARAM lParam);
+	LRESULT DisplayFinalPressure(WPARAM wParam, LPARAM lParam);
+	LRESULT ExchangeData(WPARAM wParam, LPARAM lParam);
 
 	LRESULT OnThreadAffichage(WPARAM wParam, LPARAM lParam);
-	int MessageBoxConfirmation(CString message, UINT nType);
+	LRESULT MessageBoxConfirmation(WPARAM wParam, LPARAM);
 
 	//-------- KaollaView_Boutons
 public:
-	afx_msg void OnBnClickedLancer();
-	afx_msg void OnBnClickedArreter();
-	void Annuler();
+	void OnBnClickedLancer();
+	void OnBnClickedArreter();
+	LRESULT Annuler(WPARAM wParam, LPARAM lParam);
 
-	afx_msg void OnBnClickedButtonParametresExperience();
-	afx_msg void OnBnClickedArretSousVide();
-	afx_msg void OnBnClickedPause();
-	afx_msg void OnBnClickedProchaineCommande();
-	afx_msg void OnBnClickedProchaineDose();
-	afx_msg void OnBnClickedProchaineEtape();
-	afx_msg void OnBnClickedReprise();
+	void OnBnClickedButtonParametresExperience();
+	void OnBnClickedArretSousVide();
+	void OnBnClickedPause();
+	void OnBnClickedProchaineCommande();
+	void OnBnClickedProchaineDose();
+	void OnBnClickedProchaineEtape();
+	void OnBnClickedReprise();
 
 	//-------- KaollaView_Boutons_Vannes
 public:
 	void AskThreadForManualCommand(int instrument, int i, bool askToActivate);
 	LRESULT OnThreadRequestButtonUpdate(WPARAM wParam, LPARAM lParam);
 
-	afx_msg void OnBnClickedOuvrir1();
-	afx_msg void OnBnClickedOuvrir2();
-	afx_msg void OnBnClickedOuvrir3();
-	afx_msg void OnBnClickedOuvrir4();
-	afx_msg void OnBnClickedOuvrir5();
-	afx_msg void OnBnClickedOuvrir6();
-	afx_msg void OnBnClickedOuvrir7();
-	afx_msg void OnBnClickedOuvrir8();
+	void OnBnClickedOuvrir1();
+	void OnBnClickedOuvrir2();
+	void OnBnClickedOuvrir3();
+	void OnBnClickedOuvrir4();
+	void OnBnClickedOuvrir5();
+	void OnBnClickedOuvrir6();
+	void OnBnClickedOuvrir7();
+	void OnBnClickedOuvrir8();
 
-	afx_msg void OnBnClickedFermer1();
-	afx_msg void OnBnClickedFermer2();
-	afx_msg void OnBnClickedFermer3();
-	afx_msg void OnBnClickedFermer4();
-	afx_msg void OnBnClickedFermer5();
-	afx_msg void OnBnClickedFermer6();
-	afx_msg void OnBnClickedFermer7();
-	afx_msg void OnBnClickedFermer8();
+	void OnBnClickedFermer1();
+	void OnBnClickedFermer2();
+	void OnBnClickedFermer3();
+	void OnBnClickedFermer4();
+	void OnBnClickedFermer5();
+	void OnBnClickedFermer6();
+	void OnBnClickedFermer7();
+	void OnBnClickedFermer8();
 
-	afx_msg void OnBnClickedActiverEV1();
-	afx_msg void OnBnClickedDesactiverEV1();
-	afx_msg void OnBnClickedActiverEV2();
-	afx_msg void OnBnClickedDesactiverEV2();
-	afx_msg void OnBnClickedActiverPompe();
-	afx_msg void OnBnClickedDesactiverPompe();
+	void OnBnClickedActiverEV1();
+	void OnBnClickedDesactiverEV1();
+	void OnBnClickedActiverEV2();
+	void OnBnClickedDesactiverEV2();
+	void OnBnClickedActiverPompe();
+	void OnBnClickedDesactiverPompe();
 };
 
 

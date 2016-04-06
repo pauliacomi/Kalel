@@ -8,7 +8,6 @@
 
 CManip::CManip()
 {
-	m_KaollaView = NULL;
 	manip_en_cours = FALSE;
 	// this should most definately not be defined here, it's so wrong it hurts
 	// m_proprietes_experience = new CProprietes_experience("");
@@ -32,11 +31,6 @@ CManip::~CManip()
 
 // -------------- Functions that set the pointers to external objects
 // This is most likely not thread safe so must rewrite
-
-void CManip::SetKaollaView(CKaollaView* pKV)
-{
-	m_KaollaView = pKV;
-}
 
 void CManip::SetKeithley(Keithley* Keith)
 {
@@ -204,19 +198,19 @@ void CManip::SetManipType(int experimentType)
 // Tell the main view to update itself - this should be done by using a message command
 void CManip::MiseAJour()
 {
-	m_KaollaView->MiseAJour();
+	messageHandler.UpdateDisplay();
 }
 
 // Tell the main view to unlock the menu - this should be done by using a message command
 void CManip::DebloqueMenu()
 { 
-	m_KaollaView->DebloqueMenu();
+	messageHandler.UnlockMenu();
 }
 
 // Tell the main view to unlock the launch button - this should be done by using a message command
 void CManip::RemettreBoutonLancer()
 {
-	m_KaollaView->GetDlgItem(IDC_LANCER)->EnableWindow(TRUE);
+	messageHandler.EnableStartButton();
 }
 
 // Manually reinitialise the experimental properties

@@ -12,6 +12,9 @@
 #include "KaollaDoc.h"
 #include "KaollaView.h"
 
+// Message definitions
+#include "DefinePostMessages.h"
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -27,8 +30,27 @@ BEGIN_MESSAGE_MAP(CKaollaView, CFormView)
 	ON_MESSAGE(WM_THREADAFFICHAGE, &CKaollaView::OnThreadAffichage)					// Calls to display
 	ON_MESSAGE(WM_THREADFINISHEDREG, &CKaollaView::OnRegularThreadFinished)			// Calls when manual functionality ends
 	ON_MESSAGE(WM_UPDATEBUTTONS, &CKaollaView::OnThreadRequestButtonUpdate)			// Calls to update a specific button pair and associated display
-	//ON_MESSAGE(WM_RESETDOCUMENTGRAPH, &CKaollaView::OnThreadRequestButtonUpdate)	//
+	
+	// Messages from the manip class
 	//ON_MESSAGE(WM_RESETDOCUMENTGRAPH, &CKaollaDoc::InitializeGraph)
+	ON_MESSAGE(WM_DISPLAYMEASUREMENT, &CKaollaView::AffichageMesures)
+	ON_MESSAGE(WM_DISPLAYMESSAGE, &CKaollaView::AffichageMessages)
+	ON_MESSAGE(WM_DISPLAYADDMESSAGE, &CKaollaView::RajoutAffichageMessages)
+	ON_MESSAGE(WM_DISPLAYSTEP, &CKaollaView::AffichageEtape)
+	ON_MESSAGE(WM_DISPLAYADDSTEP, &CKaollaView::RajoutAffichageEtape)
+	ON_MESSAGE(WM_DISPLAYPREVIOUSSTEP, &CKaollaView::DisplayPreviousStep)
+	ON_MESSAGE(WM_DISPLAYCALORIMETER, &CKaollaView::DisplayCalorimeter)
+	ON_MESSAGE(WM_DISPLAYHIGHPRESSURE, &CKaollaView::DisplayHighPressure)
+	ON_MESSAGE(WM_DISPLAYLOWPRESSURE, &CKaollaView::DisplayLowPressure)
+	ON_MESSAGE(WM_DISPLAYTEMPERATURES, &CKaollaView::DisplayTemperatures)
+	ON_MESSAGE(WM_DISPLAYMESSAGEBOX, &CKaollaView::MessageBoxConfirmation)
+	ON_MESSAGE(WM_UPDATEDISPLAY, &CKaollaView::MiseAJour)
+	ON_MESSAGE(WM_UNLOCKMENU, &CKaollaView::DebloqueMenu)
+	ON_MESSAGE(WM_ENABLESTARTBUTTON, &CKaollaView::UnlockStartButton)
+	ON_MESSAGE(WM_CANCELEXPERIMENT, &CKaollaView::Annuler)
+	ON_MESSAGE(WM_DISPLAYINITIALPRESSURE, &CKaollaView::DisplayInitialPressure)
+	ON_MESSAGE(WM_DISPLAYFINALPRESSURE, &CKaollaView::DisplayFinalPressure)
+	ON_MESSAGE(WM_EXCHANGEDATA, &CKaollaView::ExchangeData)
 
 	// Messages for UI buttons used for simple instrument manipulation
 	ON_BN_CLICKED(IDC_OUVRIR1, &CKaollaView::OnBnClickedOuvrir1)
@@ -260,15 +282,26 @@ void CKaollaView::DoEvents(void)
 	}
 }
 
-void CKaollaView::DebloqueMenu(void) // pretty useless, must centralize the experiment running flag
+LRESULT CKaollaView::DebloqueMenu(WPARAM wParam, LPARAM lParam) // pretty useless, must centralize the experiment running flag
 {
 	m_mainDocument = CKaollaDoc::GetDocument();
 	pApp->menuIsAvailable = !m_mainDocument->experiment_running;
+
+	return 0;
 }
 
-void CKaollaView::MiseAJour(void)
+LRESULT CKaollaView::MiseAJour(WPARAM wParam, LPARAM lParam)
 {
 	UpdateData(FALSE);
+
+	return 0;
+}
+
+LRESULT CKaollaView::UnlockStartButton(WPARAM wParam, LPARAM lParam)
+{
+	GetDlgItem(IDC_LANCER)->EnableWindow(TRUE);
+
+	return 0;
 }
 
 void CKaollaView::OnMsvAmpoule(void)
@@ -292,7 +325,7 @@ void CKaollaView::OnChangementBouteille()
 LRESULT CKaollaView::OnRegularThreadFinished(WPARAM, LPARAM) {
 
 	GetDocument()->experiment_running = FALSE;
-	DebloqueMenu();
+	DebloqueMenu(NULL, NULL);
 	
 	return 0;
 }

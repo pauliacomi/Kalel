@@ -43,7 +43,6 @@ public:
 
 	// Pointers to classes that will be used
 
-	CKaollaView* m_KaollaView;							// Pointer to the main view
 	CKaollaDoc* m_Doc;									// Pointer to the main document
 	Keithley* g_pKeithley;								// Pointer to the class that deals with the Keithley
 	Mensor* g_pMensor;									// Pointer to the class that deals with the Mensor
@@ -99,7 +98,6 @@ public:
 
 	CManip(void);
 	~CManip(void);
-	void SetKaollaView(CKaollaView* pKV);
 	void SetKeithley(Keithley* Keith);
 	void SetMensor(Mensor* Mens);
 	void SetVannes(CVannes* pVannes);
@@ -127,7 +125,6 @@ public:
 
 	void RecuperationDonnees();
 	CString GetDonneesExperience();
-	void EchangeDonnees();
 	void DonneesManuelleGrapheEtape();
 
 protected:

@@ -24,26 +24,15 @@ void CManip_Auto::LireAfficherCalo()
 }
 
 
-void CManip_Auto::AfficherPressionInitiale()
-{
-	m_KaollaView->m_StrPressionInitiale.Format(_T("%f"),PressionInitiale);
-	m_KaollaView->SetDlgItemText(IDC_PRESSION_INITIALE,m_KaollaView->m_StrPressionInitiale);
-}
-
 void CManip_Auto::InitialiserAfficherPressionInitiale(double init)
 {
 	PressionInitiale = init;
-	AfficherPressionInitiale();
+	messageHandler.DisplayInitialPressure();
 }
 
-void CManip_Auto::AfficherPressionFinale()
-{
-	m_KaollaView->m_StrPressionFinale.Format(_T("%f"),PressionFinale);
-	m_KaollaView->SetDlgItemText(IDC_PRESSION_FINALE,m_KaollaView->m_StrPressionFinale);
-}
 
 void CManip_Auto::InitialiserAfficherPressionFinale(double init)
 {
 	PressionFinale = init;
-	AfficherPressionFinale();
+	messageHandler.DisplayFinalPressure();
 }

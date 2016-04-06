@@ -27,7 +27,7 @@ void CKaollaView::OnBnClickedLancer()
 	m_mainDocument->experiment_running=TRUE;
 	
 	// set another flag to true
-	DebloqueMenu();
+	DebloqueMenu(NULL, NULL);
 
 	// Reset the graph
 	GetDocument()->TempsMinimum = -1;
@@ -65,7 +65,7 @@ void CKaollaView::OnBnClickedLancer()
 		else
 		{
 			// Roll back by calling stop function
-			Annuler();
+			Annuler(NULL,NULL);
 		}
 	}
 }
@@ -85,15 +85,17 @@ void CKaollaView::OnBnClickedArreter()
 }
 
 // When the experiment is canceled
-void CKaollaView::Annuler()
+LRESULT CKaollaView::Annuler(WPARAM, LPARAM)
 {
 	m_mainDocument = CKaollaDoc::GetDocument();
 	m_mainDocument->experiment_running=FALSE;  // FALSE : expérience en cours
 
-	DebloqueMenu();
+	DebloqueMenu(NULL, NULL);
 
 	GetDlgItem(IDC_LANCER)->EnableWindow(TRUE);
 	GetDlgItem(IDC_ARRETER)->EnableWindow(FALSE);
+
+	return 0;
 }
 
 

@@ -6,9 +6,6 @@
 #ifndef MFCMESSAGEHANDLER_H
 #define MFCMESSAGEHANDLER_H
 
-// Message definitions
-#include "DefinePostMessages.h"
-
 
 class MFCMessageHandler
 {
@@ -21,9 +18,18 @@ public:
 	HWND windowHandle;
 
 public:
+	// Set the handle
+	BOOL SetHandle(HWND h);
 
 	// PostMessage functions
-	BOOL ResetDocumentGraph(LPVOID pParam);
+	BOOL ResetDocumentGraph();
+	BOOL UpdateDisplay();
+	BOOL UnlockMenu();
+	BOOL EnableStartButton();
+	BOOL CancelExperiment();
+	BOOL DisplayInitialPressure();
+	BOOL DisplayFinalPressure();
+	BOOL ExchangeData();
 	BOOL DisplayMeasurement(CString pParam);
 	BOOL DisplayMessage(CString pParam);
 	BOOL DisplayAddMessage(CString pParam);

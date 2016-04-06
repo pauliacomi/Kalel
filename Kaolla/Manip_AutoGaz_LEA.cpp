@@ -54,7 +54,7 @@ bool CManip_AutoGaz::LireEcrireAfficher(LPVOID pParam)
 
 	temps_manip=temps_experience.TempsActuel();
 
-	EchangeDonnees();
+	messageHandler.ExchangeData();
 	RajoutMesure();
 	AffichageMesures();
 	EnregistrementFichierMesures();

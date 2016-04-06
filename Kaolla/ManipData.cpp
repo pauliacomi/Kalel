@@ -2,19 +2,6 @@
 #include "Manip.h"
 
 
-
-// Exchange the data between the class and the main window. This should be in a command format (rewrite)
-void CManip::EchangeDonnees()
-{
-	m_KaollaView->m_StrCalo.Format(_T("%.8E"),resultat_calo);
-	m_KaollaView->m_StrBassePression.Format(_T("%f"),resultat_bp);
-	m_KaollaView->m_StrHautePression.Format(_T("%f"),resultat_hp);
-	m_KaollaView->m_StrTemperatureCalo.Format(_T("%f"),TemperatureCalo);	
-	m_KaollaView->m_StrTemperatureCage.Format(_T("%f"),TemperatureCage);
-	m_KaollaView->m_StrTemperaturePiece.Format(_T("%f"),TemperaturePiece);
-	m_KaollaView->m_StrTemps.Format(_T("%.2f"),temps_manip);
-}
-
 // Manually sets the graph data. The graph coefficients are defined here, although they shouldn't
 void CManip::DonneesManuelleGrapheEtape()
 {
