@@ -32,7 +32,11 @@ BEGIN_MESSAGE_MAP(CKaollaView, CFormView)
 	ON_MESSAGE(WM_UPDATEBUTTONS, &CKaollaView::OnThreadRequestButtonUpdate)			// Calls to update a specific button pair and associated display
 	
 	// Messages from the manip class
-	//ON_MESSAGE(WM_RESETDOCUMENTGRAPH, &CKaollaDoc::InitializeGraph)
+	//ON_MESSAGE(WM_GRAPHRESET, &CKaollaDoc::InitializeGraph)
+	//ON_MESSAGE(WM_GRAPHADDMESUREMENT, &CKaollaDoc::GraphAddMeasurement)
+	//ON_MESSAGE(WM_GRAPHSETTITLE, &CKaollaDoc::GraphSetTitle)
+	//ON_MESSAGE(WM_GRAPHDATAAUTOSTEP, &CKaollaDoc::Graph)
+
 	ON_MESSAGE(WM_DISPLAYMEASUREMENT, &CKaollaView::AffichageMesures)
 	ON_MESSAGE(WM_DISPLAYMESSAGE, &CKaollaView::AffichageMessages)
 	ON_MESSAGE(WM_DISPLAYADDMESSAGE, &CKaollaView::RajoutAffichageMessages)

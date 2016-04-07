@@ -6,8 +6,6 @@
 using namespace std;
 
 
-
-
 void CManip_Auto::DonneesAutoGrapheEtape()
 {
 	CString titre;
@@ -25,18 +23,9 @@ void CManip_Auto::DonneesAutoGrapheEtape()
 	if(i==nb_etape)
 		titre.Format(_T("Etape inconnu : %d"),etape_en_cours);
 
-	m_Doc->TempsMinimum = temps_experience.TempsActuel();
-	m_Doc->MesureMinimum = numero_mesure-1;
-	m_Doc->TitreGrapheEtape = titre;
-	m_Doc->NumeroEtape = etape_en_cours;
-}
 
-
-void CManip_Auto::DonneesAutoGrapheEtape(float temps, int mesure, int num_etape)
-{
-	m_Doc->TempsMinimum = temps;
-	m_Doc->MesureMinimum = mesure-1;
-	m_Doc->NumeroEtape = num_etape;
+	messageHandler.GraphDataAutoStep(temps_experience.TempsActuel(), numero_mesure - 1, etape_en_cours);
+	messageHandler.GraphSetTitle(titre);
 }
 
 

@@ -39,7 +39,6 @@ public:
 	// Manip_Auto_Donnees
 
 	void DonneesAutoGrapheEtape();
-	void DonneesAutoGrapheEtape(float temps, int mesure, int num_etape);
 	Donnees_General DonneesActuellesGeneral();
 	Donnees_Divers DonneesActuellesDivers();
 

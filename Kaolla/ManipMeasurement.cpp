@@ -13,7 +13,7 @@ HANDLE hEvent;
 
 void CManip::RajoutMesure()
 {
-	m_Doc->RajoutMesure(numero_mesure, 
+	messageHandler.GraphAddData(numero_mesure, 
 						temps_manip, 
 						resultat_calo, 
 						resultat_bp, 

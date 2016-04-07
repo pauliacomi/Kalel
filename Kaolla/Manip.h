@@ -28,9 +28,7 @@
 #include "Chrono.h"
 
 #include <string>
-
 #include <sstream>  //ostringstream
-
 #include <fstream>
 
 #include "MFCMessageHandler.h"
@@ -43,7 +41,6 @@ public:
 
 	// Pointers to classes that will be used
 
-	CKaollaDoc* m_Doc;									// Pointer to the main document
 	Keithley* g_pKeithley;								// Pointer to the class that deals with the Keithley
 	Mensor* g_pMensor;									// Pointer to the class that deals with the Mensor
 	CVannes* g_pVanne;									// Pointer to the valve opening class

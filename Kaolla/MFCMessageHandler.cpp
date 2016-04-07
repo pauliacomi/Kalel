@@ -25,8 +25,26 @@ BOOL MFCMessageHandler::SetHandle(HWND h)
 BOOL MFCMessageHandler::ResetDocumentGraph()
 {
 	// Post the required message. The view should resolve the message to its parent document
-	::PostMessage(windowHandle, WM_RESETDOCUMENTGRAPH, NULL, NULL);
+	::PostMessage(windowHandle, WM_GRAPHRESET, NULL, NULL);
 
+	return 0;
+}
+
+BOOL MFCMessageHandler::GraphSetTitle(CString title)
+{
+	return 0;
+}
+
+BOOL MFCMessageHandler::GraphAddData(int num, double tps, double calorimeter, double lowPressure, double highPressure, double tempCalo, double tempCage, double tempPiece)
+{
+	return 0;
+}
+
+BOOL MFCMessageHandler::GraphDataAutoStep(float temps, int mesure, int num_etape)
+{
+	/*m_Doc->TempsMinimum = temps;
+	m_Doc->MesureMinimum = mesure - 1;
+	m_Doc->NumeroEtape = num_etape;*/
 	return 0;
 }
 

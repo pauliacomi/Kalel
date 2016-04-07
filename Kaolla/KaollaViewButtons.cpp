@@ -81,10 +81,10 @@ void CKaollaView::OnBnClickedArreter()
 	m_mainDocument->experiment_running=FALSE;
 
 	// Stop the threads
-	ArretThreads(GetSafeHwnd());
+	threadManager->ShutdownThread();
 }
 
-// When the experiment is canceled
+// When the experiment is signalled as cancelled from the thread or it times out
 LRESULT CKaollaView::Annuler(WPARAM, LPARAM)
 {
 	m_mainDocument = CKaollaDoc::GetDocument();

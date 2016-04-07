@@ -23,6 +23,10 @@ public:
 
 	// PostMessage functions
 	BOOL ResetDocumentGraph();
+	BOOL GraphSetTitle(CString title);
+	BOOL GraphAddData(int num, double tps, double calorimeter, double lowPressure, double highPressure, double tempCalo, double tempCage, double tempPiece);
+	BOOL GraphDataAutoStep(float temps, int mesure, int num_etape);
+
 	BOOL UpdateDisplay();
 	BOOL UnlockMenu();
 	BOOL EnableStartButton();

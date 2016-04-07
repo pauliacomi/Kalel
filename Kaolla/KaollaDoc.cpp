@@ -35,7 +35,7 @@ CKaollaDoc::CKaollaDoc()
 {
 	TitreGrapheEtape = _T("");
 	experiment_running = FALSE;
-	InitializeGraph(NULL, NULL);
+	GraphInitialize(NULL, NULL);
 }
 
 CKaollaDoc::~CKaollaDoc()
@@ -146,12 +146,22 @@ CKaollaDoc * CKaollaDoc::GetDocument()
 
 //-------------------- CKaollaDoc custom functions
 
-LRESULT CKaollaDoc::InitializeGraph(WPARAM wParam, LPARAM lParam)
+LRESULT CKaollaDoc::GraphInitialize(WPARAM wParam, LPARAM lParam)
 {
 	TempsMinimum = -1;
 	MesureMinimum = -1;
 	NumeroEtape = -1;
 
+	return 0;
+}
+
+LRESULT CKaollaDoc::GraphSetTitle(WPARAM wParam, LPARAM lParam)
+{
+	return 0;
+}
+
+LRESULT CKaollaDoc::GraphAddMeasurement(WPARAM wParam, LPARAM lParam)
+{
 	return 0;
 }
 

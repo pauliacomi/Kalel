@@ -12,14 +12,14 @@ void CManip::DonneesManuelleGrapheEtape()
 	float temps_min = coeff * nb_secondes;
 
 
-	if (m_Doc->NumeroEtape < coeff + 1)
+	if (true /*m_Doc->NumeroEtape < coeff + 1*/)
 	{
-		m_Doc->TempsMinimum = temps_min;
-		m_Doc->MesureMinimum = numero_mesure-1;
-		m_Doc->NumeroEtape = coeff + 1;
+		ASSERT(0);
+		messageHandler.GraphDataAutoStep(temps_min, numero_mesure - 1, coeff + 1);
+
 		CString titre;
 		titre.Format(_T("%dh - %dh d'expérience"), nb_heures * coeff , nb_heures*(coeff+1) );
-		m_Doc->TitreGrapheEtape = titre;
+		messageHandler.GraphSetTitle(titre);
 	}
 }
 
