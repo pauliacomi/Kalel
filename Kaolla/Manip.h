@@ -46,7 +46,7 @@ public:
 	CVannes* g_pVanne;									// Pointer to the valve opening class
 	CInstrument* instrument[NB_OF_INSTRUMENTS];			// Array of pointers that hold CInstrument classes
 	CTemperature* g_pTemperature;						// Pointer to the class that deals with temperature recording
-	CProprietes_experience* m_proprietes_experience;	// Pointer to the valve opening class
+	CProprietes_experience* m_proprietes_experience;	// Pointer to the dialog SHOULD REALLY REMOVE THIS
 
 	// Objects instantiated here
 	MFCMessageHandler messageHandler;					// This class will send all the messages to the GUI using MFC's message pump

@@ -22,8 +22,6 @@ CVannes* pVanne;
 CTemperature* pTemperature;
 
 
-HANDLE m_hStartMainThreadEvent;					// Event handle for giving the main thread the go-ahead. THIS SHOULD NOT BE HERE DUH
-
 // Threads
 CWinThread * m_threadManualAction;
 CWinThread * m_threadLaunchExperiment;
@@ -39,15 +37,13 @@ CManip_AutoGaz manip;
 // --------- Initialisation and destruction -------
 
 ThreadManager::ThreadManager(LPVOID pParam)
-	: m_threadMainControlLoop(NULL)
+	: m_threadMainControlLoop(NULL)		// should delete this 
 	, m_hShutdownEvent(::CreateEvent(NULL, TRUE, FALSE, NULL))
+	, m_hStartMainThreadEvent(::CreateEvent(NULL, TRUE, FALSE, NULL))
 {
 	// Create the required objects. Might be better to be done in the manip directly
 	pVanne = new CVannes();
 	pTemperature = new CTemperature(GetPortTemperatures());
-
-	// Instantiate the handle of the event for giving the thread a go-ahead
-	m_hStartMainThreadEvent = ::CreateEvent(NULL, TRUE, FALSE, NULL);
 
 	//Create the thread
 	CreateMainThread(pParam);
@@ -61,6 +57,7 @@ ThreadManager::~ThreadManager()
 	// signal the thread to exit
 	ShutdownThread();
 	CloseHandle(m_hShutdownEvent);
+	CloseHandle(m_hStartMainThreadEvent);
 }
 
 
@@ -72,7 +69,7 @@ HRESULT ThreadManager::CreateMainThread(LPVOID pParam)
 {
 	HRESULT hr = S_OK;
 	
-	m_threadMainControlLoop = CreateThread(NULL, NULL, ThreadMainWorker, pParam, NULL, NULL);
+	m_threadMainControlLoop = AfxBeginThread(ThreadMainWorkerStarter, this);
 
 	return hr;
 }
@@ -98,10 +95,10 @@ HRESULT ThreadManager::ShutdownThread()
 	if (NULL != m_threadMainControlLoop)
 	{
 		// Signal the thread to exit
-		SetEvent(m_threadMainControlLoop);
+		::SetEvent(m_hShutdownEvent);
 
 		// thread may be suspended, so resume before shutting down
-		ResumeThread(m_threadMainControlLoop);
+		::ResumeThread(m_threadMainControlLoop);
 
 		// Wait for the thread to exit. If it doesn't shut down
 		// on its own, force it closed with Terminate thread
@@ -112,7 +109,7 @@ HRESULT ThreadManager::ShutdownThread()
 		}
 
 		// Close the handle and NULL it out
-		CloseHandle(m_threadMainControlLoop);
+		::CloseHandle(m_threadMainControlLoop);
 		m_threadMainControlLoop = NULL;
 	}
 
@@ -124,14 +121,20 @@ HRESULT ThreadManager::ShutdownThread()
 
 
 // --------- Thread functions -------
-
-DWORD WINAPI ThreadManager::ThreadMainWorker(LPVOID pParam) // please redo in MFC
+UINT ThreadManager::ThreadMainWorkerStarter(LPVOID pParam)
 {
-	// Get custom parameter class, then check for validity
-	HWND maParam = static_cast<HWND>(pParam);
-	ASSERT(maParam != NULL);
-	bool actionSuccessful = false;
+	// Start the function from the main class, then check for validity
+	ThreadManager* maParam = static_cast<ThreadManager*>(pParam);
 
+	// Launch required functionality
+	maParam->ThreadMainWorker();
+
+	// Reset and end thread
+	return 0;
+}
+
+void ThreadManager::ThreadMainWorker()
+{
 	// Create the class to deal with the automatic functionality
 	CManip_AutoGaz manipAuto;
 	manipAuto.SetVannes(pVanne);
@@ -141,14 +144,19 @@ DWORD WINAPI ThreadManager::ThreadMainWorker(LPVOID pParam) // please redo in MF
 	WaitForSingleObject(m_hStartMainThreadEvent, INFINITE);
 
 	// Launch required functionality
-	
 
-	// Reset and end thread
-	return 0;
+
+	// Reset the shutdown event
+	::ResetEvent(m_hStartMainThreadEvent);
 }
 
 
+
+
 // ----------------------- END -----------------------
+// ----------------------- END -----------------------
+
+
 
 
 

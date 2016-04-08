@@ -23,12 +23,16 @@ public:
 
 	// Private fields
 private:
-	static DWORD WINAPI ThreadMainWorker(LPVOID pParam);	// Main worker thread
+	static UINT ThreadMainWorkerStarter(LPVOID pParam);		// Main worker thread starter
+	void ThreadMainWorker();								// Main worker thread function
+	
 
-	HANDLE      m_threadMainControlLoop;					// Main worker thread handle
+	CWinThread * m_threadMainControlLoop;					// Reference for main thread
 
 	HANDLE      m_hShutdownEvent;							// Shutdown Event handle
-															// (causes thread to exit
+															// (causes thread to exit)
+
+	HANDLE		m_hStartMainThreadEvent;					// Event handle for giving the main thread the go-ahead.
 
 	HWND   m_hWnd;    // Window handle to the UI dialog (used to
 					  // send progress and completed messages)
