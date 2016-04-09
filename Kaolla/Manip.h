@@ -2,9 +2,16 @@
 #ifndef MANIP_H
 #define MANIP_H
 
-#define finl "\r\n" 
+#define finl "\r\n"
 
-#include "MessageBoxTexts.h"	// Resource for the text. Ideally only a variable that describes the error should be returned, but this is a compromise
+
+// REQUIRED INCLUDES
+#include "MessageBoxTexts.h"		// Resource for the text. Ideally only a variable that describes the error should be returned, but this is a compromise
+#include "MFCMessageHandler.h"		// Handles all the messages from this class to the UI. Great if we want to upgrade to somehting that's not MFC
+#include "Classes_experiences.h"	// Resource where templates for all the data are stored, might be worth replacing with a single data type/class 
+
+
+// CHECK THESE INCLUDES
 
 #include "Kaolla.h"
 #include "KaollaDoc.h"
@@ -31,7 +38,6 @@
 #include <sstream>  //ostringstream
 #include <fstream>
 
-#include "MFCMessageHandler.h"
 
 class CManip
 {
@@ -46,14 +52,24 @@ public:
 	CVannes* g_pVanne;									// Pointer to the valve opening class
 	CInstrument* instrument[NB_OF_INSTRUMENTS];			// Array of pointers that hold CInstrument classes
 	CTemperature* g_pTemperature;						// Pointer to the class that deals with temperature recording
+
 	CProprietes_experience* m_proprietes_experience;	// Pointer to the dialog SHOULD REALLY REMOVE THIS
 
+	//------------------------------------------------------------
 	// Objects instantiated here
+	//------------------------------------------------------------
+
+	ofstream fileStream;								// The file stream is stored in this variable
+
 	MFCMessageHandler messageHandler;					// This class will send all the messages to the GUI using MFC's message pump
 
-	ConnectionMesure AppareilCalo, AppareilHP, AppareilBP;
+	ConnectionMesure AppareilCalo;						// Stores where each instrument index and number is
+	ConnectionMesure AppareilHP;						// Stores where each instrument index and number is
+	ConnectionMesure AppareilBP;						// Stores where each instrument index and number is
+
 	CChrono temps_experience;							// Deals with 
 	CChrono temps_intermediaire;						//
+
 	FluxConverter fluxConverter;						//
 	Donnees_General general;							//
 	Donnees_Divers divers;								//
@@ -86,6 +102,23 @@ protected:
 	DWORD ThreadId;								//
 	HANDLE hThread[3];							//
 
+	/// from manipSecurity
+
+	static bool PressionTropHaute; //SecuriteHautePressionManuelle()
+	static bool TemperatureElevee; //SecuriteTemperatureManuelle
+	static bool TemperatureFaible;
+
+	static HANDLE hEventPression, hEventTemperatureElevee, hEventTemperatureFaible;
+
+	// from manipManualExecution
+
+	static CEvent g_eventFinAffichage;
+
+	// from manip Measurement
+
+	static CRITICAL_SECTION Sync_view_instrument[NB_OF_INSTRUMENTS + 1];
+	static HANDLE hEvent;
+
 
 	// ------------------ Functions ------------------
 
@@ -106,20 +139,13 @@ public:
 	void SetManipType(int experimentType);
 	void ReinitialisationManuelle();
 
-protected:
-	void MiseAJour();
-
-	void DebloqueMenu();
-	void RemettreBoutonLancer();
-
-	// Manip_Affichage
+/**********************************************************************************************************************************
+// Data interface functions
+***********************************************************************************************************************************/
 
 public:
-	void AffichageMesures();	
-
-	// Manip_Donnees
-public:
-
+	void AffichageMesures();
+	void GraphAddMeasurement();
 	void RecuperationDonnees();
 	CString GetDonneesExperience();
 	void DonneesManuelleGrapheEtape();
@@ -140,49 +166,81 @@ public:
 	void FinAffichage();
 
 
-	// Manip_Fichier
+/**********************************************************************************************************************************
+// File Writing Functions
+***********************************************************************************************************************************/
 
-public:
-	std::string NomFichier(std::string extention);
-	std::string NomFichierEntete(std::string extention);
+protected:
 
-	void EnregistrementFichierMesures();
+	/**********************************************************************
+	Returns the full path and name of the written file or its associated entete
+	* Inputs:
+	*        string extension: Extension you want the file to have
+	*        bool entete: specify true to get the entete string or false for the regular file
+	***********************************************************************/
+	std::string NomFichier(std::string extension, bool entete);
+
+	// Opens the measurement file for the first time and stores its link in the fileStream ofstream
 	void OuvertureFichierMesures();
+	// Closes the measurement file
 	void FermetureFichierMesures();
+	// Records a measurement
+	void EnregistrementFichierMesures();
 
+	// Write the start of an entete
 	std::string EnteteBase();
+	// Write the start of the CSV entete
 	std::string EnteteBaseCSV();
+	// Write the main body of an entete
 	std::string EnteteGeneral();
+	// Write the main body of a CSV entete
 	std::string EnteteGeneralCSV();
+
+	// Write the start of an entete and save it??
 	void EcritureEntete();
+	// Write the start of a CSV entete and save it??
 	void EcritureEnteteCSV();
 
 
-	// Manip_Mesure
-
-public:
-	void RajoutMesure();
+/**********************************************************************************************************************************
+// Instrument interfaces for measurement
+***********************************************************************************************************************************/
 
 protected :
+	// Call openPort for each instrument
 	void OuvrirInstruments();
+
+	// Call closePort for each instrument
 	void FermerInstruments();
+
+	//Returns the value that is being read from the instrument passed in
 	double LectureMesure(ConnectionMesure Appareil);
+
+	// Reads the calorimeter and stores it in the coresponding variable
 	void LectureCalo();
+
+	// Reads the low pressure and stores it in the coresponding variable
 	void LectureHautePression();
+	// Reads the high pressure and stores it in the coresponding variable
 	void LectureBassePression();
+	// Reads the temperatures and stores it in the coresponding variable
 	void LectureTemperatures();
 
+	// Starts the threads for reading the data
 	void ThreadMesures();
 
+	// Threads for reading the data
 	static DWORD WINAPI ThreadProc_LectureCalo(LPVOID lpParam);
 	static DWORD WINAPI ThreadProc_LectureHautePression(LPVOID lpParam);
 	static DWORD WINAPI ThreadProc_LectureBassePression(LPVOID lpParam);
 	static DWORD WINAPI ThreadProc_LectureTemperature(LPVOID lpParam);
 
 
-	// Manip_Securite
+/**********************************************************************************************************************************
+// Security measures and checks
+***********************************************************************************************************************************/
 
-public:
+protected:
 
 	void InitialisationMesureSecuriteManuelle();
 	void SecuriteHautePression();
@@ -192,13 +250,15 @@ public:
 	void SecuriteTemperatures();
 	void SecuriteTemperaturesManuelle();
 	void SecuriteTemperaturesAuto();
-protected:
+
 	static DWORD WINAPI MesureSecuriteHautePression(LPVOID lpParam);
 	static DWORD WINAPI MesureSecuriteTemperatureElevee(LPVOID lpParam);
 	static DWORD WINAPI MesureSecuriteTemperatureFaible(LPVOID lpParam);
 
 
-	// Manip_Temps
+/**********************************************************************************************************************************
+// Time keeping
+***********************************************************************************************************************************/
 
 public:
 
@@ -208,7 +268,9 @@ public:
 	CString MessageTemps(int duree);
 
 
-	// Manip_Vannes
+/**********************************************************************************************************************************
+// Valve operations
+***********************************************************************************************************************************/
 
 public:
 	bool OuvrirEtFermer_Vanne(int num_vanne);

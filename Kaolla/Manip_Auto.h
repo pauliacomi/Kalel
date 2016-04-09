@@ -62,9 +62,7 @@ public:
 	void LireAfficherHautePression();
 	void LireAfficherCalo();
 
-	void AfficherPressionInitiale();
 	void InitialiserAfficherPressionInitiale(double init);
-	void AfficherPressionFinale();
 	void InitialiserAfficherPressionFinale(double init);
 
 

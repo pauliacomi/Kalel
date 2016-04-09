@@ -2,27 +2,6 @@
 #include "Manip.h"
 
 
-using namespace std;
-
-
-
-CRITICAL_SECTION Sync_view_instrument[NB_OF_INSTRUMENTS + 1];
-HANDLE hEvent;
-
-
-
-void CManip::RajoutMesure()
-{
-	messageHandler.GraphAddData(numero_mesure, 
-						temps_manip, 
-						resultat_calo, 
-						resultat_bp, 
-						resultat_hp, 
-						TemperatureCalo, 
-						TemperatureCage, 
-						TemperaturePiece);
-}
-
 void CManip::OuvrirInstruments()
 {
 	for(int i=0;i<NB_OF_INSTRUMENTS;i++)
@@ -81,32 +60,34 @@ void CManip::LectureTemperatures()
 
 void CManip::ThreadMesures()
 {
-	// Initialisation de la section critique
+	// Initialisation of the critical section
 	for (int i=0;i<NB_OF_INSTRUMENTS+1;i++)
 		InitializeCriticalSection(&Sync_view_instrument[i]);
 
 
-	// On crée un événement
-	//   - Non signalé par défaut
-	//   - A réinitialisation manuelle
+	// Create an event
+	//   - Non signalled by default
+	//   - With manual reinitiallisation
 	hEvent=CreateEvent(NULL,TRUE,FALSE,NULL);
 
-	// On démarre 4 threads et on récupère leurs HANDLES
-	// Les fonctions utilisées attendent l'activation de hEventAuto
+	// Start the 4 threads and get their handles
+	// The functions wait for the hEvent
 	hThread[0]=CreateThread(NULL,NULL,ThreadProc_LectureCalo,this,NULL,&ThreadId);
 	hThread[1]=CreateThread(NULL,NULL,ThreadProc_LectureHautePression,this,NULL,&ThreadId);
 	hThread[2]=CreateThread(NULL,NULL,ThreadProc_LectureBassePression,this,NULL,&ThreadId);
 	hThread[3]=CreateThread(NULL,NULL,ThreadProc_LectureTemperature,this,NULL,&ThreadId);
 
-	// Les threads sont libérés de leur attente
+	// Set the event to start the threads
 	SetEvent(hEvent);
-	// On attend que les 4 threads soient terminés
+
+	// Wait for the threads to finish
 	WaitForMultipleObjects(4,hThread,TRUE,INFINITE);
-	// On peut détruire la section critique
+
+	// Destroy the critical sections
 	for(int i=0;i<NB_OF_INSTRUMENTS;i++)
 		DeleteCriticalSection(&Sync_view_instrument[i]);
 
-	// On détruit l'événement
+	// Destroy the event
 	CloseHandle(hEvent);
 }
 
@@ -114,11 +95,13 @@ void CManip::ThreadMesures()
 
 DWORD WINAPI CManip::ThreadProc_LectureCalo(LPVOID lpParam)
 {
-	// Attend l'activation de hEventAuto indéfiniment
-	WaitForSingleObject(hEvent,INFINITE);
-	
+
 	CManip *manipulation = reinterpret_cast<CManip *>(lpParam);
-	
+
+	// Wait for the activation of the hEvent
+	WaitForSingleObject(hEvent,INFINITE);
+
+	// Block the corresponding variable
 	EnterCriticalSection(&Sync_view_instrument[manipulation->synchCalo]);
 	manipulation->LectureCalo();
 	LeaveCriticalSection(&Sync_view_instrument[manipulation->synchCalo]);
@@ -128,11 +111,12 @@ DWORD WINAPI CManip::ThreadProc_LectureCalo(LPVOID lpParam)
 
 DWORD WINAPI CManip::ThreadProc_LectureHautePression(LPVOID lpParam)
 {
-	// Attend l'activation de hEventAuto indéfiniment
-	WaitForSingleObject(hEvent,INFINITE);
-	
 	CManip *manipulation = reinterpret_cast<CManip *>(lpParam);
-	
+
+	// Wait for the activation of the hEvent
+	WaitForSingleObject(hEvent,INFINITE);
+
+	// Block the corresponding variable
 	EnterCriticalSection(&Sync_view_instrument[manipulation->synchHP]);
 	manipulation->LectureHautePression();
 	LeaveCriticalSection(&Sync_view_instrument[manipulation->synchHP]);
@@ -142,12 +126,12 @@ DWORD WINAPI CManip::ThreadProc_LectureHautePression(LPVOID lpParam)
 
 DWORD WINAPI CManip::ThreadProc_LectureBassePression(LPVOID lpParam)
 {
-	// Attend l'activation de hEventAuto indéfiniment
-	WaitForSingleObject(hEvent,INFINITE);
-	
 	CManip *manipulation = reinterpret_cast<CManip *>(lpParam);
-	
 
+	// Wait for the activation of the hEvent
+	WaitForSingleObject(hEvent,INFINITE);	
+
+	// Block the corresponding variable
 	EnterCriticalSection(&Sync_view_instrument[manipulation->synchBP]);
 	manipulation->LectureBassePression();
 	LeaveCriticalSection(&Sync_view_instrument[manipulation->synchBP]);
@@ -157,10 +141,10 @@ DWORD WINAPI CManip::ThreadProc_LectureBassePression(LPVOID lpParam)
 
 DWORD WINAPI CManip::ThreadProc_LectureTemperature(LPVOID lpParam)
 {
-	// Attend l'activation de hEvent indéfiniment
-	WaitForSingleObject(hEvent,INFINITE);
-	
 	CManip *manipulation = reinterpret_cast<CManip *>(lpParam);
+
+	// Wait for the activation of the hEvent
+	WaitForSingleObject(hEvent,INFINITE);
 	
 	manipulation->LectureTemperatures();
 

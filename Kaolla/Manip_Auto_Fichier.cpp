@@ -71,7 +71,7 @@ void CManip_Auto::RajoutFichierEntete(string stringChangement)
 {
 	ofstream fichier_entete;
 	//fichier_entete.open(CManip::NomFichier("txt").c_str(),ios::out | ios::app);//ios::ate); //ios::ate : Permet de se placer en fin de fichier. 
-	fichier_entete.open(CManip::NomFichierEntete("txt").c_str(),ios::out | ios::app);//ios::ate); //ios::ate : Permet de se placer en fin de fichier. 
+	fichier_entete.open(CManip::NomFichier("txt",true).c_str(),ios::out | ios::app);//ios::ate); //ios::ate : Permet de se placer en fin de fichier. 
 
 	fichier_entete << stringChangement << endl;
 	
@@ -89,7 +89,7 @@ void CManip_Auto::RajoutFichierEnteteCSV(string stringChangementCSV)
 {
 	ofstream fichier_entete;
 	//fichier_entete.open(CManip::NomFichier("txt").c_str(),ios::out | ios::app);//ios::ate); //ios::ate : Permet de se placer en fin de fichier. 
-	fichier_entete.open(CManip::NomFichierEntete("csv").c_str(),ios::out | ios::app);//ios::ate); //ios::ate : Permet de se placer en fin de fichier. 
+	fichier_entete.open(CManip::NomFichier("csv", true).c_str(),ios::out | ios::app);//ios::ate); //ios::ate : Permet de se placer en fin de fichier. 
 
 	fichier_entete << stringChangementCSV << endl;
 	

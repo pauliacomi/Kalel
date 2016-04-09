@@ -590,9 +590,6 @@
     <ClCompile Include="MFCMessageHandler.cpp">
       <Filter>Source Files\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="ManipDisplay.cpp">
-      <Filter>Source Files\Manip\Manip</Filter>
-    </ClCompile>
     <ClCompile Include="ManipData.cpp">
       <Filter>Source Files\Manip\Manip</Filter>
     </ClCompile>

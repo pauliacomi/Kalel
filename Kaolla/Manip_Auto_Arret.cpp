@@ -71,7 +71,6 @@ void CManip_Auto::Reprise()
 }
 
 
-
 void CManip_Auto::AffichageArret()
 {
 	
@@ -137,9 +136,7 @@ void CManip_Auto::AffichageArret()
 
 		// Emmettre un son peut-être
 		messageHandler.DisplayMessage(message);
-
 	}	
-
 }
 
 

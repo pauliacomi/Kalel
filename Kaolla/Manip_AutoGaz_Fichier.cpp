@@ -190,7 +190,7 @@ void CManip_AutoGaz::EcritureEntete()
 {
 	ofstream fichier_entete; 
 	//fichier_entete.open(CManip::NomFichier("txt").c_str(), ios::out | ios::trunc);
-	fichier_entete.open(CManip::NomFichierEntete("txt").c_str(), ios::out | ios::trunc);
+	fichier_entete.open(CManip::NomFichier("txt", true).c_str(), ios::out | ios::trunc);
 
 	fichier_entete.clear(); 
 	// Ecriture des noms des colonnes
@@ -228,7 +228,7 @@ void CManip_AutoGaz::EcritureEntete()
 void CManip_AutoGaz::EcritureEnteteCSV()
 {
 	ofstream fichier_entete; 
-	fichier_entete.open(CManip::NomFichierEntete("csv").c_str(), ios::out | ios::trunc);
+	fichier_entete.open(CManip::NomFichier("csv", true).c_str(), ios::out | ios::trunc);
 
 	fichier_entete.clear(); 
 	// Ecriture des noms des colonnes

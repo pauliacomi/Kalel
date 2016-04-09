@@ -8,7 +8,7 @@ ofstream fichier_mesure_autogaz;
 
 void CManip_AutoGaz::OuvertureFichierMesures()
 {
-	fichier_mesure_autogaz.open(NomFichier("csv").c_str(), ios_base::out /*| ios_base::trunc*/);
+	fichier_mesure_autogaz.open(NomFichier("csv", false).c_str(), ios_base::out /*| ios_base::trunc*/);
 	
 	// vider le ofstream fichier, pas le .csv, et on peut réitérer l'écriture en enlevant le caractère "fin de fichier"
 	fichier_mesure_autogaz.clear(); 

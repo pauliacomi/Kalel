@@ -1,18 +1,18 @@
 #include "StdAfx.h"
 #include "Manip.h"
 
-#include "MFCMessageHandler.h"		// Will handle all communication from base functionality to MFC
-
 
 // ------------ Constructor and Destructor
 
 CManip::CManip()
 {
-	manip_en_cours = FALSE;
-	// this should most definately not be defined here, it's so wrong it hurts
-	// m_proprietes_experience = new CProprietes_experience("");
-	for(int i=0;i<NB_OF_INSTRUMENTS;i++)
+	//m_proprietes_experience = new CProprietes_experience(""); // this should most definately not be defined here, it's so wrong it hurts
+
+	for (int i = 0; i < NB_OF_INSTRUMENTS; i++) {
 		instrument[i] = new CInstrument();
+	}
+
+	manip_en_cours = FALSE;
 	AppareilCalo.voie_mesure = VOIE_INDEF;
 	AppareilCalo.index = INDEX_INDEF;
 	AppareilHP.voie_mesure = VOIE_INDEF;
@@ -29,8 +29,8 @@ CManip::~CManip()
 }
 
 
+
 // -------------- Functions that set the pointers to external objects
-// This is most likely not thread safe so must rewrite
 
 void CManip::SetKeithley(Keithley* Keith)
 {
@@ -150,7 +150,8 @@ void CManip::InitialisationInstruments()
 							synchHP = PassageCOMs;
 						break;
 
-					default : //problème
+					default :
+						ASSERT(0); // Should never be reached
 						break;
 				}
 				index_instr++;
@@ -181,6 +182,7 @@ void CManip::InitialisationInstruments()
 			case INSTRUMENT_UNDEF:
 			case INSTRUMENT_INEXIST:
 			default:
+				ASSERT(0); // Should never be reached
 				break;
 		}
 	}
@@ -195,25 +197,7 @@ void CManip::SetManipType(int experimentType)
 }
 
 
-// Tell the main view to update itself - this should be done by using a message command
-void CManip::MiseAJour()
-{
-	messageHandler.UpdateDisplay();
-}
-
-// Tell the main view to unlock the menu - this should be done by using a message command
-void CManip::DebloqueMenu()
-{ 
-	messageHandler.UnlockMenu();
-}
-
-// Tell the main view to unlock the launch button - this should be done by using a message command
-void CManip::RemettreBoutonLancer()
-{
-	messageHandler.EnableStartButton();
-}
-
-// Manually reinitialise the experimental properties
+// Manually reinitialise the experimental properties - should remove all references to an MFC window
 void CManip::ReinitialisationManuelle()
 {
 	m_proprietes_experience->ReinitialisationManuelle();

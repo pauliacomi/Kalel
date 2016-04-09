@@ -2,9 +2,6 @@
 #include "Manip.h"
 
 
-CEvent g_eventFinAffichage;
-
-
 void CManip::ExecutionManuelle(LPVOID pParam)
 {
 	messageHandler.DisplayMessage(_T("Début de l'expérience\r\n"));
@@ -41,7 +38,7 @@ void CManip::ExecutionManuelle(LPVOID pParam)
 		temps_manip=temps_experience.TempsActuel();
 
 		messageHandler.ExchangeData();
-		RajoutMesure();
+		GraphAddMeasurement();
 		AffichageMesures();
 		EnregistrementFichierMesures();
 		DonneesManuelleGrapheEtape();
@@ -66,9 +63,9 @@ void CManip::ExecutionManuelle(LPVOID pParam)
 			ToutFermer();
 			ReinitialisationManuelle();
 			FermetureFichierMesures();
-			DebloqueMenu();
+			messageHandler.UnlockMenu();
 			messageHandler.DisplayMessage(_T("Expérience terminée\r\n"));
-			RemettreBoutonLancer();
+			messageHandler.EnableStartButton();
 			break;
 		}
 

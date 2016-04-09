@@ -311,7 +311,6 @@
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="MainThread.cpp" />
     <ClCompile Include="Manip.cpp" />
-    <ClCompile Include="ManipDisplay.cpp" />
     <ClCompile Include="Manip_Auto.cpp" />
     <ClCompile Include="Manip_AutoGaz.cpp" />
     <ClCompile Include="Manip_AutoGaz_Adsorption_Continue.cpp" />

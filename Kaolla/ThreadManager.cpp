@@ -224,7 +224,8 @@ CString GetDonneesExperience()
 void ManualAction(LPVOID pParam)
 {
 	// lock the menu
-	pKaollaDoc->experiment_running = TRUE;
+	pKaollaView = CKaollaView::GetView();
+	//pKaollaDoc->experiment_running = TRUE;
 	pKaollaView->DebloqueMenu(NULL, NULL);
 
 	//start thread

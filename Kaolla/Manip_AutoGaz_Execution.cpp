@@ -42,7 +42,7 @@ void CManip_AutoGaz::ExecutionAuto(LPVOID pParam)
 		FermerInstruments();
 
 		FermetureFichierMesures();
-		DebloqueMenu();
+		messageHandler.UnlockMenu();
 
 		return;
 	}
@@ -87,7 +87,7 @@ void CManip_AutoGaz::ExecutionAuto(LPVOID pParam)
 
 	ReinitialisationAuto();
 
-	DebloqueMenu();
+	messageHandler.UnlockMenu();
 	messageHandler.DisplayMessage(_T("Expérience terminée\r\n"));
 
 	AfxMessageBox(_T("Expérience terminée\t\n"), MB_ICONEXCLAMATION | MB_OK);

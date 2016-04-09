@@ -7,13 +7,6 @@
 #include "Define_Manip_Securite.h"
 
 
-bool PressionTropHaute; //SecuriteHautePressionManuelle()
-bool TemperatureElevee; //SecuriteTemperatureManuelle
-bool TemperatureFaible;
-
-HANDLE hEventPression,hEventTemperatureElevee,hEventTemperatureFaible;
-
-
 void CManip::SecuriteHautePression()
 {
 	if(GenreExperience == EXPERIMENT_TYPE_MANUAL)

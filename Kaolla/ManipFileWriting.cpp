@@ -2,117 +2,77 @@
 #include "Manip.h"
 
 
-ofstream fichier_mesure_manuelle;
 
 
-string CManip::NomFichier(string extention)
+std::string CManip::NomFichier(std::string extension, bool entete)
 {
+	// Create buffer
+	char fileNameBuffer[255];
+	// Put path in buffer
+	sprintf_s(fileNameBuffer,"%s",general.chemin.c_str());
 
-	char nom_fichier_char[255];
-	sprintf_s(nom_fichier_char,"%s",general.chemin.c_str());
-
-	if(!PathIsDirectory(_T(nom_fichier_char)))
+	// Check for validity, if not, put the file in the C: drive
+	if(!PathIsDirectory(_T(fileNameBuffer)))
 	{
-		//mettre erreur
-		// Pour l'instant : 
-		sprintf_s(nom_fichier_char,"C:/");
+		ASSERT(0);
+		sprintf_s(fileNameBuffer,"C:/");
 	}
 	else
 	{
+		// Check if the user field is empty
 		if( strcmp(general.experimentateur.surnom.c_str(),"") )
 		{
-			sprintf_s(nom_fichier_char,"%s/Nouveau_Fichier",general.chemin.c_str());
-			if(!PathIsDirectory(_T(nom_fichier_char)))
-				CreateDirectory(_T(nom_fichier_char),NULL);
+			sprintf_s(fileNameBuffer,"%s/Nouveau_Fichier",general.chemin.c_str());
 		}
 		else
 		{
-			sprintf_s(nom_fichier_char,"%s/%s",general.chemin.c_str(),general.experimentateur.surnom.c_str());
-			if(!PathIsDirectory(_T(nom_fichier_char)))
-				CreateDirectory(_T(nom_fichier_char),NULL);
-			sprintf_s(nom_fichier_char,"%s/%s/%s",general.chemin.c_str(),general.experimentateur.surnom.c_str(),
+			// Check if the user directory exists, if not, create it
+			sprintf_s(fileNameBuffer,"%s/%s",general.chemin.c_str(),general.experimentateur.surnom.c_str());
+			if (!PathIsDirectory(_T(fileNameBuffer))) {
+				CreateDirectory(_T(fileNameBuffer), NULL);
+			}
+			// Check if the sample directory exists
+			sprintf_s(fileNameBuffer,"%s/%s/%s",general.chemin.c_str(),general.experimentateur.surnom.c_str(),
 												general.nom_echantillon.c_str());
-			if(!PathIsDirectory(_T(nom_fichier_char)))
-				CreateDirectory(_T(nom_fichier_char),NULL);
+		}
+		// Check if the full path exists, if not create it
+		if (!PathIsDirectory(_T(fileNameBuffer))) {
+			CreateDirectory(_T(fileNameBuffer), NULL);
 		}
 	}
-	sprintf_s(nom_fichier_char,"%s/%s.%s",nom_fichier_char,general.fichier.c_str(),extention.c_str());
-	string nom_fichier = nom_fichier_char;
-	return nom_fichier;
-}
 
-string CManip::NomFichierEntete(string extention)
-{
-	char nom_fichier_entete_char[255];
-	sprintf_s(nom_fichier_entete_char,"%s",general.chemin.c_str());
-
-	if(!PathIsDirectory(_T(nom_fichier_entete_char)))
+	// Finally store the entire path including the file name and return it
+	if (entete)
 	{
-		//mettre erreur
-		// Pour l'instant : 
-		sprintf_s(nom_fichier_entete_char,"C:/");
+		sprintf_s(fileNameBuffer, "%s/%s(entete).%s", fileNameBuffer, general.fichier.c_str(), extension.c_str());
 	}
 	else
 	{
-		if( strcmp(general.experimentateur.surnom.c_str(), ""))
-		{
-			sprintf_s(nom_fichier_entete_char,"%s/Nouveau_Fichier",general.chemin.c_str());
-			if(!PathIsDirectory(_T(nom_fichier_entete_char)))
-				CreateDirectory(_T(nom_fichier_entete_char),NULL);
-		}
-		else
-		{
-			sprintf_s(nom_fichier_entete_char,"%s/%s",general.chemin.c_str(),general.experimentateur.surnom.c_str());
-			if(!PathIsDirectory(_T(nom_fichier_entete_char)))
-				CreateDirectory(_T(nom_fichier_entete_char),NULL);
-			sprintf_s(nom_fichier_entete_char,"%s/%s/%s",general.chemin.c_str(),general.experimentateur.surnom.c_str(),
-												general.nom_echantillon.c_str());
-			if(!PathIsDirectory(_T(nom_fichier_entete_char)))
-				CreateDirectory(_T(nom_fichier_entete_char),NULL);
-		}
+		sprintf_s(fileNameBuffer, "%s/%s.%s", fileNameBuffer, general.fichier.c_str(), extension.c_str());
 	}
-	sprintf_s(nom_fichier_entete_char,"%s/%s(entete).%s",nom_fichier_entete_char,general.fichier.c_str(),extention.c_str());
-	string nom_fichier_entete = nom_fichier_entete_char;
-	return nom_fichier_entete;
+	string nom_fichier = fileNameBuffer;
+	return nom_fichier;
 }
-
-
-
-void CManip::EnregistrementFichierMesures()
-{
-	char char_resultat_calo[20];
-	sprintf_s(char_resultat_calo,"%.8E",resultat_calo);
-
-	if(fichier_mesure_manuelle)
-	{
-		fichier_mesure_manuelle << numero_mesure << ";" << temps_manip << ";";
-		fichier_mesure_manuelle << char_resultat_calo << ";" << resultat_bp << ";" << resultat_hp << ";";
-		fichier_mesure_manuelle << TemperatureCalo << ";" << TemperatureCage << ";" << TemperaturePiece << ";";
-
-		fichier_mesure_manuelle << EstOuvert_Vanne(6) << ";";
-
-		fichier_mesure_manuelle << endl;
-	}
-}
-
-
 
 
 void CManip::OuvertureFichierMesures()
 {
-	fichier_mesure_manuelle.open(NomFichier("csv").c_str(), ios_base::out /*| ios::trunc*/);
-	
-	// vider le ofstream fichier, pas le .csv, et on peut réitérer l'écriture en enlevant le caractère "fin de fichier"
-	fichier_mesure_manuelle.clear(); 
-	// Ecriture des noms des colonnes
-	fichier_mesure_manuelle << "N°mesure;Temps(s);Calorimètre(W);Basse Pression(Bar);Haute Pression(Bar);T°C Calo;T°C Cage;T°C pièce;Vanne 6" << endl;
+	// Create the file
+	fileStream.open(NomFichier("csv", false).c_str(), ios_base::out /*| ios::trunc*/);
+
+	// Clear the file stream, pas le .csv, et on peut réitérer l'écriture en enlevant le caractère "fin de fichier"
+	fileStream.clear();
+
+	// Write column names
+	fileStream << "N°mesure;Temps(s);Calorimètre(W);Basse Pression(Bar);Haute Pression(Bar);T°C Calo;T°C Cage;T°C pièce;Vanne 6" << endl;
 }
 
 
 void CManip::FermetureFichierMesures()
 {
-	fichier_mesure_manuelle.close();
+	fileStream.close();
 }
+
 
 string CManip::EnteteBase()
 {
@@ -123,6 +83,25 @@ string CManip::EnteteBase()
 
 	return chaine_char.str();
 }
+
+void CManip::EnregistrementFichierMesures()
+{
+	char char_resultat_calo[20];
+	sprintf_s(char_resultat_calo,"%.8E",resultat_calo);
+
+	if(fileStream)
+	{
+		fileStream << numero_mesure << ";" << temps_manip << ";";
+		fileStream << char_resultat_calo << ";" << resultat_bp << ";" << resultat_hp << ";";
+		fileStream << TemperatureCalo << ";" << TemperatureCage << ";" << TemperaturePiece << ";";
+
+		fileStream << EstOuvert_Vanne(6) << ";";
+
+		fileStream << endl;
+	}
+}
+
+
 
 string CManip::EnteteBaseCSV()
 {
@@ -172,7 +151,7 @@ string CManip::EnteteGeneralCSV()
 void CManip::EcritureEntete()
 {
 	ofstream fichier_entete; 
-	fichier_entete.open(CManip::NomFichierEntete("txt").c_str(), ios_base::out /*| ios::trunc*/);
+	fichier_entete.open(CManip::NomFichier("txt", true).c_str(), ios_base::out /*| ios::trunc*/);
 
 	fichier_entete.clear(); 
 
@@ -184,7 +163,7 @@ void CManip::EcritureEntete()
 void CManip::EcritureEnteteCSV()
 {
 	ofstream fichier_entete; 
-	fichier_entete.open(CManip::NomFichierEntete("csv").c_str(), ios_base::out /*| ios::trunc*/);
+	fichier_entete.open(CManip::NomFichier("csv", true).c_str(), ios_base::out /*| ios::trunc*/);
 	fichier_entete.clear(); 
 
 	fichier_entete << EnteteBaseCSV();
