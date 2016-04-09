@@ -28,10 +28,6 @@ void CManip_Auto::DonneesAutoGrapheEtape()
 	messageHandler.GraphSetTitle(titre);
 }
 
-
-Donnees_General CManip_Auto::DonneesActuellesGeneral()
-{	return CManip::DonneesActuellesGeneral();}
-
 Donnees_Divers CManip_Auto::DonneesActuellesDivers()
 {	return CManip::m_proprietes_experience->m_divers.donnees_actuelles;}
 

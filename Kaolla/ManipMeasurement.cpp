@@ -99,12 +99,12 @@ DWORD WINAPI CManip::ThreadProc_LectureCalo(LPVOID lpParam)
 	CManip *manipulation = reinterpret_cast<CManip *>(lpParam);
 
 	// Wait for the activation of the hEvent
-	WaitForSingleObject(hEvent,INFINITE);
+	WaitForSingleObject(manipulation->hEvent,INFINITE);
 
 	// Block the corresponding variable
-	EnterCriticalSection(&Sync_view_instrument[manipulation->synchCalo]);
+	EnterCriticalSection(&manipulation->Sync_view_instrument[manipulation->synchCalo]);
 	manipulation->LectureCalo();
-	LeaveCriticalSection(&Sync_view_instrument[manipulation->synchCalo]);
+	LeaveCriticalSection(&manipulation->Sync_view_instrument[manipulation->synchCalo]);
 
 	return 0;
 }
@@ -114,12 +114,12 @@ DWORD WINAPI CManip::ThreadProc_LectureHautePression(LPVOID lpParam)
 	CManip *manipulation = reinterpret_cast<CManip *>(lpParam);
 
 	// Wait for the activation of the hEvent
-	WaitForSingleObject(hEvent,INFINITE);
+	WaitForSingleObject(manipulation->hEvent,INFINITE);
 
 	// Block the corresponding variable
-	EnterCriticalSection(&Sync_view_instrument[manipulation->synchHP]);
+	EnterCriticalSection(&manipulation->Sync_view_instrument[manipulation->synchHP]);
 	manipulation->LectureHautePression();
-	LeaveCriticalSection(&Sync_view_instrument[manipulation->synchHP]);
+	LeaveCriticalSection(&manipulation->Sync_view_instrument[manipulation->synchHP]);
 
 	return 0;
 }
@@ -129,12 +129,12 @@ DWORD WINAPI CManip::ThreadProc_LectureBassePression(LPVOID lpParam)
 	CManip *manipulation = reinterpret_cast<CManip *>(lpParam);
 
 	// Wait for the activation of the hEvent
-	WaitForSingleObject(hEvent,INFINITE);	
+	WaitForSingleObject(manipulation->hEvent,INFINITE);
 
 	// Block the corresponding variable
-	EnterCriticalSection(&Sync_view_instrument[manipulation->synchBP]);
+	EnterCriticalSection(&manipulation->Sync_view_instrument[manipulation->synchBP]);
 	manipulation->LectureBassePression();
-	LeaveCriticalSection(&Sync_view_instrument[manipulation->synchBP]);
+	LeaveCriticalSection(&manipulation->Sync_view_instrument[manipulation->synchBP]);
 
 	return 0;
 }
@@ -144,7 +144,7 @@ DWORD WINAPI CManip::ThreadProc_LectureTemperature(LPVOID lpParam)
 	CManip *manipulation = reinterpret_cast<CManip *>(lpParam);
 
 	// Wait for the activation of the hEvent
-	WaitForSingleObject(hEvent,INFINITE);
+	WaitForSingleObject(manipulation->hEvent,INFINITE);
 	
 	manipulation->LectureTemperatures();
 

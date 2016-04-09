@@ -14,8 +14,6 @@ void CManip_Auto::ReinitialisationVerificationInjection()
 }
 
 
-
-
 void CManip_Auto::VerificationInjection()
 {
 	if((precedent_injection - marge_injection < resultat_hp) &&

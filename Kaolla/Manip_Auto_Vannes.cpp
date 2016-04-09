@@ -2,16 +2,6 @@
 #include "Manip_Auto.h"
 
 
-
-using namespace std;
-
-bool CManip_Auto::FermetureDeToutesLesVannes()
-{
-	if(!CManip::FermetureDeToutesLesVannes())
-		return FALSE;
-	return TRUE;
-}
-
 bool CManip_Auto::Ouverture_Vanne(int num_vanne)
 {
 	if(!CManip::Ouverture_Vanne(num_vanne))

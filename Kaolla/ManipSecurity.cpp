@@ -47,14 +47,15 @@ void CManip::SecuriteHautePressionManuelle()
 		}
 }
 
-DWORD WINAPI CManip::MesureSecuriteHautePression(LPVOID)
+DWORD WINAPI CManip::MesureSecuriteHautePression(LPVOID param)
 {
+	CManip * manip = static_cast<CManip*>(param);
 
-	WaitForSingleObject(hEventPression,INFINITE);
+	WaitForSingleObject(manip->hEventPression,INFINITE);
 
-	if (!PressionTropHaute)
+	if (!manip->PressionTropHaute)
 	{
-		PressionTropHaute = TRUE;
+		manip->PressionTropHaute = TRUE;
 		CString message;
 		message.Format(_T("Attention ! Haute pression trop élevé\t\nVeuillez la mettre en dessous de : %f bar\t\n"),
 			GetPressionSecuriteHautePression());
@@ -153,12 +154,14 @@ void CManip::SecuriteTemperaturesManuelle()
 
 
 
-DWORD WINAPI CManip::MesureSecuriteTemperatureElevee(LPVOID)
+DWORD WINAPI CManip::MesureSecuriteTemperatureElevee(LPVOID param)
 {
-	WaitForSingleObject(hEventTemperatureElevee,INFINITE);
-	if (!TemperatureElevee)
+	CManip * manip = static_cast<CManip*>(param);
+
+	WaitForSingleObject(manip->hEventTemperatureElevee,INFINITE);
+	if (!manip->TemperatureElevee)
 	{
-		TemperatureElevee = TRUE;
+		manip->TemperatureElevee = TRUE;
 		CString message;
 		message.Format(_T("Attention ! Température du calo trop élevé par rapport à la température d'expérience\t\n"));
 		AfxMessageBox(message,MB_ICONERROR);
@@ -174,12 +177,14 @@ DWORD WINAPI CManip::MesureSecuriteTemperatureElevee(LPVOID)
 	return 0;
 }
 
-DWORD WINAPI CManip::MesureSecuriteTemperatureFaible(LPVOID)
+DWORD WINAPI CManip::MesureSecuriteTemperatureFaible(LPVOID param)
 {
-	WaitForSingleObject(hEventTemperatureFaible,INFINITE);
-	if (!TemperatureFaible)
+	CManip * manip = static_cast<CManip*>(param);
+
+	::WaitForSingleObject(manip->hEventTemperatureFaible,INFINITE);
+	if (!manip->TemperatureFaible)
 	{
-		TemperatureFaible = TRUE;
+		manip->TemperatureFaible = TRUE;
 		CString message;
 		message.Format(_T("Attention ! Température du calo trop faible par rapport à la température d'expérience\t\n"));
 		AfxMessageBox(message,MB_ICONERROR);

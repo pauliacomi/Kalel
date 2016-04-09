@@ -12,7 +12,6 @@ CManip_AutoGaz::CManip_AutoGaz(void) : CManip_Auto()
 
 CManip_AutoGaz::~CManip_AutoGaz(void)
 {
-	//delete DialogueTypeExperience;
 }
 
 void CManip_AutoGaz::LancementExperience(LPVOID pParam)

@@ -32,13 +32,17 @@ public:
 
 	// ----------- Fonctions ------------- //
 
-	// Manip_AutoGaz
+/**********************************************************************************************************************************
+// Manip_AutoGaz
+***********************************************************************************************************************************/
 
 	void LancementExperience(LPVOID pParam);
 	void ArretExperience();
 	void ReinitialisationAuto();
 
-	// Manip_AutoGaz_AEffectuer
+/**********************************************************************************************************************************
+// Manip_AutoGaz_AEffectuer
+***********************************************************************************************************************************/
 
 	bool PetitesDosesAEffectuer();
 	bool MoyennesDosesAEffectuer();
@@ -46,7 +50,9 @@ public:
 	bool DesorptionAEffectuer();
 
 
-	// Manip_AutoGaz_Donnees
+/**********************************************************************************************************************************
+// Manip_AutoGaz_Donnees
+***********************************************************************************************************************************/
 
 	void RecuperationDonnees();
 	Donnees_General DonneesActuellesGeneral();
@@ -58,12 +64,16 @@ public:
 	Donnees_Adsorption_Continue DonneesActuellesAdsorptionContinue();
 	CString GetDonneesExperience();
 
-	// Manip_AutoGaz_Execution
+/**********************************************************************************************************************************
+// Manip_AutoGaz_Execution
+***********************************************************************************************************************************/
 
 	void Execution(LPVOID pParam);
 	void ExecutionAuto(LPVOID pParam);
 
-	// Manip_AutoGaz_Fichier
+/**********************************************************************************************************************************
+// Manip_AutoGaz_Fichier
+***********************************************************************************************************************************/ 
 
 	std::string EnteteBase();
 	std::string EnteteBaseCSV();
@@ -86,39 +96,59 @@ public:
 	void RecuperationDonneesGrandesDoses();
 	void RecuperationDonneesDesorption();
 
-	// Manip_Auto_LEA
+/**********************************************************************************************************************************
+// Manip_Auto_LEA
+***********************************************************************************************************************************/
 
 	void LireEcrireAfficher(int duree_evenement,CString nom_etape,LPVOID pParam);
 	bool LireEcrireAfficher(LPVOID pParam);
 	
-	// Manip_AutoGaz_Mesure
+
+/**********************************************************************************************************************************
+// Manip_AutoGaz_Mesure
+***********************************************************************************************************************************/
 
 	void OuvertureFichierMesures();
 	void EnregistrementFichierMesures();
 	void FermetureFichierMesures();
 
-	// Manip_AutoGaz_Proprietes_Experience
+
+/**********************************************************************************************************************************
+// Manip_AutoGaz_Proprietes_Experience
+***********************************************************************************************************************************/
 
 	void ModifierParametresExperience();
 
-	// Manip_AutoGaz_Type_Experience
 
-	CDialogue_TypeExperience* DialogueTypeExperience;
-	void InitialisationDialogueTypeExperience();
+/**********************************************************************************************************************************
+// Manip_AutoGaz_Type_Experience
+***********************************************************************************************************************************/
 
-	// Manip_AutoGaz_Vannes
+CDialogue_TypeExperience* DialogueTypeExperience;
+void InitialisationDialogueTypeExperience();
+
+
+/**********************************************************************************************************************************
+// Manip_AutoGaz_Vannes
+***********************************************************************************************************************************/
 
 	bool Ouverture_Vanne(int num_vanne);
 	bool Fermeture_Vanne(int num_vanne);
 	bool OuvrirEtFermer_Vanne(int num_vanne);
 
+
+
 	// Etapes
 
-	// Manip_AutoGaz_Ligne_Base_Equilibre
+/**********************************************************************************************************************************
+// Manip_AutoGaz_Ligne_Base_Equilibre
+***********************************************************************************************************************************/
 
 	void LigneBaseEtEquilibre(LPVOID pParam);
 
-	// Manip_AutoGaz_Adsorption_Continue
+/**********************************************************************************************************************************
+// Manip_AutoGaz_Adsorption_Continue
+***********************************************************************************************************************************/
 
 	HANDLE hThreadDemandeOuverture;
 	DWORD ThreadDemandeOuvertureId;
@@ -133,7 +163,9 @@ public:
 	void EquilibreFinAdsorption(LPVOID pParam);
 	static DWORD WINAPI ThreadAttenteDemande(LPVOID lpParam);
 
-	// Manip_AutoGaz_Petites_Doses
+/**********************************************************************************************************************************
+// Manip_AutoGaz_Petites_Doses
+***********************************************************************************************************************************/
 
 	void PetitesDoses(LPVOID pParam);
 	void PetitesDoses_InitialisationPressionInitiale();
@@ -144,7 +176,9 @@ public:
 	void PetitesDoses_AdsorptionBassePression(LPVOID pParam);
 
 
-	// Manip_AutoGaz_Moyennes_Doses
+/**********************************************************************************************************************************
+// Manip_AutoGaz_Moyennes_Doses
+***********************************************************************************************************************************/
 
 	void MoyennesDoses(LPVOID pParam);
 	void MoyennesDoses_InitialisationPressionInitiale();
@@ -154,7 +188,9 @@ public:
 	void MoyennesDoses_EquilibreDansVolumeRef(LPVOID pParam);
 	void MoyennesDoses_AdsorptionHautePression(LPVOID pParam);
 
-	// Manip_AutoGaz_Grandes_Doses
+/**********************************************************************************************************************************
+// Manip_AutoGaz_Grandes_Doses
+***********************************************************************************************************************************/
 
 	void GrandesDoses(LPVOID pParam);
 	void GrandesDoses_InitialisationPressionInitiale();
@@ -164,7 +200,9 @@ public:
 	void GrandesDoses_EquilibreDansVolumeRef(LPVOID pParam);
 	void GrandesDoses_AdsorptionHautePression(LPVOID pParam);
 
-	// Manip_AutoGaz_Desorption
+/**********************************************************************************************************************************
+// Manip_AutoGaz_Desorption
+***********************************************************************************************************************************/
 
 	void Desorption(LPVOID pParam);
 	void Desorption_InitialisationPressionInitiale();
@@ -173,25 +211,35 @@ public:
 	void Desorption_DesorptionEchantillonEtEquilibre(LPVOID pParam);
 	void Desorption_DerniereEtape(LPVOID pParam);
 
-	// Manip_AutoGaz_Mise_Sous_Vide
+/**********************************************************************************************************************************
+// Manip_AutoGaz_Mise_Sous_Vide
+***********************************************************************************************************************************/
 
 	void MiseSousVide(LPVOID pParam);
 
+
+
 	// MSV
 
-	// Manip_AutoGaz_MiseSousVide_Ampoule
+/**********************************************************************************************************************************
+// Manip_AutoGaz_MiseSousVide_Ampoule
+***********************************************************************************************************************************/
 
 	void MiseSousVideAmpoule();
 	static DWORD WINAPI ThreadAttente(LPVOID lpParam);
 
-	// Manip_AutoGaz_MiseSousVide_Bouteille
+/**********************************************************************************************************************************
+// Manip_AutoGaz_MiseSousVide_Bouteille
+***********************************************************************************************************************************/
 
 	void MiseSousVideBouteille();
 	void ProcedureMiseSousVideBouteille();
 	void ProcedureMiseSousVideBouteille2();
 	void EvacuationDuSysteme();
 
-	// Manip_AutoGaz_MiseSousVide_ChangementBouteille
+/**********************************************************************************************************************************
+// Manip_AutoGaz_MiseSousVide_ChangementBouteille
+***********************************************************************************************************************************/
 
 	void ChangementBouteille();
 

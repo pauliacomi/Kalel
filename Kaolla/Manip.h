@@ -104,20 +104,20 @@ protected:
 
 	/// from manipSecurity
 
-	static bool PressionTropHaute; //SecuriteHautePressionManuelle()
-	static bool TemperatureElevee; //SecuriteTemperatureManuelle
-	static bool TemperatureFaible;
+	bool PressionTropHaute; //SecuriteHautePressionManuelle()
+	bool TemperatureElevee; //SecuriteTemperatureManuelle
+	bool TemperatureFaible;
 
-	static HANDLE hEventPression, hEventTemperatureElevee, hEventTemperatureFaible;
+	HANDLE hEventPression, hEventTemperatureElevee, hEventTemperatureFaible;
 
 	// from manipManualExecution
 
-	static CEvent g_eventFinAffichage;
+	CEvent g_eventFinAffichage;
 
 	// from manip Measurement
 
-	static CRITICAL_SECTION Sync_view_instrument[NB_OF_INSTRUMENTS + 1];
-	static HANDLE hEvent;
+	CRITICAL_SECTION Sync_view_instrument[NB_OF_INSTRUMENTS + 1];
+	HANDLE hEvent;
 
 
 	// ------------------ Functions ------------------

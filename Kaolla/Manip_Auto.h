@@ -20,7 +20,10 @@ public:
 
 	// ----------- Fonctions ------------- //
 
-	// Manip_Auto_Arret
+ 
+/**********************************************************************************************************************************
+// Manip_Auto_Arret
+***********************************************************************************************************************************/
 
 	void DemandePause();
 	void DemandeMiseSousVide();
@@ -35,15 +38,18 @@ public:
 
 	bool ContinuerExperience();
 
-	
-	// Manip_Auto_Donnees
 
+/**********************************************************************************************************************************
+// Manip_Auto_Donnees
+***********************************************************************************************************************************/
+	
 	void DonneesAutoGrapheEtape();
-	Donnees_General DonneesActuellesGeneral();
 	Donnees_Divers DonneesActuellesDivers();
 
 
-	// Manip_Auto_Fichier
+/**********************************************************************************************************************************
+// Manip_Auto_Fichier
+***********************************************************************************************************************************/
 
 	std::string EnteteBase();
 	std::string EnteteBaseCSV();
@@ -56,7 +62,9 @@ public:
 	void RajoutFichierEnteteCSV(std::string stringChangement);
 
 
-	// Manip_Auto_LireAfficher
+/**********************************************************************************************************************************
+// Manip_Auto_LireAfficher
+***********************************************************************************************************************************/
 
 	void LireAfficherBassePression();
 	void LireAfficherHautePression();
@@ -66,9 +74,10 @@ public:
 	void InitialiserAfficherPressionFinale(double init);
 
 
-	// Manip_Auto_Vannes
+/**********************************************************************************************************************************
+// Manip_Auto_Vannes
+***********************************************************************************************************************************/
 
-	bool FermetureDeToutesLesVannes();
 	bool Ouverture_Vanne(int num_vanne);
 	bool Fermeture_Vanne(int num_vanne);
 	bool OuvrirEtFermer_Vanne(int num_vanne);
@@ -83,13 +92,19 @@ public:
 	bool PompeEnArret();
 	bool ToutFermer();
 
-	// Manip_Auto_Probleme_Injection
+
+/**********************************************************************************************************************************
+// Manip_Auto_Probleme_Injection
+***********************************************************************************************************************************/
 
 	void ReinitialisationVerificationInjection();
 	void VerificationInjection();
 	static DWORD WINAPI PauseInjection(LPVOID lpParam);
 
-	// Manip_Auto_Verifications
+
+/**********************************************************************************************************************************
+// Manip_Auto_Verifications
+***********************************************************************************************************************************/
 
 	int Verifications();
 	int VerificationSecurite();
