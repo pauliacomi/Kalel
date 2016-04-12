@@ -118,6 +118,9 @@
     <Filter Include="Source Files\GUI\Dialogs\Experiment Parameters\TabsNew">
       <UniqueIdentifier>{4d4336e8-a13f-4388-8c9a-ea7f631adb05}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Manip\Defines">
+      <UniqueIdentifier>{5be8b2f5-7fec-496c-a33f-2ef07c67c5a6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -240,24 +243,6 @@
     <ClInclude Include="Define_Instrument.h">
       <Filter>Header Files\Resources\Define</Filter>
     </ClInclude>
-    <ClInclude Include="Define_Manip_Auto_Probleme_Injection.h">
-      <Filter>Header Files\Manip</Filter>
-    </ClInclude>
-    <ClInclude Include="Define_Manip_Auto_Verifications.h">
-      <Filter>Header Files\Manip</Filter>
-    </ClInclude>
-    <ClInclude Include="Define_Manip_AutoGaz_Doses.h">
-      <Filter>Header Files\Manip</Filter>
-    </ClInclude>
-    <ClInclude Include="Define_Manip_AutoGaz_Mise_Sous_Vide.h">
-      <Filter>Header Files\Manip</Filter>
-    </ClInclude>
-    <ClInclude Include="Define_Manip_Securite.h">
-      <Filter>Header Files\Manip</Filter>
-    </ClInclude>
-    <ClInclude Include="Define_Manip_Vannes.h">
-      <Filter>Header Files\Manip</Filter>
-    </ClInclude>
     <ClInclude Include="ListeEtape.h">
       <Filter>Header Files\Manip</Filter>
     </ClInclude>
@@ -365,6 +350,27 @@
     </ClInclude>
     <ClInclude Include="ExperimentData.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Automation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Define_Manip_Auto_Probleme_Injection.h">
+      <Filter>Header Files\Manip\Defines</Filter>
+    </ClInclude>
+    <ClInclude Include="Define_Manip_Auto_Verifications.h">
+      <Filter>Header Files\Manip\Defines</Filter>
+    </ClInclude>
+    <ClInclude Include="Define_Manip_AutoGaz_Doses.h">
+      <Filter>Header Files\Manip\Defines</Filter>
+    </ClInclude>
+    <ClInclude Include="Define_Manip_AutoGaz_Mise_Sous_Vide.h">
+      <Filter>Header Files\Manip\Defines</Filter>
+    </ClInclude>
+    <ClInclude Include="Define_Manip_Securite.h">
+      <Filter>Header Files\Manip\Defines</Filter>
+    </ClInclude>
+    <ClInclude Include="Define_Manip_Vannes.h">
+      <Filter>Header Files\Manip\Defines</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -651,6 +657,15 @@
       <Filter>Source Files\GUI\Dialogs\Experiment Parameters\TabsNew</Filter>
     </ClCompile>
     <ClCompile Include="ExperimentData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Automation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AutomationSecurity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AutomationFileWriting.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

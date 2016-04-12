@@ -14,8 +14,10 @@ public:
 
 	// General parameters
 	int experimentType;
-	int experimentStep;
-	
+
+	int experimentTime;						// Time from the experiment start
+	int experimentDose;						// The dose that is currently underway
+	int experimentMeasurement;				// Number of measurmements the machine has made
 
 	// Experimental data storage
 

@@ -1,3 +1,4 @@
+#pragma once
 #ifndef DEFINE_MANIP_AUTOGAZ_DOSES_H
 #define DEFINE_MANIP_AUTOGAZ_DOSES_H
 

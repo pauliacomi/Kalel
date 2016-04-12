@@ -34,9 +34,9 @@ public:
 	BOOL DisplayInitialPressure();
 	BOOL DisplayFinalPressure();
 	BOOL ExchangeData();
-	BOOL DisplayMeasurement(CString pParam);
-	BOOL DisplayMessage(CString pParam);
-	BOOL DisplayAddMessage(CString pParam);
+	BOOL DisplayMeasurement(int pParam);
+	BOOL DisplayMessage(int pParam);
+	BOOL DisplayAddMessage(int pParam);
 
 	// Steps
 	BOOL DisplayStep(CString pParam);

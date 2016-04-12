@@ -194,6 +194,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Automation.h" />
     <ClInclude Include="CAdsorptionContinue.h" />
     <ClInclude Include="CDesorption.h" />
     <ClInclude Include="CDivers.h" />
@@ -277,6 +278,9 @@
     <ClInclude Include="XSBrowseFolder.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Automation.cpp" />
+    <ClCompile Include="AutomationFileWriting.cpp" />
+    <ClCompile Include="AutomationSecurity.cpp" />
     <ClCompile Include="CAdsorptionContinue.cpp" />
     <ClCompile Include="CDesorption.cpp" />
     <ClCompile Include="CDivers.cpp" />

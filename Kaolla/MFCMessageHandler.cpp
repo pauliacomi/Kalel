@@ -117,7 +117,7 @@ BOOL MFCMessageHandler::EnableStartButton()
 	return 0;
 }
 
-BOOL MFCMessageHandler::DisplayMeasurement(CString pParam)
+BOOL MFCMessageHandler::DisplayMeasurement(int pParam)
 {
 	// Post the required message
 	::PostMessage(windowHandle, WM_DISPLAYMEASUREMENT, NULL, NULL);
@@ -125,7 +125,7 @@ BOOL MFCMessageHandler::DisplayMeasurement(CString pParam)
 	return 0;
 }
 
-BOOL MFCMessageHandler::DisplayMessage(CString pParam)
+BOOL MFCMessageHandler::DisplayMessage(int pParam)
 {
 	// Post the required message
 	::PostMessage(windowHandle, WM_DISPLAYMESSAGE, NULL, NULL);
@@ -133,7 +133,7 @@ BOOL MFCMessageHandler::DisplayMessage(CString pParam)
 	return 0;
 }
 
-BOOL MFCMessageHandler::DisplayAddMessage(CString pParam)
+BOOL MFCMessageHandler::DisplayAddMessage(int pParam)
 {
 	// Post the required message
 	::PostMessage(windowHandle, WM_DISPLAYADDMESSAGE, NULL, NULL);
