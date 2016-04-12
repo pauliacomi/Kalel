@@ -36,7 +36,7 @@ CManip_AutoGaz manip;
 
 // --------- Initialisation and destruction -------
 
-ThreadManager::ThreadManager(LPVOID pParam)
+ThreadManager::ThreadManager(LPVOID pParam,	ExperimentData * expD)
 	: m_threadMainControlLoop(NULL)		// should delete this 
 	, m_hShutdownEvent(::CreateEvent(NULL, TRUE, FALSE, NULL))
 	, m_hStartMainThreadEvent(::CreateEvent(NULL, TRUE, FALSE, NULL))
@@ -44,6 +44,9 @@ ThreadManager::ThreadManager(LPVOID pParam)
 	// Create the required objects. Might be better to be done in the manip directly
 	pVanne = new CVannes();
 	pTemperature = new CTemperature(GetPortTemperatures());
+
+	// Store the link to the experimental data
+	experimentData = expD;
 
 	//Create the thread
 	CreateMainThread(pParam);
@@ -53,6 +56,10 @@ ThreadManager::~ThreadManager()
 {
 	// close all valves
 	pVanne->FermerToutesLesVannes();
+
+	// delete allocations
+	delete pVanne;
+	delete pTemperature;
 
 	// signal the thread to exit
 	ShutdownThread();
@@ -151,7 +158,68 @@ void ThreadManager::ThreadMainWorker()
 }
 
 
+void ThreadManager::ManualAction(LPVOID pParam)
+{
+	// lock the menu
+	pKaollaView = CKaollaView::GetView();
+	//pKaollaDoc->experiment_running = TRUE;
+	pKaollaView->DebloqueMenu(NULL, NULL);
 
+	//start thread
+	m_threadManualAction = AfxBeginThread(ThreadManualActionStarter, this);
+}
+
+
+UINT ThreadManager::ThreadManualActionStarter(LPVOID pParam)
+{
+	// Start the function from the main class, then check for validity
+	ThreadManager* maParam = static_cast<ThreadManager*>(pParam);
+
+	// Launch required functionality
+	maParam->ThreadManualAction();
+
+	// End thread
+	return 0;
+}
+
+void ThreadManager::ThreadManualAction()
+{
+	// Get custom parameter class, then check for validity
+	ManualActionParam *maParam = NULL;
+	ASSERT(maParam != NULL);
+	bool actionSuccessful = false;
+
+	// Create the temporary class to deal with the command, can use pVanne directly but should be careful about any security machanisms
+	CManip manualManip;
+	manualManip.SetVannes(pVanne);
+	manualManip.SetTemperature(pTemperature);
+
+	// Launch required functionality
+	switch (maParam->instrumentType)
+	{
+	case INSTRUMENT_VALVE:
+		if (maParam->shouldBeActivated)
+			actionSuccessful = manualManip.Ouverture_Vanne(maParam->instrumentNumber);
+		else
+			actionSuccessful = manualManip.Fermeture_Vanne(maParam->instrumentNumber);
+	case INSTRUMENT_EV:
+		if (maParam->shouldBeActivated)
+			actionSuccessful = manualManip.ActiverEV(maParam->instrumentNumber);
+		else
+			actionSuccessful = manualManip.DesactiverEV(maParam->instrumentNumber);
+	case INSTRUMENT_PUMP:
+		if (maParam->shouldBeActivated)
+			actionSuccessful = manualManip.ActiverPompe();
+		else
+			actionSuccessful = manualManip.DesactiverPompe();
+	default:
+		ASSERT(0); // Should never reach this
+		break;
+	}
+
+	// Ask for the app to show the change
+	::PostMessage(maParam->windowHandle, WM_UPDATEBUTTONS, (WPARAM)maParam, actionSuccessful);
+}
 
 // ----------------------- END -----------------------
 // ----------------------- END -----------------------

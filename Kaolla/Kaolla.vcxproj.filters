@@ -363,6 +363,9 @@
     <ClInclude Include="TabContinuousAdsorption.h">
       <Filter>Header Files\GUI\Dialogs\Experimental Parameters\TabsNew</Filter>
     </ClInclude>
+    <ClInclude Include="ExperimentData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Mesure.cpp">
@@ -495,9 +498,6 @@
       <Filter>Source Files\Manip\Manip_AutoGaz</Filter>
     </ClCompile>
     <ClCompile Include="Manip_AutoGaz_Proprietes_Experience.cpp">
-      <Filter>Source Files\Manip\Manip_AutoGaz</Filter>
-    </ClCompile>
-    <ClCompile Include="Manip_AutoGaz_Type_Experience.cpp">
       <Filter>Source Files\Manip\Manip_AutoGaz</Filter>
     </ClCompile>
     <ClCompile Include="Manip_AutoGaz_Vannes.cpp">
@@ -649,6 +649,9 @@
     </ClCompile>
     <ClCompile Include="TabContinuousAdsorption.cpp">
       <Filter>Source Files\GUI\Dialogs\Experiment Parameters\TabsNew</Filter>
+    </ClCompile>
+    <ClCompile Include="ExperimentData.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

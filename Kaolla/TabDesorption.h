@@ -50,6 +50,7 @@ protected:
 	CSpinBtnCtrl m_SpinPressionFinaleDesorption;
 	CSpinBtnCtrl m_SpinTempsVolumeDesorption;
 
+public:
 	Donnees_Desorption allSettings;
 
 // Functions

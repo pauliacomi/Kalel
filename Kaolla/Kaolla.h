@@ -36,6 +36,7 @@ public:
 	afx_msg void OnMsvAmpoule();
 	afx_msg void OnMsvBouteille();
 	afx_msg void OnChangementBouteille();
+
 	// update commands
 	afx_msg void OnUpdateDonneesExperience(CCmdUI *pCmdUI);
 	afx_msg void OnUpdateMsvAmpoule(CCmdUI *pCmdUI);

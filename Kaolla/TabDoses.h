@@ -48,6 +48,7 @@ protected:
 	CSpinBtnCtrl m_SpinTimeAdsorptionDoses;
 	CSpinBtnCtrl m_SpinFinalPressureDoses;
 
+public:
 	Donnees_Doses allSettings;
 
 	

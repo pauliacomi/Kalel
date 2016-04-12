@@ -90,7 +90,6 @@ public:
 
 	int numero_mesure;							//
 	int TypeExperience;							//
-	int GenreExperience;						//
 
 	// Manip_Auto
 
@@ -144,8 +143,8 @@ public:
 ***********************************************************************************************************************************/
 
 public:
-	void AffichageMesures();
-	void GraphAddMeasurement();
+	void AffichageMesures();					// Obsolete, no direct data should be transmitted
+	void GraphAddMeasurement();					// Obsolete, this will be done through a separate thread in the main file
 	void RecuperationDonnees();
 	CString GetDonneesExperience();
 	void DonneesManuelleGrapheEtape();

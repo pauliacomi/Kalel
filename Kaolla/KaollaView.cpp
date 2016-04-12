@@ -12,8 +12,8 @@
 #include "KaollaDoc.h"
 #include "KaollaView.h"
 
-// Message definitions
-#include "DefinePostMessages.h"
+#include "DefinePostMessages.h"				// Message definitions
+#include "ExperimentPropertySheet.h"		// The dialog asking the user to input the experiment parameters
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -122,12 +122,14 @@ CKaollaView::CKaollaView()
 	, m_StrTemoinEV2(_T(""))
 	, m_StrTemoinPompe(_T(""))
 {
+	
 }
 
 
 CKaollaView::~CKaollaView()
 {
 	delete threadManager;
+	delete experimentData;
 }
 
 // Liaising between variables and controls
@@ -196,7 +198,8 @@ void CKaollaView::OnInitialUpdate()
 	// Check to see whether the parameters file has been created
 	VerifParametres();
 
-	threadManager = new ThreadManager(GetSafeHwnd());;  // the class dealing with managing threads
+	experimentData = new ExperimentData();								// Create a new experiment storage
+	threadManager = new ThreadManager(GetSafeHwnd(), experimentData);;  // the class dealing with managing threads
 }
 
 
@@ -272,7 +275,6 @@ CKaollaView * CKaollaView::GetView()
 	return NULL;
 }
 
-
 // CKaollaView message handlers
 
 void CKaollaView::DoEvents(void)
@@ -324,12 +326,30 @@ void CKaollaView::OnChangementBouteille()
 }
 
 
+/**********************************************************************************************************************************
 // Thread callback commands
+**********************************************************************************************************************************/
 
 LRESULT CKaollaView::OnRegularThreadFinished(WPARAM, LPARAM) {
 
 	GetDocument()->experiment_running = FALSE;
 	DebloqueMenu(NULL, NULL);
 	
+	return 0;
+}
+
+// When the experiment is signalled as cancelled from the thread or it times out
+LRESULT CKaollaView::Annuler(WPARAM, LPARAM)
+{
+	// Signal that this is the experiment end
+	m_mainDocument = CKaollaDoc::GetDocument();
+	m_mainDocument->experiment_running = FALSE;  // FALSE : expérience en cours
+
+												 // Unblock the menu
+	DebloqueMenu(NULL, NULL);
+
+	GetDlgItem(IDC_LANCER)->EnableWindow(TRUE);
+	GetDlgItem(IDC_ARRETER)->EnableWindow(FALSE);
+
 	return 0;
 }

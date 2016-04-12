@@ -63,6 +63,7 @@ protected:
 	experimentateur userExp;
 
 	// All the settings are stored here
+public:
 	Donnees_General allSettings;
 
 // Functions

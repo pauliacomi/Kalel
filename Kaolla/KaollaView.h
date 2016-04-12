@@ -10,8 +10,9 @@
 #include "DefinePostMessages.h"
 
 #include "Parametres.h"
-#include "ThreadManager.h" // The threading functionality
-
+#include "ThreadManager.h"				// The threading functionality
+#include "ExperimentData.h"				// Where data about the experimental parameters, results and current status is stored
+#include "ExperimentPropertySheet.h"	// Dialog box for setting experimental properties
 
 
 class CKaollaView : public CFormView
@@ -20,10 +21,12 @@ class CKaollaView : public CFormView
 public:
 	// pointer to the main document
 	CKaollaDoc* m_mainDocument;
-	CKaollaView* m_mainView;
 	ThreadManager* threadManager;
 
+	// Storage for all the data
+	ExperimentData * experimentData;
 
+	// Some storage variables for each MFC control
 	CEdit pEditMessages;
 	CEdit pEditMesures;
 	CString m_StrEditMessages;
@@ -66,6 +69,7 @@ public:
 	CKaollaDoc* GetDocument() const;
 	static CKaollaView * GetView();
 
+
 // Operations
 public:
 
@@ -101,7 +105,9 @@ public:
 	void OnMsvAmpoule(void);
 	void OnMsvBouteille(void);
 	void OnChangementBouteille(void);
-	
+
+	void GetExperimentData(ExperimentPropertySheet * dialogExperimentProperties);
+
 	// Thread callbacks
 	LRESULT OnRegularThreadFinished(WPARAM wParam, LPARAM);
 

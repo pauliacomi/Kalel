@@ -38,7 +38,7 @@ protected:
 
 
 // variables
-protected:
+public:
 	// PropertyPages declared
 	TabGeneral m_general;
 	TabDivers m_divers;
@@ -46,6 +46,8 @@ protected:
 	TabDesorption m_desorption;
 	TabContinuousAdsorption m_continuousAdsorption;
 	vector<TabDoses*> adsorptionTabs;
+
+protected:
 
 	// Pointers for class polymorphism
 	CPropertyPage * p_generalPP;

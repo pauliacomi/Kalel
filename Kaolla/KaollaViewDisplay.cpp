@@ -83,6 +83,7 @@ LRESULT CKaollaView::AffichageMesures(WPARAM wParam, LPARAM lParam)
 
 LRESULT CKaollaView::AffichageEtape(WPARAM wParam, LPARAM lParam)
 {
+
 	CString etape;
 
 	m_StrEtape = etape;
@@ -115,27 +116,36 @@ LRESULT CKaollaView::DisplayCalorimeter(WPARAM wParam, LPARAM lParam)
 
 LRESULT CKaollaView::DisplayLowPressure(WPARAM wParam, LPARAM lParam)
 {
-	return LRESULT();
+	experimentData->pressureLow = static_cast<double>(lParam);
+
+	return 0;
 }
 
 LRESULT CKaollaView::DisplayHighPressure(WPARAM wParam, LPARAM lParam)
 {
-	return LRESULT();
+	experimentData->pressureHigh = static_cast<double>(lParam);
+
+	return 0;
 }
 
 LRESULT CKaollaView::DisplayTemperatures(WPARAM wParam, LPARAM lParam)
 {
+	
 	return LRESULT();
 }
 
 LRESULT CKaollaView::DisplayInitialPressure(WPARAM wParam, LPARAM lParam)
 {
-	return LRESULT();
+	experimentData->pressureInitial = static_cast<double>(lParam);
+
+	return 0;
 }
 
 LRESULT CKaollaView::DisplayFinalPressure(WPARAM wParam, LPARAM lParam)
 {
-	return LRESULT();
+	experimentData->pressureFinal = static_cast<double>(lParam);
+
+	return 0;
 }
 
 LRESULT CKaollaView::ExchangeData(WPARAM wParam, LPARAM lParam)

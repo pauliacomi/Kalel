@@ -55,6 +55,7 @@ protected:
 	vector<cellule> cellList;
 	cellule cellExp;
 
+public:
 	// All the settings are stored here
 	Donnees_Divers allSettings;
 

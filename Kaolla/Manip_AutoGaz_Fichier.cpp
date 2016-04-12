@@ -189,7 +189,7 @@ string CManip_AutoGaz::EnteteDesorptionCSV()
 void CManip_AutoGaz::EcritureEntete()
 {
 	ofstream fichier_entete; 
-	//fichier_entete.open(CManip::NomFichier("txt").c_str(), ios::out | ios::trunc);
+
 	fichier_entete.open(CManip::NomFichier("txt", true).c_str(), ios::out | ios::trunc);
 
 	fichier_entete.clear(); 

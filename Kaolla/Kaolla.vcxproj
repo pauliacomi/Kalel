@@ -205,6 +205,7 @@
     <ClInclude Include="ConnectionMesure.h" />
     <ClInclude Include="Connection_port.h" />
     <ClInclude Include="DefinePostMessages.h" />
+    <ClInclude Include="ExperimentData.h" />
     <ClInclude Include="ExperimentPropertySheet.h" />
     <ClInclude Include="FluxConverter.h" />
     <ClInclude Include="CPetitesDoses.h" />
@@ -288,6 +289,7 @@
     <ClCompile Include="Connection_port.cpp" />
     <ClCompile Include="Connection_port_fct.cpp" />
     <ClCompile Include="Connection_port_Verifications.cpp" />
+    <ClCompile Include="ExperimentData.cpp" />
     <ClCompile Include="ExperimentPropertySheet.cpp" />
     <ClCompile Include="FluxConverter.cpp" />
     <ClCompile Include="CPetitesDoses.cpp" />
@@ -330,7 +332,6 @@
     <ClCompile Include="Manip_AutoGaz_Moyennes_Doses.cpp" />
     <ClCompile Include="Manip_AutoGaz_Petites_Doses.cpp" />
     <ClCompile Include="Manip_AutoGaz_Proprietes_Experience.cpp" />
-    <ClCompile Include="Manip_AutoGaz_Type_Experience.cpp" />
     <ClCompile Include="Manip_AutoGaz_Vannes.cpp" />
     <ClCompile Include="Manip_Auto_Arret.cpp" />
     <ClCompile Include="Manip_Auto_Donnees.cpp" />

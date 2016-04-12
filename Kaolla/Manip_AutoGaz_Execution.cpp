@@ -18,21 +18,27 @@ void CManip_AutoGaz::Execution(LPVOID pParam)
 
 void CManip_AutoGaz::ExecutionAuto(LPVOID pParam)
 {
+	// Initialise the instruments, might be redundant if it is already called at the start of the creation
 	InitialisationManip();
 
+	// This gets the data from the MFCcontrol, should be deleted
 	RecuperationDonnees();
 
+	// Create, open and write columns to the measurement file
 	OuvertureFichierMesures();
 
+	// Create, open and write instrument parameters to CSV file
 	EcritureEntete();
 	EcritureEnteteCSV();
 
+	// Initialise variables
 	dose = 0;
 	injection = 0;
 	temps_manip = 0;
 	numero_mesure = 1;
 	demande_arret = INACTIF;
 	etape_en_cours = STAGE_UNDEF;
+
 
 	if (Verifications() == IDCANCEL)
 	{
@@ -89,6 +95,4 @@ void CManip_AutoGaz::ExecutionAuto(LPVOID pParam)
 
 	messageHandler.UnlockMenu();
 	messageHandler.DisplayMessage(_T("Expérience terminée\r\n"));
-
-	AfxMessageBox(_T("Expérience terminée\t\n"), MB_ICONEXCLAMATION | MB_OK);
 }

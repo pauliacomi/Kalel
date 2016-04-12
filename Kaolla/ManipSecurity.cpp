@@ -9,9 +9,9 @@
 
 void CManip::SecuriteHautePression()
 {
-	if(GenreExperience == EXPERIMENT_TYPE_MANUAL)
+	if(TypeExperience == EXPERIMENT_TYPE_MANUAL)
 		SecuriteHautePressionManuelle();
-	if(GenreExperience == EXPERIMENT_TYPE_AUTO)
+	if(TypeExperience == EXPERIMENT_TYPE_AUTO)
 		SecuriteHautePressionAuto();
 }
 
@@ -103,9 +103,9 @@ void CManip::SecuriteHautePressionAuto()
 
 void CManip::SecuriteTemperatures()
 {
-	if(GenreExperience == EXPERIMENT_TYPE_MANUAL)
+	if(TypeExperience == EXPERIMENT_TYPE_MANUAL)
 		SecuriteTemperaturesManuelle();
-	if(GenreExperience == EXPERIMENT_TYPE_AUTO)
+	if(TypeExperience == EXPERIMENT_TYPE_AUTO)
 		SecuriteTemperaturesAuto();
 }
 

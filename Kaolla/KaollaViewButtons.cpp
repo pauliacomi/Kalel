@@ -23,16 +23,13 @@ void CKaollaView::OnBnClickedLancer()
 	GetDlgItem(IDC_ARRETER)->EnableWindow(TRUE);
 
 	// set one flag to true
-	m_mainDocument = CKaollaDoc::GetDocument();
-	m_mainDocument->experiment_running=TRUE;
+	GetDocument()->experiment_running=TRUE;
 	
 	// set another flag to true
 	DebloqueMenu(NULL, NULL);
 
 	// Reset the graph
-	GetDocument()->TempsMinimum = -1;
-	GetDocument()->MesureMinimum = -1;
-	GetDocument()->NumeroEtape = -1;
+	GetDocument()->GraphInitialize(NULL,NULL);
 
 	// Update the view (KaollaView)
 	GetDocument()->UpdateAllViews(this); 
@@ -41,11 +38,14 @@ void CKaollaView::OnBnClickedLancer()
 	CDialogue_TypeExperience * dialogExperimentType = new CDialogue_TypeExperience();
 	if (dialogExperimentType->DoModal() == IDOK)
 	{
+		// Save user choice
+		experimentData->experimentType = dialogExperimentType->TypeExperience;
+
 		// Create the experiment parameter window
 		ExperimentPropertySheet * dialogExperimentProperties = new ExperimentPropertySheet(_T(""));
 
 		// Instantiate the correct type of dialog
-		switch (dialogExperimentType->TypeExperience)
+		switch (experimentData->experimentType)
 		{
 		case EXPERIMENT_TYPE_MANUAL:
 			dialogExperimentProperties->SetProprietiesManual();
@@ -59,6 +59,9 @@ void CKaollaView::OnBnClickedLancer()
 
 		if (dialogExperimentProperties->DoModal() == IDOK)
 		{
+			// Get the data from the dialog
+			GetExperimentData(dialogExperimentProperties);
+
 			// Launch the threads
 			threadManager->SetStartEvent();
 		}
@@ -73,29 +76,8 @@ void CKaollaView::OnBnClickedLancer()
 // When clicking on the Stop button
 void CKaollaView::OnBnClickedArreter()
 {
-	// the button is blocked
-	GetDlgItem(IDC_ARRETER)->EnableWindow(FALSE);
-
-	// signal that this is the experiment end
-	m_mainDocument = CKaollaDoc::GetDocument();
-	m_mainDocument->experiment_running=FALSE;
-
-	// Stop the threads
+	// Ask the thread to shutdown top the threads
 	threadManager->ShutdownThread();
-}
-
-// When the experiment is signalled as cancelled from the thread or it times out
-LRESULT CKaollaView::Annuler(WPARAM, LPARAM)
-{
-	m_mainDocument = CKaollaDoc::GetDocument();
-	m_mainDocument->experiment_running=FALSE;  // FALSE : expérience en cours
-
-	DebloqueMenu(NULL, NULL);
-
-	GetDlgItem(IDC_LANCER)->EnableWindow(TRUE);
-	GetDlgItem(IDC_ARRETER)->EnableWindow(FALSE);
-
-	return 0;
 }
 
 
@@ -133,4 +115,19 @@ void CKaollaView::OnBnClickedProchaineEtape()
 void CKaollaView::OnBnClickedReprise()
 {
 	RepriseThreads();
+}
+
+
+// Copy all data from a property sheet dialog to the local object
+void CKaollaView::GetExperimentData(ExperimentPropertySheet * dialogExperimentProperties) {
+	experimentData->dataGeneral = dialogExperimentProperties->m_general.allSettings;
+	if (experimentData->experimentType == EXPERIMENT_TYPE_AUTO)
+	{
+		experimentData->dataDivers = dialogExperimentProperties->m_divers.allSettings;
+		for (size_t i = 0; i < dialogExperimentProperties->adsorptionTabs.size(); i++)
+		{
+			experimentData->dataAdsorption.push_back(dialogExperimentProperties->adsorptionTabs[i]->allSettings);
+		}
+		experimentData->dataDesorption = dialogExperimentProperties->m_desorption.allSettings;
+	}
 }

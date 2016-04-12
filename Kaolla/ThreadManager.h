@@ -5,12 +5,16 @@
 #include "afxwin.h"
 #include <afxmt.h>
 
+#include "ExperimentData.h"
+
 class ThreadManager
 {
 public:
-	ThreadManager(LPVOID pParam);
+	ThreadManager(LPVOID pParam, ExperimentData * expD);
 	~ThreadManager();
 
+	// Pointer to data storage
+	ExperimentData * experimentData;
 
 	// Public interface methods
 public:
@@ -25,9 +29,14 @@ public:
 private:
 	static UINT ThreadMainWorkerStarter(LPVOID pParam);		// Main worker thread starter
 	void ThreadMainWorker();								// Main worker thread function
+
+	void ManualAction(LPVOID pParam);						// When a manual command is issued
+	static UINT ThreadManualActionStarter(LPVOID pParam);			// Manual command thread starter
+	void ThreadManualAction();								// Manual command thread worker
 	
 
 	CWinThread * m_threadMainControlLoop;					// Reference for main thread
+	CWinThread * m_threadManualAction;						// Reference for manual thread
 
 	HANDLE      m_hShutdownEvent;							// Shutdown Event handle
 															// (causes thread to exit)
@@ -36,6 +45,7 @@ private:
 
 	HWND   m_hWnd;    // Window handle to the UI dialog (used to
 					  // send progress and completed messages)
+
 
 };
 

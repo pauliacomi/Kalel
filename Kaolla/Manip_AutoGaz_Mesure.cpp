@@ -13,7 +13,6 @@ void CManip_AutoGaz::OuvertureFichierMesures()
 	// vider le ofstream fichier, pas le .csv, et on peut réitérer l'écriture en enlevant le caractère "fin de fichier"
 	fichier_mesure_autogaz.clear(); 
 	// Ecriture des noms des colonnes
-	//fichier_mesure_autogaz << "N°mesure;Temps(s);Calorimètre(W);Basse Pression(Bar);Haute Pression(Bar);T°C Calo;T°C Cage;T°C pièce" << endl;
 	fichier_mesure_autogaz << "N°mesure;Temps(s);Calorimètre(W);Basse Pression(Bar);Haute Pression(Bar);T°C Calo;T°C Cage;T°C pièce;Vanne 6;Etape;Dose;" << endl;
 }
 

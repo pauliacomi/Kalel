@@ -193,7 +193,6 @@ void CManip::InitialisationInstruments()
 void CManip::SetManipType(int experimentType)
 {
 	TypeExperience = experimentType;
-	GenreExperience = experimentType;
 }
 
 

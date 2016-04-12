@@ -47,6 +47,7 @@ protected:
 	CSpinBtnCtrl m_SpinTempsFinalEquilibre;
 	CSpinBtnCtrl m_SpinPressionFinaleAdsorptionContinue;
 
+public:
 	Donnees_Adsorption_Continue allSettings;
 
 	// Functions
