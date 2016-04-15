@@ -52,6 +52,10 @@ public:
 	// Messageboxes
 	BOOL DisplayMessageBox(CString message, UINT nType);
 
+
+	// What i really need
+	void ExperimentStart();
+	void ExperimentEnd();
 };
 
 

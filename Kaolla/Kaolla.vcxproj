@@ -280,7 +280,9 @@
   <ItemGroup>
     <ClCompile Include="Automation.cpp" />
     <ClCompile Include="AutomationFileWriting.cpp" />
+    <ClCompile Include="AutomationMeasurement.cpp" />
     <ClCompile Include="AutomationSecurity.cpp" />
+    <ClCompile Include="AutomationValves.cpp" />
     <ClCompile Include="CAdsorptionContinue.cpp" />
     <ClCompile Include="CDesorption.cpp" />
     <ClCompile Include="CDivers.cpp" />

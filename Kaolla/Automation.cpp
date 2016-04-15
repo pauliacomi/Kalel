@@ -1,5 +1,3 @@
-
-
 #include "stdafx.h"
 #include "Automation.h"
 
@@ -36,87 +34,93 @@ void Automation::SetTemperature(CTemperature* pTemperature)
 	g_pTemperature = pTemperature;
 }
 
-void Automation::SetData(ExperimentData * eData)
+void Automation::SetDataPointer(ExperimentData * eData)	// Put this into a critical section
 {
+	// Store the pointer
 	experimentData = eData;
 }
 
+void Automation::SetData()
+{
+	// Copy the data from the main thread
+	EnterCriticalSection(&experimentData->criticalSection);			// Is the critical section defined well? might have to be defined in the main thread
+	experimentLocalData = experimentData;
+	LeaveCriticalSection(&experimentData->criticalSection);
+}
+
+void Automation::SendData()
+{
+	// Copy the data to the main thread
+	EnterCriticalSection(&experimentData->criticalSection);
+	experimentData = & experimentLocalData;
+	LeaveCriticalSection(&experimentData->criticalSection);
+}
+
+
 void Automation::Execution()
 {
+	// Initialise class members
+	Initialisation();
+
+	// Send start messages
+	messageHandler.DisplayMessage(MESSAGE_FILLLINE);
+	messageHandler.DisplayMeasurement(MESSAGE_EXPSTART);
+
+	// Record start in global bool
+	experimentLocalData.experimentInProgress = TRUE;
+	experimentLocalData.experimentMeasurement = 1;
+	
+	// Create open and write the columns in the:
+	EcritureEntete();				// Entete TXT
+	EcritureEnteteCSV();			// Entete CSV
+	FileMeasurementOpen();			// Measurement file
+	
+	// Start global experiment timer
+	timerExperiment.TopChrono();
+
+
 	if (experimentData->experimentType == EXPERIMENT_TYPE_MANUAL)
 		ExecutionManual();
 	if (experimentData->experimentType == EXPERIMENT_TYPE_AUTO)
 		ExecutionAuto();
+
+	FinishExperiment(false);
 }
 
 void Automation::ExecutionManual()
 {
-	// Send start message
-	messageHandler.DisplayMessage(MESSAGE_FILLLINE);
-	messageHandler.DisplayMeasurement(MESSAGE_EXPSTART);
-
-	// Initialise
-	Initialisation();
-
-	// Record start in global bool
-	manip_en_cours = TRUE;
-	experimentData->experimentMeasurement = 1;
-
-	// Create files
-	EcritureEntete();				// Entete
-	EcritureEnteteCSV();			// Entete CSV
-	OuvertureFichierMesures();		// Measurement file
-	
-	// Start timer
-	timerExperiment.TopChrono();
-
-	// Boucle indéfinie, elle est 'breakée' de l'intérieure
+	// Infinite loop, it is broken from the inside
 	while (TRUE)
 	{
 		// Start the timer to record time between measurements
 		timerMeasurement.TopChrono();
 
 		// Start threads and read the data
-		ThreadMesures();
+		ThreadMeasurement();
 
 		// Save the time at which the measurement took place
-		experimentData->experimentTime = timerExperiment.TempsActuel();
+		experimentLocalData.experimentTime = timerExperiment.TempsActuel();
 
 		// Send the data to be saved outside of the function
 		messageHandler.ExchangeData();
 
-		// Display to the
-		GraphAddMeasurement();	//graph
-		AffichageMesures();		// textbox
-
 		// Save the data to the file
 		EnregistrementFichierMesures();
-
-		DonneesManuelleGrapheEtape();	// saves the data to the graph again??
-
-		// Launches a tread in the main function
-		::PostMessage((HWND)pParam, WM_THREADAFFICHAGE, 0, 0);
-
 
 		// On regarde si g_eventKill est activé sans attendre
 		//	- S'il est activé, alors on arrête cette boucle while
 		//	- Sinon on refait un tour dans cette boucle while
 
 		// Increment the measurement number
-		experimentData->experimentMeasurement ++;
+		experimentLocalData.experimentMeasurement ++;
 
 		// Now check if the experiment has not been stopped from the main thread
-		if (manip_en_cours == FALSE)
+		if (experimentLocalData.experimentInProgress == FALSE)
 		{
 			DWORD TempsAttente = 20000; // ms
-			::WaitForSingleObject(g_eventFinAffichage, TempsAttente);	// wtf? really?
-			InstrumentsClose();
-			ToutFermer();
-			ReinitialisationManuelle();
-			FermetureFichierMesures();
-			messageHandler.UnlockMenu();
-			messageHandler.DisplayMessage(_T("Expérience terminée\r\n"));
-			messageHandler.EnableStartButton();
+			::WaitForSingleObject(g_eventFinAffichage, TempsAttente);
+			
+			FinishExperiment(false);
 			break;
 		}
 
@@ -124,9 +128,9 @@ void Automation::ExecutionManual()
 		do {
 			if (timerMeasurement.TempsActuel() < T_BETWEEN_MEASURE)
 			{
-				if (manip_en_cours == FALSE)
+				if (experimentLocalData.experimentInProgress == FALSE)
 					break;
-				Sleep(100); // mettre if (manip_en_cours == FALSE) {...}
+				Sleep(100);
 			}
 			else
 				break;
@@ -136,40 +140,22 @@ void Automation::ExecutionManual()
 
 void Automation::ExecutionAuto()
 {
-	// Initialise the instruments, might be redundant if it is already called at the start of the creation
-	InitialisationManip();
 
-	// Create, open and write columns to the measurement file
-	OuvertureFichierMesures();
-
-	// Create, open and write instrument parameters to CSV file
-	EcritureEntete();
-	EcritureEnteteCSV();
-
-	// Initialise automatic variables
-	experimentData->experimentDose = 0;
-	injection = 0;
-	experimentData->experimentTime = 0;
-	experimentData->experimentMeasurement = 1;
-	demande_arret = INACTIF;
-	etape_en_cours = STAGE_UNDEF;
-
-
+	// If the the verifications result in cancellation, call the experiment end
 	if (Verifications() == IDCANCEL)
 	{
-		messageHandler.DisplayMessage(_T("Expérience annulée\r\n"));
-		//GREY_OUT les boutons
-
-		InstrumentsClose();
-
-		FermetureFichierMesures();
-		messageHandler.UnlockMenu();
-
+		FinishExperiment(true);
 		return;
 	}
 
-	// Start timer
-	timerExperiment.TopChrono();
+	// Initialise automatic variables
+	experimentLocalData.experimentDose = 0;
+	injection = 0;
+	experimentLocalData.experimentTime = 0;
+	experimentLocalData.experimentMeasurement = 1;
+	demande_arret = INACTIF;
+	etape_en_cours = STAGE_UNDEF;
+
 
 	// Equilibrate
 	LigneBaseEtEquilibre(pParam);
@@ -196,34 +182,38 @@ void Automation::ExecutionAuto()
 	if (DesorptionAEffectuer())
 		Desorption(pParam);
 
-	if (divers.mise_sous_vide_fin_experience || demande_arret == ARRET_SOUSVIDE ||
+	if (experimentData->dataDivers.mise_sous_vide_fin_experience || demande_arret == ARRET_SOUSVIDE ||
 		demande_arret == ARRET_URGENCE_HP || demande_arret == ARRET_URGENCE_TCH || demande_arret == ARRET_URGENCE_TCB)
 		MiseSousVide(pParam);
-
-
-	InstrumentsClose();
-
-	ToutFermer();
-
-	FermetureFichierMesures();
-
-	ReinitialisationAuto();
-
-	messageHandler.UnlockMenu();
-	messageHandler.DisplayMessage(MESSAGE_EXPFINISH);
 }
 
 
 void Automation::Initialisation()
 {
+	// Initialise data
+	SetData();
+
+	// Initialise instruments
 	InitialisationInstruments();
+
+	// Initialise security
 	InitialisationSecurityManual();
+
+	// Open instruments
 	InstrumentsOpen();
+
+	// Initialisation of the critical section
+	InitializeCriticalSection(&criticalSection);
+
+	// Create the events
+	//   - Non signalled by default
+	//   - With manual reinitiallisation
+	h_MeasurementThreadStartEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
 }
 
 
 // The instruments which the calorimeter uses are defined here
-// It looks good, might need some error detection.
+// Ihave no clue how this works, copied it from the other code
 void Automation::InitialisationInstruments()
 {
 	int index_instr = 0;
@@ -345,4 +335,39 @@ void Automation::InitialisationInstruments()
 			break;
 		}
 	}
+}
+
+
+// Function which makes sure everything is cancelled
+void Automation::FinishExperiment(bool premature)
+{
+	// Destroy the events
+	CloseHandle(h_MeasurementThreadStartEvent);
+
+	// Destroy the critical sections
+	DeleteCriticalSection(&criticalSection);
+
+	// Close instruments
+	InstrumentsClose();
+
+	// Close valves/pump
+	ControlMechanismsCloseAll();
+
+	// Close measurement file
+	FileMeasurementClose();
+
+	if (premature) {
+		// Experiment has been cancelled
+		messageHandler.DisplayMessage(MESSAGE_EXPCANCEL);
+	}
+	else {
+		// Experiment has been finished normally
+		messageHandler.DisplayMessage(MESSAGE_EXPFINISH);
+	}
+
+	// Unlock the menu
+	messageHandler.UnlockMenu();
+
+	// Enable start button
+	messageHandler.EnableStartButton();
 }

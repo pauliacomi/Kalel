@@ -1,5 +1,7 @@
 #pragma once
 
+#define finl "\r\n"
+
 // REQUIRED INCLUDES
 
 #include "Classes_experiences.h"	// Resource where templates for all the data are stored, might be worth replacing with a single data type/class 
@@ -17,7 +19,10 @@
 #include "Instrument.h"				// Instruments
 #include "Temperature.h"			// Temperature recording
 #include "Chrono.h"					// Time keeping
+#include "FluxConverter.h"			// Conversions
 
+// std::functionality
+#include <sstream>			
 
 class Automation
 {
@@ -27,7 +32,7 @@ public:
 
 
 /**********************************************************************************************************************************
-// Variables
+// Global Variables
 ***********************************************************************************************************************************/
 
 	//------------------------------------------------------------
@@ -40,12 +45,14 @@ public:
 	CInstrument* instrument[NB_OF_INSTRUMENTS];			// Array of pointers that hold CInstrument classes
 	CTemperature* g_pTemperature;						// Pointer to the class that deals with temperature recording
 
-	ExperimentData* experimentData;						// Pointer to the class that deals with temperature recording
+	ExperimentData* experimentData;						// Pointer to the class used for synchronisation
+	ExperimentData experimentLocalData;					// Could this be a solution?
 	
 	
 	//------------------------------------------------------------
 	// Objects 
 	//------------------------------------------------------------
+	ofstream fileStream;								// The file stream is stored in this variable
 
 	MFCMessageHandler messageHandler;					// This class will send all the messages to the GUI using MFC's message pump
 
@@ -56,11 +63,22 @@ public:
 	CChrono timerExperiment;							// Class for measuring the time from the experiment start
 	CChrono timerMeasurement;							// Class for measuring the time between each measurement
 	
+	FluxConverter fluxConverter;						// Will convert between several types of raw results from instruments
+														
+	//------------------------------------------------------------
+	// Syncronisation primitives and threads
+	//------------------------------------------------------------
+
+	CRITICAL_SECTION criticalSection;					// Critical section for measurement thread sinchronisation
+	HANDLE h_MeasurementThreadStartEvent;				// Handle for measurement thread signalling
+
+	HANDLE h_MeasurementThread[3];						// Threads for measurement
+
 	//------------------------------------------------------------
 	// Standards data types 
 	//------------------------------------------------------------
 
-	// Synchronisation
+	// Synchronisation?
 	int synchCalo;
 	int synchHP;
 	int synchBP;
@@ -79,8 +97,13 @@ public:
 	void SetMensor(Mensor * Mens);
 	void SetVannes(CVannes * pVannes);
 	void SetTemperature(CTemperature * pTemperature);
-	void SetData(ExperimentData * eData);
+	void SetDataPointer(ExperimentData * eData);
 
+public:
+	void SetData();
+	void SendData();
+
+private:
 	//------------------------------------------------------------
 	// Execution
 	//------------------------------------------------------------
@@ -89,8 +112,18 @@ public:
 	void ExecutionManual();
 	void ExecutionAuto();
 
+	//------------------------------------------------------------
+	// Initialisation
+	//------------------------------------------------------------
+
 	void Initialisation();
 	void InitialisationInstruments();
+
+	//------------------------------------------------------------
+	// Termination
+	//------------------------------------------------------------
+
+	void FinishExperiment(bool premature);
 
 
 /**********************************************************************************************************************************
@@ -140,9 +173,9 @@ protected:
 	std::string NomFichier(std::string extension, bool entete);
 
 	// Opens the measurement file for the first time and stores its link in the fileStream ofstream
-	void OuvertureFichierMesures();
+	void FileMeasurementOpen();
 	// Closes the measurement file
-	void FermetureFichierMesures();
+	void FileMeasurementClose();
 	// Records a measurement
 	void EnregistrementFichierMesures();
 
@@ -159,6 +192,56 @@ protected:
 	void EcritureEntete();
 	// Write the start of a CSV entete and save it??
 	void EcritureEnteteCSV();
+
+/**********************************************************************************************************************************
+// Measurements functions and threads
+***********************************************************************************************************************************/
+
+	void InstrumentsOpen();
+	void InstrumentsClose();
+
+	
+	void ThreadMeasurement();
+
+	static DWORD WINAPI ThreadProc_ReadCalorimeter(LPVOID lpParam);
+	static DWORD WINAPI ThreadProc_ReadHighPressure(LPVOID lpParam);
+	static DWORD WINAPI ThreadProc_ReadLowPressure(LPVOID lpParam);
+	static DWORD WINAPI ThreadProc_ReadTemperature(LPVOID lpParam);
+
+	void ReadCalorimeter();
+	void ReadLowPressure();
+	void ReadHighPressure();
+	void ReadTemperatures();
+
+	double ReadMeasurementFromDevice(ConnectionMesure Appareil);
+
+
+/**********************************************************************************************************************************
+// Valve and control mechanism functions
+***********************************************************************************************************************************/
+
+	bool ValveOpen(int num_vanne);
+	bool ValveClose(int num_vanne);
+	bool ValveOpenClose(int num_vanne);
+	bool ValvesCloseAll();
+
+	bool EVActivate(int num_ev);
+	bool EVDeactivate(int num_ev);
+
+	bool ActivatePump();
+	bool DeactivatePump();
+
+	bool ValvesAndPumpClose();
+	bool ControlMechanismsCloseAll();
+
+	bool EstOuvert_Vanne(int num_vanne);
+	bool EstFerme_Vanne(int num_vanne);
+	bool EV1EstActive();
+	bool EV1EstDesactive();
+	bool EV2EstActive();
+	bool EV2EstDesactive();
+	bool PompeEstActive();
+	bool PompeEstDesactive();
 
 };
 

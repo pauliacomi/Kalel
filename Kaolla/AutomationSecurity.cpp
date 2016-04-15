@@ -24,7 +24,7 @@ void Automation::InitialisationSecurityManual()
 void Automation::SecuriteHautePressionManuelle()
 {
 	// Mesure de sécurité
-	if (resultat_hp >= GetPressionSecuriteHautePression())
+	if (experimentLocalData.pressureHigh >= GetPressionSecuriteHautePression())
 	{
 		HANDLE hThreadPression;
 		DWORD ThreadPressionId;
@@ -77,22 +77,22 @@ void Automation::SecuriteHautePressionAuto()
 	// Mesure de sécurité : 
 	if (mesure_de_securite)
 	{
-		if (etape_en_cours != STAGE_UNDER_VACUUM)
+		if (experimentLocalData.experimentStage != STAGE_UNDER_VACUUM)
 		{
-			if (resultat_hp > GetPressionSecuriteBassePression())
+			if (experimentLocalData.pressureHigh > GetPressionSecuriteBassePression())
 			{
 				if (EstOuvert_Vanne(6))
 				{
 					CString mess;
 					mess.Format(_T("HAUTE PRESSION (%f) DEPASSANT LA SECURITE DE LA BASSE PRESSION (%f)\r\n"),
-						resultat_hp, GetPressionSecuriteBassePression());
+						experimentLocalData.pressureHigh, GetPressionSecuriteBassePression());
 					mess += _T("PAR MESURE DE SECURITE, FERMETURE DE LA VANNE 6\r\n");
 
 					messageHandler.DisplayMessage(mess);
 					Fermeture_Vanne(6);
 				}
 			}
-			if (resultat_hp >= GetPressionSecuriteHautePression())
+			if (experimentLocalData.pressureHigh >= GetPressionSecuriteHautePression())
 				demande_arret = ARRET_URGENCE_HP;
 		}
 	}
@@ -101,16 +101,16 @@ void Automation::SecuriteHautePressionAuto()
 
 void Automation::SecuriteTemperatures()
 {
-	if (TypeExperience == EXPERIMENT_TYPE_MANUAL)
+	if (experimentLocalData.experimentType == EXPERIMENT_TYPE_MANUAL)
 		SecuriteTemperaturesManuelle();
-	if (TypeExperience == EXPERIMENT_TYPE_AUTO)
+	if (experimentLocalData.experimentTime == EXPERIMENT_TYPE_AUTO)
 		SecuriteTemperaturesAuto();
 }
 
 void Automation::SecuriteTemperaturesManuelle()
 {
 
-	if (TemperatureCalo >= (float)general.temperature_experience + securite_temperature)//2)//5)
+	if (experimentLocalData.temperatureCalo >= (float)general.temperature_experience + securite_temperature)
 	{
 		HANDLE hThreadTemperatureElevee;
 		DWORD ThreadTemperatureEleveeId;
@@ -129,7 +129,7 @@ void Automation::SecuriteTemperaturesManuelle()
 			TemperatureElevee = FALSE;
 		}
 
-	if (TemperatureCalo <= (float)general.temperature_experience - securite_temperature)//2)//5)
+	if (experimentLocalData.temperatureCalo <= (float)general.temperature_experience - securite_temperature)//2)//5)
 	{
 		HANDLE hThreadTemperatureFaible;
 		DWORD ThreadTemperatureFaibleId;
@@ -204,17 +204,17 @@ void Automation::SecuriteTemperaturesAuto()
 	// Mesure de sécurité : 
 	if (mesure_de_securite)
 	{
-		if (etape_en_cours != STAGE_UNDER_VACUUM)
+		if (experimentLocalData.experimentStage != STAGE_UNDER_VACUUM)
 		{
 			CString mess;
-			if (TemperatureCalo >= (float)general.temperature_experience + securite_temperature)//2)//5)
+			if (experimentLocalData.temperatureCalo >= (float)general.temperature_experience + securite_temperature)//2)//5)
 			{
 				mess.Format(_T("Arrêt de l'expérience : La température du Calo étant trop élevée (supérieure à %d°C)\r\n"),
 					general.temperature_experience + securite_temperature);
 				messageHandler.DisplayMessage(mess);
 				demande_arret = ARRET_URGENCE_TCH;
 			}
-			if (TemperatureCalo <= (float)general.temperature_experience - securite_temperature)//2)//5)
+			if (experimentLocalData.temperatureCalo <= (float)general.temperature_experience - securite_temperature)//2)//5)
 			{
 				mess.Format(_T("Arrêt de l'expérience : La température du Calo étant trop faible (inférieure à %d°C)\r\n"),
 					general.temperature_experience - securite_temperature);

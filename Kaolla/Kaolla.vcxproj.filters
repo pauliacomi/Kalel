@@ -668,6 +668,12 @@
     <ClCompile Include="AutomationFileWriting.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="AutomationMeasurement.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AutomationValves.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kaolla.rc">

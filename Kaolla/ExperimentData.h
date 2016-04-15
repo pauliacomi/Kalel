@@ -12,12 +12,16 @@ public:
 // Variables
 //**************************************************
 
+	// Critical Section
+	CRITICAL_SECTION criticalSection;
+
 	// General parameters
+	bool experimentInProgress;
 	int experimentType;
 
-	int experimentTime;						// Time from the experiment start
 	int experimentDose;						// The dose that is currently underway
 	int experimentMeasurement;				// Number of measurmements the machine has made
+	int experimentStage;					// Current experiment stage
 
 	// Experimental data storage
 
@@ -29,6 +33,9 @@ public:
 	// Text
 	CString textMessages;
 	CString textMeasurements;
+
+	// Calorimeter
+	double resultCalorimeter;
 
 	// Pressure
 	double pressureHigh;
@@ -42,7 +49,9 @@ public:
 	double temperatureRoom;
 	
 	// Time
-	double time;
+	int experimentTime;						// Time from the experiment start
 
+	// Overload equals function
+	ExperimentData & ExperimentData::operator=(const ExperimentData * p);
 };
 
