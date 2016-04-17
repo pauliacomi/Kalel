@@ -90,7 +90,10 @@ DWORD WINAPI Automation::ThreadProc_ReadTemperature(LPVOID lpParam)
 	// Wait for the activation of the hEvent
 	WaitForSingleObject(manipulation->h_MeasurementThreadStartEvent, INFINITE);
 
+	// Block the corresponding variable
+	EnterCriticalSection(&manipulation->criticalSection);
 	manipulation->ReadTemperatures();
+	LeaveCriticalSection(&manipulation->criticalSection);
 
 	return 0;
 }
