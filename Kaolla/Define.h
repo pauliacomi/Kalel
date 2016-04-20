@@ -20,16 +20,28 @@
 
 // les demandes d'arrêts
 #define INACTIF				100
+#define PAUSE				105
 #define ARRET_IMMEDIAT		101
 #define ARRET_SOUSVIDE		102
 #define ARRET_ETAPE			103
 #define ARRET_DOSE			104
-#define PAUSE				105
 #define ARRET_URGENCE_HP	106
 #define ARRET_URGENCE_TCH	107
 #define ARRET_URGENCE_TCB	108
 #define ARRET_COMMANDE		109
 
+#define INACTIVE			100
+#define STOP_IMMEDIAT		101
+#define STOP_UNDERVACCUM	102
+#define STOP_STEP			103
+#define STOP_DOSE			104
+#define PAUSE				105
+#define STOP				106
+#define STOP_EMERGENCY_HP	107
+#define STOP_EMERGENCY_TCH	108
+#define STOP_EMERGENCY_TCB	109
+#define STOP_COMMAND		110
+#define ACTIVE				111
 
 
 #define ArretManip(); 		if(demande_arret==ARRET_IMMEDIAT)	 {AffichageArret(); return;}
@@ -95,5 +107,16 @@
 
 
 // rajouter les arrets d'urgence sous la température
+
+void PointArretSansDoseSousFonction() {
+	if (demande_arret == ARRET_ETAPE) { AffichageArret(); demande_arret = INACTIF; return; }
+	if (demande_arret == ARRET_IMMEDIAT) { AffichageArret(); return; }
+	if (demande_arret == ARRET_SOUSVIDE) { AffichageArret(); return; }
+	if (demande_arret == ARRET_URGENCE_HP) { AffichageArret(); return; }
+	if (demande_arret == ARRET_URGENCE_TCH) {AffichageArret(); return;}
+	if (demande_arret == ARRET_URGENCE_TCB) {AffichageArret(); return;}
+	if (demande_arret == ARRET_COMMANDE) { AffichageArret(); demande_arret = INACTIF; }
+	MiseEnPause();
+}
 
 #endif

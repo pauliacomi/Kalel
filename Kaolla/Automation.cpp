@@ -151,20 +151,30 @@ void Automation::ExecutionAuto()
 {
 	while (true)
 	{
-		switch(g_flagAskShutdown)
-			case:
-				break;
-			case:
-				break;
-			case:
-				break;
-			case:
-				break;
-			case:
-				break;
+		switch (g_flagAskShutdown)		// We look at the main flag
+		{
+		case INACTIVE:					// In case the experiment is not started
+			break;
+		case PAUSE:						// In case the experiment is set as paused
+			Pause();
+			break;
+		case STOP:						// In case the experiment is asked to stop
+			ShutdownDisplay();			// then look at possible causes
+			break;
+		case ACTIVE:
+		
+			switch (experimentLocalData.experimentStage)
+			{
 			default:
-				ASSERT(0);
 				break;
+			}
+
+			break;
+		
+		default:
+			ASSERT(0); // Should never reach this
+			break;
+		}
 	}
 
 

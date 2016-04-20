@@ -55,7 +55,9 @@ int Automation::VerificationResidualPressure()
 	messageHandler.DisplayMessage(MESSAGE_CHECK_INITIAL_PRESSURE);
 	messageHandler.DisplayStep(MESSAGE_CHECK_INITIAL_PRESSURE);
 
-	//LireAfficherHautePression();
+	// Read the pressure
+	ReadHighPressure();
+	messageHandler.DisplayHighPressure();
 
 	if (experimentLocalData.pressureHigh < GetPressionSecuriteBassePression() && GetMesureBassePression() && GetMesureHautePression())
 	{
@@ -81,7 +83,9 @@ int Automation::VerificationResidualPressure()
 	// Wait
 	AttenteSecondes(Intervalle1 / 1000);
 
-	//LireAfficherHautePression();
+	// Read the pressure
+	ReadHighPressure();
+	messageHandler.DisplayHighPressure();
 
 	// Check residual pressure
 	if (experimentLocalData.pressureHigh >= GetPressionLimiteVide())
@@ -134,9 +138,11 @@ int Automation::VerificationTemperature()
 				for (int i = 0; i < attente_temperature / attente_pause; i++)
 				{
 					TemperatureStop();
-					Sleep(attente_pause);
+					Sleep(attente_pause);		// use functionality?
 				}
-				//LectureTemperatures();
+				// Read the temperature
+				ReadTemperatures();
+				// Display temperatures
 				messageHandler.DisplayTemperatures();
 			}
 		}
