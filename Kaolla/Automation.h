@@ -119,8 +119,8 @@ private:
 	// Execution
 	//------------------------------------------------------------
 
-	void ExecutionManual();
-	void ExecutionAuto();
+	bool ExecutionManual();
+	bool ExecutionAuto();
 
 	//------------------------------------------------------------
 	// Initialisation

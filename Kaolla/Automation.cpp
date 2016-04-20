@@ -5,8 +5,6 @@
 
 Automation::Automation()
 {
-	// Initialise class members
-	Initialisation();
 }
 
 
@@ -66,118 +64,118 @@ void Automation::Execution()
 	messageHandler.DisplayMessage(MESSAGE_FILLLINE);
 	messageHandler.DisplayMeasurement(MESSAGE_EXPSTART);
 
+	// Initialise class members
+	Initialisation();
+
 	// Record start in global bool
 	experimentLocalData.experimentInProgress = TRUE;
-	experimentLocalData.experimentMeasurement = 1;
-	
+
 	// Create open and write the columns in the:
 	EcritureEntete();				// Entete TXT
 	EcritureEnteteCSV();			// Entete CSV
 	FileMeasurementOpen();			// Measurement file
+
+	timerExperiment.TopChrono();	// Start global experiment timer
 	
-	// Start global experiment timer
-	timerExperiment.TopChrono();
-
-
-	if (experimentLocalData.experimentType == EXPERIMENT_TYPE_MANUAL)
-		ExecutionManual();
-	if (experimentLocalData.experimentType == EXPERIMENT_TYPE_AUTO)
-		ExecutionAuto();
-
-	FinishExperiment(false);
-}
-
-void Automation::ExecutionManual()
-{
 	// Infinite loop, it is broken from the inside
-	while (TRUE)
-	{
-		// Start the timer to record time between measurements
-		timerMeasurement.TopChrono();
-
-		// Start threads and read the data
-		ThreadMeasurement();
-
-		// Do the security checks
-		SecuriteTemperatures();
-		SecuriteHautePression();
-
-		// Save the time at which the measurement took place
-		experimentLocalData.experimentTime = timerExperiment.TempsActuel();
-
-		// Send the data to be saved outside of the function - ?
-		messageHandler.ExchangeData();
-
-		// Save the data to the file
-		EnregistrementFichierMesures();
-
-		// On regarde si g_eventKill est activé sans attendre
-		//	- S'il est activé, alors on arrête cette boucle while
-		//	- Sinon on refait un tour dans cette boucle while
-
-		// Increment the measurement number
-		experimentLocalData.experimentMeasurement ++;
-
-		// Now check if the experiment has not been stopped from the main thread
-		// This is an optimisation hack, first checking a boolean then doing an expensive kernel call only in the case of 
-		if (experimentLocalData.experimentInProgress == FALSE)
-		{
-			DWORD TempsAttente = 1000; // (ms) Poll once a seccond
-			switch (::WaitForSingleObject(h_eventShutdown, TempsAttente))
-			{
-			case WAIT_OBJECT_0:
-				FinishExperiment(false);	// Finish the experiment
-				break;
-			case WAIT_TIMEOUT:
-				continue;
-			}
-		}
-
-		// Wait some time between two individual measurements
-		do {
-			if (timerMeasurement.TempsActuel() < T_BETWEEN_MEASURE)
-			{
-				if (experimentLocalData.experimentInProgress == FALSE)
-					break;
-				Sleep(100);
-			}
-			else
-				break;
-		} while (TRUE);
-	}
-}
-
-void Automation::ExecutionAuto()
-{
 	while (true)
 	{
 		switch (g_flagAskShutdown)		// We look at the main flag
 		{
 		case INACTIVE:					// In case the experiment is not started
 			break;
-		case PAUSE:						// In case the experiment is set as paused
-			Pause();
-			break;
+
 		case STOP:						// In case the experiment is asked to stop
 			ShutdownDisplay();			// then look at possible causes
 			break;
-		case ACTIVE:
-		
-			switch (experimentLocalData.experimentStage)
-			{
-			default:
-				break;
-			}
 
+		case PAUSE:						// In case the experiment is set as paused
+			Pause();					// put it in a pause state
+			break;
+
+		case ACTIVE:					// In case the experiment is started
+										// We look at the type of experiment
+			switch (experimentLocalData.experimentType)
+			{
+				case EXPERIMENT_TYPE_MANUAL:		// in case it is manual
+					if (ExecutionManual())			// run the manual loop
+						continue;
+					break;
+				case EXPERIMENT_TYPE_AUTO:			// in case it is automatic
+					if (ExecutionAuto())			// run the automatic loop
+						continue;
+					break;
+				default:
+					ASSERT(0); // Error
+					break;
+			}
 			break;
 		
 		default:
-			ASSERT(0); // Should never reach this
+			ASSERT(0); // Error
 			break;
 		}
 	}
 
+	FinishExperiment(false);
+}
 
+
+
+bool Automation::ExecutionManual()
+{
+	// Start the timer to record time between measurements
+	timerMeasurement.TopChrono();
+
+	// Start threads and read the data
+	ThreadMeasurement();
+
+	// Do the security checks
+	SecuriteTemperatures();
+	SecuriteHautePression();
+
+	// Save the time at which the measurement took place
+	experimentLocalData.experimentTime = timerExperiment.TempsActuel();
+
+	// Send the data to be saved outside of the function - ?
+	messageHandler.ExchangeData();
+
+	// Save the data to the file
+	EnregistrementFichierMesures();
+
+	// Increment the measurement number
+	experimentLocalData.experimentMeasurement ++;
+
+	// Now check if the experiment has not been stopped from the main thread
+	// This is an optimisation hack, first checking a boolean then doing an expensive kernel call only in the case of 
+	if (experimentLocalData.experimentInProgress == FALSE)
+	{
+		DWORD TempsAttente = 1000; // (ms) Poll once a seccond
+		switch (::WaitForSingleObject(h_eventShutdown, TempsAttente))
+		{
+		case WAIT_OBJECT_0:
+			FinishExperiment(false);	// Finish the experiment
+			break;
+		case WAIT_TIMEOUT:
+			return true;
+		}
+	}
+
+	// Wait some time between two individual measurements
+	do {
+		if (timerMeasurement.TempsActuel() < T_BETWEEN_MEASURE)
+		{
+			if (experimentLocalData.experimentInProgress == FALSE)
+				break;
+			Sleep(100);
+		}
+		else
+			break;
+	} while (TRUE);
+}
+
+bool Automation::ExecutionAuto()
+{
 	// If the the verifications result in cancellation, call the experiment end
 	if (Verifications() == IDCANCEL)
 	{
@@ -185,13 +183,53 @@ void Automation::ExecutionAuto()
 		return;
 	}
 
-	// Initialise automatic variables
-	experimentLocalData.experimentDose = 0;
-	//injection = 0;
-	experimentLocalData.experimentTime = 0;
-	experimentLocalData.experimentMeasurement = 1;
-	g_flagAskShutdown = INACTIF;
-	experimentLocalData.experimentStage = STAGE_UNDEF;
+	// GET NEW DATA 
+	//
+	////////
+
+
+	switch (experimentLocalData.experimentStage)
+	{
+	case STEP_EQUILIBRATION:
+		// WRITE NAME OF STEP DISPLAYMESSAGE
+		// START INTERMEDIATE TIMER
+		// LOOP
+			// DISPLAY TIME OF STEP TO GUI
+				// READ INSTRUMENTS 
+				// SAVE TIME OF MEASUREMENT
+				// DISPLAY TO GUI
+				// SAVE TO FILE
+				// INCREMENT MEASUREMENT NUMBER
+				// WAIT BETWEEN MEASUREMENTSS
+		// WHILE (INTERMEDIATE TIME < TIME REQUESTED BY USER)
+		// DISPLAY END STEP
+		// DISPLAY END MESSAGE
+		// CHANGE EXPERIMENT STAGE
+		break;
+	
+	case STEP_ADSORPTION:
+		// WRITE NAME OF STEP DISPLAYMESSAGE
+		// CLOSE ALL VALVES
+		// SET DOSE NUMBER TO 1
+		// LOOP
+			// DISPLAY DOSE NUMBER
+			//
+			// DISPLAY DOSE NUMBER
+			//
+		// WHILE (PRESSURE < FINAL REQUESTED PRESSURE OF THE STEP) 
+		// DISPLAY END STEP
+		// DISPLAY END MESSAGE
+		// CHANGE EXPERIMENT STAGE
+		break;
+	case STEP_DESORPTION:
+		break;
+	case STEP_CONTINUOUS_ADSORPTION:
+		break;
+	case STEP_END_AUTOMATIC:
+		break;
+	default:
+		break;
+	}
 
 
 	//// Equilibrate
@@ -232,6 +270,12 @@ void Automation::Initialisation()
 	h_MeasurementThread[1] = NULL;
 	h_MeasurementThread[2] = NULL;
 	h_MeasurementThread[3] = NULL;
+
+	// Initialise automatic variables
+	experimentLocalData.experimentDose = 0;
+	experimentLocalData.experimentTime = 0;
+	experimentLocalData.experimentMeasurement = 1;
+	experimentLocalData.experimentStage = STAGE_UNDEF;
 
 	// Initialise data
 	SetData();
