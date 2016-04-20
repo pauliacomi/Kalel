@@ -5,11 +5,14 @@
 
 Automation::Automation()
 {
+	// Initialise class members
+	Initialisation();
 }
 
 
 Automation::~Automation()
 {
+	//CloseHandle
 }
 
 
@@ -59,9 +62,6 @@ void Automation::SendData()
 
 void Automation::Execution()
 {
-	// Initialise class members
-	Initialisation();
-
 	// Send start messages
 	messageHandler.DisplayMessage(MESSAGE_FILLLINE);
 	messageHandler.DisplayMeasurement(MESSAGE_EXPSTART);
@@ -149,6 +149,24 @@ void Automation::ExecutionManual()
 
 void Automation::ExecutionAuto()
 {
+	while (true)
+	{
+		switch(g_flagAskShutdown)
+			case:
+				break;
+			case:
+				break;
+			case:
+				break;
+			case:
+				break;
+			case:
+				break;
+			default:
+				ASSERT(0);
+				break;
+	}
+
 
 	// If the the verifications result in cancellation, call the experiment end
 	if (Verifications() == IDCANCEL)
@@ -199,6 +217,12 @@ void Automation::ExecutionAuto()
 
 void Automation::Initialisation()
 {
+	// Initialise threads
+	h_MeasurementThread[0] = NULL;
+	h_MeasurementThread[1] = NULL;
+	h_MeasurementThread[2] = NULL;
+	h_MeasurementThread[3] = NULL;
+
 	// Initialise data
 	SetData();
 
@@ -226,6 +250,11 @@ void Automation::Initialisation()
 // Ihave no clue how this works, copied it from the other code
 void Automation::InitialisationInstruments()
 {
+	// Create instruments
+	for (int i = 0; i < NB_OF_INSTRUMENTS; i++) {
+		instrument[i] = new CInstrument();
+	}
+
 	int index_instr = 0;
 
 	AppareilCalo.voie_mesure = VOIE_INDEF;
@@ -347,6 +376,17 @@ void Automation::InitialisationInstruments()
 	}
 }
 
+void Automation::InstrumentsOpen()
+{
+	for (int i = 0; i<NB_OF_INSTRUMENTS; i++)
+		instrument[i]->OuvrirPortInstrument();
+}
+
+void Automation::InstrumentsClose()
+{
+	for (int i = 0; i<NB_OF_INSTRUMENTS; i++)
+		instrument[i]->FermerPortInstrument();
+}
 
 // Function which makes sure everything is cancelled
 void Automation::FinishExperiment(bool premature)

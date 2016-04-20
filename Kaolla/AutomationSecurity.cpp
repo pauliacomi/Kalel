@@ -6,9 +6,9 @@
 
 void Automation::InitialisationSecurityManual()
 {
-	security_PressureHigh = FALSE;
-	security_TemperatureHigh = FALSE;
-	security_TemperatureLow = FALSE;
+	security_PressureHigh = false;
+	security_TemperatureHigh = false;
+	security_TemperatureLow = false;
 }
 
 void Automation::SecuriteHautePression()

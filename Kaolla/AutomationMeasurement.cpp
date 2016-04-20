@@ -17,7 +17,11 @@ void Automation::ThreadMeasurement()
 	// Wait for the threads to finish
 	WaitForMultipleObjects(4, h_MeasurementThread, TRUE, INFINITE);
 
-	// Reset event
+	// Clean-up
+	h_MeasurementThread[0] = NULL;
+	h_MeasurementThread[1] = NULL;
+	h_MeasurementThread[2] = NULL;
+	h_MeasurementThread[3] = NULL;
 	ResetEvent(h_MeasurementThreadStartEvent);
 }
 
@@ -26,7 +30,7 @@ void Automation::ThreadMeasurement()
 
 DWORD WINAPI Automation::ThreadProc_ReadCalorimeter(LPVOID lpParam)
 {
-	Automation *manipulation = reinterpret_cast<Automation *>(lpParam);
+	Automation *manipulation = static_cast<Automation *>(lpParam);
 
 	// Wait for the activation of the hEvent
 	WaitForSingleObject(manipulation->h_MeasurementThreadStartEvent, INFINITE);
@@ -39,7 +43,7 @@ DWORD WINAPI Automation::ThreadProc_ReadCalorimeter(LPVOID lpParam)
 
 DWORD WINAPI Automation::ThreadProc_ReadHighPressure(LPVOID lpParam)
 {
-	Automation *manipulation = reinterpret_cast<Automation *>(lpParam);
+	Automation *manipulation = static_cast<Automation *>(lpParam);
 
 	// Wait for the activation of the hEvent
 	WaitForSingleObject(manipulation->h_MeasurementThreadStartEvent, INFINITE);
@@ -52,7 +56,7 @@ DWORD WINAPI Automation::ThreadProc_ReadHighPressure(LPVOID lpParam)
 
 DWORD WINAPI Automation::ThreadProc_ReadLowPressure(LPVOID lpParam)
 {
-	Automation *manipulation = reinterpret_cast<Automation *>(lpParam);
+	Automation *manipulation = static_cast<Automation *>(lpParam);
 
 	// Wait for the activation of the hEvent
 	WaitForSingleObject(manipulation->h_MeasurementThreadStartEvent, INFINITE);
@@ -65,7 +69,7 @@ DWORD WINAPI Automation::ThreadProc_ReadLowPressure(LPVOID lpParam)
 
 DWORD WINAPI Automation::ThreadProc_ReadTemperature(LPVOID lpParam)
 {
-	Automation *manipulation = reinterpret_cast<Automation *>(lpParam);
+	Automation *manipulation = static_cast<Automation *>(lpParam);
 
 	// Wait for the activation of the hEvent
 	WaitForSingleObject(manipulation->h_MeasurementThreadStartEvent, INFINITE);
@@ -142,17 +146,4 @@ double Automation::ReadMeasurementFromDevice(ConnectionMesure Appareil)
 	if (Appareil.voie_mesure == MENSOR_VOIE)
 		return instrument[Appareil.index]->LireMensor();
 	return ERROR_MESURE;
-}
-
-
-void Automation::InstrumentsOpen()
-{
-	for (int i = 0; i<NB_OF_INSTRUMENTS; i++)
-		instrument[i]->OuvrirPortInstrument();
-}
-
-void Automation::InstrumentsClose()
-{
-	for (int i = 0; i<NB_OF_INSTRUMENTS; i++)
-		instrument[i]->FermerPortInstrument();
 }

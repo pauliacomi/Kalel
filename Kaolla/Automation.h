@@ -76,7 +76,7 @@ public:
 	HANDLE h_eventShutdown;								// Handle event shutting down the thread
 
 	// Threads
-	HANDLE h_MeasurementThread[3];						// Threads for measurement
+	HANDLE h_MeasurementThread[4];						// Threads for measurement
 
 	//------------------------------------------------------------
 	// Standards data types 
@@ -112,13 +112,13 @@ public:
 public:
 	void SetData();
 	void SendData();
+	void Execution();
 
 private:
 	//------------------------------------------------------------
 	// Execution
 	//------------------------------------------------------------
 
-	void Execution();
 	void ExecutionManual();
 	void ExecutionAuto();
 
@@ -128,11 +128,13 @@ private:
 
 	void Initialisation();
 	void InitialisationInstruments();
+	void InstrumentsOpen();
 
 	//------------------------------------------------------------
 	// Termination
 	//------------------------------------------------------------
 
+	void InstrumentsClose();
 	void FinishExperiment(bool premature);
 
 
@@ -203,11 +205,7 @@ protected:
 /**********************************************************************************************************************************
 // Measurements functions and threads
 ***********************************************************************************************************************************/
-
-	void InstrumentsOpen();
-	void InstrumentsClose();
-
-	
+		
 	void ThreadMeasurement();
 
 	static DWORD WINAPI ThreadProc_ReadCalorimeter(LPVOID lpParam);

@@ -149,8 +149,11 @@ void ThreadManager::ThreadMainWorker()
 	// Wait for the required event
 	WaitForSingleObject(m_hStartMainThreadEvent, INFINITE);
 
-	// Launch required functionality
+	// Set data
+	automation.SetDataPointer(experimentData);
 
+	// Launch functionality
+	automation.Execution();
 
 	// Reset the shutdown event
 	::ResetEvent(m_hStartMainThreadEvent);
