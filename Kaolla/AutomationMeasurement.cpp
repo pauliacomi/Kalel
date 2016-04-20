@@ -22,18 +22,7 @@ void Automation::ThreadMeasurement()
 }
 
 
-void Automation::InstrumentsOpen()
-{
-	for (int i = 0; i<NB_OF_INSTRUMENTS; i++)
-		instrument[i]->OuvrirPortInstrument();
-}
-
-void Automation::InstrumentsClose()
-{
-	for (int i = 0; i<NB_OF_INSTRUMENTS; i++)
-		instrument[i]->FermerPortInstrument();
-}
-
+///------------------- Threads
 
 DWORD WINAPI Automation::ThreadProc_ReadCalorimeter(LPVOID lpParam)
 {
@@ -42,10 +31,8 @@ DWORD WINAPI Automation::ThreadProc_ReadCalorimeter(LPVOID lpParam)
 	// Wait for the activation of the hEvent
 	WaitForSingleObject(manipulation->h_MeasurementThreadStartEvent, INFINITE);
 
-	// Block the corresponding variable
-	EnterCriticalSection(&manipulation->criticalSection);
+	// Execute the function
 	manipulation->ReadCalorimeter();
-	LeaveCriticalSection(&manipulation->criticalSection);
 
 	return 0;
 }
@@ -57,10 +44,8 @@ DWORD WINAPI Automation::ThreadProc_ReadHighPressure(LPVOID lpParam)
 	// Wait for the activation of the hEvent
 	WaitForSingleObject(manipulation->h_MeasurementThreadStartEvent, INFINITE);
 
-	// Block the corresponding variable
-	EnterCriticalSection(&manipulation->criticalSection);
+	// Execute the function
 	manipulation->ReadHighPressure();
-	LeaveCriticalSection(&manipulation->criticalSection);
 
 	return 0;
 }
@@ -72,13 +57,8 @@ DWORD WINAPI Automation::ThreadProc_ReadLowPressure(LPVOID lpParam)
 	// Wait for the activation of the hEvent
 	WaitForSingleObject(manipulation->h_MeasurementThreadStartEvent, INFINITE);
 
-	// Read the intstrument
-
-
-	// Block the corresponding variable
-	EnterCriticalSection(&manipulation->criticalSection);
+	// Execute the function
 	manipulation->ReadLowPressure();
-	LeaveCriticalSection(&manipulation->criticalSection);
 
 	return 0;
 }
@@ -90,44 +70,68 @@ DWORD WINAPI Automation::ThreadProc_ReadTemperature(LPVOID lpParam)
 	// Wait for the activation of the hEvent
 	WaitForSingleObject(manipulation->h_MeasurementThreadStartEvent, INFINITE);
 
-	// Block the corresponding variable
-	EnterCriticalSection(&manipulation->criticalSection);
+	// Execute the function
 	manipulation->ReadTemperatures();
-	LeaveCriticalSection(&manipulation->criticalSection);
 
 	return 0;
 }
 
 
+///------------------- Thread corresponding functions
 
 void Automation::ReadCalorimeter()
 {
-	experimentLocalData.resultCalorimeter = fluxConverter.ConversionCalo(ReadMeasurementFromDevice(AppareilCalo));
+	// Read the value from the calorimeter
+	double temp = fluxConverter.ConversionCalo(ReadMeasurementFromDevice(AppareilCalo));
+
+	// Write it in the shared object
+	EnterCriticalSection(&criticalSection);
+	experimentLocalData.resultCalorimeter = temp;
+	LeaveCriticalSection(&criticalSection);
 }
 
 
 void Automation::ReadLowPressure()
 {
-	experimentLocalData.pressureLow = fluxConverter.ConversionBP(ReadMeasurementFromDevice(AppareilBP));
+	// Read the value from the calorimeter
+	double temp = fluxConverter.ConversionCalo(ReadMeasurementFromDevice(AppareilBP));
+
+	// Write it in the shared object
+	EnterCriticalSection(&criticalSection);
+	experimentLocalData.pressureLow = temp;
+	LeaveCriticalSection(&criticalSection);
 }
 
 
 void Automation::ReadHighPressure()
 {
-	experimentLocalData.pressureHigh = fluxConverter.ConversionHP(ReadMeasurementFromDevice(AppareilHP));
-	SecuriteHautePression();
+	// Read the value from the calorimeter
+	double temp = fluxConverter.ConversionCalo(ReadMeasurementFromDevice(AppareilHP));
+
+	// Write it in the shared object
+	EnterCriticalSection(&criticalSection);
+	experimentLocalData.pressureHigh = temp;
+	LeaveCriticalSection(&criticalSection);
 }
 
 void Automation::ReadTemperatures()
 {
+	// Read the value from the calorimeter
 	double dTemperatureCalo, dTemperatureCage, dTemperaturePiece;
 	g_pTemperature->Temperature(&dTemperatureCalo, &dTemperatureCage, &dTemperaturePiece);
+
+	// Write it in the shared object
+	EnterCriticalSection(&criticalSection);
 	experimentData->temperatureCalo = (float)dTemperatureCalo;
 	experimentData->temperatureCage = (float)dTemperatureCage;
 	experimentData->temperatureRoom = (float)dTemperaturePiece;
+	LeaveCriticalSection(&criticalSection);
 
-	SecuriteTemperatures();
 }
+
+
+
+///------------------- Other functions
 
 double Automation::ReadMeasurementFromDevice(ConnectionMesure Appareil)
 {
@@ -138,4 +142,17 @@ double Automation::ReadMeasurementFromDevice(ConnectionMesure Appareil)
 	if (Appareil.voie_mesure == MENSOR_VOIE)
 		return instrument[Appareil.index]->LireMensor();
 	return ERROR_MESURE;
+}
+
+
+void Automation::InstrumentsOpen()
+{
+	for (int i = 0; i<NB_OF_INSTRUMENTS; i++)
+		instrument[i]->OuvrirPortInstrument();
+}
+
+void Automation::InstrumentsClose()
+{
+	for (int i = 0; i<NB_OF_INSTRUMENTS; i++)
+		instrument[i]->FermerPortInstrument();
 }

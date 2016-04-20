@@ -4,6 +4,12 @@
 #include "Automation.h"
 #include "Define_Manip_Securite.h"
 
+void Automation::InitialisationSecurityManual()
+{
+	security_PressureHigh = FALSE;
+	security_TemperatureHigh = FALSE;
+	security_TemperatureLow = FALSE;
+}
 
 void Automation::SecuriteHautePression()
 {
@@ -13,92 +19,6 @@ void Automation::SecuriteHautePression()
 		SecuriteHautePressionAuto();
 }
 
-void Automation::InitialisationSecurityManual()
-{
-	PressionTropHaute = FALSE;
-	TemperatureElevee = FALSE;
-	TemperatureFaible = FALSE;
-}
-
-
-void Automation::SecuriteHautePressionManuelle()
-{
-	// Mesure de sécurité
-	if (experimentLocalData.pressureHigh >= GetPressionSecuriteHautePression())
-	{
-		HANDLE hThreadPression;
-		DWORD ThreadPressionId;
-		hEventPression = CreateEvent(NULL, TRUE, FALSE, NULL);
-		hThreadPression = CreateThread(NULL, NULL, MesureSecuriteHautePression, NULL, NULL, &ThreadPressionId);
-		SetEvent(hEventPression);
-		//WaitForSingleObject(hThreadPression,INFINITE);
-		messageHandler.DisplayMessage(_T("Haute Pression trop élevée\r\n"));
-
-		CloseHandle(hEventPression);
-	}
-	else
-		if (PressionTropHaute)
-		{
-			messageHandler.DisplayMessage(_T("Haute Pression revenue à la normale\r\n"));
-			MessageBeep(MB_ICONINFORMATION);
-			PressionTropHaute = FALSE;
-		}
-}
-
-DWORD WINAPI Automation::MesureSecuriteHautePression(LPVOID param)
-{
-	Automation * manip = static_cast<Automation*>(param);
-
-	WaitForSingleObject(manip->hEventPression, INFINITE);
-
-	if (!manip->PressionTropHaute)
-	{
-		manip->PressionTropHaute = TRUE;
-		CString message;
-		message.Format(_T("Attention ! Haute pression trop élevé\t\nVeuillez la mettre en dessous de : %f bar\t\n"),
-			GetPressionSecuriteHautePression());
-		AfxMessageBox(message, MB_ICONERROR);
-	}
-	else
-	{
-		//emmetre un son
-		//MessageBeep(MB_ICONWARNING);
-		MessageBeep(MB_ICONERROR);
-		//PlaySound( (LPCTSTR)SND_ALIAS_SYSTEMHAND, NULL, SND_ALIAS_ID | SND_ASYNC );
-	}
-
-	return 0;
-}
-
-
-void Automation::SecuriteHautePressionAuto()
-{
-	bool mesure_de_securite = GetActivationSecurite();
-	// Mesure de sécurité : 
-	if (mesure_de_securite)
-	{
-		if (experimentLocalData.experimentStage != STAGE_UNDER_VACUUM)
-		{
-			if (experimentLocalData.pressureHigh > GetPressionSecuriteBassePression())
-			{
-				if (EstOuvert_Vanne(6))
-				{
-					CString mess;
-					mess.Format(_T("HAUTE PRESSION (%f) DEPASSANT LA SECURITE DE LA BASSE PRESSION (%f)\r\n"),
-						experimentLocalData.pressureHigh, GetPressionSecuriteBassePression());
-					mess += _T("PAR MESURE DE SECURITE, FERMETURE DE LA VANNE 6\r\n");
-
-					messageHandler.DisplayMessage(mess);
-					Fermeture_Vanne(6);
-				}
-			}
-			if (experimentLocalData.pressureHigh >= GetPressionSecuriteHautePression())
-				demande_arret = ARRET_URGENCE_HP;
-		}
-	}
-}
-
-
 void Automation::SecuriteTemperatures()
 {
 	if (experimentLocalData.experimentType == EXPERIMENT_TYPE_MANUAL)
@@ -107,119 +27,137 @@ void Automation::SecuriteTemperatures()
 		SecuriteTemperaturesAuto();
 }
 
+
+void Automation::SecuriteHautePressionManuelle()
+{
+	// Check the result
+	if (experimentLocalData.pressureHigh >= GetPressionSecuriteHautePression())
+	{
+		if (!security_PressureHigh) {
+			// Set the flag
+			security_PressureHigh = true;
+
+			// Alert user
+			CString message;
+			message.Format(MESSAGE_WARNING_PHIGH_BOX, GetPressionSecuriteHautePression());
+			messageHandler.DisplayMessageBox(message, MB_ICONERROR);
+			messageHandler.DisplayMessage(MESSAGE_WARNING_PHIGH);
+
+			// Play a sound
+			MessageBeep(MB_ICONERROR);
+		}
+	}
+	else
+		if (security_PressureHigh)
+		{
+			messageHandler.DisplayMessage(MESSAGE_WARNING_PHNORMAL);
+			MessageBeep(MB_ICONINFORMATION);
+			security_PressureHigh = FALSE;
+		}
+}
+
+
+
 void Automation::SecuriteTemperaturesManuelle()
 {
-
-	if (experimentLocalData.temperatureCalo >= (float)general.temperature_experience + securite_temperature)
+	// Check calorimeter temperature high
+	if (experimentLocalData.temperatureCalo >= experimentLocalData.dataGeneral.temperature_experience + securite_temperature)
 	{
-		HANDLE hThreadTemperatureElevee;
-		DWORD ThreadTemperatureEleveeId;
-		hEventTemperatureElevee = CreateEvent(NULL, TRUE, FALSE, NULL);
-		hThreadTemperatureElevee = CreateThread(NULL, NULL, MesureSecuriteTemperatureElevee, NULL, NULL, &ThreadTemperatureEleveeId);
-		SetEvent(hEventTemperatureElevee);
-		messageHandler.DisplayMessage(_T("Température du Calorimètre trop élevée\r\n"));
+		if (!security_TemperatureHigh) {
+			// Set the flag
+			security_TemperatureHigh = true;
 
-		CloseHandle(hEventTemperatureElevee);
+			// Alert user
+			CString message;
+			message.Format(MESSAGE_WARNING_THIGH_BOX, GetPressionSecuriteHautePression());
+			messageHandler.DisplayMessageBox(message, MB_ICONERROR);
+			messageHandler.DisplayMessage(MESSAGE_WARNING_CALOT_HIGH);
+
+			// Play a sound
+			MessageBeep(MB_ICONERROR);
+		}
 	}
 	else
-		if (TemperatureElevee)
+		if (security_TemperatureHigh)
 		{
-			messageHandler.DisplayMessage(_T("Température du Calorimètre redescendue à la normale\r\n"));
+			messageHandler.DisplayMessage(MESSAGE_WARNING_CALOT_NORMAL);
 			MessageBeep(MB_ICONINFORMATION);
-			TemperatureElevee = FALSE;
+			security_TemperatureHigh = FALSE;
 		}
 
-	if (experimentLocalData.temperatureCalo <= (float)general.temperature_experience - securite_temperature)//2)//5)
+	// Check calorimeter temperature low
+	if (experimentLocalData.temperatureCalo <= experimentLocalData.dataGeneral.temperature_experience - securite_temperature)
 	{
-		HANDLE hThreadTemperatureFaible;
-		DWORD ThreadTemperatureFaibleId;
-		hEventTemperatureFaible = CreateEvent(NULL, TRUE, FALSE, NULL);
-		hThreadTemperatureFaible = CreateThread(NULL, NULL, MesureSecuriteTemperatureFaible, NULL, NULL, &ThreadTemperatureFaibleId);
-		SetEvent(hEventTemperatureFaible);
-		messageHandler.DisplayMessage(_T("Température du Calorimètre trop faible\r\n"));
+		if (!security_TemperatureLow) {
+			// Set the flag
+			security_TemperatureLow = true;
 
-		CloseHandle(hEventTemperatureFaible);
-	}
-	else
-		if (TemperatureFaible)
-		{
-			messageHandler.DisplayMessage(_T("Température du Calorimètre remontée à la normale\r\n"));
-			MessageBeep(MB_ICONINFORMATION);
-			TemperatureFaible = FALSE;
+			// Alert user
+			CString message;
+			message.Format(MESSAGE_WARNING_TLOW_BOX, GetPressionSecuriteHautePression());
+			messageHandler.DisplayMessageBox(message, MB_ICONERROR);
+			messageHandler.DisplayMessage(MESSAGE_WARNING_CALOT_LOW);
+
+			// Play a sound
+			MessageBeep(MB_ICONERROR);
 		}
-
-}
-
-
-
-DWORD WINAPI Automation::MesureSecuriteTemperatureElevee(LPVOID param)
-{
-	Automation * manip = static_cast<Automation*>(param);
-
-	WaitForSingleObject(manip->hEventTemperatureElevee, INFINITE);
-	if (!manip->TemperatureElevee)
-	{
-		manip->TemperatureElevee = TRUE;
-		CString message;
-		message.Format(_T("Attention ! Température du calo trop élevé par rapport à la température d'expérience\t\n"));
-		AfxMessageBox(message, MB_ICONERROR);
 	}
 	else
-	{
-		//emmetre un son
-		//MessageBeep(MB_ICONWARNING);
-		MessageBeep(MB_ICONERROR);
-		//PlaySound( (LPCTSTR)SND_ALIAS_SYSTEMHAND, NULL, SND_ALIAS_ID | SND_ASYNC );
-	}
-
-	return 0;
+		if (security_TemperatureLow)
+		{
+			messageHandler.DisplayMessage(MESSAGE_WARNING_CALOT_NORMAL);
+			MessageBeep(MB_ICONINFORMATION);
+			security_TemperatureLow = FALSE;
+		}
 }
 
-DWORD WINAPI Automation::MesureSecuriteTemperatureFaible(LPVOID param)
+
+void Automation::SecuriteHautePressionAuto()
 {
-	Automation * manip = static_cast<Automation*>(param);
-
-	::WaitForSingleObject(manip->hEventTemperatureFaible, INFINITE);
-	if (!manip->TemperatureFaible)
-	{
-		manip->TemperatureFaible = TRUE;
-		CString message;
-		message.Format(_T("Attention ! Température du calo trop faible par rapport à la température d'expérience\t\n"));
-		AfxMessageBox(message, MB_ICONERROR);
-	}
-	else
-	{
-		//emmetre un son
-		//MessageBeep(MB_ICONWARNING);
-		MessageBeep(MB_ICONERROR);
-		//PlaySound( (LPCTSTR)SND_ALIAS_SYSTEMHAND, NULL, SND_ALIAS_ID | SND_ASYNC );
-	}
-
-	return 0;
-}
-
-void Automation::SecuriteTemperaturesAuto()
-{
+	// Check if the security is acivated from the config files
 	bool mesure_de_securite = GetActivationSecurite();
-	// Mesure de sécurité : 
+
 	if (mesure_de_securite)
 	{
 		if (experimentLocalData.experimentStage != STAGE_UNDER_VACUUM)
 		{
-			CString mess;
-			if (experimentLocalData.temperatureCalo >= (float)general.temperature_experience + securite_temperature)//2)//5)
+			// Check for the pressure being higher than low pressure limit
+			if (experimentLocalData.pressureHigh > GetPressionSecuriteBassePression())
 			{
-				mess.Format(_T("Arrêt de l'expérience : La température du Calo étant trop élevée (supérieure à %d°C)\r\n"),
-					general.temperature_experience + securite_temperature);
-				messageHandler.DisplayMessage(mess);
-				demande_arret = ARRET_URGENCE_TCH;
+				// If valve 6 is open and pressure is higher than specified, close valve 6
+				if (EstOuvert_Vanne(6))
+				{
+					messageHandler.DisplayMessage(MESSAGE_WARNING_PHIGH_V6, experimentLocalData.pressureHigh, GetPressionSecuriteBassePression());
+					ValveClose(6);
+				}
 			}
-			if (experimentLocalData.temperatureCalo <= (float)general.temperature_experience - securite_temperature)//2)//5)
+
+			// Check for the pressure being higher than high pressure limit
+			if (experimentLocalData.pressureHigh >= GetPressionSecuriteHautePression())
+				g_flagAskShutdown = ARRET_URGENCE_HP;
+		}
+	}
+}
+
+
+void Automation::SecuriteTemperaturesAuto()
+{
+	// Check if the security is acivated from the config files
+	bool mesure_de_securite = GetActivationSecurite();
+	
+	if (mesure_de_securite)
+	{
+		if (experimentLocalData.experimentStage != STAGE_UNDER_VACUUM)
+		{
+			if (experimentLocalData.temperatureCalo >= experimentLocalData.dataGeneral.temperature_experience + securite_temperature)
 			{
-				mess.Format(_T("Arrêt de l'expérience : La température du Calo étant trop faible (inférieure à %d°C)\r\n"),
-					general.temperature_experience - securite_temperature);
-				messageHandler.DisplayMessage(mess);
-				demande_arret = ARRET_URGENCE_TCB;
+				messageHandler.DisplayMessage(MESSAGE_WARNING_THIGH_STOP, experimentLocalData.dataGeneral.temperature_experience + securite_temperature);
+				g_flagAskShutdown = ARRET_URGENCE_TCH;
+			}
+			if (experimentLocalData.temperatureCalo <= experimentLocalData.dataGeneral.temperature_experience - securite_temperature)
+			{
+				messageHandler.DisplayMessage(MESSAGE_WARNING_TLOW_STOP, experimentLocalData.dataGeneral.temperature_experience - securite_temperature);
+				g_flagAskShutdown = ARRET_URGENCE_TCB;
 			}
 		}
 	}

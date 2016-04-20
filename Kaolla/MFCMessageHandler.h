@@ -35,11 +35,15 @@ public:
 	BOOL DisplayFinalPressure();
 	BOOL ExchangeData();
 	BOOL DisplayMeasurement(int pParam);
+
 	BOOL DisplayMessage(int pParam);
+	BOOL DisplayMessage(int pParam, int n);
+	BOOL DisplayMessage(int pParam, double n, float m);
+
 	BOOL DisplayAddMessage(int pParam);
 
 	// Steps
-	BOOL DisplayStep(CString pParam);
+	BOOL DisplayStep(int pParam);
 	BOOL DisplaAddStep(CString pParam);
 	BOOL DisplayPreviousStep();
 

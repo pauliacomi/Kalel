@@ -312,17 +312,20 @@ LRESULT CKaollaView::UnlockStartButton(WPARAM wParam, LPARAM lParam)
 
 void CKaollaView::OnMsvAmpoule(void)
 {
-	MiseSousVideAmpoule(GetSafeHwnd());
+	ASSERT(0);
+	//MiseSousVideAmpoule(GetSafeHwnd());
 }
 
 void CKaollaView::OnMsvBouteille()
 {
-	MiseSousVideBouteille(GetSafeHwnd());
+	ASSERT(0);
+	//MiseSousVideBouteille(GetSafeHwnd());
 }
 
 void CKaollaView::OnChangementBouteille()
 {
-	ChangementBouteille(GetSafeHwnd());
+	ASSERT(0);
+	//ChangementBouteille(GetSafeHwnd());
 }
 
 

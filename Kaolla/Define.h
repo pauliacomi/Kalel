@@ -96,6 +96,4 @@
 
 // rajouter les arrets d'urgence sous la température
 
-#define PointArretTemperature();		ArretEtapeTemperature(); ArretManipTemperature(); ArretSousVideTemperature(); ArretUrgenceHPTemperature(); ArretUrgenceTCHTemperature(); ArretUrgenceTCBTemperature(); MiseEnPause();
-
 #endif

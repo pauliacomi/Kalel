@@ -70,20 +70,30 @@ public:
 	//------------------------------------------------------------
 
 	CRITICAL_SECTION criticalSection;					// Critical section for measurement thread sinchronisation
-	HANDLE h_MeasurementThreadStartEvent;				// Handle for measurement thread signalling
 
+	// Events
+	HANDLE h_MeasurementThreadStartEvent;				// Handle event doing measurement thread signalling
+	HANDLE h_eventShutdown;								// Handle event shutting down the thread
+
+	// Threads
 	HANDLE h_MeasurementThread[3];						// Threads for measurement
 
 	//------------------------------------------------------------
 	// Standards data types 
 	//------------------------------------------------------------
 
+	// Bools to keep track of security
+	bool security_PressureHigh;
+	bool security_TemperatureHigh;
+	bool security_TemperatureLow;
+
+	int g_flagAskShutdown;
+
 	// Synchronisation?
 	int synchCalo;
 	int synchHP;
 	int synchBP;
 
-	CString message;									// Used to store the message before passing it
 
 
 /**********************************************************************************************************************************
@@ -142,9 +152,6 @@ protected:
 	void SecuriteTemperaturesManuelle();
 	void SecuriteTemperaturesAuto();
 
-	static DWORD WINAPI MesureSecuriteHautePression(LPVOID lpParam);
-	static DWORD WINAPI MesureSecuriteTemperatureElevee(LPVOID lpParam);
-	static DWORD WINAPI MesureSecuriteTemperatureFaible(LPVOID lpParam);
 
 /**********************************************************************************************************************************
 // Time keeping
@@ -242,6 +249,31 @@ protected:
 	bool EV2EstDesactive();
 	bool PompeEstActive();
 	bool PompeEstDesactive();
+
+
+	/**********************************************************************************************************************************
+	// Checks for automatic functionality
+	***********************************************************************************************************************************/
+
+	int Verifications();
+
+	int VerificationSecurity();
+
+	int VerificationValves();
+
+	int VerificationResidualPressure();
+
+	int VerificationTemperature();
+
+	/**********************************************************************************************************************************
+	// Functions for shutdown checks
+	***********************************************************************************************************************************/
+
+	int TemperatureStop();
+
+	void ShutdownDisplay();
+
+	void Pause();
 
 };
 

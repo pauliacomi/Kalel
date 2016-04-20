@@ -216,13 +216,15 @@ void CKaollaApp::OnConnectionPorts()
 {
 	CConnection_port m_connection_ports;
 	m_connection_ports.DoModal();
-	ChangementDev(GetPortVannes(), GetPortTemperatures());
+	ASSERT(0);
+	//ChangementDev(GetPortVannes(), GetPortTemperatures());
 }
 
 void CKaollaApp::OnDonneesExperience()
 {
 	CDonnees_Experience m_donnees_experience;
-	m_donnees_experience.SetStrDonneesExperience(GetDonneesExperience());
+	ASSERT(0);
+	//m_donnees_experience.SetStrDonneesExperience(GetDonneesExperience());
 	m_donnees_experience.DoModal();
 }
 

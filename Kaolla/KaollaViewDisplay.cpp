@@ -174,7 +174,8 @@ LRESULT CKaollaView::OnThreadAffichage(WPARAM, LPARAM)
 	m_mainDocument = CKaollaDoc::GetDocument();
 	if(!m_mainDocument->experiment_running)
 	{
-		FinAffichageMesure();
+		ASSERT(0);
+		//FinAffichageMesure();
 	}
 
     return 0;

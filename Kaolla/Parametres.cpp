@@ -168,7 +168,6 @@ float GetPressionSecuriteBassePression()
 
 float GetPressionSecuriteHautePression()
 {
-	
 	TCHAR StrPressionSecuriteHautePression[nSizeFloat];
 	GetPrivateProfileString(_T("Appareil"),_T("Pression_securite_capteur_haute_pression"),
 							_T("5.1"),StrPressionSecuriteHautePression,nSizeFloat,Fichier_parametres);

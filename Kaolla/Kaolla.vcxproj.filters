@@ -121,6 +121,12 @@
     <Filter Include="Header Files\Manip\Defines">
       <UniqueIdentifier>{5be8b2f5-7fec-496c-a33f-2ef07c67c5a6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Automation">
+      <UniqueIdentifier>{5bc3f4b1-2555-401d-bbd2-a619181bed19}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Automation">
+      <UniqueIdentifier>{a132455e-bd67-4205-89ff-57e9c33a3e5c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -348,12 +354,6 @@
     <ClInclude Include="TabContinuousAdsorption.h">
       <Filter>Header Files\GUI\Dialogs\Experimental Parameters\TabsNew</Filter>
     </ClInclude>
-    <ClInclude Include="ExperimentData.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Automation.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Define_Manip_Auto_Probleme_Injection.h">
       <Filter>Header Files\Manip\Defines</Filter>
     </ClInclude>
@@ -371,6 +371,12 @@
     </ClInclude>
     <ClInclude Include="Define_Manip_Vannes.h">
       <Filter>Header Files\Manip\Defines</Filter>
+    </ClInclude>
+    <ClInclude Include="Automation.h">
+      <Filter>Header Files\Automation</Filter>
+    </ClInclude>
+    <ClInclude Include="ExperimentData.h">
+      <Filter>Header Files\Automation</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -656,23 +662,32 @@
     <ClCompile Include="TabContinuousAdsorption.cpp">
       <Filter>Source Files\GUI\Dialogs\Experiment Parameters\TabsNew</Filter>
     </ClCompile>
-    <ClCompile Include="ExperimentData.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Automation.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="AutomationSecurity.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Automation</Filter>
     </ClCompile>
     <ClCompile Include="AutomationFileWriting.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Automation</Filter>
+    </ClCompile>
+    <ClCompile Include="AutomationInitialChecks.cpp">
+      <Filter>Source Files\Automation</Filter>
     </ClCompile>
     <ClCompile Include="AutomationMeasurement.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Automation</Filter>
+    </ClCompile>
+    <ClCompile Include="AutomationSecurity.cpp">
+      <Filter>Source Files\Automation</Filter>
+    </ClCompile>
+    <ClCompile Include="AutomationShutdown.cpp">
+      <Filter>Source Files\Automation</Filter>
     </ClCompile>
     <ClCompile Include="AutomationValves.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Automation</Filter>
+    </ClCompile>
+    <ClCompile Include="ExperimentData.cpp">
+      <Filter>Source Files\Automation</Filter>
+    </ClCompile>
+    <ClCompile Include="AutomationTimeKeeping.cpp">
+      <Filter>Source Files\Automation</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

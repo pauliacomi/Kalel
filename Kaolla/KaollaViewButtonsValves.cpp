@@ -30,7 +30,7 @@ void CKaollaView::AskThreadForManualCommand(int instrumentType, int instrumentNu
 
 	// Create the storage object and then pass it to the threading function
 	ManualActionParam * maParam = new ManualActionParam(GetSafeHwnd(), instrumentType, instrumentNumber, shouldBeActivated);
-	ManualAction(maParam);
+	threadManager->ManualAction(maParam);
 }
 
 

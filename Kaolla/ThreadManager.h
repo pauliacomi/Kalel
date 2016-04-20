@@ -22,15 +22,13 @@ public:
 	HRESULT SetStartEvent();
 	HRESULT ShutdownThread();
 	void ChangementDev(int dev_vanne, int dev_temp);
-	int GetEtapeEnCours();
-	CString GetDonneesExperience();
+	void ManualAction(LPVOID pParam);						// When a manual command is issued
 
 	// Private fields
 private:
 	static UINT ThreadMainWorkerStarter(LPVOID pParam);		// Main worker thread starter
 	void ThreadMainWorker();								// Main worker thread function
 
-	void ManualAction(LPVOID pParam);						// When a manual command is issued
 	static UINT ThreadManualActionStarter(LPVOID pParam);			// Manual command thread starter
 	void ThreadManualAction();								// Manual command thread worker
 	
@@ -54,47 +52,47 @@ private:
 
 
 
-
-/// Old implementation
-
-// --------- Changing the instrument parameters -------
-
-void ChangementDev(int dev_vanne, int dev_temp);
-
-// --------- Functions to return experiment information -------
-
-int GetEtapeEnCours();
-CString GetDonneesExperience();
-
-// --------- Thread start functions --------------
-
-void ManualAction(LPVOID pParam);
-void LancementThreads(LPVOID pParam);
-void ArretThreads(LPVOID pParam);
-void MiseSousVideAmpoule(LPVOID pParam);
-void MiseSousVideBouteille(LPVOID pParam);
-void ChangementBouteille(LPVOID pParam);
-
-// --------- Threads ----------------------
-
-UINT ThreadManualAction(LPVOID pParam);
-UINT LancerThreadProc(LPVOID pParam);
-UINT ArretThreadProc(LPVOID pParam);
-UINT ThreadMenuMiseSousVideAmpoule(LPVOID pParam);
-UINT ThreadMenuMiseSousVideBouteille(LPVOID pParam);
-UINT ThreadMenuChangementBouteille(LPVOID pParam);
-
-// --------- Thread interaction / modification functions -------
-
-void DemandeModificationExperience();
-void FinAffichageMesure();
-void PauseThreads();
-void ArretSousVideThreads();
-void ProchaineCommandeThreads();
-void ProchaineDoseThreads();
-void ProchaineEtapeThreads();
-void RepriseThreads();
-
-// --------- End ------------
+//
+///// Old implementation
+//
+//// --------- Changing the instrument parameters -------
+//
+//void ChangementDev(int dev_vanne, int dev_temp);
+//
+//// --------- Functions to return experiment information -------
+//
+//int GetEtapeEnCours();
+//CString GetDonneesExperience();
+//
+//// --------- Thread start functions --------------
+//
+//void ManualAction(LPVOID pParam);
+//void LancementThreads(LPVOID pParam);
+//void ArretThreads(LPVOID pParam);
+//void MiseSousVideAmpoule(LPVOID pParam);
+//void MiseSousVideBouteille(LPVOID pParam);
+//void ChangementBouteille(LPVOID pParam);
+//
+//// --------- Threads ----------------------
+//
+//UINT ThreadManualAction(LPVOID pParam);
+//UINT LancerThreadProc(LPVOID pParam);
+//UINT ArretThreadProc(LPVOID pParam);
+//UINT ThreadMenuMiseSousVideAmpoule(LPVOID pParam);
+//UINT ThreadMenuMiseSousVideBouteille(LPVOID pParam);
+//UINT ThreadMenuChangementBouteille(LPVOID pParam);
+//
+//// --------- Thread interaction / modification functions -------
+//
+//void DemandeModificationExperience();
+//void FinAffichageMesure();
+//void PauseThreads();
+//void ArretSousVideThreads();
+//void ProchaineCommandeThreads();
+//void ProchaineDoseThreads();
+//void ProchaineEtapeThreads();
+//void RepriseThreads();
+//
+//// --------- End ------------
 
 #endif

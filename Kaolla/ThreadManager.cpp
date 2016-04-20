@@ -6,11 +6,10 @@
 #include "KaollaView.h"
 #include "ThreadManager.h"
 
+#include "Automation.h"		// Backend for all the automation
+
 #include "ManualActionParam.h"
 
-#include "Manip_AutoGaz.h"
-
-#include "MainThread.h" // Custom thread event
 
 
 // Pointers to the view and document
@@ -31,7 +30,7 @@ CWinThread * m_threadBottleUnderVaccuum;
 CWinThread * m_threadChangeBottle;
 
 // Main class that deals with the automatic functionality
-CManip_AutoGaz manip;
+Automation automation;
 
 
 // --------- Initialisation and destruction -------
@@ -143,9 +142,9 @@ UINT ThreadManager::ThreadMainWorkerStarter(LPVOID pParam)
 void ThreadManager::ThreadMainWorker()
 {
 	// Create the class to deal with the automatic functionality
-	CManip_AutoGaz manipAuto;
-	manipAuto.SetVannes(pVanne);
-	manipAuto.SetTemperature(pTemperature);
+	Automation automation;
+	automation.SetVannes(pVanne);
+	automation.SetTemperature(pTemperature);
 
 	// Wait for the required event
 	WaitForSingleObject(m_hStartMainThreadEvent, INFINITE);
@@ -189,29 +188,24 @@ void ThreadManager::ThreadManualAction()
 	ASSERT(maParam != NULL);
 	bool actionSuccessful = false;
 
-	// Create the temporary class to deal with the command, can use pVanne directly but should be careful about any security machanisms
-	CManip manualManip;
-	manualManip.SetVannes(pVanne);
-	manualManip.SetTemperature(pTemperature);
-
 	// Launch required functionality
 	switch (maParam->instrumentType)
 	{
 	case INSTRUMENT_VALVE:
 		if (maParam->shouldBeActivated)
-			actionSuccessful = manualManip.Ouverture_Vanne(maParam->instrumentNumber);
+			actionSuccessful = pVanne->Ouvrir(maParam->instrumentNumber);
 		else
-			actionSuccessful = manualManip.Fermeture_Vanne(maParam->instrumentNumber);
+			actionSuccessful = pVanne->Fermer(maParam->instrumentNumber);
 	case INSTRUMENT_EV:
 		if (maParam->shouldBeActivated)
-			actionSuccessful = manualManip.ActiverEV(maParam->instrumentNumber);
+			actionSuccessful = pVanne->ActiverEV(maParam->instrumentNumber);
 		else
-			actionSuccessful = manualManip.DesactiverEV(maParam->instrumentNumber);
+			actionSuccessful = pVanne->DesactiverEV(maParam->instrumentNumber);
 	case INSTRUMENT_PUMP:
 		if (maParam->shouldBeActivated)
-			actionSuccessful = manualManip.ActiverPompe();
+			actionSuccessful = pVanne->ActiverPompe();
 		else
-			actionSuccessful = manualManip.DesactiverPompe();
+			actionSuccessful = pVanne->DesactiverPompe();
 	default:
 		ASSERT(0); // Should never reach this
 		break;
@@ -221,16 +215,6 @@ void ThreadManager::ThreadManualAction()
 	::PostMessage(maParam->windowHandle, WM_UPDATEBUTTONS, (WPARAM)maParam, actionSuccessful);
 }
 
-// ----------------------- END -----------------------
-// ----------------------- END -----------------------
-
-
-
-
-
-
-
-// --------- Changing the instrument parameters -------
 
 void ThreadManager::ChangementDev(int dev_vanne, int dev_temp)
 {
@@ -239,265 +223,262 @@ void ThreadManager::ChangementDev(int dev_vanne, int dev_temp)
 }
 
 
-// --------- Functions to return experiment information -------
-
-int ThreadManager::GetEtapeEnCours()
-{
-	return manip.etape_en_cours;
-}
-
-
-CString ThreadManager::GetDonneesExperience()
-{
-	return manip.GetDonneesExperience();
-}
+// ----------------------- END -----------------------
+// ----------------------- END -----------------------
 
 
 
-////// below this line is the old implementation
 
-//void InitialisationManip()
-//{
-//	//manip = CManip_AutoGaz();
-//	//manip.SetKaollaView(pKaollaView);
-//	//manip.SetVannes(pVanne);
-//	//manip.SetTemperature(pTemperature);
+
+
+
 //
-//	//manip.FermetureDeToutesLesVannes();
-//	//manip.FermerLesValvesEtLaPompe();
+//
+//
+//////// below this line is the old implementation
+//
+////void InitialisationManip()
+////{
+////	//manip = CManip_AutoGaz();
+////	//manip.SetKaollaView(pKaollaView);
+////	//manip.SetVannes(pVanne);
+////	//manip.SetTemperature(pTemperature);
+////
+////	//manip.FermetureDeToutesLesVannes();
+////	//manip.FermerLesValvesEtLaPompe();
+////}
+//
+//void ChangementDev(int dev_vanne, int dev_temp)
+//{
+//	pVanne->SetDevNI_USB_6008(dev_vanne);
+//	pTemperature->SetDevNI_USB_9211A(dev_temp);
 //}
-
-void ChangementDev(int dev_vanne, int dev_temp)
-{
-	pVanne->SetDevNI_USB_6008(dev_vanne);
-	pTemperature->SetDevNI_USB_9211A(dev_temp);
-}
-
-
-// --------- Functions to return experiment information -------
-
-int GetEtapeEnCours()
-{
-	return manip.etape_en_cours;
-}
-
-
-CString GetDonneesExperience()
-{
-	return manip.GetDonneesExperience();
-}
-
-// --------- Thread start functions -------
-
-void ManualAction(LPVOID pParam)
-{
-	// lock the menu
-	pKaollaView = CKaollaView::GetView();
-	//pKaollaDoc->experiment_running = TRUE;
-	pKaollaView->DebloqueMenu(NULL, NULL);
-
-	//start thread
-	m_threadManualAction = AfxBeginThread(ThreadManualAction, pParam);
-}
-
-void LancementThreads(LPVOID pParam)
-{
-	m_threadLaunchExperiment = AfxBeginThread(LancerThreadProc, pParam);
-}
-
-void ArretThreads(LPVOID pParam)
-{
-	m_threadStopExperiment = AfxBeginThread(ArretThreadProc, pParam);
-}
-
-void MiseSousVideAmpoule(LPVOID pParam)
-{
-	// lock the menu
-	pKaollaDoc->experiment_running = TRUE;
-	pKaollaView->DebloqueMenu(NULL, NULL);
-	
-	//start thread
-	m_threadSampleUnderVaccuum = AfxBeginThread(ThreadMenuMiseSousVideAmpoule, pParam);
-}
-
-void MiseSousVideBouteille(LPVOID pParam)
-{
-	// lock the menu
-	pKaollaDoc->experiment_running = TRUE;
-	pKaollaView->DebloqueMenu(NULL, NULL);
-
-	//start thread
-	m_threadBottleUnderVaccuum = AfxBeginThread(ThreadMenuMiseSousVideBouteille, pParam);
-}
-
-void ChangementBouteille(LPVOID pParam)
-{
-	// lock the menu
-	pKaollaDoc->experiment_running = TRUE;
-	pKaollaView->DebloqueMenu(NULL, NULL);
-
-	//start thread
-	m_threadChangeBottle = AfxBeginThread(ThreadMenuChangementBouteille, pParam);
-}
-
-
-/// -----------------Threads------------------
-
-UINT ThreadManualAction(LPVOID pParam)													//return manualManip.EstOuvert_Vanne(num_vanne); <- these were returned as well in the same functions
-{
-	// Get custom parameter class, then check for validity
-	ManualActionParam *maParam = static_cast<ManualActionParam*>(pParam);
-	ASSERT(maParam != NULL);
-	bool actionSuccessful = false;
-
-	// Create the temporary class to deal with the command, can use pVanne directly but should be careful about any security machanisms
-	CManip manualManip;
-	manualManip.SetVannes(pVanne);
-	manualManip.SetTemperature(pTemperature);
-
-	// Launch required functionality
-	switch (maParam->instrumentType)
-	{
-	case INSTRUMENT_VALVE:
-		if(maParam->shouldBeActivated)
-			actionSuccessful = manualManip.Ouverture_Vanne(maParam->instrumentNumber);
-		else
-			actionSuccessful = manualManip.Fermeture_Vanne(maParam->instrumentNumber);
-	case INSTRUMENT_EV:
-		if (maParam->shouldBeActivated)
-			actionSuccessful = manualManip.ActiverEV(maParam->instrumentNumber);
-		else
-			actionSuccessful = manualManip.DesactiverEV(maParam->instrumentNumber);
-	case INSTRUMENT_PUMP:
-		if (maParam->shouldBeActivated)
-			actionSuccessful = manualManip.ActiverPompe();
-		else
-			actionSuccessful = manualManip.DesactiverPompe();
-	default:
-		ASSERT(0); // Should never reach this
-		break;
-	}
-
-	// Ask for the app to show the change
-	::PostMessage(maParam->windowHandle, WM_UPDATEBUTTONS, (WPARAM)maParam, actionSuccessful);
-
-	// Debug success
-	if (actionSuccessful == false)
-		return 404;
-	return 0;
-}
-
-UINT LancerThreadProc(LPVOID pParam)
-{
-	// Get window handler and check for validity
-	const HWND hMainFrame = reinterpret_cast<HWND>(pParam);
-	ASSERT(hMainFrame != NULL);
-
-	// Launch required functionality
-	manip.LancementExperience(pParam);
-
-	return 0;
-}
-
-UINT ArretThreadProc(LPVOID pParam)
-{
-	const HWND hMainFrame = reinterpret_cast<HWND>(pParam);
-	ASSERT(hMainFrame != NULL);
-
-	// Launch required functionality
-	//manip.ArretExperience();
-
-	return 0;
-}
-
-UINT ThreadMenuMiseSousVideAmpoule(LPVOID pParam)
-{
-	// Get window handler and check for validity
-	const HWND hMainFrame = reinterpret_cast<HWND>(pParam);
-	ASSERT(hMainFrame != NULL);
-
-	// Launch required functionality
-	//manip.MiseSousVideAmpoule();
-
-	// When thread finishes, let main window know to unlock menu
-	::PostMessage(hMainFrame, WM_THREADFINISHEDREG, NULL, NULL);
-
-	return 0;
-}
-
-
-UINT ThreadMenuMiseSousVideBouteille(LPVOID pParam)
-{
-	// Get window handler and check for validity
-	const HWND hMainFrame = reinterpret_cast<HWND>(pParam);
-	ASSERT(hMainFrame != NULL);
-
-	// Launch required functionality
-	//manip.MiseSousVideBouteille();
-
-	// When thread finishes, let main window know to unlock menu
-	::PostMessage(hMainFrame, WM_THREADFINISHEDREG, NULL, NULL);
-
-	return 0;
-}
-
-
-UINT ThreadMenuChangementBouteille(LPVOID pParam)
-{
-	// Get window handler and check for validity
-	const HWND hMainFrame = reinterpret_cast<HWND>(pParam);
-	ASSERT(hMainFrame != NULL);
-
-	// Launch required functionality
-	//manip.ChangementBouteille();
-
-	// When thread finishes, let main window know to unlock menu
-	::PostMessage(hMainFrame, WM_THREADFINISHEDREG, NULL, NULL);
-
-	return 0;
-}
-
-
-// --------- Thread interaction / modification functions -------
-
-void DemandeModificationExperience()
-{
-	manip.ModifierParametresExperience();
-}
-
-void FinAffichageMesure()
-{
-	manip.FinAffichage();
-}
-
-void PauseThreads()
-{
-	manip.DemandePause();
-}
-
-void ArretSousVideThreads()
-{
-	manip.DemandeMiseSousVide();
-}
-
-void ProchaineCommandeThreads()
-{
-	manip.ProchaineCommande();
-}
-
-void ProchaineDoseThreads()
-{
-	manip.ProchaineDose();
-}
-
-void ProchaineEtapeThreads()
-{
-	manip.ProchaineEtape();
-} 
-
-void RepriseThreads()
-{
-	manip.Reprise();
-}
-
-// --------- End ------------
+//
+//
+//// --------- Functions to return experiment information -------
+//
+//int GetEtapeEnCours()
+//{
+//	return manip.etape_en_cours;
+//}
+//
+//
+//CString GetDonneesExperience()
+//{
+//	return manip.GetDonneesExperience();
+//}
+//
+//// --------- Thread start functions -------
+//
+//void ManualAction(LPVOID pParam)
+//{
+//	// lock the menu
+//	pKaollaView = CKaollaView::GetView();
+//	//pKaollaDoc->experiment_running = TRUE;
+//	pKaollaView->DebloqueMenu(NULL, NULL);
+//
+//	//start thread
+//	m_threadManualAction = AfxBeginThread(ThreadManualAction, pParam);
+//}
+//
+//void LancementThreads(LPVOID pParam)
+//{
+//	m_threadLaunchExperiment = AfxBeginThread(LancerThreadProc, pParam);
+//}
+//
+//void ArretThreads(LPVOID pParam)
+//{
+//	m_threadStopExperiment = AfxBeginThread(ArretThreadProc, pParam);
+//}
+//
+//void MiseSousVideAmpoule(LPVOID pParam)
+//{
+//	// lock the menu
+//	pKaollaDoc->experiment_running = TRUE;
+//	pKaollaView->DebloqueMenu(NULL, NULL);
+//	
+//	//start thread
+//	m_threadSampleUnderVaccuum = AfxBeginThread(ThreadMenuMiseSousVideAmpoule, pParam);
+//}
+//
+//void MiseSousVideBouteille(LPVOID pParam)
+//{
+//	// lock the menu
+//	pKaollaDoc->experiment_running = TRUE;
+//	pKaollaView->DebloqueMenu(NULL, NULL);
+//
+//	//start thread
+//	m_threadBottleUnderVaccuum = AfxBeginThread(ThreadMenuMiseSousVideBouteille, pParam);
+//}
+//
+//void ChangementBouteille(LPVOID pParam)
+//{
+//	// lock the menu
+//	pKaollaDoc->experiment_running = TRUE;
+//	pKaollaView->DebloqueMenu(NULL, NULL);
+//
+//	//start thread
+//	m_threadChangeBottle = AfxBeginThread(ThreadMenuChangementBouteille, pParam);
+//}
+//
+//
+///// -----------------Threads------------------
+//
+//UINT ThreadManualAction(LPVOID pParam)													//return manualManip.EstOuvert_Vanne(num_vanne); <- these were returned as well in the same functions
+//{
+//	// Get custom parameter class, then check for validity
+//	ManualActionParam *maParam = static_cast<ManualActionParam*>(pParam);
+//	ASSERT(maParam != NULL);
+//	bool actionSuccessful = false;
+//
+//	// Create the temporary class to deal with the command, can use pVanne directly but should be careful about any security machanisms
+//	CManip manualManip;
+//	manualManip.SetVannes(pVanne);
+//	manualManip.SetTemperature(pTemperature);
+//
+//	// Launch required functionality
+//	switch (maParam->instrumentType)
+//	{
+//	case INSTRUMENT_VALVE:
+//		if(maParam->shouldBeActivated)
+//			actionSuccessful = manualManip.Ouverture_Vanne(maParam->instrumentNumber);
+//		else
+//			actionSuccessful = manualManip.Fermeture_Vanne(maParam->instrumentNumber);
+//	case INSTRUMENT_EV:
+//		if (maParam->shouldBeActivated)
+//			actionSuccessful = manualManip.ActiverEV(maParam->instrumentNumber);
+//		else
+//			actionSuccessful = manualManip.DesactiverEV(maParam->instrumentNumber);
+//	case INSTRUMENT_PUMP:
+//		if (maParam->shouldBeActivated)
+//			actionSuccessful = manualManip.ActiverPompe();
+//		else
+//			actionSuccessful = manualManip.DesactiverPompe();
+//	default:
+//		ASSERT(0); // Should never reach this
+//		break;
+//	}
+//
+//	// Ask for the app to show the change
+//	::PostMessage(maParam->windowHandle, WM_UPDATEBUTTONS, (WPARAM)maParam, actionSuccessful);
+//
+//	// Debug success
+//	if (actionSuccessful == false)
+//		return 404;
+//	return 0;
+//}
+//
+//UINT LancerThreadProc(LPVOID pParam)
+//{
+//	// Get window handler and check for validity
+//	const HWND hMainFrame = reinterpret_cast<HWND>(pParam);
+//	ASSERT(hMainFrame != NULL);
+//
+//	// Launch required functionality
+//	manip.LancementExperience(pParam);
+//
+//	return 0;
+//}
+//
+//UINT ArretThreadProc(LPVOID pParam)
+//{
+//	const HWND hMainFrame = reinterpret_cast<HWND>(pParam);
+//	ASSERT(hMainFrame != NULL);
+//
+//	// Launch required functionality
+//	//manip.ArretExperience();
+//
+//	return 0;
+//}
+//
+//UINT ThreadMenuMiseSousVideAmpoule(LPVOID pParam)
+//{
+//	// Get window handler and check for validity
+//	const HWND hMainFrame = reinterpret_cast<HWND>(pParam);
+//	ASSERT(hMainFrame != NULL);
+//
+//	// Launch required functionality
+//	//manip.MiseSousVideAmpoule();
+//
+//	// When thread finishes, let main window know to unlock menu
+//	::PostMessage(hMainFrame, WM_THREADFINISHEDREG, NULL, NULL);
+//
+//	return 0;
+//}
+//
+//
+//UINT ThreadMenuMiseSousVideBouteille(LPVOID pParam)
+//{
+//	// Get window handler and check for validity
+//	const HWND hMainFrame = reinterpret_cast<HWND>(pParam);
+//	ASSERT(hMainFrame != NULL);
+//
+//	// Launch required functionality
+//	//manip.MiseSousVideBouteille();
+//
+//	// When thread finishes, let main window know to unlock menu
+//	::PostMessage(hMainFrame, WM_THREADFINISHEDREG, NULL, NULL);
+//
+//	return 0;
+//}
+//
+//
+//UINT ThreadMenuChangementBouteille(LPVOID pParam)
+//{
+//	// Get window handler and check for validity
+//	const HWND hMainFrame = reinterpret_cast<HWND>(pParam);
+//	ASSERT(hMainFrame != NULL);
+//
+//	// Launch required functionality
+//	//manip.ChangementBouteille();
+//
+//	// When thread finishes, let main window know to unlock menu
+//	::PostMessage(hMainFrame, WM_THREADFINISHEDREG, NULL, NULL);
+//
+//	return 0;
+//}
+//
+//
+//// --------- Thread interaction / modification functions -------
+//
+//void DemandeModificationExperience()
+//{
+//	manip.ModifierParametresExperience();
+//}
+//
+//void FinAffichageMesure()
+//{
+//	manip.FinAffichage();
+//}
+//
+//void PauseThreads()
+//{
+//	manip.DemandePause();
+//}
+//
+//void ArretSousVideThreads()
+//{
+//	manip.DemandeMiseSousVide();
+//}
+//
+//void ProchaineCommandeThreads()
+//{
+//	manip.ProchaineCommande();
+//}
+//
+//void ProchaineDoseThreads()
+//{
+//	manip.ProchaineDose();
+//}
+//
+//void ProchaineEtapeThreads()
+//{
+//	manip.ProchaineEtape();
+//} 
+//
+//void RepriseThreads()
+//{
+//	manip.Reprise();
+//}
+//
+//// --------- End ------------

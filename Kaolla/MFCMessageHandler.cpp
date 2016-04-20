@@ -152,6 +152,30 @@ BOOL MFCMessageHandler::DisplayMessage(int pParam)
 	return 0;
 }
 
+BOOL MFCMessageHandler::DisplayMessage(int pParam, int n)
+{
+	// Must format the message before posting it !
+	//
+	//
+
+	// Post the required message
+	::PostMessage(windowHandle, WM_DISPLAYMESSAGE, NULL, NULL);
+
+	return 0;
+}
+
+BOOL MFCMessageHandler::DisplayMessage(int pParam, double n, float m)
+{
+	// Must format the message before posting it !
+	//
+	//
+
+	// Post the required message
+	::PostMessage(windowHandle, WM_DISPLAYMESSAGE, NULL, NULL);
+
+	return 0;
+}
+
 BOOL MFCMessageHandler::DisplayAddMessage(int pParam)
 {
 	// Post the required message
@@ -160,7 +184,7 @@ BOOL MFCMessageHandler::DisplayAddMessage(int pParam)
 	return 0;
 }
 
-BOOL MFCMessageHandler::DisplayStep(CString pParam)
+BOOL MFCMessageHandler::DisplayStep(int pParam)
 {
 	// Post the required message
 	::PostMessage(windowHandle, WM_DISPLAYSTEP, NULL, NULL);

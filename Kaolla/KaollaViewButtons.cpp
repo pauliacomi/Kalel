@@ -84,37 +84,37 @@ void CKaollaView::OnBnClickedArreter()
 // Clicking the other buttons in the view
 void CKaollaView::OnBnClickedButtonParametresExperience()
 {
-	DemandeModificationExperience();
+	//DemandeModificationExperience();
 }
 
 void CKaollaView::OnBnClickedArretSousVide()
 {
-	ArretSousVideThreads();
+	//ArretSousVideThreads();
 }
 
 void CKaollaView::OnBnClickedPause()
 {
-	PauseThreads();
+	//PauseThreads();
 }
 
 void CKaollaView::OnBnClickedProchaineCommande()
 {
-	ProchaineCommandeThreads();
+	//ProchaineCommandeThreads();
 }
 
 void CKaollaView::OnBnClickedProchaineDose()
 {
-	ProchaineDoseThreads();
+	//ProchaineDoseThreads();
 }
 
 void CKaollaView::OnBnClickedProchaineEtape()
 {
-	ProchaineEtapeThreads();
+	//ProchaineEtapeThreads();
 }
 
 void CKaollaView::OnBnClickedReprise()
 {
-	RepriseThreads();
+	//RepriseThreads();
 }
 
 

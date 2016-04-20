@@ -79,9 +79,9 @@ void Automation::Execution()
 	timerExperiment.TopChrono();
 
 
-	if (experimentData->experimentType == EXPERIMENT_TYPE_MANUAL)
+	if (experimentLocalData.experimentType == EXPERIMENT_TYPE_MANUAL)
 		ExecutionManual();
-	if (experimentData->experimentType == EXPERIMENT_TYPE_AUTO)
+	if (experimentLocalData.experimentType == EXPERIMENT_TYPE_AUTO)
 		ExecutionAuto();
 
 	FinishExperiment(false);
@@ -98,10 +98,14 @@ void Automation::ExecutionManual()
 		// Start threads and read the data
 		ThreadMeasurement();
 
+		// Do the security checks
+		SecuriteTemperatures();
+		SecuriteHautePression();
+
 		// Save the time at which the measurement took place
 		experimentLocalData.experimentTime = timerExperiment.TempsActuel();
 
-		// Send the data to be saved outside of the function
+		// Send the data to be saved outside of the function - ?
 		messageHandler.ExchangeData();
 
 		// Save the data to the file
@@ -115,13 +119,18 @@ void Automation::ExecutionManual()
 		experimentLocalData.experimentMeasurement ++;
 
 		// Now check if the experiment has not been stopped from the main thread
+		// This is an optimisation hack, first checking a boolean then doing an expensive kernel call only in the case of 
 		if (experimentLocalData.experimentInProgress == FALSE)
 		{
-			DWORD TempsAttente = 20000; // ms
-			::WaitForSingleObject(g_eventFinAffichage, TempsAttente);
-			
-			FinishExperiment(false);
-			break;
+			DWORD TempsAttente = 1000; // (ms) Poll once a seccond
+			switch (::WaitForSingleObject(h_eventShutdown, TempsAttente))
+			{
+			case WAIT_OBJECT_0:
+				FinishExperiment(false);	// Finish the experiment
+				break;
+			case WAIT_TIMEOUT:
+				continue;
+			}
 		}
 
 		// Wait some time between two individual measurements
@@ -150,41 +159,41 @@ void Automation::ExecutionAuto()
 
 	// Initialise automatic variables
 	experimentLocalData.experimentDose = 0;
-	injection = 0;
+	//injection = 0;
 	experimentLocalData.experimentTime = 0;
 	experimentLocalData.experimentMeasurement = 1;
-	demande_arret = INACTIF;
-	etape_en_cours = STAGE_UNDEF;
+	g_flagAskShutdown = INACTIF;
+	experimentLocalData.experimentStage = STAGE_UNDEF;
 
 
-	// Equilibrate
-	LigneBaseEtEquilibre(pParam);
+	//// Equilibrate
+	//LigneBaseEtEquilibre(pParam);
 
 
-	// Start going through doses and perform the required ones
+	//// Start going through doses and perform the required ones
 
-	if (adsorption_continue.a_effectuer && ContinuerExperience())
-		AdsorptionContinue(pParam);
+	//if (adsorption_continue.a_effectuer && ContinuerExperience())
+	//	AdsorptionContinue(pParam);
 
-	//if (petites_doses.a_effectuer && ContinuerExperience())
-	if (PetitesDosesAEffectuer())
-		PetitesDoses(pParam);
+	////if (petites_doses.a_effectuer && ContinuerExperience())
+	//if (PetitesDosesAEffectuer())
+	//	PetitesDoses(pParam);
 
-	//if (moyennes_doses.a_effectuer && ContinuerExperience())
-	if (MoyennesDosesAEffectuer())
-		MoyennesDoses(pParam);
+	////if (moyennes_doses.a_effectuer && ContinuerExperience())
+	//if (MoyennesDosesAEffectuer())
+	//	MoyennesDoses(pParam);
 
-	//if (grandes_doses.a_effectuer && ContinuerExperience())
-	if (GrandesDosesAEffectuer())
-		GrandesDoses(pParam);
+	////if (grandes_doses.a_effectuer && ContinuerExperience())
+	//if (GrandesDosesAEffectuer())
+	//	GrandesDoses(pParam);
 
-	//if (desorption.a_effectuer && ContinuerExperience())
-	if (DesorptionAEffectuer())
-		Desorption(pParam);
+	////if (desorption.a_effectuer && ContinuerExperience())
+	//if (DesorptionAEffectuer())
+	//	Desorption(pParam);
 
-	if (experimentData->dataDivers.mise_sous_vide_fin_experience || demande_arret == ARRET_SOUSVIDE ||
-		demande_arret == ARRET_URGENCE_HP || demande_arret == ARRET_URGENCE_TCH || demande_arret == ARRET_URGENCE_TCB)
-		MiseSousVide(pParam);
+	//if (experimentData->dataDivers.mise_sous_vide_fin_experience || demande_arret == ARRET_SOUSVIDE ||
+	//	demande_arret == ARRET_URGENCE_HP || demande_arret == ARRET_URGENCE_TCH || demande_arret == ARRET_URGENCE_TCB)
+	//	MiseSousVide(pParam);
 }
 
 
@@ -209,6 +218,7 @@ void Automation::Initialisation()
 	//   - Non signalled by default
 	//   - With manual reinitiallisation
 	h_MeasurementThreadStartEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
+	h_eventShutdown = CreateEvent(NULL, TRUE, FALSE, NULL);
 }
 
 
