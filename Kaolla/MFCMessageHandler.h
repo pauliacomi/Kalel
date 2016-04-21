@@ -36,9 +36,8 @@ public:
 	BOOL ExchangeData();
 	BOOL DisplayMeasurement(int pParam);
 
-	BOOL DisplayMessage(int pParam);
-	BOOL DisplayMessage(int pParam, int n);
-	BOOL DisplayMessage(int pParam, double n, float m);
+	BOOL DisplayMessage(int pParam);								// Simple display message which takes an int
+	BOOL DisplayMessage(int pParam, ...);		// Display message function which take parameters
 
 	BOOL DisplayAddMessage(int pParam);
 
@@ -54,7 +53,7 @@ public:
 	BOOL DisplayTemperatures();
 
 	// Messageboxes
-	BOOL DisplayMessageBox(CString message, UINT nType);
+	BOOL DisplayMessageBox(int message, UINT nType);
 
 
 	// What i really need

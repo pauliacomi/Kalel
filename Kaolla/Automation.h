@@ -8,6 +8,9 @@
 #include "ConnectionMesure.h"		// 
 #include "MessageBoxTexts.h"		// Definitions for the text in the messages
 
+// Defines
+#include "Define_Manip_Auto_Probleme_Injection.h"		// Tries for injection attempts are here
+
 // Synchronization classes
 #include "MFCMessageHandler.h"		// Handles all the messages from this class to the UI. Great if we want to upgrade to somehting that's not MFC
 #include "ExperimentData.h"
@@ -273,11 +276,15 @@ protected:
 
 	void Pause();
 
+	/**********************************************************************************************************************************
+	// Steps
+	***********************************************************************************************************************************/
+
 	void StepEquilibration();
-
 	void StepAdsorption();
-
+	void SubstepsAdsorption();
 	void StepDesorption();
+	void SubstepsDesorption();
 
 };
 

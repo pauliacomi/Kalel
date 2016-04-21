@@ -20,12 +20,19 @@ public:
 	bool dataModified;
 	int experimentType;
 
+	// Parameters for storing where program has reached
 	int verificationStep;					// The security check steps
 	int stepStatus;							// The progress within each step
 	int experimentDose;						// The dose that is currently underway
 	int experimentMeasurement;				// Number of measurmements the machine has made
 	int experimentStage;					// Current experiment stage
-	int experimentPreviousStage;			// Current experiment stage
+	int experimentPreviousStage;			// Previous experiment stage
+	int experimentInjections;					// Counter for the injections
+
+	int experimentSubstepStage;				// Adsorption substestep we reached
+
+	int pressureHighOld;					// Old pressure stored for injection checks
+	int injectionCounter;					// Counter for the injections
 
 	// Experimental data storage
 
