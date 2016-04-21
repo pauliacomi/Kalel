@@ -46,17 +46,24 @@ void Automation::SetData()
 	// Copy the data from the main thread
 	EnterCriticalSection(&experimentData->criticalSection);			// Is the critical section defined well? might have to be defined in the main thread
 	experimentLocalData = experimentData;
+	experimentData->dataModified = false;
 	LeaveCriticalSection(&experimentData->criticalSection);
 }
 
-void Automation::SendData()
+bool Automation::DataIsNew()
 {
-	// Copy the data to the main thread
-	EnterCriticalSection(&experimentData->criticalSection);
-	experimentData = & experimentLocalData;
-	LeaveCriticalSection(&experimentData->criticalSection);
-}
+	// Copy the data from the main thread
+	bool check = false;
 
+	EnterCriticalSection(&experimentData->criticalSection);
+	if (experimentData->dataModified == false)
+		check = false;
+	else
+		check = true;
+	LeaveCriticalSection(&experimentData->criticalSection);
+
+	return check;
+}
 
 void Automation::Execution()
 {
@@ -67,8 +74,9 @@ void Automation::Execution()
 	// Initialise class members
 	Initialisation();
 
-	// Record start in global bool
+	// Record start and set initial step
 	experimentLocalData.experimentInProgress = TRUE;
+	experimentLocalData.experimentStage = STEP_VERIFICATIONS;
 
 	// Create open and write the columns in the:
 	EcritureEntete();				// Entete TXT
@@ -150,8 +158,8 @@ bool Automation::ExecutionManual()
 	// This is an optimisation hack, first checking a boolean then doing an expensive kernel call only in the case of 
 	if (experimentLocalData.experimentInProgress == FALSE)
 	{
-		DWORD TempsAttente = 1000; // (ms) Poll once a seccond
-		switch (::WaitForSingleObject(h_eventShutdown, TempsAttente))
+		DWORD TempsAttente = 1000; 
+		switch (::WaitForSingleObject(h_eventShutdown, 1000)) // (ms) Poll once a seccond
 		{
 		case WAIT_OBJECT_0:
 			FinishExperiment(false);	// Finish the experiment
@@ -176,58 +184,32 @@ bool Automation::ExecutionManual()
 
 bool Automation::ExecutionAuto()
 {
-	// If the the verifications result in cancellation, call the experiment end
-	if (Verifications() == IDCANCEL)
-	{
-		FinishExperiment(true);
-		return;
+	// Check if the data is the same as the old one, if so then get it
+	if (DataIsNew()) {
+		SetData();
 	}
-
-	// GET NEW DATA 
-	//
-	////////
-
+	
 
 	switch (experimentLocalData.experimentStage)
 	{
-	case STEP_EQUILIBRATION:
-		// WRITE NAME OF STEP DISPLAYMESSAGE
-		// START INTERMEDIATE TIMER
-		// LOOP
-			// DISPLAY TIME OF STEP TO GUI
-				// READ INSTRUMENTS 
-				// SAVE TIME OF MEASUREMENT
-				// DISPLAY TO GUI
-				// SAVE TO FILE
-				// INCREMENT MEASUREMENT NUMBER
-				// WAIT BETWEEN MEASUREMENTSS
-		// WHILE (INTERMEDIATE TIME < TIME REQUESTED BY USER)
-		// DISPLAY END STEP
-		// DISPLAY END MESSAGE
-		// CHANGE EXPERIMENT STAGE
+	case STEP_VERIFICATIONS:
+		Verifications();
 		break;
-	
+	case STEP_EQUILIBRATION:
+		StepEquilibration();
+		break;
 	case STEP_ADSORPTION:
-		// WRITE NAME OF STEP DISPLAYMESSAGE
-		// CLOSE ALL VALVES
-		// SET DOSE NUMBER TO 1
-		// LOOP
-			// DISPLAY DOSE NUMBER
-			//
-			// DISPLAY DOSE NUMBER
-			//
-		// WHILE (PRESSURE < FINAL REQUESTED PRESSURE OF THE STEP) 
-		// DISPLAY END STEP
-		// DISPLAY END MESSAGE
-		// CHANGE EXPERIMENT STAGE
+		StepAdsorption();
 		break;
 	case STEP_DESORPTION:
+		StepDesorption();
 		break;
 	case STEP_CONTINUOUS_ADSORPTION:
 		break;
 	case STEP_END_AUTOMATIC:
 		break;
 	default:
+		ASSERT(0); // Error
 		break;
 	}
 
@@ -260,6 +242,8 @@ bool Automation::ExecutionAuto()
 	//if (experimentData->dataDivers.mise_sous_vide_fin_experience || demande_arret == ARRET_SOUSVIDE ||
 	//	demande_arret == ARRET_URGENCE_HP || demande_arret == ARRET_URGENCE_TCH || demande_arret == ARRET_URGENCE_TCB)
 	//	MiseSousVide(pParam);
+
+	return true;
 }
 
 
@@ -297,6 +281,9 @@ void Automation::Initialisation()
 	//   - With manual reinitiallisation
 	h_MeasurementThreadStartEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
 	h_eventShutdown = CreateEvent(NULL, TRUE, FALSE, NULL);
+
+	// Put the thread in an active state
+	g_flagAskShutdown = ACTIVE;
 }
 
 

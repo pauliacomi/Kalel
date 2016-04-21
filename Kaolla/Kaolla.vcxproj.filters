@@ -689,6 +689,9 @@
     <ClCompile Include="ThreadManager.cpp">
       <Filter>Source Files\Automation</Filter>
     </ClCompile>
+    <ClCompile Include="AutomationSteps.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kaolla.rc">

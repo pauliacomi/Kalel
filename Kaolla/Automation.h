@@ -111,7 +111,7 @@ public:
 
 public:
 	void SetData();
-	void SendData();
+	bool DataIsNew();
 	void Execution();
 
 private:
@@ -253,7 +253,7 @@ protected:
 	// Checks for automatic functionality
 	***********************************************************************************************************************************/
 
-	int Verifications();
+	void Verifications();
 
 	int VerificationSecurity();
 
@@ -272,6 +272,12 @@ protected:
 	void ShutdownDisplay();
 
 	void Pause();
+
+	void StepEquilibration();
+
+	void StepAdsorption();
+
+	void StepDesorption();
 
 };
 

@@ -108,15 +108,4 @@
 
 // rajouter les arrets d'urgence sous la température
 
-void PointArretSansDoseSousFonction() {
-	if (demande_arret == ARRET_ETAPE) { AffichageArret(); demande_arret = INACTIF; return; }
-	if (demande_arret == ARRET_IMMEDIAT) { AffichageArret(); return; }
-	if (demande_arret == ARRET_SOUSVIDE) { AffichageArret(); return; }
-	if (demande_arret == ARRET_URGENCE_HP) { AffichageArret(); return; }
-	if (demande_arret == ARRET_URGENCE_TCH) {AffichageArret(); return;}
-	if (demande_arret == ARRET_URGENCE_TCB) {AffichageArret(); return;}
-	if (demande_arret == ARRET_COMMANDE) { AffichageArret(); demande_arret = INACTIF; }
-	MiseEnPause();
-}
-
 #endif

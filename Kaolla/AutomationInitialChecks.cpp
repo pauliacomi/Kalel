@@ -2,18 +2,30 @@
 #include "Automation.h"
 #include "Define_Manip_Auto_Verifications.h"
 
-int Automation::Verifications()
+void Automation::Verifications()
 {
-	if (VerificationSecurity() == IDCANCEL)
-		return IDCANCEL;
-	if (VerificationValves() == IDCANCEL)
-		return IDCANCEL;
-	if (VerificationResidualPressure() == IDCANCEL)
-		return IDCANCEL;
-	if (VerificationTemperature() == IDCANCEL)
-		return IDCANCEL;
+	switch (experimentLocalData.verificationStep)
+	{
+	case STEP_VERIFICATIONS_SECURITY:
+		experimentLocalData.verificationStep = STEP_VERIFICATIONS_VALVES;
+		VerificationSecurity();
+		break;
+	case STEP_VERIFICATIONS_VALVES:
+		experimentLocalData.verificationStep = STEP_VERIFICATIONS_PRESSURE;
+		VerificationValves();
+		break;
+	case STEP_VERIFICATIONS_PRESSURE:
+		experimentLocalData.verificationStep = STEP_VERIFICATIONS_TEMPERATURE;
+		VerificationResidualPressure();
+		break;
+	case STEP_VERIFICATIONS_TEMPERATURE:
+		experimentLocalData.experimentStage = STEP_EQUILIBRATION;
+		experimentLocalData.verificationStep = STEP_VERIFICATIONS_COMPLETE;
+		VerificationTemperature();
+		break;
+	}
 
-	return 0;
+	g_flagAskShutdown = STOP;
 }
 
 
@@ -84,7 +96,7 @@ int Automation::VerificationResidualPressure()
 	AttenteSecondes(Intervalle1 / 1000);
 
 	// Read the pressure
-	ReadHighPressure();
+	ThreadMeasurement();
 	messageHandler.DisplayHighPressure();
 
 	// Check residual pressure
@@ -141,7 +153,7 @@ int Automation::VerificationTemperature()
 					Sleep(attente_pause);		// use functionality?
 				}
 				// Read the temperature
-				ReadTemperatures();
+				ThreadMeasurement();
 				// Display temperatures
 				messageHandler.DisplayTemperatures();
 			}

@@ -80,15 +80,15 @@ void Automation::ShutdownDisplay()
 
 void Automation::Pause()
 {
-	if (g_flagAskShutdown == PAUSE)
-	{
-		messageHandler.DisplayMessage(_T("Pause\r\n"));
-		messageHandler.DisplaAddStep(_T("  |  Pause"));
-		temps_intermediaire.ArretTemps();
-		WaitForSingleObject(EventReprise, INFINITE);
-		//UN_GREY_OUT
-		temps_intermediaire.RepriseTemps();
-		messageHandler.DisplayMessage(_T("Reprise\r\n"));
-		messageHandler.DisplayPreviousStep();
-	}
+	//if (g_flagAskShutdown == PAUSE)
+	//{
+	//	messageHandler.DisplayMessage(_T("Pause\r\n"));
+	//	messageHandler.DisplaAddStep(_T("  |  Pause"));
+	//	temps_intermediaire.ArretTemps();
+	//	WaitForSingleObject(EventReprise, INFINITE);
+	//	//UN_GREY_OUT
+	//	temps_intermediaire.RepriseTemps();
+	//	messageHandler.DisplayMessage(_T("Reprise\r\n"));
+	//	messageHandler.DisplayPreviousStep();
+	//}
 }

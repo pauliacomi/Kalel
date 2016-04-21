@@ -17,11 +17,15 @@ public:
 
 	// General parameters
 	bool experimentInProgress;
+	bool dataModified;
 	int experimentType;
 
+	int verificationStep;					// The security check steps
+	int stepStatus;							// The progress within each step
 	int experimentDose;						// The dose that is currently underway
 	int experimentMeasurement;				// Number of measurmements the machine has made
 	int experimentStage;					// Current experiment stage
+	int experimentPreviousStage;			// Current experiment stage
 
 	// Experimental data storage
 
