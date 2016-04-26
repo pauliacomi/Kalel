@@ -9,6 +9,7 @@ void Automation::Verifications()
 	case STEP_VERIFICATIONS_SECURITY:
 		experimentLocalData.verificationStep = STEP_VERIFICATIONS_VALVES;
 		VerificationSecurity();
+		experimentLocalData.experimentStage = PAUSE;
 		break;
 	case STEP_VERIFICATIONS_VALVES:
 		experimentLocalData.verificationStep = STEP_VERIFICATIONS_PRESSURE;

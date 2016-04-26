@@ -64,7 +64,7 @@ bool CVannes::Fermer(int num)
 	do{
 		tentative++;
 		action_reussie = NI_USB_6008::FermerPort0(num-1);
-		Sleep(temps_ms);
+		Sleep(temps_ms);	// should probably remove these wait times
 	}while(!action_reussie && tentative <= nb_essais);
 
 	return action_reussie;

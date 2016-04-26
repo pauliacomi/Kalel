@@ -169,3 +169,33 @@ void Automation::EcritureEnteteCSV()
 	fichier_entete.close();
 }
 
+void Automation::RecordDataChange()
+{
+	ostringstream char_changement("", ios_base::app);
+	ostringstream char_changementCSV("", ios_base::app);
+
+	char_changement << endl << "-----------------------------------------------------" << endl;
+	char_changementCSV << endl << "-----------------------------------------------------" << endl;
+
+	if (moyennes_doses.a_effectuer)
+	{
+
+		char_changement << "Rajout de l'étape : " << << endl;
+		char_changementCSV << "Rajout de l'étape : "<< << endl;
+
+		char_changement << EnteteMoyennesDoses();
+		char_changementCSV << EnteteMoyennesDosesCSV();
+
+	}
+	else
+	{
+		char_changement << "Suppression de l'étape : " << << endl;
+		char_changementCSV << "Suppression de l'étape :" << << endl;
+	}
+
+	string strChangement = char_changement.str();
+	string strChangementCSV = char_changementCSV.str();
+
+	RajoutFichierEntete(strChangement);
+	RajoutFichierEnteteCSV(strChangementCSV);
+}

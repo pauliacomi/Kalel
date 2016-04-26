@@ -77,6 +77,7 @@ void Automation::Execution()
 	// Record start and set initial step
 	experimentLocalData.experimentInProgress = TRUE;
 	experimentLocalData.experimentStage = STEP_VERIFICATIONS;
+	experimentLocalData.experimentSubstepStage == STEP_STATUS_START;
 
 	// Create open and write the columns in the:
 	EcritureEntete();				// Entete TXT
@@ -95,10 +96,21 @@ void Automation::Execution()
 
 		case STOP:						// In case the experiment is asked to stop
 			ShutdownDisplay();			// then look at possible causes
+			//break out of loop?
 			break;
 
 		case PAUSE:						// In case the experiment is set as paused
 			Pause();					// put it in a pause state
+
+			switch (::WaitForSingleObject(h_eventShutdown, 500)) // (ms) Poll time
+			{
+			case WAIT_OBJECT_0:
+				g_flagAskShutdown = STOP;
+				break;
+			case WAIT_TIMEOUT:
+				g_flagAskShutdown = ACTIVE;
+				break;
+			}
 			break;
 
 		case ACTIVE:					// In case the experiment is started
@@ -132,54 +144,42 @@ void Automation::Execution()
 
 bool Automation::ExecutionManual()
 {
-	// Start the timer to record time between measurements
-	timerMeasurement.TopChrono();
-
-	// Start threads and read the data
-	ThreadMeasurement();
-
-	// Do the security checks
-	SecuriteTemperatures();
-	SecuriteHautePression();
-
-	// Save the time at which the measurement took place
-	experimentLocalData.experimentTime = timerExperiment.TempsActuel();
-
-	// Send the data to be saved outside of the function - ?
-	messageHandler.ExchangeData();
-
-	// Save the data to the file
-	EnregistrementFichierMesures();
-
-	// Increment the measurement number
-	experimentLocalData.experimentMeasurement ++;
-
-	// Now check if the experiment has not been stopped from the main thread
-	// This is an optimisation hack, first checking a boolean then doing an expensive kernel call only in the case of 
-	if (experimentLocalData.experimentInProgress == FALSE)
+	// Have enough time between two measurements
+	if (experimentLocalData.experimentSubstepStage == STEP_STATUS_START	// If we started
+		&& timerMeasurement.TempsActuel() < T_BETWEEN_MEASURE)			// and the enough time between measurements
 	{
-		DWORD TempsAttente = 1000; 
-		switch (::WaitForSingleObject(h_eventShutdown, 1000)) // (ms) Poll once a seccond
-		{
-		case WAIT_OBJECT_0:
-			FinishExperiment(false);	// Finish the experiment
-			break;
-		case WAIT_TIMEOUT:
-			return true;
-		}
+		g_flagAskShutdown = ACTIVE;
 	}
+	else
+	{
+		// Change the flag
+		experimentLocalData.experimentSubstepStage = STEP_STATUS_INPROGRESS;
 
-	// Wait some time between two individual measurements
-	do {
-		if (timerMeasurement.TempsActuel() < T_BETWEEN_MEASURE)
-		{
-			if (experimentLocalData.experimentInProgress == FALSE)
-				break;
-			Sleep(100);
-		}
-		else
-			break;
-	} while (TRUE);
+		// Start the timer to record time between measurements
+		timerMeasurement.TopChrono();
+
+		// Start threads and read the data
+		ThreadMeasurement();
+
+		// Do the security checks
+		SecuriteTemperatures();
+		SecuriteHautePression();
+
+		// Save the time at which the measurement took place
+		experimentLocalData.experimentTime = timerExperiment.TempsActuel();
+
+		// Send the data to be saved outside of the function - ?
+		messageHandler.ExchangeData();
+
+		// Save the data to the file
+		EnregistrementFichierMesures();
+
+		// Increment the measurement number
+		experimentLocalData.experimentMeasurement++;
+
+		// Put the experiment to wait
+		g_flagAskShutdown = PAUSE;
+	}
 }
 
 bool Automation::ExecutionAuto()
@@ -187,8 +187,8 @@ bool Automation::ExecutionAuto()
 	// Check if the data is the same as the old one, if so then get it
 	if (DataIsNew()) {
 		SetData();
+		RecordDataChange();
 	}
-	
 
 	switch (experimentLocalData.experimentStage)
 	{
@@ -212,37 +212,6 @@ bool Automation::ExecutionAuto()
 		ASSERT(0); // Error
 		break;
 	}
-
-
-	//// Equilibrate
-	//LigneBaseEtEquilibre(pParam);
-
-
-	//// Start going through doses and perform the required ones
-
-	//if (adsorption_continue.a_effectuer && ContinuerExperience())
-	//	AdsorptionContinue(pParam);
-
-	////if (petites_doses.a_effectuer && ContinuerExperience())
-	//if (PetitesDosesAEffectuer())
-	//	PetitesDoses(pParam);
-
-	////if (moyennes_doses.a_effectuer && ContinuerExperience())
-	//if (MoyennesDosesAEffectuer())
-	//	MoyennesDoses(pParam);
-
-	////if (grandes_doses.a_effectuer && ContinuerExperience())
-	//if (GrandesDosesAEffectuer())
-	//	GrandesDoses(pParam);
-
-	////if (desorption.a_effectuer && ContinuerExperience())
-	//if (DesorptionAEffectuer())
-	//	Desorption(pParam);
-
-	//if (experimentData->dataDivers.mise_sous_vide_fin_experience || demande_arret == ARRET_SOUSVIDE ||
-	//	demande_arret == ARRET_URGENCE_HP || demande_arret == ARRET_URGENCE_TCH || demande_arret == ARRET_URGENCE_TCB)
-	//	MiseSousVide(pParam);
-
 	return true;
 }
 

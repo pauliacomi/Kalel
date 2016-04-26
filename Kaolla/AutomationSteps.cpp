@@ -18,7 +18,7 @@ void Automation::StepEquilibration()
 		// Save the time at which the measurement took place
 		experimentLocalData.experimentTime = timerExperiment.TempsActuel();
 
-		// Send the data to be saved outside of the function - ?
+		// Send the data to be saved outside of the function
 		messageHandler.ExchangeData();
 
 		// Save the data to the file
@@ -28,8 +28,10 @@ void Automation::StepEquilibration()
 		experimentLocalData.experimentMeasurement++;
 		
 		// Check if the time has been reached
-		if (timerMeasurement.TempsActuel > experimentLocalData.dataDivers.temps_ligne_base)
+		if (timerMeasurement.TempsActuel() > experimentLocalData.dataDivers.temps_ligne_base)
 			experimentLocalData.stepStatus = STEP_STATUS_END;
+		
+		// Wait
 		g_flagAskShutdown = PAUSE;
 		break;
 
@@ -38,7 +40,6 @@ void Automation::StepEquilibration()
 		timerMeasurement.TopChrono();
 		experimentLocalData.stepStatus = STEP_STATUS_INPROGRESS;
 		// Let GUI know the step change
-		messageHandler.DisplayStep(Etape);
 		messageHandler.DisplayMessage(message);
 		break;
 
@@ -46,7 +47,6 @@ void Automation::StepEquilibration()
 		// Change to the next step
 		experimentLocalData.stepStatus = STEP_STATUS_START;
 		// Let GUI know the step change
-		messageHandler.DisplayStep(Etape);
 		messageHandler.DisplayMessage(message);
 		SetNextStage();
 		break;
@@ -58,19 +58,12 @@ void Automation::StepAdsorption()
 	switch (experimentLocalData.stepStatus)
 	{
 	case STEP_STATUS_INPROGRESS:
-		// Tell GUI about current dose
-		messageHandler.DisplayMessage(_T("Début de la petite dose %d\r\n"), dose);
+
+		// Start the timer to record time of the measurement
+		timerMeasurement.TopChrono();
 
 		// Start threads and read the data
 		ThreadMeasurement();
-
-		SubstepsAdsorption();
-
-		// increment injection var
-		// ?
-
-		// Previous injection  = -1 
-		// injection counter =  0
 
 		// Do the security checks
 		SecuriteTemperatures();
@@ -88,19 +81,23 @@ void Automation::StepAdsorption()
 		// Increment the measurement number
 		experimentLocalData.experimentMeasurement++;
 
+		// Go through the adsorption substeps
+		SubstepsAdsorption();
+
 		// Check if the required pressure has been reached
 		if (experimentLocalData.pressureFinal > experimentLocalData.dataAdsorption[experimentLocalData.adsorptionStage].pression_finale)
 			experimentLocalData.stepStatus = STEP_STATUS_END;
+		
+		// Wait
 		g_flagAskShutdown = PAUSE;
 		break;
 
 	case STEP_STATUS_START:
-		// Start the timer to record time of the baseline
-		timerMeasurement.TopChrono();
+
 		experimentLocalData.stepStatus = STEP_STATUS_INPROGRESS;
+		
 		// Let GUI know the step change
-		messageHandler.DisplayStep(Etape);
-		messageHandler.DisplayMessage(message);
+		messageHandler.DisplayMessage(_T("Début de la petite dose %d\r\n"), dose);
 		// Close all valves
 		ControlMechanismsCloseAll();
 		// Start threads and read the data
@@ -125,6 +122,11 @@ void Automation::SubstepsAdsorption()
 {
 	switch (experimentLocalData.experimentSubstepStage)
 	{
+	case START:
+		// Tell GUI about current dose
+		messageHandler.DisplayMessage(_T("Début de la petite dose %d\r\n"), dose);
+
+		break;
 	case INJECTION:
 		// Display step
 		messageHandler.DisplayMessage(_T("Début Injection dans le volume de référence %d\r\n"), injection);
@@ -154,8 +156,8 @@ void Automation::SubstepsAdsorption()
 		}
 		if (experimentLocalData.injectionCounter >= nb_injection)
 		{
-			// Pause the thread
-			experimentLocalData.experimentStage = PAUSE;
+			// Put the thread on stand-by
+			experimentLocalData.experimentStage = INACTIVE;
 
 			// Tell GUI
 			messageHandler.DisplayMessage(_T("Problème d'injection - demande de pause\r\n"));
@@ -188,6 +190,28 @@ void Automation::SubstepsAdsorption()
 		break;
 
 	case ADSORPTION:
+		messageHandler.DisplayMessage(_T("Adsorption Basse Pression\r\n"));
+		messageHandler.DisplayMessage(_T("Demande d'ouverture de la vanne 5 pour l'adsorption\r\n"));
+		Ouverture_Vanne(5);
+
+		nom_etape.Format(_T("Petites Doses %d : Adsorption Basse Pression"), dose);
+		LireEcrireAfficher(petites_doses.temps_adsorption, nom_etape, pParam);
+		messageHandler.DisplayMessage(_T("Fin Adsorption Basse Pression\r\n"));
+		break;
+
+	case FINISHED:
+
+		// Set the initial pressure for the next dose
+		experimentLocalData.pressureInitial = experimentLocalData.pressureHigh;
+
+		messageHandler.DisplayMessage(_T("Isolation de l'échantillon\r\n"));
+		Fermeture_Vanne(5); // ?
+
+		messageHandler.DisplayMessage(_T("Fin de la petite dose %d\r\n"), dose);
+
+		// Reset counter
+		experimentLocalData.injectionCounter = 0;
+		experimentLocalData.pressureHighOld = -1;
 
 		break;
 
