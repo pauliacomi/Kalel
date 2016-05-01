@@ -4,5 +4,6 @@
 
 #define nb_injection 5 // nombre d'injections avant de déclarer un problème de gaz
 #define marge_injection 0.01 //bar   Si on ne dépasse pas cette marge, on consiède que la pression n'a pas changé
+#define marge_multiplicateur 1.2 //bar
 
 #endif

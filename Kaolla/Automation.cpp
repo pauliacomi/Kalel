@@ -76,7 +76,7 @@ void Automation::Execution()
 
 	// Record start and set initial step
 	experimentLocalData.experimentInProgress = TRUE;
-	experimentLocalData.experimentStage = STEP_VERIFICATIONS;
+	experimentLocalData.experimentStage = STAGE_VERIFICATIONS;
 	experimentLocalData.experimentSubstepStage == STEP_STATUS_START;
 
 	// Create open and write the columns in the:
@@ -85,6 +85,7 @@ void Automation::Execution()
 	FileMeasurementOpen();			// Measurement file
 
 	timerExperiment.TopChrono();	// Start global experiment timer
+
 	
 	// Infinite loop, it is broken from the inside
 	while (true)
@@ -92,6 +93,7 @@ void Automation::Execution()
 		switch (g_flagAskShutdown)		// We look at the main flag
 		{
 		case INACTIVE:					// In case the experiment is not started
+			Inactive();
 			break;
 
 		case STOP:						// In case the experiment is asked to stop
@@ -101,16 +103,6 @@ void Automation::Execution()
 
 		case PAUSE:						// In case the experiment is set as paused
 			Pause();					// put it in a pause state
-
-			switch (::WaitForSingleObject(h_eventShutdown, 500)) // (ms) Poll time
-			{
-			case WAIT_OBJECT_0:
-				g_flagAskShutdown = STOP;
-				break;
-			case WAIT_TIMEOUT:
-				g_flagAskShutdown = ACTIVE;
-				break;
-			}
 			break;
 
 		case ACTIVE:					// In case the experiment is started
@@ -145,10 +137,10 @@ void Automation::Execution()
 bool Automation::ExecutionManual()
 {
 	// Have enough time between two measurements
-	if (experimentLocalData.experimentSubstepStage == STEP_STATUS_START	// If we started
+	if (experimentLocalData.experimentSubstepStage == STEP_STATUS_INPROGRESS	// If we started
 		&& timerMeasurement.TempsActuel() < T_BETWEEN_MEASURE)			// and the enough time between measurements
 	{
-		g_flagAskShutdown = ACTIVE;
+		g_flagAskShutdown = PAUSE;
 	}
 	else
 	{
@@ -190,23 +182,25 @@ bool Automation::ExecutionAuto()
 		RecordDataChange();
 	}
 
+	experimentLocalData.timeToEquilibrate = experimentLocalData.dataDivers.temps_ligne_base;		// Set the time to wait
+
 	switch (experimentLocalData.experimentStage)
 	{
-	case STEP_VERIFICATIONS:
+	case STAGE_VERIFICATIONS:
 		Verifications();
 		break;
-	case STEP_EQUILIBRATION:
-		StepEquilibration();
+	case STAGE_EQUILIBRATION:
+		StageEquilibration();
 		break;
-	case STEP_ADSORPTION:
-		StepAdsorption();
+	case STAGE_ADSORPTION:
+		StageAdsorption();
 		break;
-	case STEP_DESORPTION:
-		StepDesorption();
+	case STAGE_DESORPTION:
+		StageDesorption();
 		break;
-	case STEP_CONTINUOUS_ADSORPTION:
+	case STAGE_CONTINUOUS_ADSORPTION:
 		break;
-	case STEP_END_AUTOMATIC:
+	case STAGE_END_AUTOMATIC:
 		break;
 	default:
 		ASSERT(0); // Error

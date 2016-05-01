@@ -278,14 +278,16 @@ protected:
 
 	void Pause();
 
+	void Inavtive();
+
 	/**********************************************************************************************************************************
 	// Steps
 	***********************************************************************************************************************************/
 
-	void StepEquilibration();
-	void StepAdsorption();
+	void StageEquilibration();
+	void StageAdsorption();
 	void SubstepsAdsorption();
-	void StepDesorption();
+	void StageDesorption();
 	void SubstepsDesorption();
 
 };

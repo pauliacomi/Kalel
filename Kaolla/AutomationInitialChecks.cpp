@@ -20,7 +20,7 @@ void Automation::Verifications()
 		VerificationResidualPressure();
 		break;
 	case STEP_VERIFICATIONS_TEMPERATURE:
-		experimentLocalData.experimentStage = STEP_EQUILIBRATION;
+		experimentLocalData.experimentStage = STAGE_EQUILIBRATION;
 		experimentLocalData.verificationStep = STEP_VERIFICATIONS_COMPLETE;
 		VerificationTemperature();
 		break;

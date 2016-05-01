@@ -21,18 +21,21 @@ public:
 	int experimentType;
 
 	// Parameters for storing where program has reached
-	int verificationStep;					// The security check steps
-	int stepStatus;							// The progress within each step
-	int experimentDose;						// The dose that is currently underway
-	int experimentMeasurement;				// Number of measurmements the machine has made
-	int experimentStage;					// Current experiment stage
+
+	int experimentStage;					// Current experiment stage, the main part of the program (equilibration, adsorption, desorption etc.)
 	int experimentPreviousStage;			// Previous experiment stage
-	int experimentInjections;					// Counter for the injections
+	int experimentDose;						// Current experiment dose that is currently underway (ex: 2nd dose of adsorption step 1)
+	int experimentStepStatus;				// Current step status, for each step this can be STARTING, ENDING or UNDERWAY
+	int experimentAdsorptionStatus;				// 
+	int experimentSubstepStage;				// Current dose substep, can be at injection, equilibration etc
+	int experimentMeasurement;				// Number of measurmements made, happen every T_BETWEEN_MEASUREMENT
 
-	int experimentSubstepStage;				// Adsorption substestep we reached
+	int timeToEquilibrate;					// Number of measurmements made, happen every T_BETWEEN_MEASUREMENT
+	int injectionAttemptCounter;			// Counter for the injections
 
-	int pressureHighOld;					// Old pressure stored for injection checks
-	int injectionCounter;					// Counter for the injections
+
+	int verificationStep;					// The security check steps
+
 
 	// Experimental data storage
 
@@ -49,10 +52,11 @@ public:
 	double resultCalorimeter;
 
 	// Pressure
-	double pressureHigh;
-	double pressureLow;
-	double pressureInitial;
-	double pressureFinal;
+	double pressureHigh;					// Pressure recorded from the high PT
+	double pressureLow;						// Pressure recorded from the low PT
+	double pressureInitial;					// Pressure set as an initial pressure in injections
+	double pressureFinal;					// Pressure set as the final pressure in injections
+	double pressureHighOld;					// Previous pressure stored for injection checks
 	
 	// Temperature
 	double temperatureCalo;

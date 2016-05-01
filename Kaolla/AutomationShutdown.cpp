@@ -80,6 +80,14 @@ void Automation::ShutdownDisplay()
 
 void Automation::Pause()
 {
+	switch (::WaitForSingleObject(h_eventShutdown, 500)) // (ms) Poll time
+	{
+	case WAIT_OBJECT_0:
+		g_flagAskShutdown = STOP;
+	case WAIT_TIMEOUT:
+		g_flagAskShutdown = ACTIVE;
+	}
+
 	//if (g_flagAskShutdown == PAUSE)
 	//{
 	//	messageHandler.DisplayMessage(_T("Pause\r\n"));
@@ -91,4 +99,15 @@ void Automation::Pause()
 	//	messageHandler.DisplayMessage(_T("Reprise\r\n"));
 	//	messageHandler.DisplayPreviousStep();
 	//}
+}
+
+void Automation::Inavtive()
+{
+	switch (::WaitForSingleObject(h_eventShutdown, 500)) // (ms) Poll time
+	{
+	case WAIT_OBJECT_0:
+		g_flagAskShutdown = STOP;
+	case WAIT_TIMEOUT:
+		g_flagAskShutdown = INACTIVE;
+	}
 }
