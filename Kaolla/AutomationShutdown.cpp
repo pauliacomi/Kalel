@@ -101,7 +101,7 @@ void Automation::Pause()
 	//}
 }
 
-void Automation::Inavtive()
+void Automation::Inactive()
 {
 	switch (::WaitForSingleObject(h_eventShutdown, 500)) // (ms) Poll time
 	{

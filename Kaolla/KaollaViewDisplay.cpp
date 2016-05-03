@@ -104,81 +104,47 @@ LRESULT CKaollaView::RajoutAffichageEtape(WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 
-LRESULT CKaollaView::DisplayPreviousStep(WPARAM wParam, LPARAM lParam)
-{
-	return LRESULT();
-}
-
-LRESULT CKaollaView::DisplayCalorimeter(WPARAM wParam, LPARAM lParam)
-{
-	return LRESULT();
-}
-
-LRESULT CKaollaView::DisplayLowPressure(WPARAM wParam, LPARAM lParam)
-{
-	experimentData->pressureLow = static_cast<double>(lParam);
-
-	return 0;
-}
-
-LRESULT CKaollaView::DisplayHighPressure(WPARAM wParam, LPARAM lParam)
-{
-	experimentData->pressureHigh = static_cast<double>(lParam);
-
-	return 0;
-}
-
-LRESULT CKaollaView::DisplayTemperatures(WPARAM wParam, LPARAM lParam)
-{
-	
-	return LRESULT();
-}
-
-LRESULT CKaollaView::DisplayInitialPressure(WPARAM wParam, LPARAM lParam)
-{
-	experimentData->pressureInitial = static_cast<double>(lParam);
-
-	return 0;
-}
-
-LRESULT CKaollaView::DisplayFinalPressure(WPARAM wParam, LPARAM lParam)
-{
-	experimentData->pressureFinal = static_cast<double>(lParam);
-
-	return 0;
-}
-
-LRESULT CKaollaView::ExchangeData(WPARAM wParam, LPARAM lParam)
-{
-	return LRESULT();
-}
-
 
 // ------------ Threads --------------
 
-LRESULT CKaollaView::OnThreadAffichage(WPARAM, LPARAM)
-{	
-	// On affiche les résultats
-	SetDlgItemText(IDC_CALO,m_StrCalo);
-	SetDlgItemText(IDC_BASSE_PRESSION,m_StrBassePression);
-	SetDlgItemText(IDC_HAUTE_PRESSION,m_StrHautePression);
-	SetDlgItemText(IDC_TEMPERATURE_CALO,m_StrTemperatureCalo);
-	SetDlgItemText(IDC_TEMPERATURE_CAGE,m_StrTemperatureCage);
-	SetDlgItemText(IDC_TEMPERATURE_PIECE,m_StrTemperaturePiece);
-	SetDlgItemText(IDC_TEMPS,m_StrTemps);
-
-
-	GetDocument()->UpdateAllViews(this); 
-
-	// Si arrêt de l'expérience
-	m_mainDocument = CKaollaDoc::GetDocument();
-	if(!m_mainDocument->experiment_running)
-	{
-		ASSERT(0);
-		//FinAffichageMesure();
-	}
+LRESULT CKaollaView::ExchangeData(WPARAM, LPARAM incomingExperimentData)
+{
+	// Get the incoming pointer and cast it as a smart pointer
+	std::auto_ptr<ExperimentData> tempExpData(reinterpret_cast<ExperimentData*>(incomingExperimentData));
+	 
+	// Safely copy the data across
+	EnterCriticalSection(&experimentData->criticalSection);
+	experimentData = tempExpData.get();
+	LeaveCriticalSection(&experimentData->criticalSection);
 
     return 0;
+}
+
+void CKaollaView::OnTimer(UINT nIDEvent)
+{
+	// Safely store
+	EnterCriticalSection(&experimentData->criticalSection);
+	m_StrCalo.Format(_T("%.2f") ,experimentData->resultCalorimeter);
+	m_StrBassePression.Format(_T("%.2f"), experimentData->pressureLow);
+	m_StrHautePression.Format(_T("%.2f"), experimentData->pressureHigh);
+	m_StrTemperatureCalo.Format(_T("%.2f"), experimentData->temperatureCalo);
+	m_StrTemperatureCage.Format(_T("%.2f"), experimentData->temperatureCage);
+	m_StrTemperaturePiece.Format(_T("%.2f"), experimentData->temperatureRoom);
+	m_StrTemps.Format(_T("%.2f"), experimentData->experimentTime);
+	LeaveCriticalSection(&experimentData->criticalSection);
+
+	// Refresh view
+	SetDlgItemText(IDC_CALO, m_StrCalo);
+	SetDlgItemText(IDC_BASSE_PRESSION, m_StrBassePression);
+	SetDlgItemText(IDC_HAUTE_PRESSION, m_StrHautePression);
+	SetDlgItemText(IDC_TEMPERATURE_CALO, m_StrTemperatureCalo);
+	SetDlgItemText(IDC_TEMPERATURE_CAGE, m_StrTemperatureCage);
+	SetDlgItemText(IDC_TEMPERATURE_PIECE, m_StrTemperaturePiece);
+	SetDlgItemText(IDC_TEMPS, m_StrTemps);
+
+	GetDocument()->UpdateAllViews(this);
+
+	CFormView::OnTimer(nIDEvent);	// Call base class handler.
 }
 
 // ------------ Dialog Box ----

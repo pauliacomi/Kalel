@@ -4,6 +4,7 @@
 // Message definitions
 #include "DefinePostMessages.h"
 
+
 MFCMessageHandler::MFCMessageHandler(/*HWND h*/)
 {
 }
@@ -144,63 +145,8 @@ BOOL MFCMessageHandler::DisplayMeasurement(int pParam)
 	return 0;
 }
 
-BOOL MFCMessageHandler::DisplayMessage(int pParam)
-{
-	// Create a new string 
-	CString * message = new CString;
-	message->Format(pParam);
-	
-	// Other thread is now responsible for deleting this string
-	::PostMessage(windowHandle, WM_DISPLAYMESSAGE, NULL, message);
-
-	return 0;
-}
 
 
-BOOL MFCMessageHandler::DisplayMessage(int pParam, int size, ...)
-{
-	va_list ap; /*will point to each unnamed argument in turn*/
-
-	CString message; // will store the message to be formatted
-	message.Format(pParam);
-
-	va_start(ap, pParam); /* point to first element after pParam*/
-	for (size_t i = 0; i < size; i++)
-	{
-
-	}
-
-	while (*p)
-	{
-		if (*p == 'i') /*int*/
-		{
-			num = va_arg(ap, int);
-			printf("%d", num);
-		}
-		else if (*p == 'd') /*double*/
-		{
-			d = va_arg(ap, double);
-			printf("%f", d);
-		}
-		else
-		{
-			printf("unsupported format flag");
-			break;
-		}
-		++p; /* get the next char of the format string */
-	}/*while*/
-	va_end(ap) /*cleanup*/
-
-	// Must format the message before posting it !
-	//
-	//
-	CString display;
-	display.Format(pParam)
-	// Post the required message
-	::PostMessage(windowHandle, WM_DISPLAYMESSAGE, NULL, NULL);
-
-	return 0;
-}
 
 BOOL MFCMessageHandler::DisplayAddMessage(int pParam)
 {
@@ -282,17 +228,8 @@ BOOL MFCMessageHandler::DisplayTemperatures()
 	return 0;
 }
 
-BOOL MFCMessageHandler::DisplayMessageBox(int pParam, UINT nType)
-{
-	// Create a new string 
-	CString * message = new CString;
-	message->Format(pParam);
 
-	// Post the required message
-	::PostMessage(windowHandle, WM_DISPLAYMESSAGEBOX, NULL, message);
 
-	return 0;
-}
 
 
 
@@ -301,6 +238,57 @@ BOOL MFCMessageHandler::DisplayMessageBox(int pParam, UINT nType)
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
+BOOL MFCMessageHandler::DisplayMessage(int pParam, int pInt1, int pInt2, double pDouble)
+{
+	// Create a new pointer 
+	CString * message = new CString;
+	if (pDouble != default_val)
+	{
+		message->Format(pParam, pDouble);
+	}
+	else
+	{
+		if (pInt1 != default_val)
+		{
+			if (pInt1 != default_val)
+			{
+				message->Format(pParam, pInt1, pInt2);
+			}
+			else
+			{
+				message->Format(pParam, pInt1);
+			}
+		}
+		else
+		{
+			message->Format(pParam);
+		}
+	}
+
+	// Other thread is now responsible for deleting this object
+	::PostMessage(windowHandle, WM_DISPLAYMESSAGE, NULL, (LPARAM)message);
+
+	return 0;
+}
+
+BOOL MFCMessageHandler::DisplayMessageBox(int pParam, UINT nType, float pFloat)
+{
+	// Create a new pointer 
+	CString * message = new CString;
+	if (pFloat != default_val)
+	{
+		message->Format(pParam, pFloat);
+	}
+	else
+	{
+		message->Format(pParam);
+	}
+
+	// Other thread is now responsible for deleting this object
+	::PostMessage(windowHandle, WM_DISPLAYMESSAGEBOX, nType, (LPARAM)message);
+
+	return 0;
+}
 
 void MFCMessageHandler::ExperimentStart()
 {

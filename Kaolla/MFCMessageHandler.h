@@ -6,6 +6,8 @@
 #ifndef MFCMESSAGEHANDLER_H
 #define MFCMESSAGEHANDLER_H
 
+#define default_val -1	// This value is used as the default value for the optional parameters of the message display function. 
+						// Make sure that it is set to a value that the actual parameters can never take
 
 class MFCMessageHandler
 {
@@ -36,8 +38,7 @@ public:
 	BOOL ExchangeData();
 	BOOL DisplayMeasurement(int pParam);
 
-	BOOL DisplayMessage(int pParam);								// Simple display message which takes an int
-	BOOL DisplayMessage(int pParam, ...);		// Display message function which take parameters
+	BOOL DisplayMessage(int pParam, int pInt1 = default_val, int pInt2 = default_val, double pDouble = default_val);								// Simple display message which takes an int
 
 	BOOL DisplayAddMessage(int pParam);
 
@@ -53,7 +54,7 @@ public:
 	BOOL DisplayTemperatures();
 
 	// Messageboxes
-	BOOL DisplayMessageBox(int message, UINT nType);
+	BOOL DisplayMessageBox(int message, UINT nType, float pFloat = default_val);
 
 
 	// What i really need

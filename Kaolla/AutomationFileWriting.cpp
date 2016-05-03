@@ -177,7 +177,7 @@ void Automation::RecordDataChange()
 	char_changement << endl << "-----------------------------------------------------" << endl;
 	char_changementCSV << endl << "-----------------------------------------------------" << endl;
 
-	if (moyennes_doses.a_effectuer)
+	/*if (moyennes_doses.a_effectuer)
 	{
 
 		char_changement << "Rajout de l'étape : " << << endl;
@@ -197,5 +197,5 @@ void Automation::RecordDataChange()
 	string strChangementCSV = char_changementCSV.str();
 
 	RajoutFichierEntete(strChangement);
-	RajoutFichierEnteteCSV(strChangementCSV);
+	RajoutFichierEnteteCSV(strChangementCSV);*/
 }

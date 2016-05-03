@@ -27,10 +27,10 @@ IMPLEMENT_DYNCREATE(CKaollaView, CFormView)
 
 BEGIN_MESSAGE_MAP(CKaollaView, CFormView)
 	// Custom messages for threads
-	ON_MESSAGE(WM_THREADAFFICHAGE, &CKaollaView::OnThreadAffichage)					// Calls to display
+	ON_MESSAGE(WM_EXCHANGEDATA, &CKaollaView::ExchangeData)							// Calls to save the incoming data from the thread
 	ON_MESSAGE(WM_THREADFINISHEDREG, &CKaollaView::OnRegularThreadFinished)			// Calls when manual functionality ends
 	ON_MESSAGE(WM_UPDATEBUTTONS, &CKaollaView::OnThreadRequestButtonUpdate)			// Calls to update a specific button pair and associated display
-	
+
 	// Messages from the manip class
 	//ON_MESSAGE(WM_GRAPHRESET, &CKaollaDoc::InitializeGraph)
 	//ON_MESSAGE(WM_GRAPHADDMESUREMENT, &CKaollaDoc::GraphAddMeasurement)
@@ -42,18 +42,11 @@ BEGIN_MESSAGE_MAP(CKaollaView, CFormView)
 	ON_MESSAGE(WM_DISPLAYADDMESSAGE, &CKaollaView::RajoutAffichageMessages)
 	ON_MESSAGE(WM_DISPLAYSTEP, &CKaollaView::AffichageEtape)
 	ON_MESSAGE(WM_DISPLAYADDSTEP, &CKaollaView::RajoutAffichageEtape)
-	ON_MESSAGE(WM_DISPLAYPREVIOUSSTEP, &CKaollaView::DisplayPreviousStep)
-	ON_MESSAGE(WM_DISPLAYCALORIMETER, &CKaollaView::DisplayCalorimeter)
-	ON_MESSAGE(WM_DISPLAYHIGHPRESSURE, &CKaollaView::DisplayHighPressure)
-	ON_MESSAGE(WM_DISPLAYLOWPRESSURE, &CKaollaView::DisplayLowPressure)
-	ON_MESSAGE(WM_DISPLAYTEMPERATURES, &CKaollaView::DisplayTemperatures)
 	ON_MESSAGE(WM_DISPLAYMESSAGEBOX, &CKaollaView::MessageBoxConfirmation)
 	ON_MESSAGE(WM_UPDATEDISPLAY, &CKaollaView::MiseAJour)
 	ON_MESSAGE(WM_UNLOCKMENU, &CKaollaView::DebloqueMenu)
 	ON_MESSAGE(WM_ENABLESTARTBUTTON, &CKaollaView::UnlockStartButton)
 	ON_MESSAGE(WM_CANCELEXPERIMENT, &CKaollaView::Annuler)
-	ON_MESSAGE(WM_DISPLAYINITIALPRESSURE, &CKaollaView::DisplayInitialPressure)
-	ON_MESSAGE(WM_DISPLAYFINALPRESSURE, &CKaollaView::DisplayFinalPressure)
 	ON_MESSAGE(WM_EXCHANGEDATA, &CKaollaView::ExchangeData)
 
 	// Messages for UI buttons used for simple instrument manipulation
@@ -92,6 +85,7 @@ BEGIN_MESSAGE_MAP(CKaollaView, CFormView)
 
 	ON_BN_CLICKED(IDC_BUTTON_PARAMETRES_EXPERIENCE, &CKaollaView::OnBnClickedButtonParametresExperience)
 
+	ON_WM_TIMER()					// timer for update of the values
 END_MESSAGE_MAP()
 
 // CKaollaView construction/destruction
@@ -200,6 +194,9 @@ void CKaollaView::OnInitialUpdate()
 
 	experimentData = new ExperimentData();								// Create a new experiment storage
 	threadManager = new ThreadManager(GetSafeHwnd(), experimentData);;  // the class dealing with managing threads
+
+	// Set the timer for the window update
+	SetTimer(1, 200, NULL);
 }
 
 

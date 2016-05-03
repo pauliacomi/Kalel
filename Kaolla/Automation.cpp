@@ -172,6 +172,7 @@ bool Automation::ExecutionManual()
 		// Put the experiment to wait
 		g_flagAskShutdown = PAUSE;
 	}
+	return true;
 }
 
 bool Automation::ExecutionAuto()

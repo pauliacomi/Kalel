@@ -140,10 +140,13 @@ void Automation::ReadTemperatures()
 double Automation::ReadMeasurementFromDevice(ConnectionMesure Appareil)
 {
 	if (Appareil.voie_mesure == INSTRUMENT_KEYTHLEY_V1)
-		return instrument[Appareil.index]->LireKeithley_Voie1();
+		return (rand() % 100) / 100;
+		//return instrument[Appareil.index]->LireKeithley_Voie1();
 	if (Appareil.voie_mesure == INSTRUMENT_KEYTHLEY_V2)
-		return instrument[Appareil.index]->LireKeithley_Voie2();
+		return (rand() % 100) / 100;
+		//return instrument[Appareil.index]->LireKeithley_Voie2();
 	if (Appareil.voie_mesure == MENSOR_VOIE)
-		return instrument[Appareil.index]->LireMensor();
+		return (rand() % 100) / 100;
+		//return instrument[Appareil.index]->LireMensor();
 	return ERROR_MESURE;
 }

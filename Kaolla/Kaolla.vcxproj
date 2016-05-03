@@ -470,7 +470,9 @@
     <ClCompile Include="NI_USB_9211A.cpp" />
     <ClCompile Include="Parametres.cpp" />
     <ClCompile Include="Parametres_appareil.cpp" />
-    <ClCompile Include="Parametres_experience.cpp" />
+    <ClCompile Include="Parametres_experience.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="ParserXML.cpp" />
     <ClCompile Include="SpinBtnCtrl.cpp" />
     <ClCompile Include="stdafx.cpp">

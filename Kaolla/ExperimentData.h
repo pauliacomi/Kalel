@@ -26,16 +26,19 @@ public:
 	int experimentPreviousStage;			// Previous experiment stage
 	int experimentDose;						// Current experiment dose that is currently underway (ex: 2nd dose of adsorption step 1)
 	int experimentStepStatus;				// Current step status, for each step this can be STARTING, ENDING or UNDERWAY
-	int experimentAdsorptionStatus;				// 
+	int experimentEquilibrationStatus;		// 
 	int experimentSubstepStage;				// Current dose substep, can be at injection, equilibration etc
 	int experimentMeasurement;				// Number of measurmements made, happen every T_BETWEEN_MEASUREMENT
-
-	int timeToEquilibrate;					// Number of measurmements made, happen every T_BETWEEN_MEASUREMENT
-	int injectionAttemptCounter;			// Counter for the injections
-
-
 	int verificationStep;					// The security check steps
 
+	// Time
+	int experimentTime;						// Time from the experiment start
+	int timeToEquilibrate;					// Number of measurmements made, happen every T_BETWEEN_MEASUREMENT
+
+	// Counters
+	int injectionAttemptCounter;			// Counter for the injections
+	int adsorptionCounter;					// Counter for the number of adsorption settings inputted by the user
+	int desorptionCounter;					// Counter for the number of desorption settings inputted by the user
 
 	// Experimental data storage
 
@@ -63,8 +66,6 @@ public:
 	double temperatureCage;
 	double temperatureRoom;
 	
-	// Time
-	int experimentTime;						// Time from the experiment start
 
 	// Overload equals function
 	ExperimentData & ExperimentData::operator=(const ExperimentData * p);

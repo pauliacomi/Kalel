@@ -108,7 +108,7 @@ HRESULT ThreadManager::ShutdownThread()
 
 		// Wait for the thread to exit. If it doesn't shut down
 		// on its own, force it closed with Terminate thread
-		if (WAIT_TIMEOUT == WaitForSingleObject(m_threadMainControlLoop, 1000))
+		if (WAIT_TIMEOUT == WaitForSingleObject(m_threadMainControlLoop, 2000))
 		{
 			TerminateThread(m_threadMainControlLoop, -1000);
 			hr = S_FALSE;

@@ -122,17 +122,10 @@ public:
 	LRESULT AffichageMesures(WPARAM wParam, LPARAM lParam);
 	LRESULT AffichageEtape(WPARAM wParam, LPARAM lParam);
 	LRESULT RajoutAffichageEtape(WPARAM wParam, LPARAM lParam);
-	LRESULT DisplayPreviousStep(WPARAM wParam, LPARAM lParam);
-	LRESULT DisplayCalorimeter(WPARAM wParam, LPARAM lParam);
-	LRESULT DisplayLowPressure(WPARAM wParam, LPARAM lParam);
-	LRESULT DisplayHighPressure(WPARAM wParam, LPARAM lParam);
-	LRESULT DisplayTemperatures(WPARAM wParam, LPARAM lParam);
-	LRESULT DisplayInitialPressure(WPARAM wParam, LPARAM lParam);
-	LRESULT DisplayFinalPressure(WPARAM wParam, LPARAM lParam);
 	LRESULT ExchangeData(WPARAM wParam, LPARAM lParam);
-
-	LRESULT OnThreadAffichage(WPARAM wParam, LPARAM lParam);
 	LRESULT MessageBoxConfirmation(WPARAM wParam, LPARAM);
+
+	void OnTimer(UINT nIDEvent);	//timer for window update
 
 	//-------- KaollaView_Boutons
 public:

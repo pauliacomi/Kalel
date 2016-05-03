@@ -3,6 +3,33 @@
 
 
 ExperimentData::ExperimentData()
+	: experimentStage(0)
+	, experimentPreviousStage(0)
+	, experimentDose(0)
+	, experimentStepStatus(0)
+	, experimentEquilibrationStatus(0)
+	, experimentSubstepStage(0)
+	, experimentMeasurement(0)
+	, verificationStep(0)
+
+	, experimentTime(0)
+	, timeToEquilibrate(0)
+
+	, injectionAttemptCounter(0)
+	, adsorptionCounter(0)
+	, desorptionCounter(0)
+
+	, resultCalorimeter(0)
+
+	, pressureHigh(0)
+	, pressureLow(0)
+	, pressureInitial(0)
+	, pressureFinal(0)
+	, pressureHighOld(0)
+
+	, temperatureCalo(0)
+	, temperatureCage(0)
+	, temperatureRoom(0)
 {
 	// Initialisation of the critical section
 	InitializeCriticalSection(&criticalSection);
