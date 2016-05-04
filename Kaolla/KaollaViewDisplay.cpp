@@ -114,7 +114,13 @@ LRESULT CKaollaView::ExchangeData(WPARAM, LPARAM incomingExperimentData)
 	 
 	// Safely copy the data across
 	EnterCriticalSection(&experimentData->criticalSection);
-	experimentData = tempExpData.get();
+		experimentData->resultCalorimeter = tempExpData->resultCalorimeter;
+		experimentData->pressureLow = tempExpData->pressureLow;
+		experimentData->pressureHigh = tempExpData->pressureHigh;
+		experimentData->temperatureCalo = tempExpData->temperatureCalo;
+		experimentData->temperatureCage = tempExpData->temperatureCage;
+		experimentData->temperatureRoom = tempExpData->temperatureRoom;
+		experimentData->experimentTime = tempExpData->experimentTime;
 	LeaveCriticalSection(&experimentData->criticalSection);
 
     return 0;
@@ -124,13 +130,13 @@ void CKaollaView::OnTimer(UINT nIDEvent)
 {
 	// Safely store
 	EnterCriticalSection(&experimentData->criticalSection);
-	m_StrCalo.Format(_T("%.2f") ,experimentData->resultCalorimeter);
-	m_StrBassePression.Format(_T("%.2f"), experimentData->pressureLow);
-	m_StrHautePression.Format(_T("%.2f"), experimentData->pressureHigh);
-	m_StrTemperatureCalo.Format(_T("%.2f"), experimentData->temperatureCalo);
-	m_StrTemperatureCage.Format(_T("%.2f"), experimentData->temperatureCage);
-	m_StrTemperaturePiece.Format(_T("%.2f"), experimentData->temperatureRoom);
-	m_StrTemps.Format(_T("%.2f"), experimentData->experimentTime);
+		m_StrCalo.Format(_T("%.2f") ,experimentData->resultCalorimeter);
+		m_StrBassePression.Format(_T("%.2f"), experimentData->pressureLow);
+		m_StrHautePression.Format(_T("%.2f"), experimentData->pressureHigh);
+		m_StrTemperatureCalo.Format(_T("%.2f"), experimentData->temperatureCalo);
+		m_StrTemperatureCage.Format(_T("%.2f"), experimentData->temperatureCage);
+		m_StrTemperaturePiece.Format(_T("%.2f"), experimentData->temperatureRoom);
+		m_StrTemps.Format(_T("%.2f"), experimentData->experimentTime);
 	LeaveCriticalSection(&experimentData->criticalSection);
 
 	// Refresh view
@@ -151,13 +157,13 @@ void CKaollaView::OnTimer(UINT nIDEvent)
 
 LRESULT CKaollaView::MessageBoxConfirmation(WPARAM wParam, LPARAM lParam)
 {
-	CString message;
-	int nType = 0;
-
+	// Get the incoming pointer and cast it as a smart pointer
+	std::auto_ptr<CString> message(reinterpret_cast<CString*>(lParam));
+	
 	int result;
 	bool continuer = true;
 	do{
-		result = AfxMessageBox(message, nType);
+		result = AfxMessageBox(*message, wParam);
 		if(result==IDCANCEL || result == IDNO)
 		{
 			if(AfxMessageBox(PROMPT_RUNNINGEXP, MB_YESNO | MB_ICONWARNING,0)==IDYES)

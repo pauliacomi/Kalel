@@ -9,7 +9,7 @@
 #define GREY_OUT FALSE
 #define UN_GREY_OUT TRUE
 
-#define T_BETWEEN_MEASURE 10 //secondes
+#define T_BETWEEN_MEASURE 2 //secondes
 
 #define ERROR_MESURE -300000
 

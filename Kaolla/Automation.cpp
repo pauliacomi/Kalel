@@ -77,7 +77,7 @@ void Automation::Execution()
 	// Record start and set initial step
 	experimentLocalData.experimentInProgress = TRUE;
 	experimentLocalData.experimentStage = STAGE_VERIFICATIONS;
-	experimentLocalData.experimentSubstepStage == STEP_STATUS_START;
+	experimentLocalData.experimentSubstepStage = STEP_STATUS_START;
 
 	// Create open and write the columns in the:
 	EcritureEntete();				// Entete TXT
@@ -138,7 +138,7 @@ bool Automation::ExecutionManual()
 {
 	// Have enough time between two measurements
 	if (experimentLocalData.experimentSubstepStage == STEP_STATUS_INPROGRESS	// If we started
-		&& timerMeasurement.TempsActuel() < T_BETWEEN_MEASURE)			// and the enough time between measurements
+		&& timerMeasurement.TempsActuel() < T_BETWEEN_MEASURE)					// and the enough time between measurements
 	{
 		g_flagAskShutdown = PAUSE;
 	}
@@ -160,8 +160,8 @@ bool Automation::ExecutionManual()
 		// Save the time at which the measurement took place
 		experimentLocalData.experimentTime = timerExperiment.TempsActuel();
 
-		// Send the data to be saved outside of the function - ?
-		messageHandler.ExchangeData();
+		// Send the data to be saved outside of the function
+		messageHandler.ExchangeData(experimentLocalData);
 
 		// Save the data to the file
 		EnregistrementFichierMesures();
@@ -227,6 +227,7 @@ void Automation::Initialisation()
 
 	// Initialise data
 	SetData();
+	messageHandler.SetHandle(experimentLocalData.GUIhandle);
 
 	// Initialise instruments
 	InitialisationInstruments();

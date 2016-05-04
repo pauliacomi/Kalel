@@ -47,7 +47,6 @@ BEGIN_MESSAGE_MAP(CKaollaView, CFormView)
 	ON_MESSAGE(WM_UNLOCKMENU, &CKaollaView::DebloqueMenu)
 	ON_MESSAGE(WM_ENABLESTARTBUTTON, &CKaollaView::UnlockStartButton)
 	ON_MESSAGE(WM_CANCELEXPERIMENT, &CKaollaView::Annuler)
-	ON_MESSAGE(WM_EXCHANGEDATA, &CKaollaView::ExchangeData)
 
 	// Messages for UI buttons used for simple instrument manipulation
 	ON_BN_CLICKED(IDC_OUVRIR1, &CKaollaView::OnBnClickedOuvrir1)
@@ -193,10 +192,11 @@ void CKaollaView::OnInitialUpdate()
 	VerifParametres();
 
 	experimentData = new ExperimentData();								// Create a new experiment storage
+	experimentData->GUIhandle = GetSafeHwnd();							// Save the window handle
 	threadManager = new ThreadManager(GetSafeHwnd(), experimentData);;  // the class dealing with managing threads
 
 	// Set the timer for the window update
-	SetTimer(1, 200, NULL);
+	SetTimer(1, 100, NULL);
 }
 
 

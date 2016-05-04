@@ -13,9 +13,9 @@ void Automation::InitialisationSecurityManual()
 
 void Automation::SecuriteHautePression()
 {
-	if (experimentData->experimentType == EXPERIMENT_TYPE_MANUAL)
+	if (experimentLocalData.experimentType == EXPERIMENT_TYPE_MANUAL)
 		SecuriteHautePressionManuelle();
-	if (experimentData->experimentType == EXPERIMENT_TYPE_AUTO)
+	if (experimentLocalData.experimentType == EXPERIMENT_TYPE_AUTO)
 		SecuriteHautePressionAuto();
 }
 

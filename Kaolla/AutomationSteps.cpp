@@ -19,7 +19,7 @@ void Automation::StageEquilibration()
 		experimentLocalData.experimentTime = timerExperiment.TempsActuel();
 
 		// Send the data to be saved outside of the function
-		messageHandler.ExchangeData();
+		messageHandler.ExchangeData(experimentLocalData);
 
 		// Save the data to the file
 		EnregistrementFichierMesures();
@@ -77,7 +77,7 @@ void Automation::StageAdsorption()
 		experimentLocalData.experimentTime = timerExperiment.TempsActuel();
 
 		// Send the data to be saved outside of the function
-		messageHandler.ExchangeData();
+		messageHandler.ExchangeData(experimentLocalData);
 
 		// Save the data to the file
 		EnregistrementFichierMesures();

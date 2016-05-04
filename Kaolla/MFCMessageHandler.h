@@ -9,6 +9,9 @@
 #define default_val -1	// This value is used as the default value for the optional parameters of the message display function. 
 						// Make sure that it is set to a value that the actual parameters can never take
 
+// Required to pass the experimental data to the main GUI
+#include "ExperimentData.h"		
+
 class MFCMessageHandler
 {
 	// Constructor and destructor
@@ -33,9 +36,7 @@ public:
 	BOOL UnlockMenu();
 	BOOL EnableStartButton();
 	BOOL CancelExperiment();
-	BOOL DisplayInitialPressure();
-	BOOL DisplayFinalPressure();
-	BOOL ExchangeData();
+	BOOL ExchangeData(ExperimentData pParam);
 	BOOL DisplayMeasurement(int pParam);
 
 	BOOL DisplayMessage(int pParam, int pInt1 = default_val, int pInt2 = default_val, double pDouble = default_val);								// Simple display message which takes an int
@@ -45,13 +46,6 @@ public:
 	// Steps
 	BOOL DisplayStep(int pParam);
 	BOOL DisplaAddStep(CString pParam);
-	BOOL DisplayPreviousStep();
-
-	// Data
-	BOOL DisplayCalorimeter();
-	BOOL DisplayHighPressure();
-	BOOL DisplayLowPressure();
-	BOOL DisplayTemperatures();
 
 	// Messageboxes
 	BOOL DisplayMessageBox(int message, UINT nType, float pFloat = default_val);

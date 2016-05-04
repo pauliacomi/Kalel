@@ -98,7 +98,8 @@ void Automation::ReadCalorimeter()
 void Automation::ReadLowPressure()
 {
 	// Read the value from the calorimeter
-	double temp = fluxConverter.ConversionCalo(ReadMeasurementFromDevice(AppareilBP));
+	double temp = ReadMeasurementFromDevice(AppareilBP);
+	temp = fluxConverter.ConversionCalo(temp);
 
 	// Write it in the shared object
 	EnterCriticalSection(&criticalSection);
@@ -126,9 +127,9 @@ void Automation::ReadTemperatures()
 
 	// Write it in the shared object
 	EnterCriticalSection(&criticalSection);
-	experimentData->temperatureCalo = (float)dTemperatureCalo;
-	experimentData->temperatureCage = (float)dTemperatureCage;
-	experimentData->temperatureRoom = (float)dTemperaturePiece;
+	experimentLocalData.temperatureCalo = (float)dTemperatureCalo;
+	experimentLocalData.temperatureCage = (float)dTemperatureCage;
+	experimentLocalData.temperatureRoom = (float)dTemperaturePiece;
 	LeaveCriticalSection(&criticalSection);
 
 }
@@ -139,14 +140,24 @@ void Automation::ReadTemperatures()
 
 double Automation::ReadMeasurementFromDevice(ConnectionMesure Appareil)
 {
-	if (Appareil.voie_mesure == INSTRUMENT_KEYTHLEY_V1)
-		return (rand() % 100) / 100;
+	srand(time(NULL)); // temp
+	double tsp;
+	if (Appareil.voie_mesure == INSTRUMENT_KEYTHLEY_V1) {
+		tsp = (rand() % 100);
+		return tsp;
 		//return instrument[Appareil.index]->LireKeithley_Voie1();
-	if (Appareil.voie_mesure == INSTRUMENT_KEYTHLEY_V2)
-		return (rand() % 100) / 100;
+	}
+		
+	if (Appareil.voie_mesure == INSTRUMENT_KEYTHLEY_V2) {
+		tsp = (rand() % 100);
+		return tsp;
 		//return instrument[Appareil.index]->LireKeithley_Voie2();
-	if (Appareil.voie_mesure == MENSOR_VOIE)
-		return (rand() % 100) / 100;
+	}
+
+	if (Appareil.voie_mesure == MENSOR_VOIE) {
+		tsp = (rand() % 100);
+		return tsp;
 		//return instrument[Appareil.index]->LireMensor();
+	}
 	return ERROR_MESURE;
 }

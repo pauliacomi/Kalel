@@ -30,6 +30,8 @@ ExperimentData::ExperimentData()
 	, temperatureCalo(0)
 	, temperatureCage(0)
 	, temperatureRoom(0)
+
+	, GUIhandle(NULL)
 {
 	// Initialisation of the critical section
 	InitializeCriticalSection(&criticalSection);
@@ -44,6 +46,8 @@ ExperimentData::~ExperimentData()
 
 ExperimentData & ExperimentData::operator=(const ExperimentData * p) {
 	if (this != p) {  // make sure not same object
+
+		GUIhandle = p->GUIhandle;
 
 		experimentInProgress = p->experimentInProgress;
 		experimentType = p->experimentType;

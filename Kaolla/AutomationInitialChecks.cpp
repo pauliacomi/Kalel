@@ -70,7 +70,7 @@ int Automation::VerificationResidualPressure()
 
 	// Read the pressure
 	ReadHighPressure();
-	messageHandler.DisplayHighPressure();
+	//messageHandler.DisplayHighPressure();
 
 	if (experimentLocalData.pressureHigh < GetPressionSecuriteBassePression() && GetMesureBassePression() && GetMesureHautePression())
 	{
@@ -98,7 +98,7 @@ int Automation::VerificationResidualPressure()
 
 	// Read the pressure
 	ThreadMeasurement();
-	messageHandler.DisplayHighPressure();
+	//messageHandler.DisplayHighPressure();
 
 	// Check residual pressure
 	if (experimentLocalData.pressureHigh >= GetPressionLimiteVide())
@@ -124,7 +124,7 @@ int Automation::VerificationTemperature()
 	experimentLocalData.experimentStage = STAGE_TEMP;
 
 	//LectureTemperatures();
-	messageHandler.DisplayTemperatures();
+	//messageHandler.DisplayTemperatures();
 
 	// préciser quelle température dans la boite de dialogue ???
 	if ((experimentLocalData.temperatureCalo < experimentLocalData.dataGeneral.temperature_experience - 1) || (experimentLocalData.temperatureCalo > experimentLocalData.dataGeneral.temperature_experience + 1) ||
@@ -156,7 +156,7 @@ int Automation::VerificationTemperature()
 				// Read the temperature
 				ThreadMeasurement();
 				// Display temperatures
-				messageHandler.DisplayTemperatures();
+				// messageHandler.DisplayTemperatures();
 			}
 		}
 	}

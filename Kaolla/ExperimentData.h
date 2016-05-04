@@ -15,6 +15,9 @@ public:
 	// Critical Section
 	CRITICAL_SECTION criticalSection;
 
+	// Main GUI handle
+	HWND GUIhandle;
+
 	// General parameters
 	bool experimentInProgress;
 	bool dataModified;
@@ -32,8 +35,8 @@ public:
 	int verificationStep;					// The security check steps
 
 	// Time
-	int experimentTime;						// Time from the experiment start
-	int timeToEquilibrate;					// Number of measurmements made, happen every T_BETWEEN_MEASUREMENT
+	float experimentTime;					// Time from the experiment start
+	float timeToEquilibrate;				// Number of measurmements made, happen every T_BETWEEN_MEASUREMENT
 
 	// Counters
 	int injectionAttemptCounter;			// Counter for the injections

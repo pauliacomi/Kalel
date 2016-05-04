@@ -12,7 +12,7 @@
 bool Automation::ValveOpen(int num_vanne)
 {
 	// Open valve
-	if(!g_pVanne->Ouvrir(num_vanne));
+	if(!g_pVanne->Ouvrir(num_vanne))
 		return false;
 
 	// Tell GUI valve is opened
@@ -26,7 +26,7 @@ bool Automation::ValveOpen(int num_vanne)
 bool Automation::ValveClose(int num_vanne)
 {
 	// Close valve
-	if(!g_pVanne->Fermer(num_vanne));
+	if(!g_pVanne->Fermer(num_vanne))
 		return false;
 
 	// Tell GUI valve is closed
