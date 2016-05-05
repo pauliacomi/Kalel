@@ -17,6 +17,7 @@ protected: // create from serialization only
 public:	
 	bool experiment_running;	// TRUE when the experiment is running
 								// Allows to alert the user of possible loss of data
+
 	CArrayMesure m_TableauMesures;
 	CString TitreGrapheEtape;
 	double maxPressure, minPressure, maxCalo, minCalo;
@@ -53,11 +54,9 @@ protected:
 
 public:
 	LRESULT GraphInitialize(WPARAM wParam, LPARAM lParam);
-	LRESULT GraphSetTitle(WPARAM wParam, LPARAM lParam);
-	LRESULT GraphAddMeasurement(WPARAM wParam, LPARAM lParam);
-	void RajoutMesure(CMesure NouvellesMesures);
-	void RajoutMesure(int num, double tps, double calorimetre, double bpression, double hpression, double temp_calo, double temp_cage, double temp_piece);
-	void RajoutMesure(double tps, double calorimetre, double bpression, double hpression, double temp_calo, double temp_cage, double temp_piece);
+	void GraphAddMeasurement(ExperimentResults NouvellesMesures);
+	void GraphAddMeasurement(int num, double tps, double calorimetre, double bpression, double hpression, double temp_calo, double temp_cage, double temp_piece);
+	void GraphAddMeasurement(double tps, double calorimetre, double bpression, double hpression, double temp_calo, double temp_cage, double temp_piece);
 	
 
 #ifdef SHARED_HANDLERS

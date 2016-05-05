@@ -14,7 +14,7 @@
 
 #include <propkey.h>
 
-#include "Mesure.h"
+#include "ExperimentResults.h"
 #include "DefinePostMessages.h"		// For message definitions
 
 #ifdef _DEBUG
@@ -155,83 +155,70 @@ LRESULT CKaollaDoc::GraphInitialize(WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 
-LRESULT CKaollaDoc::GraphSetTitle(WPARAM wParam, LPARAM lParam)
-{
-	return 0;
-}
-
-LRESULT CKaollaDoc::GraphAddMeasurement(WPARAM wParam, LPARAM lParam)
-{
-	return 0;
-}
-
 // Add a measurement to the graph -- Regular
-void CKaollaDoc::RajoutMesure(CMesure NouvellesMesures)
+void CKaollaDoc::GraphAddMeasurement(ExperimentResults NouvellesMesures)
 {
 	int lastMeasurement = m_TableauMesures.GetUpperBound();
 	m_TableauMesures[lastMeasurement] = NouvellesMesures;
 }
 
 // Add a measurement to the graph -- Overload 1
-void CKaollaDoc::RajoutMesure(int num, double tps, double calorimeter, double lowPressure, double highPressure, double tempCalo, double tempCage, double tempPiece)
+void CKaollaDoc::GraphAddMeasurement(int num, double time, double calorimeter, double lowPressure, double highPressure, double tempCalo, double tempCage, double tempPiece)
 {
-	// Set the maximum and minimums
-	if (m_TableauMesures.IsEmpty())
-	{
-		maxPressure = max(lowPressure, highPressure);
-		minPressure = min(lowPressure, highPressure);
+	if (time > m_TableauMesures[m_TableauMesures.GetCount()].temps) {
+		// Set the maximum and minimums
+		if (m_TableauMesures.IsEmpty())
+		{
+			maxPressure = max(lowPressure, highPressure);
+			minPressure = min(lowPressure, highPressure);
 
-		maxCalo = calorimeter;
-		minCalo = calorimeter;
-	}
-	else
-	{
-		maxPressure = max(maxPressure, lowPressure);
-		maxPressure = max(maxPressure, highPressure);
+			maxCalo = calorimeter;
+			minCalo = calorimeter;
+		}
+		else
+		{
+			maxPressure = max(maxPressure, lowPressure);
+			maxPressure = max(maxPressure, highPressure);
 
-		minPressure = min(minPressure, lowPressure);
-		minPressure = min(minPressure, highPressure);
+			minPressure = min(minPressure, lowPressure);
+			minPressure = min(minPressure, highPressure);
 
-		maxCalo = max(maxCalo, calorimeter);
-		minCalo = min(minCalo, calorimeter);
-	}
+			maxCalo = max(maxCalo, calorimeter);
+			minCalo = min(minCalo, calorimeter);
+		}
 
-	// Add measurement to the array
-	m_TableauMesures.SetSize(num);
-	m_TableauMesures[num - 1] = CMesure(num, tps, calorimeter, lowPressure, highPressure, tempCalo, tempCage, tempPiece);
+		// Add measurement to the array
+		m_TableauMesures.SetSize(num);
+		m_TableauMesures[num - 1] = ExperimentResults(num, time, calorimeter, lowPressure, highPressure, tempCalo, tempCage, tempPiece);
 
-	//Debug code
+		//Debug code
 #ifdef _DEBUG
-	int j = num - 1;
-	TRACE("m_TableauMesures[%d]=CMesure(%d,%d,%f,%f,%f,%f,%f,%f)\n", j, m_TableauMesures[j].numero, m_TableauMesures[j].temps, m_TableauMesures[j].calo, m_TableauMesures[j].basse_pression,
-		m_TableauMesures[j].haute_pression, m_TableauMesures[j].temperature_calo, m_TableauMesures[j].temperature_cage,
-		m_TableauMesures[j].temperature_piece);
+		int j = num - 1;
+		TRACE("m_TableauMesures[%d]=ExperimentResults(%d,%d,%f,%f,%f,%f,%f,%f)\n", j, m_TableauMesures[j].numero, m_TableauMesures[j].temps, m_TableauMesures[j].calo, m_TableauMesures[j].basse_pression,
+			m_TableauMesures[j].haute_pression, m_TableauMesures[j].temperature_calo, m_TableauMesures[j].temperature_cage,
+			m_TableauMesures[j].temperature_piece);
 #endif // _DEBUG
-
+	}
 }
 
 // Add a measurement to the graph -- Overload 2
-void CKaollaDoc::RajoutMesure(double tps, double calorimeter, double lowPressure, double highPressure, double tempCalo, double tempCage, double tempPiece)
+void CKaollaDoc::GraphAddMeasurement(double time, double calorimeter, double lowPressure, double highPressure, double tempCalo, double tempCage, double tempPiece)
 {
-	int lastMeasurement;
-	if (m_TableauMesures.IsEmpty())
-	{
-		lastMeasurement = 1;
-		m_TableauMesures.SetSize(3);
-	}
-	else
-		lastMeasurement = m_TableauMesures.GetUpperBound();
-	m_TableauMesures[lastMeasurement - 1] = CMesure(lastMeasurement, tps, calorimeter, lowPressure, highPressure, tempCalo, tempCage, tempPiece);
-	
+		int lastMeasurement;
+		if (m_TableauMesures.IsEmpty())
+		{
+			lastMeasurement = 1;
+			m_TableauMesures.SetSize(1);
+			m_TableauMesures[0] = ExperimentResults(lastMeasurement, 0, 0, 0, 0, 0, 0, 0);
+		}
+		else
+			lastMeasurement = m_TableauMesures.GetUpperBound();
 
-	//Debug code
-#ifdef _DEBUG
-	int j = lastMeasurement - 1;
-	TRACE("m_TableauMesures[%d]=CMesure(%d,%d,%f,%f,%f,%f,%f,%f)\n", j, m_TableauMesures[j].numero,
-		m_TableauMesures[j].temps, m_TableauMesures[j].calo, m_TableauMesures[j].basse_pression,
-		m_TableauMesures[j].haute_pression, m_TableauMesures[j].temperature_calo, m_TableauMesures[j].temperature_cage,
-		m_TableauMesures[j].temperature_piece);
-#endif // _DEBUG
+		if (time > m_TableauMesures[m_TableauMesures.GetUpperBound()].temps) {
+
+			m_TableauMesures[m_TableauMesures.GetUpperBound()] = ExperimentResults(lastMeasurement, time, calorimeter, lowPressure, highPressure, tempCalo, tempCage, tempPiece);
+
+		}
 }
 
 // ?

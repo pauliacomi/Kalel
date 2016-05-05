@@ -237,13 +237,12 @@
     <ClInclude Include="ListeEtape.h" />
     <ClInclude Include="ListOfInstrumentButtons.h" />
     <ClInclude Include="MainFrm.h" />
-    <ClInclude Include="MainThread.h" />
     <ClInclude Include="Manip.h" />
     <ClInclude Include="Manip_Auto.h" />
     <ClInclude Include="Manip_AutoGaz.h" />
     <ClInclude Include="ManualActionParam.h" />
     <ClInclude Include="Mensor.h" />
-    <ClInclude Include="Mesure.h" />
+    <ClInclude Include="ExperimentSettings.h" />
     <ClInclude Include="MFCMessageHandler.h" />
     <ClInclude Include="NIDAQmx.h" />
     <ClInclude Include="NI_USB_6008.h" />
@@ -287,14 +286,26 @@
     <ClCompile Include="AutomationSteps.cpp" />
     <ClCompile Include="AutomationTimeKeeping.cpp" />
     <ClCompile Include="AutomationValves.cpp" />
-    <ClCompile Include="CAdsorptionContinue.cpp" />
-    <ClCompile Include="CDesorption.cpp" />
-    <ClCompile Include="CDivers.cpp" />
-    <ClCompile Include="CGeneral.cpp" />
-    <ClCompile Include="CGrandesDoses.cpp" />
+    <ClCompile Include="CAdsorptionContinue.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="CDesorption.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="CDivers.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="CGeneral.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="CGrandesDoses.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Chrono.cpp" />
     <ClCompile Include="Classes_experiences.cpp" />
-    <ClCompile Include="CMoyennesDoses.cpp" />
+    <ClCompile Include="CMoyennesDoses.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="ConnectionMesure.cpp" />
     <ClCompile Include="Connection_port.cpp" />
     <ClCompile Include="Connection_port_fct.cpp" />
@@ -302,7 +313,9 @@
     <ClCompile Include="ExperimentData.cpp" />
     <ClCompile Include="ExperimentPropertySheet.cpp" />
     <ClCompile Include="FluxConverter.cpp" />
-    <ClCompile Include="CPetitesDoses.cpp" />
+    <ClCompile Include="CPetitesDoses.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Dialogue_cellule.cpp" />
     <ClCompile Include="Dialogue_experimentateur.cpp" />
     <ClCompile Include="Dialogue_gaz.cpp" />
@@ -321,7 +334,6 @@
     <ClCompile Include="LiaisonRS232.cpp" />
     <ClCompile Include="ListOfInstrumentButtons.cpp" />
     <ClCompile Include="MainFrm.cpp" />
-    <ClCompile Include="MainThread.cpp" />
     <ClCompile Include="Manip.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -464,7 +476,7 @@
     </ClCompile>
     <ClCompile Include="ManualActionParam.cpp" />
     <ClCompile Include="Mensor.cpp" />
-    <ClCompile Include="Mesure.cpp" />
+    <ClCompile Include="ExperimentSettings.cpp" />
     <ClCompile Include="MFCMessageHandler.cpp" />
     <ClCompile Include="NI_USB_6008.cpp" />
     <ClCompile Include="NI_USB_9211A.cpp" />

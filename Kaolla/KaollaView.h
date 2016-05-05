@@ -12,6 +12,7 @@
 #include "Parametres.h"
 #include "ThreadManager.h"				// The threading functionality
 #include "ExperimentData.h"				// Where data about the experimental parameters, results and current status is stored
+#include "ExperimentResults.h"				// Where returned data from results is stored
 #include "ExperimentPropertySheet.h"	// Dialog box for setting experimental properties
 
 
@@ -25,6 +26,7 @@ public:
 
 	// Storage for all the data
 	ExperimentData * experimentData;
+	ExperimentResults experimentResults;
 
 	// Some storage variables for each MFC control
 	CEdit pEditMessages;

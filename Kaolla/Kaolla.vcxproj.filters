@@ -19,35 +19,11 @@
     <Filter Include="Source Files\Utils">
       <UniqueIdentifier>{9e00bc48-72f1-4a77-8a51-b338ab37a64c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Manip">
-      <UniqueIdentifier>{c6bd3aa8-2811-4fff-920c-8278501ba5b4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Manip">
-      <UniqueIdentifier>{a56842c2-1f7d-4033-8d7d-b470d5d4146e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Resources">
       <UniqueIdentifier>{d6e2437e-54e3-4455-a156-54706713f396}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\National Instruments">
-      <UniqueIdentifier>{4923e287-e684-4a37-851e-0fba72e00832}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Parameters">
       <UniqueIdentifier>{5c9404dc-8e53-4516-97a0-11c4d791f8be}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\XML">
-      <UniqueIdentifier>{1171cb4f-1756-4c73-9eea-4fc9ffd69c53}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\RS232">
-      <UniqueIdentifier>{45a6839d-1ded-4ae2-af12-69bfce5d5a95}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\XML">
-      <UniqueIdentifier>{8ba33742-ab29-4bfd-a2ee-4e0d241affa6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\RS232">
-      <UniqueIdentifier>{18ca9bec-3aab-43ec-91e0-a16ba38df627}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\National Instruments">
-      <UniqueIdentifier>{dc56d958-654e-4892-8e96-414aa9ee30d7}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Parameters">
       <UniqueIdentifier>{9719e089-913d-4d04-8f59-f05994236ca0}</UniqueIdentifier>
@@ -57,21 +33,6 @@
     </Filter>
     <Filter Include="Source Files\Utils\MFC Utils">
       <UniqueIdentifier>{d9c78f29-e452-4ed4-830e-27746c3880f9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Manip\Manip">
-      <UniqueIdentifier>{8a80b201-801f-4928-9dd0-e751e4c12c8d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Manip\Manip_Auto">
-      <UniqueIdentifier>{2aeacfee-561f-4952-bc35-7f2888267dd3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Manip\Manip_AutoGaz">
-      <UniqueIdentifier>{7747c689-e2b6-48ad-9089-b60836ba4cd1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Manip\Manip_AutoGaz\Stages">
-      <UniqueIdentifier>{26a06bb4-55cb-4dd0-8cdc-6c5492ab5a64}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Manip\Manip_AutoGaz\MSV">
-      <UniqueIdentifier>{f37a788e-6f5a-480b-964a-205ef26bb2a8}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\GUI">
       <UniqueIdentifier>{8c1edfac-6d83-46a2-88eb-dbcc4558b9ac}</UniqueIdentifier>
@@ -84,9 +45,6 @@
     </Filter>
     <Filter Include="Source Files\GUI\Dialogs\Experiment Parameters">
       <UniqueIdentifier>{0e8e0212-cbd1-445a-af00-cbec1019fcf3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\GUI\Dialogs\Experiment Parameters\Tabs">
-      <UniqueIdentifier>{72b9ecbd-d296-43ad-899d-8e7aea0b8862}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\GUI\Dialogs\Experiment Parameters\Base Data">
       <UniqueIdentifier>{2becea59-6e89-4f33-ab11-05baf2ed04cb}</UniqueIdentifier>
@@ -118,23 +76,77 @@
     <Filter Include="Source Files\GUI\Dialogs\Experiment Parameters\TabsNew">
       <UniqueIdentifier>{4d4336e8-a13f-4388-8c9a-ea7f631adb05}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Manip\Defines">
-      <UniqueIdentifier>{5be8b2f5-7fec-496c-a33f-2ef07c67c5a6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Automation">
       <UniqueIdentifier>{5bc3f4b1-2555-401d-bbd2-a619181bed19}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Automation">
       <UniqueIdentifier>{a132455e-bd67-4205-89ff-57e9c33a3e5c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Old">
+      <UniqueIdentifier>{dd43d28b-26fe-4dce-9e57-d53b2424173e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Old\Manip">
+      <UniqueIdentifier>{a56842c2-1f7d-4033-8d7d-b470d5d4146e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Old\Manip\Manip">
+      <UniqueIdentifier>{8a80b201-801f-4928-9dd0-e751e4c12c8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Old\Manip\Manip_Auto">
+      <UniqueIdentifier>{2aeacfee-561f-4952-bc35-7f2888267dd3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Old\Manip\Manip_AutoGaz">
+      <UniqueIdentifier>{7747c689-e2b6-48ad-9089-b60836ba4cd1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Old\Manip\Manip_AutoGaz\Stages">
+      <UniqueIdentifier>{26a06bb4-55cb-4dd0-8cdc-6c5492ab5a64}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Old\Manip\Manip_AutoGaz\MSV">
+      <UniqueIdentifier>{f37a788e-6f5a-480b-964a-205ef26bb2a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Backend">
+      <UniqueIdentifier>{b22e0119-9154-40a6-9382-128eee7e473d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Backend\National Instruments">
+      <UniqueIdentifier>{dc56d958-654e-4892-8e96-414aa9ee30d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Backend\RS232">
+      <UniqueIdentifier>{18ca9bec-3aab-43ec-91e0-a16ba38df627}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Utils\XML">
+      <UniqueIdentifier>{8ba33742-ab29-4bfd-a2ee-4e0d241affa6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Old\Tabs">
+      <UniqueIdentifier>{72b9ecbd-d296-43ad-899d-8e7aea0b8862}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Automation\Class">
+      <UniqueIdentifier>{8f6f7548-7262-4113-88ac-25c61bac649c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Backend">
+      <UniqueIdentifier>{a81e172e-df84-4e22-9d65-448cd81abe92}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Backend\RS232">
+      <UniqueIdentifier>{45a6839d-1ded-4ae2-af12-69bfce5d5a95}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Backend\National Instruments">
+      <UniqueIdentifier>{4923e287-e684-4a37-851e-0fba72e00832}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Old">
+      <UniqueIdentifier>{96d2c0e6-0df0-4f78-9127-a353892d9380}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Old\Manip">
+      <UniqueIdentifier>{c6bd3aa8-2811-4fff-920c-8278501ba5b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Old\Manip\Defines">
+      <UniqueIdentifier>{5be8b2f5-7fec-496c-a33f-2ef07c67c5a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Utils\XML">
+      <UniqueIdentifier>{1171cb4f-1756-4c73-9eea-4fc9ffd69c53}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Mesure.h">
-      <Filter>Header Files\Utils</Filter>
-    </ClInclude>
     <ClInclude Include="targetver.h">
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
@@ -187,37 +199,37 @@
       <Filter>Header Files\Resources</Filter>
     </ClInclude>
     <ClInclude Include="ParserXML.h">
-      <Filter>Header Files\XML</Filter>
+      <Filter>Header Files\Utils\XML</Filter>
     </ClInclude>
     <ClInclude Include="tinystr.h">
-      <Filter>Header Files\XML</Filter>
+      <Filter>Header Files\Utils\XML</Filter>
     </ClInclude>
     <ClInclude Include="tinyxml.h">
-      <Filter>Header Files\XML</Filter>
+      <Filter>Header Files\Utils\XML</Filter>
     </ClInclude>
     <ClInclude Include="Keithley.h">
-      <Filter>Header Files\RS232</Filter>
+      <Filter>Header Files\Backend\RS232</Filter>
     </ClInclude>
     <ClInclude Include="LiaisonRS232.h">
-      <Filter>Header Files\RS232</Filter>
+      <Filter>Header Files\Backend\RS232</Filter>
     </ClInclude>
     <ClInclude Include="Mensor.h">
-      <Filter>Header Files\RS232</Filter>
+      <Filter>Header Files\Backend\RS232</Filter>
     </ClInclude>
     <ClInclude Include="NI_USB_6008.h">
-      <Filter>Header Files\National Instruments</Filter>
+      <Filter>Header Files\Backend\National Instruments</Filter>
     </ClInclude>
     <ClInclude Include="NI_USB_9211A.h">
-      <Filter>Header Files\National Instruments</Filter>
+      <Filter>Header Files\Backend\National Instruments</Filter>
     </ClInclude>
     <ClInclude Include="NIDAQmx.h">
-      <Filter>Header Files\National Instruments</Filter>
+      <Filter>Header Files\Backend\National Instruments</Filter>
     </ClInclude>
     <ClInclude Include="Temperature.h">
-      <Filter>Header Files\National Instruments</Filter>
+      <Filter>Header Files\Backend\National Instruments</Filter>
     </ClInclude>
     <ClInclude Include="Vannes.h">
-      <Filter>Header Files\National Instruments</Filter>
+      <Filter>Header Files\Backend\National Instruments</Filter>
     </ClInclude>
     <ClInclude Include="Parametres.h">
       <Filter>Header Files\Parameters</Filter>
@@ -250,16 +262,16 @@
       <Filter>Header Files\Resources\Define</Filter>
     </ClInclude>
     <ClInclude Include="ListeEtape.h">
-      <Filter>Header Files\Manip</Filter>
+      <Filter>Header Files\Old\Manip</Filter>
     </ClInclude>
     <ClInclude Include="Manip.h">
-      <Filter>Header Files\Manip</Filter>
+      <Filter>Header Files\Old\Manip</Filter>
     </ClInclude>
     <ClInclude Include="Manip_Auto.h">
-      <Filter>Header Files\Manip</Filter>
+      <Filter>Header Files\Old\Manip</Filter>
     </ClInclude>
     <ClInclude Include="Manip_AutoGaz.h">
-      <Filter>Header Files\Manip</Filter>
+      <Filter>Header Files\Old\Manip</Filter>
     </ClInclude>
     <ClInclude Include="Connection_port.h">
       <Filter>Header Files\GUI\Dialogs\Connection Port</Filter>
@@ -330,9 +342,6 @@
     <ClInclude Include="DefinePostMessages.h">
       <Filter>Header Files\Resources\Define</Filter>
     </ClInclude>
-    <ClInclude Include="MainThread.h">
-      <Filter>Header Files\Manip</Filter>
-    </ClInclude>
     <ClInclude Include="TabGeneral.h">
       <Filter>Header Files\GUI\Dialogs\Experimental Parameters\TabsNew</Filter>
     </ClInclude>
@@ -352,22 +361,22 @@
       <Filter>Header Files\GUI\Dialogs\Experimental Parameters\TabsNew</Filter>
     </ClInclude>
     <ClInclude Include="Define_Manip_Auto_Probleme_Injection.h">
-      <Filter>Header Files\Manip\Defines</Filter>
+      <Filter>Header Files\Old\Manip\Defines</Filter>
     </ClInclude>
     <ClInclude Include="Define_Manip_Auto_Verifications.h">
-      <Filter>Header Files\Manip\Defines</Filter>
+      <Filter>Header Files\Old\Manip\Defines</Filter>
     </ClInclude>
     <ClInclude Include="Define_Manip_AutoGaz_Doses.h">
-      <Filter>Header Files\Manip\Defines</Filter>
+      <Filter>Header Files\Old\Manip\Defines</Filter>
     </ClInclude>
     <ClInclude Include="Define_Manip_AutoGaz_Mise_Sous_Vide.h">
-      <Filter>Header Files\Manip\Defines</Filter>
+      <Filter>Header Files\Old\Manip\Defines</Filter>
     </ClInclude>
     <ClInclude Include="Define_Manip_Securite.h">
-      <Filter>Header Files\Manip\Defines</Filter>
+      <Filter>Header Files\Old\Manip\Defines</Filter>
     </ClInclude>
     <ClInclude Include="Define_Manip_Vannes.h">
-      <Filter>Header Files\Manip\Defines</Filter>
+      <Filter>Header Files\Old\Manip\Defines</Filter>
     </ClInclude>
     <ClInclude Include="Automation.h">
       <Filter>Header Files\Automation</Filter>
@@ -378,11 +387,11 @@
     <ClInclude Include="ThreadManager.h">
       <Filter>Header Files\Automation</Filter>
     </ClInclude>
+    <ClInclude Include="ExperimentSettings.h">
+      <Filter>Header Files\Automation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Mesure.cpp">
-      <Filter>Source Files\Utils</Filter>
-    </ClCompile>
     <ClCompile Include="Kaolla.cpp">
       <Filter>Source Files\GUI</Filter>
     </ClCompile>
@@ -402,40 +411,40 @@
       <Filter>Source Files\GUI</Filter>
     </ClCompile>
     <ClCompile Include="ParserXML.cpp">
-      <Filter>Source Files\XML</Filter>
+      <Filter>Source Files\Utils\XML</Filter>
     </ClCompile>
     <ClCompile Include="tinystr.cpp">
-      <Filter>Source Files\XML</Filter>
+      <Filter>Source Files\Utils\XML</Filter>
     </ClCompile>
     <ClCompile Include="tinyxml.cpp">
-      <Filter>Source Files\XML</Filter>
+      <Filter>Source Files\Utils\XML</Filter>
     </ClCompile>
     <ClCompile Include="tinyxmlerror.cpp">
-      <Filter>Source Files\XML</Filter>
+      <Filter>Source Files\Utils\XML</Filter>
     </ClCompile>
     <ClCompile Include="tinyxmlparser.cpp">
-      <Filter>Source Files\XML</Filter>
+      <Filter>Source Files\Utils\XML</Filter>
     </ClCompile>
     <ClCompile Include="Keithley.cpp">
-      <Filter>Source Files\RS232</Filter>
+      <Filter>Source Files\Backend\RS232</Filter>
     </ClCompile>
     <ClCompile Include="LiaisonRS232.cpp">
-      <Filter>Source Files\RS232</Filter>
+      <Filter>Source Files\Backend\RS232</Filter>
     </ClCompile>
     <ClCompile Include="Mensor.cpp">
-      <Filter>Source Files\RS232</Filter>
+      <Filter>Source Files\Backend\RS232</Filter>
     </ClCompile>
     <ClCompile Include="NI_USB_6008.cpp">
-      <Filter>Source Files\National Instruments</Filter>
+      <Filter>Source Files\Backend\National Instruments</Filter>
     </ClCompile>
     <ClCompile Include="NI_USB_9211A.cpp">
-      <Filter>Source Files\National Instruments</Filter>
+      <Filter>Source Files\Backend\National Instruments</Filter>
     </ClCompile>
     <ClCompile Include="Temperature.cpp">
-      <Filter>Source Files\National Instruments</Filter>
+      <Filter>Source Files\Backend\National Instruments</Filter>
     </ClCompile>
     <ClCompile Include="Vannes.cpp">
-      <Filter>Source Files\National Instruments</Filter>
+      <Filter>Source Files\Backend\National Instruments</Filter>
     </ClCompile>
     <ClCompile Include="Parametres.cpp">
       <Filter>Source Files\Parameters</Filter>
@@ -462,88 +471,88 @@
       <Filter>Source Files\Utils\MFC Utils</Filter>
     </ClCompile>
     <ClCompile Include="Manip.cpp">
-      <Filter>Source Files\Manip\Manip</Filter>
+      <Filter>Source Files\Old\Manip\Manip</Filter>
     </ClCompile>
     <ClCompile Include="Manip_Auto_Arret.cpp">
-      <Filter>Source Files\Manip\Manip_Auto</Filter>
+      <Filter>Source Files\Old\Manip\Manip_Auto</Filter>
     </ClCompile>
     <ClCompile Include="Manip_Auto.cpp">
-      <Filter>Source Files\Manip\Manip_Auto</Filter>
+      <Filter>Source Files\Old\Manip\Manip_Auto</Filter>
     </ClCompile>
     <ClCompile Include="Manip_Auto_Donnees.cpp">
-      <Filter>Source Files\Manip\Manip_Auto</Filter>
+      <Filter>Source Files\Old\Manip\Manip_Auto</Filter>
     </ClCompile>
     <ClCompile Include="Manip_Auto_Fichier.cpp">
-      <Filter>Source Files\Manip\Manip_Auto</Filter>
+      <Filter>Source Files\Old\Manip\Manip_Auto</Filter>
     </ClCompile>
     <ClCompile Include="Manip_Auto_LireAfficher.cpp">
-      <Filter>Source Files\Manip\Manip_Auto</Filter>
+      <Filter>Source Files\Old\Manip\Manip_Auto</Filter>
     </ClCompile>
     <ClCompile Include="Manip_Auto_Probleme_Injection.cpp">
-      <Filter>Source Files\Manip\Manip_Auto</Filter>
+      <Filter>Source Files\Old\Manip\Manip_Auto</Filter>
     </ClCompile>
     <ClCompile Include="Manip_Auto_Vannes.cpp">
-      <Filter>Source Files\Manip\Manip_Auto</Filter>
+      <Filter>Source Files\Old\Manip\Manip_Auto</Filter>
     </ClCompile>
     <ClCompile Include="Manip_Auto_Verifications.cpp">
-      <Filter>Source Files\Manip\Manip_Auto</Filter>
+      <Filter>Source Files\Old\Manip\Manip_Auto</Filter>
     </ClCompile>
     <ClCompile Include="Manip_AutoGaz.cpp">
-      <Filter>Source Files\Manip\Manip_AutoGaz</Filter>
+      <Filter>Source Files\Old\Manip\Manip_AutoGaz</Filter>
     </ClCompile>
     <ClCompile Include="Manip_AutoGaz_AEffectuer.cpp">
-      <Filter>Source Files\Manip\Manip_AutoGaz</Filter>
+      <Filter>Source Files\Old\Manip\Manip_AutoGaz</Filter>
     </ClCompile>
     <ClCompile Include="Manip_AutoGaz_Donnees.cpp">
-      <Filter>Source Files\Manip\Manip_AutoGaz</Filter>
+      <Filter>Source Files\Old\Manip\Manip_AutoGaz</Filter>
     </ClCompile>
     <ClCompile Include="Manip_AutoGaz_Execution.cpp">
-      <Filter>Source Files\Manip\Manip_AutoGaz</Filter>
+      <Filter>Source Files\Old\Manip\Manip_AutoGaz</Filter>
     </ClCompile>
     <ClCompile Include="Manip_AutoGaz_Fichier.cpp">
-      <Filter>Source Files\Manip\Manip_AutoGaz</Filter>
+      <Filter>Source Files\Old\Manip\Manip_AutoGaz</Filter>
     </ClCompile>
     <ClCompile Include="Manip_AutoGaz_LEA.cpp">
-      <Filter>Source Files\Manip\Manip_AutoGaz</Filter>
+      <Filter>Source Files\Old\Manip\Manip_AutoGaz</Filter>
     </ClCompile>
     <ClCompile Include="Manip_AutoGaz_Mesure.cpp">
-      <Filter>Source Files\Manip\Manip_AutoGaz</Filter>
+      <Filter>Source Files\Old\Manip\Manip_AutoGaz</Filter>
     </ClCompile>
     <ClCompile Include="Manip_AutoGaz_Proprietes_Experience.cpp">
-      <Filter>Source Files\Manip\Manip_AutoGaz</Filter>
+      <Filter>Source Files\Old\Manip\Manip_AutoGaz</Filter>
     </ClCompile>
     <ClCompile Include="Manip_AutoGaz_Vannes.cpp">
-      <Filter>Source Files\Manip\Manip_AutoGaz</Filter>
+      <Filter>Source Files\Old\Manip\Manip_AutoGaz</Filter>
     </ClCompile>
     <ClCompile Include="Manip_AutoGaz_Adsorption_Continue.cpp">
-      <Filter>Source Files\Manip\Manip_AutoGaz\Stages</Filter>
+      <Filter>Source Files\Old\Manip\Manip_AutoGaz\Stages</Filter>
     </ClCompile>
     <ClCompile Include="Manip_AutoGaz_Desorption.cpp">
-      <Filter>Source Files\Manip\Manip_AutoGaz\Stages</Filter>
+      <Filter>Source Files\Old\Manip\Manip_AutoGaz\Stages</Filter>
     </ClCompile>
     <ClCompile Include="Manip_AutoGaz_Grandes_Doses.cpp">
-      <Filter>Source Files\Manip\Manip_AutoGaz\Stages</Filter>
+      <Filter>Source Files\Old\Manip\Manip_AutoGaz\Stages</Filter>
     </ClCompile>
     <ClCompile Include="Manip_AutoGaz_Moyennes_Doses.cpp">
-      <Filter>Source Files\Manip\Manip_AutoGaz\Stages</Filter>
+      <Filter>Source Files\Old\Manip\Manip_AutoGaz\Stages</Filter>
     </ClCompile>
     <ClCompile Include="Manip_AutoGaz_Petites_Doses.cpp">
-      <Filter>Source Files\Manip\Manip_AutoGaz\Stages</Filter>
+      <Filter>Source Files\Old\Manip\Manip_AutoGaz\Stages</Filter>
     </ClCompile>
     <ClCompile Include="Manip_AutoGaz_Mise_Sous_Vide.cpp">
-      <Filter>Source Files\Manip\Manip_AutoGaz\Stages</Filter>
+      <Filter>Source Files\Old\Manip\Manip_AutoGaz\Stages</Filter>
     </ClCompile>
     <ClCompile Include="Manip_AutoGaz_Ligne_Base_Equilibre.cpp">
-      <Filter>Source Files\Manip\Manip_AutoGaz\Stages</Filter>
+      <Filter>Source Files\Old\Manip\Manip_AutoGaz\Stages</Filter>
     </ClCompile>
     <ClCompile Include="Manip_AutoGaz_MiseSousVide_ChangementBouteille.cpp">
-      <Filter>Source Files\Manip\Manip_AutoGaz\MSV</Filter>
+      <Filter>Source Files\Old\Manip\Manip_AutoGaz\MSV</Filter>
     </ClCompile>
     <ClCompile Include="Manip_AutoGaz_MiseSousVide_Ampoule.cpp">
-      <Filter>Source Files\Manip\Manip_AutoGaz\MSV</Filter>
+      <Filter>Source Files\Old\Manip\Manip_AutoGaz\MSV</Filter>
     </ClCompile>
     <ClCompile Include="Manip_AutoGaz_MiseSousVide_Bouteille.cpp">
-      <Filter>Source Files\Manip\Manip_AutoGaz\MSV</Filter>
+      <Filter>Source Files\Old\Manip\Manip_AutoGaz\MSV</Filter>
     </ClCompile>
     <ClCompile Include="Dialogue_TypeExperience.cpp">
       <Filter>Source Files\GUI\Dialogs</Filter>
@@ -564,25 +573,25 @@
       <Filter>Source Files\GUI\Dialogs\Connection Port</Filter>
     </ClCompile>
     <ClCompile Include="CAdsorptionContinue.cpp">
-      <Filter>Source Files\GUI\Dialogs\Experiment Parameters\Tabs</Filter>
+      <Filter>Source Files\Old\Tabs</Filter>
     </ClCompile>
     <ClCompile Include="CDesorption.cpp">
-      <Filter>Source Files\GUI\Dialogs\Experiment Parameters\Tabs</Filter>
+      <Filter>Source Files\Old\Tabs</Filter>
     </ClCompile>
     <ClCompile Include="CDivers.cpp">
-      <Filter>Source Files\GUI\Dialogs\Experiment Parameters\Tabs</Filter>
+      <Filter>Source Files\Old\Tabs</Filter>
     </ClCompile>
     <ClCompile Include="CGeneral.cpp">
-      <Filter>Source Files\GUI\Dialogs\Experiment Parameters\Tabs</Filter>
+      <Filter>Source Files\Old\Tabs</Filter>
     </ClCompile>
     <ClCompile Include="CGrandesDoses.cpp">
-      <Filter>Source Files\GUI\Dialogs\Experiment Parameters\Tabs</Filter>
+      <Filter>Source Files\Old\Tabs</Filter>
     </ClCompile>
     <ClCompile Include="CMoyennesDoses.cpp">
-      <Filter>Source Files\GUI\Dialogs\Experiment Parameters\Tabs</Filter>
+      <Filter>Source Files\Old\Tabs</Filter>
     </ClCompile>
     <ClCompile Include="CPetitesDoses.cpp">
-      <Filter>Source Files\GUI\Dialogs\Experiment Parameters\Tabs</Filter>
+      <Filter>Source Files\Old\Tabs</Filter>
     </ClCompile>
     <ClCompile Include="Dialogue_cellule.cpp">
       <Filter>Source Files\GUI\Dialogs\Experiment Parameters\Base Data</Filter>
@@ -593,9 +602,6 @@
     <ClCompile Include="Dialogue_experimentateur.cpp">
       <Filter>Source Files\GUI\Dialogs\Experiment Parameters\Base Data</Filter>
     </ClCompile>
-    <ClCompile Include="Parametres_experience.cpp">
-      <Filter>Source Files\GUI\Dialogs\Experiment Parameters</Filter>
-    </ClCompile>
     <ClCompile Include="FluxConverter.cpp">
       <Filter>Source Files\Parameters</Filter>
     </ClCompile>
@@ -603,25 +609,25 @@
       <Filter>Source Files\Utils</Filter>
     </ClCompile>
     <ClCompile Include="ManipData.cpp">
-      <Filter>Source Files\Manip\Manip</Filter>
+      <Filter>Source Files\Old\Manip\Manip</Filter>
     </ClCompile>
     <ClCompile Include="ManipManualExecution.cpp">
-      <Filter>Source Files\Manip\Manip</Filter>
+      <Filter>Source Files\Old\Manip\Manip</Filter>
     </ClCompile>
     <ClCompile Include="ManipFileWriting.cpp">
-      <Filter>Source Files\Manip\Manip</Filter>
+      <Filter>Source Files\Old\Manip\Manip</Filter>
     </ClCompile>
     <ClCompile Include="ManipMeasurement.cpp">
-      <Filter>Source Files\Manip\Manip</Filter>
+      <Filter>Source Files\Old\Manip\Manip</Filter>
     </ClCompile>
     <ClCompile Include="ManipSecurity.cpp">
-      <Filter>Source Files\Manip\Manip</Filter>
+      <Filter>Source Files\Old\Manip\Manip</Filter>
     </ClCompile>
     <ClCompile Include="ManipTimeKeeping.cpp">
-      <Filter>Source Files\Manip\Manip</Filter>
+      <Filter>Source Files\Old\Manip\Manip</Filter>
     </ClCompile>
     <ClCompile Include="ManipValves.cpp">
-      <Filter>Source Files\Manip\Manip</Filter>
+      <Filter>Source Files\Old\Manip\Manip</Filter>
     </ClCompile>
     <ClCompile Include="KaollaViewDisplay.cpp">
       <Filter>Source Files\GUI</Filter>
@@ -656,40 +662,43 @@
     <ClCompile Include="TabContinuousAdsorption.cpp">
       <Filter>Source Files\GUI\Dialogs\Experiment Parameters\TabsNew</Filter>
     </ClCompile>
-    <ClCompile Include="Automation.cpp">
-      <Filter>Source Files\Automation</Filter>
-    </ClCompile>
-    <ClCompile Include="AutomationFileWriting.cpp">
-      <Filter>Source Files\Automation</Filter>
-    </ClCompile>
-    <ClCompile Include="AutomationInitialChecks.cpp">
-      <Filter>Source Files\Automation</Filter>
-    </ClCompile>
-    <ClCompile Include="AutomationMeasurement.cpp">
-      <Filter>Source Files\Automation</Filter>
-    </ClCompile>
-    <ClCompile Include="AutomationSecurity.cpp">
-      <Filter>Source Files\Automation</Filter>
-    </ClCompile>
-    <ClCompile Include="AutomationShutdown.cpp">
-      <Filter>Source Files\Automation</Filter>
-    </ClCompile>
-    <ClCompile Include="AutomationValves.cpp">
-      <Filter>Source Files\Automation</Filter>
-    </ClCompile>
     <ClCompile Include="ExperimentData.cpp">
-      <Filter>Source Files\Automation</Filter>
-    </ClCompile>
-    <ClCompile Include="AutomationTimeKeeping.cpp">
       <Filter>Source Files\Automation</Filter>
     </ClCompile>
     <ClCompile Include="ThreadManager.cpp">
       <Filter>Source Files\Automation</Filter>
     </ClCompile>
-    <ClCompile Include="AutomationSteps.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Parametres_experience.cpp">
+      <Filter>Source Files\Old</Filter>
     </ClCompile>
-    <ClCompile Include="MainThread.cpp">
+    <ClCompile Include="Automation.cpp">
+      <Filter>Source Files\Automation\Class</Filter>
+    </ClCompile>
+    <ClCompile Include="AutomationFileWriting.cpp">
+      <Filter>Source Files\Automation\Class</Filter>
+    </ClCompile>
+    <ClCompile Include="AutomationInitialChecks.cpp">
+      <Filter>Source Files\Automation\Class</Filter>
+    </ClCompile>
+    <ClCompile Include="AutomationMeasurement.cpp">
+      <Filter>Source Files\Automation\Class</Filter>
+    </ClCompile>
+    <ClCompile Include="AutomationSecurity.cpp">
+      <Filter>Source Files\Automation\Class</Filter>
+    </ClCompile>
+    <ClCompile Include="AutomationShutdown.cpp">
+      <Filter>Source Files\Automation\Class</Filter>
+    </ClCompile>
+    <ClCompile Include="AutomationSteps.cpp">
+      <Filter>Source Files\Automation\Class</Filter>
+    </ClCompile>
+    <ClCompile Include="AutomationTimeKeeping.cpp">
+      <Filter>Source Files\Automation\Class</Filter>
+    </ClCompile>
+    <ClCompile Include="AutomationValves.cpp">
+      <Filter>Source Files\Automation\Class</Filter>
+    </ClCompile>
+    <ClCompile Include="ExperimentSettings.cpp">
       <Filter>Source Files\Automation</Filter>
     </ClCompile>
   </ItemGroup>
@@ -743,7 +752,7 @@
   </ItemGroup>
   <ItemGroup>
     <Library Include="NIDAQmx.lib">
-      <Filter>Header Files\National Instruments</Filter>
+      <Filter>Header Files\Backend\National Instruments</Filter>
     </Library>
   </ItemGroup>
 </Project>

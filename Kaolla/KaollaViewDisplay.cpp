@@ -114,13 +114,8 @@ LRESULT CKaollaView::ExchangeData(WPARAM, LPARAM incomingExperimentData)
 	 
 	// Safely copy the data across
 	EnterCriticalSection(&experimentData->criticalSection);
-		experimentData->resultCalorimeter = tempExpData->resultCalorimeter;
-		experimentData->pressureLow = tempExpData->pressureLow;
-		experimentData->pressureHigh = tempExpData->pressureHigh;
-		experimentData->temperatureCalo = tempExpData->temperatureCalo;
-		experimentData->temperatureCage = tempExpData->temperatureCage;
-		experimentData->temperatureRoom = tempExpData->temperatureRoom;
-		experimentData->experimentTime = tempExpData->experimentTime;
+		experimentData = *tempExpData;
+		experimentLocalData = *tempExpData;
 	LeaveCriticalSection(&experimentData->criticalSection);
 
     return 0;
@@ -129,15 +124,13 @@ LRESULT CKaollaView::ExchangeData(WPARAM, LPARAM incomingExperimentData)
 void CKaollaView::OnTimer(UINT nIDEvent)
 {
 	// Safely store
-	EnterCriticalSection(&experimentData->criticalSection);
-		m_StrCalo.Format(_T("%.2f") ,experimentData->resultCalorimeter);
-		m_StrBassePression.Format(_T("%.2f"), experimentData->pressureLow);
-		m_StrHautePression.Format(_T("%.2f"), experimentData->pressureHigh);
-		m_StrTemperatureCalo.Format(_T("%.2f"), experimentData->temperatureCalo);
-		m_StrTemperatureCage.Format(_T("%.2f"), experimentData->temperatureCage);
-		m_StrTemperaturePiece.Format(_T("%.2f"), experimentData->temperatureRoom);
-		m_StrTemps.Format(_T("%.2f"), experimentData->experimentTime);
-	LeaveCriticalSection(&experimentData->criticalSection);
+	m_StrCalo.Format(_T("%.2f") , experimentLocalData.resultCalorimeter);
+	m_StrBassePression.Format(_T("%.2f"), experimentLocalData.pressureLow);
+	m_StrHautePression.Format(_T("%.2f"), experimentLocalData.pressureHigh);
+	m_StrTemperatureCalo.Format(_T("%.2f"), experimentLocalData.temperatureCalo);
+	m_StrTemperatureCage.Format(_T("%.2f"), experimentLocalData.temperatureCage);
+	m_StrTemperaturePiece.Format(_T("%.2f"), experimentLocalData.temperatureRoom);
+	m_StrTemps.Format(_T("%.1f"), experimentLocalData.experimentTime);
 
 	// Refresh view
 	SetDlgItemText(IDC_CALO, m_StrCalo);
@@ -148,6 +141,9 @@ void CKaollaView::OnTimer(UINT nIDEvent)
 	SetDlgItemText(IDC_TEMPERATURE_PIECE, m_StrTemperaturePiece);
 	SetDlgItemText(IDC_TEMPS, m_StrTemps);
 
+	// Write graph
+	GetDocument()->GraphAddMeasurement(experimentLocalData.experimentTime, experimentLocalData.resultCalorimeter , 0, 1000, experimentLocalData.temperatureCalo, experimentLocalData.temperatureCage, experimentLocalData.temperatureRoom);
+	
 	GetDocument()->UpdateAllViews(this);
 
 	CFormView::OnTimer(nIDEvent);	// Call base class handler.
