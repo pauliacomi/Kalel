@@ -5,16 +5,16 @@
 #include "afxwin.h"
 #include <afxmt.h>
 
-#include "ExperimentData.h"
+#include "ExperimentSettings.h"
 
 class ThreadManager
 {
 public:
-	ThreadManager(LPVOID pParam, ExperimentData * expD);
+	ThreadManager(LPVOID pParam, ExperimentSettings * expD);
 	~ThreadManager();
 
-	// Pointer to data storage
-	ExperimentData * experimentData;
+	// Pointer to settings storage
+	ExperimentSettings * experimentSettings;
 
 	// Public interface methods
 public:
@@ -29,7 +29,7 @@ private:
 	static UINT ThreadMainWorkerStarter(LPVOID pParam);		// Main worker thread starter
 	void ThreadMainWorker();								// Main worker thread function
 
-	static UINT ThreadManualActionStarter(LPVOID pParam);			// Manual command thread starter
+	static UINT ThreadManualActionStarter(LPVOID pParam);	// Manual command thread starter
 	void ThreadManualAction();								// Manual command thread worker
 	
 

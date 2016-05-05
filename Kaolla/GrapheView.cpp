@@ -6,7 +6,7 @@
 #include "KaollaDoc.h"
 #include "GrapheView.h"
 
-#include "Mesure.h"
+#include "ExperimentData.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -71,7 +71,7 @@ void CGrapheView::OnDraw(CDC* pDC)
 	{
 
 		// Acquisition des données 
-		CMesure* TableauMesures=pDoc->m_TableauMesures.GetData();
+		ExperimentData* TableauMesures=pDoc->m_TableauMesures.GetData();
 		int fort_index=pDoc->m_TableauMesures.GetUpperBound();
 		int taille=pDoc->m_TableauMesures.GetSize();
 
@@ -383,7 +383,7 @@ void CGrapheView::trace_echelle(CRect graphe,CRect axe_graphe,int max_pression,i
 
 	// ----- marquage du temps ----------------------------------------------
 	int nb_trait_abs=4; 
-	int temps = (int)pDoc->m_TableauMesures[pDoc->m_TableauMesures.GetUpperBound()].temps;
+	int temps = (int)pDoc->m_TableauMesures[pDoc->m_TableauMesures.GetUpperBound()].experimentTime;
 
 	for (int i=0;i<=nb_trait_abs;i++)
 	{
@@ -432,7 +432,7 @@ void CGrapheView::trace_graphe(CRect graphe,int max_pression,int min_pression,do
 	// rapport = hauteur du graphe / (max_calo - min_calo)
 	// rapport = valeur (bar ou µV) par pixel
 	float rapport_calo, rapport_pression, rapport_temps;
-	float max_temps = pDoc->m_TableauMesures[pDoc->m_TableauMesures.GetUpperBound()].temps;
+	float max_temps = pDoc->m_TableauMesures[pDoc->m_TableauMesures.GetUpperBound()].experimentTime;
 	float ecart_temps = max_temps-min_temps;
 	float ecart_calo = max_calo-min_calo;
 	float ecart_pression = max_pression-min_pression;
@@ -857,9 +857,9 @@ void CGrapheView::trace_graphe(CRect graphe,int max_pression,int min_pression,do
 	for(int i=PremiereMesure;i<=pDoc->m_TableauMesures.GetUpperBound();i++)
 	{
 		POINT PCalo;
-		double abs_temps = graphe.left + rapport_temps * (pDoc->m_TableauMesures[i].temps - min_temps);
+		double abs_temps = graphe.left + rapport_temps * (pDoc->m_TableauMesures[i].experimentTime - min_temps);
 		PCalo.x = abs_temps;
-		PCalo.y = graphe.bottom - rapport_calo * (pDoc->m_TableauMesures[i].calo - min_calo);
+		PCalo.y = graphe.bottom - rapport_calo * (pDoc->m_TableauMesures[i].resultCalorimeter - min_calo);
 		if(i==PremiereMesure)
 			pDC->MoveTo(PCalo);
 		else
@@ -877,9 +877,9 @@ void CGrapheView::trace_graphe(CRect graphe,int max_pression,int min_pression,do
 	for(int i=PremiereMesure;i<=pDoc->m_TableauMesures.GetUpperBound();i++)
 	{
 		POINT PBasse_pression;
-		double abs_temps = graphe.left + rapport_temps * (pDoc->m_TableauMesures[i].temps - min_temps);
+		double abs_temps = graphe.left + rapport_temps * (pDoc->m_TableauMesures[i].experimentTime - min_temps);
 		PBasse_pression.x=abs_temps;
-		PBasse_pression.y=graphe.bottom - rapport_pression * (pDoc->m_TableauMesures[i].basse_pression - min_pression);
+		PBasse_pression.y=graphe.bottom - rapport_pression * (pDoc->m_TableauMesures[i].pressureLow - min_pression);
 		if(i==PremiereMesure)
 			pDC->MoveTo(PBasse_pression);
 		else
@@ -896,9 +896,9 @@ void CGrapheView::trace_graphe(CRect graphe,int max_pression,int min_pression,do
 	for(int i=PremiereMesure;i<=pDoc->m_TableauMesures.GetUpperBound();i++)
 	{
 		POINT PHaute_pression;
-		double abs_temps = graphe.left + rapport_temps * (pDoc->m_TableauMesures[i].temps - min_temps);
+		double abs_temps = graphe.left + rapport_temps * (pDoc->m_TableauMesures[i].experimentTime - min_temps);
 		PHaute_pression.x=abs_temps;	
-		PHaute_pression.y=graphe.bottom - rapport_pression * (pDoc->m_TableauMesures[i].haute_pression - min_pression);
+		PHaute_pression.y=graphe.bottom - rapport_pression * (pDoc->m_TableauMesures[i].pressureHigh - min_pression);
 		if(i==PremiereMesure)
 			pDC->MoveTo(PHaute_pression);
 		else

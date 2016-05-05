@@ -14,6 +14,7 @@
 // Synchronization classes
 #include "MFCMessageHandler.h"		// Handles all the messages from this class to the UI. Great if we want to upgrade to somehting that's not MFC
 #include "ExperimentData.h"
+#include "ExperimentSettings.h"	
 
 // Measurement and manipulation classes
 #include "Keithley.h"				// Keithley
@@ -48,8 +49,10 @@ public:
 	CInstrument* instrument[NB_OF_INSTRUMENTS];			// Array of pointers that hold CInstrument classes
 	CTemperature* g_pTemperature;						// Pointer to the class that deals with temperature recording
 
-	ExperimentData* experimentData;						// Pointer to the class used for synchronisation
-	ExperimentData experimentLocalData;					// Could this be a solution?
+	ExperimentSettings* experimentSettings;				//
+	ExperimentSettings experimentLocalSettings;			// 
+
+	ExperimentData experimentLocalData;					// 
 	
 	
 	//------------------------------------------------------------
@@ -110,7 +113,7 @@ public:
 	void SetMensor(Mensor * Mens);
 	void SetVannes(CVannes * pVannes);
 	void SetTemperature(CTemperature * pTemperature);
-	void SetDataPointer(ExperimentData * eData);
+	void SetDataPointer(ExperimentSettings * eSettings);
 
 public:
 	void SetData();

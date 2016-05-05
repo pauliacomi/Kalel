@@ -35,19 +35,19 @@ void Automation::SetTemperature(CTemperature* pTemperature)
 	g_pTemperature = pTemperature;
 }
 
-void Automation::SetDataPointer(ExperimentData * eData)	// Put this into a critical section
+void Automation::SetDataPointer(ExperimentSettings * eSettings)	// Put this into a critical section
 {
 	// Store the pointer
-	experimentData = eData;
+	experimentSettings = eSettings;
 }
 
 void Automation::SetData()
 {
 	// Copy the data from the main thread
-	EnterCriticalSection(&experimentData->criticalSection);			// Is the critical section defined well? might have to be defined in the main thread
-	experimentLocalData = experimentData;
-	experimentData->dataModified = false;
-	LeaveCriticalSection(&experimentData->criticalSection);
+	EnterCriticalSection(&experimentSettings->criticalSection);			// Is the critical section defined well? might have to be defined in the main thread
+	experimentLocalSettings = experimentSettings;
+	experimentSettings->dataModified = false;
+	LeaveCriticalSection(&experimentSettings->criticalSection);
 }
 
 bool Automation::DataIsNew()
@@ -55,12 +55,12 @@ bool Automation::DataIsNew()
 	// Copy the data from the main thread
 	bool check = false;
 
-	EnterCriticalSection(&experimentData->criticalSection);
-	if (experimentData->dataModified == false)
+	EnterCriticalSection(&experimentSettings->criticalSection);
+	if (experimentSettings->dataModified == false)
 		check = false;
 	else
 		check = true;
-	LeaveCriticalSection(&experimentData->criticalSection);
+	LeaveCriticalSection(&experimentSettings->criticalSection);
 
 	return check;
 }
@@ -107,7 +107,7 @@ void Automation::Execution()
 
 		case ACTIVE:					// In case the experiment is started
 										// We look at the type of experiment
-			switch (experimentLocalData.experimentType)
+			switch (experimentLocalSettings.experimentType)
 			{
 				case EXPERIMENT_TYPE_MANUAL:		// in case it is manual
 					if (ExecutionManual())			// run the manual loop
@@ -167,7 +167,7 @@ bool Automation::ExecutionManual()
 		EnregistrementFichierMesures();
 
 		// Increment the measurement number
-		experimentLocalData.experimentMeasurement++;
+		experimentLocalData.experimentMeasurements++;
 
 		// Put the experiment to wait
 		g_flagAskShutdown = PAUSE;
@@ -183,7 +183,7 @@ bool Automation::ExecutionAuto()
 		RecordDataChange();
 	}
 
-	experimentLocalData.timeToEquilibrate = experimentLocalData.dataDivers.temps_ligne_base;		// Set the time to wait
+	experimentLocalData.timeToEquilibrate = experimentLocalSettings.dataDivers.temps_ligne_base;		// Set the time to wait
 
 	switch (experimentLocalData.experimentStage)
 	{
@@ -222,12 +222,12 @@ void Automation::Initialisation()
 	// Initialise automatic variables
 	experimentLocalData.experimentDose = 0;
 	experimentLocalData.experimentTime = 0;
-	experimentLocalData.experimentMeasurement = 1;
+	experimentLocalData.experimentMeasurements = 1;
 	experimentLocalData.experimentStage = STAGE_UNDEF;
 
 	// Initialise data
 	SetData();
-	messageHandler.SetHandle(experimentLocalData.GUIhandle);
+	messageHandler.SetHandle(experimentLocalSettings.GUIhandle);
 
 	// Initialise instruments
 	InitialisationInstruments();

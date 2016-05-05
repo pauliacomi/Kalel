@@ -85,16 +85,6 @@ BOOL MFCMessageHandler::ExchangeData(ExperimentData pParam)
 	// Post the required message, now the main thread is responsible for deleting the new class
 	::PostMessage(windowHandle, WM_EXCHANGEDATA, NULL, (LPARAM)newData);
 
-
-	/*
-	m_KaollaView->m_StrCalo.Format(_T("%.8E"), resultat_calo);
-	m_KaollaView->m_StrBassePression.Format(_T("%f"), resultat_bp);
-	m_KaollaView->m_StrHautePression.Format(_T("%f"), resultat_hp);
-	m_KaollaView->m_StrTemperatureCalo.Format(_T("%f"), TemperatureCalo);
-	m_KaollaView->m_StrTemperatureCage.Format(_T("%f"), TemperatureCage);
-	m_KaollaView->m_StrTemperaturePiece.Format(_T("%f"), TemperaturePiece);
-	m_KaollaView->m_StrTemps.Format(_T("%.2f"), temps_manip);*/
-
 	return 0;
 }
 

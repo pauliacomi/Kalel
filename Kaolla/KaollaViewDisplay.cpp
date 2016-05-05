@@ -112,11 +112,8 @@ LRESULT CKaollaView::ExchangeData(WPARAM, LPARAM incomingExperimentData)
 	// Get the incoming pointer and cast it as a smart pointer
 	std::auto_ptr<ExperimentData> tempExpData(reinterpret_cast<ExperimentData*>(incomingExperimentData));
 	 
-	// Safely copy the data across
-	EnterCriticalSection(&experimentData->criticalSection);
-		experimentData = *tempExpData;
-		experimentLocalData = *tempExpData;
-	LeaveCriticalSection(&experimentData->criticalSection);
+	// Copy the data across
+	experimentData = *tempExpData;
 
     return 0;
 }
@@ -124,13 +121,13 @@ LRESULT CKaollaView::ExchangeData(WPARAM, LPARAM incomingExperimentData)
 void CKaollaView::OnTimer(UINT nIDEvent)
 {
 	// Safely store
-	m_StrCalo.Format(_T("%.2f") , experimentLocalData.resultCalorimeter);
-	m_StrBassePression.Format(_T("%.2f"), experimentLocalData.pressureLow);
-	m_StrHautePression.Format(_T("%.2f"), experimentLocalData.pressureHigh);
-	m_StrTemperatureCalo.Format(_T("%.2f"), experimentLocalData.temperatureCalo);
-	m_StrTemperatureCage.Format(_T("%.2f"), experimentLocalData.temperatureCage);
-	m_StrTemperaturePiece.Format(_T("%.2f"), experimentLocalData.temperatureRoom);
-	m_StrTemps.Format(_T("%.1f"), experimentLocalData.experimentTime);
+	m_StrCalo.Format(_T("%.2f") , experimentData.resultCalorimeter);
+	m_StrBassePression.Format(_T("%.2f"), experimentData.pressureLow);
+	m_StrHautePression.Format(_T("%.2f"), experimentData.pressureHigh);
+	m_StrTemperatureCalo.Format(_T("%.2f"), experimentData.temperatureCalo);
+	m_StrTemperatureCage.Format(_T("%.2f"), experimentData.temperatureCage);
+	m_StrTemperaturePiece.Format(_T("%.2f"), experimentData.temperatureRoom);
+	m_StrTemps.Format(_T("%.1f"), experimentData.experimentTime);
 
 	// Refresh view
 	SetDlgItemText(IDC_CALO, m_StrCalo);
@@ -142,7 +139,7 @@ void CKaollaView::OnTimer(UINT nIDEvent)
 	SetDlgItemText(IDC_TEMPS, m_StrTemps);
 
 	// Write graph
-	GetDocument()->GraphAddMeasurement(experimentLocalData.experimentTime, experimentLocalData.resultCalorimeter , 0, 1000, experimentLocalData.temperatureCalo, experimentLocalData.temperatureCage, experimentLocalData.temperatureRoom);
+	// GetDocument()->GraphAddMeasurement(experimentData.experimentTime, experimentData.resultCalorimeter , 0, 1000, experimentData.temperatureCalo, experimentData.temperatureCage, experimentData.temperatureRoom);
 	
 	GetDocument()->UpdateAllViews(this);
 

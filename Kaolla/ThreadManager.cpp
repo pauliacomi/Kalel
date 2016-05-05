@@ -35,7 +35,7 @@ Automation automation;
 
 // --------- Initialisation and destruction -------
 
-ThreadManager::ThreadManager(LPVOID pParam,	ExperimentData * expD)
+ThreadManager::ThreadManager(LPVOID pParam, ExperimentSettings * expD)
 	: m_threadMainControlLoop(NULL)		// should delete this 
 	, m_hShutdownEvent(::CreateEvent(NULL, TRUE, FALSE, NULL))
 	, m_hStartMainThreadEvent(::CreateEvent(NULL, TRUE, FALSE, NULL))
@@ -45,7 +45,7 @@ ThreadManager::ThreadManager(LPVOID pParam,	ExperimentData * expD)
 	pTemperature = new CTemperature(GetPortTemperatures());
 
 	// Store the link to the experimental data
-	experimentData = expD;
+	experimentSettings = expD;
 
 	//Create the thread
 	CreateMainThread(pParam);
@@ -150,7 +150,7 @@ void ThreadManager::ThreadMainWorker()
 	WaitForSingleObject(m_hStartMainThreadEvent, INFINITE);
 
 	// Set data
-	automation.SetDataPointer(experimentData);
+	automation.SetDataPointer(experimentSettings);
 
 	// Launch functionality
 	automation.Execution();

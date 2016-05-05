@@ -122,7 +122,7 @@ CKaollaView::CKaollaView()
 CKaollaView::~CKaollaView()
 {
 	delete threadManager;
-	delete experimentData;
+	delete experimentSettings;
 }
 
 // Liaising between variables and controls
@@ -191,9 +191,9 @@ void CKaollaView::OnInitialUpdate()
 	// Check to see whether the parameters file has been created
 	VerifParametres();
 
-	experimentData = new ExperimentData();								// Create a new experiment storage
-	experimentData->GUIhandle = GetSafeHwnd();							// Save the window handle
-	threadManager = new ThreadManager(GetSafeHwnd(), experimentData);;  // the class dealing with managing threads
+	experimentSettings = new ExperimentSettings();						// Create a new experiment storage
+	experimentSettings->GUIhandle = GetSafeHwnd();							// Save the window handle
+	threadManager = new ThreadManager(GetSafeHwnd(), experimentSettings);;  // the class dealing with managing threads
 
 	// Set the timer for the window update
 	SetTimer(1, 100, NULL);

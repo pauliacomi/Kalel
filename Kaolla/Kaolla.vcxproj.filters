@@ -330,9 +330,6 @@
     <ClInclude Include="MessageBoxTexts.h">
       <Filter>Header Files\Resources</Filter>
     </ClInclude>
-    <ClInclude Include="MFCMessageHandler.h">
-      <Filter>Header Files\Utils</Filter>
-    </ClInclude>
     <ClInclude Include="ManualActionParam.h">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
@@ -388,6 +385,9 @@
       <Filter>Header Files\Automation</Filter>
     </ClInclude>
     <ClInclude Include="ExperimentSettings.h">
+      <Filter>Header Files\Automation</Filter>
+    </ClInclude>
+    <ClInclude Include="MFCMessageHandler.h">
       <Filter>Header Files\Automation</Filter>
     </ClInclude>
   </ItemGroup>
@@ -605,9 +605,6 @@
     <ClCompile Include="FluxConverter.cpp">
       <Filter>Source Files\Parameters</Filter>
     </ClCompile>
-    <ClCompile Include="MFCMessageHandler.cpp">
-      <Filter>Source Files\Utils</Filter>
-    </ClCompile>
     <ClCompile Include="ManipData.cpp">
       <Filter>Source Files\Old\Manip\Manip</Filter>
     </ClCompile>
@@ -699,6 +696,9 @@
       <Filter>Source Files\Automation\Class</Filter>
     </ClCompile>
     <ClCompile Include="ExperimentSettings.cpp">
+      <Filter>Source Files\Automation</Filter>
+    </ClCompile>
+    <ClCompile Include="MFCMessageHandler.cpp">
       <Filter>Source Files\Automation</Filter>
     </ClCompile>
   </ItemGroup>

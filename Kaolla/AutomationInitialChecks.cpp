@@ -127,8 +127,8 @@ int Automation::VerificationTemperature()
 	//messageHandler.DisplayTemperatures();
 
 	// préciser quelle température dans la boite de dialogue ???
-	if ((experimentLocalData.temperatureCalo < experimentLocalData.dataGeneral.temperature_experience - 1) || (experimentLocalData.temperatureCalo > experimentLocalData.dataGeneral.temperature_experience + 1) ||
-		(experimentLocalData.temperatureCalo < experimentLocalData.dataGeneral.temperature_experience - 1) || (experimentLocalData.temperatureCalo > experimentLocalData.dataGeneral.temperature_experience + 1))
+	if ((experimentLocalData.temperatureCalo < experimentLocalSettings.dataGeneral.temperature_experience - 1) || (experimentLocalData.temperatureCalo > experimentLocalSettings.dataGeneral.temperature_experience + 1) ||
+		(experimentLocalData.temperatureCalo < experimentLocalSettings.dataGeneral.temperature_experience - 1) || (experimentLocalData.temperatureCalo > experimentLocalSettings.dataGeneral.temperature_experience + 1))
 	{
 		//messageHandler.DisplayMessageBox(MESSAGE_CHECK_TEMPERATURE_DIFF, MB_ICONQUESTION | MB_YESNOCANCEL);
 		
@@ -143,8 +143,8 @@ int Automation::VerificationTemperature()
 			messageHandler.DisplayMessage(MESSAGE_WAIT_TEMP_EQUILIBRATION);
 
 			// Loop until the temperature is stable
-			while ((experimentLocalData.temperatureCalo < experimentLocalData.dataGeneral.temperature_experience - 1) || (experimentLocalData.temperatureCalo > experimentLocalData.dataGeneral.temperature_experience + 1) ||
-				(experimentLocalData.temperatureCalo < experimentLocalData.dataGeneral.temperature_experience - 1) || (experimentLocalData.temperatureCalo > experimentLocalData.dataGeneral.temperature_experience + 1))
+			while ((experimentLocalData.temperatureCalo < experimentLocalSettings.dataGeneral.temperature_experience - 1) || (experimentLocalData.temperatureCalo > experimentLocalSettings.dataGeneral.temperature_experience + 1) ||
+				(experimentLocalData.temperatureCalo < experimentLocalSettings.dataGeneral.temperature_experience - 1) || (experimentLocalData.temperatureCalo > experimentLocalSettings.dataGeneral.temperature_experience + 1))
 			{
 				int attente_pause = 500;//ms
 				int attente_temperature = 10000;//ms

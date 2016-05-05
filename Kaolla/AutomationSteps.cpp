@@ -25,7 +25,7 @@ void Automation::StageEquilibration()
 		EnregistrementFichierMesures();
 
 		// Increment the measurement number
-		experimentLocalData.experimentMeasurement++;
+		experimentLocalData.experimentMeasurements++;
 		
 		// Check if the time has been reached
 		if (timerMeasurement.TempsActuel() > experimentLocalData.timeToEquilibrate)
@@ -83,13 +83,13 @@ void Automation::StageAdsorption()
 		EnregistrementFichierMesures();
 
 		// Increment the measurement number
-		experimentLocalData.experimentMeasurement++;
+		experimentLocalData.experimentMeasurements++;
 
 		// Go through the adsorption substeps
 		SubstepsAdsorption();
 
 		// Check if the pressure for this adsorption stage has been reached
-		if (experimentLocalData.pressureFinal > experimentLocalData.dataAdsorption[experimentLocalData.adsorptionCounter].pression_finale)
+		if (experimentLocalData.pressureFinal > experimentLocalSettings.dataAdsorption[experimentLocalData.adsorptionCounter].pression_finale)
 			experimentLocalData.experimentStepStatus = STEP_STATUS_END;
 		
 		// Wait
@@ -109,7 +109,7 @@ void Automation::StageAdsorption()
 		experimentLocalData.experimentStepStatus = STEP_STATUS_START;													// Set next substep
 		messageHandler.DisplayMessage(MESSAGE_ADSORPTION_STAGE_END, experimentLocalData.adsorptionCounter);				// Let GUI know the step change
 
-		if (experimentLocalData.adsorptionCounter < experimentLocalData.dataAdsorption.size())
+		if (experimentLocalData.adsorptionCounter < experimentLocalSettings.dataAdsorption.size())
 		{
 			experimentLocalData.adsorptionCounter++;
 		}
@@ -150,7 +150,7 @@ void Automation::SubstepsAdsorption()
 		messageHandler.DisplayMessage(MESSAGE_ADSORPTION_D_PI, experimentLocalData.pressureInitial);
 		messageHandler.DisplayMessage(MESSAGE_ADSORPTION_D_PF, experimentLocalData.pressureFinal);
 		messageHandler.DisplayMessage(MESSAGE_ADSORPTION_D_DP, experimentLocalData.pressureFinal - experimentLocalData.pressureInitial);
-		messageHandler.DisplayMessage(MESSAGE_ADSORPTION_D_DPREQ, (experimentLocalData.dataAdsorption[experimentLocalData.adsorptionCounter].delta_pression));
+		messageHandler.DisplayMessage(MESSAGE_ADSORPTION_D_DPREQ, (experimentLocalSettings.dataAdsorption[experimentLocalData.adsorptionCounter].delta_pression));
 		messageHandler.DisplayMessage(MESSAGE_INJECTION_END, experimentLocalData.injectionAttemptCounter);
 
 		// Checks for injection succeess, else increment the injection counter
@@ -182,14 +182,14 @@ void Automation::SubstepsAdsorption()
 			experimentLocalData.pressureHighOld = experimentLocalData.pressureHigh;
 
 			// Check if injection has overshot
-			if (experimentLocalData.pressureFinal - experimentLocalData.pressureInitial > marge_multiplicateur * (experimentLocalData.dataAdsorption[experimentLocalData.adsorptionCounter].delta_pression))
+			if (experimentLocalData.pressureFinal - experimentLocalData.pressureInitial > marge_multiplicateur * (experimentLocalSettings.dataAdsorption[experimentLocalData.adsorptionCounter].delta_pression))
 			{
 				experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_INJECTION_ABORT;
 			}
 			// If completeted successfully go to equilibration
 			else
 			{
-				experimentLocalData.timeToEquilibrate = experimentLocalData.dataAdsorption[experimentLocalData.adsorptionCounter].temps_volume;		// Set the time to wait
+				experimentLocalData.timeToEquilibrate = experimentLocalSettings.dataAdsorption[experimentLocalData.adsorptionCounter].temps_volume;		// Set the time to wait
 				experimentLocalData.experimentStage = STAGE_EQUILIBRATION;																			// Go to equilibration stage
 				experimentLocalData.experimentEquilibrationStatus = STEP_STATUS_START;																// Also reset substage
 			}
@@ -197,7 +197,7 @@ void Automation::SubstepsAdsorption()
 		break;
 	
 	case SUBSTEP_STATUS_INJECTION_ABORT:
-		if (experimentLocalData.pressureFinal - experimentLocalData.pressureInitial > marge_multiplicateur * (experimentLocalData.dataAdsorption[experimentLocalData.adsorptionCounter].delta_pression))
+		if (experimentLocalData.pressureFinal - experimentLocalData.pressureInitial > marge_multiplicateur * (experimentLocalSettings.dataAdsorption[experimentLocalData.adsorptionCounter].delta_pression))
 		{
 			if (!PompeEstActive()) {
 				EVActivate(1);
@@ -211,7 +211,7 @@ void Automation::SubstepsAdsorption()
 			messageHandler.DisplayMessage(MESSAGE_ADSORPTION_D_PI, experimentLocalData.pressureInitial);
 			messageHandler.DisplayMessage(MESSAGE_ADSORPTION_D_PF, experimentLocalData.pressureFinal);
 			messageHandler.DisplayMessage(MESSAGE_ADSORPTION_D_DP, experimentLocalData.pressureFinal - experimentLocalData.pressureInitial);
-			messageHandler.DisplayMessage(MESSAGE_ADSORPTION_D_DPREQ, (experimentLocalData.dataAdsorption[experimentLocalData.adsorptionCounter].delta_pression));
+			messageHandler.DisplayMessage(MESSAGE_ADSORPTION_D_DPREQ, (experimentLocalSettings.dataAdsorption[experimentLocalData.adsorptionCounter].delta_pression));
 			messageHandler.DisplayMessage(MESSAGE_INJECTION_END, experimentLocalData.injectionAttemptCounter);
 
 			ValveOpenClose(8);
@@ -238,7 +238,7 @@ void Automation::SubstepsAdsorption()
 		ValveOpen(5);
 
 		// Wait for adsorption
-		experimentLocalData.timeToEquilibrate = experimentLocalData.dataAdsorption[experimentLocalData.adsorptionCounter].temps_adsorption;		// Set the time to wait
+		experimentLocalData.timeToEquilibrate = experimentLocalSettings.dataAdsorption[experimentLocalData.adsorptionCounter].temps_adsorption;		// Set the time to wait
 		experimentLocalData.experimentStage = STAGE_EQUILIBRATION;																				// Go to equilibration stage
 		experimentLocalData.experimentEquilibrationStatus = STEP_STATUS_START;																	// Also reset substage
 		break;

@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include "Mesure.h"
+#include "ExperimentData.h"
 
 class CKaollaDoc : public CDocument
 {
@@ -54,7 +54,7 @@ protected:
 
 public:
 	LRESULT GraphInitialize(WPARAM wParam, LPARAM lParam);
-	void GraphAddMeasurement(ExperimentResults NouvellesMesures);
+	void GraphAddMeasurement(ExperimentData NouvellesMesures);
 	void GraphAddMeasurement(int num, double tps, double calorimetre, double bpression, double hpression, double temp_calo, double temp_cage, double temp_piece);
 	void GraphAddMeasurement(double tps, double calorimetre, double bpression, double hpression, double temp_calo, double temp_cage, double temp_piece);
 	

@@ -7,7 +7,7 @@ std::string Automation::NomFichier(std::string extension, bool entete)
 	// Create buffer
 	char fileNameBuffer[255];
 	// Put path in buffer
-	sprintf_s(fileNameBuffer, "%s", experimentLocalData.dataGeneral.chemin.c_str());
+	sprintf_s(fileNameBuffer, "%s", experimentLocalSettings.dataGeneral.chemin.c_str());
 
 	// Check for validity, if not, put the file in the C: drive
 	if (!PathIsDirectory(_T(fileNameBuffer)))
@@ -18,20 +18,20 @@ std::string Automation::NomFichier(std::string extension, bool entete)
 	else
 	{
 		// Check if the user field is empty
-		if (strcmp(experimentLocalData.dataGeneral.experimentateur.surnom.c_str(), ""))
+		if (strcmp(experimentLocalSettings.dataGeneral.experimentateur.surnom.c_str(), ""))
 		{
-			sprintf_s(fileNameBuffer, "%s/Nouveau_Fichier", experimentLocalData.dataGeneral.chemin.c_str());
+			sprintf_s(fileNameBuffer, "%s/Nouveau_Fichier", experimentLocalSettings.dataGeneral.chemin.c_str());
 		}
 		else
 		{
 			// Check if the user directory exists, if not, create it
-			sprintf_s(fileNameBuffer, "%s/%s", experimentLocalData.dataGeneral.chemin.c_str(), experimentLocalData.dataGeneral.experimentateur.surnom.c_str());
+			sprintf_s(fileNameBuffer, "%s/%s", experimentLocalSettings.dataGeneral.chemin.c_str(), experimentLocalSettings.dataGeneral.experimentateur.surnom.c_str());
 			if (!PathIsDirectory(_T(fileNameBuffer))) {
 				CreateDirectory(_T(fileNameBuffer), NULL);
 			}
 			// Check if the sample directory exists
-			sprintf_s(fileNameBuffer, "%s/%s/%s", experimentLocalData.dataGeneral.chemin.c_str(), experimentLocalData.dataGeneral.experimentateur.surnom.c_str(),
-				experimentLocalData.dataGeneral.nom_echantillon.c_str());
+			sprintf_s(fileNameBuffer, "%s/%s/%s", experimentLocalSettings.dataGeneral.chemin.c_str(), experimentLocalSettings.dataGeneral.experimentateur.surnom.c_str(),
+				experimentLocalSettings.dataGeneral.nom_echantillon.c_str());
 		}
 		// Check if the full path exists, if not create it
 		if (!PathIsDirectory(_T(fileNameBuffer))) {
@@ -42,11 +42,11 @@ std::string Automation::NomFichier(std::string extension, bool entete)
 	// Finally store the entire path including the file name and return it
 	if (entete)
 	{
-		sprintf_s(fileNameBuffer, "%s/%s(entete).%s", fileNameBuffer, experimentLocalData.dataGeneral.fichier.c_str(), extension.c_str());
+		sprintf_s(fileNameBuffer, "%s/%s(entete).%s", fileNameBuffer, experimentLocalSettings.dataGeneral.fichier.c_str(), extension.c_str());
 	}
 	else
 	{
-		sprintf_s(fileNameBuffer, "%s/%s.%s", fileNameBuffer, experimentLocalData.dataGeneral.fichier.c_str(), extension.c_str());
+		sprintf_s(fileNameBuffer, "%s/%s.%s", fileNameBuffer, experimentLocalSettings.dataGeneral.fichier.c_str(), extension.c_str());
 	}
 	string nom_fichier = fileNameBuffer;
 	return nom_fichier;
@@ -116,13 +116,13 @@ string Automation::EnteteGeneral()
 {
 	ostringstream chaine_char("", ios_base::app);
 
-	chaine_char << "Experimentateur : " << experimentLocalData.dataGeneral.experimentateur.nom << finl;
-	chaine_char << "Date : " << experimentLocalData.dataGeneral.date_experience << finl;
-	chaine_char << "Gaz : " << experimentLocalData.dataGeneral.gaz.symbole << finl;
-	chaine_char << "Echantillon : " << experimentLocalData.dataGeneral.nom_echantillon << finl;
-	chaine_char << "Masse : " << experimentLocalData.dataGeneral.masse_echantillon << " g" << finl;
-	chaine_char << "Température de l'expérience : " << experimentLocalData.dataGeneral.temperature_experience << " °C" << finl;
-	chaine_char << "Commentaires : " << experimentLocalData.dataGeneral.commentaires << finl;
+	chaine_char << "Experimentateur : " << experimentLocalSettings.dataGeneral.experimentateur.nom << finl;
+	chaine_char << "Date : " << experimentLocalSettings.dataGeneral.date_experience << finl;
+	chaine_char << "Gaz : " << experimentLocalSettings.dataGeneral.gaz.symbole << finl;
+	chaine_char << "Echantillon : " << experimentLocalSettings.dataGeneral.nom_echantillon << finl;
+	chaine_char << "Masse : " << experimentLocalSettings.dataGeneral.masse_echantillon << " g" << finl;
+	chaine_char << "Température de l'expérience : " << experimentLocalSettings.dataGeneral.temperature_experience << " °C" << finl;
+	chaine_char << "Commentaires : " << experimentLocalSettings.dataGeneral.commentaires << finl;
 	chaine_char << "Calorimètre : " << GetNomCalo() << finl;
 
 	return chaine_char.str();
@@ -133,13 +133,13 @@ string Automation::EnteteGeneralCSV()
 	ostringstream chaine_char("", ios_base::app);
 
 	// Ecriture des noms des colonnes
-	chaine_char << "Experimentateur; " << experimentLocalData.dataGeneral.experimentateur.nom << endl;
-	chaine_char << "Date;" << experimentLocalData.dataGeneral.date_experience << endl;
-	chaine_char << "Gaz;" << experimentLocalData.dataGeneral.gaz.symbole << endl;
-	chaine_char << "Echantillon;" << experimentLocalData.dataGeneral.nom_echantillon << endl;
-	chaine_char << "Masse;" << experimentLocalData.dataGeneral.masse_echantillon << ";g" << endl;
-	chaine_char << "Température de l'expérience;" << experimentLocalData.dataGeneral.temperature_experience << ";°C" << endl;
-	chaine_char << "Commentaires;" << experimentLocalData.dataGeneral.commentaires << endl;
+	chaine_char << "Experimentateur; " << experimentLocalSettings.dataGeneral.experimentateur.nom << endl;
+	chaine_char << "Date;" << experimentLocalSettings.dataGeneral.date_experience << endl;
+	chaine_char << "Gaz;" << experimentLocalSettings.dataGeneral.gaz.symbole << endl;
+	chaine_char << "Echantillon;" << experimentLocalSettings.dataGeneral.nom_echantillon << endl;
+	chaine_char << "Masse;" << experimentLocalSettings.dataGeneral.masse_echantillon << ";g" << endl;
+	chaine_char << "Température de l'expérience;" << experimentLocalSettings.dataGeneral.temperature_experience << ";°C" << endl;
+	chaine_char << "Commentaires;" << experimentLocalSettings.dataGeneral.commentaires << endl;
 	chaine_char << "Calorimètre;" << GetNomCalo() << endl;
 
 	return chaine_char.str();

@@ -39,13 +39,13 @@ void CKaollaView::OnBnClickedLancer()
 	if (dialogExperimentType->DoModal() == IDOK)
 	{
 		// Save user choice
-		experimentData->experimentType = dialogExperimentType->TypeExperience;
+		experimentSettings->experimentType = dialogExperimentType->TypeExperience;
 
 		// Create the experiment parameter window
 		ExperimentPropertySheet * dialogExperimentProperties = new ExperimentPropertySheet(_T(""));
 
 		// Instantiate the correct type of dialog
-		switch (experimentData->experimentType)
+		switch (experimentSettings->experimentType)
 		{
 		case EXPERIMENT_TYPE_MANUAL:
 			dialogExperimentProperties->SetProprietiesManual();
@@ -120,14 +120,14 @@ void CKaollaView::OnBnClickedReprise()
 
 // Copy all data from a property sheet dialog to the local object
 void CKaollaView::GetExperimentData(ExperimentPropertySheet * dialogExperimentProperties) {
-	experimentData->dataGeneral = dialogExperimentProperties->m_general.allSettings;
-	if (experimentData->experimentType == EXPERIMENT_TYPE_AUTO)
+	experimentSettings->dataGeneral = dialogExperimentProperties->m_general.allSettings;
+	if (experimentSettings->experimentType == EXPERIMENT_TYPE_AUTO)
 	{
-		experimentData->dataDivers = dialogExperimentProperties->m_divers.allSettings;
+		experimentSettings->dataDivers = dialogExperimentProperties->m_divers.allSettings;
 		for (size_t i = 0; i < dialogExperimentProperties->adsorptionTabs.size(); i++)
 		{
-			experimentData->dataAdsorption.push_back(dialogExperimentProperties->adsorptionTabs[i]->allSettings);
+			experimentSettings->dataAdsorption.push_back(dialogExperimentProperties->adsorptionTabs[i]->allSettings);
 		}
-		experimentData->dataDesorption = dialogExperimentProperties->m_desorption.allSettings;
+		experimentSettings->dataDesorption = dialogExperimentProperties->m_desorption.allSettings;
 	}
 }

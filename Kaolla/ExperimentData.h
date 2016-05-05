@@ -1,7 +1,6 @@
 #pragma once
-
-#include "Classes_experiences.h"
-#include <vector>
+#ifndef EXPERIMENT_DATA
+#define EXPERIMENT_DATA
 
 class ExperimentData
 {
@@ -12,16 +11,7 @@ public:
 // Variables
 //**************************************************
 
-	// Critical Section
-	CRITICAL_SECTION criticalSection;
-
-	// Main GUI handle
-	HWND GUIhandle;
-
-	// General parameters
 	bool experimentInProgress;
-	bool dataModified;
-	int experimentType;
 
 	// Parameters for storing where program has reached
 
@@ -31,7 +21,7 @@ public:
 	int experimentStepStatus;				// Current step status, for each step this can be STARTING, ENDING or UNDERWAY
 	int experimentEquilibrationStatus;		// 
 	int experimentSubstepStage;				// Current dose substep, can be at injection, equilibration etc
-	int experimentMeasurement;				// Number of measurmements made, happen every T_BETWEEN_MEASUREMENT
+	int experimentMeasurements;				// Number of measurmements made, happen every T_BETWEEN_MEASUREMENT
 	int verificationStep;					// The security check steps
 
 	// Time
@@ -42,13 +32,6 @@ public:
 	int injectionAttemptCounter;			// Counter for the injections
 	int adsorptionCounter;					// Counter for the number of adsorption settings inputted by the user
 	int desorptionCounter;					// Counter for the number of desorption settings inputted by the user
-
-	// Experimental data storage
-
-	Donnees_General dataGeneral;
-	Donnees_Divers dataDivers;
-	vector<Donnees_Doses> dataAdsorption;
-	Donnees_Desorption dataDesorption;
 
 	// Text
 	CString textMessages;
@@ -74,3 +57,6 @@ public:
 	ExperimentData & ExperimentData::operator=(const ExperimentData * p);
 };
 
+typedef CArray<ExperimentData, ExperimentData*> CArrayMesure;
+
+#endif

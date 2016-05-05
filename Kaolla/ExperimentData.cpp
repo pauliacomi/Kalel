@@ -3,13 +3,15 @@
 
 
 ExperimentData::ExperimentData()
-	: experimentStage(0)
+	: experimentInProgress(false)
+
+	, experimentStage(0)
 	, experimentPreviousStage(0)
 	, experimentDose(0)
 	, experimentStepStatus(0)
 	, experimentEquilibrationStatus(0)
 	, experimentSubstepStage(0)
-	, experimentMeasurement(0)
+	, experimentMeasurements(0)
 	, verificationStep(0)
 
 	, experimentTime(0)
@@ -31,31 +33,18 @@ ExperimentData::ExperimentData()
 	, temperatureCage(0)
 	, temperatureRoom(0)
 
-	, GUIhandle(NULL)
 {
-	// Initialisation of the critical section
-	InitializeCriticalSection(&criticalSection);
 }
 
 
 ExperimentData::~ExperimentData()
 {
-	// Destroy the critical sections
-	DeleteCriticalSection(&criticalSection);
 }
 
 ExperimentData & ExperimentData::operator=(const ExperimentData * p) {
 	if (this != p) {  // make sure not same object
 
-		GUIhandle = p->GUIhandle;
-
-		experimentInProgress = p->experimentInProgress;
-		experimentType = p->experimentType;
 		experimentDose = p->experimentDose;
-
-		dataGeneral = p->dataGeneral;
-		dataDivers = p->dataDivers;
-		dataDesorption = p->dataDesorption;
 
 		resultCalorimeter = p->resultCalorimeter;
 		pressureHigh = p->pressureHigh;

@@ -13,17 +13,17 @@ void Automation::InitialisationSecurityManual()
 
 void Automation::SecuriteHautePression()
 {
-	if (experimentLocalData.experimentType == EXPERIMENT_TYPE_MANUAL)
+	if (experimentLocalSettings.experimentType == EXPERIMENT_TYPE_MANUAL)
 		SecuriteHautePressionManuelle();
-	if (experimentLocalData.experimentType == EXPERIMENT_TYPE_AUTO)
+	if (experimentLocalSettings.experimentType == EXPERIMENT_TYPE_AUTO)
 		SecuriteHautePressionAuto();
 }
 
 void Automation::SecuriteTemperatures()
 {
-	if (experimentLocalData.experimentType == EXPERIMENT_TYPE_MANUAL)
+	if (experimentLocalSettings.experimentType == EXPERIMENT_TYPE_MANUAL)
 		SecuriteTemperaturesManuelle();
-	if (experimentLocalData.experimentTime == EXPERIMENT_TYPE_AUTO)
+	if (experimentLocalSettings.experimentType == EXPERIMENT_TYPE_AUTO)
 		SecuriteTemperaturesAuto();
 }
 
@@ -59,7 +59,7 @@ void Automation::SecuriteHautePressionManuelle()
 void Automation::SecuriteTemperaturesManuelle()
 {
 	// Check calorimeter temperature high
-	if (experimentLocalData.temperatureCalo >= experimentLocalData.dataGeneral.temperature_experience + securite_temperature)
+	if (experimentLocalData.temperatureCalo >= experimentLocalSettings.dataGeneral.temperature_experience + securite_temperature)
 	{
 		if (!security_TemperatureHigh) {
 			// Set the flag
@@ -82,7 +82,7 @@ void Automation::SecuriteTemperaturesManuelle()
 		}
 
 	// Check calorimeter temperature low
-	if (experimentLocalData.temperatureCalo <= experimentLocalData.dataGeneral.temperature_experience - securite_temperature)
+	if (experimentLocalData.temperatureCalo <= experimentLocalSettings.dataGeneral.temperature_experience - securite_temperature)
 	{
 		if (!security_TemperatureLow) {
 			// Set the flag
@@ -143,14 +143,14 @@ void Automation::SecuriteTemperaturesAuto()
 	{
 		if (experimentLocalData.experimentStage != STAGE_UNDER_VACUUM)
 		{
-			if (experimentLocalData.temperatureCalo >= experimentLocalData.dataGeneral.temperature_experience + securite_temperature)
+			if (experimentLocalData.temperatureCalo >= experimentLocalSettings.dataGeneral.temperature_experience + securite_temperature)
 			{
-				messageHandler.DisplayMessage(MESSAGE_WARNING_THIGH_STOP, experimentLocalData.dataGeneral.temperature_experience + securite_temperature);
+				messageHandler.DisplayMessage(MESSAGE_WARNING_THIGH_STOP, experimentLocalSettings.dataGeneral.temperature_experience + securite_temperature);
 				g_flagAskShutdown = ARRET_URGENCE_TCH;
 			}
-			if (experimentLocalData.temperatureCalo <= experimentLocalData.dataGeneral.temperature_experience - securite_temperature)
+			if (experimentLocalData.temperatureCalo <= experimentLocalSettings.dataGeneral.temperature_experience - securite_temperature)
 			{
-				messageHandler.DisplayMessage(MESSAGE_WARNING_TLOW_STOP, experimentLocalData.dataGeneral.temperature_experience - securite_temperature);
+				messageHandler.DisplayMessage(MESSAGE_WARNING_TLOW_STOP, experimentLocalSettings.dataGeneral.temperature_experience - securite_temperature);
 				g_flagAskShutdown = ARRET_URGENCE_TCB;
 			}
 		}
