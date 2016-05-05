@@ -156,10 +156,43 @@ LRESULT CKaollaDoc::GraphInitialize(WPARAM wParam, LPARAM lParam)
 }
 
 // Add a measurement to the graph -- Regular
-void CKaollaDoc::GraphAddMeasurement(ExperimentData NouvellesMesures)
+void CKaollaDoc::GraphAddMeasurement(ExperimentData expData)
 {
-	int lastMeasurement = m_TableauMesures.GetUpperBound();
-	m_TableauMesures[lastMeasurement] = NouvellesMesures;
+	int lastMeasurement;
+
+	if (m_TableauMesures.IsEmpty())
+	{
+		m_TableauMesures.SetSize(1);
+
+		//Set the maximums and minimums
+
+		maxPressure = max(expData.pressureLow, expData.pressureHigh);
+		minPressure = min(expData.pressureLow, expData.pressureHigh);
+
+		maxCalo = expData.resultCalorimeter;
+		minCalo = expData.resultCalorimeter;
+	}
+	else
+	{
+		lastMeasurement = m_TableauMesures.GetUpperBound();
+
+		if (expData.experimentTime > m_TableauMesures[lastMeasurement].experimentTime) {
+
+		maxPressure = max(maxPressure, expData.pressureLow);
+		maxPressure = max(maxPressure, expData.pressureHigh);
+		
+		minPressure = min(minPressure, expData.pressureLow);
+		minPressure = min(minPressure, expData.pressureHigh);
+		
+		maxCalo = max(maxCalo, expData.resultCalorimeter);
+		minCalo = min(minCalo, expData.resultCalorimeter);
+
+		m_TableauMesures.SetSize(lastMeasurement + 2);
+		m_TableauMesures[lastMeasurement+1] = expData;
+
+		}
+	}
+
 }
 
 // Add a measurement to the graph -- Overload 1

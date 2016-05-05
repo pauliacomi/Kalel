@@ -16,6 +16,9 @@
 CKaollaView* pKaollaView;
 CKaollaDoc* pKaollaDoc;
 
+// Main class that deals with the automatic functionality
+Automation * automation;
+
 // Pointers for interfacing with the valves and temperature
 CVannes* pVanne;
 CTemperature* pTemperature;
@@ -29,15 +32,11 @@ CWinThread * m_threadSampleUnderVaccuum;
 CWinThread * m_threadBottleUnderVaccuum;
 CWinThread * m_threadChangeBottle;
 
-// Main class that deals with the automatic functionality
-Automation automation;
-
 
 // --------- Initialisation and destruction -------
 
 ThreadManager::ThreadManager(LPVOID pParam, ExperimentSettings * expD)
 	: m_threadMainControlLoop(NULL)		// should delete this 
-	, m_hShutdownEvent(::CreateEvent(NULL, TRUE, FALSE, NULL))
 	, m_hStartMainThreadEvent(::CreateEvent(NULL, TRUE, FALSE, NULL))
 {
 	// Create the required objects. Might be better to be done in the manip directly
@@ -62,7 +61,6 @@ ThreadManager::~ThreadManager()
 
 	// signal the thread to exit
 	ShutdownThread();
-	CloseHandle(m_hShutdownEvent);
 	CloseHandle(m_hStartMainThreadEvent);
 }
 
@@ -81,6 +79,8 @@ HRESULT ThreadManager::CreateMainThread(LPVOID pParam)
 }
 
 HRESULT ThreadManager::SetStartEvent() {
+
+
 
 	HRESULT hr = S_OK;
 
@@ -101,7 +101,7 @@ HRESULT ThreadManager::ShutdownThread()
 	if (NULL != m_threadMainControlLoop)
 	{
 		// Signal the thread to exit
-		::SetEvent(m_hShutdownEvent);
+		::SetEvent(automation->h_eventShutdown);
 
 		// thread may be suspended, so resume before shutting down
 		::ResumeThread(m_threadMainControlLoop);
@@ -114,13 +114,12 @@ HRESULT ThreadManager::ShutdownThread()
 			hr = S_FALSE;
 		}
 
-		// Close the handle and NULL it out
-		::CloseHandle(m_threadMainControlLoop);
+		// NULL out pointer
 		m_threadMainControlLoop = NULL;
 	}
 
 	// Reset the shutdown event
-	ResetEvent(m_hShutdownEvent);
+	ResetEvent(automation->h_eventShutdown);
 
 	return hr;
 }
@@ -142,18 +141,18 @@ UINT ThreadManager::ThreadMainWorkerStarter(LPVOID pParam)
 void ThreadManager::ThreadMainWorker()
 {
 	// Create the class to deal with the automatic functionality
-	Automation automation;
-	automation.SetVannes(pVanne);
-	automation.SetTemperature(pTemperature);
+	automation = new Automation;
+	automation->SetVannes(pVanne);
+	automation->SetTemperature(pTemperature);
 
 	// Wait for the required event
 	WaitForSingleObject(m_hStartMainThreadEvent, INFINITE);
 
 	// Set data
-	automation.SetDataPointer(experimentSettings);
+	automation->SetDataPointer(experimentSettings);
 
 	// Launch functionality
-	automation.Execution();
+	automation->Execution();
 
 	// Reset the shutdown event
 	::ResetEvent(m_hStartMainThreadEvent);

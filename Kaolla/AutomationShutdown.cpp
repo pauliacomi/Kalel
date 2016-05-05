@@ -80,7 +80,6 @@ void Automation::ShutdownDisplay()
 
 void Automation::Pause()
 {
-	TRACE("pause /n");
 	switch (::WaitForSingleObject(h_eventShutdown, 500)) // (ms) Poll time
 	{
 	case WAIT_OBJECT_0:

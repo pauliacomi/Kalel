@@ -139,8 +139,8 @@ void CKaollaView::OnTimer(UINT nIDEvent)
 	SetDlgItemText(IDC_TEMPS, m_StrTemps);
 
 	// Write graph
-	// GetDocument()->GraphAddMeasurement(experimentData.experimentTime, experimentData.resultCalorimeter , 0, 1000, experimentData.temperatureCalo, experimentData.temperatureCage, experimentData.temperatureRoom);
-	
+	GetDocument()->GraphAddMeasurement(experimentData);
+
 	GetDocument()->UpdateAllViews(this);
 
 	CFormView::OnTimer(nIDEvent);	// Call base class handler.
