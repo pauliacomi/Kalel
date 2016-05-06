@@ -5,6 +5,13 @@ void Automation::StageEquilibration()
 {
 	switch (experimentLocalData.experimentEquilibrationStatus)
 	{
+
+	case STEP_STATUS_START:
+		timerMeasurement.TopChrono();													// Start the timer to record time of the baseline
+		experimentLocalData.experimentEquilibrationStatus = STEP_STATUS_INPROGRESS;		// Set next step
+		messageHandler.DisplayMessage(MESSAGE_EQUILIBRATION_STARTED);					// Let GUI know the step change
+		break;
+
 	case STEP_STATUS_INPROGRESS:
 		// Should display time here
 
@@ -35,12 +42,6 @@ void Automation::StageEquilibration()
 		g_flagState = INACTIVE;
 		break;
 
-	case STEP_STATUS_START:
-		timerMeasurement.TopChrono();													// Start the timer to record time of the baseline
-		experimentLocalData.experimentEquilibrationStatus = STEP_STATUS_INPROGRESS;		// Set next step
-		messageHandler.DisplayMessage(MESSAGE_EQUILIBRATION_STARTED);					// Let GUI know the step change
-		break;
-
 	case STEP_STATUS_END:
 		experimentLocalData.experimentEquilibrationStatus = STEP_STATUS_START;			// Set next step
 		if (experimentLocalData.experimentPreviousStage == STAGE_UNDEF)
@@ -61,6 +62,15 @@ void Automation::StageAdsorption()
 {
 	switch (experimentLocalData.experimentStepStatus)
 	{
+	case STEP_STATUS_START:
+		experimentLocalData.experimentStepStatus = STEP_STATUS_INPROGRESS;												// Set next step
+		messageHandler.DisplayMessage(MESSAGE_ADSORPTION_STAGE_START, experimentLocalData.experimentStage);				// Let GUI know the step change
+
+		ControlMechanismsCloseAll();																					// Close all valves
+		ThreadMeasurement();																							// Start threads and read the data
+		experimentLocalData.pressureInitial = experimentLocalData.pressureHigh;											// Set the initial pressure
+		break;
+
 	case STEP_STATUS_INPROGRESS:
 
 		// Start the timer to record time of the measurement
@@ -94,15 +104,6 @@ void Automation::StageAdsorption()
 		
 		// Wait
 		g_flagState = INACTIVE;
-		break;
-
-	case STEP_STATUS_START:
-		experimentLocalData.experimentStepStatus = STEP_STATUS_INPROGRESS;												// Set next step
-		messageHandler.DisplayMessage(MESSAGE_ADSORPTION_STAGE_START, experimentLocalData.experimentStage);				// Let GUI know the step change
-
-		ControlMechanismsCloseAll();																					// Close all valves
-		ThreadMeasurement();																							// Start threads and read the data
-		experimentLocalData.pressureInitial = experimentLocalData.pressureHigh;											// Set the initial pressure
 		break;
 
 	case STEP_STATUS_END:

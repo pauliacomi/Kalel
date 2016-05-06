@@ -197,10 +197,6 @@ bool Automation::ExecutionManual()
 
 bool Automation::ExecutionAuto()
 {
-	
-
-	experimentLocalData.timeToEquilibrate = experimentLocalSettings.dataDivers.temps_ligne_base;		// Set the time to wait
-
 	switch (experimentLocalData.experimentStage)
 	{
 	case STAGE_VERIFICATIONS:

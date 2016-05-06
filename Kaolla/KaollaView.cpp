@@ -30,6 +30,9 @@ BEGIN_MESSAGE_MAP(CKaollaView, CFormView)
 	ON_MESSAGE(WM_EXCHANGEDATA, &CKaollaView::ExchangeData)							// Calls to save the incoming data from the thread
 	ON_MESSAGE(WM_THREADFINISHEDREG, &CKaollaView::OnRegularThreadFinished)			// Calls when manual functionality ends
 	ON_MESSAGE(WM_UPDATEBUTTONS, &CKaollaView::OnThreadRequestButtonUpdate)			// Calls to update a specific button pair and associated display
+	ON_MESSAGE(WM_DISPLAYMESSAGE, &CKaollaView::AffichageMessages)					// Displays a message from the automation thread 
+	ON_MESSAGE(WM_DISPLAYMESSAGEBOX, &CKaollaView::MessageBoxAlert)					// Displays an messageBOX to alert user of something
+	ON_MESSAGE(WM_DISPLAYMESSAGEBOXCONF, &CKaollaView::MessageBoxConfirmation)		// Displays an messageBOX to or ask user for confirmation
 
 	// Messages from the manip class
 	//ON_MESSAGE(WM_GRAPHRESET, &CKaollaDoc::InitializeGraph)
@@ -38,11 +41,9 @@ BEGIN_MESSAGE_MAP(CKaollaView, CFormView)
 	//ON_MESSAGE(WM_GRAPHDATAAUTOSTEP, &CKaollaDoc::Graph)
 
 	ON_MESSAGE(WM_DISPLAYMEASUREMENT, &CKaollaView::AffichageMesures)
-	ON_MESSAGE(WM_DISPLAYMESSAGE, &CKaollaView::AffichageMessages)
 	ON_MESSAGE(WM_DISPLAYADDMESSAGE, &CKaollaView::RajoutAffichageMessages)
 	ON_MESSAGE(WM_DISPLAYSTEP, &CKaollaView::AffichageEtape)
 	ON_MESSAGE(WM_DISPLAYADDSTEP, &CKaollaView::RajoutAffichageEtape)
-	ON_MESSAGE(WM_DISPLAYMESSAGEBOX, &CKaollaView::MessageBoxConfirmation)
 	ON_MESSAGE(WM_UPDATEDISPLAY, &CKaollaView::MiseAJour)
 	ON_MESSAGE(WM_UNLOCKMENU, &CKaollaView::DebloqueMenu)
 	ON_MESSAGE(WM_ENABLESTARTBUTTON, &CKaollaView::UnlockStartButton)

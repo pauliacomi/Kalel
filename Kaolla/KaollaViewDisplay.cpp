@@ -12,11 +12,14 @@
 // Write on the dialog box reserved for new messages
 LRESULT CKaollaView::AffichageMessages(WPARAM wParam, LPARAM lParam)
 {
-	CString message;
+	// Get the incoming pointer and cast it as a smart pointer
+	std::auto_ptr<CString> message(reinterpret_cast<CString*>(lParam));
 
-	// On rajoute le nouveau message 
-	m_StrEditMessages += message;
-		SetDlgItemText(IDC_EDIT_MESSAGES,m_StrEditMessages);
+	// Add the new message
+	m_StrEditMessages += *message;
+	m_StrEditMessages += "\r\n";
+	SetDlgItemText(IDC_EDIT_MESSAGES,m_StrEditMessages);
+
 	// pEditMessages : le CEdit lié à m_StrEditMessages
 	// On écrit dans l'Edit le contenu de m_StrEditMessages
 	pEditMessages.GetWindowText(m_StrEditMessages);
@@ -33,7 +36,9 @@ LRESULT CKaollaView::AffichageMessages(CString message)
 {
 	// On rajoute le nouveau message 
 	m_StrEditMessages += message;
+	m_StrEditMessages += "\r\n";
 	SetDlgItemText(IDC_EDIT_MESSAGES, m_StrEditMessages);
+
 	// pEditMessages : le CEdit lié à m_StrEditMessages
 	// On écrit dans l'Edit le contenu de m_StrEditMessages
 	pEditMessages.GetWindowText(m_StrEditMessages);
@@ -148,7 +153,7 @@ void CKaollaView::OnTimer(UINT nIDEvent)
 
 // ------------ Dialog Box ----
 
-LRESULT CKaollaView::MessageBoxConfirmation(WPARAM wParam, LPARAM lParam)
+LRESULT CKaollaView::MessageBoxAlert(WPARAM wParam, LPARAM lParam)
 {
 	// Get the incoming pointer and cast it as a smart pointer
 	std::auto_ptr<CString> message(reinterpret_cast<CString*>(lParam));
@@ -166,5 +171,29 @@ LRESULT CKaollaView::MessageBoxConfirmation(WPARAM wParam, LPARAM lParam)
 			continuer=false;
 		
 	}while(continuer);
+	return result;
+}
+
+LRESULT CKaollaView::MessageBoxConfirmation(WPARAM wParam, LPARAM lParam)
+{
+	// Get the incoming pointer and cast it as a smart pointer
+	std::auto_ptr<CString> message(reinterpret_cast<CString*>(lParam));
+
+	int result;
+	bool continuer = true;
+	do {
+		result = AfxMessageBox(*message, wParam);
+		if (result == IDCANCEL || result == IDNO)
+		{
+			if (AfxMessageBox(PROMPT_RUNNINGEXP, MB_YESNO | MB_ICONWARNING, 0) == IDYES)
+				continuer = false;
+		}
+		else {
+			if (result == IDYES || result == IDOK) {
+				threadManager->StartThread();
+				continuer = false;
+			}
+		}
+	} while (continuer);
 	return result;
 }

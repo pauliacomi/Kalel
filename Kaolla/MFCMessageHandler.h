@@ -48,8 +48,7 @@ public:
 	BOOL DisplaAddStep(CString pParam);
 
 	// Messageboxes
-	BOOL DisplayMessageBox(int message, UINT nType, float pFloat = default_val);
-
+	BOOL DisplayMessageBox(int message, UINT nType, bool blocking, double pDouble1 = default_val, double pDouble2 = default_val);
 
 	// What i really need
 	void ExperimentStart();

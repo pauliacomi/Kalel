@@ -184,21 +184,37 @@ BOOL MFCMessageHandler::DisplayMessage(int pParam, int pInt1, int pInt2, double 
 	return 0;
 }
 
-BOOL MFCMessageHandler::DisplayMessageBox(int pParam, UINT nType, float pFloat)
+BOOL MFCMessageHandler::DisplayMessageBox(int pParam, UINT nType, bool blocking, double pDouble1, double pDouble2)
 {
 	// Create a new pointer 
 	CString * message = new CString;
-	if (pFloat != default_val)
+
+	// Format the string. Yes I know it's not the best solution.
+	if (pDouble1 != default_val)
 	{
-		message->Format(pParam, pFloat);
+		if (pDouble2 != default_val){
+			message->Format(pParam, pDouble1);
+		}
+		else {
+			message->Format(pParam, pDouble1, pDouble2);
+		}
 	}
 	else
 	{
 		message->Format(pParam);
 	}
 
-	// Other thread is now responsible for deleting this object
-	::PostMessage(windowHandle, WM_DISPLAYMESSAGEBOX, nType, (LPARAM)message);
+	// Check if the message box is supposed to alert the user or ask for input
+	if (blocking)
+	{
+		// Other thread is now responsible for deleting this object
+		::PostMessage(windowHandle, WM_DISPLAYMESSAGEBOXCONF, nType, (LPARAM)message);
+	}
+	else
+	{
+		// Other thread is now responsible for deleting this object
+		::PostMessage(windowHandle, WM_DISPLAYMESSAGEBOX, nType, (LPARAM)message);
+	}
 
 	return 0;
 }

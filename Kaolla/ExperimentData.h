@@ -26,7 +26,7 @@ public:
 
 	// Time
 	float experimentTime;					// Time from the experiment start
-	float timeToEquilibrate;				// Number of measurmements made, happen every T_BETWEEN_MEASUREMENT
+	float timeToEquilibrate;				// The amount of time that the waiting + recording functionality will run before returning to an active state
 
 	// Counters
 	int injectionAttemptCounter;			// Counter for the injections

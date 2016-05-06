@@ -125,6 +125,7 @@ public:
 	LRESULT AffichageEtape(WPARAM wParam, LPARAM lParam);
 	LRESULT RajoutAffichageEtape(WPARAM wParam, LPARAM lParam);
 	LRESULT ExchangeData(WPARAM wParam, LPARAM lParam);
+	LRESULT MessageBoxAlert(WPARAM wParam, LPARAM lParam);
 	LRESULT MessageBoxConfirmation(WPARAM wParam, LPARAM);
 
 	void OnTimer(UINT nIDEvent);	//timer for window update

@@ -108,6 +108,11 @@ void Automation::Pause()
 		break;
 	case WAIT_OBJECT_0 + 1:
 		g_flagState = ACTIVE;
+		if (experimentLocalData.experimentInProgress)
+		{
+			messageHandler.DisplayMessage(MESSAGE_EXPRESUME);
+			timerExperiment.RepriseTemps();
+		}
 		::ResetEvent(h_eventResume);	// Reset the event
 		break;
 	default:
@@ -133,6 +138,11 @@ void Automation::Inactive()
 		break;
 	case WAIT_OBJECT_0 + 1:
 		g_flagState = PAUSE;
+		if (experimentLocalData.experimentInProgress)
+		{
+			messageHandler.DisplayMessage(MESSAGE_EXPPAUSE);
+			timerExperiment.ArretTemps();
+		}
 		::ResetEvent(h_eventPause);	// Reset the event
 		break;
 	default:
@@ -140,14 +150,3 @@ void Automation::Inactive()
 		break;
 	}
 }
-//if (g_flagState == PAUSE)
-//{
-//	messageHandler.DisplayMessage(_T("Pause\r\n"));
-//	messageHandler.DisplaAddStep(_T("  |  Pause"));
-//	temps_intermediaire.ArretTemps();
-//	WaitForSingleObject(EventReprise, INFINITE);
-//	//UN_GREY_OUT
-//	temps_intermediaire.RepriseTemps();
-//	messageHandler.DisplayMessage(_T("Reprise\r\n"));
-//	messageHandler.DisplayPreviousStep();
-//}

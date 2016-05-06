@@ -7,28 +7,22 @@ void Automation::Verifications()
 	switch (experimentLocalData.verificationStep)
 	{
 	case STEP_VERIFICATIONS_SECURITY:
-		experimentLocalData.verificationStep = STEP_VERIFICATIONS_VALVES;
 		VerificationSecurity();
-		experimentLocalData.experimentStage = PAUSE;
 		break;
 	case STEP_VERIFICATIONS_VALVES:
-		experimentLocalData.verificationStep = STEP_VERIFICATIONS_PRESSURE;
 		VerificationValves();
 		break;
 	case STEP_VERIFICATIONS_PRESSURE:
-		experimentLocalData.verificationStep = STEP_VERIFICATIONS_TEMPERATURE;
 		VerificationResidualPressure();
 		break;
 	case STEP_VERIFICATIONS_TEMPERATURE:
-		experimentLocalData.experimentStage = STAGE_EQUILIBRATION;
-		experimentLocalData.verificationStep = STEP_VERIFICATIONS_COMPLETE;
 		VerificationTemperature();
 		break;
+	case STEP_VERIFICATIONS_COMPLETE:
+		VerificationComplete();
+		break;
 	}
-
-	g_flagState = STOP;
 }
-
 
 
 int Automation::VerificationSecurity()
@@ -36,27 +30,23 @@ int Automation::VerificationSecurity()
 	bool secu = GetActivationSecurite();
 	if (!secu)
 	{
-		// should implement a pause functionality to put here
-		CString MessageInBox;
-		MessageInBox.Format(MESSAGE_NOSECURITY);
-		return AfxMessageBox(MessageInBox, MB_ICONWARNING | MB_OKCANCEL);
+		// Ask user if they want to continue
+		messageHandler.DisplayMessageBox(MESSAGE_NOSECURITY, MB_ICONWARNING | MB_OKCANCEL, true);
+		g_flagState = PAUSE;
 	}
+	experimentLocalData.verificationStep = STEP_VERIFICATIONS_VALVES;
 	return 0;
 }
 
 
 int Automation::VerificationValves()
 {
-	// Normalement, toutes les vannes sont fermées...
+	// Ask user to check the valves
 	messageHandler.DisplayMessage(MESSAGE_CHECK_INITIAL_STATE);
-	messageHandler.DisplayStep(MESSAGE_CHECK_INITIAL_STATE);
+	messageHandler.DisplayMessageBox(MESSAGE_CHECK_VALVES_OPEN, MB_ICONQUESTION | MB_OKCANCEL, true);
+	g_flagState = PAUSE;
 
-	CString MessageInBox;
-	MessageInBox.Format(MESSAGE_CHECK_VALVES_OPEN);
-	int verif_etat_initial = AfxMessageBox(MessageInBox, MB_ICONQUESTION | MB_OKCANCEL);
-
-	if (verif_etat_initial == IDCANCEL)
-		return IDCANCEL;
+	experimentLocalData.verificationStep = STEP_VERIFICATIONS_PRESSURE;
 
 	return 0;
 }
@@ -64,102 +54,125 @@ int Automation::VerificationValves()
 
 int Automation::VerificationResidualPressure()
 {
-	// Vérification de la pression résiduelle
-	messageHandler.DisplayMessage(MESSAGE_CHECK_INITIAL_PRESSURE);
-	messageHandler.DisplayStep(MESSAGE_CHECK_INITIAL_PRESSURE);
-
-	// Read the pressure
-	ReadHighPressure();
-	//messageHandler.DisplayHighPressure();
-
-	if (experimentLocalData.pressureHigh < GetPressionSecuriteBassePression() && GetMesureBassePression() && GetMesureHautePression())
+	switch (experimentLocalData.experimentSubstepStage)
 	{
-		// Tell GUI we are opening valve 6
-		messageHandler.DisplayMessage(MESSAGE_CHECK_OPENV6_POSSIB, experimentLocalData.pressureHigh);
 
-		// Open valve 6
-		ValveOpen(6);
+	case SUBSTEP_STATUS_START:
+		// Vérification de la pression résiduelle
+		messageHandler.DisplayMessage(MESSAGE_CHECK_INITIAL_PRESSURE);
+
+		if (experimentLocalData.pressureHigh < GetPressionSecuriteBassePression() && GetMesureBassePression() && GetMesureHautePression())
+		{
+			// Tell GUI we are opening valve 6
+			messageHandler.DisplayMessage(MESSAGE_CHECK_OPENV6_POSSIB, experimentLocalData.pressureHigh);
+
+			// Open valve 6
+			ValveOpen(6);
+
+			// Tell GUI we are waiting
+			messageHandler.DisplayMessage(MESSAGE_WAIT_TIME, TimeInterval);
+
+			// Set the time to wait
+			experimentLocalData.timeToEquilibrate = TimeInterval;
+			experimentLocalData.experimentStage = STAGE_EQUILIBRATION;
+			experimentLocalData.experimentEquilibrationStatus = STEP_STATUS_INPROGRESS;
+		}
+		experimentLocalData.experimentSubstepStage = STEP_STATUS_INPROGRESS;
+		break;
+
+	case STEP_STATUS_INPROGRESS:
+		// Open valve 5
+		ValveOpen(5);
 
 		// Tell GUI we are waiting
-		messageHandler.DisplayMessage(MESSAGE_WAIT_TIME, Intervalle1 / 1000);
+		messageHandler.DisplayMessage(MESSAGE_WAIT_TIME, TimeInterval);
+		// Set the time to wait
+		experimentLocalData.timeToEquilibrate = TimeInterval;
+		experimentLocalData.experimentStage = STAGE_EQUILIBRATION;
+		experimentLocalData.experimentEquilibrationStatus = STEP_STATUS_INPROGRESS;
 
-		// Wait
-		AttenteSecondes(Intervalle1 / 1000);
-	}
+		experimentLocalData.experimentSubstepStage = STEP_STATUS_END;
+		break;
 
-	// Open valve 5
-	ValveOpen(5);
+	case STEP_STATUS_END:
+		// Check residual pressure
+		if (experimentLocalData.pressureHigh >= GetPressionLimiteVide())
+		{
+			messageHandler.DisplayMessageBox(MESSAGE_WARNING_INITIAL_PRESSURE, MB_ICONQUESTION | MB_OKCANCEL, true, experimentLocalData.pressureHigh, GetPressionLimiteVide());
+			g_flagState = PAUSE;
+		}
+		experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_START;
+		experimentLocalData.verificationStep = STEP_VERIFICATIONS_TEMPERATURE;
+		break;
 
-	// Tell GUI we are waiting
-	messageHandler.DisplayMessage(MESSAGE_WAIT_TIME, Intervalle1 / 1000);
-
-	// Wait
-	AttenteSecondes(Intervalle1 / 1000);
-
-	// Read the pressure
-	ThreadMeasurement();
-	//messageHandler.DisplayHighPressure();
-
-	// Check residual pressure
-	if (experimentLocalData.pressureHigh >= GetPressionLimiteVide())
-	{
-		CString MessageInBox;
-		MessageInBox.Format(MESSAGE_WARNING_INITIAL_PRESSURE, experimentLocalData.pressureHigh, GetPressionLimiteVide());
-		int verif_pression = AfxMessageBox(MessageInBox, MB_ICONQUESTION | MB_OKCANCEL);
-		if (verif_pression == IDCANCEL)
-			return IDCANCEL;
+	default:
+		ASSERT(0);
+		break;
 	}
 
 	return 0;
 }
 
 
-
 int Automation::VerificationTemperature()
 {
-	// Vérification des températures
-	messageHandler.DisplayMessage(MESSAGE_CHECK_INITIAL_TEMPERATURE);
-	messageHandler.DisplayStep(MESSAGE_CHECK_INITIAL_TEMPERATURE);
-
-	experimentLocalData.experimentStage = STAGE_TEMP;
-
-	//LectureTemperatures();
-	//messageHandler.DisplayTemperatures();
-
-	// préciser quelle température dans la boite de dialogue ???
-	if ((experimentLocalData.temperatureCalo < experimentLocalSettings.dataGeneral.temperature_experience - 1) || (experimentLocalData.temperatureCalo > experimentLocalSettings.dataGeneral.temperature_experience + 1) ||
-		(experimentLocalData.temperatureCalo < experimentLocalSettings.dataGeneral.temperature_experience - 1) || (experimentLocalData.temperatureCalo > experimentLocalSettings.dataGeneral.temperature_experience + 1))
+	switch (experimentLocalData.experimentSubstepStage)
 	{
-		//messageHandler.DisplayMessageBox(MESSAGE_CHECK_TEMPERATURE_DIFF, MB_ICONQUESTION | MB_YESNOCANCEL);
-		
-		int verif_temperatures = IDCANCEL; //= AfxMessageBox(MessageInBox, MB_ICONQUESTION | MB_YESNOCANCEL);
 
-		// Does the user wait or cancel?
-		if (verif_temperatures == IDCANCEL)		// Cancel, give up on experiment
-			return IDCANCEL;
-		if (verif_temperatures == IDYES)		// Yes, wait until temperature stabilizes
+	case SUBSTEP_STATUS_START:
+		// Vérification des températures
+		messageHandler.DisplayMessage(MESSAGE_CHECK_INITIAL_TEMPERATURE);
+
+		if ((experimentLocalData.temperatureCalo < experimentLocalSettings.dataGeneral.temperature_experience - TEMP_SECURITY) || (experimentLocalData.temperatureCalo > experimentLocalSettings.dataGeneral.temperature_experience + TEMP_SECURITY) ||
+			(experimentLocalData.temperatureCage < experimentLocalSettings.dataGeneral.temperature_experience - TEMP_SECURITY) || (experimentLocalData.temperatureCage > experimentLocalSettings.dataGeneral.temperature_experience + TEMP_SECURITY))
 		{
-			// Tell GUI we are waiting
-			messageHandler.DisplayMessage(MESSAGE_WAIT_TEMP_EQUILIBRATION);
-
-			// Loop until the temperature is stable
-			while ((experimentLocalData.temperatureCalo < experimentLocalSettings.dataGeneral.temperature_experience - 1) || (experimentLocalData.temperatureCalo > experimentLocalSettings.dataGeneral.temperature_experience + 1) ||
-				(experimentLocalData.temperatureCalo < experimentLocalSettings.dataGeneral.temperature_experience - 1) || (experimentLocalData.temperatureCalo > experimentLocalSettings.dataGeneral.temperature_experience + 1))
-			{
-				int attente_pause = 500;//ms
-				int attente_temperature = 10000;//ms
-				for (int i = 0; i < attente_temperature / attente_pause; i++)
-				{
-					TemperatureStop();
-					Sleep(attente_pause);		// use functionality?
-				}
-				// Read the temperature
-				ThreadMeasurement();
-				// Display temperatures
-				// messageHandler.DisplayTemperatures();
-			}
+			messageHandler.DisplayMessageBox(MESSAGE_CHECK_TEMPERATURE_DIFF, MB_ICONQUESTION | MB_YESNOCANCEL, true, experimentLocalData.temperatureCalo, experimentLocalSettings.dataGeneral.temperature_experience - TEMP_SECURITY);
+			g_flagState = PAUSE;
+			experimentLocalData.experimentSubstepStage = STEP_STATUS_INPROGRESS;
 		}
+		else
+		{
+			experimentLocalData.experimentSubstepStage = STEP_STATUS_END;
+		}
+		break;
+
+	case STEP_STATUS_INPROGRESS:
+		// Tell GUI we are waiting
+		messageHandler.DisplayMessage(MESSAGE_WAIT_TEMP_EQUILIBRATION);
+
+		// Loop until the temperature is stable
+		if ((experimentLocalData.temperatureCalo < experimentLocalSettings.dataGeneral.temperature_experience - TEMP_SECURITY) || (experimentLocalData.temperatureCalo > experimentLocalSettings.dataGeneral.temperature_experience + TEMP_SECURITY) ||
+			(experimentLocalData.temperatureCage < experimentLocalSettings.dataGeneral.temperature_experience - TEMP_SECURITY) || (experimentLocalData.temperatureCage > experimentLocalSettings.dataGeneral.temperature_experience + TEMP_SECURITY))
+		{
+			g_flagState = PAUSE;
+		}
+		else
+		{
+			experimentLocalData.experimentSubstepStage = STEP_STATUS_END;
+		}
+		break;
+
+	case STEP_STATUS_END:
+		experimentLocalData.verificationStep = STEP_VERIFICATIONS_COMPLETE;
+		break;
+
+	default:
+		ASSERT(0);
+		break;
 	}
+
+	return 0;
+}
+
+int Automation::VerificationComplete()
+{
+	// Start the global experiment timer
+	timerExperiment.TopChrono();
+
+	// Go to the next step
+	experimentLocalData.timeToEquilibrate = experimentLocalSettings.dataDivers.temps_ligne_base;		// Set the time to wait
+	experimentLocalData.experimentSubstepStage = STEP_STATUS_START;
+	experimentLocalData.experimentStage = STAGE_ADSORPTION;
 
 	return 0;
 }
