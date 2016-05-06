@@ -54,9 +54,7 @@ protected:
 
 public:
 	LRESULT GraphInitialize(WPARAM wParam, LPARAM lParam);
-	void GraphAddMeasurement(ExperimentData NouvellesMesures);
-	void GraphAddMeasurement(int num, double tps, double calorimetre, double bpression, double hpression, double temp_calo, double temp_cage, double temp_piece);
-	void GraphAddMeasurement(double tps, double calorimetre, double bpression, double hpression, double temp_calo, double temp_cage, double temp_piece);
+	void GraphAddMeasurement(ExperimentData expData);
 	
 
 #ifdef SHARED_HANDLERS

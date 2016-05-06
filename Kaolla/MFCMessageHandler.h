@@ -27,32 +27,19 @@ public:
 	BOOL SetHandle(HWND h);
 
 	// PostMessage functions
-	BOOL ResetDocumentGraph();
-	BOOL GraphSetTitle(CString title);
-	BOOL GraphAddData(int num, double tps, double calorimeter, double lowPressure, double highPressure, double tempCalo, double tempCage, double tempPiece);
-	BOOL GraphDataAutoStep(float temps, int mesure, int num_etape);
 
-	BOOL UpdateDisplay();
+	void ExperimentStart();
+	void ExperimentEnd();
 	BOOL UnlockMenu();
 	BOOL EnableStartButton();
 	BOOL CancelExperiment();
 	BOOL ExchangeData(ExperimentData pParam);
-	BOOL DisplayMeasurement(int pParam);
 
 	BOOL DisplayMessage(int pParam, int pInt1 = default_val, int pInt2 = default_val, double pDouble = default_val);								// Simple display message which takes an int
-
 	BOOL DisplayAddMessage(int pParam);
-
-	// Steps
-	BOOL DisplayStep(int pParam);
-	BOOL DisplaAddStep(CString pParam);
 
 	// Messageboxes
 	BOOL DisplayMessageBox(int message, UINT nType, bool blocking, double pDouble1 = default_val, double pDouble2 = default_val);
-
-	// What i really need
-	void ExperimentStart();
-	void ExperimentEnd();
 };
 
 
