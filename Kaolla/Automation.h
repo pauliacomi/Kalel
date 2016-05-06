@@ -68,6 +68,7 @@ public:
 
 	CChrono timerExperiment;							// Class for measuring the time from the experiment start
 	CChrono timerMeasurement;							// Class for measuring the time between each measurement
+	CChrono timerWaiting;								// Class for measuring the time to wait
 	
 	FluxConverter fluxConverter;						// Will convert between several types of raw results from instruments
 														
@@ -98,6 +99,7 @@ public:
 	// Case switch int for the experiment states (running/paused/etc)
 	int g_flagState;
 	bool running;
+	bool waiting;
 	int shutdownReason;
 
 	// Synchronisation?

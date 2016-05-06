@@ -73,9 +73,10 @@ int Automation::VerificationResidualPressure()
 			messageHandler.DisplayMessage(MESSAGE_WAIT_TIME, TimeInterval);
 
 			// Set the time to wait
+			timerWaiting.TopChrono();
 			experimentLocalData.timeToEquilibrate = TimeInterval;
-			experimentLocalData.experimentStage = STAGE_EQUILIBRATION;
-			experimentLocalData.experimentEquilibrationStatus = STEP_STATUS_INPROGRESS;
+			g_flagState = INACTIVE;
+			waiting = true;
 		}
 		experimentLocalData.experimentSubstepStage = STEP_STATUS_INPROGRESS;
 		break;
@@ -86,10 +87,12 @@ int Automation::VerificationResidualPressure()
 
 		// Tell GUI we are waiting
 		messageHandler.DisplayMessage(MESSAGE_WAIT_TIME, TimeInterval);
+
 		// Set the time to wait
+		timerWaiting.TopChrono();
 		experimentLocalData.timeToEquilibrate = TimeInterval;
-		experimentLocalData.experimentStage = STAGE_EQUILIBRATION;
-		experimentLocalData.experimentEquilibrationStatus = STEP_STATUS_INPROGRESS;
+		g_flagState = INACTIVE;
+		waiting = true;
 
 		experimentLocalData.experimentSubstepStage = STEP_STATUS_END;
 		break;
@@ -166,13 +169,9 @@ int Automation::VerificationTemperature()
 
 int Automation::VerificationComplete()
 {
-	// Start the global experiment timer
-	timerExperiment.TopChrono();
-
 	// Go to the next step
-	experimentLocalData.timeToEquilibrate = experimentLocalSettings.dataDivers.temps_ligne_base;		// Set the time to wait
 	experimentLocalData.experimentSubstepStage = STEP_STATUS_START;
-	experimentLocalData.experimentStage = STAGE_ADSORPTION;
+	experimentLocalData.experimentStage = STAGE_EQUILIBRATION;
 
 	return 0;
 }

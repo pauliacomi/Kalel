@@ -5,66 +5,15 @@
 
 Automation::Automation()
 	:running(true)
+	,waiting(false)
 {
 }
 
 
 Automation::~Automation()
 {
-	//CloseHandle
 }
 
-
-
-void Automation::SetKeithley(Keithley* Keith)
-{
-	g_pKeithley = Keith;
-}
-
-void Automation::SetMensor(Mensor* Mens)
-{
-	g_pMensor = Mens;
-}
-
-void Automation::SetVannes(CVannes* pVannes)
-{
-	g_pVanne = pVannes;
-}
-
-void Automation::SetTemperature(CTemperature* pTemperature)
-{
-	g_pTemperature = pTemperature;
-}
-
-void Automation::SetDataPointer(ExperimentSettings * eSettings)	// Put this into a critical section
-{
-	// Store the pointer
-	experimentSettings = eSettings;
-}
-
-void Automation::SetData()
-{
-	// Copy the data from the main thread
-	EnterCriticalSection(&experimentSettings->criticalSection);
-	experimentLocalSettings = experimentSettings;
-	experimentSettings->dataModified = false;
-	LeaveCriticalSection(&experimentSettings->criticalSection);
-}
-
-bool Automation::DataIsNew()
-{
-	// Copy the data from the main thread
-	bool check = false;
-
-	EnterCriticalSection(&experimentSettings->criticalSection);
-	if (experimentSettings->dataModified == false)
-		check = false;
-	else
-		check = true;
-	LeaveCriticalSection(&experimentSettings->criticalSection);
-
-	return check;
-}
 
 void Automation::Execution()
 {
@@ -125,66 +74,37 @@ void Automation::Execution()
 
 bool Automation::ExecutionManual()
 {
-	switch (experimentLocalData.experimentSubstepStage)
+	switch (experimentLocalData.experimentStepStatus)
 	{
 	case STEP_STATUS_START:
 
 		// Send start messages
 		messageHandler.DisplayMessage(MESSAGE_FILLLINE);
-		messageHandler.DisplayMeasurement(MESSAGE_EXPSTART);
+		messageHandler.DisplayMessage(MESSAGE_EXPSTART);
 
 		// Record start
-		experimentLocalData.experimentInProgress = TRUE;
+		experimentLocalData.experimentInProgress = true; 
+		experimentLocalData.experimentRecording = true;
 
 		// Create open and write the columns in the:
 		EcritureEntete();				// Entete TXT
 		EcritureEnteteCSV();			// Entete CSV
 		FileMeasurementOpen();			// Measurement file
 
-		timerExperiment.TopChrono();	// Start global experiment timer
+		timerExperiment.TopChrono();	// Start global experiment timer	
+		timerMeasurement.TopChrono();	// Start the timer to record time between measurements
 
 		// Continue experiment
-		experimentLocalData.experimentSubstepStage = STEP_STATUS_INPROGRESS;
+		experimentLocalData.experimentStepStatus = STEP_STATUS_INPROGRESS;
+		g_flagState = INACTIVE;
+
 		break;
 
 	case STEP_STATUS_INPROGRESS:
+		g_flagState = INACTIVE;
+		break;
 
-		// Have enough time between two measurements
-		if (experimentLocalData.experimentSubstepStage == STEP_STATUS_INPROGRESS	// If we started
-			&& timerMeasurement.TempsActuel() < T_BETWEEN_MEASURE)					// and the enough time between measurements
-		{
-			g_flagState = INACTIVE;
-		}
-		else
-		{
-			// Change the flag
-			experimentLocalData.experimentSubstepStage = STEP_STATUS_INPROGRESS;
-
-			// Start the timer to record time between measurements
-			timerMeasurement.TopChrono();
-
-			// Start threads and read the data
-			ThreadMeasurement();
-
-			// Do the security checks
-			SecuriteTemperatures();
-			SecuriteHautePression();
-
-			// Save the time at which the measurement took place
-			experimentLocalData.experimentTime = timerExperiment.TempsActuel();
-
-			// Send the data to be saved outside of the function
-			messageHandler.ExchangeData(experimentLocalData);
-
-			// Save the data to the file
-			EnregistrementFichierMesures();
-
-			// Increment the measurement number
-			experimentLocalData.experimentMeasurements++;
-
-			// Put the experiment to wait
-			g_flagState = INACTIVE;
-		}
+	case STEP_STATUS_END:
 		break;
 
 	default:
@@ -235,7 +155,7 @@ void Automation::Initialisation()
 	experimentLocalData.experimentDose = 0;
 	experimentLocalData.experimentTime = 0;
 	experimentLocalData.experimentMeasurements = 1;
-	experimentLocalData.experimentStage = STAGE_UNDEF;
+	experimentLocalData.experimentStage = STAGE_VERIFICATIONS;
 	experimentLocalData.experimentSubstepStage = STEP_STATUS_START;
 
 	// Initialise data
@@ -444,4 +364,55 @@ void Automation::FinishExperiment(bool premature)
 
 	// Enable start button
 	messageHandler.EnableStartButton();
+}
+
+
+void Automation::SetKeithley(Keithley* Keith)
+{
+	g_pKeithley = Keith;
+}
+
+void Automation::SetMensor(Mensor* Mens)
+{
+	g_pMensor = Mens;
+}
+
+void Automation::SetVannes(CVannes* pVannes)
+{
+	g_pVanne = pVannes;
+}
+
+void Automation::SetTemperature(CTemperature* pTemperature)
+{
+	g_pTemperature = pTemperature;
+}
+
+void Automation::SetDataPointer(ExperimentSettings * eSettings)
+{
+	// Store the pointer
+	experimentSettings = eSettings;
+}
+
+void Automation::SetData()
+{
+	// Copy the data from the main thread
+	EnterCriticalSection(&experimentSettings->criticalSection);
+	experimentLocalSettings = experimentSettings;
+	experimentSettings->dataModified = false;
+	LeaveCriticalSection(&experimentSettings->criticalSection);
+}
+
+bool Automation::DataIsNew()
+{
+	// Copy the data from the main thread
+	bool check = false;
+
+	EnterCriticalSection(&experimentSettings->criticalSection);
+	if (experimentSettings->dataModified == false)
+		check = false;
+	else
+		check = true;
+	LeaveCriticalSection(&experimentSettings->criticalSection);
+
+	return check;
 }

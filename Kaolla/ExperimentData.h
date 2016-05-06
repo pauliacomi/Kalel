@@ -11,7 +11,8 @@ public:
 // Variables
 //**************************************************
 
-	bool experimentInProgress;
+	bool experimentInProgress;				// Boolean for checking whether the experiment is started or not
+	bool experimentRecording;				// Boolean for checking whether the data is being recorded at each measurement
 
 	// Parameters for storing where program has reached
 
@@ -19,7 +20,7 @@ public:
 	int experimentPreviousStage;			// Previous experiment stage
 	int experimentDose;						// Current experiment dose that is currently underway (ex: 2nd dose of adsorption step 1)
 	int experimentStepStatus;				// Current step status, for each step this can be STARTING, ENDING or UNDERWAY
-	int experimentEquilibrationStatus;		// 
+	int experimentEquilibrationStatus;		// Current step in equlibration 
 	int experimentSubstepStage;				// Current dose substep, can be at injection, equilibration etc
 	int experimentMeasurements;				// Number of measurmements made, happen every T_BETWEEN_MEASUREMENT
 	int verificationStep;					// The security check steps

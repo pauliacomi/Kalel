@@ -4,6 +4,7 @@
 
 ExperimentData::ExperimentData()
 	: experimentInProgress(false)
+	, experimentRecording(false)
 
 	, experimentStage(0)
 	, experimentPreviousStage(0)

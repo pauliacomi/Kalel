@@ -7,53 +7,31 @@ void Automation::StageEquilibration()
 	{
 
 	case STEP_STATUS_START:
-		timerMeasurement.TopChrono();													// Start the timer to record time of the baseline
-		experimentLocalData.experimentEquilibrationStatus = STEP_STATUS_INPROGRESS;		// Set next step
-		messageHandler.DisplayMessage(MESSAGE_EQUILIBRATION_STARTED);					// Let GUI know the step change
+		messageHandler.DisplayMessage(MESSAGE_EQUILIBRATION_STARTED);										// Let GUI know the step change
+		experimentLocalData.timeToEquilibrate = experimentLocalSettings.dataDivers.temps_ligne_base;		// Set the time to wait
+		timerWaiting.TopChrono();																			// Start the timer to record time of the baseline
+		g_flagState = INACTIVE;
+		waiting = true;
+		experimentLocalData.experimentEquilibrationStatus = STEP_STATUS_END;								// Set next step
 		break;
 
 	case STEP_STATUS_INPROGRESS:
 		// Should display time here
 
-		// Start threads and read the data
-		ThreadMeasurement();
-
-		// Do the security checks
-		SecuriteTemperatures();
-		SecuriteHautePression();
-
-		// Save the time at which the measurement took place
-		experimentLocalData.experimentTime = timerExperiment.TempsActuel();
-
-		// Send the data to be saved outside of the function
-		messageHandler.ExchangeData(experimentLocalData);
-
-		// Save the data to the file
-		EnregistrementFichierMesures();
-
-		// Increment the measurement number
-		experimentLocalData.experimentMeasurements++;
-		
-		// Check if the time has been reached
-		if (timerMeasurement.TempsActuel() > experimentLocalData.timeToEquilibrate)
-			experimentLocalData.experimentEquilibrationStatus = STEP_STATUS_END;
-		
-		// Wait
-		g_flagState = INACTIVE;
 		break;
 
 	case STEP_STATUS_END:
-		experimentLocalData.experimentEquilibrationStatus = STEP_STATUS_START;			// Set next step
+		experimentLocalData.experimentEquilibrationStatus = STEP_STATUS_START;								// Set next step
 		if (experimentLocalData.experimentPreviousStage == STAGE_UNDEF)
 		{
-			experimentLocalData.experimentStage = STAGE_ADSORPTION;									// Set next stage
+			experimentLocalData.experimentStage = STAGE_ADSORPTION;											// Set next stage
 		}
 		else
 		{
-			experimentLocalData.experimentStage = experimentLocalData.experimentPreviousStage;		// Back to previous stage
+			experimentLocalData.experimentStage = experimentLocalData.experimentPreviousStage;				// Back to previous stage
 		}
 
-		messageHandler.DisplayMessage(MESSAGE_EQUILIBRATION_COMPLETE);					// Let GUI know the step change
+		messageHandler.DisplayMessage(MESSAGE_EQUILIBRATION_COMPLETE);										// Let GUI know the step change
 		break;
 	}
 }
@@ -169,7 +147,7 @@ void Automation::SubstepsAdsorption()
 
 			// Tell GUI
 			messageHandler.DisplayMessage(MESSAGE_INJECTION_PROBLEM);
-			messageHandler.DisplayMessageBox(MESSAGE_INJECTION_PROBLEM_BOX, MB_ICONERROR | MB_OK);
+			messageHandler.DisplayMessageBox(MESSAGE_INJECTION_PROBLEM_BOX, MB_ICONERROR | MB_OK , true);
 
 			// Reset counter
 			experimentLocalData.injectionAttemptCounter = 0;

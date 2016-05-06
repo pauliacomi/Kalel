@@ -98,7 +98,7 @@ void Automation::Pause()
 	objects[0] = h_eventShutdown;
 	objects[1] = h_eventResume;
 
-	switch (::WaitForMultipleObjects(2, objects, FALSE, 500)) // (ms) Poll time
+	switch (::WaitForMultipleObjects(2, objects, FALSE, T_BETWEEN_MEASURE)) // (ms) Poll time
 	{
 	case WAIT_TIMEOUT:
 		g_flagState = PAUSE;
@@ -123,15 +123,51 @@ void Automation::Pause()
 
 void Automation::Inactive()
 {
+	// Start threads and read the data
+	ThreadMeasurement();
+
+	// Do the security checks
+	SecuriteTemperatures();
+	SecuriteHautePression();
+
+	if (experimentLocalData.experimentRecording									// If we started recording
+		&& timerMeasurement.TempsActuel() > T_BETWEEN_RECORD)					// and the enough time between measurements
+	{
+		// Restart the timer to record time between measurements
+		timerMeasurement.TopChrono();
+
+		// Save the time at which the measurement took place
+		experimentLocalData.experimentTime = timerExperiment.TempsActuel();
+
+		// Save the data to the file
+		EnregistrementFichierMesures();
+
+		// Increment the measurement number
+		experimentLocalData.experimentMeasurements++;
+	}
+
+	// Send the data to be saved outside of the function
+	messageHandler.ExchangeData(experimentLocalData);
+
+	// If the wait functionality is requested, check to see if we can continue
+	if (timerWaiting.TempsActuel() > experimentLocalData.timeToEquilibrate) {
+		waiting = false;
+	}
+
 	// Switch to see if the thread is still inactive
 	HANDLE objects[2];
 	objects[0] = h_eventShutdown;
 	objects[1] = h_eventPause;
 
-	switch (::WaitForMultipleObjects(2, objects, FALSE, 500)) // (ms) Poll time
+	switch (::WaitForMultipleObjects(2, objects, FALSE, T_BETWEEN_MEASURE)) // (ms) Poll time
 	{
 	case WAIT_TIMEOUT:
-		g_flagState = ACTIVE;
+		if (waiting) {
+			g_flagState = INACTIVE;
+		}
+		else{
+			g_flagState = ACTIVE;
+		}
 		break;
 	case WAIT_OBJECT_0:
 		g_flagState = STOP;

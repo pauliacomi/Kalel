@@ -9,8 +9,9 @@
 #define GREY_OUT FALSE
 #define UN_GREY_OUT TRUE
 
-#define T_BETWEEN_MEASURE 2 //secondes
-#define TEMP_SECURITY 1 //degreee celsius
+#define T_BETWEEN_RECORD		4		//seconds
+#define T_BETWEEN_MEASURE		500		//miliseconds
+#define TEMP_SECURITY 1					//degreee celsius
 
 #define ERROR_MESURE -300000
 
