@@ -18,9 +18,10 @@ public:
 
 	// Public interface methods
 public:
-	HRESULT CreateMainThread(LPVOID pParam);
-	HRESULT SetStartEvent();
+	HRESULT StartThread();
+	HRESULT PauseThread();
 	HRESULT ShutdownThread();
+
 	void ChangementDev(int dev_vanne, int dev_temp);
 	void ManualAction(LPVOID pParam);						// When a manual command is issued
 
@@ -35,12 +36,6 @@ private:
 
 	CWinThread * m_threadMainControlLoop;					// Reference for main thread
 	CWinThread * m_threadManualAction;						// Reference for manual thread
-
-	HANDLE		m_hStartMainThreadEvent;					// Event handle for giving the main thread the go-ahead.
-
-	HWND   m_hWnd;    // Window handle to the UI dialog (used to
-					  // send progress and completed messages)
-
 
 };
 

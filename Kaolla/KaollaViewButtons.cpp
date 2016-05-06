@@ -63,7 +63,7 @@ void CKaollaView::OnBnClickedLancer()
 			GetExperimentData(dialogExperimentProperties);
 
 			// Launch the threads
-			threadManager->SetStartEvent();
+			threadManager->StartThread();
 		}
 		else
 		{
@@ -76,7 +76,6 @@ void CKaollaView::OnBnClickedLancer()
 // When clicking on the Stop button
 void CKaollaView::OnBnClickedArreter()
 {
-	// Ask the thread to shutdown top the threads
 	threadManager->ShutdownThread();
 }
 
@@ -94,7 +93,7 @@ void CKaollaView::OnBnClickedArretSousVide()
 
 void CKaollaView::OnBnClickedPause()
 {
-	//PauseThreads();
+	threadManager->PauseThread();
 }
 
 void CKaollaView::OnBnClickedProchaineCommande()
@@ -114,12 +113,20 @@ void CKaollaView::OnBnClickedProchaineEtape()
 
 void CKaollaView::OnBnClickedReprise()
 {
-	//RepriseThreads();
+	threadManager->StartThread();
 }
 
 
 // Copy all data from a property sheet dialog to the local object
 void CKaollaView::GetExperimentData(ExperimentPropertySheet * dialogExperimentProperties) {
+
+	// Use a critical section to avoid data races
+	EnterCriticalSection(&experimentSettings->criticalSection);
+
+	// Raise the flag for data modified
+	experimentSettings->dataModified = true;
+
+	// Copy data accross
 	experimentSettings->dataGeneral = dialogExperimentProperties->m_general.allSettings;
 	if (experimentSettings->experimentType == EXPERIMENT_TYPE_AUTO)
 	{
@@ -130,4 +137,8 @@ void CKaollaView::GetExperimentData(ExperimentPropertySheet * dialogExperimentPr
 		}
 		experimentSettings->dataDesorption = dialogExperimentProperties->m_desorption.allSettings;
 	}
+
+	// Leave the critical section
+	LeaveCriticalSection(&experimentSettings->criticalSection);
+
 }

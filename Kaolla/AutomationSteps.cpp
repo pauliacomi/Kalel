@@ -32,7 +32,7 @@ void Automation::StageEquilibration()
 			experimentLocalData.experimentEquilibrationStatus = STEP_STATUS_END;
 		
 		// Wait
-		g_flagAskShutdown = PAUSE;
+		g_flagState = INACTIVE;
 		break;
 
 	case STEP_STATUS_START:
@@ -93,7 +93,7 @@ void Automation::StageAdsorption()
 			experimentLocalData.experimentStepStatus = STEP_STATUS_END;
 		
 		// Wait
-		g_flagAskShutdown = PAUSE;
+		g_flagState = INACTIVE;
 		break;
 
 	case STEP_STATUS_START:

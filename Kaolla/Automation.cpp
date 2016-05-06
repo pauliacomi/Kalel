@@ -4,6 +4,7 @@
 
 
 Automation::Automation()
+	:running(true)
 {
 }
 
@@ -44,7 +45,7 @@ void Automation::SetDataPointer(ExperimentSettings * eSettings)	// Put this into
 void Automation::SetData()
 {
 	// Copy the data from the main thread
-	EnterCriticalSection(&experimentSettings->criticalSection);			// Is the critical section defined well? might have to be defined in the main thread
+	EnterCriticalSection(&experimentSettings->criticalSection);
 	experimentLocalSettings = experimentSettings;
 	experimentSettings->dataModified = false;
 	LeaveCriticalSection(&experimentSettings->criticalSection);
@@ -67,54 +68,42 @@ bool Automation::DataIsNew()
 
 void Automation::Execution()
 {
-	// Send start messages
-	messageHandler.DisplayMessage(MESSAGE_FILLLINE);
-	messageHandler.DisplayMeasurement(MESSAGE_EXPSTART);
-
 	// Initialise class members
 	Initialisation();
-
-	// Record start and set initial step
-	experimentLocalData.experimentInProgress = TRUE;
-	experimentLocalData.experimentStage = STAGE_VERIFICATIONS;
-	experimentLocalData.experimentSubstepStage = STEP_STATUS_START;
-
-	// Create open and write the columns in the:
-	EcritureEntete();				// Entete TXT
-	EcritureEnteteCSV();			// Entete CSV
-	FileMeasurementOpen();			// Measurement file
-
-	timerExperiment.TopChrono();	// Start global experiment timer
-
 	
 	// Infinite loop, it is broken from the inside
-	while (true)
+	while (running)
 	{
-		switch (g_flagAskShutdown)		// We look at the main flag
+		switch (g_flagState)		// We look at the main flag
 		{
-		case INACTIVE:					// In case the experiment is not started
+		case STOP:						// In case the experiment is asked to stop completely
+			Shutdown();
+			break;
+
+		case INACTIVE:					// In case the experiment is not doing anything
 			Inactive();
 			break;
 
-		case STOP:						// In case the experiment is asked to stop
-			ShutdownDisplay();			// then look at possible causes
-			//break out of loop?
+		case PAUSE:						// In case the experiment is measuring in the background
+			Pause();
 			break;
+			
+		case ACTIVE:					// In case the experiment is started and underway
+			
+			// Check if the data is the same as the old one, if so then get it
+			if (DataIsNew()) {
+				SetData();
+				RecordDataChange();
+			}
 
-		case PAUSE:						// In case the experiment is set as paused
-			Pause();					// put it in a pause state
-			break;
-
-		case ACTIVE:					// In case the experiment is started
-										// We look at the type of experiment
-			switch (experimentLocalSettings.experimentType)
+			switch (experimentLocalSettings.experimentType)		// We look at the type of experiment
 			{
-				case EXPERIMENT_TYPE_MANUAL:		// in case it is manual
-					if (ExecutionManual())			// run the manual loop
+				case EXPERIMENT_TYPE_MANUAL:					// in case it is manual
+					if (ExecutionManual())						// run the manual loop
 						continue;
 					break;
-				case EXPERIMENT_TYPE_AUTO:			// in case it is automatic
-					if (ExecutionAuto())			// run the automatic loop
+				case EXPERIMENT_TYPE_AUTO:						// in case it is automatic
+					if (ExecutionAuto())						// run the automatic loop
 						continue;
 					break;
 				default:
@@ -136,52 +125,79 @@ void Automation::Execution()
 
 bool Automation::ExecutionManual()
 {
-	// Have enough time between two measurements
-	if (experimentLocalData.experimentSubstepStage == STEP_STATUS_INPROGRESS	// If we started
-		&& timerMeasurement.TempsActuel() < T_BETWEEN_MEASURE)					// and the enough time between measurements
+	switch (experimentLocalData.experimentSubstepStage)
 	{
-		g_flagAskShutdown = PAUSE;
-	}
-	else
-	{
-		// Change the flag
+	case STEP_STATUS_START:
+
+		// Send start messages
+		messageHandler.DisplayMessage(MESSAGE_FILLLINE);
+		messageHandler.DisplayMeasurement(MESSAGE_EXPSTART);
+
+		// Record start
+		experimentLocalData.experimentInProgress = TRUE;
+
+		// Create open and write the columns in the:
+		EcritureEntete();				// Entete TXT
+		EcritureEnteteCSV();			// Entete CSV
+		FileMeasurementOpen();			// Measurement file
+
+		timerExperiment.TopChrono();	// Start global experiment timer
+
+		// Continue experiment
 		experimentLocalData.experimentSubstepStage = STEP_STATUS_INPROGRESS;
+		break;
 
-		// Start the timer to record time between measurements
-		timerMeasurement.TopChrono();
+	case STEP_STATUS_INPROGRESS:
 
-		// Start threads and read the data
-		ThreadMeasurement();
+		// Have enough time between two measurements
+		if (experimentLocalData.experimentSubstepStage == STEP_STATUS_INPROGRESS	// If we started
+			&& timerMeasurement.TempsActuel() < T_BETWEEN_MEASURE)					// and the enough time between measurements
+		{
+			g_flagState = INACTIVE;
+		}
+		else
+		{
+			// Change the flag
+			experimentLocalData.experimentSubstepStage = STEP_STATUS_INPROGRESS;
 
-		// Do the security checks
-		SecuriteTemperatures();
-		SecuriteHautePression();
+			// Start the timer to record time between measurements
+			timerMeasurement.TopChrono();
 
-		// Save the time at which the measurement took place
-		experimentLocalData.experimentTime = timerExperiment.TempsActuel();
+			// Start threads and read the data
+			ThreadMeasurement();
 
-		// Send the data to be saved outside of the function
-		messageHandler.ExchangeData(experimentLocalData);
+			// Do the security checks
+			SecuriteTemperatures();
+			SecuriteHautePression();
 
-		// Save the data to the file
-		EnregistrementFichierMesures();
+			// Save the time at which the measurement took place
+			experimentLocalData.experimentTime = timerExperiment.TempsActuel();
 
-		// Increment the measurement number
-		experimentLocalData.experimentMeasurements++;
+			// Send the data to be saved outside of the function
+			messageHandler.ExchangeData(experimentLocalData);
 
-		// Put the experiment to wait
-		g_flagAskShutdown = PAUSE;
+			// Save the data to the file
+			EnregistrementFichierMesures();
+
+			// Increment the measurement number
+			experimentLocalData.experimentMeasurements++;
+
+			// Put the experiment to wait
+			g_flagState = INACTIVE;
+		}
+		break;
+
+	default:
+		ASSERT(0);
+		break;
 	}
+	
 	return true;
 }
 
 bool Automation::ExecutionAuto()
 {
-	// Check if the data is the same as the old one, if so then get it
-	if (DataIsNew()) {
-		SetData();
-		RecordDataChange();
-	}
+	
 
 	experimentLocalData.timeToEquilibrate = experimentLocalSettings.dataDivers.temps_ligne_base;		// Set the time to wait
 
@@ -224,6 +240,7 @@ void Automation::Initialisation()
 	experimentLocalData.experimentTime = 0;
 	experimentLocalData.experimentMeasurements = 1;
 	experimentLocalData.experimentStage = STAGE_UNDEF;
+	experimentLocalData.experimentSubstepStage = STEP_STATUS_START;
 
 	// Initialise data
 	SetData();
@@ -246,9 +263,11 @@ void Automation::Initialisation()
 	//   - With manual reinitiallisation
 	h_MeasurementThreadStartEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
 	h_eventShutdown = CreateEvent(NULL, TRUE, FALSE, NULL);
+	h_eventResume = CreateEvent(NULL, TRUE, FALSE, NULL);
+	h_eventPause = CreateEvent(NULL, TRUE, FALSE, NULL);
 
-	// Put the thread in an active state
-	g_flagAskShutdown = ACTIVE;
+	// Put the thread in a paused state
+	g_flagState = PAUSE;
 }
 
 
@@ -399,7 +418,10 @@ void Automation::FinishExperiment(bool premature)
 {
 	// Destroy the events
 	CloseHandle(h_MeasurementThreadStartEvent);
-
+	CloseHandle(h_eventShutdown);
+	CloseHandle(h_eventResume);
+	CloseHandle(h_eventPause);
+	
 	// Destroy the critical sections
 	DeleteCriticalSection(&criticalSection);
 

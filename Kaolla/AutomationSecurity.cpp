@@ -128,7 +128,7 @@ void Automation::SecuriteHautePressionAuto()
 
 			// Check for the pressure being higher than high pressure limit
 			if (experimentLocalData.pressureHigh >= GetPressionSecuriteHautePression())
-				g_flagAskShutdown = ARRET_URGENCE_HP;
+				g_flagState = ARRET_URGENCE_HP;
 		}
 	}
 }
@@ -146,12 +146,12 @@ void Automation::SecuriteTemperaturesAuto()
 			if (experimentLocalData.temperatureCalo >= experimentLocalSettings.dataGeneral.temperature_experience + securite_temperature)
 			{
 				messageHandler.DisplayMessage(MESSAGE_WARNING_THIGH_STOP, experimentLocalSettings.dataGeneral.temperature_experience + securite_temperature);
-				g_flagAskShutdown = ARRET_URGENCE_TCH;
+				g_flagState = ARRET_URGENCE_TCH;
 			}
 			if (experimentLocalData.temperatureCalo <= experimentLocalSettings.dataGeneral.temperature_experience - securite_temperature)
 			{
 				messageHandler.DisplayMessage(MESSAGE_WARNING_TLOW_STOP, experimentLocalSettings.dataGeneral.temperature_experience - securite_temperature);
-				g_flagAskShutdown = ARRET_URGENCE_TCB;
+				g_flagState = ARRET_URGENCE_TCB;
 			}
 		}
 	}

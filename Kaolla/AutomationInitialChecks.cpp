@@ -26,7 +26,7 @@ void Automation::Verifications()
 		break;
 	}
 
-	g_flagAskShutdown = STOP;
+	g_flagState = STOP;
 }
 
 

@@ -80,6 +80,8 @@ public:
 	// Events
 	HANDLE h_MeasurementThreadStartEvent;				// Handle event doing measurement thread signalling
 	HANDLE h_eventShutdown;								// Handle event shutting down the thread
+	HANDLE h_eventResume;								// Handle event resuming the thread
+	HANDLE h_eventPause;								// Handle event pausing the thread
 
 	// Threads
 	HANDLE h_MeasurementThread[4];						// Threads for measurement
@@ -93,7 +95,10 @@ public:
 	bool security_TemperatureHigh;
 	bool security_TemperatureLow;
 
-	int g_flagAskShutdown;
+	// Case switch int for the experiment states (running/paused/etc)
+	int g_flagState;
+	bool running;
+	int shutdownReason;
 
 	// Synchronisation?
 	int synchCalo;
@@ -277,7 +282,7 @@ protected:
 
 	int TemperatureStop();
 
-	void ShutdownDisplay();
+	void Shutdown();
 
 	void Pause();
 

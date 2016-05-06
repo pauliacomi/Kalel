@@ -36,8 +36,7 @@ CWinThread * m_threadChangeBottle;
 // --------- Initialisation and destruction -------
 
 ThreadManager::ThreadManager(LPVOID pParam, ExperimentSettings * expD)
-	: m_threadMainControlLoop(NULL)		// should delete this 
-	, m_hStartMainThreadEvent(::CreateEvent(NULL, TRUE, FALSE, NULL))
+	: m_threadMainControlLoop(NULL)
 {
 	// Create the required objects. Might be better to be done in the manip directly
 	pVanne = new CVannes();
@@ -47,7 +46,7 @@ ThreadManager::ThreadManager(LPVOID pParam, ExperimentSettings * expD)
 	experimentSettings = expD;
 
 	//Create the thread
-	CreateMainThread(pParam);
+	m_threadMainControlLoop = AfxBeginThread(ThreadMainWorkerStarter, this);
 }
 
 ThreadManager::~ThreadManager()
@@ -61,32 +60,28 @@ ThreadManager::~ThreadManager()
 
 	// signal the thread to exit
 	ShutdownThread();
-	CloseHandle(m_hStartMainThreadEvent);
 }
 
 
-// --------- Thread creation and destruction -------
+// --------- Thread pausing, resuming and shutdown -------
 
-// A function that will create the main thread.
-// This should not run if the thread is running, consider adding a check for it.
-HRESULT ThreadManager::CreateMainThread(LPVOID pParam)
-{
+
+HRESULT ThreadManager::StartThread() {
+
 	HRESULT hr = S_OK;
-	
-	m_threadMainControlLoop = AfxBeginThread(ThreadMainWorkerStarter, this);
+
+	// Signal the thread to resume
+	::SetEvent(automation->h_eventResume);
 
 	return hr;
 }
 
-HRESULT ThreadManager::SetStartEvent() {
-
-
+HRESULT ThreadManager::PauseThread() {
 
 	HRESULT hr = S_OK;
 
-	if (::SetEvent(m_hStartMainThreadEvent) == FALSE) {
-		hr = S_FALSE;
-	}
+	// Signal the thread to resume
+	::SetEvent(automation->h_eventPause);
 
 	return hr;
 }
@@ -100,26 +95,27 @@ HRESULT ThreadManager::ShutdownThread()
 	// Close the worker thread
 	if (NULL != m_threadMainControlLoop)
 	{
+		// Make sure thread is not accidentally deleted
+		m_threadMainControlLoop->m_bAutoDelete = FALSE;
+
 		// Signal the thread to exit
 		::SetEvent(automation->h_eventShutdown);
 
 		// thread may be suspended, so resume before shutting down
 		::ResumeThread(m_threadMainControlLoop);
 
-		// Wait for the thread to exit. If it doesn't shut down
-		// on its own, force it closed with Terminate thread
-		if (WAIT_TIMEOUT == WaitForSingleObject(m_threadMainControlLoop, 2000))
+		// Wait for the thread to exit. If it doesn't shut down on its own, throw an error
+		if (WAIT_TIMEOUT == WaitForSingleObject(m_threadMainControlLoop->m_hThread, INFINITE))
 		{
-			TerminateThread(m_threadMainControlLoop, -1000);
 			hr = S_FALSE;
 		}
+
+		// Delete thread
+		delete m_threadMainControlLoop;
 
 		// NULL out pointer
 		m_threadMainControlLoop = NULL;
 	}
-
-	// Reset the shutdown event
-	ResetEvent(automation->h_eventShutdown);
 
 	return hr;
 }
@@ -145,17 +141,12 @@ void ThreadManager::ThreadMainWorker()
 	automation->SetVannes(pVanne);
 	automation->SetTemperature(pTemperature);
 
-	// Wait for the required event
-	WaitForSingleObject(m_hStartMainThreadEvent, INFINITE);
-
 	// Set data
 	automation->SetDataPointer(experimentSettings);
 
 	// Launch functionality
 	automation->Execution();
 
-	// Reset the shutdown event
-	::ResetEvent(m_hStartMainThreadEvent);
 }
 
 
