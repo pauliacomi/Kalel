@@ -54,7 +54,7 @@ protected:
 
 public:
 	LRESULT GraphInitialize(WPARAM wParam, LPARAM lParam);
-	void GraphAddMeasurement(ExperimentData expData);
+	bool GraphAddMeasurement(ExperimentData expData);
 	
 
 #ifdef SHARED_HANDLERS

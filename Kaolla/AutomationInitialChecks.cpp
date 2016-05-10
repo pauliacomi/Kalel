@@ -172,6 +172,7 @@ int Automation::VerificationTemperature()
 int Automation::VerificationComplete()
 {
 	// Go to the next step
+	experimentLocalData.experimentEquilibrationStatus = SUBSTEP_STATUS_START;
 	experimentLocalData.experimentSubstepStage = STEP_STATUS_START;
 	experimentLocalData.experimentStage = STAGE_EQUILIBRATION;
 

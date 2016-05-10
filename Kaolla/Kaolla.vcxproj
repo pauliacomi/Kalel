@@ -517,6 +517,7 @@
     <ResourceCompile Include="Onglets.rc" />
     <ResourceCompile Include="OngletsEtapes.rc" />
     <ResourceCompile Include="ParametresAppareil.rc" />
+    <ResourceCompile Include="Steps.rc" />
     <ResourceCompile Include="TypeExperience.rc" />
   </ItemGroup>
   <ItemGroup>

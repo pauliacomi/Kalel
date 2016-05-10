@@ -156,9 +156,10 @@ LRESULT CKaollaDoc::GraphInitialize(WPARAM wParam, LPARAM lParam)
 }
 
 // Add a measurement to the graph -- Regular
-void CKaollaDoc::GraphAddMeasurement(ExperimentData expData)
+bool CKaollaDoc::GraphAddMeasurement(ExperimentData expData)
 {
 	int lastMeasurement;
+	bool result = false;
 
 	if (m_TableauMesures.IsEmpty())
 	{
@@ -177,7 +178,7 @@ void CKaollaDoc::GraphAddMeasurement(ExperimentData expData)
 	{
 		lastMeasurement = m_TableauMesures.GetUpperBound();
 
-		if (expData.experimentTime > m_TableauMesures[lastMeasurement].experimentTime) {
+		if (expData.experimentMeasurements > m_TableauMesures[lastMeasurement].experimentMeasurements) {
 
 		maxPressure = max(maxPressure, expData.pressureLow);
 		maxPressure = max(maxPressure, expData.pressureHigh);
@@ -191,9 +192,10 @@ void CKaollaDoc::GraphAddMeasurement(ExperimentData expData)
 		m_TableauMesures.SetSize(lastMeasurement + 2);
 		m_TableauMesures[lastMeasurement+1] = expData;
 
+		result = true;
 		}
 	}
-
+	return result;
 }
 
 /*void CManip::DonneesManuelleGrapheEtape()

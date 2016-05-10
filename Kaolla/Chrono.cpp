@@ -12,6 +12,7 @@ CChrono::~CChrono(void)
 // Start the timer object
 void CChrono::TopChrono()
 {
+	started = true;
 	QueryPerformanceFrequency(&freq);
 	QueryPerformanceCounter(&start);
 	temps = 0;
@@ -31,7 +32,10 @@ float CChrono::TempsActuel()
 	// (plus précis que lorsqu'on calcul en secondes... on ne sait pas pourquoi) 
 	double elapsed = (1000.0 * (end.QuadPart - start.QuadPart)) / freq.QuadPart;
 	temps = static_cast<float>(elapsed) /1000.0;
-	return temps; //en secondes
+	if (started) {
+		return temps; //en secondes
+	}
+	return 0;
 }
 
 float CChrono::TempsActuel(LARGE_INTEGER endEtranger)

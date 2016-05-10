@@ -13,6 +13,7 @@ private:
 	LARGE_INTEGER start, end, freq;
 	float temps;
 	LARGE_INTEGER pause,reprise;
+	bool started;
 	
 public:
 	void TopChrono();

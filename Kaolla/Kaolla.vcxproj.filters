@@ -142,6 +142,18 @@
     <Filter Include="Header Files\Utils\XML">
       <UniqueIdentifier>{1171cb4f-1756-4c73-9eea-4fc9ffd69c53}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Strings">
+      <UniqueIdentifier>{a8ea875c-77f0-4b5b-b25f-67dbeb5ad1f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\DialogBoxes">
+      <UniqueIdentifier>{1335dc40-154e-4059-8a02-4332a9cf87a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Resources\Strings">
+      <UniqueIdentifier>{3022b526-90bb-4146-b410-ccbdabb0e4d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Resources\DialogBoxes">
+      <UniqueIdentifier>{b01ec661-30b5-45c4-9cfe-29b4e5805132}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -169,30 +181,6 @@
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
     <ClInclude Include="Resource.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="ResourceCellule.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="ResourceConnectionPort.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="ResourceExperimentateur.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="ResourceGaz.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="ResourceOnglets.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="ResourceOngletsEtapes.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="ResourceParametresAppareil.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="ResourceTypeExperience.h">
       <Filter>Header Files\Resources</Filter>
     </ClInclude>
     <ClInclude Include="IncludeResources.h">
@@ -318,17 +306,11 @@
     <ClInclude Include="CAdsorptionContinue.h">
       <Filter>Header Files\GUI\Dialogs\Experimental Parameters\Tabs</Filter>
     </ClInclude>
-    <ClInclude Include="Define_Stages.h">
-      <Filter>Header Files\Resources\Define</Filter>
-    </ClInclude>
     <ClInclude Include="Define_Experiment_Type.h">
       <Filter>Header Files\Resources\Define</Filter>
     </ClInclude>
     <ClInclude Include="FluxConverter.h">
       <Filter>Header Files\Parameters</Filter>
-    </ClInclude>
-    <ClInclude Include="MessageBoxTexts.h">
-      <Filter>Header Files\Resources</Filter>
     </ClInclude>
     <ClInclude Include="ManualActionParam.h">
       <Filter>Header Files\Utils</Filter>
@@ -389,6 +371,36 @@
     </ClInclude>
     <ClInclude Include="MFCMessageHandler.h">
       <Filter>Header Files\Automation</Filter>
+    </ClInclude>
+    <ClInclude Include="MessageBoxTexts.h">
+      <Filter>Header Files\Resources\Strings</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceCellule.h">
+      <Filter>Header Files\Resources\DialogBoxes</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceConnectionPort.h">
+      <Filter>Header Files\Resources\DialogBoxes</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceExperimentateur.h">
+      <Filter>Header Files\Resources\DialogBoxes</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceGaz.h">
+      <Filter>Header Files\Resources\DialogBoxes</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceOnglets.h">
+      <Filter>Header Files\Resources\DialogBoxes</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceOngletsEtapes.h">
+      <Filter>Header Files\Resources\DialogBoxes</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceParametresAppareil.h">
+      <Filter>Header Files\Resources\DialogBoxes</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceTypeExperience.h">
+      <Filter>Header Files\Resources\DialogBoxes</Filter>
+    </ClInclude>
+    <ClInclude Include="Define_Stages.h">
+      <Filter>Header Files\Resources\Strings</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -706,32 +718,35 @@
     <ResourceCompile Include="Kaolla.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
-    <ResourceCompile Include="Cellule.rc">
-      <Filter>Resource Files</Filter>
-    </ResourceCompile>
-    <ResourceCompile Include="ConnectionPort.rc">
-      <Filter>Resource Files</Filter>
-    </ResourceCompile>
-    <ResourceCompile Include="Experimentateur.rc">
-      <Filter>Resource Files</Filter>
-    </ResourceCompile>
-    <ResourceCompile Include="Gaz.rc">
-      <Filter>Resource Files</Filter>
-    </ResourceCompile>
-    <ResourceCompile Include="Onglets.rc">
-      <Filter>Resource Files</Filter>
-    </ResourceCompile>
-    <ResourceCompile Include="OngletsEtapes.rc">
-      <Filter>Resource Files</Filter>
-    </ResourceCompile>
-    <ResourceCompile Include="ParametresAppareil.rc">
-      <Filter>Resource Files</Filter>
-    </ResourceCompile>
-    <ResourceCompile Include="TypeExperience.rc">
-      <Filter>Resource Files</Filter>
+    <ResourceCompile Include="Steps.rc">
+      <Filter>Resource Files\Strings</Filter>
     </ResourceCompile>
     <ResourceCompile Include="MessageBoxTexts.rc">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\Strings</Filter>
+    </ResourceCompile>
+    <ResourceCompile Include="ConnectionPort.rc">
+      <Filter>Resource Files\DialogBoxes</Filter>
+    </ResourceCompile>
+    <ResourceCompile Include="Cellule.rc">
+      <Filter>Resource Files\DialogBoxes</Filter>
+    </ResourceCompile>
+    <ResourceCompile Include="Experimentateur.rc">
+      <Filter>Resource Files\DialogBoxes</Filter>
+    </ResourceCompile>
+    <ResourceCompile Include="Gaz.rc">
+      <Filter>Resource Files\DialogBoxes</Filter>
+    </ResourceCompile>
+    <ResourceCompile Include="Onglets.rc">
+      <Filter>Resource Files\DialogBoxes</Filter>
+    </ResourceCompile>
+    <ResourceCompile Include="OngletsEtapes.rc">
+      <Filter>Resource Files\DialogBoxes</Filter>
+    </ResourceCompile>
+    <ResourceCompile Include="ParametresAppareil.rc">
+      <Filter>Resource Files\DialogBoxes</Filter>
+    </ResourceCompile>
+    <ResourceCompile Include="TypeExperience.rc">
+      <Filter>Resource Files\DialogBoxes</Filter>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>

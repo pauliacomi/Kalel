@@ -3,29 +3,24 @@
 
 void Automation::StageEquilibration()
 {
-	switch (experimentLocalData.experimentEquilibrationStatus)
+	switch (experimentLocalData.experimentStepStatus)
 	{
 
 	case STEP_STATUS_START:
+		experimentLocalData.experimentEquilibrationStatus = STEP_STATUS_END;								// Set next step
 		messageHandler.DisplayMessage(MESSAGE_EQUILIBRATION_STARTED);										// Let GUI know the step change
-
+		
 		// Set the time to wait
 		experimentLocalData.timeToEquilibrate = experimentLocalSettings.dataDivers.temps_ligne_base * 60;
 		experimentLocalData.experimentWaiting = true;
 		experimentLocalData.experimentCommandsRequested = false;
 		timerWaiting.TopChrono();
 
-		experimentLocalData.experimentEquilibrationStatus = STEP_STATUS_END;								// Set next step
-		break;
-
-	case STEP_STATUS_INPROGRESS:
-		// Should display time here
-
 		break;
 
 	case STEP_STATUS_END:
-		experimentLocalData.experimentEquilibrationStatus = STEP_STATUS_START;								// Reset next step
 		experimentLocalData.experimentStage = STAGE_ADSORPTION;												// Set next stage
+		experimentLocalData.experimentEquilibrationStatus = STEP_STATUS_START;								// Reset next step
 		messageHandler.DisplayMessage(MESSAGE_EQUILIBRATION_COMPLETE);										// Let GUI know the step change
 		break;
 	}
@@ -45,12 +40,12 @@ void Automation::StageAdsorption()
 
 	case STEP_STATUS_INPROGRESS:
 
-		// Go through the adsorption substeps
-		SubstepsAdsorption();
-
 		// Check if the pressure for this adsorption stage has been reached
 		if (experimentLocalData.pressureFinal > experimentLocalSettings.dataAdsorption[experimentLocalData.adsorptionCounter].pression_finale)
 			experimentLocalData.experimentStepStatus = STEP_STATUS_END;
+
+		// Go through the adsorption substeps
+		SubstepsAdsorption();
 		
 		// Set the time to wait
 		experimentLocalData.timeToEquilibrate = experimentLocalSettings.dataAdsorption[experimentLocalData.adsorptionCounter].temps_adsorption;

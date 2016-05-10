@@ -39,10 +39,10 @@ BEGIN_MESSAGE_MAP(CKaollaView, CFormView)
 	//ON_MESSAGE(WM_GRAPHADDMESUREMENT, &CKaollaDoc::GraphAddMeasurement)
 	//ON_MESSAGE(WM_GRAPHSETTITLE, &CKaollaDoc::GraphSetTitle)
 	//ON_MESSAGE(WM_GRAPHDATAAUTOSTEP, &CKaollaDoc::Graph)
-
-	ON_MESSAGE(WM_DISPLAYMEASUREMENT, &CKaollaView::AffichageMesures)
+	//ON_MESSAGE(WM_DISPLAYMEASUREMENT, &CKaollaView::AffichageMesures)
+	//ON_MESSAGE(WM_DISPLAYSTEP, &CKaollaView::AffichageEtape)
+	
 	ON_MESSAGE(WM_DISPLAYADDMESSAGE, &CKaollaView::RajoutAffichageMessages)
-	ON_MESSAGE(WM_DISPLAYSTEP, &CKaollaView::AffichageEtape)
 	ON_MESSAGE(WM_DISPLAYADDSTEP, &CKaollaView::RajoutAffichageEtape)
 	ON_MESSAGE(WM_UPDATEDISPLAY, &CKaollaView::MiseAJour)
 	ON_MESSAGE(WM_UNLOCKMENU, &CKaollaView::DebloqueMenu)

@@ -53,12 +53,12 @@ void Automation::Execution()
 		SecuriteTemperatures();
 		SecuriteHautePression();
 
+		// Save the time at which the measurement took place
+		experimentLocalData.experimentTime = timerExperiment.TempsActuel();
+
 		if (experimentLocalData.experimentRecording	&&								// If we started recording
 			timerMeasurement.TempsActuel() > T_BETWEEN_RECORD)						// and the enough time between measurements
 		{
-			// Save the time at which the measurement took place
-			experimentLocalData.experimentTime = timerExperiment.TempsActuel();
-
 			// Save the data to the file
 			EnregistrementFichierMesures();
 
@@ -68,6 +68,8 @@ void Automation::Execution()
 			// Increment the measurement number
 			experimentLocalData.experimentMeasurements++;
 		}
+
+		experimentLocalData.timeToEquilibrateCurrent = timerWaiting.TempsActuel(); // Save the waiting time if it exists
 
 		// Send the data to be displayed to the GUI
 		messageHandler.ExchangeData(experimentLocalData);
@@ -120,7 +122,7 @@ void Automation::Execution()
 					experimentLocalData.experimentCommandsRequested = true;
 				}
 				if (experimentLocalData.experimentWaiting &&								// If the wait functionality is requested																					
-					timerWaiting.TempsActuel() > experimentLocalData.timeToEquilibrate) {	//and the time has been completed
+					timerWaiting.TempsActuel() > experimentLocalData.timeToEquilibrate) {	//and the time has been completed									BUG HERE - waiting might destroy the loop
 
 					timerWaiting.ArretTemps();
 					experimentLocalData.experimentWaiting = false;
@@ -141,16 +143,14 @@ void Automation::Execution()
 
 bool Automation::ExecutionManual()
 {
-	switch (experimentLocalData.experimentStepStatus)
-	{
-	case STEP_STATUS_START:
+	if (experimentLocalData.experimentStepStatus == STEP_STATUS_UNDEF) {
 
 		// Send start messages
 		messageHandler.DisplayMessage(MESSAGE_FILLLINE);
 		messageHandler.DisplayMessage(MESSAGE_EXPSTART);
 
 		// Record start
-		experimentLocalData.experimentInProgress = true; 
+		experimentLocalData.experimentInProgress = true;
 		experimentLocalData.experimentRecording = true;
 
 		// Create open and write the columns in the:
@@ -161,26 +161,30 @@ bool Automation::ExecutionManual()
 		timerExperiment.TopChrono();	// Start global experiment timer	
 		timerMeasurement.TopChrono();	// Start the timer to record time between measurements
 
-		// Continue experiment
+										// Continue experiment
+		experimentLocalData.experimentStage = STAGE_MANUAL;
 		experimentLocalData.experimentStepStatus = STEP_STATUS_INPROGRESS;
-		experimentLocalData.experimentCommandsRequested = false;
-
-		break;
-
-	case STEP_STATUS_INPROGRESS:
-		experimentLocalData.experimentCommandsRequested = false;
-		break;
-
-	default:
-		ASSERT(0);
-		break;
 	}
-	
+
+	experimentLocalData.experimentCommandsRequested = false;
+
 	return true;
 }
 
 bool Automation::ExecutionAuto()
 {
+	if (experimentLocalData.experimentStepStatus == STEP_STATUS_UNDEF){
+
+		// Send start messages
+		messageHandler.DisplayMessage(MESSAGE_FILLLINE);
+		messageHandler.DisplayMessage(MESSAGE_EXPSTART);
+
+		experimentLocalData.experimentStage = STAGE_VERIFICATIONS;
+		experimentLocalData.experimentStepStatus = STEP_STATUS_START;
+		experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_START;
+		experimentLocalData.verificationStep = STEP_VERIFICATIONS_SECURITY;
+	}
+
 	switch (experimentLocalData.experimentStage)
 	{
 	case STAGE_VERIFICATIONS:
@@ -203,6 +207,7 @@ bool Automation::ExecutionAuto()
 		ASSERT(0); // Error
 		break;
 	}
+
 	return true;
 }
 
@@ -216,12 +221,8 @@ void Automation::Initialisation()
 	h_MeasurementThread[3] = NULL;
 
 	// Initialise automatic variables
-	experimentLocalData.experimentDose = 0;
-	experimentLocalData.experimentTime = 0;
-	experimentLocalData.experimentMeasurements = 1;
+	experimentLocalData.ResetData();
 	experimentLocalSettings.experimentType = EXPERIMENT_TYPE_UNDEF;
-	experimentLocalData.experimentStage = STAGE_VERIFICATIONS;
-	experimentLocalData.experimentSubstepStage = STEP_STATUS_START;
 
 	// Initialise data
 	SetData();

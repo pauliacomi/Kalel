@@ -30,7 +30,8 @@ public:
 	// Time
 	float experimentTime;					// Time from the experiment start
 	float timeToEquilibrate;				// The amount of time that the waiting + recording functionality will run before returning to an active state
-
+	float timeToEquilibrateCurrent;			// The current time of waiting
+	
 	// Counters
 	int injectionAttemptCounter;			// Counter for the injections
 	int adsorptionCounter;					// Counter for the number of adsorption settings inputted by the user
@@ -55,6 +56,8 @@ public:
 	double temperatureCage;
 	double temperatureRoom;
 	
+	// Function to reset
+	void ResetData();
 
 	// Overload equals function
 	ExperimentData & ExperimentData::operator=(const ExperimentData * p);
