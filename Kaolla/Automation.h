@@ -47,7 +47,7 @@ public:
 	Mensor* g_pMensor;									// Pointer to the class that deals with the Mensor
 	CVannes* g_pVanne;									// Pointer to the valve opening class
 	CInstrument* instrument[NB_OF_INSTRUMENTS];			// Array of pointers that hold CInstrument classes
-	CTemperature* g_pTemperature;						// Pointer to the class that deals with temperature recording
+	CTemperature* g_pTemperature;							// Pointer to the class that deals with temperature recording
 
 	ExperimentSettings* experimentSettings;				//
 	ExperimentSettings experimentLocalSettings;			// 
@@ -97,9 +97,9 @@ public:
 	bool security_TemperatureLow;
 
 	// Case switch int for the experiment states (running/paused/etc)
-	int g_flagState;
+	bool checking;
 	bool running;
-	bool waiting;
+	bool paused;
 	int shutdownReason;
 
 	// Synchronisation?
@@ -289,8 +289,6 @@ protected:
 	void Shutdown();
 
 	void Pause();
-
-	void Inactive();
 
 	/**********************************************************************************************************************************
 	// Steps

@@ -163,6 +163,7 @@ void CKaollaDoc::GraphAddMeasurement(ExperimentData expData)
 	if (m_TableauMesures.IsEmpty())
 	{
 		m_TableauMesures.SetSize(1);
+		m_TableauMesures[0] = expData;
 
 		//Set the maximums and minimums
 

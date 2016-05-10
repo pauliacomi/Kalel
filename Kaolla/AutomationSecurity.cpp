@@ -38,7 +38,7 @@ void Automation::SecuriteHautePressionManuelle()
 			security_PressureHigh = true;
 
 			// Alert user
-			messageHandler.DisplayMessageBox(MESSAGE_WARNING_PHIGH_BOX, MB_ICONERROR, GetPressionSecuriteHautePression());
+			messageHandler.DisplayMessageBox(MESSAGE_WARNING_PHIGH_BOX, MB_ICONERROR, false, GetPressionSecuriteHautePression());
 			messageHandler.DisplayMessage(MESSAGE_WARNING_PHIGH);
 
 			// Play a sound
@@ -66,7 +66,7 @@ void Automation::SecuriteTemperaturesManuelle()
 			security_TemperatureHigh = true;
 
 			// Alert user
-			messageHandler.DisplayMessageBox(MESSAGE_WARNING_THIGH_BOX, MB_ICONERROR, GetPressionSecuriteHautePression());
+			messageHandler.DisplayMessageBox(MESSAGE_WARNING_THIGH_BOX, MB_ICONERROR, false, GetPressionSecuriteHautePression());
 			messageHandler.DisplayMessage(MESSAGE_WARNING_CALOT_HIGH);
 
 			// Play a sound
@@ -89,7 +89,7 @@ void Automation::SecuriteTemperaturesManuelle()
 			security_TemperatureLow = true;
 
 			// Alert user
-			messageHandler.DisplayMessageBox(MESSAGE_WARNING_TLOW_BOX, MB_ICONERROR, GetPressionSecuriteHautePression());
+			messageHandler.DisplayMessageBox(MESSAGE_WARNING_TLOW_BOX, MB_ICONERROR, false, GetPressionSecuriteHautePression());
 			messageHandler.DisplayMessage(MESSAGE_WARNING_CALOT_LOW);
 
 			// Play a sound

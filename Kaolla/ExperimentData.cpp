@@ -5,6 +5,8 @@
 ExperimentData::ExperimentData()
 	: experimentInProgress(false)
 	, experimentRecording(false)
+	, experimentWaiting(false)
+	, experimentCommandsRequested(false)
 
 	, experimentStage(0)
 	, experimentPreviousStage(0)

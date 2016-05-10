@@ -18,10 +18,11 @@ void Automation::ThreadMeasurement()
 	WaitForMultipleObjects(4, h_MeasurementThread, TRUE, INFINITE);
 
 	// Clean-up
-	h_MeasurementThread[0] = NULL;
-	h_MeasurementThread[1] = NULL;
-	h_MeasurementThread[2] = NULL;
-	h_MeasurementThread[3] = NULL;
+	for (size_t i = 0; i < 4; i++)
+	{
+		CloseHandle(h_MeasurementThread[i]);
+		h_MeasurementThread[i] = NULL;
+	}
 	ResetEvent(h_MeasurementThreadStartEvent);
 }
 
@@ -123,13 +124,19 @@ void Automation::ReadTemperatures()
 {
 	// Read the value from the calorimeter
 	double dTemperatureCalo, dTemperatureCage, dTemperaturePiece;
-	g_pTemperature->Temperature(&dTemperatureCalo, &dTemperatureCage, &dTemperaturePiece);
+	//g_pTemperature->Temperature(&dTemperatureCalo, &dTemperatureCage, &dTemperaturePiece);
+
+	srand(time(NULL)); // temp
 
 	// Write it in the shared object
-	EnterCriticalSection(&criticalSection);
-	experimentLocalData.temperatureCalo = (float)dTemperatureCalo;
-	experimentLocalData.temperatureCage = (float)dTemperatureCage;
-	experimentLocalData.temperatureRoom = (float)dTemperaturePiece;
+	EnterCriticalSection(&criticalSection); 
+	experimentLocalData.temperatureCalo = 29 + (rand() % 2);
+	experimentLocalData.temperatureCage = 29 + (rand() % 2);;
+	experimentLocalData.temperatureRoom = 29 + (rand() % 2);;
+
+	//experimentLocalData.temperatureCalo = (float)dTemperatureCalo;
+	//experimentLocalData.temperatureCage = (float)dTemperatureCage;
+	//experimentLocalData.temperatureRoom = (float)dTemperaturePiece;
 	LeaveCriticalSection(&criticalSection);
 
 }
@@ -143,19 +150,19 @@ double Automation::ReadMeasurementFromDevice(ConnectionMesure Appareil)
 	srand(time(NULL)); // temp
 	double tsp;
 	if (Appareil.voie_mesure == INSTRUMENT_KEYTHLEY_V1) {
-		tsp = (rand() % 100);
+		tsp = 1 + ((double)(rand() % 100) / 500);
 		return tsp;
 		//return instrument[Appareil.index]->LireKeithley_Voie1();
 	}
 		
 	if (Appareil.voie_mesure == INSTRUMENT_KEYTHLEY_V2) {
-		tsp = (rand() % 100);
+		tsp = 0.1 + ((double)(rand() % 100) / 500);
 		return tsp;
 		//return instrument[Appareil.index]->LireKeithley_Voie2();
 	}
 
 	if (Appareil.voie_mesure == MENSOR_VOIE) {
-		tsp = (rand() % 100);
+		tsp = 0.1 + ((double)(rand() % 100) / 500);
 		return tsp;
 		//return instrument[Appareil.index]->LireMensor();
 	}

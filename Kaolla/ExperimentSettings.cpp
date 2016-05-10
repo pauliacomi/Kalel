@@ -1,10 +1,12 @@
 #include "StdAfx.h"
 #include "ExperimentSettings.h"
+#include "Define_Experiment_Type.h"
+
 
 ExperimentSettings::ExperimentSettings(void)
 : GUIhandle(NULL)
 , dataModified(false)
-, experimentType(NULL)
+, experimentType(EXPERIMENT_TYPE_UNDEF)
 {
 	// Initialisation of the critical section
 	InitializeCriticalSection(&criticalSection);

@@ -4,8 +4,9 @@
 
 
 Automation::Automation()
-	:running(true)
-	,waiting(false)
+	: running(true)
+	, checking(true)
+	, paused(false)
 {
 }
 
@@ -23,53 +24,119 @@ void Automation::Execution()
 	// Infinite loop, it is broken from the inside
 	while (running)
 	{
-		switch (g_flagState)		// We look at the main flag
-		{
-		case STOP:						// In case the experiment is asked to stop completely
-			Shutdown();
-			break;
+		if (DataIsNew()) {
+			SetData();
+			RecordDataChange();
+		}
 
-		case INACTIVE:					// In case the experiment is not doing anything
-			Inactive();
-			break;
-
-		case PAUSE:						// In case the experiment is measuring in the background
-			Pause();
-			break;
-			
-		case ACTIVE:					// In case the experiment is started and underway
-			
-			// Check if the data is the same as the old one, if so then get it
-			if (DataIsNew()) {
-				SetData();
-				RecordDataChange();
-			}
-
+		if (experimentLocalData.experimentCommandsRequested == true) {
 			switch (experimentLocalSettings.experimentType)		// We look at the type of experiment
 			{
-				case EXPERIMENT_TYPE_MANUAL:					// in case it is manual
-					if (ExecutionManual())						// run the manual loop
-						continue;
-					break;
-				case EXPERIMENT_TYPE_AUTO:						// in case it is automatic
-					if (ExecutionAuto())						// run the automatic loop
-						continue;
-					break;
-				default:
-					ASSERT(0); // Error
-					break;
+			case EXPERIMENT_TYPE_MANUAL:						// in case it is manual
+				ExecutionManual();								// run the manual loop
+				break;
+			case EXPERIMENT_TYPE_AUTO:							// in case it is automatic
+				ExecutionAuto();								// run the automatic loop
+				break;
+			case EXPERIMENT_TYPE_UNDEF:							// in case no experiment has been set yet
+				break;											// just continue
+			default:
+				ASSERT(0); // Error
+				break;
 			}
-			break;
+		}
+
+		// Start threads and read the data
+		ThreadMeasurement();
+
+		// Do the security checks
+		SecuriteTemperatures();
+		SecuriteHautePression();
+
+		if (experimentLocalData.experimentRecording	&&								// If we started recording
+			timerMeasurement.TempsActuel() > T_BETWEEN_RECORD)						// and the enough time between measurements
+		{
+			// Save the time at which the measurement took place
+			experimentLocalData.experimentTime = timerExperiment.TempsActuel();
+
+			// Save the data to the file
+			EnregistrementFichierMesures();
+
+			// Restart the timer to record time between measurements
+			timerMeasurement.TopChrono();
+			
+			// Increment the measurement number
+			experimentLocalData.experimentMeasurements++;
+		}
+
+		// Send the data to be displayed to the GUI
+		messageHandler.ExchangeData(experimentLocalData);
 		
-		default:
-			ASSERT(0); // Error
-			break;
+		if (checking)
+		{
+			// Switch to see if the thread is still inactive
+			HANDLE objects[3];
+			objects[0] = h_eventShutdown;
+			objects[1] = h_eventPause;
+			objects[2] = h_eventResume;
+
+			switch (::WaitForMultipleObjects(3, objects, FALSE, T_BETWEEN_MEASURE)) // (ms) Poll time
+			{
+
+			case WAIT_OBJECT_0:
+				Shutdown();
+				break;
+
+			case WAIT_OBJECT_0 + 1:
+				if (experimentLocalData.experimentInProgress)
+				{
+					timerExperiment.ArretTemps();
+					timerMeasurement.ArretTemps();
+					timerWaiting.ArretTemps();
+					experimentLocalData.experimentRecording = false;
+
+					messageHandler.DisplayMessage(MESSAGE_EXPPAUSE);
+				}
+				experimentLocalData.experimentCommandsRequested = false;
+				::ResetEvent(h_eventPause);	// Reset the event
+				break;
+
+			case WAIT_OBJECT_0 + 2:
+				if (experimentLocalData.experimentInProgress)
+				{
+					timerExperiment.RepriseTemps();
+					timerMeasurement.RepriseTemps();
+					timerWaiting.RepriseTemps();
+					experimentLocalData.experimentRecording = true;
+
+					messageHandler.DisplayMessage(MESSAGE_EXPRESUME);
+				}
+				experimentLocalData.experimentCommandsRequested = true;
+				::ResetEvent(h_eventResume);	// Reset the event
+				break;
+
+			case WAIT_TIMEOUT:
+				if (experimentLocalData.experimentInProgress) {
+					experimentLocalData.experimentCommandsRequested = true;
+				}
+				if (experimentLocalData.experimentWaiting &&								// If the wait functionality is requested																					
+					timerWaiting.TempsActuel() > experimentLocalData.timeToEquilibrate) {	//and the time has been completed
+
+					timerWaiting.ArretTemps();
+					experimentLocalData.experimentWaiting = false;
+					experimentLocalData.experimentCommandsRequested = true;
+				}
+				break;
+
+			default:
+				ASSERT(FALSE); // unknown error
+				break;
+			}
 		}
 	}
 
 	FinishExperiment(false);
 }
-
 
 
 bool Automation::ExecutionManual()
@@ -96,15 +163,12 @@ bool Automation::ExecutionManual()
 
 		// Continue experiment
 		experimentLocalData.experimentStepStatus = STEP_STATUS_INPROGRESS;
-		g_flagState = INACTIVE;
+		experimentLocalData.experimentCommandsRequested = false;
 
 		break;
 
 	case STEP_STATUS_INPROGRESS:
-		g_flagState = INACTIVE;
-		break;
-
-	case STEP_STATUS_END:
+		experimentLocalData.experimentCommandsRequested = false;
 		break;
 
 	default:
@@ -155,6 +219,7 @@ void Automation::Initialisation()
 	experimentLocalData.experimentDose = 0;
 	experimentLocalData.experimentTime = 0;
 	experimentLocalData.experimentMeasurements = 1;
+	experimentLocalSettings.experimentType = EXPERIMENT_TYPE_UNDEF;
 	experimentLocalData.experimentStage = STAGE_VERIFICATIONS;
 	experimentLocalData.experimentSubstepStage = STEP_STATUS_START;
 
@@ -183,7 +248,7 @@ void Automation::Initialisation()
 	h_eventPause = CreateEvent(NULL, TRUE, FALSE, NULL);
 
 	// Put the thread in a paused state
-	g_flagState = PAUSE;
+	experimentLocalData.experimentRecording = false;
 }
 
 
@@ -410,8 +475,9 @@ bool Automation::DataIsNew()
 	EnterCriticalSection(&experimentSettings->criticalSection);
 	if (experimentSettings->dataModified == false)
 		check = false;
-	else
+	else {
 		check = true;
+	}
 	LeaveCriticalSection(&experimentSettings->criticalSection);
 
 	return check;

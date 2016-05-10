@@ -8,10 +8,13 @@ void Automation::StageEquilibration()
 
 	case STEP_STATUS_START:
 		messageHandler.DisplayMessage(MESSAGE_EQUILIBRATION_STARTED);										// Let GUI know the step change
-		experimentLocalData.timeToEquilibrate = experimentLocalSettings.dataDivers.temps_ligne_base;		// Set the time to wait
-		timerWaiting.TopChrono();																			// Start the timer to record time of the baseline
-		g_flagState = INACTIVE;
-		waiting = true;
+
+		// Set the time to wait
+		experimentLocalData.timeToEquilibrate = experimentLocalSettings.dataDivers.temps_ligne_base * 60;
+		experimentLocalData.experimentWaiting = true;
+		experimentLocalData.experimentCommandsRequested = false;
+		timerWaiting.TopChrono();
+
 		experimentLocalData.experimentEquilibrationStatus = STEP_STATUS_END;								// Set next step
 		break;
 
@@ -21,16 +24,8 @@ void Automation::StageEquilibration()
 		break;
 
 	case STEP_STATUS_END:
-		experimentLocalData.experimentEquilibrationStatus = STEP_STATUS_START;								// Set next step
-		if (experimentLocalData.experimentPreviousStage == STAGE_UNDEF)
-		{
-			experimentLocalData.experimentStage = STAGE_ADSORPTION;											// Set next stage
-		}
-		else
-		{
-			experimentLocalData.experimentStage = experimentLocalData.experimentPreviousStage;				// Back to previous stage
-		}
-
+		experimentLocalData.experimentEquilibrationStatus = STEP_STATUS_START;								// Reset next step
+		experimentLocalData.experimentStage = STAGE_ADSORPTION;												// Set next stage
 		messageHandler.DisplayMessage(MESSAGE_EQUILIBRATION_COMPLETE);										// Let GUI know the step change
 		break;
 	}
@@ -45,33 +40,10 @@ void Automation::StageAdsorption()
 		messageHandler.DisplayMessage(MESSAGE_ADSORPTION_STAGE_START, experimentLocalData.experimentStage);				// Let GUI know the step change
 
 		ControlMechanismsCloseAll();																					// Close all valves
-		ThreadMeasurement();																							// Start threads and read the data
 		experimentLocalData.pressureInitial = experimentLocalData.pressureHigh;											// Set the initial pressure
 		break;
 
 	case STEP_STATUS_INPROGRESS:
-
-		// Start the timer to record time of the measurement
-		timerMeasurement.TopChrono();
-
-		// Start threads and read the data
-		ThreadMeasurement();
-
-		// Do the security checks
-		SecuriteTemperatures();
-		SecuriteHautePression();
-
-		// Save the time at which the measurement took place
-		experimentLocalData.experimentTime = timerExperiment.TempsActuel();
-
-		// Send the data to be saved outside of the function
-		messageHandler.ExchangeData(experimentLocalData);
-
-		// Save the data to the file
-		EnregistrementFichierMesures();
-
-		// Increment the measurement number
-		experimentLocalData.experimentMeasurements++;
 
 		// Go through the adsorption substeps
 		SubstepsAdsorption();
@@ -80,8 +52,12 @@ void Automation::StageAdsorption()
 		if (experimentLocalData.pressureFinal > experimentLocalSettings.dataAdsorption[experimentLocalData.adsorptionCounter].pression_finale)
 			experimentLocalData.experimentStepStatus = STEP_STATUS_END;
 		
-		// Wait
-		g_flagState = INACTIVE;
+		// Set the time to wait
+		experimentLocalData.timeToEquilibrate = experimentLocalSettings.dataAdsorption[experimentLocalData.adsorptionCounter].temps_adsorption;
+		experimentLocalData.experimentWaiting = true;
+		experimentLocalData.experimentCommandsRequested = false;
+		timerWaiting.TopChrono();
+
 		break;
 
 	case STEP_STATUS_END:

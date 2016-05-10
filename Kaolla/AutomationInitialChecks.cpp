@@ -32,7 +32,7 @@ int Automation::VerificationSecurity()
 	{
 		// Ask user if they want to continue
 		messageHandler.DisplayMessageBox(MESSAGE_NOSECURITY, MB_ICONWARNING | MB_OKCANCEL, true);
-		g_flagState = PAUSE;
+		::SetEvent(h_eventPause);
 	}
 	experimentLocalData.verificationStep = STEP_VERIFICATIONS_VALVES;
 	return 0;
@@ -44,7 +44,7 @@ int Automation::VerificationValves()
 	// Ask user to check the valves
 	messageHandler.DisplayMessage(MESSAGE_CHECK_INITIAL_STATE);
 	messageHandler.DisplayMessageBox(MESSAGE_CHECK_VALVES_OPEN, MB_ICONQUESTION | MB_OKCANCEL, true);
-	g_flagState = PAUSE;
+	::SetEvent(h_eventPause);
 
 	experimentLocalData.verificationStep = STEP_VERIFICATIONS_PRESSURE;
 
@@ -75,9 +75,10 @@ int Automation::VerificationResidualPressure()
 			// Set the time to wait
 			timerWaiting.TopChrono();
 			experimentLocalData.timeToEquilibrate = TimeInterval;
-			g_flagState = INACTIVE;
-			waiting = true;
+			experimentLocalData.experimentWaiting = true;
+			experimentLocalData.experimentCommandsRequested = false;
 		}
+		// Continue to next step
 		experimentLocalData.experimentSubstepStage = STEP_STATUS_INPROGRESS;
 		break;
 
@@ -89,11 +90,12 @@ int Automation::VerificationResidualPressure()
 		messageHandler.DisplayMessage(MESSAGE_WAIT_TIME, TimeInterval);
 
 		// Set the time to wait
-		timerWaiting.TopChrono();
 		experimentLocalData.timeToEquilibrate = TimeInterval;
-		g_flagState = INACTIVE;
-		waiting = true;
-
+		experimentLocalData.experimentWaiting = true;
+		experimentLocalData.experimentCommandsRequested = false;
+		timerWaiting.TopChrono();
+		
+		// Continue to next step
 		experimentLocalData.experimentSubstepStage = STEP_STATUS_END;
 		break;
 
@@ -102,7 +104,7 @@ int Automation::VerificationResidualPressure()
 		if (experimentLocalData.pressureHigh >= GetPressionLimiteVide())
 		{
 			messageHandler.DisplayMessageBox(MESSAGE_WARNING_INITIAL_PRESSURE, MB_ICONQUESTION | MB_OKCANCEL, true, experimentLocalData.pressureHigh, GetPressionLimiteVide());
-			g_flagState = PAUSE;
+			::SetEvent(h_eventPause);
 		}
 		experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_START;
 		experimentLocalData.verificationStep = STEP_VERIFICATIONS_TEMPERATURE;
@@ -130,7 +132,7 @@ int Automation::VerificationTemperature()
 			(experimentLocalData.temperatureCage < experimentLocalSettings.dataGeneral.temperature_experience - TEMP_SECURITY) || (experimentLocalData.temperatureCage > experimentLocalSettings.dataGeneral.temperature_experience + TEMP_SECURITY))
 		{
 			messageHandler.DisplayMessageBox(MESSAGE_CHECK_TEMPERATURE_DIFF, MB_ICONQUESTION | MB_YESNOCANCEL, true, experimentLocalData.temperatureCalo, experimentLocalSettings.dataGeneral.temperature_experience - TEMP_SECURITY);
-			g_flagState = PAUSE;
+			::SetEvent(h_eventPause);
 			experimentLocalData.experimentSubstepStage = STEP_STATUS_INPROGRESS;
 		}
 		else
@@ -147,7 +149,7 @@ int Automation::VerificationTemperature()
 		if ((experimentLocalData.temperatureCalo < experimentLocalSettings.dataGeneral.temperature_experience - TEMP_SECURITY) || (experimentLocalData.temperatureCalo > experimentLocalSettings.dataGeneral.temperature_experience + TEMP_SECURITY) ||
 			(experimentLocalData.temperatureCage < experimentLocalSettings.dataGeneral.temperature_experience - TEMP_SECURITY) || (experimentLocalData.temperatureCage > experimentLocalSettings.dataGeneral.temperature_experience + TEMP_SECURITY))
 		{
-			g_flagState = PAUSE;
+			::SetEvent(h_eventPause);
 		}
 		else
 		{

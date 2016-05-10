@@ -125,7 +125,7 @@ LRESULT CKaollaView::ExchangeData(WPARAM, LPARAM incomingExperimentData)
 
 void CKaollaView::OnTimer(UINT nIDEvent)
 {
-	// Safely store
+	// Convert to strings
 	m_StrCalo.Format(_T("%.2f") , experimentData.resultCalorimeter);
 	m_StrBassePression.Format(_T("%.2f"), experimentData.pressureLow);
 	m_StrHautePression.Format(_T("%.2f"), experimentData.pressureHigh);
@@ -133,6 +133,8 @@ void CKaollaView::OnTimer(UINT nIDEvent)
 	m_StrTemperatureCage.Format(_T("%.2f"), experimentData.temperatureCage);
 	m_StrTemperaturePiece.Format(_T("%.2f"), experimentData.temperatureRoom);
 	m_StrTemps.Format(_T("%.1f"), experimentData.experimentTime);
+	m_StrPressionInitiale.Format(_T("%.1f"), experimentData.pressureInitial);
+	m_StrPressionFinale.Format(_T("%.1f"), experimentData.pressureFinal);
 
 	// Refresh view
 	SetDlgItemText(IDC_CALO, m_StrCalo);
@@ -142,6 +144,8 @@ void CKaollaView::OnTimer(UINT nIDEvent)
 	SetDlgItemText(IDC_TEMPERATURE_CAGE, m_StrTemperatureCage);
 	SetDlgItemText(IDC_TEMPERATURE_PIECE, m_StrTemperaturePiece);
 	SetDlgItemText(IDC_TEMPS, m_StrTemps);
+	SetDlgItemText(IDC_PRESSION_INITIALE, m_StrPressionInitiale);
+	SetDlgItemText(IDC_PRESSION_FINALE, m_StrPressionFinale);
 
 	// Write graph
 	GetDocument()->GraphAddMeasurement(experimentData);
@@ -151,7 +155,7 @@ void CKaollaView::OnTimer(UINT nIDEvent)
 	CFormView::OnTimer(nIDEvent);	// Call base class handler.
 }
 
-// ------------ Dialog Box ----
+// ------------ Dialog Boxes ----
 
 LRESULT CKaollaView::MessageBoxAlert(WPARAM wParam, LPARAM lParam)
 {

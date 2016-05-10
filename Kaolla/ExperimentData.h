@@ -13,6 +13,8 @@ public:
 
 	bool experimentInProgress;				// Boolean for checking whether the experiment is started or not
 	bool experimentRecording;				// Boolean for checking whether the data is being recorded at each measurement
+	bool experimentWaiting;					// Boolean for 
+	bool experimentCommandsRequested;		// Boolean for 
 
 	// Parameters for storing where program has reached
 
