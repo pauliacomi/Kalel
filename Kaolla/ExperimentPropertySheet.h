@@ -22,6 +22,7 @@
 #define tab_desorption			5
 
 #define nb_ads_tabs 3
+#define nb_des_tabs 3
 #define nb_tabs 7
 
 class ExperimentPropertySheet : public CMFCPropertySheet
@@ -42,20 +43,20 @@ public:
 	// PropertyPages declared
 	TabGeneral m_general;
 	TabDivers m_divers;
-	TabDoses * p_dose;
-	TabDesorption m_desorption;
+	TabDoses * m_dose;
+	TabDesorption * m_desorption;
 	TabContinuousAdsorption m_continuousAdsorption;
 	vector<TabDoses*> adsorptionTabs;
+	vector<TabDesorption*> desorptionTabs;
 
 protected:
 
 	// Pointers for class polymorphism
 	CPropertyPage * p_generalPP;
 	CPropertyPage * p_diversPP;
-	CPropertyPage * p_dosePP;
-	CPropertyPage * p_desorptionPP;
 	CPropertyPage * p_adsorptioncontinuePP;
 	vector<CPropertyPage*> adsorptionTabPointers;
+	vector<CPropertyPage*> desorptionTabPointers;
 
 public:
 	int experimentType;

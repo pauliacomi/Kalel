@@ -11,9 +11,14 @@
 
 IMPLEMENT_DYNAMIC(TabDesorption, CMFCPropertyPage)
 
-TabDesorption::TabDesorption()
+TabDesorption::TabDesorption(CString i)
 	: CMFCPropertyPage(TabDesorption::IDD)
 {
+	// Set title from its initialisation
+	m_caption = i;
+	m_psp.pszTitle = m_caption;
+	m_psp.dwFlags |= PSP_USETITLE;
+
 	Reinitialisation();
 }
 

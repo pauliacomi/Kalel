@@ -174,8 +174,8 @@ protected:
 
 protected:
 
-	void AttenteMinutes(int nbminutes);
-	void AttenteSecondes(int nbsecondes);
+	void WaitMinutes(int nbminutes);
+	void WaitSeconds(int nbsecondes);
 	CString MessageAttente(int nbsecondes);
 	CString MessageTemps(int duree);
 

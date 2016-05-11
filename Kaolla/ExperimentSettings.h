@@ -24,14 +24,14 @@ public:
 
 	// Data modified boolean
 	bool dataModified;
+	bool continueAnyway;
 
 	// Experimental data storage
 
 	Donnees_General dataGeneral;
 	Donnees_Divers dataDivers;
 	vector<Donnees_Doses> dataAdsorption;
-	Donnees_Desorption dataDesorption;
-
+	vector<Donnees_Desorption> dataDesorption;
 
 	// Overload equals function
 	ExperimentSettings & ExperimentSettings::operator=(const ExperimentSettings * p);

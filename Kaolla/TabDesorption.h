@@ -13,10 +13,10 @@ class TabDesorption : public CMFCPropertyPage
 	DECLARE_DYNAMIC(TabDesorption)
 
 public:
-	TabDesorption();
+	TabDesorption(CString i);
 	virtual ~TabDesorption();
 
-// Dialog Data
+	// Dialog Data
 	enum { IDD = IDD_DESORPTION };
 
 protected:

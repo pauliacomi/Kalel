@@ -6,6 +6,7 @@
 ExperimentSettings::ExperimentSettings(void)
 : GUIhandle(NULL)
 , dataModified(false)
+, continueAnyway(false)
 , experimentType(EXPERIMENT_TYPE_UNDEF)
 {
 	// Initialisation of the critical section

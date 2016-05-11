@@ -22,7 +22,6 @@ void ExperimentData::ResetData()
 	experimentPreviousStage = STAGE_UNDEF;
 	experimentDose = 0;
 	experimentStepStatus = STEP_STATUS_UNDEF;
-	experimentEquilibrationStatus = STEP_STATUS_UNDEF;
 	experimentSubstepStage = STEP_STATUS_START;
 	experimentMeasurements = 0;
 	verificationStep = STEP_VERIFICATIONS_UNDEF;

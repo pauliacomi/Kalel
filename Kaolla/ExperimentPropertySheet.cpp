@@ -30,17 +30,23 @@ ExperimentPropertySheet::ExperimentPropertySheet(LPCTSTR pszCaption, CWnd* pPare
 	// Link the pointers
 	p_generalPP = &m_general;
 	p_diversPP = &m_divers;
-	p_desorptionPP = &m_desorption;
 	p_adsorptioncontinuePP = &m_continuousAdsorption;
 
 	// Dynamically generate the tabs
 	CString tabtitle;
 	for (int i = 0; i < nb_ads_tabs; i++)
 	{
-		tabtitle.Format(_T("Adsorption %d"), i+1);
-		p_dose = new TabDoses(tabtitle);
-		adsorptionTabs.push_back(p_dose);
+		tabtitle.Format(_T("Adsorption %d"), i + 1);
+		m_dose = new TabDoses(tabtitle);
+		adsorptionTabs.push_back(m_dose);
 		adsorptionTabPointers.push_back(adsorptionTabs[i]);
+	}
+	for (int i = 0; i < nb_des_tabs; i++)
+	{
+		tabtitle.Format(_T("Desorption %d"), i + 1);
+		m_desorption = new TabDesorption(tabtitle);
+		desorptionTabs.push_back(m_desorption);
+		desorptionTabPointers.push_back(desorptionTabs[i]);
 	}
 
 	for (int i = 0; i<nb_tabs; i++) //////redo
@@ -56,6 +62,10 @@ ExperimentPropertySheet::~ExperimentPropertySheet()
 	for (int i = 0; i < adsorptionTabs.size(); i++)
 	{
 		delete adsorptionTabs[i];
+	}
+	for (int i = 0; i < desorptionTabs.size(); i++)
+	{
+		delete desorptionTabs[i];
 	}
 }
 
@@ -166,7 +176,10 @@ void ExperimentPropertySheet::ReinitialisationAuto()
 	{
 		adsorptionTabs[i]->Reinitialisation();
 	}
-	m_desorption.Reinitialisation();
+	for (int i = 0; i < desorptionTabs.size(); i++)
+	{
+		desorptionTabs[i]->Reinitialisation();
+	}
 
 	/*m_adsorptioncontinue.Reinitialisation()*/;
 }
@@ -186,7 +199,10 @@ void ExperimentPropertySheet::AddAllTabs() {
 	{
 		AddTab(adsorptionTabs[i], tab_divers + i + 1);
 	}
-	AddTab(p_desorptionPP, tab_desorption);
+	for (int i = 0; i < desorptionTabs.size(); i++)
+	{
+		AddTab(desorptionTabs[i], tab_divers + i + 1);
+	}
 	AddTab(p_adsorptioncontinuePP, tab_adsorption_continue);
 }
 
@@ -199,8 +215,10 @@ void ExperimentPropertySheet::RemoveAllTabs()
 	{
 		RemoveTab(adsorptionTabs[i], tab_divers + i + 1);
 	}
-	RemoveTab(p_diversPP, tab_divers);
-	RemoveTab(p_desorptionPP, tab_desorption);
+	for (int i = 0; i < desorptionTabs.size(); i++)
+	{
+		RemoveTab(desorptionTabs[i], tab_divers + i + 1);
+	}
 	RemoveTab(p_adsorptioncontinuePP, tab_adsorption_continue);
 }
 

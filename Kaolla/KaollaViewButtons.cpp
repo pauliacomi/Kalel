@@ -135,7 +135,10 @@ void CKaollaView::GetExperimentData(ExperimentPropertySheet * dialogExperimentPr
 		{
 			experimentSettings->dataAdsorption.push_back(dialogExperimentProperties->adsorptionTabs[i]->allSettings);
 		}
-		experimentSettings->dataDesorption = dialogExperimentProperties->m_desorption.allSettings;
+		for (size_t i = 0; i < dialogExperimentProperties->desorptionTabs.size(); i++)
+		{
+			experimentSettings->dataDesorption.push_back(dialogExperimentProperties->desorptionTabs[i]->allSettings);
+		}
 	}
 
 	// Leave the critical section

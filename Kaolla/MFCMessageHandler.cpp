@@ -112,7 +112,7 @@ BOOL MFCMessageHandler::DisplayMessage(int pParam, int pInt1, int pInt2, double 
 	return 0;
 }
 
-BOOL MFCMessageHandler::DisplayMessageBox(int pParam, UINT nType, bool blocking, double pDouble1, double pDouble2)
+BOOL MFCMessageHandler::DisplayMessageBox(int pParam, UINT nType, bool blocksProgram, double pDouble1, double pDouble2)
 {
 	// Create a new pointer 
 	CString * message = new CString;
@@ -133,14 +133,13 @@ BOOL MFCMessageHandler::DisplayMessageBox(int pParam, UINT nType, bool blocking,
 	}
 
 	// Check if the message box is supposed to alert the user or ask for input
-	if (blocking)
+	// Other thread is now responsible for deleting this object
+	if (blocksProgram)
 	{
-		// Other thread is now responsible for deleting this object
 		::PostMessage(windowHandle, WM_DISPLAYMESSAGEBOXCONF, nType, (LPARAM)message);
 	}
 	else
 	{
-		// Other thread is now responsible for deleting this object
 		::PostMessage(windowHandle, WM_DISPLAYMESSAGEBOX, nType, (LPARAM)message);
 	}
 

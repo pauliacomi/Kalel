@@ -11,14 +11,15 @@ public:
 
 private:
 	LARGE_INTEGER start, end, freq;
+	LARGE_INTEGER pause, reprise;
 	float temps;
-	LARGE_INTEGER pause,reprise;
 	bool started;
+	bool paused;
 	
 public:
 	void TopChrono();
-	float TempsActuel();
-	float TempsActuel(LARGE_INTEGER endEtranger);
+	double TempsActuel();
+	double TempsActuel(LARGE_INTEGER endEtranger);
 	int TempsActuelMinute();
 	int TempsActuelMinute(LARGE_INTEGER endEtranger);
 	float fTempsActuelMinute();

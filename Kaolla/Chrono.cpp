@@ -15,10 +15,24 @@ void CChrono::TopChrono()
 	started = true;
 	QueryPerformanceFrequency(&freq);
 	QueryPerformanceCounter(&start);
-	temps = 0;
+	temps = 0.f;
 }
 
-float CChrono::TempsActuel()
+void CChrono::ArretTemps()
+{
+	paused = true;
+	QueryPerformanceCounter(&pause);
+}
+
+
+void CChrono::RepriseTemps()
+{
+	paused = false;
+	QueryPerformanceCounter(&reprise);
+	start.QuadPart = reprise.QuadPart - (pause.QuadPart - start.QuadPart);
+}
+
+double CChrono::TempsActuel()
 {
 	// il vaudra mieux utiliser la fonction QueryPerformanceCounter. 
 	// La précision du compteur utilisée par cette fonction peut être connue 
@@ -28,22 +42,33 @@ float CChrono::TempsActuel()
 	// Le membre QuadPart de cette union permet d'accéder intégralement à l'entier qu'il représente.
 
 	QueryPerformanceCounter(&end);
-	// Conversion en milliseconde 
-	// (plus précis que lorsqu'on calcul en secondes... on ne sait pas pourquoi) 
-	double elapsed = (1000.0 * (end.QuadPart - start.QuadPart)) / freq.QuadPart;
-	temps = static_cast<float>(elapsed) /1000.0;
+	
+	// If paused do not return actual value
+
+	// Conversion en milliseconde
+	if (!paused)
+	{
+		temps = (1000.0 * (end.QuadPart - start.QuadPart)) / freq.QuadPart;
+		temps /= 1000;
+	}
+	else {
+		temps = (1000.0 * (pause.QuadPart - start.QuadPart)) / freq.QuadPart;
+		temps /= 1000;
+	}
+
 	if (started) {
 		return temps; //en secondes
 	}
 	return 0;
 }
 
-float CChrono::TempsActuel(LARGE_INTEGER endEtranger)
+double CChrono::TempsActuel(LARGE_INTEGER endEtranger)
 {
 	double elapsed = (1000.0 * (endEtranger.QuadPart - start.QuadPart)) / freq.QuadPart;
-	temps = static_cast<float>(elapsed)/1000.0;
-	return temps; //en secondes
+	elapsed /= 1000;
+	return elapsed; //en secondes
 }
+
 
 int CChrono::TempsActuelMinute()
 {
@@ -84,15 +109,3 @@ CString CChrono::StrTempsActuel()
 	return StrTemps;
 }
 
-
-void CChrono::ArretTemps()
-{
-	QueryPerformanceCounter(&pause);
-}
-
-
-void CChrono::RepriseTemps()
-{
-	QueryPerformanceCounter(&reprise);
-	start.QuadPart = reprise.QuadPart - (pause.QuadPart - start.QuadPart);
-}

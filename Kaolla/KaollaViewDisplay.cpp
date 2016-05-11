@@ -177,13 +177,21 @@ LRESULT CKaollaView::MessageBoxConfirmation(WPARAM wParam, LPARAM lParam)
 	bool continuer = true;
 	do {
 		result = AfxMessageBox(*message, wParam);
-		if (result == IDCANCEL || result == IDNO)
+		if (result == IDCANCEL)
 		{
 			if (AfxMessageBox(PROMPT_RUNNINGEXP, MB_YESNO | MB_ICONWARNING, 0) == IDYES)
 				continuer = false;
 		}
 		else {
 			if (result == IDYES || result == IDOK) {
+				threadManager->StartThread();
+				continuer = false;
+			}
+			if (result == IDNO) {
+				EnterCriticalSection(&experimentSettings->criticalSection);
+				experimentSettings->continueAnyway = true;
+				experimentSettings->dataModified = true;
+				LeaveCriticalSection(&experimentSettings->criticalSection);
 				threadManager->StartThread();
 				continuer = false;
 			}

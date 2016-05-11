@@ -27,8 +27,8 @@ void Automation::Verifications()
 
 int Automation::VerificationSecurity()
 {
-	bool secu = GetActivationSecurite();
-	if (!secu)
+	bool securityActivated = GetActivationSecurite();
+	if (!securityActivated)
 	{
 		// Ask user if they want to continue
 		messageHandler.DisplayMessageBox(MESSAGE_NOSECURITY, MB_ICONWARNING | MB_OKCANCEL, true);
@@ -54,10 +54,10 @@ int Automation::VerificationValves()
 
 int Automation::VerificationResidualPressure()
 {
-	switch (experimentLocalData.experimentSubstepStage)
+	switch (experimentLocalData.experimentStepStatus)
 	{
 
-	case SUBSTEP_STATUS_START:
+	case STEP_STATUS_START:
 		// Vérification de la pression résiduelle
 		messageHandler.DisplayMessage(MESSAGE_CHECK_INITIAL_PRESSURE);
 
@@ -73,41 +73,39 @@ int Automation::VerificationResidualPressure()
 			messageHandler.DisplayMessage(MESSAGE_WAIT_TIME, TimeInterval);
 
 			// Set the time to wait
-			timerWaiting.TopChrono();
-			experimentLocalData.timeToEquilibrate = TimeInterval;
-			experimentLocalData.experimentWaiting = true;
-			experimentLocalData.experimentCommandsRequested = false;
+			WaitSeconds(TimeInterval);
 		}
 		// Continue to next step
-		experimentLocalData.experimentSubstepStage = STEP_STATUS_INPROGRESS;
+		experimentLocalData.experimentStepStatus = STEP_STATUS_INPROGRESS;
 		break;
 
 	case STEP_STATUS_INPROGRESS:
-		// Open valve 5
-		ValveOpen(5);
+		if (experimentLocalData.experimentWaiting == false) {				// If waiting is done
+			// Open valve 5
+			ValveOpen(5);
 
-		// Tell GUI we are waiting
-		messageHandler.DisplayMessage(MESSAGE_WAIT_TIME, TimeInterval);
+			// Tell GUI we are waiting
+			messageHandler.DisplayMessage(MESSAGE_WAIT_TIME, TimeInterval);
 
-		// Set the time to wait
-		experimentLocalData.timeToEquilibrate = TimeInterval;
-		experimentLocalData.experimentWaiting = true;
-		experimentLocalData.experimentCommandsRequested = false;
-		timerWaiting.TopChrono();
-		
-		// Continue to next step
-		experimentLocalData.experimentSubstepStage = STEP_STATUS_END;
+			// Set the time to wait
+			WaitSeconds(TimeInterval);
+
+			// Continue to next step
+			experimentLocalData.experimentStepStatus = STEP_STATUS_END;
+		}		
 		break;
 
 	case STEP_STATUS_END:
-		// Check residual pressure
-		if (experimentLocalData.pressureHigh >= GetPressionLimiteVide())
-		{
-			messageHandler.DisplayMessageBox(MESSAGE_WARNING_INITIAL_PRESSURE, MB_ICONQUESTION | MB_OKCANCEL, true, experimentLocalData.pressureHigh, GetPressionLimiteVide());
-			::SetEvent(h_eventPause);
+		if (experimentLocalData.experimentWaiting == false) {				// If waiting is done
+			// Check residual pressure
+			if (experimentLocalData.pressureHigh >= GetPressionLimiteVide())
+			{
+				messageHandler.DisplayMessageBox(MESSAGE_WARNING_INITIAL_PRESSURE, MB_ICONQUESTION | MB_OKCANCEL, true, experimentLocalData.pressureHigh, GetPressionLimiteVide());
+				::SetEvent(h_eventPause);
+			}
+			experimentLocalData.experimentStepStatus = STEP_STATUS_START;
+			experimentLocalData.verificationStep = STEP_VERIFICATIONS_TEMPERATURE;
 		}
-		experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_START;
-		experimentLocalData.verificationStep = STEP_VERIFICATIONS_TEMPERATURE;
 		break;
 
 	default:
@@ -121,43 +119,44 @@ int Automation::VerificationResidualPressure()
 
 int Automation::VerificationTemperature()
 {
-	switch (experimentLocalData.experimentSubstepStage)
+	switch (experimentLocalData.experimentStepStatus)
 	{
 
-	case SUBSTEP_STATUS_START:
+	case STEP_STATUS_START:
 		// Vérification des températures
 		messageHandler.DisplayMessage(MESSAGE_CHECK_INITIAL_TEMPERATURE);
 
 		if ((experimentLocalData.temperatureCalo < experimentLocalSettings.dataGeneral.temperature_experience - TEMP_SECURITY) || (experimentLocalData.temperatureCalo > experimentLocalSettings.dataGeneral.temperature_experience + TEMP_SECURITY) ||
 			(experimentLocalData.temperatureCage < experimentLocalSettings.dataGeneral.temperature_experience - TEMP_SECURITY) || (experimentLocalData.temperatureCage > experimentLocalSettings.dataGeneral.temperature_experience + TEMP_SECURITY))
 		{
+			// Tell GUI we are waiting
+			messageHandler.DisplayMessage(MESSAGE_WAIT_TEMP_EQUILIBRATION);
 			messageHandler.DisplayMessageBox(MESSAGE_CHECK_TEMPERATURE_DIFF, MB_ICONQUESTION | MB_YESNOCANCEL, true, experimentLocalData.temperatureCalo, experimentLocalSettings.dataGeneral.temperature_experience - TEMP_SECURITY);
+			
 			::SetEvent(h_eventPause);
-			experimentLocalData.experimentSubstepStage = STEP_STATUS_INPROGRESS;
+			experimentLocalData.experimentStepStatus = STEP_STATUS_INPROGRESS;			// never will end if the user selects continue anyway
 		}
 		else
 		{
-			experimentLocalData.experimentSubstepStage = STEP_STATUS_END;
+			experimentLocalData.experimentStepStatus = STEP_STATUS_END;
 		}
 		break;
 
 	case STEP_STATUS_INPROGRESS:
-		// Tell GUI we are waiting
-		messageHandler.DisplayMessage(MESSAGE_WAIT_TEMP_EQUILIBRATION);
-
-		// Loop until the temperature is stable
-		if ((experimentLocalData.temperatureCalo < experimentLocalSettings.dataGeneral.temperature_experience - TEMP_SECURITY) || (experimentLocalData.temperatureCalo > experimentLocalSettings.dataGeneral.temperature_experience + TEMP_SECURITY) ||
-			(experimentLocalData.temperatureCage < experimentLocalSettings.dataGeneral.temperature_experience - TEMP_SECURITY) || (experimentLocalData.temperatureCage > experimentLocalSettings.dataGeneral.temperature_experience + TEMP_SECURITY))
+		if (experimentLocalSettings.continueAnyway)
 		{
-			::SetEvent(h_eventPause);
+			experimentLocalData.experimentStepStatus = STEP_STATUS_END;
 		}
-		else
+		// Loop until the temperature is stable
+		if ((experimentLocalData.temperatureCalo > experimentLocalSettings.dataGeneral.temperature_experience - TEMP_SECURITY) || (experimentLocalData.temperatureCalo < experimentLocalSettings.dataGeneral.temperature_experience + TEMP_SECURITY) ||
+			(experimentLocalData.temperatureCage > experimentLocalSettings.dataGeneral.temperature_experience - TEMP_SECURITY) || (experimentLocalData.temperatureCage < experimentLocalSettings.dataGeneral.temperature_experience + TEMP_SECURITY))
 		{
-			experimentLocalData.experimentSubstepStage = STEP_STATUS_END;
+			experimentLocalData.experimentStepStatus = STEP_STATUS_END;
 		}
 		break;
 
 	case STEP_STATUS_END:
+		experimentLocalData.experimentStepStatus = STEP_STATUS_START;
 		experimentLocalData.verificationStep = STEP_VERIFICATIONS_COMPLETE;
 		break;
 
@@ -172,9 +171,8 @@ int Automation::VerificationTemperature()
 int Automation::VerificationComplete()
 {
 	// Go to the next step
-	experimentLocalData.experimentEquilibrationStatus = SUBSTEP_STATUS_START;
-	experimentLocalData.experimentSubstepStage = STEP_STATUS_START;
 	experimentLocalData.experimentStage = STAGE_EQUILIBRATION;
+	experimentLocalData.experimentStepStatus = STEP_STATUS_START;
 
 	return 0;
 }

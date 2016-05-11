@@ -18,43 +18,17 @@
 
 
 // Wait a number of minutes
-void Automation::AttenteMinutes(int nbminutes)
+void Automation::WaitMinutes(int nbminutes)
 {
-	AttenteSecondes(nbminutes * 60);
+	WaitSeconds(nbminutes * 60);
 }
 
 // Wait a number of seconds
-void Automation::AttenteSecondes(int nbsecondes)
+void Automation::WaitSeconds(int nbsecondes)
 {
-	CChrono chrono_attente;
-	chrono_attente.TopChrono();
-	int temps_effectue = chrono_attente.TempsActuel();
-	CString textAttente, message;
-	textAttente = MessageAttente(nbsecondes);
-	int compteur = 0;
-	while (temps_effectue<nbsecondes)
-	{
-		message = textAttente;
-		message += MessageTemps(nbsecondes - temps_effectue);
-
-		for (int i = 0; i<compteur; i++)
-		{
-			message += _T(".");
-		}
-
-		if (compteur == 10)
-			compteur = 0;
-		else
-			compteur++;
-		message += _T("\r\n");
-
-		ASSERT(0);
-		//messageHandler.DisplayAddMessage(message);
-
-		Sleep(995); // why?
-		temps_effectue = chrono_attente.TempsActuel();
-	}
-
+	experimentLocalData.timeToEquilibrate = nbsecondes;
+	experimentLocalData.experimentWaiting = true;
+	timerWaiting.TopChrono();
 }
 
 CString Automation::MessageAttente(int nbsecondes) // should build just a time object to be passed 

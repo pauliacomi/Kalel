@@ -53,8 +53,12 @@ void Automation::Execution()
 		SecuriteTemperatures();
 		SecuriteHautePression();
 
+
 		// Save the time at which the measurement took place
 		experimentLocalData.experimentTime = timerExperiment.TempsActuel();
+		// Save the waiting time if it exists
+		experimentLocalData.timeToEquilibrateCurrent = timerWaiting.TempsActuel();
+
 
 		if (experimentLocalData.experimentRecording	&&								// If we started recording
 			timerMeasurement.TempsActuel() > T_BETWEEN_RECORD)						// and the enough time between measurements
@@ -69,7 +73,16 @@ void Automation::Execution()
 			experimentLocalData.experimentMeasurements++;
 		}
 
-		experimentLocalData.timeToEquilibrateCurrent = timerWaiting.TempsActuel(); // Save the waiting time if it exists
+				
+		if (experimentLocalData.experimentWaiting &&														// If the wait functionality is requested																					
+			experimentLocalData.timeToEquilibrateCurrent > experimentLocalData.timeToEquilibrate) {			//and the time has been completed
+
+			// Stop the timer
+			timerWaiting.ArretTemps();
+
+			// Reset the flag
+			experimentLocalData.experimentWaiting = false;
+		}
 
 		// Send the data to be displayed to the GUI
 		messageHandler.ExchangeData(experimentLocalData);
@@ -118,16 +131,6 @@ void Automation::Execution()
 				break;
 
 			case WAIT_TIMEOUT:
-				if (experimentLocalData.experimentInProgress) {
-					experimentLocalData.experimentCommandsRequested = true;
-				}
-				if (experimentLocalData.experimentWaiting &&								// If the wait functionality is requested																					
-					timerWaiting.TempsActuel() > experimentLocalData.timeToEquilibrate) {	//and the time has been completed									BUG HERE - waiting might destroy the loop
-
-					timerWaiting.ArretTemps();
-					experimentLocalData.experimentWaiting = false;
-					experimentLocalData.experimentCommandsRequested = true;
-				}
 				break;
 
 			default:
@@ -179,6 +182,7 @@ bool Automation::ExecutionAuto()
 		messageHandler.DisplayMessage(MESSAGE_FILLLINE);
 		messageHandler.DisplayMessage(MESSAGE_EXPSTART);
 
+		experimentLocalData.experimentInProgress = true;
 		experimentLocalData.experimentStage = STAGE_VERIFICATIONS;
 		experimentLocalData.experimentStepStatus = STEP_STATUS_START;
 		experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_START;
@@ -465,6 +469,7 @@ void Automation::SetData()
 	EnterCriticalSection(&experimentSettings->criticalSection);
 	experimentLocalSettings = experimentSettings;
 	experimentSettings->dataModified = false;
+	experimentSettings->continueAnyway = false;
 	LeaveCriticalSection(&experimentSettings->criticalSection);
 }
 
