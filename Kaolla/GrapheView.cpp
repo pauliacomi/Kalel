@@ -17,12 +17,10 @@
 
 #define TAILLE_POINT 15000
 
-#define MAXPRESSION 5
-#define MINPRESSION 0
 #define MAXCALO 0.01
 #define MINCALO 0
 
-#define NOMBREPOINTS /*5//10//*/2000
+#define NOMBREPOINTS 2000
 
 #define INEXISTANT -255
 
@@ -76,15 +74,8 @@ void CGrapheView::OnDraw(CDC* pDC)
 		int taille=pDoc->m_TableauMesures.GetSize();
 
 		// Valeurs utilisées pour les échelles et les axes d'abscisses et d'ordonnées
-		/*
-		int max_pression=MAXPRESSION;//5;
-		int min_pression=MINPRESSION;//0;
-		double max_calo=MAXCALO;//3000;
-		double min_calo=MINCALO;//0;
-		*/
-
 		int max_pression=MaxPressionEchelle(pDoc->maxPressure);
-		int min_pression = 0;//MINPRESSION;
+		int min_pression = 0;
 		double max_calo=pDoc->maxCalo;
 		double min_calo=pDoc->minCalo;
 
@@ -150,31 +141,15 @@ void CGrapheView::OnDraw(CDC* pDC)
 								   axe_grapheEtape.right,
 								   axe_grapheEtape.bottom - border);
 		
-		if (pDoc->NumeroEtape != -1)
-		{
-			
-			CString titreEtape;
-			//titreEtape.Format(_T("Graphe Etape %d"),pDoc->NumeroEtape);
-			titreEtape = pDoc->TitreGrapheEtape;
-			trace_axe(place_grapheEtape,axe_grapheEtape,pDC,pDoc,titreEtape);
 
-			/*
-			float tps_m;
-			if (pDoc->MesureMinimum == 0)
-				tps_m = 0;
-			else
-				tps_m = pDoc->m_TableauMesures[pDoc->MesureMinimum].temps;
+		CString titreEtape;
+		titreEtape = pDoc->TitreGrapheEtape;
 
-			//trace_echelle(grapheEtape,axe_grapheEtape,max_pression,min_pression,max_calo,min_calo,pDC,pDoc,pDoc->TempsMinimum);
-			trace_echelle(grapheEtape,axe_grapheEtape,max_pression,min_pression,max_calo,min_calo,pDC,pDoc,tps_m);
-			//trace_graphe(grapheEtape,max_pression,min_pression,max_calo,min_calo,pDC,pDoc,pDoc->TempsMinimum,pDoc->MesureMinimum);
-			trace_graphe(grapheEtape,max_pression,min_pression,max_calo,min_calo,pDC,pDoc,tps_m,pDoc->MesureMinimum);
-			*/
+		trace_axe(place_grapheEtape,axe_grapheEtape,pDC,pDoc,titreEtape);
 
-			
-			trace_echelle(grapheEtape,axe_grapheEtape,max_pression,min_pression,max_calo,min_calo,pDC,pDoc,pDoc->TempsMinimum);
-			trace_graphe(grapheEtape,max_pression,min_pression,max_calo,min_calo,pDC,pDoc,pDoc->TempsMinimum,pDoc->MesureMinimum);
-		}
+		trace_echelle(grapheEtape,axe_grapheEtape,max_pression,min_pression,max_calo,min_calo,pDC,pDoc,pDoc->TempsMinimum);
+		trace_graphe(grapheEtape,max_pression,min_pression,max_calo,min_calo,pDC,pDoc,pDoc->TempsMinimum,pDoc->MesureMinimum);
+		
 
 		// ------------------------------------------------------------
 		// --------------- Légende ------------------------------------
@@ -210,14 +185,14 @@ void CGrapheView::OnDraw(CDC* pDC)
 		trace_legende(legende_basse_pression,color2,texte2,pDC);
 		trace_legende(legende_haute_pression,color3,texte3,pDC);
 		
-	}}//fin else if(!pDoc->m_TableauMesures.IsEmpty())
+	}}
 
 }
 
 
-// -------------------------------------------
-// --------------- Axes ----------------------
-// -------------------------------------------
+// ------------------------------------------------
+// --------------- Axes ---------------------------
+// ------------------------------------------------
 
 
 void CGrapheView::trace_axe(CRect place_graphe, CRect axe_graphe, CDC *pDC, CKaollaDoc* pDoc,CString titre)
@@ -274,8 +249,6 @@ void CGrapheView::trace_axe(CRect place_graphe, CRect axe_graphe, CDC *pDC, CKao
 
 
 
-/*void CGrapheView::trace_echelle(CRect graphe,CRect axe_graphe,int max_pression,int min_pression,int max_calo,int min_calo,
-								CDC *pDC, CKaollaDoc* pDoc, float min_temps)*/
 void CGrapheView::trace_echelle(CRect graphe,CRect axe_graphe,int max_pression,int min_pression,double max_calo,double min_calo,
 								CDC *pDC, CKaollaDoc* pDoc, float min_temps)
 {
@@ -423,9 +396,6 @@ void CGrapheView::trace_echelle(CRect graphe,CRect axe_graphe,int max_pression,i
 
 
 
-
-/*void CGrapheView::trace_graphe(CRect graphe,int max_pression,int min_pression,int max_calo,int min_calo,
-							   CDC *pDC,CKaollaDoc *pDoc,float min_temps,int PremiereMesure)*/
 void CGrapheView::trace_graphe(CRect graphe,int max_pression,int min_pression,double max_calo,double min_calo,
 							   CDC *pDC,CKaollaDoc *pDoc,float min_temps,int PremiereMesure)
 {
@@ -452,7 +422,7 @@ void CGrapheView::trace_graphe(CRect graphe,int max_pression,int min_pression,do
 	else
 		rapport_temps = 0;
 
-	/*
+/*
 
 	// --------------------- Version 1 ----------------------------------------
 
@@ -521,7 +491,6 @@ void CGrapheView::trace_graphe(CRect graphe,int max_pression,int min_pression,do
 	pDC->Polyline(GHaute_pression,nb_points);
 	pDC->SelectObject(pOldPen3);
 	*/
-
 
 /*
 	// ----------------- Version 2 -----------------------------------------
@@ -702,7 +671,6 @@ void CGrapheView::trace_graphe(CRect graphe,int max_pression,int min_pression,do
 	}
 */
 
-
 /*
 	// ----------------- Version 3/test -----------------------------------------
 
@@ -839,8 +807,6 @@ void CGrapheView::trace_graphe(CRect graphe,int max_pression,int min_pression,do
 */
 
 
-
-
 	// ----------------- Version 4 (tous les points)-----------------------------------------
 
 	// traçage des courbes
@@ -905,7 +871,6 @@ void CGrapheView::trace_graphe(CRect graphe,int max_pression,int min_pression,do
 			pDC->LineTo(PHaute_pression);
 	}
 	pDC->SelectObject(pOldPen3);
-
 
 
 /*
@@ -1000,6 +965,10 @@ void CGrapheView::trace_graphe(CRect graphe,int max_pression,int min_pression,do
 
 }
 
+// -------------------------------------------------
+// --------------- Legende --------------------------
+// -------------------------------------------------
+
 
 void CGrapheView::trace_legende(CRect rect, COLORREF color, CString texte, CDC* pDC)
 {
@@ -1034,6 +1003,8 @@ void CGrapheView::traceContour(CRect rect, CDC *pDC)
 	pDC->LineTo(rect.right,rect.top);
 	pDC->LineTo(rect.left,rect.top);
 }
+
+
 
 
 double CGrapheView::MaxPressionEchelle(double max_p)

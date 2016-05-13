@@ -40,10 +40,7 @@ void CKaollaView::OnBnClickedLancer()
 	{
 		// Save user choice
 		experimentSettings->experimentType = dialogExperimentType->TypeExperience;
-
-		// Create the experiment parameter window
-		ExperimentPropertySheet * dialogExperimentProperties = new ExperimentPropertySheet(_T(""));
-
+		
 		// Instantiate the correct type of dialog
 		switch (experimentSettings->experimentType)
 		{
@@ -83,7 +80,13 @@ void CKaollaView::OnBnClickedArreter()
 // Clicking the other buttons in the view
 void CKaollaView::OnBnClickedButtonParametresExperience()
 {
-	//DemandeModificationExperience();
+	dialogExperimentProperties->SetProprietiesModif(experimentData.experimentStage);
+
+	if (dialogExperimentProperties->DoModal() == IDOK)
+	{
+		// Get the data from the dialog
+		GetExperimentData(dialogExperimentProperties);
+	}
 }
 
 void CKaollaView::OnBnClickedArretSousVide()

@@ -19,11 +19,8 @@
 #define tab_general				0
 #define tab_divers				1
 #define tab_adsorption_continue	6
-#define tab_desorption			5
 
-#define nb_ads_tabs 3
-#define nb_des_tabs 3
-#define nb_tabs 7
+#define nb_permanent_tabs		2
 
 class ExperimentPropertySheet : public CMFCPropertySheet
 {
@@ -58,15 +55,22 @@ protected:
 	vector<CPropertyPage*> adsorptionTabPointers;
 	vector<CPropertyPage*> desorptionTabPointers;
 
+	// Number of tabs
+
+	int numberOfAdsorptions;
+	int numberOfDesorptions;
+
 public:
 	int experimentType;
-	bool availableTabs[nb_tabs];
+	vector<bool> availableTabs;
 
 // custom functions
 
 public:
 	void AddAllTabs();		// Asks all the tabs to be added
 	void RemoveAllTabs();	// Asks all the tabs to be removed
+	void AddAdsorption(int i);	// Adds one new adsorption experiment tab
+	void AddDesorption(int i);	// Adds one new adsorption experiment tab
 	void AddTab(CPropertyPage * tab, int checkTab);			// Adds a tab, checking if it is available first
 	void RemoveTab(CPropertyPage * tab, int checkTab);		// Removes a tab, checking if it is available first
 

@@ -192,6 +192,8 @@ void CKaollaView::OnInitialUpdate()
 	// Check to see whether the parameters file has been created
 	VerifParametres();
 
+	// Create the experiment parameter window
+	dialogExperimentProperties = new ExperimentPropertySheet(_T(""));
 	experimentSettings = new ExperimentSettings();						// Create a new experiment storage
 	experimentSettings->GUIhandle = GetSafeHwnd();							// Save the window handle
 	threadManager = new ThreadManager(GetSafeHwnd(), experimentSettings);;  // the class dealing with managing threads

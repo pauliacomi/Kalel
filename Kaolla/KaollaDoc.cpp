@@ -148,9 +148,9 @@ CKaollaDoc * CKaollaDoc::GetDocument()
 
 LRESULT CKaollaDoc::GraphInitialize(WPARAM wParam, LPARAM lParam)
 {
-	TempsMinimum = -1;
-	MesureMinimum = -1;
-	NumeroEtape = -1;
+	TempsMinimum = NULL;
+	MesureMinimum = NULL;
+	NumeroEtape = NULL;
 
 	return 0;
 }

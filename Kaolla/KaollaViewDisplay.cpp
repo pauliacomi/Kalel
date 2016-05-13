@@ -111,17 +111,24 @@ LRESULT CKaollaView::AffichageEtape(ExperimentData expD)
 	
 	temp.Format(expD.experimentStage);
 
-	m_StrEtape = "Status: " + temp;
+	m_StrEtape = temp;
 
 	if (expD.verificationStep != STEP_VERIFICATIONS_UNDEF && expD.verificationStep != STEP_VERIFICATIONS_COMPLETE)
 	{
 		temp.Format(expD.verificationStep);
-		m_StrEtape += " *** Substage: " + temp;
+		m_StrEtape += ",   Substage: " + temp;
 	}
 
 	if (expD.experimentWaiting == true)
 	{
-		temp.Format(" *** Waiting: %.0f / %.0f", expD.timeToEquilibrateCurrent ,expD.timeToEquilibrate);
+		if (expD.timeToEquilibrate / 60 > 1)
+		{
+			temp.Format(" *** Waiting: %.0f min %.0f s /  %.0f min %.0f s", floorf(expD.timeToEquilibrateCurrent / 60.0f), fmodf(expD.timeToEquilibrateCurrent, 60.0f), floorf(expD.timeToEquilibrate / 60.0f), fmodf(expD.timeToEquilibrate, 60.0f));
+		}
+		else
+		{
+			temp.Format(" *** Waiting: %.0f s /  %.0f s", expD.timeToEquilibrateCurrent, expD.timeToEquilibrate);
+		}
 		m_StrEtape += temp;
 	}
 
