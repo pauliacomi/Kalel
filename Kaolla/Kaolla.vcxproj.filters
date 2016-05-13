@@ -73,9 +73,6 @@
     <Filter Include="Header Files\GUI\Dialogs\Experimental Parameters\TabsNew">
       <UniqueIdentifier>{c2f3920c-056e-4c6f-9fa9-65c03e393e14}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\GUI\Dialogs\Experiment Parameters\TabsNew">
-      <UniqueIdentifier>{4d4336e8-a13f-4388-8c9a-ea7f631adb05}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Automation">
       <UniqueIdentifier>{5bc3f4b1-2555-401d-bbd2-a619181bed19}</UniqueIdentifier>
     </Filter>
@@ -153,6 +150,9 @@
     </Filter>
     <Filter Include="Header Files\Resources\DialogBoxes">
       <UniqueIdentifier>{b01ec661-30b5-45c4-9cfe-29b4e5805132}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GUI\Dialogs\Experiment Parameters\Tabs">
+      <UniqueIdentifier>{4d4336e8-a13f-4388-8c9a-ea7f631adb05}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -654,22 +654,22 @@
       <Filter>Source Files\Utils</Filter>
     </ClCompile>
     <ClCompile Include="TabGeneral.cpp">
-      <Filter>Source Files\GUI\Dialogs\Experiment Parameters\TabsNew</Filter>
+      <Filter>Source Files\GUI\Dialogs\Experiment Parameters\Tabs</Filter>
     </ClCompile>
     <ClCompile Include="TabDivers.cpp">
-      <Filter>Source Files\GUI\Dialogs\Experiment Parameters\TabsNew</Filter>
+      <Filter>Source Files\GUI\Dialogs\Experiment Parameters\Tabs</Filter>
     </ClCompile>
     <ClCompile Include="TabDoses.cpp">
-      <Filter>Source Files\GUI\Dialogs\Experiment Parameters\TabsNew</Filter>
+      <Filter>Source Files\GUI\Dialogs\Experiment Parameters\Tabs</Filter>
     </ClCompile>
     <ClCompile Include="ExperimentPropertySheet.cpp">
       <Filter>Source Files\GUI\Dialogs\Experiment Parameters</Filter>
     </ClCompile>
     <ClCompile Include="TabDesorption.cpp">
-      <Filter>Source Files\GUI\Dialogs\Experiment Parameters\TabsNew</Filter>
+      <Filter>Source Files\GUI\Dialogs\Experiment Parameters\Tabs</Filter>
     </ClCompile>
     <ClCompile Include="TabContinuousAdsorption.cpp">
-      <Filter>Source Files\GUI\Dialogs\Experiment Parameters\TabsNew</Filter>
+      <Filter>Source Files\GUI\Dialogs\Experiment Parameters\Tabs</Filter>
     </ClCompile>
     <ClCompile Include="ExperimentData.cpp">
       <Filter>Source Files\Automation</Filter>

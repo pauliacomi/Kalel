@@ -11,6 +11,7 @@
 #include "Define_Stages.h"					// For the definitions of the steps used
 
 
+
 // ExperimentPropertySheet
 
 IMPLEMENT_DYNAMIC(ExperimentPropertySheet, CMFCPropertySheet)
@@ -23,8 +24,8 @@ ExperimentPropertySheet::ExperimentPropertySheet(UINT nIDCaption, CWnd* pParentW
 
 ExperimentPropertySheet::ExperimentPropertySheet(LPCTSTR pszCaption, CWnd* pParentWnd, UINT iSelectPage)
 	: CMFCPropertySheet(pszCaption, pParentWnd, iSelectPage)
-	, numberOfAdsorptions(2)
-	, numberOfDesorptions(2)
+	, numberOfAdsorptions(3)
+	, numberOfDesorptions(0)
 {
 	// Choose the view of the property page
 	SetLook(CMFCPropertySheet::PropSheetLook_List, 150);
@@ -57,14 +58,40 @@ ExperimentPropertySheet::ExperimentPropertySheet(LPCTSTR pszCaption, CWnd* pPare
 ExperimentPropertySheet::~ExperimentPropertySheet()
 {
 	// Must delete all created tabs
-	for (int i = 0; i < adsorptionTabs.size(); i++)
+	for (size_t i = 0; i < adsorptionTabs.size(); i++)
 	{
 		delete adsorptionTabs[i];
 	}
-	for (int i = 0; i < desorptionTabs.size(); i++)
+	for (size_t i = 0; i < desorptionTabs.size(); i++)
 	{
 		delete desorptionTabs[i];
 	}
+}
+
+BOOL ExperimentPropertySheet::OnInitDialog()
+{
+	BOOL bResult = CMFCPropertySheet::OnInitDialog();
+
+	// Find a bottom-left point for the edit control in the client area
+	CRect rect;
+	GetClientRect(&rect);
+
+	int nOffset = 6;
+	int nWidth = 70;
+	int nHeight = 22;
+
+	int nLeft = rect.left + nOffset;
+	int nTop = rect.top + (rect.Height() - nHeight) - nOffset;
+	int nRight = nLeft + nWidth;
+	int nBottom = nTop + nHeight;
+
+	// finally create the new buttons
+	m_addAdsorption.Create(_T("+ADS"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, CRect(nLeft, nTop, nRight, nBottom) , this, IDC_PLUSADS);
+	m_addAdsorption.SetFont(GetFont());
+	m_addDesorption.Create(_T("+DES"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, CRect(nLeft + nWidth + nOffset, nTop, nRight + nWidth, nBottom), this, IDC_PLUSDES);
+	m_addDesorption.SetFont(GetFont());
+
+	return bResult;
 }
 
 
@@ -72,7 +99,7 @@ ExperimentPropertySheet::~ExperimentPropertySheet()
 // It allows only the general tab to be viewed
 void ExperimentPropertySheet::SetProprietiesManual(void)
 {
-	if (experimentType != EXPERIMENT_TYPE_MANUAL)						// cancel might destroy everything
+	if (experimentType != EXPERIMENT_TYPE_MANUAL)
 	{
 		experimentType = EXPERIMENT_TYPE_MANUAL;
 
@@ -182,11 +209,11 @@ void ExperimentPropertySheet::ReinitialisationAuto()
 	m_general.Reinitialisation();
 	m_divers.Reinitialisation();
 
-	for (int i = 0; i < adsorptionTabs.size(); i++)
+	for (size_t i = 0; i < adsorptionTabs.size(); i++)
 	{
 		adsorptionTabs[i]->Reinitialisation();
 	}
-	for (int i = 0; i < desorptionTabs.size(); i++)
+	for (size_t i = 0; i < desorptionTabs.size(); i++)
 	{
 		desorptionTabs[i]->Reinitialisation();
 	}
@@ -205,11 +232,11 @@ void ExperimentPropertySheet::ReinitialisationManual()
 void ExperimentPropertySheet::AddAllTabs() {
 	AddTab(p_generalPP, tab_general);
 	AddTab(p_diversPP, tab_divers);
-	for (int i = 0; i < adsorptionTabs.size(); i++)
+	for (size_t i = 0; i < adsorptionTabs.size(); i++)
 	{
 		AddTab(adsorptionTabs[i], nb_permanent_tabs + i);
 	}
-	for (int i = 0; i < desorptionTabs.size(); i++)
+	for (size_t i = 0; i < desorptionTabs.size(); i++)
 	{
 		AddTab(desorptionTabs[i], nb_permanent_tabs + numberOfAdsorptions + i);
 	}
@@ -221,11 +248,11 @@ void ExperimentPropertySheet::RemoveAllTabs()
 {
 	RemoveTab(p_generalPP, tab_general);
 	RemoveTab(p_diversPP, tab_divers);
-	for (int i = 0; i < adsorptionTabs.size(); i++)
+	for (size_t i = 0; i < adsorptionTabs.size(); i++)
 	{
 		RemoveTab(adsorptionTabs[i], nb_permanent_tabs + i);
 	}
-	for (int i = 0; i < desorptionTabs.size(); i++)
+	for (size_t i = 0; i < desorptionTabs.size(); i++)
 	{
 		RemoveTab(desorptionTabs[i], nb_permanent_tabs + numberOfAdsorptions + i);
 	}
@@ -253,7 +280,6 @@ void ExperimentPropertySheet::AddDesorption(int i)
 }
 
 
-
 // Adds a tab, checking if it is available first
 void ExperimentPropertySheet::AddTab(CPropertyPage * tab, int checkTab) {
 	if (availableTabs[checkTab] == false)
@@ -274,6 +300,48 @@ void ExperimentPropertySheet::RemoveTab(CPropertyPage * tab, int checkTab) {
 
 
 BEGIN_MESSAGE_MAP(ExperimentPropertySheet, CMFCPropertySheet)
+	//{{AFX_MSG_MAP(CMyPropertySheet)
+	// NOTE - the ClassWizard will add and remove mapping macros here.
+	//}}AFX_MSG_MAP
+	ON_BN_CLICKED(IDC_PLUSADS, OnButtonAddAdsorption)
+	ON_BN_CLICKED(IDC_PLUSDES, OnButtonAddDesorption)
+	ON_BN_CLICKED(IDC_MINUSADS, OnButtonRemoveAdsorption)
+	ON_BN_CLICKED(IDC_MINUDES, OnButtonRemoveDesorption)
 END_MESSAGE_MAP()
 
+
 // ExperimentPropertySheet message handlers
+
+void ExperimentPropertySheet::OnButtonAddAdsorption()
+{
+	numberOfAdsorptions++;
+
+	availableTabs.resize(availableTabs.size() + 1);
+	availableTabs[availableTabs.size()-1] = false;
+
+	AddAdsorption(numberOfAdsorptions-1);
+	AddTab(adsorptionTabs[adsorptionTabs.size()-1], availableTabs.size()-1);
+}
+
+void ExperimentPropertySheet::OnButtonAddDesorption()
+{
+	numberOfDesorptions++;
+
+	availableTabs.resize(availableTabs.size() + 1);
+	availableTabs[availableTabs.size()-1] = false;
+
+	AddDesorption(numberOfDesorptions-1);
+	AddTab(desorptionTabs[desorptionTabs.size()-1], availableTabs.size()-1);
+}
+
+void ExperimentPropertySheet::OnButtonRemoveAdsorption()
+{
+	RemovePage(numberOfAdsorptions);
+	adsorptionTabs.erase(adsorptionTabs.end());
+}
+
+void ExperimentPropertySheet::OnButtonRemoveDesorption()
+{
+	RemovePage(numberOfDesorptions);
+	desorptionTabs.erase(desorptionTabs.end());
+}

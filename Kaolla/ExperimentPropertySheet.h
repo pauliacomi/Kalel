@@ -31,6 +31,8 @@ public:
 	ExperimentPropertySheet(LPCTSTR pszCaption, CWnd* pParentWnd = NULL, UINT iSelectPage = 0);
 	virtual ~ExperimentPropertySheet();
 
+	BOOL OnInitDialog();
+
 protected:
 	DECLARE_MESSAGE_MAP()
 
@@ -47,6 +49,8 @@ public:
 	vector<TabDesorption*> desorptionTabs;
 
 protected:
+	CMFCButton m_addAdsorption;
+	CMFCButton m_addDesorption;
 
 	// Pointers for class polymorphism
 	CPropertyPage * p_generalPP;
@@ -56,7 +60,6 @@ protected:
 	vector<CPropertyPage*> desorptionTabPointers;
 
 	// Number of tabs
-
 	int numberOfAdsorptions;
 	int numberOfDesorptions;
 
@@ -71,6 +74,10 @@ public:
 	void RemoveAllTabs();	// Asks all the tabs to be removed
 	void AddAdsorption(int i);	// Adds one new adsorption experiment tab
 	void AddDesorption(int i);	// Adds one new adsorption experiment tab
+	void OnButtonAddAdsorption();
+	void OnButtonAddDesorption();
+	void OnButtonRemoveAdsorption();
+	void OnButtonRemoveDesorption();
 	void AddTab(CPropertyPage * tab, int checkTab);			// Adds a tab, checking if it is available first
 	void RemoveTab(CPropertyPage * tab, int checkTab);		// Removes a tab, checking if it is available first
 

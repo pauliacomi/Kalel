@@ -93,6 +93,12 @@
 #define ID_FONCTIONNALIT32790           32790
 #define ID_CHANGEMENT_BOUTEILLE         32791
 
+// Custom adds
+#define IDC_PLUSADS						2792
+#define IDC_PLUSDES						2793
+#define IDC_MINUSADS					2794
+#define IDC_MINUDES						2795
+
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
