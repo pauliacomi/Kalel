@@ -1,6 +1,8 @@
 #include "StdAfx.h"
 #include "Automation.h"
 
+
+
 int Automation::TemperatureStop() {
 //	if (g_flagState == ARRET_ETAPE) { ShutdownDisplay(); g_flagState = INACTIF; return 0; }
 //	if (g_flagState == ARRET_IMMEDIAT) { ShutdownDisplay(); return 0; }

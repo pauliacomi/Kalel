@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="iso-8859-1" ?>
 <experience>
-    <experimentateurs />
+    <experimentateurs>
+        <experimentateur>
+            <nom>Paul</nom>
+            <surnom>Iacomi</surnom>
+        </experimentateur>
+    </experimentateurs>
     <gazs>
         <gaz>
             <nom>Azote</nom>

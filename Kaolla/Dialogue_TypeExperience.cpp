@@ -5,9 +5,9 @@
 #include "Kaolla.h"
 #include "Dialogue_TypeExperience.h"
 
-//// Included to check for the existence of 
-#include "Parametres.h"
-////
+
+#include "Parametres.h"			// Accexsing the parameters file 
+#include "DefineStages.h"		// Experiment types
 
 // Dialog box CDialogue_TypeExperience
 
@@ -87,5 +87,3 @@ void CDialogue_TypeExperience::OnCancel()
 
 	CDialog::OnCancel();
 }
-
-

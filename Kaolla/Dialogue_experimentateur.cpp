@@ -5,7 +5,6 @@
 #include "Kaolla.h"
 #include "Dialogue_experimentateur.h"
 
-
 //////////////////////////////////////////////////////////////////////////////////////////////
 //
 // Boîte de dialogue CAjoutExperimentateur
@@ -38,7 +37,7 @@ void CAjoutExperimentateur::DoDataExchange(CDataExchange* pDX)
 
 
 BEGIN_MESSAGE_MAP(CAjoutExperimentateur, CPropertyPage)
-	ON_BN_CLICKED(IDC_AJOUTER, &CAjoutExperimentateur::OnBnClickedAjouter)
+	ON_BN_CLICKED(IDC_ADD_USER, &CAjoutExperimentateur::OnBnClickedAjouter)
 END_MESSAGE_MAP()
 
 
@@ -125,7 +124,7 @@ void CModifExperimentateur::DoDataExchange(CDataExchange* pDX)
 
 
 BEGIN_MESSAGE_MAP(CModifExperimentateur, CPropertyPage)
-	ON_BN_CLICKED(IDC_MODIFIER, &CModifExperimentateur::OnBnClickedModifier)
+	ON_BN_CLICKED(IDC_MODIFY_USER, &CModifExperimentateur::OnBnClickedModifier)
 	ON_CBN_SELCHANGE(IDC_COMBO_MODIF_EXPERIMENTATEUR, &CModifExperimentateur::OnCbnSelchangeComboModifExperimentateur)
 END_MESSAGE_MAP()
 
@@ -251,7 +250,7 @@ void CSupprExperimentateur::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(CSupprExperimentateur, CPropertyPage)
 	ON_CBN_SELCHANGE(IDC_COMBO_SUPPR_EXPERIMENTATEUR, &CSupprExperimentateur::OnCbnSelchangeComboSupprExperimentateur)
-	ON_BN_CLICKED(IDC_SUPPRIMER, &CSupprExperimentateur::OnBnClickedSupprimer)
+	ON_BN_CLICKED(IDC_DELETE_USER, &CSupprExperimentateur::OnBnClickedSupprimer)
 END_MESSAGE_MAP()
 
 

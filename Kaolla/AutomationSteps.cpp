@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "Automation.h"
 
+
+
 void Automation::StageEquilibration()
 {
 	if (experimentLocalData.experimentStepStatus == STEP_STATUS_START) {

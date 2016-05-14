@@ -5,9 +5,8 @@
 #include "Kaolla.h"
 #include "Parametres_appareil.h"
 
-//////
 #include "Parametres.h"
-//////
+
 
 
 using namespace std;

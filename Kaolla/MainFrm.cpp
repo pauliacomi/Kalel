@@ -5,8 +5,6 @@
 #include "stdafx.h"
 #include "MainFrm.h"
 
-#include "MessageBoxTexts.h"
-
 #include "Kaolla.h"
 #include "KaollaDoc.h"
 #include "KaollaView.h"

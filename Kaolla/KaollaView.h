@@ -7,12 +7,15 @@
 #include "afxwin.h"
 #include <afxmt.h> // CEvent
 
-#include "DefinePostMessages.h"
+#include "StringTable.h"				// All strings in the program
 
-#include "Parametres.h"
+#include "DefinePostMessages.h"			// Definition of messages received from the automation functionality
+#include "DefineStages.h"				// Stages/experiment type definitions
+
+#include "Parametres.h"					// Functions for reading the parameters file
 #include "ThreadManager.h"				// The threading functionality
 #include "ExperimentData.h"				// Where data about the experimental parameters, results and current status is stored
-#include "ExperimentSettings.h"				// Where returned data from results is stored
+#include "ExperimentSettings.h"			// Where returned data from results is stored
 #include "ExperimentPropertySheet.h"	// Dialog box for setting experimental properties
 
 

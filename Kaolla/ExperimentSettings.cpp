@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "ExperimentSettings.h"
-#include "Define_Experiment_Type.h"
+
+#include "DefineStages.h"
 
 
 ExperimentSettings::ExperimentSettings(void)

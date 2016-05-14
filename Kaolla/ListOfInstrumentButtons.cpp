@@ -2,8 +2,8 @@
 #include "ListOfInstrumentButtons.h"
 
 #include "resource.h"				// For the MFC button id's
-#include "Define_Instrument.h"		// For the instrument definitions
-#include "MessageBoxTexts.h"		// For the error message definitions
+#include "DefineInstruments.h"		// For the instrument definitions
+#include "Kaolla.h"					// For the error message definitions
 
 
 const int idcValveOpen[] = { IDC_OUVRIR1,IDC_OUVRIR2,IDC_OUVRIR3,IDC_OUVRIR4, IDC_OUVRIR5,IDC_OUVRIR6,IDC_OUVRIR7,IDC_OUVRIR8 };

@@ -5,8 +5,6 @@
 #include "Kaolla.h"
 #include "TabContinuousAdsorption.h"
 
-#include "Define.h"			// For some definitions
-
 // TabContinuousAdsorption
 
 IMPLEMENT_DYNAMIC(TabContinuousAdsorption, CMFCPropertyPage)

@@ -10,8 +10,7 @@
 
 #include "ThreadManager.h"
 
-#include "Dialogue_TypeExperience.h"	// The dialog asking the user for the experiment type
-#include "ExperimentPropertySheet.h"		// The dialog asking the user to input the experiment parameters
+#include "Dialogue_TypeExperience.h"		// The dialog asking the user for the experiment type
 
 
 // When clicking on the Launch button

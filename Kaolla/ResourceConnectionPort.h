@@ -2,7 +2,7 @@
 // Microsoft Visual C++ generated include file.
 // Used by ConnectionPort.rc
 //
-#define IDD_CONNECTION_PORT						830
+#define IDD_CONNECTION_PORT						8830
 #define IDC_COMBO_INSTRUMENT1_KEITHLEY_VOIE2	8001
 #define IDC_COMBO_INSTRUMENT2_KEITHLEY_VOIE2	8002
 #define IDC_COMBO_INSTRUMENT3_KEITHLEY_VOIE2	8003

@@ -1,6 +1,6 @@
 #include "StdAfx.h"
 #include "FluxConverter.h"
-#include "Define.h"
+#include "DefineAutomationSettings.h"
 #include "Parametres.h"
 
 FluxConverter::FluxConverter()

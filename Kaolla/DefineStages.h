@@ -6,10 +6,14 @@
 // Used by Steps.rc
 
 
-
 //#define STAGE_EQ_LINE				0
 //#define STAGE_CONT_ADSORPTON		1
 
+
+#define EXPERIMENT_TYPE_UNDEF			0
+#define EXPERIMENT_TYPE_AUTO			1
+#define EXPERIMENT_TYPE_MANUAL			2
+#define EXPERIMENT_TYPE_MODIFY			3
 
 #define STAGE_UNDEF						100
 #define STAGE_TEMP						101
@@ -45,6 +49,20 @@
 #define SUBSTEP_STATUS_ADSORPTION		404
 #define	SUBSTEP_STATUS_END				405
 
+
+// Stage steps
+#define PAUSE				505
+#define INACTIVE			500
+#define ACTIVE				511
+#define STOP				506
+#define STOP_IMMEDIAT		501
+#define STOP_UNDERVACCUM	502
+#define STOP_STEP			503
+#define STOP_DOSE			504
+#define STOP_EMERGENCY_HP	507
+#define STOP_EMERGENCY_TCH	508
+#define STOP_EMERGENCY_TCB	509
+#define STOP_COMMAND		510
 
 // Next default values for new objects
 // 

@@ -1,6 +1,6 @@
 #include "StdAfx.h"
 #include "Automation.h"
-#include "Define_Manip_Auto_Verifications.h"
+
 
 void Automation::Verifications()
 {

@@ -2,12 +2,12 @@
 // Microsoft Visual C++ generated include file.
 // Used by Cellule.rc
 //
-#define IDD_TABDIVERS                   104
-#define IDD_TABDOSES                    105
-#define IDD_TABGENERAL                  303
-#define IDD_AJOUT_CELLULE               341
-#define IDD_MODIF_CELLULE               342
-#define IDD_SUPPR_CELLULE               343
+#define IDD_TABDIVERS                   3304
+#define IDD_TABDOSES                    3305
+#define IDD_TABGENERAL                  3303
+#define IDD_AJOUT_CELLULE               3341
+#define IDD_MODIF_CELLULE               3342
+#define IDD_SUPPR_CELLULE               3343
 #define IDC_ADD_CELL                    3040
 #define IDC_EDIT_AJOUT_NUMERO_CELLULE   3041
 #define IDC_EDIT_MODIF_NUMERO_CELLULE   3041

@@ -2,32 +2,36 @@
 // Microsoft Visual C++ generated include file.
 // Used by Onglets.rc
 //
-#define IDD_GENERAL                     1001
-#define IDD_DIVERS                      1003
-#define IDC_NOM_FICHIER                 1927
-#define IDC_NOM_ECHANTILLON             1928
-#define IDC_MASSE_ECHANTILLON           1929
-#define IDC_SPIN_MASSE_ECHANTILLON      1030
-#define IDC_COMBO_EXPERIMENTATEUR       1932
-#define IDC_BUTTON_EXPERIMENTATEUR      1933
-#define IDC_BUTTON_GAZ                  1934
-#define IDC_COMBO_GAZ                   1935
-#define IDC_COMMENTAIRES                1936
-#define IDC_NOM_CHEMIN                  1938
-#define IDC_PARCOURIR_DOSSIER           1940
-#define IDC_TEMPERATURE_EXPERIENCE      1941
-#define IDC_SPIN_TEMPERATURE_EXPERIENCE 1946
-#define IDC_COMBO_CELLULE               1952
-#define IDC_BUTTON_CELLULE              1953
-#define IDC_EDIT_VOLUME_TOTAL           1954
-#define IDC_EDIT_VOLUME_CALO            1955
-#define IDC_EDIT_TEMPS_LIGNE_BASE       1956
-#define IDC_CHECK_MISE_SOUS_VIDE        1957
-#define IDC_SPIN_TEMPS_LIGNE_BASE       1958
-#define IDC_EDIT_TEMPS_VIDE             1959
-#define IDC_SPIN_TEMPS_VIDE             1960
-#define IDC_STATIC_MISE_SOUS_VIDE       1962
-#define IDC_STATIC_MISE_SOUS_VIDE2      1963
+#define IDD_GENERAL                     9001
+#define IDD_DIVERS                      9003
+#define IDC_NOM_FICHIER                 9927
+#define IDC_NOM_ECHANTILLON             9928
+#define IDC_MASSE_ECHANTILLON           9929
+#define IDC_SPIN_MASSE_ECHANTILLON      9030
+#define IDC_COMBO_EXPERIMENTATEUR       9932
+#define IDC_BUTTON_EXPERIMENTATEUR      9933
+#define IDC_BUTTON_GAZ                  9934
+#define IDC_COMBO_GAZ                   9935
+#define IDC_COMMENTAIRES                9936
+#define IDC_NOM_CHEMIN                  9938
+#define IDC_PARCOURIR_DOSSIER           9940
+#define IDC_TEMPERATURE_EXPERIENCE      9941
+#define IDC_SPIN_TEMPERATURE_EXPERIENCE 9946
+#define IDC_COMBO_CELLULE               9952
+#define IDC_BUTTON_CELLULE              9953
+#define IDC_EDIT_VOLUME_TOTAL           9954
+#define IDC_EDIT_VOLUME_CALO            9955
+#define IDC_EDIT_TEMPS_LIGNE_BASE       9956
+#define IDC_CHECK_MISE_SOUS_VIDE        9957
+#define IDC_SPIN_TEMPS_LIGNE_BASE       9958
+#define IDC_EDIT_TEMPS_VIDE             9959
+#define IDC_SPIN_TEMPS_VIDE             9960
+#define IDC_STATIC_MISE_SOUS_VIDE       9962
+#define IDC_STATIC_MISE_SOUS_VIDE2      9963
+#define IDC_PLUSADS                     9964
+#define IDC_PLUSDES                     9965
+#define IDC_MINUSADS                    9966
+#define IDC_MINUDES                     9967
 
 // Next default values for new objects
 // 

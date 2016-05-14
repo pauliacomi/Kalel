@@ -44,4 +44,9 @@
 #define INSTRUMENT_EV		1002
 #define INSTRUMENT_PUMP		1003
 
+// Some other stuff
+#define PassageNul						0
+#define PassageCOM1						1
+#define PassageCOMs						2
+
 #endif

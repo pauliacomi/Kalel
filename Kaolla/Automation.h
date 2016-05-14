@@ -4,15 +4,17 @@
 
 // REQUIRED INCLUDES
 
-#include "Classes_experiences.h"	// Resource where templates for all the data are stored, might be worth replacing with a single data type/class 
-#include "ConnectionMesure.h"		// 
-#include "MessageBoxTexts.h"		// Definitions for the text in the messages
+#include "Classes_experiences.h"			// Resource where templates for all the data are stored, might be worth replacing with a single data type/class 
+#include "ConnectionMesure.h"				// 
+#include "StringTable.h"					// Definitions for the text in the messages
 
 // Defines
-#include "Define_Manip_Auto_Probleme_Injection.h"		// Tries for injection attempts are here
+#include "DefineAutomationSettings.h"		// All settings for automation are stored here
+#include "DefineInstruments.h"				// All instruments definitions are here
+#include "DefineStages.h"					// All stage, experiment type definitions are here
 
 // Synchronization classes
-#include "MFCMessageHandler.h"		// Handles all the messages from this class to the UI. Great if we want to upgrade to somehting that's not MFC
+#include "MFCMessageHandler.h"				// Handles all the messages from this class to the UI. Great if we want to upgrade to somehting that's not MFC
 #include "ExperimentData.h"
 #include "ExperimentSettings.h"	
 
@@ -47,7 +49,7 @@ public:
 	Mensor* g_pMensor;									// Pointer to the class that deals with the Mensor
 	CVannes* g_pVanne;									// Pointer to the valve opening class
 	CInstrument* instrument[NB_OF_INSTRUMENTS];			// Array of pointers that hold CInstrument classes
-	CTemperature* g_pTemperature;							// Pointer to the class that deals with temperature recording
+	CTemperature* g_pTemperature;						// Pointer to the class that deals with temperature recording
 
 	ExperimentSettings* experimentSettings;				//
 	ExperimentSettings experimentLocalSettings;			// 
@@ -176,8 +178,6 @@ protected:
 
 	void WaitMinutes(int nbminutes);
 	void WaitSeconds(int nbsecondes);
-	CString MessageAttente(int nbsecondes);
-	CString MessageTemps(int duree);
 
 
 /**********************************************************************************************************************************

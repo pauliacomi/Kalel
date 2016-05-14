@@ -1,8 +1,8 @@
 #include "StdAfx.h"
+#include "Classes_experiences.h"
 
 #include <string.h>
 
-#include "Classes_experiences.h"
 
 experimentateur experimentateur::operator=(const experimentateur &exp)
 {

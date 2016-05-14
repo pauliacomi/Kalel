@@ -6,7 +6,7 @@
 #include "TabDoses.h"
 #include "afxdialogex.h"
 
-#include "Define.h"			// For some definitions
+#include "General.h"			// For some definitions
 
 // TabDoses dialog
 

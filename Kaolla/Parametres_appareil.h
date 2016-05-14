@@ -1,5 +1,6 @@
 #pragma once
 #include "SpinBtnCtrl.h"
+#include "ResourceParametresAppareil.h"
 
 
 // Dialogbox CParametres_appareil

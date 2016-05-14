@@ -2,7 +2,7 @@
 
 #include "StdAfx.h"
 #include "Automation.h"
-#include "Define_Manip_Securite.h"
+
 
 void Automation::InitialisationSecurityManual()
 {

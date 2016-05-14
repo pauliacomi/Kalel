@@ -5,7 +5,6 @@
 #include "Kaolla.h"
 #include "Connection_port.h"
 
-
 // Boîte de dialogue CConnection_port
 
 IMPLEMENT_DYNAMIC(CConnection_port, CDialog)

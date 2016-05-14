@@ -2,10 +2,10 @@
 // Microsoft Visual C++ generated include file.
 // Used by TypeExperience.rc
 
-#define IDD_TYPE_EXPERIENCE	            744
+#define IDD_TYPE_EXPERIENCE					7744
 
-#define IDC_RADIO_TYPE_EXPERIENCE_AUTO       7141
-#define IDC_RADIO_TYPE_EXPERIENCE_MANUAL     7101
+#define IDC_RADIO_TYPE_EXPERIENCE_AUTO      7141
+#define IDC_RADIO_TYPE_EXPERIENCE_MANUAL    7101
 
 // Valeurs par défaut suivantes des nouveaux objets
 // 

@@ -1,6 +1,8 @@
 #include "StdAfx.h"
 #include "Instrument.h"
 
+#include "DefineInstruments.h"
+
 
 CInstrument::CInstrument(void)
 {

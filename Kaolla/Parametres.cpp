@@ -5,6 +5,9 @@
 #include "Parametres.h"
 
 
+#include "DefineInstruments.h"
+
+
 using namespace std;
 
 #define nSizeInt 6

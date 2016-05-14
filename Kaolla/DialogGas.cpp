@@ -3,10 +3,70 @@
 
 #include "stdafx.h"
 #include "Kaolla.h"
-#include "Dialogue_gaz.h"
+#include "DialogGas.h"
 
 
-// Boîte de dialogue CAjoutGaz
+
+//////////////////////////////////////////////////////////////////////////////////////
+			//------------------------------------------------------
+			//----------------- Gas Property Sheet------------------ 
+			//------------------------------------------------------
+			//
+			//  Main class, all property pages will be added here
+			//
+//////////////////////////////////////////////////////////////////////////////////////
+
+
+IMPLEMENT_DYNAMIC(CDialogueGaz, CPropertySheet)
+
+CDialogueGaz::CDialogueGaz(UINT nIDCaption, CWnd* pParentWnd, UINT iSelectPage)
+	:CPropertySheet(nIDCaption, pParentWnd, iSelectPage)
+{
+
+}
+
+CDialogueGaz::CDialogueGaz(LPCTSTR pszCaption, CWnd* pParentWnd, UINT iSelectPage)
+	: CPropertySheet(pszCaption, pParentWnd, iSelectPage)
+{
+	AddPage(&m_AjoutGaz);
+	AddPage(&m_ModifGaz);
+	AddPage(&m_SupprGaz);
+
+	// Set the name of the title
+	CString title;
+	title.Format(TITLE_DIALOG_GAS);
+	SetTitle(title);
+}
+
+CDialogueGaz::~CDialogueGaz()
+{
+}
+
+
+BEGIN_MESSAGE_MAP(CDialogueGaz, CPropertySheet)
+END_MESSAGE_MAP()
+
+
+// Gestionnaires de messages de CDialogueGaz
+
+
+
+
+
+
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////
+				//------------------------------------------------------
+				//--------------Add Gas Property Page------------------ 
+				//------------------------------------------------------
+				//
+				//  For adding a new gas
+				//
+//////////////////////////////////////////////////////////////////////////////////////
+
+
 
 IMPLEMENT_DYNAMIC(CAjoutGaz, CPropertyPage)
 
@@ -54,17 +114,6 @@ void CAjoutGaz::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_AJOUT_GAZ, m_strMessageAjoutGaz);
 }
 
-
-BEGIN_MESSAGE_MAP(CAjoutGaz, CPropertyPage)
-	ON_BN_CLICKED(IDC_AJOUTER, &CAjoutGaz::OnBnClickedAjouter)
-END_MESSAGE_MAP()
-
-
-// Gestionnaires de messages de CAjoutGaz
-
-
-
-
 BOOL CAjoutGaz::OnInitDialog()
 {
 	CPropertyPage::OnInitDialog();
@@ -102,20 +151,29 @@ BOOL CAjoutGaz::OnInitDialog()
 	pSpinOmegaAjoutGaz.UpdateBuddy();
 
 	return TRUE;  // return TRUE unless you set the focus to a control
-	// EXCEPTION : les pages de propriétés OCX devraient retourner FALSE
+				  // EXCEPTION : les pages de propriétés OCX devraient retourner FALSE
 }
 
 
+BEGIN_MESSAGE_MAP(CAjoutGaz, CPropertyPage)
+	ON_BN_CLICKED(IDC_ADD_GAS, &CAjoutGaz::OnBnClickedAjouter)
+END_MESSAGE_MAP()
+
+
+// Gestionnaires de messages de CAjoutGaz
 
 void CAjoutGaz::OnBnClickedAjouter()
 {
 	// Mise à jour des variables attachées aux contrôles
 	UpdateData(TRUE);
 
+	CString message;
+
 	// On vérifie si les chmaps ne sont pas vides
 	if(m_strNomAjoutGaz == "" || m_strSymboleAjoutGaz=="")
 	{
-		m_strMessageAjoutGaz = "Tous les champs n'ont pas été remplis.";
+		message.Format(ERROR_FIELDS_NOT_FILLED);
+		m_strMessageAjoutGaz = message + "\r\n";
 	}
 
 	else
@@ -124,10 +182,14 @@ void CAjoutGaz::OnBnClickedAjouter()
 		   DoublonSymboleGaz(m_strSymboleAjoutGaz.GetBuffer()))
 		{
 			m_strMessageAjoutGaz = "";
-			if (DoublonNomGaz(m_strNomAjoutGaz.GetBuffer()))
-				m_strMessageAjoutGaz += "Nom déja utilisé\r\n";
-			if (DoublonSymboleGaz(m_strSymboleAjoutGaz.GetBuffer()))
-				m_strMessageAjoutGaz += "Symbole déja utilisé\r\n";
+			if (DoublonNomGaz(m_strNomAjoutGaz.GetBuffer())) {
+				message.Format(ERROR_NAME_USED);
+				m_strMessageAjoutGaz = message + "\r\n";
+			}
+			if (DoublonSymboleGaz(m_strSymboleAjoutGaz.GetBuffer())) {
+				message.Format(ERROR_SYMBOL_USED);
+				m_strMessageAjoutGaz = message + "\r\n";
+			}
 		}
 		// Si toutes les conditions sont bonnes, on peut rajouter le gaz dans un fichier XML
 		else
@@ -135,8 +197,9 @@ void CAjoutGaz::OnBnClickedAjouter()
 			Rajout_Gaz(m_strNomAjoutGaz.GetBuffer(),m_strSymboleAjoutGaz.GetBuffer(),
 					   m_fMasseMoleculaireAjoutGaz,m_fTemperatureCritiqueAjoutGaz, 
 					   m_fPressionCritiqueAjoutGaz, m_fTemperatureEbullitionAjoutGaz);
-			m_strMessageAjoutGaz = "Le gaz " + m_strNomAjoutGaz + " (" +
-								   m_strSymboleAjoutGaz + ") a été rajouté à la liste.";
+
+			message.Format(TEXT_GAS_ADDED, m_strNomAjoutGaz, m_strSymboleAjoutGaz);
+			m_strMessageAjoutGaz = message + "\r\n";
 			m_strNomAjoutGaz = "";
 			m_strSymboleAjoutGaz = "";
 		}
@@ -154,9 +217,15 @@ void CAjoutGaz::OnBnClickedAjouter()
 
 
 
-//////////////////////////////////////////////////////////////////////////////////////////////
-//
-// Boîte de dialogue CModifGaz
+//////////////////////////////////////////////////////////////////////////////////////
+				//------------------------------------------------------
+				//--------------Modify Gas Property Page------------------ 
+				//------------------------------------------------------
+				//
+				//  For modifying a gas
+				//
+//////////////////////////////////////////////////////////////////////////////////////
+
 
 IMPLEMENT_DYNAMIC(CModifGaz, CPropertyPage)
 
@@ -209,16 +278,6 @@ void CModifGaz::DoDataExchange(CDataExchange* pDX)
 }
 
 
-BEGIN_MESSAGE_MAP(CModifGaz, CPropertyPage)
-	ON_CBN_SELCHANGE(IDC_COMBO_MODIF_GAZ, &CModifGaz::OnCbnSelchangeComboModifGaz)
-	ON_BN_CLICKED(IDC_MODIFIER, &CModifGaz::OnBnClickedModifier)
-END_MESSAGE_MAP()
-
-
-// Gestionnaires de messages de CModifGaz
-
-
-
 BOOL CModifGaz::OnInitDialog()
 {
 	CPropertyPage::OnInitDialog();
@@ -261,7 +320,6 @@ BOOL CModifGaz::OnInitDialog()
 	// EXCEPTION : les pages de propriétés OCX devraient retourner FALSE
 }
 
-
 // OnSetActive : fonction utilisée à chaque fois qu'on active la page
 BOOL CModifGaz::OnSetActive()
 {
@@ -269,6 +327,14 @@ BOOL CModifGaz::OnSetActive()
 
 	return CPropertyPage::OnSetActive();
 }
+
+BEGIN_MESSAGE_MAP(CModifGaz, CPropertyPage)
+	ON_CBN_SELCHANGE(IDC_COMBO_MODIF_GAZ, &CModifGaz::OnCbnSelchangeComboModifGaz)
+	ON_BN_CLICKED(IDC_MODIFY_GAS, &CModifGaz::OnBnClickedModifier)
+END_MESSAGE_MAP()
+
+
+// Gestionnaires de messages de CModifGaz
 
 // Lorsqu'on selectionne un gaz à modifier
 void CModifGaz::OnCbnSelchangeComboModifGaz()
@@ -307,18 +373,17 @@ void CModifGaz::OnBnClickedModifier()
 		if(Modif_Gaz(nom_modif,symbole_modif,m_fMasseMoleculaireModifGaz,m_fTemperatureCritiqueModifGaz,
 					 m_fPressionCritiqueModifGaz,m_fTemperatureEbullitionModifGaz,index))
 		{	// Si tout se passe bien, on le signale dans la boite de dialogue
-			m_strMessageModifGaz.Format(_T("Le gaz %s(%s) a été modifié."), 
-				nom_modif.c_str(),symbole_modif.c_str());
+			m_strMessageModifGaz.Format(TEXT_GAS_MODIFIED, nom_modif.c_str(), symbole_modif.c_str());
 			
 			ReinitialisationComboBox();
 
 		}
 		else
 			// Si la modification ne se fait pas... On le signale dans la boite de dialogue
-			m_strMessageModifGaz = "La modification n'a pu être effectuée\r\n Veuillez recommencer.";
+			m_strMessageModifGaz.Format(ERROR_GAS_MODIFIED);
 	}
 	else
-		m_strMessageModifGaz = "Gaz à modifier non sélectionné.";
+		m_strMessageModifGaz.Format(ERROR_SELECTED);
 
 	UpdateData(FALSE);
 }
@@ -361,9 +426,16 @@ void CModifGaz::ReinitialisationComboBox()
 
 
 
-/////////////////////////////////////////////////////////////////////////////////
-//
-// Boîte de dialogue CSupprGaz
+//////////////////////////////////////////////////////////////////////////////////////
+				//------------------------------------------------------
+				//--------------Delete Gas Property Page------------------ 
+				//------------------------------------------------------
+				//
+				//  For deleting a gas
+				//
+//////////////////////////////////////////////////////////////////////////////////////
+
+
 
 IMPLEMENT_DYNAMIC(CSupprGaz, CPropertyPage)
 
@@ -388,15 +460,6 @@ void CSupprGaz::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_SUPPR_GAZ, m_strMessageSupprGaz);
 }
 
-
-BEGIN_MESSAGE_MAP(CSupprGaz, CPropertyPage)
-	ON_CBN_SELCHANGE(IDC_COMBO_SUPPR_GAZ, &CSupprGaz::OnCbnSelchangeComboSupprGaz)
-	ON_BN_CLICKED(IDC_SUPPRIMER, &CSupprGaz::OnBnClickedSupprimer)
-END_MESSAGE_MAP()
-
-
-// Gestionnaires de messages de CSupprGaz
-
 // Comme dans 'EXPERIMENT_TYPE_MODIFY', on réinitialise le ComboBox
 BOOL CSupprGaz::OnSetActive()
 {
@@ -405,6 +468,13 @@ BOOL CSupprGaz::OnSetActive()
 	return CPropertyPage::OnSetActive();
 }
 
+
+BEGIN_MESSAGE_MAP(CSupprGaz, CPropertyPage)
+	ON_CBN_SELCHANGE(IDC_COMBO_SUPPR_GAZ, &CSupprGaz::OnCbnSelchangeComboSupprGaz)
+	ON_BN_CLICKED(IDC_DELETE_GAS, &CSupprGaz::OnBnClickedSupprimer)
+END_MESSAGE_MAP()
+
+// Gestionnaires de messages de CSupprGaz
 
 void CSupprGaz::OnCbnSelchangeComboSupprGaz()
 {
@@ -426,19 +496,18 @@ void CSupprGaz::OnBnClickedSupprimer()
 			// Et on réinitialise le ComboBox
 			string nom_suppr = list_suppr_gaz[index].nom;
 			string symbole_suppr = list_suppr_gaz[index].symbole;
-			m_strMessageSupprGaz.Format(_T("Le gaz %s(%s) a été supprimé."),
-				nom_suppr.c_str(),symbole_suppr.c_str());
+			m_strMessageSupprGaz.Format(TEXT_GAS_DELETED, nom_suppr.c_str(), symbole_suppr.c_str());
 
 			ReinitialisationComboBox();
 
 		}
 		else
 		{	// Si ça ne marche pas, on le signale dans la boite de dialogue
-			m_strMessageSupprGaz = "Erreur dans la suppression";
+			m_strMessageSupprGaz.Format(ERROR_GAS_DELETED);
 		}
 	}
 	else
-		m_strMessageSupprGaz = "Gaz à supprimer non sélectionné";
+		m_strMessageSupprGaz.Format(ERROR_SELECTED);
 	
 	UpdateData(FALSE);
 }
@@ -460,52 +529,3 @@ void CSupprGaz::ReinitialisationComboBox()
 	m_nIndexSupprGaz = -1;
 	UpdateData(FALSE);
 }
-
-
-
-
-
-
-
-
-////////////////////////////////////////////////////////////////////////////////////
-//
-// CDialogueGaz
-
-IMPLEMENT_DYNAMIC(CDialogueGaz, CPropertySheet)
-
-CDialogueGaz::CDialogueGaz(UINT nIDCaption, CWnd* pParentWnd, UINT iSelectPage)
-	:CPropertySheet(nIDCaption, pParentWnd, iSelectPage)
-{
-
-}
-
-CDialogueGaz::CDialogueGaz(LPCTSTR pszCaption, CWnd* pParentWnd, UINT iSelectPage)
-	:CPropertySheet(pszCaption, pParentWnd, iSelectPage)
-{
-	AddPage(&m_AjoutGaz);
-	AddPage(&m_ModifGaz);
-	AddPage(&m_SupprGaz);
-
-	SetTitle("Ajouter/Modifier un gaz");
-}
-
-CDialogueGaz::~CDialogueGaz()
-{
-}
-
-
-BEGIN_MESSAGE_MAP(CDialogueGaz, CPropertySheet)
-END_MESSAGE_MAP()
-
-
-// Gestionnaires de messages de CDialogueGaz
-
-
-
-
-
-
-
-
-

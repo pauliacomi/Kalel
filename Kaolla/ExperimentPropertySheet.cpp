@@ -6,9 +6,7 @@
 #include "ExperimentPropertySheet.h"
 
 
-#include "MessageBoxTexts.h"				// For the required strings
-#include "Define_Experiment_Type.h"			// For the types of experiments used
-#include "Define_Stages.h"					// For the definitions of the steps used
+#include "DefineStages.h"			// For the types of experiments used
 
 
 
@@ -314,24 +312,44 @@ END_MESSAGE_MAP()
 
 void ExperimentPropertySheet::OnButtonAddAdsorption()
 {
-	numberOfAdsorptions++;
+	if (experimentType == EXPERIMENT_TYPE_MANUAL) {
+		AfxMessageBox(ERROR_NOT_APPLICABLE);
+	}
+	else {
+		if (numberOfAdsorptions > 5) {
+			AfxMessageBox(ERROR_TOO_MANY_TABS);
+		}
+		else {
+			numberOfAdsorptions++;
 
-	availableTabs.resize(availableTabs.size() + 1);
-	availableTabs[availableTabs.size()-1] = false;
+			availableTabs.resize(availableTabs.size() + 1);
+			availableTabs[availableTabs.size() - 1] = false;
 
-	AddAdsorption(numberOfAdsorptions-1);
-	AddTab(adsorptionTabs[adsorptionTabs.size()-1], availableTabs.size()-1);
+			AddAdsorption(numberOfAdsorptions - 1);
+			AddTab(adsorptionTabs[adsorptionTabs.size() - 1], availableTabs.size() - 1);
+		}
+	}
 }
 
 void ExperimentPropertySheet::OnButtonAddDesorption()
 {
-	numberOfDesorptions++;
+	if (experimentType == EXPERIMENT_TYPE_MANUAL) {
+		AfxMessageBox(ERROR_NOT_APPLICABLE);
+	}
+	else {
+		if (numberOfAdsorptions > 5) {
+			AfxMessageBox(ERROR_TOO_MANY_TABS);
+		}
+		else {
+			numberOfAdsorptions++;
 
-	availableTabs.resize(availableTabs.size() + 1);
-	availableTabs[availableTabs.size()-1] = false;
+			availableTabs.resize(availableTabs.size() + 1);
+			availableTabs[availableTabs.size() - 1] = false;
 
-	AddDesorption(numberOfDesorptions-1);
-	AddTab(desorptionTabs[desorptionTabs.size()-1], availableTabs.size()-1);
+			AddDesorption(numberOfDesorptions - 1);
+			AddTab(desorptionTabs[desorptionTabs.size() - 1], availableTabs.size() - 1);
+		}
+	}
 }
 
 void ExperimentPropertySheet::OnButtonRemoveAdsorption()

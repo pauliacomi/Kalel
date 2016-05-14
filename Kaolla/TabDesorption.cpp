@@ -5,7 +5,7 @@
 #include "Kaolla.h"
 #include "TabDesorption.h"
 
-#include "Define.h"			// For some definitions
+#include "General.h"			// For some definitions
 
 // TabDesorption
 

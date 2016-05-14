@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Define.h"
+#include "afxwin.h"
+#include "ResourceTypeExperience.h"
 
 // Boîte de dialogue CDialogue_TypeExperience
 

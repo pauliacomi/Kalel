@@ -2,12 +2,12 @@
 // Microsoft Visual C++ generated include file.
 // Used by OngletsEtapes.rc
 //
-#define IDD_ADSORPTION_CONTINUE         531
-#define IDD_PETITES_DOSES               504
-#define IDD_MOYENNES_DOSES              507
-#define IDD_GRANDES_DOSES               506
-#define IDD_DESORPTION                  505
-#define IDD_DOSES						509
+#define IDD_ADSORPTION_CONTINUE							5001
+#define IDD_PETITES_DOSES								5002
+#define IDD_MOYENNES_DOSES								5003
+#define IDD_GRANDES_DOSES								5004
+#define IDD_DESORPTION									5005
+#define IDD_DOSES										5006
 
 
 // Adsorption Continue
@@ -28,11 +28,11 @@
 #define IDC_STATIC_AD_TEVI_TEXT							5069
 #define IDC_STATIC_AD_TEVI_MIN							5070
 #define IDC_STATIC_AD_TEC_TEXT							5081
-#define IDC_STATIC_AD_TEC_MIN							5003
-#define IDC_STATIC_AD_TFE_TEXT							5083
-#define IDC_STATIC_AD_TFE_MIN							5004
 #define IDC_STATIC_AD_PF_TEXT							5082
 #define IDC_STATIC_AD_PF_BAR							5085
+#define IDC_STATIC_AD_TEC_MIN							5086
+#define IDC_STATIC_AD_TFE_TEXT							5087
+#define IDC_STATIC_AD_TFE_MIN							5088
 
 // Petites Doses
 #define IDC_CHECK_PETITES_DOSES							5164

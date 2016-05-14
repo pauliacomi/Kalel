@@ -1,13 +1,13 @@
 #pragma once
 #include "afxwin.h"
 
-#include "Define.h"
+#include "ResourceConnectionPort.h"
 
 #include "Parametres.h"
 
 #include "ConnectionMesure.h"
 #include "VerifInstrument.h"
-
+#include "DefineInstruments.h"
 
 // Boîte de dialogue CConnection_port
 

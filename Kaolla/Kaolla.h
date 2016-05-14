@@ -8,7 +8,7 @@
 #endif
 
 #include "resource.h"				// main symbols
-#include "IncludeResources.h"		// secondary symbols
+#include "StringTable.h"		// For all the strings in the program
 
 // CKaollaApp:
 // See Kaolla.cpp for the implementation of this class

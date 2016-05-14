@@ -13,7 +13,6 @@
 #include <string>
 //#include "NIDAQmxBase.h"
 
-#include "Define_Instrument.h"
 
 
 #define Dev_USB_Temp 2

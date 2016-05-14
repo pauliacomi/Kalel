@@ -5,7 +5,6 @@
 
 #include "StdAfx.h"
 #include "Automation.h"
-#include "Define_Manip_Vannes.h"
 
 
 // Open a valve

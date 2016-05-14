@@ -2,9 +2,9 @@
 // Microsoft Visual C++ generated include file.
 // Used by Gaz.rc
 //
-#define IDD_AJOUT_GAZ								238
-#define IDD_MODIF_GAZ								239
-#define IDD_SUPPR_GAZ								340
+#define IDD_AJOUT_GAZ								2001
+#define IDD_MODIF_GAZ								2002
+#define IDD_SUPPR_GAZ								2003
 
 // Ajout Gaz
 

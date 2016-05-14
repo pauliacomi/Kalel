@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "ExperimentData.h"
-#include "Define_Stages.h"
+
+#include "DefineStages.h"	// For the names of the stages/experiment types
 
 ExperimentData::ExperimentData()
 {

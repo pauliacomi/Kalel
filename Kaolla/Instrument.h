@@ -2,8 +2,6 @@
 #ifndef INSTRUMENT_H
 #define INSTRUMENT_H
 
-#include "Define.h"
-
 #include "Keithley.h"
 #include "Mensor.h"
 

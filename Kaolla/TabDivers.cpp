@@ -7,7 +7,7 @@
 #include "afxdialogex.h"
 
 #include "Dialogue_cellule.h"				// For the cell dialog
-#include "Parametres.h"						// For a few commonly used functions
+#include "Parametres.h"						// For accessing the parameters file
 #include "ParserXML.h"						// XML builder
 
 

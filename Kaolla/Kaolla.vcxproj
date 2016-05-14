@@ -23,6 +23,7 @@
     <RootNamespace>Kaolla</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
     <Keyword>MFCProj</Keyword>
+    <ProjectName>Kalel</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -210,23 +211,16 @@
     <ClInclude Include="ExperimentPropertySheet.h" />
     <ClInclude Include="FluxConverter.h" />
     <ClInclude Include="CPetitesDoses.h" />
-    <ClInclude Include="Define.h" />
-    <ClInclude Include="Define_Stages.h" />
-    <ClInclude Include="Define_Instrument.h" />
-    <ClInclude Include="Define_Manip_AutoGaz_Doses.h" />
-    <ClInclude Include="Define_Manip_AutoGaz_Mise_Sous_Vide.h" />
-    <ClInclude Include="Define_Manip_Auto_Probleme_Injection.h" />
-    <ClInclude Include="Define_Manip_Auto_Verifications.h" />
-    <ClInclude Include="Define_Manip_Securite.h" />
-    <ClInclude Include="Define_Manip_Vannes.h" />
-    <ClInclude Include="Define_Experiment_Type.h" />
+    <ClInclude Include="General.h" />
+    <ClInclude Include="DefineStages.h" />
+    <ClInclude Include="DefineInstruments.h" />
+    <ClInclude Include="DefineAutomationSettings.h" />
     <ClInclude Include="Dialogue_cellule.h" />
     <ClInclude Include="Dialogue_experimentateur.h" />
-    <ClInclude Include="Dialogue_gaz.h" />
+    <ClInclude Include="DialogGas.h" />
     <ClInclude Include="Dialogue_TypeExperience.h" />
     <ClInclude Include="Donnees_Experience.h" />
     <ClInclude Include="GrapheView.h" />
-    <ClInclude Include="IncludeResources.h" />
     <ClInclude Include="InfoEtape.h" />
     <ClInclude Include="Instrument.h" />
     <ClInclude Include="Kaolla.h" />
@@ -252,7 +246,7 @@
     <ClInclude Include="Parametres_experience.h" />
     <ClInclude Include="ParserXML.h" />
     <ClInclude Include="Resource.h" />
-    <ClInclude Include="MessageBoxTexts.h" />
+    <ClInclude Include="StringTable.h" />
     <ClInclude Include="ResourceCellule.h" />
     <ClInclude Include="ResourceConnectionPort.h" />
     <ClInclude Include="ResourceExperimentateur.h" />
@@ -318,7 +312,7 @@
     </ClCompile>
     <ClCompile Include="Dialogue_cellule.cpp" />
     <ClCompile Include="Dialogue_experimentateur.cpp" />
-    <ClCompile Include="Dialogue_gaz.cpp" />
+    <ClCompile Include="DialogGas.cpp" />
     <ClCompile Include="Dialogue_TypeExperience.cpp" />
     <ClCompile Include="Donnees_Experience.cpp" />
     <ClCompile Include="GrapheView.cpp" />
@@ -513,7 +507,7 @@
     <ResourceCompile Include="Experimentateur.rc" />
     <ResourceCompile Include="Gaz.rc" />
     <ResourceCompile Include="Kaolla.rc" />
-    <ResourceCompile Include="MessageBoxTexts.rc" />
+    <ResourceCompile Include="StringTable.rc" />
     <ResourceCompile Include="Onglets.rc" />
     <ResourceCompile Include="OngletsEtapes.rc" />
     <ResourceCompile Include="ParametresAppareil.rc" />

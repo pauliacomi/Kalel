@@ -15,7 +15,6 @@
 #include <propkey.h>
 
 #include "ExperimentData.h"
-#include "DefinePostMessages.h"		// For message definitions
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

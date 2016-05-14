@@ -3,7 +3,7 @@
 // Used by ParametresAppareil.rc
 
 
-#define IDD_PARAMETRES_APPAREIL								607
+#define IDD_PARAMETRES_APPAREIL								6607
 
 
 #define IDC_EDIT_SENSIBILITE_CALO							6041
