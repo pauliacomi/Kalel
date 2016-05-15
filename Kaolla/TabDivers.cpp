@@ -6,7 +6,8 @@
 #include "TabDivers.h"
 #include "afxdialogex.h"
 
-#include "Dialogue_cellule.h"				// For the cell dialog
+#include "DialogCell.h"						// For the cell dialog
+
 #include "Parametres.h"						// For accessing the parameters file
 #include "ParserXML.h"						// XML builder
 
@@ -214,6 +215,7 @@ void TabDivers::OnBnClickedButtonCellule()
 
 	for (UINT i = 0; i<cellList.size(); i++)
 	{
+		GetDlgItem(IDC_COMBO_CELLULE)->EnableWindow(true);
 		CString StrNumero;
 		StrNumero.Format(_T("%s"), cellList[i].numero.c_str());
 		m_CBCellule.InsertString(-1, StrNumero);

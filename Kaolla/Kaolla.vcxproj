@@ -215,8 +215,8 @@
     <ClInclude Include="DefineStages.h" />
     <ClInclude Include="DefineInstruments.h" />
     <ClInclude Include="DefineAutomationSettings.h" />
-    <ClInclude Include="Dialogue_cellule.h" />
-    <ClInclude Include="Dialogue_experimentateur.h" />
+    <ClInclude Include="DialogCell.h" />
+    <ClInclude Include="DialogUser.h" />
     <ClInclude Include="DialogGas.h" />
     <ClInclude Include="Dialogue_TypeExperience.h" />
     <ClInclude Include="Donnees_Experience.h" />
@@ -247,10 +247,10 @@
     <ClInclude Include="ParserXML.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="StringTable.h" />
-    <ClInclude Include="ResourceCellule.h" />
+    <ClInclude Include="ResourceDialogCell.h" />
     <ClInclude Include="ResourceConnectionPort.h" />
-    <ClInclude Include="ResourceExperimentateur.h" />
-    <ClInclude Include="ResourceGaz.h" />
+    <ClInclude Include="ResourceDialogUser.h" />
+    <ClInclude Include="ResourceDialogGas.h" />
     <ClInclude Include="ResourceOnglets.h" />
     <ClInclude Include="ResourceOngletsEtapes.h" />
     <ClInclude Include="ResourceParametresAppareil.h" />
@@ -310,8 +310,8 @@
     <ClCompile Include="CPetitesDoses.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="Dialogue_cellule.cpp" />
-    <ClCompile Include="Dialogue_experimentateur.cpp" />
+    <ClCompile Include="DialogCell.cpp" />
+    <ClCompile Include="DialogUser.cpp" />
     <ClCompile Include="DialogGas.cpp" />
     <ClCompile Include="Dialogue_TypeExperience.cpp" />
     <ClCompile Include="Donnees_Experience.cpp" />
@@ -502,10 +502,10 @@
     <ClCompile Include="XSBrowseFolder.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="Cellule.rc" />
+    <ResourceCompile Include="DialogCell.rc" />
     <ResourceCompile Include="ConnectionPort.rc" />
-    <ResourceCompile Include="Experimentateur.rc" />
-    <ResourceCompile Include="Gaz.rc" />
+    <ResourceCompile Include="DialogUser.rc" />
+    <ResourceCompile Include="DialogGas.rc" />
     <ResourceCompile Include="Kaolla.rc" />
     <ResourceCompile Include="StringTable.rc" />
     <ResourceCompile Include="Onglets.rc" />

@@ -5,7 +5,7 @@
 #include "afxwin.h"
 #include "ParserXML.h"
 #include "SpinBtnCtrl.h"
-#include "ResourceGaz.h"
+#include "ResourceDialogGas.h"
 
 
 
@@ -158,6 +158,23 @@ public:
 	CEdit m_EditSupprGaz;
 	CString m_strMessageSupprGaz;
 
+	CString m_strNomSuppGaz;
+	CString m_strSymboleSuppGaz;
+	float m_fMasseMoleculaireSuppGaz;
+	float m_fTemperatureCritiqueSuppGaz;
+	float m_fPressionCritiqueSuppGaz;
+	float m_fTemperatureEbullitionSuppGaz;
+	float m_fOmegaSuppGaz;
+
+
+	CEdit m_EditNomSuppGaz;
+	CEdit m_EditSymboleSuppGaz;
+	CEdit m_EditMasseMoleculaireSuppGaz;
+	CEdit m_EditTemperatureCritiqueSuppGaz;
+	CEdit m_EditPressionCritiqueSuppGaz;
+	CEdit m_EditTemperatureEbullitionSuppGaz;
+	CEdit m_EditOmegaSuppGaz;
+
 	vector<gaz> list_suppr_gaz;
 
 	virtual BOOL OnSetActive();
@@ -199,6 +216,8 @@ public:
 
 protected:
 	DECLARE_MESSAGE_MAP()
+
+	virtual BOOL OnInitDialog();
 };
 
 

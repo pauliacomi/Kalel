@@ -1,6 +1,6 @@
 // Microsoft Visual C++ generated resource script.
 //
-#include "resourceGaz.h"
+#include "ResourceDialogGas.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
 /////////////////////////////////////////////////////////////////////////////
@@ -13,13 +13,11 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// Français (France) resources
+// French (France) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_FRA)
-#ifdef _WIN32
 LANGUAGE LANG_FRENCH, SUBLANG_FRENCH
 #pragma code_page(1252)
-#endif //_WIN32
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -29,7 +27,7 @@ LANGUAGE LANG_FRENCH, SUBLANG_FRENCH
 
 1 TEXTINCLUDE 
 BEGIN
-    "resourceGaz.h\0"
+    "ResourceDialogGas.h\0"
 END
 
 2 TEXTINCLUDE 
@@ -123,14 +121,32 @@ BEGIN
 END
 
 IDD_SUPPR_GAZ DIALOGEX 0, 0, 242, 278
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Supprimer"
 FONT 8, "MS Sans Serif", 400, 0, 0x1
 BEGIN
-    LTEXT           "Gaz",IDC_STATIC,41,72,19,12,SS_CENTERIMAGE
-    COMBOBOX        IDC_COMBO_SUPPR_GAZ,129,72,50,151,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Gaz",IDC_STATIC,21,13,19,12,SS_CENTERIMAGE
+    COMBOBOX        IDC_COMBO_SUPPR_GAZ,109,13,50,151,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
     EDITTEXT        IDC_EDIT_SUPPR_GAZ,21,210,196,36,ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_READONLY | ES_WANTRETURN
     PUSHBUTTON      "Supprimer",IDC_DELETE_GAS,175,257,50,14
+    LTEXT           "Nom",IDC_STATIC,21,35,19,14,SS_CENTERIMAGE
+    EDITTEXT        IDC_EDIT_NOM_SUPPR_GAZ,109,35,63,14,ES_AUTOHSCROLL | ES_READONLY
+    LTEXT           "Symbole",IDC_STATIC,21,60,31,14,SS_CENTERIMAGE
+    EDITTEXT        IDC_EDIT_SYMBOLE_SUPPR_GAZ,109,60,40,14,ES_AUTOHSCROLL | ES_READONLY
+    LTEXT           "Masse moléculaire",IDC_STATIC,21,85,61,14,SS_CENTERIMAGE
+    EDITTEXT        IDC_EDIT_MASSE_MOLECULAIRE_SUPPR_GAZ,109,85,40,14,ES_AUTOHSCROLL | ES_READONLY
+    LTEXT           "g",IDC_STATIC,169,85,19,14,SS_CENTERIMAGE
+    LTEXT           "Température critique",IDC_STATIC,21,110,69,14,SS_CENTERIMAGE
+    EDITTEXT        IDC_EDIT_TEMPERATURE_CRITIQUE_SUPPR_GAZ,109,110,40,14,ES_AUTOHSCROLL | ES_READONLY
+    LTEXT           "°C",IDC_STATIC,169,110,19,14,SS_CENTERIMAGE
+    LTEXT           "Pression critique",IDC_STATIC,21,135,59,14,SS_CENTERIMAGE
+    EDITTEXT        IDC_EDIT_PRESSION_CRITIQUE_SUPPR_GAZ,109,135,40,14,ES_AUTOHSCROLL | ES_READONLY
+    LTEXT           "bar",IDC_STATIC,169,135,19,14,SS_CENTERIMAGE
+    LTEXT           "Température d'ébullition",IDC_STATIC,21,160,76,14,SS_CENTERIMAGE
+    EDITTEXT        IDC_EDIT_TEMPERATURE_EBULLITION_SUPPR_GAZ,109,160,40,14,ES_AUTOHSCROLL | ES_READONLY
+    LTEXT           "°C",IDC_STATIC,169,160,19,14,SS_CENTERIMAGE
+    LTEXT           "omega",IDC_STATIC,21,185,25,14,SS_CENTERIMAGE
+    EDITTEXT        IDC_EDIT_OMEGA_SUPPR_GAZ,109,185,40,14,ES_AUTOHSCROLL | ES_READONLY
 END
 
 
@@ -140,7 +156,7 @@ END
 //
 
 #ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO 
+GUIDELINES DESIGNINFO
 BEGIN
     IDD_AJOUT_GAZ, DIALOG
     BEGIN
@@ -168,7 +184,18 @@ BEGIN
 END
 #endif    // APSTUDIO_INVOKED
 
-#endif    // Français (France) resources
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// AFX_DIALOG_LAYOUT
+//
+
+IDD_SUPPR_GAZ AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+#endif    // French (France) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

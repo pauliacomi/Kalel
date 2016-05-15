@@ -125,6 +125,12 @@
             <omega>0.61804</omega>
         </gaz>
     </gazs>
-    <cellules />
+    <cellules>
+        <cellule>
+            <numero>1</numero>
+            <volume_total>2</volume_total>
+            <volume_calo>1</volume_calo>
+        </cellule>
+    </cellules>
     <configs />
 </experience>

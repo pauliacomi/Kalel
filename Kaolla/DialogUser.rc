@@ -1,6 +1,6 @@
 // Microsoft Visual C++ generated resource script.
 //
-#include "resourceExperimentateur.h"
+#include "ResourceDialogUser.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
 /////////////////////////////////////////////////////////////////////////////
@@ -13,13 +13,11 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// Français (France) resources
+// French (France) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_FRA)
-#ifdef _WIN32
 LANGUAGE LANG_FRENCH, SUBLANG_FRENCH
 #pragma code_page(1252)
-#endif //_WIN32
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -29,7 +27,7 @@ LANGUAGE LANG_FRENCH, SUBLANG_FRENCH
 
 1 TEXTINCLUDE 
 BEGIN
-    "resourceExperimentateur.h\0"
+    "ResourceDialogUser.h\0"
 END
 
 2 TEXTINCLUDE 
@@ -55,7 +53,7 @@ END
 IDD_AJOUT_EXPERIMENTATEUR DIALOGEX 0, 0, 214, 145
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Ajouter"
-FONT 8, "MS Shell Dlg", 400, 0, 0x1
+FONT 8, "MS Sans Serif", 400, 0, 0x1
 BEGIN
     LTEXT           "Nom",IDC_STATIC,25,26,15,14,SS_CENTERIMAGE
     EDITTEXT        IDC_NOM_AJOUT_EXPERIMENTATEUR,71,26,67,14,ES_AUTOHSCROLL
@@ -68,7 +66,7 @@ END
 IDD_MODIF_EXPERIMENTATEUR DIALOGEX 0, 0, 214, 145
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Modifier"
-FONT 8, "MS Shell Dlg", 400, 0, 0x1
+FONT 8, "MS Sans Serif", 400, 0, 0x1
 BEGIN
     LTEXT           "Experimentateur",IDC_STATIC,21,15,54,12,SS_CENTERIMAGE
     COMBOBOX        IDC_COMBO_MODIF_EXPERIMENTATEUR,93,15,67,52,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
@@ -81,14 +79,18 @@ BEGIN
 END
 
 IDD_SUPPR_EXPERIMENTATEUR DIALOGEX 0, 0, 214, 145
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Supprimer"
-FONT 8, "MS Shell Dlg", 400, 0, 0x1
+FONT 8, "MS Sans Serif", 400, 0, 0x1
 BEGIN
-    LTEXT           "Experimentateur",IDC_STATIC,33,33,54,12,SS_CENTERIMAGE
-    COMBOBOX        IDC_COMBO_SUPPR_EXPERIMENTATEUR,105,33,67,52,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Experimentateur",IDC_STATIC,21,15,54,12,SS_CENTERIMAGE
+    COMBOBOX        IDC_COMBO_SUPPR_EXPERIMENTATEUR,93,15,67,52,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
     EDITTEXT        IDC_EDIT_SUPPR_EXPERIMENTATEUR,24,78,161,36,ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_READONLY | ES_WANTRETURN
     PUSHBUTTON      "Supprimer",IDC_DELETE_USER,148,124,50,14
+    LTEXT           "Nom",IDC_STATIC,47,33,15,14,SS_CENTERIMAGE
+    EDITTEXT        IDC_NOM_SUPPR_EXPERIMENTATEUR,93,33,67,14,ES_AUTOHSCROLL | ES_READONLY
+    LTEXT           "Surnom",IDC_STATIC,47,52,25,14,SS_CENTERIMAGE
+    EDITTEXT        IDC_SURNOM_SUPPR_EXPERIMENTATEUR,93,52,67,14,ES_AUTOHSCROLL | ES_READONLY
 END
 
 
@@ -98,7 +100,7 @@ END
 //
 
 #ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO 
+GUIDELINES DESIGNINFO
 BEGIN
     IDD_AJOUT_EXPERIMENTATEUR, DIALOG
     BEGIN
@@ -126,7 +128,18 @@ BEGIN
 END
 #endif    // APSTUDIO_INVOKED
 
-#endif    // Français (France) resources
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// AFX_DIALOG_LAYOUT
+//
+
+IDD_SUPPR_EXPERIMENTATEUR AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+#endif    // French (France) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

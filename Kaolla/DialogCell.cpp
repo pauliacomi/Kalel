@@ -3,10 +3,99 @@
 
 #include "stdafx.h"
 #include "Kaolla.h"
-#include "Dialogue_cellule.h"
+#include "DialogCell.h"
 
 
-// Boîte de dialogue CAjoutCellule
+
+
+//////////////////////////////////////////////////////////////////////////////////////
+			//------------------------------------------------------
+			//----------------- Cell Property Sheet------------------ 
+			//------------------------------------------------------
+			//
+			//  Main class, all property pages will be added here
+			//
+//////////////////////////////////////////////////////////////////////////////////////
+
+IMPLEMENT_DYNAMIC(CDialogueCellule, CPropertySheet)
+
+CDialogueCellule::CDialogueCellule(UINT nIDCaption, CWnd* pParentWnd, UINT iSelectPage)
+	:CPropertySheet(nIDCaption, pParentWnd, iSelectPage)
+{
+
+}
+
+CDialogueCellule::CDialogueCellule(LPCTSTR pszCaption, CWnd* pParentWnd, UINT iSelectPage)
+	:CPropertySheet(pszCaption, pParentWnd, iSelectPage)
+{
+	AddPage(&m_AjoutCellule);
+	AddPage(&m_ModifCellule);
+	AddPage(&m_SupprCellule);
+
+	CString title;
+	title.Format(TITLE_DIALOG_CELL);
+	SetTitle(title);
+}
+
+CDialogueCellule::~CDialogueCellule()
+{
+}
+
+BOOL CDialogueCellule::OnInitDialog()
+{
+	BOOL bResult = CPropertySheet::OnInitDialog();
+
+	// We will need a pointer to each button
+	CButton *btnOK, *btnCancel, *btnApply;
+	// We will need the location and dimensions of Apply
+	CRect RectApply;
+
+	// Get handles to the OK, Cancel and Apply buttons
+	btnOK = reinterpret_cast<CButton *>(GetDlgItem(IDOK));
+	btnCancel = reinterpret_cast<CButton *>(GetDlgItem(IDCANCEL));
+	btnApply = reinterpret_cast<CButton *>(GetDlgItem(ID_APPLY_NOW));
+
+	// Get the location and the dimensions of the Apply button
+	btnApply->GetWindowRect(&RectApply);
+
+	// Dismiss the Apply and the Cancel buttons
+	btnApply->DestroyWindow();
+	btnCancel->DestroyWindow();
+
+	// Convert the location and dimensions to screen coordinates
+	ScreenToClient(&RectApply);
+
+	// Put the OK button where the Apply button was
+	btnOK->SetWindowPos(NULL, RectApply.left, RectApply.top, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_SHOWWINDOW);
+
+	return bResult;
+}
+
+BEGIN_MESSAGE_MAP(CDialogueCellule, CPropertySheet)
+END_MESSAGE_MAP()
+
+
+// Gestionnaires de messages de CDialogueCellule
+
+
+
+
+
+
+
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////
+				//------------------------------------------------------
+				//--------------Add Cell Property Page------------------ 
+				//------------------------------------------------------
+				//
+				//  For adding a new cell
+				//
+//////////////////////////////////////////////////////////////////////////////////////
+
+
 
 IMPLEMENT_DYNAMIC(CAjoutCellule, CPropertyPage)
 
@@ -38,7 +127,7 @@ void CAjoutCellule::DoDataExchange(CDataExchange* pDX)
 
 
 BEGIN_MESSAGE_MAP(CAjoutCellule, CPropertyPage)
-	ON_BN_CLICKED(IDC_AJOUTER, &CAjoutCellule::OnBnClickedAjouter)
+	ON_BN_CLICKED(IDC_ADD_CELL, &CAjoutCellule::OnBnClickedAjouter)
 END_MESSAGE_MAP()
 
 
@@ -74,29 +163,35 @@ void CAjoutCellule::OnBnClickedAjouter()
 	// Mise à jour des variables attachées aux contrôles
 	UpdateData(TRUE);
 
+	CString message;
+
 	// On vérifie si les champs ne sont pas vides
 	if(m_StrAjoutNumeroCellule == _T("") || m_fAjoutVolumeCellule == 0 || m_fAjoutVolumeCalo == 0)
 	{
-		m_strMessageAjoutCellule = "Tous les champs n'ont pas été remplis convenablement!";
+		message.Format(ERROR_FIELDS_NOT_FILLED);
+		m_strMessageAjoutCellule = message + "\r\n";
 	}
 	else
 	{	// On vérifie que la cellule ne soit pas déjà initialisé
-		if(DoublonNumeroCellule(m_StrAjoutNumeroCellule.GetBuffer()))
-			m_strMessageAjoutCellule = "Cellule déjà initialisée";
+		if (DoublonNumeroCellule(m_StrAjoutNumeroCellule.GetBuffer())) {
+			message.Format(ERROR_NAME_USED);
+			m_strMessageAjoutCellule = message + "\r\n";
+		}
 
 		else
 		{	// On vérifie que le volume total de la cellule soit plus important que 
 			// le volume du calo dans la cellule
 			if(m_fAjoutVolumeCellule < m_fAjoutVolumeCalo)
 			{
-				m_strMessageAjoutCellule = 
-					"Le volume du Calo est plus gros que le volume de la cellule";
+				message.Format(ERROR_CELL_VCALO_CCELL);
+				m_strMessageAjoutCellule = message + "\r\n";
 			}
 			// Si toutes les conditions sont bonnes, on peut rajouter l'experimentateur dans un fichier XML
 			else
 			{
 				Rajout_Cellule(m_StrAjoutNumeroCellule.GetBuffer(),m_fAjoutVolumeCellule,m_fAjoutVolumeCalo);
-				m_strMessageAjoutCellule.Format(_T("La cellule %s a été rajoutée"),m_StrAjoutNumeroCellule);
+
+				m_strMessageAjoutCellule.Format(TEXT_CELL_ADDED, m_StrAjoutNumeroCellule);
 				m_StrAjoutNumeroCellule=_T("");
 				m_fAjoutVolumeCellule=0;
 				m_fAjoutVolumeCalo=0;
@@ -106,14 +201,24 @@ void CAjoutCellule::OnBnClickedAjouter()
 	// Pour afficher les messages, on met à jour les contrôles
 	UpdateData(FALSE);
 
-	OnOK();
 }
 
 
 
-///////////////////////////////////////////////////////////////////////////////
-//
-// Boîte de dialogue CModifCellule
+
+
+
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////
+				//------------------------------------------------------
+				//--------------Modify Cell Property Page------------------ 
+				//------------------------------------------------------
+				//
+				//  For modifying existing cells
+				//
+//////////////////////////////////////////////////////////////////////////////////////
 
 IMPLEMENT_DYNAMIC(CModifCellule, CPropertyPage)
 
@@ -150,7 +255,7 @@ void CModifCellule::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(CModifCellule, CPropertyPage)
 	ON_CBN_SELCHANGE(IDC_COMBO_MODIF_CELLULE, &CModifCellule::OnCbnSelchangeComboModifCellule)
-	ON_BN_CLICKED(IDC_MODIFIER, &CModifCellule::OnBnClickedModifier)
+	ON_BN_CLICKED(IDC_MODIFY_CELL, &CModifCellule::OnBnClickedModifier)
 END_MESSAGE_MAP()
 
 
@@ -220,39 +325,41 @@ void CModifCellule::OnBnClickedModifier()
 		// On modifie la cellule n°'index+1'
 		if(m_StrModifNumeroCellule == _T("") || m_fModifVolumeCellule == 0 || m_fModifVolumeCalo == 0)
 		{
-			m_strMessageModifCellule = "Tous les champs n'ont pas été remplis convenablement!";
+			m_strMessageModifCellule.Format(ERROR_FIELDS_NOT_FILLED);
 		}
 		else
 		{
 			// On verifie que si on donne un nouveau numéro qui n'est pas déjà pris à la cellule
-			if(/*m_StrModifNumeroCellule != m_nIndexModifCellule + 1 && */
+			if(
 				DoublonNumeroCellule(m_StrModifNumeroCellule.GetBuffer()))
-				m_strMessageModifCellule = "Cellule déjà initialisée";
+				m_strMessageModifCellule.Format(ERROR_NAME_USED);
 			else
 			{
 				// On vérifie que le volume total de la cellule soit plus important que 
 				// le volume du calo dans la cellule
-				if(m_fModifVolumeCellule < m_fModifVolumeCalo)
-					m_strMessageModifCellule = "Le volume du Calo est plus gros que le volume de la cellule";
+				if (m_fModifVolumeCellule < m_fModifVolumeCalo) {
+					m_strMessageModifCellule.Format(ERROR_CELL_VCALO_CCELL);
+				}
 				else
 				{
 					// Si tout se passe bien, on le signale dans la boite de dialogue
 					if(Modif_Cellule(m_StrModifNumeroCellule.GetBuffer(), m_fModifVolumeCellule, 
 									 m_fModifVolumeCalo, m_nIndexModifCellule))
 					{
-						m_strMessageModifCellule.Format(_T("La cellule %s a été modifiée."), m_StrModifNumeroCellule);
+						m_strMessageModifCellule.Format(TEXT_CELL_MODIFIED, list_modif_cellule[index].numero.c_str(), m_StrModifNumeroCellule);
 						ReinitialisationComboBox();
 					}
 					else
 					{	// Si la modification ne se fait pas... On le signale dans la boite de dialogue
-						m_strMessageModifCellule = "La modification n'a pu être effectuée\r\n Veuillez recommencer.";
+						m_strMessageModifCellule.Format(ERROR_MODIFICATION);
 					}
-				} // else - (m_fModifVolumeCellule < m_fModifVolumeCalo)
-			} // else ( ... && DoublonNumeroCellule(m_StrModifNumeroCellule))
-		} // else (m_StrModifNumeroCellule == 0 || ... || ...)
-	}// if(index != -1)
-	else
-		m_strMessageModifCellule = "Cellule à modifier non sélectionnée.";
+				}
+			}
+		}
+	}
+	else {
+		m_strMessageModifCellule.Format(ERROR_SELECTED);
+	}
 
 	UpdateData(FALSE);
 }
@@ -286,9 +393,18 @@ void CModifCellule::ReinitialisationComboBox()
 
 
 
-///////////////////////////////////////////////////////////////////////////////
-//
-// Boîte de dialogue CSupprCellule
+
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////
+				//------------------------------------------------------
+				//--------------Delete Cell Property Page------------------ 
+				//------------------------------------------------------
+				//
+				//  For deleting a cell
+				//
+//////////////////////////////////////////////////////////////////////////////////////
 
 IMPLEMENT_DYNAMIC(CSupprCellule, CPropertyPage)
 
@@ -322,7 +438,7 @@ void CSupprCellule::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(CSupprCellule, CPropertyPage)
 	ON_CBN_SELCHANGE(IDC_COMBO_SUPPR_NUMERO_CELLULE, &CSupprCellule::OnCbnSelchangeComboSupprNumeroCellule)
-	ON_BN_CLICKED(IDC_SUPPRIMER, &CSupprCellule::OnBnClickedSupprimer)
+	ON_BN_CLICKED(IDC_DELETE_CELL, &CSupprCellule::OnBnClickedSupprimer)
 END_MESSAGE_MAP()
 
 
@@ -346,7 +462,6 @@ void CSupprCellule::OnCbnSelchangeComboSupprNumeroCellule()
 	m_fSupprVolumeCellule = list_suppr_cellule[m_nIndexSupprNumeroCellule].volume_total;
 	m_fSupprVolumeCalo = list_suppr_cellule[m_nIndexSupprNumeroCellule].volume_calo;
 	UpdateData(FALSE);
-
 }
 
 void CSupprCellule::OnBnClickedSupprimer()
@@ -359,23 +474,18 @@ void CSupprCellule::OnBnClickedSupprimer()
 		// On supprime l'expérimentateur de l'index : m_IndexSupprExperimentateur
 		if(Suppression_Cellule(index))
 		{
-
 			// Si tout se passe bien, on le signale dans la boite de dialogue
 			// Et on réinitialise le ComboBox
-			/*m_strMessageSupprCellule.Format(_T("La cellule %d a été supprimé."),
-				Cellule_A_Supprime);*/
-			m_strMessageSupprCellule.Format(_T("La cellule %s a été supprimé."),
-				list_suppr_cellule[index].numero);
+			m_strMessageSupprCellule.Format(TEXT_CELL_DELETED,	list_suppr_cellule[index].numero.c_str());
 			ReinitialisationComboBox();
-
 		}
 		else
 		{	// Si ça ne marche pas, on le signale dans la boite de dialogue
-			m_strMessageSupprCellule = "Erreur dans la suppression";
+			m_strMessageSupprCellule.Format(ERROR_DELETION);
 		}
 	}
 	else
-		m_strMessageSupprCellule = "Cellule à supprimer non sélectionnée";
+		m_strMessageSupprCellule.Format(ERROR_SELECTED);
 	
 	UpdateData(FALSE);
 }
@@ -398,55 +508,3 @@ void CSupprCellule::ReinitialisationComboBox()
 	m_fSupprVolumeCalo=0;
 	UpdateData(FALSE);
 }
-
-
-
-
-
-
-
-//////////////////////////////////////////////////////////////////////////////////////
-//
-// CDialogueCellule
-
-IMPLEMENT_DYNAMIC(CDialogueCellule, CPropertySheet)
-
-CDialogueCellule::CDialogueCellule(UINT nIDCaption, CWnd* pParentWnd, UINT iSelectPage)
-	:CPropertySheet(nIDCaption, pParentWnd, iSelectPage)
-{
-
-}
-
-CDialogueCellule::CDialogueCellule(LPCTSTR pszCaption, CWnd* pParentWnd, UINT iSelectPage)
-	:CPropertySheet(pszCaption, pParentWnd, iSelectPage)
-{
-	AddPage(&m_AjoutCellule);
-	AddPage(&m_ModifCellule);
-	AddPage(&m_SupprCellule);
-
-	SetTitle("Ajouter/Modifier une cellule");
-}
-
-CDialogueCellule::~CDialogueCellule()
-{
-}
-
-
-BEGIN_MESSAGE_MAP(CDialogueCellule, CPropertySheet)
-END_MESSAGE_MAP()
-
-
-// Gestionnaires de messages de CDialogueCellule
-
-
-
-
-
-
-
-
-
-
-
-
-

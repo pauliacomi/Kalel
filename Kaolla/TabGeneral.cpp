@@ -6,8 +6,9 @@
 #include "TabGeneral.h"
 #include "afxdialogex.h"
 
-#include "Dialogue_experimentateur.h"		// User selection dialog
+#include "DialogUser.h"						// User selection dialog
 #include "DialogGas.h"						// Gas selection dialog
+
 #include "XSBrowseFolder.h"					// Browse for folder custom class
 #include "Parametres.h"						// For reading the parameters file
 #include "ParserXML.h"						// XML builder

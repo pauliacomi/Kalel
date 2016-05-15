@@ -42,6 +42,35 @@ CDialogueGaz::~CDialogueGaz()
 {
 }
 
+BOOL CDialogueGaz::OnInitDialog()
+{
+	BOOL bResult = CPropertySheet::OnInitDialog();
+
+	// We will need a pointer to each button
+	CButton *btnOK, *btnCancel, *btnApply;
+	// We will need the location and dimensions of Apply
+	CRect RectApply;
+
+	// Get handles to the OK, Cancel and Apply buttons
+	btnOK = reinterpret_cast<CButton *>(GetDlgItem(IDOK));
+	btnCancel = reinterpret_cast<CButton *>(GetDlgItem(IDCANCEL));
+	btnApply = reinterpret_cast<CButton *>(GetDlgItem(ID_APPLY_NOW));
+
+	// Get the location and the dimensions of the Apply button
+	btnApply->GetWindowRect(&RectApply);
+
+	// Dismiss the Apply and the Cancel buttons
+	btnApply->DestroyWindow();
+	btnCancel->DestroyWindow();
+	
+	// Convert the location and dimensions to screen coordinates
+	ScreenToClient(&RectApply);
+
+	// Put the OK button where the Apply button was
+	btnOK->SetWindowPos(NULL, RectApply.left, RectApply.top, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_SHOWWINDOW);
+
+	return bResult;
+}
 
 BEGIN_MESSAGE_MAP(CDialogueGaz, CPropertySheet)
 END_MESSAGE_MAP()
@@ -367,20 +396,46 @@ void CModifGaz::OnBnClickedModifier()
 	string symbole_modif ((LPCTSTR)m_strSymboleModifGaz);
 	int index = m_nIndexModifGaz;
 
+	CString message;
+
 	// On modifie l'expérimentateur n°'index'.
 	if(index != -1)
 	{
-		if(Modif_Gaz(nom_modif,symbole_modif,m_fMasseMoleculaireModifGaz,m_fTemperatureCritiqueModifGaz,
-					 m_fPressionCritiqueModifGaz,m_fTemperatureEbullitionModifGaz,index))
-		{	// Si tout se passe bien, on le signale dans la boite de dialogue
-			m_strMessageModifGaz.Format(TEXT_GAS_MODIFIED, nom_modif.c_str(), symbole_modif.c_str());
-			
-			ReinitialisationComboBox();
-
+		if (m_strNomModifGaz == "" || m_strSymboleModifGaz == "")
+		{
+			m_strMessageModifGaz.Format(ERROR_FIELDS_NOT_FILLED);
 		}
 		else
-			// Si la modification ne se fait pas... On le signale dans la boite de dialogue
-			m_strMessageModifGaz.Format(ERROR_GAS_MODIFIED);
+		{	// On vérifie que le gaz ne soit pas déjà répertorié
+			if (DoublonNomGaz(m_strNomModifGaz.GetBuffer()) ||
+				DoublonSymboleGaz(m_strSymboleModifGaz.GetBuffer()))
+			{
+				m_strMessageModifGaz = "";
+				if (DoublonNomGaz(m_strNomModifGaz.GetBuffer())) {
+					message.Format(ERROR_NAME_USED);
+					m_strMessageModifGaz = message + "\r\n";
+				}
+				if (DoublonSymboleGaz(m_strSymboleModifGaz.GetBuffer())) {
+					message.Format(ERROR_SYMBOL_USED);
+					m_strMessageModifGaz = message + "\r\n";
+				}
+			}
+			else {
+				if (Modif_Gaz(nom_modif, symbole_modif, m_fMasseMoleculaireModifGaz, m_fTemperatureCritiqueModifGaz,
+					m_fPressionCritiqueModifGaz, m_fTemperatureEbullitionModifGaz, index))
+				{	// Si tout se passe bien, on le signale dans la boite de dialogue
+					m_strMessageModifGaz.Format(TEXT_GAS_MODIFIED,
+						list_modif_gaz[index].nom.c_str(), list_modif_gaz[index].symbole.c_str(),
+						nom_modif.c_str(), symbole_modif.c_str());
+
+					ReinitialisationComboBox();
+				}
+				else {
+					// Si la modification ne se fait pas... On le signale dans la boite de dialogue
+					m_strMessageModifGaz.Format(ERROR_MODIFICATION);
+				}
+			}
+		}
 	}
 	else
 		m_strMessageModifGaz.Format(ERROR_SELECTED);
@@ -443,6 +498,13 @@ CSupprGaz::CSupprGaz()
 	: CPropertyPage(CSupprGaz::IDD)
 	, m_nIndexSupprGaz(0)
 	, m_strMessageSupprGaz(_T(""))
+	, m_strNomSuppGaz(_T(""))
+	, m_strSymboleSuppGaz(_T(""))
+	, m_fMasseMoleculaireSuppGaz(0)
+	, m_fTemperatureCritiqueSuppGaz(0)
+	, m_fPressionCritiqueSuppGaz(0)
+	, m_fTemperatureEbullitionSuppGaz(0)
+	, m_fOmegaSuppGaz(0)
 {
 
 }
@@ -458,6 +520,21 @@ void CSupprGaz::DoDataExchange(CDataExchange* pDX)
 	DDX_CBIndex(pDX, IDC_COMBO_SUPPR_GAZ, m_nIndexSupprGaz);
 	DDX_Control(pDX, IDC_EDIT_SUPPR_GAZ, m_EditSupprGaz);
 	DDX_Text(pDX, IDC_EDIT_SUPPR_GAZ, m_strMessageSupprGaz);
+
+	DDX_Control(pDX, IDC_EDIT_NOM_SUPPR_GAZ, m_EditNomSuppGaz);
+	DDX_Text(pDX, IDC_EDIT_NOM_SUPPR_GAZ, m_strNomSuppGaz);
+	DDX_Control(pDX, IDC_EDIT_SYMBOLE_SUPPR_GAZ, m_EditSymboleSuppGaz);
+	DDX_Text(pDX, IDC_EDIT_SYMBOLE_SUPPR_GAZ, m_strSymboleSuppGaz);
+	DDX_Control(pDX, IDC_EDIT_MASSE_MOLECULAIRE_SUPPR_GAZ, m_EditMasseMoleculaireSuppGaz);
+	DDX_Text(pDX, IDC_EDIT_MASSE_MOLECULAIRE_SUPPR_GAZ, m_fMasseMoleculaireSuppGaz);
+	DDX_Control(pDX, IDC_EDIT_TEMPERATURE_CRITIQUE_SUPPR_GAZ, m_EditTemperatureCritiqueSuppGaz);
+	DDX_Text(pDX, IDC_EDIT_TEMPERATURE_CRITIQUE_SUPPR_GAZ, m_fTemperatureCritiqueSuppGaz);
+	DDX_Control(pDX, IDC_EDIT_PRESSION_CRITIQUE_SUPPR_GAZ, m_EditPressionCritiqueSuppGaz);
+	DDX_Text(pDX, IDC_EDIT_PRESSION_CRITIQUE_SUPPR_GAZ, m_fPressionCritiqueSuppGaz);
+	DDX_Control(pDX, IDC_EDIT_TEMPERATURE_EBULLITION_SUPPR_GAZ, m_EditTemperatureEbullitionSuppGaz);
+	DDX_Text(pDX, IDC_EDIT_TEMPERATURE_EBULLITION_SUPPR_GAZ, m_fTemperatureEbullitionSuppGaz);
+	DDX_Control(pDX, IDC_EDIT_OMEGA_SUPPR_GAZ, m_EditOmegaSuppGaz);
+	DDX_Text(pDX, IDC_EDIT_OMEGA_SUPPR_GAZ, m_fOmegaSuppGaz);
 }
 
 // Comme dans 'EXPERIMENT_TYPE_MODIFY', on réinitialise le ComboBox
@@ -482,6 +559,17 @@ void CSupprGaz::OnCbnSelchangeComboSupprGaz()
 	// Si on clique sur 'supprimer', on effacera le gaz
 	// de l'index m_IndexSupprGaz mise à jour.
 	UpdateData(TRUE);
+
+	// On affiche les données de la cellule qu'on veux effacer
+	m_strNomSuppGaz = list_suppr_gaz[m_nIndexSupprGaz].nom.c_str();
+	m_strSymboleSuppGaz = list_suppr_gaz[m_nIndexSupprGaz].symbole.c_str();
+	m_fMasseMoleculaireSuppGaz = list_suppr_gaz[m_nIndexSupprGaz].masse_moleculaire;
+	m_fTemperatureCritiqueSuppGaz = list_suppr_gaz[m_nIndexSupprGaz].temperature_critique;
+	m_fPressionCritiqueSuppGaz = list_suppr_gaz[m_nIndexSupprGaz].pression_critique;
+	m_fTemperatureEbullitionSuppGaz = list_suppr_gaz[m_nIndexSupprGaz].temperature_ebullition;
+	m_fOmegaSuppGaz = list_suppr_gaz[m_nIndexSupprGaz].omega;
+
+	UpdateData(FALSE);
 }
 
 
@@ -503,7 +591,7 @@ void CSupprGaz::OnBnClickedSupprimer()
 		}
 		else
 		{	// Si ça ne marche pas, on le signale dans la boite de dialogue
-			m_strMessageSupprGaz.Format(ERROR_GAS_DELETED);
+			m_strMessageSupprGaz.Format(ERROR_DELETION);
 		}
 	}
 	else

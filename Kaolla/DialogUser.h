@@ -4,11 +4,19 @@
 
 #include "afxwin.h"
 #include "ParserXML.h"
-#include "ResourceExperimentateur.h"
+#include "ResourceDialogUser.h"
 
-////////////////////////////////////////////////////////////////////////////////////////
-//
-// Boîte de dialogue CAjoutExperimentateur
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////
+				//------------------------------------------------------
+				//--------------Add User Property Page------------------ 
+				//------------------------------------------------------
+				//
+				//  For adding a user to the configuration file
+				//
+//////////////////////////////////////////////////////////////////////////////////////
 
 class CAjoutExperimentateur : public CPropertyPage
 {
@@ -38,9 +46,16 @@ public:
 
 
 
+
+
 //////////////////////////////////////////////////////////////////////////////////////
-//
-// Boîte de dialogue CModifExperimentateur
+				//------------------------------------------------------
+				//--------------Modify User Property Page------------------ 
+				//------------------------------------------------------
+				//
+				//  For modifying a user in the configuration file
+				//
+//////////////////////////////////////////////////////////////////////////////////////
 
 class CModifExperimentateur : public CPropertyPage
 {
@@ -77,9 +92,17 @@ public:
 
 
 
-////////////////////////////////////////////////////////////////////////////////////////
-//
-// Boîte de dialogue CSupprExperimentateur
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////
+				//------------------------------------------------------
+				//--------------Delete User Property Page------------------ 
+				//------------------------------------------------------
+				//
+				//  For deleting a user in the configuration file
+				//
+//////////////////////////////////////////////////////////////////////////////////////
 
 class CSupprExperimentateur : public CPropertyPage
 {
@@ -102,6 +125,11 @@ public:
 	CEdit m_EditSupprExperimentateur;
 	CString m_MessageSupprExperimentateur;
 
+	CEdit m_EditNomSupprExperimentateur;
+	CString m_strNomSupprExperimentateur;
+	CEdit m_EditSurnomSupprExperimentateur;
+	CString m_strSurnomSupprExperimentateur;
+
 	vector<experimentateur> list_suppr_experimentateur;
 
 	afx_msg void OnCbnSelchangeComboSupprExperimentateur();
@@ -112,9 +140,18 @@ public:
 
 
 
-/////////////////////////////////////////////////////////////////////////////////////
-//
-// CDialogueExperimentateur
+
+
+//////////////////////////////////////////////////////////////////////////////////////
+				//------------------------------------------------------
+				//-------------- User Property Sheet------------------ 
+				//------------------------------------------------------
+				//
+				//  Where all the tabs will go
+				//
+//////////////////////////////////////////////////////////////////////////////////////
+
+
 
 class CDialogueExperimentateur : public CPropertySheet
 {
@@ -132,7 +169,7 @@ public:
 
 protected:
 	DECLARE_MESSAGE_MAP()
-public:
+
 	virtual BOOL OnInitDialog();
 };
 
