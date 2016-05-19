@@ -214,4 +214,4 @@ ModelManifest.xml
 # VC.opendb
 *.VC.opendb
 /Kaolla.VC.db
-/Kalel.VC.db
+*.db
