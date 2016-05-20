@@ -26,10 +26,10 @@ CInstrument::~CInstrument(void)
 	delete mensor;
 }
 
-void CInstrument::SetParametresInstrument(int COM,int type)
+void CInstrument::SetParametresInstrument(int pCOM,int pType)
 {
-	this->COM = COM;
-	this->type = type;
+	this->COM = pCOM;
+	this->type = pType;
 }
 
 bool CInstrument::OuvrirPortInstrument()

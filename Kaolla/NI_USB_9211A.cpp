@@ -42,81 +42,61 @@ void NI_USB_9211A::LectureThermocouple ()
     int32       error = 0;
     TaskHandle  taskHandle = 0;
     char        errBuff[2048]={'\0'};
-//    int32       i;
 
     // Channel parameters
-    //char        chan[] = "Dev1/ai0";
 	char        chan[25];
     float64     min = 0;
     float64     max = 100.0;
 
     // Timing parameters
     char        source[] = "OnboardClock";
-    //uInt64      samplesPerChan = 10;
 	uInt64      samplesPerChan = 1;
     float64     sampleRate = 4.0;
 
     // Data read parameters
     #define     bufferSize (uInt32)10
     float64     data[bufferSize];
-    //int32       pointsToRead = 10;
 	int32       pointsToRead = 1;
     int32       pointsRead;
     float64     timeout = 10.0;
 	
 
 
-
-
 	sprintf_s(chan,"Dev%d/ai0:3",DevNI_USB_9211A);
 	// Si on veut utiliser que la voie 1 et 3, faire du style: 
-	// sprintf_s(chan,"Dev0/ai1,Dev0/ai3",DevNI_USB_9211A);
 
+			// Leak Here
 	DAQmxErrChk (DAQmxCreateTask ("", &taskHandle));
 	DAQmxErrChk (DAQmxCreateAIThrmcplChan (taskHandle, chan, "", min, max, DAQmx_Val_DegC , DAQmx_Val_K_Type_TC, DAQmx_Val_BuiltIn , 0, ""));
 	
 	DAQmxErrChk (DAQmxStartTask (taskHandle));
 
 	DAQmxErrChk (DAQmxReadAnalogF64 (taskHandle, pointsToRead, timeout, 0, data, bufferSize, &pointsRead, NULL));
+			// Leak Here
+
 
 	if (taskHandle != 0)
     {
        DAQmxStopTask (taskHandle);
        DAQmxClearTask (taskHandle);
-	   //return -200;
-	   //*retour = -200;
     }
 
-
-
+	// Write data from returned array
 	TC0=data[0];
 	TC1=data[1];
 	TC2=data[2];
 	TC3=data[3];
-	//return data[0];
 	
 
 Error:
     if (DAQmxFailed (error))
 	{
 	   DAQmxGetExtendedErrorInfo (errBuff, 2048);
-		TC0=error;
-		TC1=error;
-		TC2=error;
-		TC3=error;
-	   //return error;
-	   //*retour = error;
+		TC0 = error;
+		TC1 = error;
+		TC2 = error;
+		TC3 = error;
 	}
-
-    if (error)
-	{
-		TC0=error;
-		TC1=error;
-		TC2=error;
-		TC3=error;
-	}
-
-	//return -1;
 }
 
 void NI_USB_9211A::LectureTousThermocouple(double* Valeur0,double* Valeur1,double* Valeur2,double* Valeur3)

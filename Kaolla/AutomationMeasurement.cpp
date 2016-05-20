@@ -120,10 +120,11 @@ void Automation::ReadHighPressure()
 	LeaveCriticalSection(&criticalSection);
 }
 
-void Automation::ReadTemperatures()
+void Automation::ReadTemperatures()	// another problem is that the threads are reading something from the automation thread and may cause unexpected behaviour
 {
 	// Read the value from the calorimeter
 	double dTemperatureCalo, dTemperatureCage, dTemperaturePiece;
+
 	//g_pTemperature->Temperature(&dTemperatureCalo, &dTemperatureCage, &dTemperaturePiece);
 
 	srand(time(NULL)); // temp

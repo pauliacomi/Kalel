@@ -18,7 +18,7 @@ std::string Automation::NomFichier(std::string extension, bool entete)
 	else
 	{
 		// Check if the user field is empty
-		if (strcmp(experimentLocalSettings.dataGeneral.experimentateur.surnom.c_str(), ""))
+		if (strcmp(experimentLocalSettings.dataGeneral.experimentateur.surnom.c_str(), ""))		//??
 		{
 			sprintf_s(fileNameBuffer, "%s/Nouveau_Fichier", experimentLocalSettings.dataGeneral.chemin.c_str());
 		}
@@ -48,7 +48,7 @@ std::string Automation::NomFichier(std::string extension, bool entete)
 	{
 		sprintf_s(fileNameBuffer, "%s/%s.%s", fileNameBuffer, experimentLocalSettings.dataGeneral.fichier.c_str(), extension.c_str());
 	}
-	string nom_fichier = fileNameBuffer;
+	string nom_fichier = fileNameBuffer;			// Assignment yields null string value
 	return nom_fichier;
 }
 

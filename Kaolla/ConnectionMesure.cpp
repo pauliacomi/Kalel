@@ -12,8 +12,8 @@ ConnectionMesure::~ConnectionMesure()
 {
 }
 
-void ConnectionMesure::SetConnectionMesure(int voie_mesure,int index)
+void ConnectionMesure::SetConnectionMesure(int pvoieMesure,int pindex)
 {
-	this->voie_mesure = voie_mesure;
-	this->index = index;
+	this->voie_mesure = pvoieMesure;
+	this->index = pindex;
 }

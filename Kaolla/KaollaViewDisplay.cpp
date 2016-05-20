@@ -62,7 +62,7 @@ void CKaollaView::OnTimer(UINT nIDEvent)
 
 
 // Write on the dialog box reserved for new messages
-LRESULT CKaollaView::AffichageMessages(WPARAM wParam, LPARAM lParam)
+LRESULT CKaollaView::AffichageMessages(WPARAM, LPARAM lParam)
 {
 	// Get the incoming pointer and cast it as a smart pointer
 	std::auto_ptr<CString> message(reinterpret_cast<CString*>(lParam));
@@ -193,7 +193,7 @@ LRESULT CKaollaView::AffichageEtape(ExperimentData expD)
 }
 
 
-LRESULT CKaollaView::RajoutAffichageEtape(WPARAM wParam, LPARAM lParam)
+LRESULT CKaollaView::RajoutAffichageEtape(WPARAM, LPARAM)
 {
 	CString rajout;
 
@@ -296,7 +296,7 @@ LRESULT CKaollaView::AffichageMessages(CString message)
 	return 0;
 }
 
-LRESULT CKaollaView::RajoutAffichageMessages(WPARAM wParam, LPARAM lParam)
+LRESULT CKaollaView::RajoutAffichageMessages(WPARAM, LPARAM)
 {
 	CString rajout;
 

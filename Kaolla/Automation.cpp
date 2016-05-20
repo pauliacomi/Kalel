@@ -6,13 +6,20 @@
 Automation::Automation()
 	: running(true)
 	, checking(true)
-	, paused(false)
 {
+	g_pTemperature = new CTemperature(GetPortTemperatures());
 }
 
 
 Automation::~Automation()
 {
+	// Delete instruments
+	for (int i = 0; i < NB_OF_INSTRUMENTS; i++) {
+		delete instrument[i];
+	}
+
+	// Delete temperature class
+	delete g_pTemperature;
 }
 
 
@@ -454,7 +461,7 @@ void Automation::SetVannes(CVannes* pVannes)
 
 void Automation::SetTemperature(CTemperature* pTemperature)
 {
-	g_pTemperature = pTemperature;
+	//g_pTemperature = pTemperature;
 }
 
 void Automation::SetDataPointer(ExperimentSettings * eSettings)
