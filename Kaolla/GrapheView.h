@@ -25,12 +25,6 @@ public:
 	void traceContour(CRect rect, CDC *pDC);
 	double MaxPressionEchelle(double max_p);
 	int NbrIntervalles(double max);
-	/*
-	void trace_echelle(CRect graphe,CRect axe_graphe,int max_pression,int min_pression,int max_calo,int min_calo,
-	CDC *pDC, CKaollaDoc* pDoc,float min_temps = 0.0);
-	void trace_graphe(CRect graphe,int max_pression,int min_pression,int max_calo,int min_calo,
-	CDC *pDC,CKaollaDoc *pDoc,float min_temps=0.0,int PremiereMesure=0);
-	*/
 
 public:
 	virtual void OnDraw(CDC* pDC);      // substitué pour dessiner cette vue

@@ -23,8 +23,8 @@ class CKaollaView : public CFormView
 {
 
 public:
-	// pointer to the main document
-	CKaollaDoc* m_mainDocument;
+	CKaollaApp* pApp;				// pointer to the main app
+	CKaollaDoc* m_mainDocument;		// pointer to the main document
 	ThreadManager* threadManager;
 
 	// Storage for all the data
@@ -107,14 +107,13 @@ public:
 	//------- KaollaView
 
 	void DoEvents(void);
-	LRESULT DebloqueMenu(WPARAM wParam, LPARAM lParam);
-	LRESULT MiseAJour(WPARAM wParam, LPARAM lParam);
-	LRESULT UnlockStartButton(WPARAM wParam, LPARAM lParam);
 	void OnMsvAmpoule(void);
 	void OnMsvBouteille(void);
 	void OnChangementBouteille(void);
 
 	void GetExperimentData(ExperimentPropertySheet * dialogExperimentProperties);
+
+	void UpdateButtons();
 
 	// Thread callbacks
 	LRESULT OnRegularThreadFinished(WPARAM wParam, LPARAM);

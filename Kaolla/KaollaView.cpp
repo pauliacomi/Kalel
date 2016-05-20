@@ -19,7 +19,6 @@
 #define new DEBUG_NEW
 #endif
 
-CKaollaApp *pApp;
 
 // CKaollaView
 
@@ -41,12 +40,12 @@ BEGIN_MESSAGE_MAP(CKaollaView, CFormView)
 	//ON_MESSAGE(WM_GRAPHDATAAUTOSTEP, &CKaollaDoc::Graph)
 	//ON_MESSAGE(WM_DISPLAYMEASUREMENT, &CKaollaView::AffichageMesures)
 	//ON_MESSAGE(WM_DISPLAYSTEP, &CKaollaView::AffichageEtape)
+	//ON_MESSAGE(WM_UNLOCKMENU, &CKaollaView::DebloqueMenu)
+	//ON_MESSAGE(WM_UPDATEDISPLAY, &CKaollaView::MiseAJour)
+	//ON_MESSAGE(WM_ENABLESTARTBUTTON, &CKaollaView::UnlockStartButton)
 	
 	ON_MESSAGE(WM_DISPLAYADDMESSAGE, &CKaollaView::RajoutAffichageMessages)
 	ON_MESSAGE(WM_DISPLAYADDSTEP, &CKaollaView::RajoutAffichageEtape)
-	ON_MESSAGE(WM_UPDATEDISPLAY, &CKaollaView::MiseAJour)
-	ON_MESSAGE(WM_UNLOCKMENU, &CKaollaView::DebloqueMenu)
-	ON_MESSAGE(WM_ENABLESTARTBUTTON, &CKaollaView::UnlockStartButton)
 	ON_MESSAGE(WM_CANCELEXPERIMENT, &CKaollaView::Annuler)
 
 	// Messages for UI buttons used for simple instrument manipulation
@@ -116,7 +115,6 @@ CKaollaView::CKaollaView()
 	, m_StrTemoinEV2(_T(""))
 	, m_StrTemoinPompe(_T(""))
 {
-	
 }
 
 
@@ -191,10 +189,13 @@ void CKaollaView::OnInitialUpdate()
 
 	// Check to see whether the parameters file has been created
 	VerifParametres();
+	
+	// Initial button set-up
+	UpdateButtons();
 
 	// Create the experiment parameter window
 	dialogExperimentProperties = new ExperimentPropertySheet(_T(""));
-	experimentSettings = new ExperimentSettings();						// Create a new experiment storage
+	experimentSettings = new ExperimentSettings();							// Create a new experiment storage
 	experimentSettings->GUIhandle = GetSafeHwnd();							// Save the window handle
 	threadManager = new ThreadManager(GetSafeHwnd(), experimentSettings);;  // the class dealing with managing threads
 
@@ -241,10 +242,12 @@ CKaollaDoc* CKaollaView::GetDocument() const // non-debug version is inline
 CKaollaView * CKaollaView::GetView()
 {
 	CDocTemplate* pTemplate;
-	POSITION pos = pApp->GetFirstDocTemplatePosition();
+	CKaollaApp* pAppl = (CKaollaApp *)(AfxGetApp()->m_pMainWnd);
+
+	POSITION pos = pAppl->GetFirstDocTemplatePosition();
 	while (pos != NULL)
 	{
-		pTemplate = pApp->GetNextDocTemplate(pos);
+		pTemplate = pAppl->GetNextDocTemplate(pos);
 		ASSERT(pTemplate);
 
 		// iterate through template documents
@@ -288,28 +291,6 @@ void CKaollaView::DoEvents(void)
 	}
 }
 
-LRESULT CKaollaView::DebloqueMenu(WPARAM wParam, LPARAM lParam) // pretty useless, must centralize the experiment running flag
-{
-	m_mainDocument = CKaollaDoc::GetDocument();
-	pApp->menuIsAvailable = !m_mainDocument->experiment_running;
-
-	return 0;
-}
-
-LRESULT CKaollaView::MiseAJour(WPARAM wParam, LPARAM lParam)
-{
-	UpdateData(FALSE);
-
-	return 0;
-}
-
-LRESULT CKaollaView::UnlockStartButton(WPARAM wParam, LPARAM lParam)
-{
-	GetDlgItem(IDC_LANCER)->EnableWindow(TRUE);
-
-	return 0;
-}
-
 void CKaollaView::OnMsvAmpoule(void)
 {
 	ASSERT(0);
@@ -335,8 +316,12 @@ void CKaollaView::OnChangementBouteille()
 
 LRESULT CKaollaView::OnRegularThreadFinished(WPARAM, LPARAM) {
 
-	GetDocument()->experiment_running = FALSE;
-	DebloqueMenu(NULL, NULL);
+	pApp->experimentRunning = false;
+	pApp->menuIsAvailable = true;
+	UpdateButtons();
+
+	GetDlgItem(IDC_LANCER)->EnableWindow(TRUE);
+	GetDlgItem(IDC_ARRETER)->EnableWindow(FALSE);
 	
 	return 0;
 }
@@ -345,11 +330,9 @@ LRESULT CKaollaView::OnRegularThreadFinished(WPARAM, LPARAM) {
 LRESULT CKaollaView::Annuler(WPARAM, LPARAM)
 {
 	// Signal that this is the experiment end
-	m_mainDocument = CKaollaDoc::GetDocument();
-	m_mainDocument->experiment_running = FALSE;  // FALSE : expérience en cours
-
-												 // Unblock the menu
-	DebloqueMenu(NULL, NULL);
+	pApp->experimentRunning = false;
+	pApp->menuIsAvailable = true;
+	UpdateButtons();
 
 	GetDlgItem(IDC_LANCER)->EnableWindow(TRUE);
 	GetDlgItem(IDC_ARRETER)->EnableWindow(FALSE);

@@ -73,6 +73,8 @@ void Automation::Shutdown()
 		break;
 */
 	default:
+		//When thread finishes, let main window know to unlock menu
+		messageHandler.ExperimentEnd();
 		running = false;
 		//message.Format(_T("Arret non défini de %s\r\n"), etape);
 		break;
