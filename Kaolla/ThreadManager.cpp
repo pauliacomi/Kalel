@@ -21,7 +21,6 @@ Automation * automation;
 
 // Pointers for interfacing with the valves and temperature
 CVannes* pVanne;
-CTemperature* pTemperature;
 
 
 // Threads
@@ -40,7 +39,6 @@ ThreadManager::ThreadManager(LPVOID pParam, ExperimentSettings * expD)
 {
 	// Create the required objects. Might be better to be done in the manip directly
 	pVanne = new CVannes();
-	pTemperature = new CTemperature(GetPortTemperatures());
 
 	// Store the link to the experimental data
 	experimentSettings = expD;
@@ -56,7 +54,6 @@ ThreadManager::~ThreadManager()
 
 	// delete allocations
 	delete pVanne;
-	delete pTemperature;
 
 	// signal the thread to exit
 	ShutdownThread();
@@ -139,7 +136,6 @@ void ThreadManager::ThreadMainWorker()
 	// Create the class to deal with the automatic functionality
 	automation = new Automation;
 	automation->SetVannes(pVanne);
-	automation->SetTemperature(pTemperature);
 
 	// Set data
 	automation->SetDataPointer(experimentSettings);
@@ -212,7 +208,7 @@ void ThreadManager::ThreadManualAction()
 void ThreadManager::ChangementDev(int dev_vanne, int dev_temp)
 {
 	pVanne->SetDevNI_USB_6008(dev_vanne);
-	pTemperature->SetDevNI_USB_9211A(dev_temp);
+	//pTemperature->SetDevNI_USB_9211A(dev_temp);
 }
 
 
@@ -229,38 +225,6 @@ void ThreadManager::ChangementDev(int dev_vanne, int dev_temp)
 //
 //
 //////// below this line is the old implementation
-//
-////void InitialisationManip()
-////{
-////	//manip = CManip_AutoGaz();
-////	//manip.SetKaollaView(pKaollaView);
-////	//manip.SetVannes(pVanne);
-////	//manip.SetTemperature(pTemperature);
-////
-////	//manip.FermetureDeToutesLesVannes();
-////	//manip.FermerLesValvesEtLaPompe();
-////}
-//
-//void ChangementDev(int dev_vanne, int dev_temp)
-//{
-//	pVanne->SetDevNI_USB_6008(dev_vanne);
-//	pTemperature->SetDevNI_USB_9211A(dev_temp);
-//}
-//
-//
-//// --------- Functions to return experiment information -------
-//
-//int GetEtapeEnCours()
-//{
-//	return manip.etape_en_cours;
-//}
-//
-//
-//CString GetDonneesExperience()
-//{
-//	return manip.GetDonneesExperience();
-//}
-//
 //// --------- Thread start functions -------
 //
 //void ManualAction(LPVOID pParam)

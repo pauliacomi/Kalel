@@ -120,7 +120,7 @@ void CKaollaView::OnBnClickedReprise()
 
 
 // Copy all data from a property sheet dialog to the local object
-void CKaollaView::GetExperimentData(ExperimentPropertySheet * dialogExperimentProperties) {
+void CKaollaView::GetExperimentData(ExperimentPropertySheet * pDialogExperimentProperties) {
 
 	// Use a critical section to avoid data races
 	EnterCriticalSection(&experimentSettings->criticalSection);
@@ -129,17 +129,17 @@ void CKaollaView::GetExperimentData(ExperimentPropertySheet * dialogExperimentPr
 	experimentSettings->dataModified = true;
 
 	// Copy data accross
-	experimentSettings->dataGeneral = dialogExperimentProperties->m_general.allSettings;
+	experimentSettings->dataGeneral = pDialogExperimentProperties->m_general.allSettings;
 	if (experimentSettings->experimentType == EXPERIMENT_TYPE_AUTO)
 	{
-		experimentSettings->dataDivers = dialogExperimentProperties->m_divers.allSettings;
-		for (size_t i = 0; i < dialogExperimentProperties->adsorptionTabs.size(); i++)
+		experimentSettings->dataDivers = pDialogExperimentProperties->m_divers.allSettings;
+		for (size_t i = 0; i < pDialogExperimentProperties->adsorptionTabs.size(); i++)
 		{
-			experimentSettings->dataAdsorption.push_back(dialogExperimentProperties->adsorptionTabs[i]->allSettings);
+			experimentSettings->dataAdsorption.push_back(pDialogExperimentProperties->adsorptionTabs[i]->allSettings);
 		}
-		for (size_t i = 0; i < dialogExperimentProperties->desorptionTabs.size(); i++)
+		for (size_t i = 0; i < pDialogExperimentProperties->desorptionTabs.size(); i++)
 		{
-			experimentSettings->dataDesorption.push_back(dialogExperimentProperties->desorptionTabs[i]->allSettings);
+			experimentSettings->dataDesorption.push_back(pDialogExperimentProperties->desorptionTabs[i]->allSettings);
 		}
 	}
 

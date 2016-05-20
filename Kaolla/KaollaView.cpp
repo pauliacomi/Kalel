@@ -288,7 +288,7 @@ void CKaollaView::DoEvents(void)
 	}
 }
 
-LRESULT CKaollaView::DebloqueMenu(WPARAM wParam, LPARAM lParam) // pretty useless, must centralize the experiment running flag
+LRESULT CKaollaView::DebloqueMenu(WPARAM, LPARAM lParam) // pretty useless, must centralize the experiment running flag
 {
 	m_mainDocument = CKaollaDoc::GetDocument();
 	pApp->menuIsAvailable = !m_mainDocument->experiment_running;

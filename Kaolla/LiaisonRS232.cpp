@@ -59,19 +59,19 @@ LiaisonRS232::~LiaisonRS232()
 {
 }
 
-bool LiaisonRS232::OpenCOM(int nId)
+bool LiaisonRS232::OpenCOM(int pnId)
 {
 	char szCOM[5];
 
     /* construction du nom du port, tentative d'ouverture */
-    sprintf_s(szCOM, "COM%d", nId);
+    sprintf_s(szCOM, "COM%d", pnId);
 	
     g_hCOM = CreateFile(szCOM, GENERIC_READ|GENERIC_WRITE, 0, NULL,
                         OPEN_EXISTING, FILE_ATTRIBUTE_SYSTEM, NULL);
     if(g_hCOM == INVALID_HANDLE_VALUE)
 
     {
-        printf("Erreur lors de l'ouverture du port COM%d", nId);
+        printf("Erreur lors de l'ouverture du port COM%d", pnId);
         return FALSE;
     }
 
