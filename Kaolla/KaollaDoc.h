@@ -15,9 +15,6 @@ protected: // create from serialization only
 
 // Attributes
 public:	
-	bool experiment_running;	// TRUE when the experiment is running
-								// Allows to alert the user of possible loss of data
-
 	CArrayMesure m_TableauMesures;
 	CString TitreGrapheEtape;
 	double maxPressure, minPressure, maxCalo, minCalo;

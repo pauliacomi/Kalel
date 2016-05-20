@@ -148,15 +148,11 @@ BOOL MFCMessageHandler::DisplayMessageBox(int pParam, UINT nType, bool blocksPro
 
 void MFCMessageHandler::ExperimentStart()
 {
-	/*messageHandler.DisplayMessage(MESSAGE_FILLLINE);
-	messageHandler.DisplayMeasurement(MESSAGE_EXPSTART);*/
+	//messageHandler.DisplayMessage(MESSAGE_FILLLINE);
 }
 
 void MFCMessageHandler::ExperimentEnd()
 {
-	//// Unlock the menu
-	//messageHandler.UnlockMenu();
-	//// Enable start button
-	//messageHandler.EnableStartButton();
+	::PostMessage(windowHandle, WM_THREADFINISHEDREG, NULL, NULL);
 }
 

@@ -123,10 +123,10 @@ void CMainFrame::OnSysCommand(UINT nID, LPARAM lParam)
 {
 	if (nID == SC_CLOSE)
 	{
-		CKaollaDoc* pDoc = CKaollaDoc::GetDocument();
+		CKaollaApp* pApp = static_cast<CKaollaApp *>(AfxGetApp());
 		CKaollaView* pView = CKaollaView::GetView();
 
-		if (pDoc->experiment_running)
+		if (pApp->experimentRunning)
 		{
 			if (AfxMessageBox(PROMPT_RUNNINGEXP,
 				MB_YESNO | MB_ICONQUESTION, 0) == IDYES)

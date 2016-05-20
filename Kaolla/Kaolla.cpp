@@ -66,6 +66,8 @@ CKaollaApp::CKaollaApp()
 	SetAppID(_T("MADIREL.Kalel.1"));
 
 	// TODO: add construction code here,
+	menuIsAvailable = true;
+	experimentRunning = false;
 	// Place all significant initialization in InitInstance
 }
 
@@ -143,9 +145,6 @@ BOOL CKaollaApp::InitInstance()
 	// The one and only window has been initialized, so show and update it
 	m_pMainWnd->ShowWindow(SW_SHOW);
 	m_pMainWnd->UpdateWindow();
-
-	// To keep track of the availability of the menu
-	menuIsAvailable = TRUE;
 	
 	return TRUE;
 }

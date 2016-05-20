@@ -16,23 +16,6 @@
 // When clicking on the Launch button
 void CKaollaView::OnBnClickedLancer()
 {
-	// the start button is blocked
-	GetDlgItem(IDC_LANCER)->EnableWindow(FALSE);
-	// the stop button is activated
-	GetDlgItem(IDC_ARRETER)->EnableWindow(TRUE);
-
-	// set one flag to true
-	GetDocument()->experiment_running=TRUE;
-	
-	// set another flag to true
-	DebloqueMenu(NULL, NULL);
-
-	// Reset the graph
-	GetDocument()->GraphInitialize(NULL,NULL);
-
-	// Update the view (KaollaView)
-	GetDocument()->UpdateAllViews(this); 
-
 	// Create the experiment type window
 	CDialogue_TypeExperience * dialogExperimentType = new CDialogue_TypeExperience();
 	if (dialogExperimentType->DoModal() == IDOK)
@@ -55,6 +38,19 @@ void CKaollaView::OnBnClickedLancer()
 
 		if (dialogExperimentProperties->DoModal() == IDOK)
 		{
+			// the start button is blocked
+			GetDlgItem(IDC_LANCER)->EnableWindow(FALSE);
+			// the stop button is activated
+			GetDlgItem(IDC_ARRETER)->EnableWindow(TRUE);
+
+			// Block menu and set running flag
+			pApp->experimentRunning = true;
+			pApp->menuIsAvailable = false;
+			UpdateButtons();
+			
+			// Reset the graph
+			GetDocument()->GraphInitialize(NULL, NULL);
+
 			// Get the data from the dialog
 			GetExperimentData(dialogExperimentProperties);
 
@@ -79,12 +75,15 @@ void CKaollaView::OnBnClickedArreter()
 // Clicking the other buttons in the view
 void CKaollaView::OnBnClickedButtonParametresExperience()
 {
-	dialogExperimentProperties->SetProprietiesModif(experimentData.experimentStage);
+	if (pApp->experimentRunning) {
 
-	if (dialogExperimentProperties->DoModal() == IDOK)
-	{
-		// Get the data from the dialog
-		GetExperimentData(dialogExperimentProperties);
+		dialogExperimentProperties->SetProprietiesModif(experimentData.experimentStage);
+
+		if (dialogExperimentProperties->DoModal() == IDOK)
+		{
+			// Get the data from the dialog
+			GetExperimentData(dialogExperimentProperties);
+		}
 	}
 }
 
@@ -146,4 +145,17 @@ void CKaollaView::GetExperimentData(ExperimentPropertySheet * dialogExperimentPr
 	// Leave the critical section
 	LeaveCriticalSection(&experimentSettings->criticalSection);
 
+}
+
+void CKaollaView::UpdateButtons() {
+
+	bool eRun = !pApp->menuIsAvailable;
+
+	GetDlgItem(IDC_PROCHAINE_COMMANDE)->EnableWindow(eRun);
+	GetDlgItem(IDC_PROCHAINE_DOSE)->EnableWindow(eRun);
+	GetDlgItem(IDC_PROCHAINE_ETAPE)->EnableWindow(eRun);
+	GetDlgItem(IDC_ARRET_SOUS_VIDE)->EnableWindow(eRun);
+	GetDlgItem(IDC_BUTTON_PARAMETRES_EXPERIENCE)->EnableWindow(eRun);
+	GetDlgItem(IDC_REPRISE)->EnableWindow(eRun);
+	GetDlgItem(IDC_PAUSE)->EnableWindow(eRun);
 }

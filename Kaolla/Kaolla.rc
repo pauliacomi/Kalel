@@ -157,7 +157,7 @@ BEGIN
     EDITTEXT        IDC_TEMPS,58,230,52,14,ES_RIGHT | ES_AUTOHSCROLL
     PUSHBUTTON      "Lancer",IDC_LANCER,19,17,50,14
     PUSHBUTTON      "Arrêter",IDC_ARRETER,89,17,50,14
-    PUSHBUTTON      "Paramètres",IDC_BUTTON_PARAMETRES_EXPERIENCE,325,17,50,14
+    PUSHBUTTON      "Paramètres",IDC_BUTTON_PARAMETRES_EXPERIENCE,316,17,55,14
     LTEXT           "Etape : ",IDC_STATIC,16,325,22,14,SS_CENTERIMAGE
     EDITTEXT        IDC_EDIT_ETAPE,50,325,335,22,ES_MULTILINE | ES_AUTOHSCROLL,WS_EX_LEFTSCROLLBAR
     LTEXT           "Pression Initiale",IDC_STATIC,14,258,51,14,SS_CENTERIMAGE
@@ -293,6 +293,17 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 //
+// AFX_DIALOG_LAYOUT
+//
+
+IDD_KAOLLA_FORM AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
 // String Table
 //
 
@@ -409,6 +420,10 @@ END
 STRINGTABLE
 BEGIN
     ID_PARAMETRES_APPAREIL  "Apparatus Parameters"
+END
+
+STRINGTABLE
+BEGIN
     ID_PARAMATRES_APPAREIL  "Modify The Apparatus Parameters"
     ID_CONNECTION_PORTS     "Modify the connection of the USB et RS232 Ports"
 END

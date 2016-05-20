@@ -33,7 +33,6 @@ END_MESSAGE_MAP()
 CKaollaDoc::CKaollaDoc()
 {
 	TitreGrapheEtape = _T("");
-	experiment_running = FALSE;
 	GraphInitialize(NULL, NULL);
 }
 
