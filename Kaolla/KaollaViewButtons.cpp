@@ -17,11 +17,11 @@
 void CKaollaView::OnBnClickedLancer()
 {
 	// Create the experiment type window
-	CDialogue_TypeExperience * dialogExperimentType = new CDialogue_TypeExperience();
-	if (dialogExperimentType->DoModal() == IDOK)
+	CDialogue_TypeExperience dialogExperimentType;
+	if (dialogExperimentType.DoModal() == IDOK)
 	{
 		// Save user choice
-		experimentSettings->experimentType = dialogExperimentType->TypeExperience;
+		experimentSettings->experimentType = dialogExperimentType.TypeExperience;
 		
 		// Instantiate the correct type of dialog
 		switch (experimentSettings->experimentType)
