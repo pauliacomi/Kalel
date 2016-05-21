@@ -109,6 +109,7 @@ HRESULT ThreadManager::ShutdownThread()
 
 		// Delete thread
 		delete m_threadMainControlLoop;
+		delete automation;
 
 		// NULL out pointer
 		m_threadMainControlLoop = NULL;

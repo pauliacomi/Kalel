@@ -124,6 +124,7 @@ CKaollaView::~CKaollaView()
 {
 	delete threadManager;
 	delete experimentSettings;
+	delete dialogExperimentProperties;
 }
 
 // Liaising between variables and controls
