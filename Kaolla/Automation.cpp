@@ -13,13 +13,7 @@ Automation::Automation()
 
 Automation::~Automation()
 {
-	// Delete instruments
-	for (int i = 0; i < NB_OF_INSTRUMENTS; i++) {
-		delete instrument[i];
-	}
-
-	// Delete temperature class
-	delete g_pTemperature;
+	DeInitialise();
 }
 
 
@@ -97,16 +91,18 @@ void Automation::Execution()
 		if (checking)
 		{
 			// Switch to see if the thread is still inactive
-			HANDLE objects[3];
+			HANDLE objects[4];
 			objects[0] = h_eventShutdown;
 			objects[1] = h_eventPause;
 			objects[2] = h_eventResume;
+			objects[3] = h_eventReset;
 
-			switch (::WaitForMultipleObjects(3, objects, FALSE, T_BETWEEN_MEASURE)) // (ms) Poll time
+			switch (::WaitForMultipleObjects(4, objects, FALSE, T_BETWEEN_MEASURE)) // (ms) Poll time
 			{
 
-			case WAIT_OBJECT_0:
-				Shutdown();
+			case WAIT_OBJECT_0:					// Complete stop of thread, might need extra things
+				running = false;
+				::ResetEvent(h_eventShutdown);	// Reset the event
 				break;
 
 			case WAIT_OBJECT_0 + 1:
@@ -137,6 +133,11 @@ void Automation::Execution()
 				::ResetEvent(h_eventResume);	// Reset the event
 				break;
 
+			case WAIT_OBJECT_0 + 3:
+				Shutdown();
+				::ResetEvent(h_eventReset);	// Reset the event
+				break;
+
 			case WAIT_TIMEOUT:
 				break;
 
@@ -146,8 +147,6 @@ void Automation::Execution()
 			}
 		}
 	}
-
-	FinishExperiment(false);
 }
 
 
@@ -158,6 +157,7 @@ bool Automation::ExecutionManual()
 		// Send start messages
 		messageHandler.DisplayMessage(MESSAGE_FILLLINE);
 		messageHandler.DisplayMessage(MESSAGE_EXPSTART);
+		messageHandler.ExperimentStart();
 
 		// Record start
 		experimentLocalData.experimentInProgress = true;
@@ -180,6 +180,8 @@ bool Automation::ExecutionManual()
 
 	return true;
 }
+
+
 
 bool Automation::ExecutionAuto()
 {
@@ -213,6 +215,11 @@ bool Automation::ExecutionAuto()
 	case STAGE_CONTINUOUS_ADSORPTION:
 		break;
 	case STAGE_END_AUTOMATIC:
+
+		// If the experiment has finished
+		shutdownReason = STOP_NORMAL;	// set a normal shutdown
+		::SetEvent(h_eventReset);	// end then set the event
+
 		break;
 	default:
 		ASSERT(0); // Error
@@ -258,9 +265,13 @@ void Automation::Initialisation()
 	h_eventShutdown = CreateEvent(NULL, TRUE, FALSE, NULL);
 	h_eventResume = CreateEvent(NULL, TRUE, FALSE, NULL);
 	h_eventPause = CreateEvent(NULL, TRUE, FALSE, NULL);
+	h_eventReset = CreateEvent(NULL, TRUE, FALSE, NULL);
 
 	// Put the thread in a paused state
 	experimentLocalData.experimentRecording = false;
+	// If the shutdown event is called externally, it will default to a cancel
+	// Otherwise the flag will be changed from inside the code
+	shutdownReason = STOP_CANCEL;
 }
 
 
@@ -407,40 +418,31 @@ void Automation::InstrumentsClose()
 }
 
 // Function which makes sure everything is cancelled
-void Automation::FinishExperiment(bool premature)
+void Automation::DeInitialise()
 {
+	// Close valves/pump
+	ControlMechanismsCloseAll();
+
+	// Close instruments
+	InstrumentsClose();
+
 	// Destroy the events
 	CloseHandle(h_MeasurementThreadStartEvent);
 	CloseHandle(h_eventShutdown);
 	CloseHandle(h_eventResume);
 	CloseHandle(h_eventPause);
+	CloseHandle(h_eventReset);
 	
 	// Destroy the critical sections
 	DeleteCriticalSection(&criticalSection);
 
-	// Close instruments
-	InstrumentsClose();
-
-	// Close valves/pump
-	ControlMechanismsCloseAll();
-
-	// Close measurement file
-	FileMeasurementClose();
-
-	if (premature) {
-		// Experiment has been cancelled
-		messageHandler.DisplayMessage(MESSAGE_EXPCANCEL);
-	}
-	else {
-		// Experiment has been finished normally
-		messageHandler.DisplayMessage(MESSAGE_EXPFINISH);
+	// Delete instruments
+	for (int i = 0; i < NB_OF_INSTRUMENTS; i++) {
+		delete instrument[i];
 	}
 
-	// Unlock the menu
-	messageHandler.UnlockMenu();
-
-	// Enable start button
-	messageHandler.EnableStartButton();
+	// Delete temperature class
+	delete g_pTemperature;
 }
 
 

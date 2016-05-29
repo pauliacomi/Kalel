@@ -27,16 +27,11 @@ public:
 	BOOL SetHandle(HWND h);
 
 	// PostMessage functions
-
 	void ExperimentStart();
 	void ExperimentEnd();
-	BOOL UnlockMenu();
-	BOOL EnableStartButton();
-	BOOL CancelExperiment();
+	void GraphReset();
 	BOOL ExchangeData(ExperimentData pParam);
-
 	BOOL DisplayMessage(int pParam, int pInt1 = default_val, int pInt2 = default_val, double pDouble = default_val);								// Simple display message which takes an int
-	BOOL DisplayAddMessage(int pParam);
 
 	// Messageboxes
 	BOOL DisplayMessageBox(int message, UINT nType, bool blocksProgram, double pDouble1 = default_val, double pDouble2 = default_val);

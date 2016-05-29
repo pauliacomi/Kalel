@@ -13,6 +13,7 @@ CChrono::~CChrono(void)
 void CChrono::TopChrono()
 {
 	started = true;
+	paused = false;
 	QueryPerformanceFrequency(&freq);
 	QueryPerformanceCounter(&start);
 	temps = 0.f;

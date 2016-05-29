@@ -25,45 +25,7 @@ BOOL MFCMessageHandler::SetHandle(HWND h)
 }
 
 
-BOOL MFCMessageHandler::CancelExperiment()
-{
-	// Post the required message
-	::PostMessage(windowHandle, WM_CANCELEXPERIMENT, NULL, NULL);
-
-	return 0;
-}
-
-
-BOOL MFCMessageHandler::UnlockMenu()
-{
-	// Post the required message
-	::PostMessage(windowHandle, WM_UNLOCKMENU, NULL, NULL);
-
-	return 0;
-}
-
-BOOL MFCMessageHandler::EnableStartButton()
-{
-	// Post the required message
-	::PostMessage(windowHandle, WM_ENABLESTARTBUTTON, NULL, NULL);
-
-	return 0;
-}
-
-
-
-
-BOOL MFCMessageHandler::DisplayAddMessage(int pParam)
-{
-	// Post the required message
-	::PostMessage(windowHandle, WM_DISPLAYADDMESSAGE, NULL, NULL);
-
-	return 0;
-}
-
-
-
-///////////////////////////////////////////////////////////////////////////////////////////////
+// Functions for sending messages below
 
 
 BOOL MFCMessageHandler::ExchangeData(ExperimentData pParam)
@@ -148,7 +110,7 @@ BOOL MFCMessageHandler::DisplayMessageBox(int pParam, UINT nType, bool blocksPro
 
 void MFCMessageHandler::ExperimentStart()
 {
-	//messageHandler.DisplayMessage(MESSAGE_FILLLINE);
+	GraphReset();
 }
 
 void MFCMessageHandler::ExperimentEnd()
@@ -156,3 +118,7 @@ void MFCMessageHandler::ExperimentEnd()
 	::PostMessage(windowHandle, WM_THREADFINISHEDREG, NULL, NULL);
 }
 
+void MFCMessageHandler::GraphReset() 
+{
+	::PostMessage(windowHandle, WM_GRAPHRESET, NULL, NULL);
+}

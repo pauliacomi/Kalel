@@ -68,7 +68,7 @@ void CKaollaView::OnBnClickedLancer()
 // When clicking on the Stop button
 void CKaollaView::OnBnClickedArreter()
 {
-	threadManager->ShutdownThread();
+	threadManager->ResetThread();
 }
 
 

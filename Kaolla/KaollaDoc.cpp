@@ -196,6 +196,17 @@ bool CKaollaDoc::GraphAddMeasurement(ExperimentData expData)
 	return result;
 }
 
+
+LRESULT CKaollaDoc::GraphReset(WPARAM , LPARAM ) {
+	
+	m_TableauMesures.RemoveAll();
+	TempsMinimum = NULL;
+	MesureMinimum = NULL;
+	NumeroEtape = NULL;
+
+	return 0;
+}
+
 /*void CManip::DonneesManuelleGrapheEtape()
 {
 int nb_heures = 2;

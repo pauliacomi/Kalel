@@ -85,6 +85,7 @@ public:
 	HANDLE h_eventShutdown;								// Handle event shutting down the thread
 	HANDLE h_eventResume;								// Handle event resuming the thread
 	HANDLE h_eventPause;								// Handle event pausing the thread
+	HANDLE h_eventReset;								// Handle event resetting the thread for a new experiment
 
 	// Threads
 	HANDLE h_MeasurementThread[4];						// Threads for measurement
@@ -150,7 +151,7 @@ private:
 	//------------------------------------------------------------
 
 	void InstrumentsClose();
-	void FinishExperiment(bool premature);
+	void DeInitialise();
 
 
 /**********************************************************************************************************************************
@@ -284,11 +285,8 @@ protected:
 	// Functions for shutdown checks
 	***********************************************************************************************************************************/
 
-	int TemperatureStop();
-
 	void Shutdown();
 
-	void Pause();
 
 	/**********************************************************************************************************************************
 	// Steps

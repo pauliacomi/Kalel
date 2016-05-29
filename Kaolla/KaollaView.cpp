@@ -32,9 +32,10 @@ BEGIN_MESSAGE_MAP(CKaollaView, CFormView)
 	ON_MESSAGE(WM_DISPLAYMESSAGE, &CKaollaView::AffichageMessages)					// Displays a message from the automation thread 
 	ON_MESSAGE(WM_DISPLAYMESSAGEBOX, &CKaollaView::MessageBoxAlert)					// Displays an messageBOX to alert user of something
 	ON_MESSAGE(WM_DISPLAYMESSAGEBOXCONF, &CKaollaView::MessageBoxConfirmation)		// Displays an messageBOX to or ask user for confirmation
+	//ON_MESSAGE(WM_GRAPHRESET, &CKaollaDoc::GraphReset)
 
 	// Messages from the manip class
-	//ON_MESSAGE(WM_GRAPHRESET, &CKaollaDoc::InitializeGraph)
+
 	//ON_MESSAGE(WM_GRAPHADDMESUREMENT, &CKaollaDoc::GraphAddMeasurement)
 	//ON_MESSAGE(WM_GRAPHSETTITLE, &CKaollaDoc::GraphSetTitle)
 	//ON_MESSAGE(WM_GRAPHDATAAUTOSTEP, &CKaollaDoc::Graph)

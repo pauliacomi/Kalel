@@ -67,8 +67,16 @@ HRESULT ThreadManager::StartThread() {
 
 	HRESULT hr = S_OK;
 
-	// Signal the thread to resume
-	::SetEvent(automation->h_eventResume);
+	// Check if the thread exists
+	if (NULL != m_threadMainControlLoop)
+	{
+		// Signal the thread to start
+		::SetEvent(automation->h_eventResume);
+	}
+	else
+	{
+		hr = S_FALSE;
+	}
 
 	return hr;
 }
@@ -77,11 +85,39 @@ HRESULT ThreadManager::PauseThread() {
 
 	HRESULT hr = S_OK;
 
-	// Signal the thread to resume
-	::SetEvent(automation->h_eventPause);
+	// Check if the thread exists
+	if (NULL != m_threadMainControlLoop)
+	{
+		// Signal the thread to resume
+		::SetEvent(automation->h_eventPause);
+	}
+	else
+	{
+		hr = S_FALSE;
+	}
 
 	return hr;
 }
+
+
+HRESULT ThreadManager::ResetThread()
+{
+	HRESULT hr = S_OK;
+
+	// Check if the thread exists
+	if (NULL != m_threadMainControlLoop)
+	{
+		// Signal the thread to reset
+		::SetEvent(automation->h_eventReset);
+	}
+	else
+	{
+		hr = S_FALSE;
+	}
+
+	return hr;
+}
+
 
 // ShutdownThread function will check if thread is running and then send it the shutdown command
 // If the thread does not quit in a short time it will be forcefully closed. Check if this is an error when using the function.

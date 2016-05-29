@@ -64,6 +64,10 @@
 #define STOP_EMERGENCY_TCB	509
 #define STOP_COMMAND		510
 
+#define STOP_UNDEF			511
+#define STOP_NORMAL			512
+#define STOP_CANCEL			513
+
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED

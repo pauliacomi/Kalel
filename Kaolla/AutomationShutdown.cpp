@@ -3,37 +3,63 @@
 
 
 
-int Automation::TemperatureStop() {
-//	if (g_flagState == ARRET_ETAPE) { ShutdownDisplay(); g_flagState = INACTIF; return 0; }
-//	if (g_flagState == ARRET_IMMEDIAT) { ShutdownDisplay(); return 0; }
-//	if (g_flagState == ARRET_SOUSVIDE) { ShutdownDisplay(); return 0; }
-//	if (g_flagState == ARRET_URGENCE_HP) { ShutdownDisplay(); return 0; }
-//	if (g_flagState == ARRET_URGENCE_TCH) { ShutdownDisplay(); return 0; }
-//	if (g_flagState == ARRET_URGENCE_TCB) { ShutdownDisplay(); return 0; }
-//	Pause();
-	return 0;
-}
-
 void Automation::Shutdown()
 {
-	//CString etape, message;
-	//if (demande_arret != INACTIF) // Alors écriture dans editMessage pour prévenir d'un arret
-	//{
-	//	int i;
-	//	for (i = 0; i<nb_etape; i++)
-	//	{
-	//		if (etape_en_cours == ListeEtape[i].Index)
-	//		{
-	//			etape = ListeEtape[i].Nom;
-	//			break;
-	//		}
-	//	}
-
-	//	if (i == nb_etape)
-	//		etape = _T("non définie");
-
 	switch (shutdownReason)
 	{
+
+	case STOP_CANCEL:		// This option is used if the experiment is cancelled
+							// It then resets everything
+
+		//messageHandler.DisplayMessageBox(PROMPT_CANCELEXP, MB_ICONQUESTION | MB_OKCANCEL, true);
+		//::SetEvent(h_eventPause);
+
+		//When thread finishes, let main window know to unlock menu
+		messageHandler.ExperimentEnd();
+
+		// Close measurement file
+		FileMeasurementClose();
+
+		// Stop all timers 
+		timerExperiment.ArretTemps();
+		timerMeasurement.ArretTemps();
+		timerWaiting.ArretTemps();
+
+		// Reset all data from the experiment
+		experimentLocalData.ResetData();
+
+		// Experiment has been cancelled
+		messageHandler.DisplayMessage(MESSAGE_EXPCANCEL);
+
+		break;
+
+	case STOP_NORMAL:		// This option is used if the experiment finishes correctly
+							// It then resets everything
+
+		//When thread finishes, let main window know to unlock menu
+		messageHandler.ExperimentEnd();
+
+		// Close measurement file
+		FileMeasurementClose();
+
+		// Stop all timers 
+		timerExperiment.ArretTemps();
+		timerMeasurement.ArretTemps();
+		timerWaiting.ArretTemps();
+
+		// Reset all data from the experiment
+		experimentLocalData.ResetData();
+
+		// Experiment has been finished normally
+		messageHandler.DisplayMessage(MESSAGE_EXPFINISH);
+
+		break;
+
+	default:
+		ASSERT(0);		// Error, should never be reached
+		break;
+	}
+
 	/*case ARRET_IMMEDIAT:
 	case ARRET_SOUSVIDE:
 		if (etape_perturbe != etape_en_cours)
@@ -72,14 +98,6 @@ void Automation::Shutdown()
 		}
 		break;
 */
-	default:
-		//When thread finishes, let main window know to unlock menu
-		messageHandler.ExperimentEnd();
-		running = false;
-		//message.Format(_T("Arret non défini de %s\r\n"), etape);
-		break;
-	}
-
 	//	// Emmettre un son peut-être
 	//	messageHandler.DisplayMessage(message);
 	//}

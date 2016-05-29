@@ -20,6 +20,7 @@ public:
 public:
 	HRESULT StartThread();
 	HRESULT PauseThread();
+	HRESULT ResetThread();
 	HRESULT ShutdownThread();
 
 	void ChangementDev(int dev_vanne, int dev_temp);
