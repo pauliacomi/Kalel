@@ -3,20 +3,18 @@
 
 #include "stdafx.h"
 #include "Kaolla.h"
-#include "Parametres_appareil.h"
+#include "ApparatusParameters.h"
 
 #include "Parametres.h"
 
 
 
-using namespace std;
+// Boîte de dialogue ApparatusParameters
 
-// Boîte de dialogue CParametres_appareil
+IMPLEMENT_DYNAMIC(ApparatusParameters, CDialog)
 
-IMPLEMENT_DYNAMIC(CParametres_appareil, CDialog)
-
-CParametres_appareil::CParametres_appareil(CWnd* pParent /*=NULL*/)
-	: CDialog(CParametres_appareil::IDD, pParent)
+ApparatusParameters::ApparatusParameters(CWnd* pParent /*=NULL*/)
+	: CDialog(ApparatusParameters::IDD, pParent)
 	, Fichier_parametres(_T("./Parametres.ini"))
 	, m_StrNomCalo(_T(""))
 	, m_StrEnteteFichier(_T(""))
@@ -37,16 +35,16 @@ CParametres_appareil::CParametres_appareil(CWnd* pParent /*=NULL*/)
 	m_fVolumeP6 = GetVolumeP6();
 }
 
-CParametres_appareil::~CParametres_appareil()
+ApparatusParameters::~ApparatusParameters()
 {
 }
 
-BOOL CParametres_appareil::OnCommand(WPARAM wParam, LPARAM lParam)
+BOOL ApparatusParameters::OnCommand(WPARAM wParam, LPARAM lParam)
 {
 	return CDialog::OnCommand(wParam, lParam);
 }
 
-void CParametres_appareil::DoDataExchange(CDataExchange* pDX)
+void ApparatusParameters::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
 
@@ -82,20 +80,14 @@ void CParametres_appareil::DoDataExchange(CDataExchange* pDX)
 }
 
 
-BEGIN_MESSAGE_MAP(CParametres_appareil, CDialog)
-	ON_BN_CLICKED(IDOK, &CParametres_appareil::OnBnClickedOk)
-	ON_BN_CLICKED(IDCANCEL, &CParametres_appareil::OnBnClickedCancel)
-END_MESSAGE_MAP()
-
-
-BOOL CParametres_appareil::Create(LPCTSTR lpszTemplateName, CWnd* pParentWnd)
+BOOL ApparatusParameters::Create(LPCTSTR lpszTemplateName, CWnd* pParentWnd)
 {
 	return CDialog::Create(lpszTemplateName, pParentWnd);
 }
 
-// Gestionnaires de messages de CParametres_appareil
+// Gestionnaires de messages de ApparatusParameters
 
-BOOL CParametres_appareil::OnInitDialog()
+BOOL ApparatusParameters::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
@@ -156,7 +148,14 @@ BOOL CParametres_appareil::OnInitDialog()
 }
 
 
-void CParametres_appareil::OnBnClickedOk()
+
+BEGIN_MESSAGE_MAP(ApparatusParameters, CDialog)
+	ON_BN_CLICKED(IDOK, &ApparatusParameters::OnBnClickedOk)
+	ON_BN_CLICKED(IDCANCEL, &ApparatusParameters::OnBnClickedCancel)
+END_MESSAGE_MAP()
+
+
+void ApparatusParameters::OnBnClickedOk()
 {
 	UpdateData(TRUE);
 
@@ -176,7 +175,7 @@ void CParametres_appareil::OnBnClickedOk()
 	OnOK();
 }
 
-void CParametres_appareil::OnBnClickedCancel()
+void ApparatusParameters::OnBnClickedCancel()
 {
 	OnCancel();
 }

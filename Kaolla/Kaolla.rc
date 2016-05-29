@@ -201,15 +201,6 @@ BEGIN
     LTEXT           "TODO: layout dialog bar",IDC_STATIC,126,4,77,8
 END
 
-IDD_DONNEES_EXPERIENCE DIALOGEX 0, 0, 320, 291
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Données de l'expérience"
-FONT 8, "MS Shell Dlg", 0, 0, 0x0
-BEGIN
-    DEFPUSHBUTTON   "OK",IDOK,263,270,50,14
-    EDITTEXT        IDC_EDIT_DONNEES_EXPERIENCE,27,28,264,223,ES_MULTILINE | ES_AUTOHSCROLL | ES_READONLY | ES_WANTRETURN | WS_VSCROLL
-END
-
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -280,12 +271,6 @@ BEGIN
         RIGHTMARGIN, 323
         TOPMARGIN, 7
         BOTTOMMARGIN, 9
-    END
-
-    IDD_DONNEES_EXPERIENCE, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        TOPMARGIN, 7
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -513,10 +498,6 @@ BEGIN
     BEGIN
         MENUITEM "Paramètres de l'&Appareil",   ID_PARAMATRES_APPAREIL
         MENUITEM "Connection des &Ports",       ID_CONNECTION_PORTS
-    END
-    POPUP "E&xpérience"
-    BEGIN
-        MENUITEM "&Données",                    ID_DONNEES_EXPERIENCE
     END
     POPUP "F&onctionnalités"
     BEGIN

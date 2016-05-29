@@ -14,9 +14,8 @@
 #include "ThreadManager.h"
 
 // Dialog Box includes
-#include "Parametres_appareil.h"
+#include "ApparatusParameters.h"
 #include "Connection_port.h"
-#include "Donnees_Experience.h"
 
 
 #ifdef _DEBUG
@@ -34,7 +33,6 @@ BEGIN_MESSAGE_MAP(CKaollaApp, CWinApp)
 	// New menu based commands
 	ON_COMMAND(ID_PARAMATRES_APPAREIL, &CKaollaApp::OnParamatresAppareil)
 	ON_COMMAND(ID_CONNECTION_PORTS, &CKaollaApp::OnConnectionPorts)
-	ON_COMMAND(ID_DONNEES_EXPERIENCE, &CKaollaApp::OnDonneesExperience)
 	ON_COMMAND(ID_MSV_AMPOULE, &CKaollaView::OnMsvAmpoule)
 	ON_COMMAND(ID_MSV_BOUTEILLE, &CKaollaView::OnMsvBouteille)
 	ON_COMMAND(ID_CHANGEMENT_BOUTEILLE, &CKaollaView::OnChangementBouteille)
@@ -207,24 +205,15 @@ void CKaollaApp::OnAppAbout()
 
 void CKaollaApp::OnParamatresAppareil()
 {
-	CParametres_appareil m_parametres_appareil;
-	m_parametres_appareil.DoModal();
+	ApparatusParameters apparatusParameters;
+	apparatusParameters.DoModal();
 }
 
 void CKaollaApp::OnConnectionPorts()
 {
 	CConnection_port m_connection_ports;
 	m_connection_ports.DoModal();
-	ASSERT(0);
 	//ChangementDev(GetPortVannes(), GetPortTemperatures());
-}
-
-void CKaollaApp::OnDonneesExperience()
-{
-	CDonnees_Experience m_donnees_experience;
-	ASSERT(0);
-	//m_donnees_experience.SetStrDonneesExperience(GetDonneesExperience());
-	m_donnees_experience.DoModal();
 }
 
 

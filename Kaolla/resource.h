@@ -4,7 +4,6 @@
 //
 #define IDD_ABOUTBOX                    100
 #define IDP_OLE_INIT_FAILED             101
-#define IDD_DONNEES_EXPERIENCE          102
 #define IDD_KAOLLA_FORM                 103
 #define IDD_DIALOGBAR                   104
 #define IDR_MAINFRAME                   128
@@ -50,7 +49,6 @@
 #define IDC_AJOUTER                     1041
 #define IDC_BUTTON_PARAMETRES_EXPERIENCE 1042
 #define IDC_EDIT_ETAPE                  1043
-#define IDC_EDIT_DONNEES_EXPERIENCE     1044
 #define IDC_PRESSION_INITIALE           1045
 #define IDC_PRESSION_FINALE             1046
 #define IDC_TEMOIN_VANNE1               1047

@@ -219,7 +219,6 @@
     <ClInclude Include="DialogUser.h" />
     <ClInclude Include="DialogGas.h" />
     <ClInclude Include="Dialogue_TypeExperience.h" />
-    <ClInclude Include="Donnees_Experience.h" />
     <ClInclude Include="GrapheView.h" />
     <ClInclude Include="InfoEtape.h" />
     <ClInclude Include="Instrument.h" />
@@ -242,7 +241,7 @@
     <ClInclude Include="NI_USB_6008.h" />
     <ClInclude Include="NI_USB_9211A.h" />
     <ClInclude Include="Parametres.h" />
-    <ClInclude Include="Parametres_appareil.h" />
+    <ClInclude Include="ApparatusParameters.h" />
     <ClInclude Include="Parametres_experience.h" />
     <ClInclude Include="ParserXML.h" />
     <ClInclude Include="Resource.h" />
@@ -315,7 +314,6 @@
     <ClCompile Include="DialogUser.cpp" />
     <ClCompile Include="DialogGas.cpp" />
     <ClCompile Include="Dialogue_TypeExperience.cpp" />
-    <ClCompile Include="Donnees_Experience.cpp" />
     <ClCompile Include="GrapheView.cpp" />
     <ClCompile Include="InfoEtape.cpp" />
     <ClCompile Include="Instrument.cpp" />
@@ -476,7 +474,7 @@
     <ClCompile Include="NI_USB_6008.cpp" />
     <ClCompile Include="NI_USB_9211A.cpp" />
     <ClCompile Include="Parametres.cpp" />
-    <ClCompile Include="Parametres_appareil.cpp" />
+    <ClCompile Include="ApparatusParameters.cpp" />
     <ClCompile Include="Parametres_experience.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>

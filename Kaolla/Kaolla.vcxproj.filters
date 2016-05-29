@@ -255,12 +255,6 @@
     <ClInclude Include="Dialogue_TypeExperience.h">
       <Filter>Header Files\GUI\Dialogs</Filter>
     </ClInclude>
-    <ClInclude Include="Donnees_Experience.h">
-      <Filter>Header Files\GUI\Dialogs</Filter>
-    </ClInclude>
-    <ClInclude Include="Parametres_appareil.h">
-      <Filter>Header Files\GUI\Dialogs</Filter>
-    </ClInclude>
     <ClInclude Include="CDesorption.h">
       <Filter>Header Files\Old\Tabs</Filter>
     </ClInclude>
@@ -377,6 +371,9 @@
     </ClInclude>
     <ClInclude Include="DialogCell.h">
       <Filter>Header Files\GUI\Dialogs\Experimental Parameters\Stored Parameters</Filter>
+    </ClInclude>
+    <ClInclude Include="ApparatusParameters.h">
+      <Filter>Header Files\GUI\Dialogs</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -545,12 +542,6 @@
     <ClCompile Include="Dialogue_TypeExperience.cpp">
       <Filter>Source Files\GUI\Dialogs</Filter>
     </ClCompile>
-    <ClCompile Include="Donnees_Experience.cpp">
-      <Filter>Source Files\GUI\Dialogs</Filter>
-    </ClCompile>
-    <ClCompile Include="Parametres_appareil.cpp">
-      <Filter>Source Files\GUI\Dialogs</Filter>
-    </ClCompile>
     <ClCompile Include="Connection_port.cpp">
       <Filter>Source Files\GUI\Dialogs\Connection Port</Filter>
     </ClCompile>
@@ -691,6 +682,9 @@
     </ClCompile>
     <ClCompile Include="AutomationVacuum.cpp">
       <Filter>Source Files\Automation\Class</Filter>
+    </ClCompile>
+    <ClCompile Include="ApparatusParameters.cpp">
+      <Filter>Source Files\GUI\Dialogs</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
