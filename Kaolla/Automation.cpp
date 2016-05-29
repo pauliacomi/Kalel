@@ -39,6 +39,13 @@ void Automation::Execution()
 			case EXPERIMENT_TYPE_AUTO:							// in case it is automatic
 				ExecutionAuto();								// run the automatic loop
 				break;
+			case EXPERIMENT_TYPE_SAMPLE_VACUUM:					// in case we want to vacuum up to the sample
+				SampleVacuum();									// run the functionality
+				break;
+			case EXPERIMENT_TYPE_BOTTLE_VACUUM:					// in case we want to vacuum up to the bottle
+				BottleVacuum();									// run the functionality
+				break;
+
 			case EXPERIMENT_TYPE_UNDEF:							// in case no experiment has been set yet
 				break;											// just continue
 			default:

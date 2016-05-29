@@ -279,6 +279,7 @@
     <ClCompile Include="AutomationShutdown.cpp" />
     <ClCompile Include="AutomationSteps.cpp" />
     <ClCompile Include="AutomationTimeKeeping.cpp" />
+    <ClCompile Include="AutomationVacuum.cpp" />
     <ClCompile Include="AutomationValves.cpp" />
     <ClCompile Include="CAdsorptionContinue.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>

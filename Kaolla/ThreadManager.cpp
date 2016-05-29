@@ -30,14 +30,14 @@ ThreadManager::ThreadManager(ExperimentSettings * expD)
 
 ThreadManager::~ThreadManager()
 {
+	// signal the thread to exit
+	ShutdownThread();
+
 	// close all valves
 	pVanne->FermerToutesLesVannes();
 
 	// delete allocations
 	delete pVanne;
-
-	// signal the thread to exit
-	ShutdownThread();
 }
 
 
@@ -173,7 +173,7 @@ void ThreadManager::ThreadMainWorker()
 {
 	// Create the class to deal with the automatic functionality
 	automation = new Automation;
-	automation->SetVannes(pVanne);
+	automation->SetVannes(pVanne);			// !not sure i like this tbh. does this make the vanne object common between threads?
 
 	// Set data
 	automation->SetDataPointer(experimentSettings);
@@ -252,61 +252,3 @@ void ThreadManager::ChangementDev(int dev_vanne, int dev_temp)
 	pVanne->SetDevNI_USB_6008(dev_vanne);
 	//pTemperature->SetDevNI_USB_9211A(dev_temp);
 }
-
-
-// ----------------------- END -----------------------
-// ----------------------- END -----------------------
-
-
-
-
-
-
-
-
-
-///// -----------------Threads------------------
-//
-//UINT ThreadManualAction(LPVOID pParam)													//return manualManip.EstOuvert_Vanne(num_vanne); <- these were returned as well in the same functions
-//{
-//	// Get custom parameter class, then check for validity
-//	ManualActionParam *maParam = static_cast<ManualActionParam*>(pParam);
-//	ASSERT(maParam != NULL);
-//	bool actionSuccessful = false;
-//
-//	// Create the temporary class to deal with the command, can use pVanne directly but should be careful about any security machanisms
-//	CManip manualManip;
-//	manualManip.SetVannes(pVanne);
-//	manualManip.SetTemperature(pTemperature);
-//
-//	// Launch required functionality
-//	switch (maParam->instrumentType)
-//	{
-//	case INSTRUMENT_VALVE:
-//		if(maParam->shouldBeActivated)
-//			actionSuccessful = manualManip.Ouverture_Vanne(maParam->instrumentNumber);
-//		else
-//			actionSuccessful = manualManip.Fermeture_Vanne(maParam->instrumentNumber);
-//	case INSTRUMENT_EV:
-//		if (maParam->shouldBeActivated)
-//			actionSuccessful = manualManip.ActiverEV(maParam->instrumentNumber);
-//		else
-//			actionSuccessful = manualManip.DesactiverEV(maParam->instrumentNumber);
-//	case INSTRUMENT_PUMP:
-//		if (maParam->shouldBeActivated)
-//			actionSuccessful = manualManip.ActiverPompe();
-//		else
-//			actionSuccessful = manualManip.DesactiverPompe();
-//	default:
-//		ASSERT(0); // Should never reach this
-//		break;
-//	}
-//
-//	// Ask for the app to show the change
-//	::PostMessage(maParam->windowHandle, WM_UPDATEBUTTONS, (WPARAM)maParam, actionSuccessful);
-//
-//	// Debug success
-//	if (actionSuccessful == false)
-//		return 404;
-//	return 0;
-//}
