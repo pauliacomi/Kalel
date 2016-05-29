@@ -1,41 +1,22 @@
 
 #include "stdafx.h"
 
-#include "Kaolla.h"
-#include "KaollaDoc.h"
 #include "KaollaView.h"
 #include "ThreadManager.h"
 
-#include "Automation.h"		// Backend for all the automation
-
-#include "ManualActionParam.h"
-
-
-
-// Pointers to the view and document
-CKaollaView* pKaollaView;
-CKaollaDoc* pKaollaDoc;
-
-// Main class that deals with the automatic functionality
-Automation * automation;
-
-// Pointers for interfacing with the valves and temperature
-CVannes* pVanne;
-
-
-// Threads
-CWinThread * m_threadManualAction;
-CWinThread * m_threadLaunchExperiment;
-CWinThread * m_threadStopExperiment;
-CWinThread * m_threadSampleUnderVaccuum;
-CWinThread * m_threadBottleUnderVaccuum;
-CWinThread * m_threadChangeBottle;
 
 
 // --------- Initialisation and destruction -------
 
-ThreadManager::ThreadManager(LPVOID pParam, ExperimentSettings * expD)
+ThreadManager::ThreadManager(ExperimentSettings * expD)
 	: m_threadMainControlLoop(NULL)
+	, m_threadManualAction (NULL)
+
+	, maParam(NULL)
+	, experimentSettings(NULL)
+
+	, automation(NULL)
+	, pVanne(NULL)
 {
 	// Create the required objects. Might be better to be done in the manip directly
 	pVanne = new CVannes();
@@ -60,7 +41,15 @@ ThreadManager::~ThreadManager()
 }
 
 
-// --------- Thread pausing, resuming and shutdown -------
+
+
+
+//--------------------------------------------------------------------
+//
+// --------- Thread pausing, resetting, resuming and shutdown --------
+//
+//--------------------------------------------------------------------
+
 
 
 HRESULT ThreadManager::StartThread() {
@@ -155,7 +144,19 @@ HRESULT ThreadManager::ShutdownThread()
 }
 
 
-// --------- Thread functions -------
+
+
+
+
+
+//--------------------------------------------------------------------
+//
+// --------- Thread start functions --------
+//
+//--------------------------------------------------------------------
+
+
+
 UINT ThreadManager::ThreadMainWorkerStarter(LPVOID pParam)
 {
 	// Start the function from the main class, then check for validity
@@ -179,16 +180,11 @@ void ThreadManager::ThreadMainWorker()
 
 	// Launch functionality
 	automation->Execution();
-
 }
 
 
-void ThreadManager::ManualAction(LPVOID pParam)
+void ThreadManager::ManualAction()
 {
-	// lock the menu
-	pKaollaView = CKaollaView::GetView();
-	pKaollaView->pApp->menuIsAvailable = false;
-
 	//start thread
 	m_threadManualAction = AfxBeginThread(ThreadManualActionStarter, this);
 }
@@ -197,10 +193,10 @@ void ThreadManager::ManualAction(LPVOID pParam)
 UINT ThreadManager::ThreadManualActionStarter(LPVOID pParam)
 {
 	// Start the function from the main class, then check for validity
-	ThreadManager* maParam = static_cast<ThreadManager*>(pParam);
+	ThreadManager* threadManager = static_cast<ThreadManager*>(pParam);
 
 	// Launch required functionality
-	maParam->ThreadManualAction();
+	threadManager->ThreadManualAction();
 
 	// End thread
 	return 0;
@@ -208,36 +204,46 @@ UINT ThreadManager::ThreadManualActionStarter(LPVOID pParam)
 
 void ThreadManager::ThreadManualAction()
 {
-	// Get custom parameter class, then check for validity
-	ManualActionParam *maParam = NULL;
-	ASSERT(maParam != NULL);
 	bool actionSuccessful = false;
 
+	// Check for validity
+	ASSERT(maParam != NULL);
+
+	// Create local copy so we don't have to depend on main one which can get deleted
+	ManualActionParam * localMP = new ManualActionParam(maParam);
+
 	// Launch required functionality
-	switch (maParam->instrumentType)
+	switch (localMP->instrumentType)
 	{
 	case INSTRUMENT_VALVE:
-		if (maParam->shouldBeActivated)
-			actionSuccessful = pVanne->Ouvrir(maParam->instrumentNumber);
+		if (localMP->shouldBeActivated)
+			actionSuccessful = pVanne->Ouvrir(localMP->instrumentNumber);
 		else
-			actionSuccessful = pVanne->Fermer(maParam->instrumentNumber);
+			actionSuccessful = pVanne->Fermer(localMP->instrumentNumber);
+		break;
+
 	case INSTRUMENT_EV:
-		if (maParam->shouldBeActivated)
-			actionSuccessful = pVanne->ActiverEV(maParam->instrumentNumber);
+		if (localMP->shouldBeActivated)
+			actionSuccessful = pVanne->ActiverEV(localMP->instrumentNumber);
 		else
-			actionSuccessful = pVanne->DesactiverEV(maParam->instrumentNumber);
+			actionSuccessful = pVanne->DesactiverEV(localMP->instrumentNumber);
+		break;
+
 	case INSTRUMENT_PUMP:
-		if (maParam->shouldBeActivated)
+		if (localMP->shouldBeActivated)
 			actionSuccessful = pVanne->ActiverPompe();
 		else
 			actionSuccessful = pVanne->DesactiverPompe();
+		break;
+
 	default:
 		ASSERT(0); // Should never reach this
 		break;
 	}
 
-	// Ask for the app to show the change
-	::PostMessage(maParam->windowHandle, WM_UPDATEBUTTONS, (WPARAM)maParam, actionSuccessful);
+	// Ask for the app to show the change, pass the locally created object which must be deleted there
+	::PostMessage(localMP->windowHandle, WM_UPDATEBUTTONS, (WPARAM)localMP, actionSuccessful);
+
 }
 
 
@@ -250,6 +256,11 @@ void ThreadManager::ChangementDev(int dev_vanne, int dev_temp)
 
 // ----------------------- END -----------------------
 // ----------------------- END -----------------------
+
+
+
+
+
 
 
 

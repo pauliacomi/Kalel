@@ -28,16 +28,22 @@ void CKaollaView::AskThreadForManualCommand(int instrumentType, int instrumentNu
 	// Show that the action has started
 	SetDlgItemText(list.GetTextboxID(), list.GetTempTextboxMessage());
 
+	// lock the menu
+	pApp->menuIsAvailable = false;
+
 	// Create the storage object and then pass it to the threading function
-	ManualActionParam * maParam = new ManualActionParam(GetSafeHwnd(), instrumentType, instrumentNumber, shouldBeActivated);
-	threadManager->ManualAction(maParam);
+	if (threadManager->maParam) {
+		delete threadManager->maParam;
+	}
+	threadManager->maParam = new ManualActionParam(GetSafeHwnd(), instrumentType, instrumentNumber, shouldBeActivated);
+	threadManager->ManualAction();
 }
 
 
 // Single function to update UI when receiving the command that the thread posted before finishing
 LRESULT CKaollaView::OnThreadRequestButtonUpdate(WPARAM wParam, LPARAM lParam) {
 
-	// Cast the parameters object
+	// Cast the parameters object and take ownership
 	const ManualActionParam *maParam = reinterpret_cast<ManualActionParam*>(wParam);
 
 	// Create a new list object
@@ -60,7 +66,12 @@ LRESULT CKaollaView::OnThreadRequestButtonUpdate(WPARAM wParam, LPARAM lParam) {
 		AffichageMessages(list.GetTempTextboxMessage());
 	}
 
+	// unlock the menu
+	pApp->menuIsAvailable = true;
+
+	// Now delete the object
 	delete maParam;
+
 	return 0;
 }
 

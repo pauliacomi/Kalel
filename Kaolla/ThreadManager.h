@@ -6,15 +6,26 @@
 #include <afxmt.h>
 
 #include "ExperimentSettings.h"
+#include "Automation.h"				// Backend for all the automation
+#include "ManualActionParam.h"
+
 
 class ThreadManager
 {
 public:
-	ThreadManager(LPVOID pParam, ExperimentSettings * expD);
+	ThreadManager(ExperimentSettings * expD);
 	~ThreadManager();
 
 	// Pointer to settings storage
-	ExperimentSettings * experimentSettings;
+	ManualActionParam * maParam;							// Storage for manual parameters
+	ExperimentSettings * experimentSettings;				// Storage for automatic parameters
+
+	CWinThread * m_threadMainControlLoop;					// Reference for main thread
+	CWinThread * m_threadManualAction;						// Reference for manual thread
+
+private:
+	Automation * automation;								// Main class that deals with the automatic functionality
+	CVannes * pVanne;										// Pointers for interfacing with the valves and temperature
 
 	// Public interface methods
 public:
@@ -24,7 +35,7 @@ public:
 	HRESULT ShutdownThread();
 
 	void ChangementDev(int dev_vanne, int dev_temp);
-	void ManualAction(LPVOID pParam);						// When a manual command is issued
+	void ManualAction();									// When a manual command is issued
 
 	// Private fields
 private:
@@ -34,58 +45,6 @@ private:
 	static UINT ThreadManualActionStarter(LPVOID pParam);	// Manual command thread starter
 	void ThreadManualAction();								// Manual command thread worker
 	
-
-	CWinThread * m_threadMainControlLoop;					// Reference for main thread
-	CWinThread * m_threadManualAction;						// Reference for manual thread
-
 };
-
-
-
-
-
-
-//
-///// Old implementation
-//
-//// --------- Changing the instrument parameters -------
-//
-//void ChangementDev(int dev_vanne, int dev_temp);
-//
-//// --------- Functions to return experiment information -------
-//
-//int GetEtapeEnCours();
-//CString GetDonneesExperience();
-//
-//// --------- Thread start functions --------------
-//
-//void ManualAction(LPVOID pParam);
-//void LancementThreads(LPVOID pParam);
-//void ArretThreads(LPVOID pParam);
-//void MiseSousVideAmpoule(LPVOID pParam);
-//void MiseSousVideBouteille(LPVOID pParam);
-//void ChangementBouteille(LPVOID pParam);
-//
-//// --------- Threads ----------------------
-//
-//UINT ThreadManualAction(LPVOID pParam);
-//UINT LancerThreadProc(LPVOID pParam);
-//UINT ArretThreadProc(LPVOID pParam);
-//UINT ThreadMenuMiseSousVideAmpoule(LPVOID pParam);
-//UINT ThreadMenuMiseSousVideBouteille(LPVOID pParam);
-//UINT ThreadMenuChangementBouteille(LPVOID pParam);
-//
-//// --------- Thread interaction / modification functions -------
-//
-//void DemandeModificationExperience();
-//void FinAffichageMesure();
-//void PauseThreads();
-//void ArretSousVideThreads();
-//void ProchaineCommandeThreads();
-//void ProchaineDoseThreads();
-//void ProchaineEtapeThreads();
-//void RepriseThreads();
-//
-//// --------- End ------------
 
 #endif

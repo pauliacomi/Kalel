@@ -199,7 +199,7 @@ void CKaollaView::OnInitialUpdate()
 	dialogExperimentProperties = new ExperimentPropertySheet(_T(""));
 	experimentSettings = new ExperimentSettings();							// Create a new experiment storage
 	experimentSettings->GUIhandle = GetSafeHwnd();							// Save the window handle
-	threadManager = new ThreadManager(GetSafeHwnd(), experimentSettings);;  // the class dealing with managing threads
+	threadManager = new ThreadManager(experimentSettings);;  // the class dealing with managing threads
 
 	// Set the timer for the window update
 	SetTimer(1, 100, NULL);
@@ -244,7 +244,7 @@ CKaollaDoc* CKaollaView::GetDocument() const // non-debug version is inline
 CKaollaView * CKaollaView::GetView()
 {
 	CDocTemplate* pTemplate;
-	CKaollaApp* pAppl = (CKaollaApp *)(AfxGetApp()->m_pMainWnd);
+	CKaollaApp* pAppl = static_cast<CKaollaApp *>(AfxGetApp());
 
 	POSITION pos = pAppl->GetFirstDocTemplatePosition();
 	while (pos != NULL)

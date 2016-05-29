@@ -18,6 +18,9 @@
 #include "ExperimentSettings.h"			// Where returned data from results is stored
 #include "ExperimentPropertySheet.h"	// Dialog box for setting experimental properties
 
+#include "KaollaDoc.h"
+#include "Kaolla.h"
+
 
 class CKaollaView : public CFormView
 {
