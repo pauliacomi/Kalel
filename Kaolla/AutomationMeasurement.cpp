@@ -125,7 +125,7 @@ void Automation::ReadTemperatures()	// another problem is that the threads are r
 	// Read the value from the calorimeter
 	double dTemperatureCalo, dTemperatureCage, dTemperaturePiece;
 
-	//g_pTemperature->Temperature(&dTemperatureCalo, &dTemperatureCage, &dTemperaturePiece);
+	g_pTemperature->Temperature(&dTemperatureCalo, &dTemperatureCage, &dTemperaturePiece);
 
 	srand(time(NULL)); // temp
 

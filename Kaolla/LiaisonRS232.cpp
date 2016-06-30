@@ -122,6 +122,7 @@ bool LiaisonRS232::WriteCOM(void* buffer, int nBytesToWrite, int* pBytesWritten)
 
 bool LiaisonRS232::CloseCOM()
 {
+	// Handle may sometimes not exist, if there's an error here
     CloseHandle(g_hCOM);
     return true;
 }

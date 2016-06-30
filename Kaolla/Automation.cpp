@@ -25,6 +25,7 @@ void Automation::Execution()
 	// Infinite loop, it is broken from the inside
 	while (running)
 	{
+		// Check if there is any change in the experiment settings
 		if (DataIsNew()) {
 			SetData();
 			RecordDataChange();
