@@ -8,6 +8,7 @@ Automation::Automation()
 	, checking(true)
 {
 	g_pTemperature = new CTemperature(GetPortTemperatures());
+
 }
 
 
@@ -16,12 +17,37 @@ Automation::~Automation()
 	DeInitialise();
 }
 
-
+////////////////////////////////////////////////////////
+//	Main execution function
+//
+//	This is an infinite loop which has to be broken form inside
+//	The general flowchart goes as follows:
+//	
+//	initialize everything
+//	loop
+//	{
+//		1. Get the experiment settings if they are new
+//		2. Run through the automation algorithm for the chosen program (nothing, manual, automatic, vacuum, etc)
+//		3. Measure values from instruments
+//		4. Do a security and safety check on the values
+//		5. Record the time the measurement was done / the time between measurments
+//		6. IF RECORDING, save the data to the file, restart timer between measurements and increment measurement number
+//		7. IF WAITING, check whether the wait is complete and reset the wait
+//		8. Display the data to the GUI
+//		9. 
+//	}
+//
+//
+//
+//
+//
+//
+////////////////////////////////////////////////////////
 void Automation::Execution()
 {
 	// Initialise class members
 	Initialisation();
-	
+
 	// Infinite loop, it is broken from the inside
 	while (running)
 	{
@@ -30,7 +56,7 @@ void Automation::Execution()
 			RecordDataChange();
 		}
 
-		if (experimentLocalData.experimentCommandsRequested == true) {
+		if (experimentLocalData.experimentCommandsRequested) {
 			switch (experimentLocalSettings.experimentType)		// We look at the type of experiment
 			{
 			case EXPERIMENT_TYPE_MANUAL:						// in case it is manual
@@ -45,7 +71,6 @@ void Automation::Execution()
 			case EXPERIMENT_TYPE_BOTTLE_VACUUM:					// in case we want to vacuum up to the bottle
 				BottleVacuum();									// run the functionality
 				break;
-
 			case EXPERIMENT_TYPE_UNDEF:							// in case no experiment has been set yet
 				break;											// just continue
 			default:
@@ -61,13 +86,11 @@ void Automation::Execution()
 		SecuriteTemperatures();
 		SecuriteHautePression();
 
+		// Record time
+		experimentLocalData.experimentTime = timerExperiment.TempsActuel();			// Save the time at which the measurement took place
+		experimentLocalData.timeToEquilibrateCurrent = timerWaiting.TempsActuel();	// Save the waiting time if it exists
 
-		// Save the time at which the measurement took place
-		experimentLocalData.experimentTime = timerExperiment.TempsActuel();
-		// Save the waiting time if it exists
-		experimentLocalData.timeToEquilibrateCurrent = timerWaiting.TempsActuel();
-
-
+		// Write data
 		if (experimentLocalData.experimentRecording	&&								// If we started recording
 			timerMeasurement.TempsActuel() > T_BETWEEN_RECORD)						// and the enough time between measurements
 		{
@@ -81,7 +104,7 @@ void Automation::Execution()
 			experimentLocalData.experimentMeasurements++;
 		}
 
-				
+		// If waiting complete
 		if (experimentLocalData.experimentWaiting &&														// If the wait functionality is requested																					
 			experimentLocalData.timeToEquilibrateCurrent > experimentLocalData.timeToEquilibrate) {			//and the time has been completed
 
@@ -98,13 +121,7 @@ void Automation::Execution()
 		if (checking)
 		{
 			// Switch to see if the thread is still inactive
-			HANDLE objects[4];
-			objects[0] = h_eventShutdown;
-			objects[1] = h_eventPause;
-			objects[2] = h_eventResume;
-			objects[3] = h_eventReset;
-
-			switch (::WaitForMultipleObjects(4, objects, FALSE, T_BETWEEN_MEASURE)) // (ms) Poll time
+			switch (::WaitForMultipleObjects(4, events, FALSE, T_BETWEEN_MEASURE)) // (ms) Poll time
 			{
 
 			case WAIT_OBJECT_0:					// Complete stop of thread, might need extra things
@@ -178,14 +195,15 @@ bool Automation::ExecutionManual()
 		timerExperiment.TopChrono();	// Start global experiment timer	
 		timerMeasurement.TopChrono();	// Start the timer to record time between measurements
 
-										// Continue experiment
+		// Continue experiment
 		experimentLocalData.experimentStage = STAGE_MANUAL;
 		experimentLocalData.experimentStepStatus = STEP_STATUS_INPROGRESS;
+		experimentLocalData.experimentCommandsRequested = false;
+		
+		return true;
 	}
 
-	experimentLocalData.experimentCommandsRequested = false;
-
-	return true;
+	return false;
 }
 
 
@@ -236,7 +254,7 @@ bool Automation::ExecutionAuto()
 	return true;
 }
 
-
+// Initialisation of all variables
 void Automation::Initialisation()
 {
 	// Initialise threads
@@ -247,7 +265,7 @@ void Automation::Initialisation()
 
 	// Initialise automatic variables
 	experimentLocalData.ResetData();
-	experimentLocalSettings.experimentType = EXPERIMENT_TYPE_UNDEF;
+	experimentLocalSettings.experimentType = EXPERIMENT_TYPE_UNDEF;	// reset function?
 
 	// Initialise data
 	SetData();
@@ -256,11 +274,11 @@ void Automation::Initialisation()
 	// Initialise instruments
 	InitialisationInstruments();
 
-	// Initialise security
-	InitialisationSecurityManual();
-
 	// Open instruments
 	InstrumentsOpen();
+
+	// Initialise security
+	InitialisationSecurityManual();
 
 	// Initialisation of the critical section
 	InitializeCriticalSection(&criticalSection);
@@ -273,9 +291,11 @@ void Automation::Initialisation()
 	h_eventResume = CreateEvent(NULL, TRUE, FALSE, NULL);
 	h_eventPause = CreateEvent(NULL, TRUE, FALSE, NULL);
 	h_eventReset = CreateEvent(NULL, TRUE, FALSE, NULL);
+	events[0] = h_eventShutdown;
+	events[1] = h_eventPause;
+	events[2] = h_eventResume;
+	events[3] = h_eventReset;
 
-	// Put the thread in a paused state
-	experimentLocalData.experimentRecording = false;
 	// If the shutdown event is called externally, it will default to a cancel
 	// Otherwise the flag will be changed from inside the code
 	shutdownReason = STOP_CANCEL;
@@ -424,7 +444,7 @@ void Automation::InstrumentsClose()
 		instrument[i]->FermerPortInstrument();
 }
 
-// Function which makes sure everything is cancelled
+// Function which makes sure everything is shutdown gracefully
 void Automation::DeInitialise()
 {
 	// Close valves/pump
@@ -432,6 +452,11 @@ void Automation::DeInitialise()
 
 	// Close instruments
 	InstrumentsClose();
+
+	// Delete instruments
+	for (int i = 0; i < NB_OF_INSTRUMENTS; i++) {
+		delete instrument[i];
+	}
 
 	// Destroy the events
 	CloseHandle(h_MeasurementThreadStartEvent);
@@ -442,11 +467,6 @@ void Automation::DeInitialise()
 	
 	// Destroy the critical sections
 	DeleteCriticalSection(&criticalSection);
-
-	// Delete instruments
-	for (int i = 0; i < NB_OF_INSTRUMENTS; i++) {
-		delete instrument[i];
-	}
 
 	// Delete temperature class
 	delete g_pTemperature;

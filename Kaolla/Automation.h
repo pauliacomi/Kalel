@@ -82,6 +82,8 @@ public:
 
 	// Events
 	HANDLE h_MeasurementThreadStartEvent;				// Handle event doing measurement thread signalling
+	
+	HANDLE events[4];									// Keeps all the events below in one array
 	HANDLE h_eventShutdown;								// Handle event shutting down the thread
 	HANDLE h_eventResume;								// Handle event resuming the thread
 	HANDLE h_eventPause;								// Handle event pausing the thread
