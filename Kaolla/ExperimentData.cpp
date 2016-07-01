@@ -5,6 +5,7 @@
 
 ExperimentData::ExperimentData()
 {
+	ResetData();
 }
 
 
