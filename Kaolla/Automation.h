@@ -33,7 +33,7 @@
 class Automation
 {
 public:
-	Automation();
+	Automation(CVannes* vannes, ExperimentSettings* exps);
 	~Automation();
 
 
