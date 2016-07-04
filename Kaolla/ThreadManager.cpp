@@ -24,8 +24,14 @@ ThreadManager::ThreadManager(ExperimentSettings * expD)
 	// Store the link to the experimental data
 	experimentSettings = expD;
 
-	//Create the thread
-	m_threadMainControlLoop = AfxBeginThread(ThreadMainWorkerStarter, this);
+	// Create the thread in a suspended state
+	m_threadMainControlLoop = AfxBeginThread(ThreadMainWorkerStarter, this, NULL, NULL, CREATE_SUSPENDED, NULL);
+
+	// Make sure thread is not accidentally deleted
+	m_threadMainControlLoop->m_bAutoDelete = FALSE;
+
+	// Now resume the thread
+	m_threadMainControlLoop->ResumeThread();
 }
 
 ThreadManager::~ThreadManager()
@@ -117,9 +123,6 @@ HRESULT ThreadManager::ShutdownThread()
 	// Close the worker thread
 	if (NULL != m_threadMainControlLoop)
 	{
-		// Make sure thread is not accidentally deleted
-		m_threadMainControlLoop->m_bAutoDelete = FALSE;
-
 		// Signal the thread to exit
 		::SetEvent(automation->h_eventShutdown);
 
