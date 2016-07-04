@@ -97,6 +97,11 @@ Error:
 		TC2 = error;
 		TC3 = error;
 	}
+	if (taskHandle != 0)
+	{
+		DAQmxStopTask(taskHandle);
+		DAQmxClearTask(taskHandle);
+	}
 }
 
 void NI_USB_9211A::LectureTousThermocouple(double* Valeur0,double* Valeur1,double* Valeur2,double* Valeur3)
