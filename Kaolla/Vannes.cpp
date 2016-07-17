@@ -8,8 +8,9 @@
 
 CVannes::CVannes(void) : NI_USB_6008()
 {
-	NI_USB_6008::SetDevNI_USB_6008(PortUSBVannes());
+	NI_USB_6008::SetDevNI_USB_6008(GetPortVannes());
 
+	// Close everything from the start?
 	ToutFermer();
 }
 
@@ -17,31 +18,6 @@ CVannes::~CVannes(void)
 {
 }
 
-
-
-bool CVannes::VanneEstOuvert(int num)
-{return NI_USB_6008::EstOuvertPort0(num-1);}
-
-bool CVannes::VanneEstFerme(int num)
-{return NI_USB_6008::EstFermePort0(num-1);}
-
-bool CVannes::EV1EstActive()
-{return NI_USB_6008::EstOuvertPort1(0);}
-
-bool CVannes::EV1EstDesactive()
-{return NI_USB_6008::EstFermePort1(0);}
-
-bool CVannes::EV2EstActive()
-{return NI_USB_6008::EstOuvertPort1(1);}
-
-bool CVannes::EV2EstDesactive()
-{return NI_USB_6008::EstFermePort1(1);}
-
-bool CVannes::PompeEstActive()
-{return NI_USB_6008::EstOuvertPort1(2);}
-
-bool CVannes::PompeEstDesactive()
-{return NI_USB_6008::EstFermePort1(2);}
 
 
 bool CVannes::Ouvrir(int num)
@@ -135,7 +111,7 @@ bool CVannes::DesactiverPompe()
 	return action_reussie;
 }
 
-bool CVannes::FermerLesValvesEtLaPompe()
+bool CVannes::FermerLesEVEtLaPompe()
 {
 	int tentative = 0;
 	bool action_reussie;
@@ -150,18 +126,43 @@ bool CVannes::FermerLesValvesEtLaPompe()
 
 bool CVannes::ToutFermer()
 {
-	if(FermerToutesLesVannes() && FermerLesValvesEtLaPompe())
+	if(FermerToutesLesVannes() && FermerLesEVEtLaPompe())
 		return TRUE;
 	return FALSE;
 }
 
 
-
-int CVannes::PortUSBVannes()
+int CVannes::PortUSB()
 {
-	return GetPortVannes();
+	return NI_USB_6008::GetDevNI_USB_6008();
 }
 
 
+///////////////////////////////////////////////////////
+// Functions checking for the state of the equipemt
+
+bool CVannes::VanneEstOuvert(int num)
+{return NI_USB_6008::EstOuvertPort0(num-1);}
+
+bool CVannes::VanneEstFerme(int num)
+{return NI_USB_6008::EstFermePort0(num-1);}
+
+bool CVannes::EV1EstActive()
+{return NI_USB_6008::EstOuvertPort1(0);}
+
+bool CVannes::EV1EstDesactive()
+{return NI_USB_6008::EstFermePort1(0);}
+
+bool CVannes::EV2EstActive()
+{return NI_USB_6008::EstOuvertPort1(1);}
+
+bool CVannes::EV2EstDesactive()
+{return NI_USB_6008::EstFermePort1(1);}
+
+bool CVannes::PompeEstActive()
+{return NI_USB_6008::EstOuvertPort1(2);}
+
+bool CVannes::PompeEstDesactive()
+{return NI_USB_6008::EstFermePort1(2);}
 
 

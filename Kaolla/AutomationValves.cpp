@@ -120,7 +120,7 @@ bool Automation::ValvesCloseAll()
 // Close the pump
 bool Automation::ValvesAndPumpClose()
 {
-	if (!g_pVanne->FermerLesValvesEtLaPompe())
+	if (!g_pVanne->FermerLesEVEtLaPompe())
 		return false;
 
 	// Tell GUI

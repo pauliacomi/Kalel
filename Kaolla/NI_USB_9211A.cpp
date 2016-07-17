@@ -1,6 +1,5 @@
 
 #include "StdAfx.h"
-
 #include "NI_USB_9211A.h"
 
 #define DAQmxErrChk(functionCall) { if( DAQmxFailed(error=(functionCall)) ) { goto Error; } }
@@ -38,7 +37,7 @@ void NI_USB_9211A::SetDevNI_USB_9211A(int dev)
 void NI_USB_9211A::LectureThermocouple ()
 {
 	
-   // Task parameters
+	// Task parameters
     int32       error = 0;
     TaskHandle  taskHandle = 0;
     char        errBuff[2048]={'\0'};
@@ -60,21 +59,18 @@ void NI_USB_9211A::LectureThermocouple ()
     int32       pointsRead;
     float64     timeout = 10.0;
 	
-
-
+	// Write channel string
 	sprintf_s(chan,"Dev%d/ai0:3",DevNI_USB_9211A);
-	// Si on veut utiliser que la voie 1 et 3, faire du style: 
 
-			// Leak Here
+	// Create task
 	DAQmxErrChk (DAQmxCreateTask ("", &taskHandle));
 	DAQmxErrChk (DAQmxCreateAIThrmcplChan (taskHandle, chan, "", min, max, DAQmx_Val_DegC , DAQmx_Val_K_Type_TC, DAQmx_Val_BuiltIn , 0, ""));
 	
+	// Run task
 	DAQmxErrChk (DAQmxStartTask (taskHandle));
-
 	DAQmxErrChk (DAQmxReadAnalogF64 (taskHandle, pointsToRead, timeout, 0, data, bufferSize, &pointsRead, NULL));
-			// Leak Here
-
-
+	
+	// Clear task
 	if (taskHandle != 0)
     {
        DAQmxStopTask (taskHandle);
@@ -82,27 +78,34 @@ void NI_USB_9211A::LectureThermocouple ()
     }
 
 	// Write data from returned array
-	TC0=data[0];
-	TC1=data[1];
-	TC2=data[2];
-	TC3=data[3];
+	TC0 = data[0];
+	TC1 = data[1];
+	TC2 = data[2];
+	TC3 = data[3];
 	
-
+	// In case of error
 Error:
     if (DAQmxFailed (error))
 	{
-	   DAQmxGetExtendedErrorInfo (errBuff, 2048);
+		DAQmxGetExtendedErrorInfo (errBuff, 2048);
 		TC0 = error;
 		TC1 = error;
 		TC2 = error;
 		TC3 = error;
 	}
+	// Clear task to free memory
 	if (taskHandle != 0)
 	{
 		DAQmxStopTask(taskHandle);
 		DAQmxClearTask(taskHandle);
 	}
 }
+
+
+
+//////////////////////////////////////////
+//
+// Individual functions to read data
 
 void NI_USB_9211A::LectureTousThermocouple(double* Valeur0,double* Valeur1,double* Valeur2,double* Valeur3)
 {

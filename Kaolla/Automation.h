@@ -45,10 +45,13 @@ public:
 	// Pointers
 	//------------------------------------------------------------
 
+	// RS232 instruments
 	Keithley* g_pKeithley;								// Pointer to the class that deals with the Keithley
 	Mensor* g_pMensor;									// Pointer to the class that deals with the Mensor
-	CVannes* g_pVanne;									// Pointer to the valve opening class
 	CInstrument* instrument[NB_OF_INSTRUMENTS];			// Array of pointers that hold CInstrument classes
+
+	// USB instruments
+	CVannes* g_pVanne;									// Pointer to the valve opening class
 	CTemperature* g_pTemperature;						// Pointer to the class that deals with temperature recording
 
 	ExperimentSettings* experimentSettings;				//

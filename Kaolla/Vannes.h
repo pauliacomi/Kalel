@@ -3,12 +3,11 @@
 #define _VANNE_H_
 
 
-#define WIN32_LEAN_AND_MEAN		// Exclude rarely-used stuff from Windows headers
+#define WIN32_LEAN_AND_MEAN		// Exclude rarely-used stuff from Windows headers, useless, because automatically defined in MFC
 #include <stdio.h>
 #include <tchar.h>
 
 #include "NI_USB_6008.h"
-
 #include "Parametres.h"
 
 
@@ -19,6 +18,21 @@ public:
 	CVannes(void);
 	~CVannes(void);
 
+	bool Ouvrir(int num);				// Open a valve
+	bool Fermer(int num);				// Close a valve
+
+	bool ActiverEV(int num);			// Activate EV
+	bool DesactiverEV(int num);			// Deactivate EV
+
+	bool ActiverPompe();				// Activate Pump
+	bool DesactiverPompe();				// Deactivate Pump
+
+	bool ToutFermer();					// Close everything
+	bool FermerToutesLesVannes();		// Close all the valves
+	bool FermerLesEVEtLaPompe();		// Close the Pump and EV's
+
+	// Checks for activation
+
 	bool VanneEstOuvert(int num);
 	bool VanneEstFerme(int num);
 	bool EV1EstActive();
@@ -27,16 +41,9 @@ public:
 	bool EV2EstDesactive();
 	bool PompeEstActive();
 	bool PompeEstDesactive();
-	bool Ouvrir(int num);
-	bool Fermer(int num);
-	bool FermerToutesLesVannes();
-	bool ActiverEV(int num);
-	bool ActiverPompe();
-	bool DesactiverEV(int num);
-	bool DesactiverPompe();
-	bool FermerLesValvesEtLaPompe();
-	bool ToutFermer();
-	int PortUSBVannes();
+
+	// Get the USB port
+	int PortUSB();
 };
 
 #endif

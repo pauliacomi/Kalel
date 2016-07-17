@@ -7,7 +7,7 @@ Automation::Automation()
 	: running(true)
 	, checking(true)
 {
-	g_pTemperature = new CTemperature(GetPortTemperatures());
+	g_pTemperature = new CTemperature;
 
 }
 

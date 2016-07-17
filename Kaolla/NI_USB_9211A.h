@@ -12,13 +12,18 @@ public:
 	NI_USB_9211A(void);
 	NI_USB_9211A(int dev);
 	~NI_USB_9211A(void);
-	
-	int DevNI_USB_9211A;
 
-	int GetDevNI_USB_9211A();
-	void SetDevNI_USB_9211A(int dev);
 
-	void LectureThermocouple();
+private:
+	int DevNI_USB_9211A;						// USB port used
+	double TC0, TC1, TC2, TC3;					// Store the data from the thermocouples
+	void LectureThermocouple();					// Reads all data from device
+
+public:
+
+	int GetDevNI_USB_9211A();					// Get USB port
+	void SetDevNI_USB_9211A(int dev);			// Set USB port
+
 	
 	void LectureTousThermocouple(double* Valeur0,double* Valeur1,double* Valeur2,double* Valeur3);
 	
@@ -42,9 +47,6 @@ public:
 	double LectureThermocouple_2();
 	void LectureThermocouple_3(double* Valeur3);
 	double LectureThermocouple_3();
-	
-	double TC0,TC1,TC2,TC3;
-
 };
 
 
