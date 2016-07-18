@@ -111,7 +111,7 @@ bool Automation::ValvesCloseAll()
 		return false;
 
 	// Tell GUI
-	messageHandler.DisplayMessage(MESSAGE_VALVE_CLOSEALL);
+	messageHandler.DisplayMessage(MESSAGE_VALVE_CLOSEALL); // - causes memory leak when ran at the end of the program
 
 	// Return success
 	return true;
@@ -124,7 +124,7 @@ bool Automation::ValvesAndPumpClose()
 		return false;
 
 	// Tell GUI
-	messageHandler.DisplayMessage(MESSAGE_PUMP_VALVE_CLOSEALL);
+	messageHandler.DisplayMessage(MESSAGE_PUMP_VALVE_CLOSEALL); // - causes memory leak when ran at the end of the program
 
 	// Return success
 	return true;
@@ -139,7 +139,7 @@ bool Automation::ControlMechanismsCloseAll()
 		return false;
 
 	// Tell GUI
-	messageHandler.DisplayMessage(MESSAGE_CLOSEEVERYTHING);
+	messageHandler.DisplayMessage(MESSAGE_CLOSEEVERYTHING); // - causes memory leak when ran at the end of the program
 
 	// Return success
 	return true;

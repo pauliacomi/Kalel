@@ -3,12 +3,16 @@
 
 
 
-Automation::Automation()
+Automation::Automation(CVannes* vannes, ExperimentSettings* exps)
 	: running(true)
 	, checking(true)
 {
 	g_pTemperature = new CTemperature;
 
+	experimentSettings = exps;
+
+	// Initialise class members
+	Initialisation();
 }
 
 
@@ -45,9 +49,6 @@ Automation::~Automation()
 ////////////////////////////////////////////////////////
 void Automation::Execution()
 {
-	// Initialise class members
-	Initialisation();
-
 	// Infinite loop, it is broken from the inside
 	while (running)
 	{
@@ -449,7 +450,7 @@ void Automation::InstrumentsClose()
 void Automation::DeInitialise()
 {
 	// Close valves/pump
-	ControlMechanismsCloseAll();
+	ControlMechanismsCloseAll();  // - causes memory leak when ran at the end of the program
 
 	// Close instruments
 	InstrumentsClose();
@@ -473,32 +474,6 @@ void Automation::DeInitialise()
 	delete g_pTemperature;
 }
 
-
-void Automation::SetKeithley(Keithley* Keith)
-{
-	g_pKeithley = Keith;
-}
-
-void Automation::SetMensor(Mensor* Mens)
-{
-	g_pMensor = Mens;
-}
-
-void Automation::SetVannes(CVannes* pVannes)
-{
-	g_pVanne = pVannes;
-}
-
-void Automation::SetTemperature(CTemperature* pTemperature)
-{
-	//g_pTemperature = pTemperature;
-}
-
-void Automation::SetDataPointer(ExperimentSettings * eSettings)
-{
-	// Store the pointer
-	experimentSettings = eSettings;
-}
 
 void Automation::SetData()
 {
