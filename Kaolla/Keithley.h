@@ -25,6 +25,9 @@ public:
 	bool InitKeithley();
 	bool InitKeithley(std::string* info);
 
+
+	// Channel 1 functions
+
 	bool ReadChannel1(std::string* result);
 	bool ReadChannel1(std::string* result, std::string* info);
 	bool ReadChannel1(double* resultat);
@@ -34,6 +37,7 @@ public:
 	std::string ReadChannel1();
 	double ReadChannel1_double();
 
+	// Channel 2 functions
 
 	bool ReadChannel2(std::string* result);
 	bool ReadChannel2(std::string* result, std::string* info);
@@ -43,11 +47,6 @@ public:
 	bool ReadChannel2(std::string* result, double* resultat, std::string* info);
 	std::string ReadChannel2();
 	double ReadChannel2_double();
-
-	/*
-	void ReadChannel2();
-	void ReadChannel2Console();
-	*/
 
 	std::string getMessage();
 	double Conversion(std::string resultat);

@@ -45,9 +45,7 @@ public:
 	// Pointers
 	//------------------------------------------------------------
 
-	// RS232 instruments
-	Keithley* g_pKeithley;								// Pointer to the class that deals with the Keithley
-	Mensor* g_pMensor;									// Pointer to the class that deals with the Mensor
+	
 	CInstrument* instrument[NB_OF_INSTRUMENTS];			// Array of pointers that hold CInstrument classes
 
 	// USB instruments
@@ -63,6 +61,11 @@ public:
 	//------------------------------------------------------------
 	// Objects 
 	//------------------------------------------------------------
+	
+	// RS232 instruments
+	Keithley calorimeter;								// Pointer to the class that deals with the Keithley
+	Mensor pressureLowPT, pressureHighPT;				// Pointer to the class that deals with the Mensor
+
 	ofstream fileStream;								// The file stream is stored in this variable
 
 	MFCMessageHandler messageHandler;					// This class will send all the messages to the GUI using MFC's message pump

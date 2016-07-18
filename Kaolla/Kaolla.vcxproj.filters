@@ -222,13 +222,7 @@
     <ClInclude Include="Classes_experiences.h">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="ConnectionMesure.h">
-      <Filter>Header Files\Utils</Filter>
-    </ClInclude>
     <ClInclude Include="InfoEtape.h">
-      <Filter>Header Files\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="Instrument.h">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
     <ClInclude Include="SpinBtnCtrl.h">
@@ -378,6 +372,12 @@
     <ClInclude Include="DialogCell.h">
       <Filter>Header Files\GUI\Dialogs\Experimental Parameters\Stored Parameters</Filter>
     </ClInclude>
+    <ClInclude Include="ConnectionMesure.h">
+      <Filter>Header Files\Backend</Filter>
+    </ClInclude>
+    <ClInclude Include="Instrument.h">
+      <Filter>Header Files\Backend</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Kaolla.cpp">
@@ -443,13 +443,7 @@
     <ClCompile Include="Classes_experiences.cpp">
       <Filter>Source Files\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="ConnectionMesure.cpp">
-      <Filter>Source Files\Utils</Filter>
-    </ClCompile>
     <ClCompile Include="InfoEtape.cpp">
-      <Filter>Source Files\Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="Instrument.cpp">
       <Filter>Source Files\Utils</Filter>
     </ClCompile>
     <ClCompile Include="SpinBtnCtrl.cpp">
@@ -691,6 +685,12 @@
     </ClCompile>
     <ClCompile Include="AutomationVacuum.cpp">
       <Filter>Source Files\Automation\Class</Filter>
+    </ClCompile>
+    <ClCompile Include="Instrument.cpp">
+      <Filter>Source Files\Backend</Filter>
+    </ClCompile>
+    <ClCompile Include="ConnectionMesure.cpp">
+      <Filter>Source Files\Backend</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

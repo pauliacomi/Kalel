@@ -10,13 +10,14 @@ using namespace std;
 
 #define RX_SIZE         4096    /* taille tampon d'entrée  */
 #define TX_SIZE         4096    /* taille tampon de sortie */
-#define MAX_WAIT_READ   500    /* temps max d'attente pour lecture (en ms) */
-int nId;
-int nBytesWritten;
-int nBytesRead;
+#define MAX_WAIT_READ   500		/* temps max d'attente pour lecture (en ms) */
+
 
 LiaisonRS232::LiaisonRS232()
 {
+	// Null out the handle
+	g_hCOM = NULL;
+
 	//configuration du temps d'attente
 	g_cto.ReadIntervalTimeout = MAX_WAIT_READ;
 	g_cto.ReadTotalTimeoutMultiplier = 0;
@@ -27,7 +28,6 @@ LiaisonRS232::LiaisonRS232()
 	//Configuration du Port
 	g_dcb.DCBlength = sizeof(DCB);
 	g_dcb.BaudRate = 9600;
-	//g_dcb.BaudRate = 19200;
 	g_dcb.fBinary = true;
 	g_dcb.fParity = false;
 	g_dcb.fOutxCtsFlow = false;
@@ -68,8 +68,8 @@ bool LiaisonRS232::OpenCOM(int pnId)
 	
     g_hCOM = CreateFile(szCOM, GENERIC_READ|GENERIC_WRITE, 0, NULL,
                         OPEN_EXISTING, FILE_ATTRIBUTE_SYSTEM, NULL);
-    if(g_hCOM == INVALID_HANDLE_VALUE)
 
+    if(g_hCOM == INVALID_HANDLE_VALUE)
     {
         printf("Erreur lors de l'ouverture du port COM%d", pnId);
         return FALSE;
@@ -81,7 +81,7 @@ bool LiaisonRS232::OpenCOM(int pnId)
     /* configuration du port COM */
     if(!SetCommTimeouts(g_hCOM, &g_cto) || !SetCommState(g_hCOM, &g_dcb))
     {
-        //printf("Erreur lors de la configuration du port COM%d", nId);
+        printf("Erreur lors de la configuration du port COM%d", pnId);
         CloseHandle(g_hCOM);
         return FALSE;
     }
@@ -92,12 +92,6 @@ bool LiaisonRS232::OpenCOM(int pnId)
     return TRUE;
 }
 
-/*
-bool LiaisonRS232::ReadCOM(void* buffer, int nBytesToRead, int* pBytesRead)
-{
-	return ReadFile(g_hCOM, buffer, nBytesToRead, (LPDWORD)pBytesRead, NULL);
-}
-*/
 
 int LiaisonRS232::ReadCOM(char *buffer, int nBytesToRead)
 {

@@ -8,17 +8,24 @@
 
 using namespace std;
 
-CRITICAL_SECTION Sync;
+CRITICAL_SECTION Sync_keithley;
 
 Keithley::Keithley(void) : LiaisonRS232()
 {
-	g_dcb.BaudRate = 19200; // On a le moyen d'augmenter le BaudRate du keithley.
+	g_dcb.BaudRate = 19200;				// On a le moyen d'augmenter le BaudRate du keithley.
 	message = "Keithley non connecté";
+
+	// Initialize the critical section
+	InitializeCriticalSection(&Sync_keithley);
 }
 
 Keithley::~Keithley(void)
 {
+	// Close the connection
 	LiaisonRS232::CloseCOM();
+
+	// Delete the critical section
+	DeleteCriticalSection(&Sync_keithley);
 }
 
 //============================
@@ -28,6 +35,7 @@ Keithley::~Keithley(void)
 bool Keithley::OpenCOM(int nId)
 {
 	bool ouverture = LiaisonRS232::OpenCOM(nId);
+	
 	// créer un flux de sortie
     ostringstream nPort;
     // écrire un nombre dans le flux
@@ -77,6 +85,7 @@ bool Keithley::CloseCOM(string *info)
 	return fermeture;
 }
 
+
 bool Keithley::InitKeithley()
 {
 	int nBytesWritten = 0;
@@ -106,7 +115,11 @@ bool Keithley::InitKeithley()
 	//On va ecrire dans le port COM pour initialiser le Keithley.
 	//Si on a pu ecrire au COM - WriteCOM retournant 'true' - l'initialisation a ete effectue,
 	//on retourne 'true', sinon, on retourne 'false'
-	if(WriteCOM(buffer, (int)strlen(buffer), &nBytesWritten))
+	EnterCriticalSection(&Sync_keithley);
+	bool success = WriteCOM(buffer, (int)strlen(buffer), &nBytesWritten);
+	LeaveCriticalSection(&Sync_keithley);
+
+	if(success)
 	{
 		message = "Initialisation du Keithley réussie";
 		return true;
@@ -140,7 +153,7 @@ bool Keithley::ReadChannel1(string* result)
 	int nbOctetsLus = 0;
 	char buffer[256];
 
-	//fgets(buffer,256,":READ?");	//acquisition de la données a envoyer
+	// Start by sending message to ask for the data
 
 	//On met dans 'buffer' les instructions a donne au keithley pour qu'il puisse nous donner
 	//la mesure du Channel 1
@@ -152,79 +165,47 @@ bool Keithley::ReadChannel1(string* result)
 
 	sprintf_s(buffer,"*CLS\nSENS:CHAN 1\n:READ?\n");
 
-	//printf("Envoi des donnes...\n");
-
-	InitializeCriticalSection(&Sync);
-
-	EnterCriticalSection(&Sync);
-
+	EnterCriticalSection(&Sync_keithley);
 	WriteCOM(buffer, (int)strlen(buffer), &nBytesWritten);
+	LeaveCriticalSection(&Sync_keithley);
 
-	/*if(WriteCOM(buffer, (int)strlen(buffer), &nBytesWritten)) 
-	{*/
 
-	LeaveCriticalSection(&Sync);
 
-	EnterCriticalSection(&Sync);
+	// Then receive the data in an array
 
-	/*
-		if(ReadCOM(buffer,256 , &nbOctetsLus))
-		{
-	*/
+	// Si tout va bien, nbOctetsLus = 16
+	// Le Keithley nous renvoie 16 octets qui represente une chaine de caracteres donnant
+	// la valeur scientifique de la mesure
+	//
+	// Exemples : 
+	//	-1.16305416E-01(13)
+	//  +1.23456753E+02(13)
+	//
+	// Le premier caractère est le signe de la valeur
+	// Du 2eme au 11eme caractere, c'est la valeur décimal de la mesure
+	// le 12eme caractere est 'E'
+	// le 13eme caractere esr le signe de la puissance 10
+	// le 14eme et 15eme caractere sont la puissance 10
+	// le 16eme caractere est le caractere 13 representant le retour a la ligne :
+	//							<cr> Carriage return en code ascii
+	//
+	// On rajoute a buffer[16] (representant le 17eme caractere)le caractere '\0' qui est
+	// la fin d'une chaine.
+	//
+	// On pourra voir si on rajoute une fonction pour verifier que la valeur renvoyer est la bonne.
 
-	//ReadCOM(buffer,256 , &nbOctetsLus);
-
+	EnterCriticalSection(&Sync_keithley);
 	while(ReadCOM(buffer, 256)==-1){}
+	LeaveCriticalSection(&Sync_keithley);
 
-	LeaveCriticalSection(&Sync);
+	// On ne va garder de 'buffer' que les 15 premiers caracteres. On elimine le retour a la ligne
+	// On mettra cette chaine de caractere dans 'resultat'.
+	string temp = buffer;
+	temp = temp.substr(0,15);
+	*result = temp;
 
-	DeleteCriticalSection(&Sync);
-
-			// Si tout va bien, nbOctetsLus = 16
-			// Le Keithley nous renvoie 16 octets qui represente une chaine de caracteres donnant
-			// la valeur scientifique de la mesure
-			//
-			// Exemples : 
-			//	-1.16305416E-01(13)
-			//  +1.23456753E+02(13)
-			//
-			// Le premier caractère est le signe de la valeur
-			// Du 2eme au 11eme caractere, c'est la valeur décimal de la mesure
-			// le 12eme caractere est 'E'
-			// le 13eme caractere esr le signe de la puissance 10
-			// le 14eme et 15eme caractere sont la puissance 10
-			// le 16eme caractere est le caractere 13 representant le retour a la ligne :
-			//							<cr> Carriage return en code ascii
-			//
-			// On rajoute a buffer[16] (representant le 17eme caractere)le caractere '\0' qui est
-			// la fin d'une chaine.
-			//
-			// On pourra voir si on rajoute une fonction pour verifier que la valeur renvoyer est la bonne.
-
-
-			// On ne va garder de 'buffer' que les 15 premiers caracteres. On elimine le retour a la ligne
-			// On mettra cette chaine de caractere dans 'resultat'.
-			string temp = buffer;
-			temp = temp.substr(0,15);
-			*result = temp;
-
-			message = "Lecture du Channel 1 effectué";
-			return true;
-
-/*
-		}
-		else
-		{
-			message = "Erreur : Pas de reception";
-			return false;
-		}
-	}
-	else //de WriteCOM
-	{
-		message = "Erreur : Envoi non effectue";
-		return false;
-	}
-*/
+	message = "Lecture du Channel 1 effectué";
+	return true;
 }
 
 bool Keithley::ReadChannel1(string* result, string* info)
@@ -298,62 +279,44 @@ bool Keithley::ReadChannel2(string* result)
 
 //printf("Envoi des donnes...\n");
 
-	InitializeCriticalSection(&Sync);
-
-	EnterCriticalSection(&Sync);
-
+	EnterCriticalSection(&Sync_keithley);
 	WriteCOM(buffer, (int)strlen(buffer), &nBytesWritten);
+	LeaveCriticalSection(&Sync_keithley);
 
-	/*if(WriteCOM(buffer, (int)strlen(buffer), &nBytesWritten)) 
-	{*/
-
-	LeaveCriticalSection(&Sync);
-
-	EnterCriticalSection(&Sync);
-
-	/*
-		if(ReadCOM(buffer,256 , &nbOctetsLus))
-		{
-	*/
-
-	//ReadCOM(buffer,256 , &nbOctetsLus);
-
+	EnterCriticalSection(&Sync_keithley);
 	while(ReadCOM(buffer, 256)==-1){}
+	LeaveCriticalSection(&Sync_keithley);
 
-	LeaveCriticalSection(&Sync);
-
-	DeleteCriticalSection(&Sync);
-
-			// Si tout va bien, nbOctetsLus = 16
-			// Le Keithley nous renvoie 16 octets qui represente une chaine de caracteres donnant
-			// la valeur scientifique de la mesure
-			//
-			// Exemples : 
-			//	-1.16305416E-01(13)
-			//  +1.23456753E+02(13)
-			//
-			// Le premier caractère est le signe de la valeur
-			// Du 2eme au 11eme caractere, c'est la valeur décimal de la mesure
-			// le 12eme caractere est 'E'
-			// le 13eme caractere esr le signe de la puissance 10
-			// le 14eme et 15eme caractere sont la puissance 10
-			// le 16eme caractere est le caractere 13 representant le retour a la ligne :
-			//							<cr> Carriage return en code ascii
-			//
-			// On rajoute a buffer[16] (representant le 17eme caractere)le caractere '\0' qui est
-			// la fin d'une chaine.
-			//
-			// On pourra voir si on rajoute une fonction pour verifier que la valeur renvoyer est la bonne.
+	// Si tout va bien, nbOctetsLus = 16
+	// Le Keithley nous renvoie 16 octets qui represente une chaine de caracteres donnant
+	// la valeur scientifique de la mesure
+	//
+	// Exemples : 
+	//	-1.16305416E-01(13)
+	//  +1.23456753E+02(13)
+	//
+	// Le premier caractère est le signe de la valeur
+	// Du 2eme au 11eme caractere, c'est la valeur décimal de la mesure
+	// le 12eme caractere est 'E'
+	// le 13eme caractere esr le signe de la puissance 10
+	// le 14eme et 15eme caractere sont la puissance 10
+	// le 16eme caractere est le caractere 13 representant le retour a la ligne :
+	//							<cr> Carriage return en code ascii
+	//
+	// On rajoute a buffer[16] (representant le 17eme caractere)le caractere '\0' qui est
+	// la fin d'une chaine.
+	//
+	// On pourra voir si on rajoute une fonction pour verifier que la valeur renvoyer est la bonne.
 
 
-			// On ne va garder de 'buffer' que les 15 premiers caracteres. On elimine le retour a la ligne
-			// On mettra cette chaine de caractere dans 'resultat'.
-			string temp = buffer;
-			temp = temp.substr(0,15);
-			*result = temp;
+	// On ne va garder de 'buffer' que les 15 premiers caracteres. On elimine le retour a la ligne
+	// On mettra cette chaine de caractere dans 'resultat'.
+	string temp = buffer;
+	temp = temp.substr(0,15);
+	*result = temp;
 
-			message = "Lecture du Channel 2 effectué";
-			return true;
+	message = "Lecture du Channel 2 effectué";
+	return true;
 }
 
 bool Keithley::ReadChannel2(string* result, string* info)
