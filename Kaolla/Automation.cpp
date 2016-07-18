@@ -3,12 +3,10 @@
 
 
 
-Automation::Automation(CVannes* vannes, ExperimentSettings* exps)
+Automation::Automation(ExperimentSettings* exps)
 	: running(true)
 	, checking(true)
 {
-	g_pTemperature = new CTemperature;
-
 	experimentSettings = exps;
 
 	// Initialise class members
@@ -274,10 +272,10 @@ void Automation::Initialisation()
 	messageHandler.SetHandle(experimentLocalSettings.GUIhandle);
 
 	// Initialise instruments
-	InitialisationInstruments();
-
-	// Open instruments
-	InstrumentsOpen();
+	g_pVanne = new CVannes();
+	g_pTemperature = new CTemperature;
+	g_pCalorimeter = new CCalorimeter();
+	g_pPressure = new CPressure();
 
 	// Initialise security
 	InitialisationSecurityManual();
@@ -303,162 +301,17 @@ void Automation::Initialisation()
 	shutdownReason = STOP_CANCEL;
 }
 
-
-// The instruments which the calorimeter uses are defined here
-// Ihave no clue how this works, copied it from the other code
-void Automation::InitialisationInstruments()
-{
-	// Create instruments
-	for (int i = 0; i < NB_OF_INSTRUMENTS; i++) {
-		instrument[i] = new CInstrument();
-	}
-
-	int index_instr = 0;
-
-	AppareilCalo.voie_mesure = VOIE_INDEF;
-	AppareilCalo.index = INDEX_INDEF;
-	AppareilHP.voie_mesure = VOIE_INDEF;
-	AppareilHP.index = INDEX_INDEF;
-	AppareilBP.voie_mesure = VOIE_INDEF;
-	AppareilBP.index = INDEX_INDEF;
-
-	synchCalo = PassageNul;
-	synchHP = PassageNul;
-	synchBP = PassageNul;
-
-	for (int i = 1; i <= NB_OF_INSTRUMENTS; i++)
-	{
-		switch (GetTypeInstrument(i))
-		{
-		case INSTRUMENT_KEITHLEY:
-			instrument[index_instr]->SetParametresInstrument(GetCOMInstrument(i), INSTRUMENT_KEITHLEY);
-			switch (GetFonctionInstrument(i))
-			{
-			case CALO_V1_BP_V2_KEITHLEY:
-				AppareilCalo.voie_mesure = INSTRUMENT_KEYTHLEY_V1;
-				AppareilCalo.index = index_instr;
-				AppareilBP.voie_mesure = INSTRUMENT_KEYTHLEY_V2;
-				AppareilBP.index = index_instr;
-				if (instrument[index_instr]->COM == 1)
-				{
-					synchCalo = PassageCOM1;
-					synchBP = PassageCOM1;
-				}
-				else
-				{
-					synchCalo = PassageCOMs;
-					synchBP = PassageCOMs;
-				}
-				break;
-
-			case CALO_V1_HP_V2_KEITHLEY:
-				AppareilCalo.voie_mesure = INSTRUMENT_KEYTHLEY_V1;
-				AppareilCalo.index = index_instr;
-				AppareilHP.voie_mesure = INSTRUMENT_KEYTHLEY_V2;
-				AppareilHP.index = index_instr;
-				if (instrument[index_instr]->COM == 1)
-				{
-					synchCalo = PassageCOM1;
-					synchHP = PassageCOM1;
-				}
-				else
-				{
-					synchCalo = PassageCOMs;
-					synchHP = PassageCOMs;
-				}
-				break;
-
-			case CALO_V1_KEITHLEY:
-				AppareilCalo.voie_mesure = INSTRUMENT_KEYTHLEY_V1;
-				AppareilCalo.index = index_instr;
-				if (instrument[index_instr]->COM == 1)
-					synchCalo = PassageCOM1;
-				else
-					synchCalo = PassageCOMs;
-				break;
-
-			case INSTRUMENT_KEYTHLEY_LP_V2:
-				AppareilBP.voie_mesure = INSTRUMENT_KEYTHLEY_V2;
-				AppareilBP.index = index_instr;
-				if (instrument[index_instr]->COM == 1)
-					synchBP = PassageCOM1;
-				else
-					synchBP = PassageCOMs;
-				break;
-
-			case INSTRUMENT_KEYTHLEY_HP_V2:
-				AppareilHP.voie_mesure = INSTRUMENT_KEYTHLEY_V2;
-				AppareilHP.index = index_instr;
-				if (instrument[index_instr]->COM == 1)
-					synchHP = PassageCOM1;
-				else
-					synchHP = PassageCOMs;
-				break;
-
-			default:
-				ASSERT(0); // Should never be reached
-				break;
-			}
-			index_instr++;
-			break;
-
-		case INSTRUMENT_MENSOR:
-			instrument[index_instr]->SetParametresInstrument(GetCOMInstrument(i), INSTRUMENT_MENSOR);
-			if (GetFonctionInstrument(i) == INSTRUMENT_MENSOR_LP)
-			{
-				AppareilBP.voie_mesure = MENSOR_VOIE;
-				AppareilBP.index = index_instr;
-				if (instrument[index_instr]->COM == 1)
-					synchBP = PassageCOM1;
-				else
-					synchBP = PassageCOMs;
-			}
-			else
-			{
-				AppareilHP.voie_mesure = MENSOR_VOIE;
-				AppareilHP.index = index_instr;
-				if (instrument[index_instr]->COM == 1)
-					synchHP = PassageCOM1;
-				else
-					synchHP = PassageCOMs;
-			}
-			index_instr++;
-			break;
-		case INSTRUMENT_NONE:
-		case INSTRUMENT_UNDEF:
-		case INSTRUMENT_INEXIST:
-		default:
-			ASSERT(0); // Should never be reached
-			break;
-		}
-	}
-}
-
-void Automation::InstrumentsOpen()
-{
-	for (int i = 0; i<NB_OF_INSTRUMENTS; i++)
-		instrument[i]->OuvrirPortInstrument();
-}
-
-void Automation::InstrumentsClose()
-{
-	for (int i = 0; i<NB_OF_INSTRUMENTS; i++)
-		instrument[i]->FermerPortInstrument();
-}
-
 // Function which makes sure everything is shutdown gracefully
 void Automation::DeInitialise()
 {
 	// Close valves/pump
 	ControlMechanismsCloseAll();  // - causes memory leak when ran at the end of the program
 
-	// Close instruments
-	InstrumentsClose();
-
 	// Delete instruments
-	for (int i = 0; i < NB_OF_INSTRUMENTS; i++) {
-		delete instrument[i];
-	}
+	delete g_pVanne;
+	delete g_pTemperature;
+	delete g_pCalorimeter;
+	delete g_pPressure;
 
 	// Destroy the events
 	CloseHandle(h_MeasurementThreadStartEvent);
@@ -469,9 +322,6 @@ void Automation::DeInitialise()
 	
 	// Destroy the critical sections
 	DeleteCriticalSection(&criticalSection);
-
-	// Delete temperature class
-	delete g_pTemperature;
 }
 
 

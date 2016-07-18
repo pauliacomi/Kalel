@@ -21,20 +21,20 @@ public:
 	~CTemperature(void);
 
 	// Pass in the references to double variables to get the three temperatures
-	void Temperature(double* Temperature_Calo, double* Temperature_Cage, double* Temperature_Piece);
+	bool Read(double* Temperature_Calo, double* Temperature_Cage, double* Temperature_Piece);
 
 	// Pass in the references to float variables to get the three temperatures
-	void Temperature(float* Temperature_Calo, float* Temperature_Cage, float* Temperature_Piece);
+	bool Read(float* Temperature_Calo, float* Temperature_Cage, float* Temperature_Piece);
 	
 
 	// Get calorimeter temperature
-	double TemperatureCalo();
+	double ReadCalo();
 
 	// Get cage temperature
-	double TemperatureCage();
+	double ReadCage();
 
 	// Get room temperature
-	double TemperaturePiece();
+	double ReadPiece();
 
 	// Get the usb port for temperature readings
 	int PortUSB();

@@ -175,10 +175,10 @@ UINT ThreadManager::ThreadMainWorkerStarter(LPVOID pParam)
 void ThreadManager::ThreadMainWorker()
 {
 	// Create the class to deal with the automatic functionality
-	automation = new Automation(pVanne, experimentSettings);		// !not sure i like this tbh. does this make the vanne object common between threads?
+	automation = new Automation(experimentSettings);
 
 	// Launch functionality
-	//automation->Execution();
+	automation->Execution();
 }
 
 

@@ -63,6 +63,7 @@ void Initialisation_parametres()
 	WritePrivateProfileString(_T("Appareil"),_T("Presence_Tuyere_Sonique"),_T("Vrai"),Fichier_parametres);
 	WritePrivateProfileString(_T("Appareil"),_T("Volume_ref"),_T("1"),Fichier_parametres);
 	WritePrivateProfileString(_T("Appareil"),_T("Volume_P6"),_T("1"),Fichier_parametres);
+	WritePrivateProfileString(_T("Appareil"),_T("Instrument_number"), _T("3"), Fichier_parametres);
 
 	WritePrivateProfileString(_T("Connection"),_T("USB_Vannes"),_T("1"),Fichier_parametres);
 	WritePrivateProfileString(_T("Connection"),_T("USB_Temperature"),_T("2"),Fichier_parametres);
@@ -220,6 +221,13 @@ float GetVolumeP6()
 	return atof(ConvertVolumeP6.c_str());
 }
 
+int GetNumberInstruments()
+{
+	TCHAR StrNumberInstruments[nSizeInt];
+	GetPrivateProfileString(_T("Appareil"), _T("Instrument_number"),
+		_T("1"), StrNumberInstruments, nSizeInt, Fichier_parametres);
+	return _ttoi(StrNumberInstruments);
+}
 
 int GetTypeInstrument(int num)
 {

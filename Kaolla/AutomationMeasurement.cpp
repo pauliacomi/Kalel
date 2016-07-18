@@ -87,11 +87,14 @@ DWORD WINAPI Automation::ThreadProc_ReadTemperature(LPVOID lpParam)
 void Automation::ReadCalorimeter()
 {
 	// Read the value from the calorimeter
-	double temp = fluxConverter.ConversionCalo(ReadMeasurementFromDevice(AppareilCalo));
+	double calorimeter;
+	if (g_pCalorimeter->Read(&calorimeter) == false) {
+
+	}
 
 	// Write it in the shared object
 	EnterCriticalSection(&criticalSection);
-	experimentLocalData.resultCalorimeter = temp;
+	experimentLocalData.resultCalorimeter = calorimeter;
 	LeaveCriticalSection(&criticalSection);
 }
 
@@ -99,12 +102,14 @@ void Automation::ReadCalorimeter()
 void Automation::ReadLowPressure()
 {
 	// Read the value from the calorimeter
-	double temp = ReadMeasurementFromDevice(AppareilBP);
-	temp = fluxConverter.ConversionCalo(temp);
+	double pressureLowRange;
+	if (g_pPressure->ReadLowRange(&pressureLowRange) == false) {
 
+	}
+	
 	// Write it in the shared object
 	EnterCriticalSection(&criticalSection);
-	experimentLocalData.pressureLow = temp;
+	experimentLocalData.pressureLow = pressureLowRange;
 	LeaveCriticalSection(&criticalSection);
 }
 
@@ -112,11 +117,14 @@ void Automation::ReadLowPressure()
 void Automation::ReadHighPressure()
 {
 	// Read the value from the calorimeter
-	double temp = fluxConverter.ConversionCalo(ReadMeasurementFromDevice(AppareilHP));
+	double pressureHighRange;
+	if (g_pPressure->ReadLowRange(&pressureHighRange) == false) {
+
+	}
 
 	// Write it in the shared object
 	EnterCriticalSection(&criticalSection);
-	experimentLocalData.pressureHigh = temp;
+	experimentLocalData.pressureHigh = pressureHighRange;
 	LeaveCriticalSection(&criticalSection);
 }
 
@@ -124,48 +132,14 @@ void Automation::ReadTemperatures()	// another problem is that the threads are r
 {
 	// Read the value from the calorimeter
 	double dTemperatureCalo, dTemperatureCage, dTemperaturePiece;
+	if (g_pTemperature->Read(&dTemperatureCalo, &dTemperatureCage, &dTemperaturePiece) == false) {
 
-	g_pTemperature->Temperature(&dTemperatureCalo, &dTemperatureCage, &dTemperaturePiece);
-
-	srand(time(NULL)); // temp
+	}
 
 	// Write it in the shared object
 	EnterCriticalSection(&criticalSection); 
-	experimentLocalData.temperatureCalo = 29 + (rand() % 2);
-	experimentLocalData.temperatureCage = 29 + (rand() % 2);;
-	experimentLocalData.temperatureRoom = 29 + (rand() % 2);;
-
-	//experimentLocalData.temperatureCalo = (float)dTemperatureCalo;
-	//experimentLocalData.temperatureCage = (float)dTemperatureCage;
-	//experimentLocalData.temperatureRoom = (float)dTemperaturePiece;
+	experimentLocalData.temperatureCalo = dTemperatureCalo;
+	experimentLocalData.temperatureCage = dTemperatureCage;
+	experimentLocalData.temperatureRoom = dTemperaturePiece;
 	LeaveCriticalSection(&criticalSection);
-
-}
-
-
-
-///------------------- Other functions
-
-double Automation::ReadMeasurementFromDevice(ConnectionMesure Appareil)
-{
-	srand(time(NULL)); // temp
-	double tsp;
-	if (Appareil.voie_mesure == INSTRUMENT_KEYTHLEY_V1) {
-		tsp = 1 + ((double)(rand() % 100) / 500);
-		return tsp;
-		//return instrument[Appareil.index]->LireKeithley_Voie1();
-	}
-		
-	if (Appareil.voie_mesure == INSTRUMENT_KEYTHLEY_V2) {
-		tsp = 0.1 + ((double)(rand() % 100) / 500);
-		return tsp;
-		//return instrument[Appareil.index]->LireKeithley_Voie2();
-	}
-
-	if (Appareil.voie_mesure == MENSOR_VOIE) {
-		tsp = 0.1 + ((double)(rand() % 100) / 500);
-		return tsp;
-		//return instrument[Appareil.index]->LireMensor();
-	}
-	return ERROR_MESURE;
 }

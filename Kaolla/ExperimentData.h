@@ -27,9 +27,9 @@ public:
 	int verificationStep;					// The security check steps
 
 	// Time
-	float experimentTime;					// Time from the experiment start
-	float timeToEquilibrate;				// The amount of time that the waiting + recording functionality will run before returning to an active state
-	float timeToEquilibrateCurrent;			// The current time of waiting
+	double experimentTime;					// Time from the experiment start
+	double timeToEquilibrate;				// The amount of time that the waiting + recording functionality will run before returning to an active state
+	double timeToEquilibrateCurrent;		// The current time of waiting
 	
 	// Counters
 	int injectionAttemptCounter;			// Counter for the injections

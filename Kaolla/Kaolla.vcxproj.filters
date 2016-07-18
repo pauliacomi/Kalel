@@ -88,9 +88,6 @@
     <Filter Include="Source Files\Backend">
       <UniqueIdentifier>{b22e0119-9154-40a6-9382-128eee7e473d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Backend\National Instruments">
-      <UniqueIdentifier>{dc56d958-654e-4892-8e96-414aa9ee30d7}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Backend\RS232">
       <UniqueIdentifier>{18ca9bec-3aab-43ec-91e0-a16ba38df627}</UniqueIdentifier>
     </Filter>
@@ -108,9 +105,6 @@
     </Filter>
     <Filter Include="Header Files\Backend\RS232">
       <UniqueIdentifier>{45a6839d-1ded-4ae2-af12-69bfce5d5a95}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Backend\National Instruments">
-      <UniqueIdentifier>{4923e287-e684-4a37-851e-0fba72e00832}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\Old">
       <UniqueIdentifier>{96d2c0e6-0df0-4f78-9127-a353892d9380}</UniqueIdentifier>
@@ -150,6 +144,18 @@
     </Filter>
     <Filter Include="Source Files\GUI\Dialogs\Experiment Parameters\Stored Parameters">
       <UniqueIdentifier>{2becea59-6e89-4f33-ab11-05baf2ed04cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Backend\USB">
+      <UniqueIdentifier>{dc56d958-654e-4892-8e96-414aa9ee30d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Backend\Wrapper Classes">
+      <UniqueIdentifier>{9a6ee88c-d35f-42c7-9867-4a61a9e66eaf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Backend\USB">
+      <UniqueIdentifier>{4923e287-e684-4a37-851e-0fba72e00832}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Backend\Wrapper Classes">
+      <UniqueIdentifier>{f69c1726-0f15-433b-82e1-f46680256b52}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -199,19 +205,13 @@
       <Filter>Header Files\Backend\RS232</Filter>
     </ClInclude>
     <ClInclude Include="NI_USB_6008.h">
-      <Filter>Header Files\Backend\National Instruments</Filter>
+      <Filter>Header Files\Backend\USB</Filter>
     </ClInclude>
     <ClInclude Include="NI_USB_9211A.h">
-      <Filter>Header Files\Backend\National Instruments</Filter>
+      <Filter>Header Files\Backend\USB</Filter>
     </ClInclude>
     <ClInclude Include="NIDAQmx.h">
-      <Filter>Header Files\Backend\National Instruments</Filter>
-    </ClInclude>
-    <ClInclude Include="Temperature.h">
-      <Filter>Header Files\Backend\National Instruments</Filter>
-    </ClInclude>
-    <ClInclude Include="Vannes.h">
-      <Filter>Header Files\Backend\National Instruments</Filter>
+      <Filter>Header Files\Backend\USB</Filter>
     </ClInclude>
     <ClInclude Include="Parametres.h">
       <Filter>Header Files\Parameters</Filter>
@@ -372,11 +372,17 @@
     <ClInclude Include="DialogCell.h">
       <Filter>Header Files\GUI\Dialogs\Experimental Parameters\Stored Parameters</Filter>
     </ClInclude>
-    <ClInclude Include="ConnectionMesure.h">
-      <Filter>Header Files\Backend</Filter>
+    <ClInclude Include="Calorimeter.h">
+      <Filter>Header Files\Backend\Wrapper Classes</Filter>
     </ClInclude>
-    <ClInclude Include="Instrument.h">
-      <Filter>Header Files\Backend</Filter>
+    <ClInclude Include="Pressure.h">
+      <Filter>Header Files\Backend\Wrapper Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Temperature.h">
+      <Filter>Header Files\Backend\Wrapper Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Vannes.h">
+      <Filter>Header Files\Backend\Wrapper Classes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -423,16 +429,10 @@
       <Filter>Source Files\Backend\RS232</Filter>
     </ClCompile>
     <ClCompile Include="NI_USB_6008.cpp">
-      <Filter>Source Files\Backend\National Instruments</Filter>
+      <Filter>Source Files\Backend\USB</Filter>
     </ClCompile>
     <ClCompile Include="NI_USB_9211A.cpp">
-      <Filter>Source Files\Backend\National Instruments</Filter>
-    </ClCompile>
-    <ClCompile Include="Temperature.cpp">
-      <Filter>Source Files\Backend\National Instruments</Filter>
-    </ClCompile>
-    <ClCompile Include="Vannes.cpp">
-      <Filter>Source Files\Backend\National Instruments</Filter>
+      <Filter>Source Files\Backend\USB</Filter>
     </ClCompile>
     <ClCompile Include="Parametres.cpp">
       <Filter>Source Files\Parameters</Filter>
@@ -686,11 +686,17 @@
     <ClCompile Include="AutomationVacuum.cpp">
       <Filter>Source Files\Automation\Class</Filter>
     </ClCompile>
-    <ClCompile Include="Instrument.cpp">
-      <Filter>Source Files\Backend</Filter>
+    <ClCompile Include="Temperature.cpp">
+      <Filter>Source Files\Backend\Wrapper Classes</Filter>
     </ClCompile>
-    <ClCompile Include="ConnectionMesure.cpp">
-      <Filter>Source Files\Backend</Filter>
+    <ClCompile Include="Vannes.cpp">
+      <Filter>Source Files\Backend\Wrapper Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="Calorimeter.cpp">
+      <Filter>Source Files\Backend\Wrapper Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="Pressure.cpp">
+      <Filter>Source Files\Backend\Wrapper Classes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -746,7 +752,7 @@
   </ItemGroup>
   <ItemGroup>
     <Library Include="NIDAQmx.lib">
-      <Filter>Header Files\Backend\National Instruments</Filter>
+      <Filter>Header Files\Backend\USB</Filter>
     </Library>
   </ItemGroup>
 </Project>

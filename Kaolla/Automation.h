@@ -5,7 +5,6 @@
 // REQUIRED INCLUDES
 
 #include "Classes_experiences.h"			// Resource where templates for all the data are stored, might be worth replacing with a single data type/class 
-#include "ConnectionMesure.h"				// 
 #include "StringTable.h"					// Definitions for the text in the messages
 
 // Defines
@@ -19,13 +18,12 @@
 #include "ExperimentSettings.h"	
 
 // Measurement and manipulation classes
-#include "Keithley.h"				// Keithley
-#include "Mensor.h"					// Mensor
-#include "Vannes.h"					// Valves
-#include "Instrument.h"				// Instruments
+#include "Vannes.h"					// Controlling valves
 #include "Temperature.h"			// Temperature recording
+#include "Pressure.h"				// Pressure recording
+#include "Calorimeter.h"			// Calorimeter recording
+
 #include "Chrono.h"					// Time keeping
-#include "FluxConverter.h"			// Conversions
 
 // std::functionality
 #include <sstream>			
@@ -33,7 +31,7 @@
 class Automation
 {
 public:
-	Automation(CVannes* vannes, ExperimentSettings* exps);
+	Automation(ExperimentSettings* exps);
 	~Automation();
 
 
@@ -45,16 +43,15 @@ public:
 	// Pointers
 	//------------------------------------------------------------
 
-	
-	CInstrument* instrument[NB_OF_INSTRUMENTS];			// Array of pointers that hold CInstrument classes
 
-	// USB instruments
+	// Instruments
 	CVannes* g_pVanne;									// Pointer to the valve opening class
 	CTemperature* g_pTemperature;						// Pointer to the class that deals with temperature recording
+	CCalorimeter * g_pCalorimeter;						// Pointer to the class that deals with calorimeter recording
+	CPressure* g_pPressure;								// Pointer to the class that deals with pressure recording
 
 	ExperimentSettings* experimentSettings;				//
 	ExperimentSettings experimentLocalSettings;			// 
-
 	ExperimentData experimentLocalData;					// 
 	
 	
@@ -62,23 +59,14 @@ public:
 	// Objects 
 	//------------------------------------------------------------
 	
-	// RS232 instruments
-	Keithley calorimeter;								// Pointer to the class that deals with the Keithley
-	Mensor pressureLowPT, pressureHighPT;				// Pointer to the class that deals with the Mensor
-
 	ofstream fileStream;								// The file stream is stored in this variable
 
 	MFCMessageHandler messageHandler;					// This class will send all the messages to the GUI using MFC's message pump
-
-	ConnectionMesure AppareilCalo;						// Stores where each instrument index and number is
-	ConnectionMesure AppareilHP;						// Stores where each instrument index and number is
-	ConnectionMesure AppareilBP;						// Stores where each instrument index and number is
 
 	CChrono timerExperiment;							// Class for measuring the time from the experiment start
 	CChrono timerMeasurement;							// Class for measuring the time between each measurement
 	CChrono timerWaiting;								// Class for measuring the time to wait
 	
-	FluxConverter fluxConverter;						// Will convert between several types of raw results from instruments
 														
 	//------------------------------------------------------------
 	// Syncronisation primitives and threads
@@ -113,12 +101,6 @@ public:
 	bool paused;
 	int shutdownReason;
 
-	// Synchronisation?
-	int synchCalo;
-	int synchHP;
-	int synchBP;
-
-
 
 /**********************************************************************************************************************************
 // Functions main cpp
@@ -126,12 +108,6 @@ public:
 	//------------------------------------------------------------
 	// Set Data
 	//------------------------------------------------------------
-
-	void SetKeithley(Keithley * Keith);
-	void SetMensor(Mensor * Mens);
-	void SetVannes(CVannes * pVannes);
-	void SetTemperature(CTemperature * pTemperature);
-	void SetDataPointer(ExperimentSettings * eSettings);
 
 public:
 	void SetData();
@@ -151,14 +127,11 @@ private:
 	//------------------------------------------------------------
 
 	void Initialisation();
-	void InitialisationInstruments();
-	void InstrumentsOpen();
 
 	//------------------------------------------------------------
 	// Termination
 	//------------------------------------------------------------
 
-	void InstrumentsClose();
 	void DeInitialise();
 
 
@@ -241,8 +214,6 @@ protected:
 	void ReadLowPressure();
 	void ReadHighPressure();
 	void ReadTemperatures();
-
-	double ReadMeasurementFromDevice(ConnectionMesure Appareil);
 
 
 /**********************************************************************************************************************************

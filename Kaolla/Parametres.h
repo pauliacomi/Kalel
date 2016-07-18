@@ -37,6 +37,8 @@ int GetPourcentageAvertissement();
 float GetVolumeRef();
 float GetVolumeP6();
 
+int GetNumberInstruments();
+
 int GetTypeInstrument(int num);
 int GetTypeInstrument1();
 int GetTypeInstrument2();

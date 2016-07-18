@@ -15,23 +15,25 @@ CTemperature::~CTemperature(void)
 }
 
 
-void CTemperature::Temperature(double* Temperature_Calo, double* Temperature_Cage, double* Temperature_Piece)
+bool CTemperature::Read(double* Temperature_Calo, double* Temperature_Cage, double* Temperature_Piece)
 {
 	NI_USB_9211A::LectureThermocouple_de_0_a_2(Temperature_Calo,Temperature_Cage,Temperature_Piece);
+	return true;
 } 
 
-void CTemperature::Temperature(float* Temperature_Calo, float* Temperature_Cage, float* Temperature_Piece)
+bool CTemperature::Read(float* Temperature_Calo, float* Temperature_Cage, float* Temperature_Piece)
 {
 	NI_USB_9211A::LectureThermocouple_de_0_a_2((double*)&Temperature_Calo,(double*)&Temperature_Cage,(double*)&Temperature_Piece);
+	return true;
 } 
 
-double CTemperature::TemperatureCalo()
+double CTemperature::ReadCalo()
 {	return NI_USB_9211A::LectureThermocouple_0();	}
 
-double CTemperature::TemperatureCage()
+double CTemperature::ReadCage()
 {	return NI_USB_9211A::LectureThermocouple_1();	}
 
-double CTemperature::TemperaturePiece()
+double CTemperature::ReadPiece()
 {	return NI_USB_9211A::LectureThermocouple_2();	}
 
 
