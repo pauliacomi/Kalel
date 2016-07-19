@@ -384,6 +384,9 @@
     <ClInclude Include="Vannes.h">
       <Filter>Header Files\Backend\Wrapper Classes</Filter>
     </ClInclude>
+    <ClInclude Include="ConnectionMesure.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Kaolla.cpp">
@@ -697,6 +700,9 @@
     </ClCompile>
     <ClCompile Include="Pressure.cpp">
       <Filter>Source Files\Backend\Wrapper Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="ConnectionMesure.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -17,14 +17,12 @@ CTemperature::~CTemperature(void)
 
 bool CTemperature::Read(double* Temperature_Calo, double* Temperature_Cage, double* Temperature_Piece)
 {
-	NI_USB_9211A::LectureThermocouple_de_0_a_2(Temperature_Calo,Temperature_Cage,Temperature_Piece);
-	return true;
+	return NI_USB_9211A::LectureThermocouple_de_0_a_2(Temperature_Calo,Temperature_Cage,Temperature_Piece);
 } 
 
 bool CTemperature::Read(float* Temperature_Calo, float* Temperature_Cage, float* Temperature_Piece)
 {
-	NI_USB_9211A::LectureThermocouple_de_0_a_2((double*)&Temperature_Calo,(double*)&Temperature_Cage,(double*)&Temperature_Piece);
-	return true;
+	return NI_USB_9211A::LectureThermocouple_de_0_a_2((double*)&Temperature_Calo,(double*)&Temperature_Cage,(double*)&Temperature_Piece);
 } 
 
 double CTemperature::ReadCalo()

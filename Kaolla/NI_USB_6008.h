@@ -4,6 +4,7 @@
 
 #include "NIDAQmx.h"
 #include <math.h>
+#include <string>
 
 #define ouvert 1
 #define ferme  0
@@ -28,6 +29,7 @@ private:
 	bool ActionPort0();
 	bool ActionPort1();
 	bool ActionDigital(char chan[], uInt32 w_data[]);
+	std::string errorKeep;
 
 public:
 	
@@ -50,6 +52,9 @@ public:
 	bool EstOuvertPort1(int num);
 	bool EstFermePort1(int num);
 
+	// Error retrieval
+
+	void GetError(std::string* err);
 };
 
 #endif

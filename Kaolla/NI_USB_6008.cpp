@@ -118,6 +118,7 @@ Error:
 	if (DAQmxFailed(error))
 	{
 		DAQmxGetExtendedErrorInfo(errBuff, 2048);
+		errorKeep.assign(errBuff);
 	}
 	// Clear task to free memory
 	if (taskHandle != 0)
@@ -128,7 +129,10 @@ Error:
 	return false;
 }
 
-
+void NI_USB_6008::GetError(std::string* err)
+{
+	*err = errorKeep;
+}
 
 ////////////////////////////////////////
 //
@@ -272,3 +276,5 @@ bool NI_USB_6008::EstOuvertPort1(int num)
 
 bool NI_USB_6008::EstFermePort1(int num)
 {return (etatPort1[num]==ferme);}
+
+

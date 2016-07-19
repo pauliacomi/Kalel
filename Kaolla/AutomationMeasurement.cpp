@@ -89,7 +89,7 @@ void Automation::ReadCalorimeter()
 	// Read the value from the calorimeter
 	double calorimeter;
 	if (g_pCalorimeter->Read(&calorimeter) == false) {
-
+		
 	}
 
 	// Write it in the shared object
@@ -133,7 +133,8 @@ void Automation::ReadTemperatures()	// another problem is that the threads are r
 	// Read the value from the calorimeter
 	double dTemperatureCalo, dTemperatureCage, dTemperaturePiece;
 	if (g_pTemperature->Read(&dTemperatureCalo, &dTemperatureCage, &dTemperaturePiece) == false) {
-
+		string error;
+		g_pTemperature->GetError(&error);
 	}
 
 	// Write it in the shared object

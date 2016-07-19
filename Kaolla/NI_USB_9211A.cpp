@@ -34,7 +34,7 @@ void NI_USB_9211A::SetDevNI_USB_9211A(int dev)
 }
 
 
-void NI_USB_9211A::LectureThermocouple ()
+bool NI_USB_9211A::LectureThermocouple ()
 {
 	
 	// Task parameters
@@ -82,12 +82,16 @@ void NI_USB_9211A::LectureThermocouple ()
 	TC1 = data[1];
 	TC2 = data[2];
 	TC3 = data[3];
+
+	return true;
+
 	
 	// In case of error
 Error:
     if (DAQmxFailed (error))
 	{
 		DAQmxGetExtendedErrorInfo (errBuff, 2048);
+		errorKeep.assign(errBuff);
 		TC0 = error;
 		TC1 = error;
 		TC2 = error;
@@ -99,101 +103,178 @@ Error:
 		DAQmxStopTask(taskHandle);
 		DAQmxClearTask(taskHandle);
 	}
+
+	return false;
 }
 
-
+void NI_USB_9211A::GetError(std::string* err)
+{
+	*err = errorKeep;
+}
 
 //////////////////////////////////////////
 //
 // Individual functions to read data
 
-void NI_USB_9211A::LectureTousThermocouple(double* Valeur0,double* Valeur1,double* Valeur2,double* Valeur3)
+bool NI_USB_9211A::LectureTousThermocouple(double* Valeur0,double* Valeur1,double* Valeur2,double* Valeur3)
 {
-	LectureThermocouple();
+	bool result = LectureThermocouple();
 	*Valeur0 = TC0;
 	*Valeur1 = TC1;
 	*Valeur2 = TC2;
 	*Valeur3 = TC3;
+
+	if (result == true)
+	{
+		return true;
+	}
+	return false;
 }
 
-void NI_USB_9211A::LectureThermocouple_de_0_a_2(double* Valeur0,double* Valeur1,double* Valeur2)
+bool NI_USB_9211A::LectureThermocouple_de_0_a_2(double* Valeur0,double* Valeur1,double* Valeur2)
 {
-	LectureThermocouple();
+	bool result = LectureThermocouple();
 	*Valeur0 = TC0;
 	*Valeur1 = TC1;
 	*Valeur2 = TC2;
+
+	if (result == true)
+	{
+		return true;
+	}
+	return false;
 }
 
-void NI_USB_9211A::LectureThermocouple_de_1_a_3(double* Valeur1,double* Valeur2,double* Valeur3)
+bool NI_USB_9211A::LectureThermocouple_de_1_a_3(double* Valeur1,double* Valeur2,double* Valeur3)
 {
-	LectureThermocouple();
+	bool result = LectureThermocouple();
 	*Valeur1 = TC1;
 	*Valeur2 = TC2;
 	*Valeur3 = TC3;
+
+	if (result == true)
+	{
+		return true;
+	}
+	return false;
 }
 
-void NI_USB_9211A::LectureThermocouple_0_1_3(double* Valeur0,double* Valeur1,double* Valeur3)
+bool NI_USB_9211A::LectureThermocouple_0_1_3(double* Valeur0,double* Valeur1,double* Valeur3)
 {
-	LectureThermocouple();
+	bool result = LectureThermocouple();
 	*Valeur0 = TC0;
 	*Valeur1 = TC1;
 	*Valeur3 = TC3;
+
+	if (result == true)
+	{
+		return true;
+	}
+	return false;
 }
 
-void NI_USB_9211A::LectureThermocouple_0_2_3(double* Valeur0,double* Valeur2,double* Valeur3)
+bool NI_USB_9211A::LectureThermocouple_0_2_3(double* Valeur0,double* Valeur2,double* Valeur3)
 {
-	LectureThermocouple();
+	bool result = LectureThermocouple();
 	*Valeur0 = TC0;
 	*Valeur2 = TC2;
 	*Valeur3 = TC3;
+
+	if (result == true)
+	{
+		return true;
+	}
+	return false;
 }
 
-void NI_USB_9211A::LectureThermocouple_0_1(double* Valeur0,double* Valeur1)
+bool NI_USB_9211A::LectureThermocouple_0_1(double* Valeur0,double* Valeur1)
 {
-	LectureThermocouple();
+	bool result = LectureThermocouple();
 	*Valeur0 = TC0;
 	*Valeur1 = TC1;
+
+	if (result == true)
+	{
+		return true;
+	}
+	return false;
 }
 
-void NI_USB_9211A::LectureThermocouple_0_2(double* Valeur0,double* Valeur2)
+bool NI_USB_9211A::LectureThermocouple_0_2(double* Valeur0,double* Valeur2)
 {
-	LectureThermocouple();
+	bool result = LectureThermocouple();
 	*Valeur0 = TC0;
 	*Valeur2 = TC2;
+
+	if (result == true)
+	{
+		return true;
+	}
+	return false;
 }
 
-void NI_USB_9211A::LectureThermocouple_0_3(double* Valeur0,double* Valeur3)
+bool NI_USB_9211A::LectureThermocouple_0_3(double* Valeur0,double* Valeur3)
 {
-	LectureThermocouple();
+	bool result = LectureThermocouple();
 	*Valeur0 = TC0;
 	*Valeur3 = TC3;
+
+	if (result == true)
+	{
+		return true;
+	}
+	return false;
 }
 
-void NI_USB_9211A::LectureThermocouple_1_2(double* Valeur1,double* Valeur2)
+bool NI_USB_9211A::LectureThermocouple_1_2(double* Valeur1,double* Valeur2)
 {
-	LectureThermocouple();
+	bool result = LectureThermocouple();
 	*Valeur1 = TC1;
 	*Valeur2 = TC2;
+
+	if (result == true)
+	{
+		return true;
+	}
+	return false;
 }
 
-void NI_USB_9211A::LectureThermocouple_1_3(double* Valeur1,double* Valeur3)
+bool NI_USB_9211A::LectureThermocouple_1_3(double* Valeur1,double* Valeur3)
 {
-	LectureThermocouple();
+	bool result = LectureThermocouple();
 	*Valeur1 = TC1;
 	*Valeur3 = TC3;
+
+	if (result == true)
+	{
+		return true;
+	}
+	return false;
 }
 
-void NI_USB_9211A::LectureThermocouple_2_3(double* Valeur2,double* Valeur3)
+bool NI_USB_9211A::LectureThermocouple_2_3(double* Valeur2,double* Valeur3)
 {
-	LectureThermocouple();
+	bool result = LectureThermocouple();
 	*Valeur2 = TC2;
 	*Valeur3 = TC3;
+
+	if (result == true)
+	{
+		return true;
+	}
+	return false;
 }
 
-void NI_USB_9211A::LectureThermocouple_0(double* Valeur0)
+bool NI_USB_9211A::LectureThermocouple_0(double* Valeur0)
 {
-	LectureThermocouple();
+	bool result = LectureThermocouple();
 	*Valeur0 = TC0;
+
+	if (result == true)
+	{
+		return true;
+	}
+	return false;
 }
 
 
@@ -204,10 +285,16 @@ double NI_USB_9211A::LectureThermocouple_0()
 }
 
 
-void NI_USB_9211A::LectureThermocouple_1(double* Valeur1)
+bool NI_USB_9211A::LectureThermocouple_1(double* Valeur1)
 {
-	LectureThermocouple();
+	bool result = LectureThermocouple();
 	*Valeur1 = TC1;
+
+	if (result == true)
+	{
+		return true;
+	}
+	return false;
 }
 
 double NI_USB_9211A::LectureThermocouple_1()
@@ -216,10 +303,16 @@ double NI_USB_9211A::LectureThermocouple_1()
 	return TC1;
 }
 
-void NI_USB_9211A::LectureThermocouple_2(double* Valeur2)
+bool NI_USB_9211A::LectureThermocouple_2(double* Valeur2)
 {
-	LectureThermocouple();
+	bool result = LectureThermocouple();
 	*Valeur2 = TC2;
+
+	if (result == true)
+	{
+		return true;
+	}
+	return false;
 }
 
 double NI_USB_9211A::LectureThermocouple_2()
@@ -228,10 +321,16 @@ double NI_USB_9211A::LectureThermocouple_2()
 	return TC2;
 }
 
-void NI_USB_9211A::LectureThermocouple_3(double* Valeur3)
+bool NI_USB_9211A::LectureThermocouple_3(double* Valeur3)
 {
-	LectureThermocouple();
+	bool result = LectureThermocouple();
 	*Valeur3 = TC3;
+
+	if (result == true)
+	{
+		return true;
+	}
+	return false;
 }
 
 double NI_USB_9211A::LectureThermocouple_3()
