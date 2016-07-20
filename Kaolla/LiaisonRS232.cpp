@@ -61,35 +61,44 @@ LiaisonRS232::~LiaisonRS232()
 
 bool LiaisonRS232::OpenCOM(int pnId)
 {
+	// Construct port specifier
 	char szCOM[5];
-
-    /* construction du nom du port, tentative d'ouverture */
     sprintf_s(szCOM, "COM%d", pnId);
 	
-    g_hCOM = CreateFile(szCOM, GENERIC_READ|GENERIC_WRITE, 0, NULL,
-                        OPEN_EXISTING, FILE_ATTRIBUTE_SYSTEM, NULL);
+	// Open COM port
+    g_hCOM = CreateFile(
+		szCOM,									// Port specifier 
+		GENERIC_READ|GENERIC_WRITE,				// Access mode
+		0,										//
+		NULL,									// security  (None)
+		OPEN_EXISTING,							// creation : open_existing
+		FILE_ATTRIBUTE_SYSTEM,					//
+		NULL									// no templates file for COM poort
+	);
 
+	// Error check
     if(g_hCOM == INVALID_HANDLE_VALUE)
     {
-        printf("Erreur lors de l'ouverture du port COM%d", pnId);
-        return FALSE;
+        errorKeep = "Error opening port COM" + to_string(pnId);
+        return false;
     }
 
     /* affectation taille des tampons d'émission et de réception */
     SetupComm(g_hCOM, RX_SIZE, TX_SIZE);
 
-    /* configuration du port COM */
+    // Configure port
     if(!SetCommTimeouts(g_hCOM, &g_cto) || !SetCommState(g_hCOM, &g_dcb))
     {
-        printf("Erreur lors de la configuration du port COM%d", pnId);
+		errorKeep = "Error configuring port COM" + to_string(pnId);
         CloseHandle(g_hCOM);
-        return FALSE;
+        return false;
     }
 
     /* on vide les tampons d'émission et de réception, mise à 1 DTR */
     PurgeComm(g_hCOM, PURGE_TXCLEAR|PURGE_RXCLEAR|PURGE_TXABORT|PURGE_RXABORT);
     EscapeCommFunction(g_hCOM, SETDTR);
-    return TRUE;
+
+    return true;
 }
 
 
@@ -121,4 +130,9 @@ bool LiaisonRS232::CloseCOM()
 		g_hCOM = NULL;
 	}
     return true;
+}
+
+void LiaisonRS232::GetError(std::string* err)
+{
+	*err = errorKeep;
 }

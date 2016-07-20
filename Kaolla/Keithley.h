@@ -11,44 +11,32 @@
 class Keithley :
 	public LiaisonRS232
 {
-private:
-	std::string message;
 
 public:
 	Keithley(void);
 	~Keithley(void);
 
 	bool OpenCOM(int nId);
-	bool OpenCOM(int nId,std::string* info);
 	bool CloseCOM();
-	bool CloseCOM(std::string* info);
 	bool InitKeithley();
-	bool InitKeithley(std::string* info);
-
 
 	// Channel 1 functions
 
 	bool ReadChannel1(std::string* result);
-	bool ReadChannel1(std::string* result, std::string* info);
 	bool ReadChannel1(double* resultat);
-	bool ReadChannel1(double* resultat, std::string* info);
 	bool ReadChannel1(std::string* result, double* resultat);
-	bool ReadChannel1(std::string* result, double* resultat, std::string* info);
 	std::string ReadChannel1();
 	double ReadChannel1_double();
 
 	// Channel 2 functions
 
 	bool ReadChannel2(std::string* result);
-	bool ReadChannel2(std::string* result, std::string* info);
 	bool ReadChannel2(double* resultat);
-	bool ReadChannel2(double* resultat, std::string* info);
 	bool ReadChannel2(std::string* result, double* resultat);
-	bool ReadChannel2(std::string* result, double* resultat, std::string* info);
 	std::string ReadChannel2();
 	double ReadChannel2_double();
 
-	std::string getMessage();
+
 	double Conversion(std::string resultat);
 };
 #endif

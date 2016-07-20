@@ -13,7 +13,7 @@ CRITICAL_SECTION Sync_keithley;
 Keithley::Keithley(void) : LiaisonRS232()
 {
 	g_dcb.BaudRate = 19200;				// On a le moyen d'augmenter le BaudRate du keithley.
-	message = "Keithley non connecté";
+	errorKeep = "Keithley non connecté";
 
 	// Initialize the critical section
 	InitializeCriticalSection(&Sync_keithley);
@@ -45,21 +45,14 @@ bool Keithley::OpenCOM(int nId)
 
 	if (ouverture)
 	{
-		message = "Keithley ouvert au port COM" + port;
+		errorKeep = "Keithley ouvert au port COM" + port;
 		return true;
 	}
 	else
 	{
-		message = "Erreur : Ouverture du Keithley échoué au port COM" + port;
+		errorKeep += "\nErreur : Ouverture du Keithley échoué au port COM" + port;
 		return false;
 	}
-}
-
-bool Keithley::OpenCOM(int nId,string* info)
-{
-	bool ouverture = OpenCOM(nId);
-	*info = message;
-	return ouverture;
 }
 
 bool Keithley::CloseCOM()
@@ -68,23 +61,15 @@ bool Keithley::CloseCOM()
 
 	if (fermeture)
 	{
-		message = "Le Keithley est fermé";
+		errorKeep = "Le Keithley est fermé";
 		return true;
 	}
 	else
 	{
-		message = "Erreur : La fermeture du Keithley a échoué";
+		errorKeep += "\nErreur : La fermeture du Keithley a échoué";
 		return false;
 	}
 }
-
-bool Keithley::CloseCOM(string *info)
-{
-	bool fermeture = CloseCOM();
-	*info = message;
-	return fermeture;
-}
-
 
 bool Keithley::InitKeithley()
 {
@@ -121,21 +106,14 @@ bool Keithley::InitKeithley()
 
 	if(success)
 	{
-		message = "Initialisation du Keithley réussie";
+		errorKeep = "Initialisation du Keithley réussie";
 		return true;
 	}
 	else
 	{
-		message = "Initialisation échouée";
+		errorKeep = "Initialisation échouée";
 		return false;
 	}
-}
-
-bool Keithley::InitKeithley(string* info)
-{
-	bool initialisation = InitKeithley();
-	*info = message;
-	return initialisation;
 }
 
 
@@ -204,15 +182,8 @@ bool Keithley::ReadChannel1(string* result)
 	temp = temp.substr(0,15);
 	*result = temp;
 
-	message = "Lecture du Channel 1 effectué";
+	errorKeep = "Lecture du Channel 1 effectué";
 	return true;
-}
-
-bool Keithley::ReadChannel1(string* result, string* info)
-{
-	bool read = ReadChannel1(result);
-	*info = message;
-	return read;
 }
 
 
@@ -228,13 +199,6 @@ bool Keithley::ReadChannel1(double* resultat)
 	return read;
 }
 
-bool Keithley::ReadChannel1(double* resultat, string* info)
-{
-	bool read = ReadChannel1(resultat);
-	*info = message;
-	return read;
-}
-
 
 bool Keithley::ReadChannel1(string* result, double* resultat)
 {
@@ -245,12 +209,6 @@ bool Keithley::ReadChannel1(string* result, double* resultat)
 	return read;
 }
 
-bool Keithley::ReadChannel1(string* result, double* resultat, string* info)
-{
-	bool read = ReadChannel1(result,resultat);
-	*info = message;
-	return read;
-}
 
 string Keithley::ReadChannel1()
 {
@@ -315,17 +273,9 @@ bool Keithley::ReadChannel2(string* result)
 	temp = temp.substr(0,15);
 	*result = temp;
 
-	message = "Lecture du Channel 2 effectué";
+	errorKeep = "Lecture du Channel 2 effectué";
 	return true;
 }
-
-bool Keithley::ReadChannel2(string* result, string* info)
-{
-	bool read = ReadChannel2(result);
-	*info = message;
-	return read;
-}
-
 
 
 bool Keithley::ReadChannel2(double* resultat)
@@ -333,13 +283,6 @@ bool Keithley::ReadChannel2(double* resultat)
 	string temp;
 	bool read = ReadChannel2(&temp);
 	*resultat = atof(temp.c_str());
-	return read;
-}
-
-bool Keithley::ReadChannel2(double* resultat, string* info)
-{
-	bool read = ReadChannel2(resultat);
-	*info = message;
 	return read;
 }
 
@@ -353,12 +296,6 @@ bool Keithley::ReadChannel2(string* result, double* resultat)
 	return read;
 }
 
-bool Keithley::ReadChannel2(string* result, double* resultat, string* info)
-{
-	bool read = ReadChannel2(result,resultat);
-	*info = message;
-	return read;
-}
 
 string Keithley::ReadChannel2()
 {
@@ -376,9 +313,6 @@ double Keithley::ReadChannel2_double()
 
 //==================================
 // Autres fonctions
-
-string Keithley::getMessage()
-{return message;}
 
 double Keithley::Conversion(string resultat)
 {return atof(resultat.c_str());}

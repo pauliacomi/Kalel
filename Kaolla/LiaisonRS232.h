@@ -6,6 +6,7 @@
 #ifndef _LIAISONRS232__H_
 #define _LIAISONRS232__H_
 #include <windows.h>
+#include <string>
 
 class LiaisonRS232
 {
@@ -25,9 +26,13 @@ public:
 	// Close the COM port, must always be called to make sure the handle is closed
 	bool CloseCOM();
 
+	// Error reporting
+	void GetError(std::string * err);
+
 protected:
 	HANDLE g_hCOM;
 	COMMTIMEOUTS g_cto;
 	DCB g_dcb;
+	string errorKeep;
 };
 #endif

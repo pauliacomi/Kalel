@@ -26,7 +26,7 @@ CRITICAL_SECTION Sync_mensor;
 
 Mensor::Mensor(void) : LiaisonRS232()
 { 
-	message = "Mensor non connecté";
+	errorKeep = "Mensor non connecté";
 
 	// Initialize the critical section
 	InitializeCriticalSection(&Sync_mensor);
@@ -55,21 +55,14 @@ bool Mensor::OpenCOM(int nId)
 
 	if (ouverture)
 	{
-		message = "Le Mensor est ouvert au port COM" + port;
+		errorKeep = "Le Mensor est ouvert au port COM" + port;
 		return true;
 	}
 	else
 	{
-		message = "Erreur : Ouverture du Mensor échoué au port COM" + port;
+		errorKeep = "Erreur : Ouverture du Mensor échoué au port COM" + port;
 		return false;
 	}
-}
-
-bool Mensor::OpenCOM(int nId, string* info)
-{
-	bool ouverture = OpenCOM(nId);
-	*info = message;
-	return ouverture;
 }
 
 bool Mensor::CloseCOM()
@@ -78,21 +71,14 @@ bool Mensor::CloseCOM()
 
 	if (fermeture)
 	{
-		message = "Le Mensor est fermé";
+		errorKeep = "Le Mensor est fermé";
 		return true;
 	}
 	else
 	{
-		message = "Erreur : La fermeture du Mensor a échoué";
+		errorKeep = "Erreur : La fermeture du Mensor a échoué";
 		return false;
 	}
-}
-
-bool Mensor::CloseCOM(string *info)
-{
-	bool fermeture = CloseCOM();
-	*info = message;
-	return fermeture;
 }
 
 
@@ -139,15 +125,8 @@ bool Mensor::ReadMensor(double* pression)
 	string resultat = buffer;
 	resultat = resultat.substr(4,nbOctetsLus-6);
 	*pression = atof(resultat.c_str()); //conversion du string en float
-	message = "Lecture du Mensor effectué";
+	errorKeep = "Lecture du Mensor effectué";
 	return true;
-}
-
-bool Mensor::ReadMensor(double* pression, string* info)
-{
-	bool read = ReadMensor(pression);
-	*info = message;
-	return read;
 }
 
 double Mensor::ReadMensor()
@@ -156,9 +135,4 @@ double Mensor::ReadMensor()
 	ReadMensor(&pression);
 	return pression;
 }
-
-//================================================================================
-//Renvoie les messages que ce soit d'erreur ou d'information
-string Mensor::getMessage()
-{return message;}
 
