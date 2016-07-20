@@ -274,8 +274,11 @@ void Automation::Initialisation()
 	// Initialise instruments
 	g_pVanne = new CVannes();
 	g_pTemperature = new CTemperature();
-	g_pCalorimeter = new CCalorimeter();
-	g_pPressure = new CPressure();
+	g_pSerialInstruments = new SerialInstruments();
+	if (!g_pSerialInstruments->Init())
+	{
+		//messageHandler.DisplayMessage(g_pSerialInstruments)
+	}
 
 	// Initialise security
 	InitialisationSecurityManual();
@@ -310,8 +313,7 @@ void Automation::DeInitialise()
 	// Delete instruments
 	delete g_pVanne;
 	delete g_pTemperature;
-	delete g_pCalorimeter;
-	delete g_pPressure;
+	delete g_pSerialInstruments;
 
 	// Destroy the events
 	CloseHandle(h_MeasurementThreadStartEvent);

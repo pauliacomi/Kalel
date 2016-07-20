@@ -372,12 +372,6 @@
     <ClInclude Include="DialogCell.h">
       <Filter>Header Files\GUI\Dialogs\Experimental Parameters\Stored Parameters</Filter>
     </ClInclude>
-    <ClInclude Include="Calorimeter.h">
-      <Filter>Header Files\Backend\Wrapper Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="Pressure.h">
-      <Filter>Header Files\Backend\Wrapper Classes</Filter>
-    </ClInclude>
     <ClInclude Include="Temperature.h">
       <Filter>Header Files\Backend\Wrapper Classes</Filter>
     </ClInclude>
@@ -387,7 +381,7 @@
     <ClInclude Include="ConnectionMesure.h">
       <Filter>Header Files\Old</Filter>
     </ClInclude>
-    <ClInclude Include="Instruments.h">
+    <ClInclude Include="SerialInstruments.h">
       <Filter>Header Files\Backend\Wrapper Classes</Filter>
     </ClInclude>
   </ItemGroup>
@@ -698,16 +692,10 @@
     <ClCompile Include="Vannes.cpp">
       <Filter>Source Files\Backend\Wrapper Classes</Filter>
     </ClCompile>
-    <ClCompile Include="Calorimeter.cpp">
-      <Filter>Source Files\Backend\Wrapper Classes</Filter>
-    </ClCompile>
-    <ClCompile Include="Pressure.cpp">
-      <Filter>Source Files\Backend\Wrapper Classes</Filter>
-    </ClCompile>
     <ClCompile Include="ConnectionMesure.cpp">
       <Filter>Source Files\Old</Filter>
     </ClCompile>
-    <ClCompile Include="Instruments.cpp">
+    <ClCompile Include="SerialInstruments.cpp">
       <Filter>Source Files\Backend\Wrapper Classes</Filter>
     </ClCompile>
   </ItemGroup>

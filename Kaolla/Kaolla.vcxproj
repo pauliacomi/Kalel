@@ -29,9 +29,9 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140_xp</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
-    <UseOfMfc>Static</UseOfMfc>
+    <UseOfMfc>Dynamic</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -197,7 +197,6 @@
   <ItemGroup>
     <ClInclude Include="Automation.h" />
     <ClInclude Include="CAdsorptionContinue.h" />
-    <ClInclude Include="Calorimeter.h" />
     <ClInclude Include="CDesorption.h" />
     <ClInclude Include="CDivers.h" />
     <ClInclude Include="CGeneral.h" />
@@ -223,7 +222,7 @@
     <ClInclude Include="Donnees_Experience.h" />
     <ClInclude Include="GrapheView.h" />
     <ClInclude Include="InfoEtape.h" />
-    <ClInclude Include="Instruments.h" />
+    <ClInclude Include="SerialInstruments.h" />
     <ClInclude Include="Kaolla.h" />
     <ClInclude Include="KaollaDoc.h" />
     <ClInclude Include="KaollaView.h" />
@@ -246,7 +245,6 @@
     <ClInclude Include="Parametres_appareil.h" />
     <ClInclude Include="Parametres_experience.h" />
     <ClInclude Include="ParserXML.h" />
-    <ClInclude Include="Pressure.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="StringTable.h" />
     <ClInclude Include="ResourceDialogCell.h" />
@@ -286,7 +284,6 @@
     <ClCompile Include="CAdsorptionContinue.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="Calorimeter.cpp" />
     <ClCompile Include="CDesorption.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
@@ -321,7 +318,7 @@
     <ClCompile Include="Donnees_Experience.cpp" />
     <ClCompile Include="GrapheView.cpp" />
     <ClCompile Include="InfoEtape.cpp" />
-    <ClCompile Include="Instruments.cpp" />
+    <ClCompile Include="SerialInstruments.cpp" />
     <ClCompile Include="Kaolla.cpp" />
     <ClCompile Include="KaollaDoc.cpp" />
     <ClCompile Include="KaollaView.cpp" />
@@ -484,7 +481,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="ParserXML.cpp" />
-    <ClCompile Include="Pressure.cpp" />
     <ClCompile Include="SpinBtnCtrl.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

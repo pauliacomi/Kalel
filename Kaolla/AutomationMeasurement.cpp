@@ -106,12 +106,14 @@ void Automation::ReadCalorimeter()
 	bool success;
 	
 	EnterCriticalSection(&criticalSection);
-	success = g_pCalorimeter->Read(&calorimeter);
+	success = g_pSerialInstruments->ReadCalorimeter(&calorimeter);
 	LeaveCriticalSection(&criticalSection);
 
 	if (success == false) {
 		std::string error;
-		g_pCalorimeter->GetError(&error);
+		EnterCriticalSection(&criticalSection);
+		g_pSerialInstruments->GetErrorCalrimeter(&error);
+		LeaveCriticalSection(&criticalSection);
 		messageHandler.DisplayMessage(GENERIC_STRING, error.c_str());
 	}
 
@@ -129,12 +131,14 @@ void Automation::ReadLowPressure()
 	bool success;
 
 	EnterCriticalSection(&criticalSection);
-	success = g_pPressure->ReadLowRange(&pressureLowRange);
+	success = g_pSerialInstruments->ReadPressureLowRange(&pressureLowRange);
 	LeaveCriticalSection(&criticalSection);
 
 	if (success == false) {
 		std::string error;
-		g_pPressure->GetErrorLowRange(&error);
+		EnterCriticalSection(&criticalSection);
+		g_pSerialInstruments->GetErrorLowRange(&error);
+		LeaveCriticalSection(&criticalSection);
 		messageHandler.DisplayMessage(GENERIC_STRING, error.c_str());
 	}
 	
@@ -152,12 +156,14 @@ void Automation::ReadHighPressure()
 	bool success;
 
 	EnterCriticalSection(&criticalSection);
-	success = g_pPressure->ReadHighRange(&pressureHighRange);
+	success = g_pSerialInstruments->ReadPressureHighRange(&pressureHighRange);
 	LeaveCriticalSection(&criticalSection);
 
 	if (success == false) {
 		std::string error;
-		g_pPressure->GetErrorHighRange(&error);
+		EnterCriticalSection(&criticalSection);
+		g_pSerialInstruments->GetErrorHighRange(&error);
+		LeaveCriticalSection(&criticalSection);
 		messageHandler.DisplayMessage(GENERIC_STRING, error.c_str());
 	}
 
@@ -179,7 +185,9 @@ void Automation::ReadTemperatures()	// another problem is that the threads are r
 
 	if (success == false) {
 		std::string error;
+		EnterCriticalSection(&criticalSection);
 		g_pTemperature->GetError(&error);
+		LeaveCriticalSection(&criticalSection);
 		messageHandler.DisplayMessage(GENERIC_STRING, error.c_str());
 	}
 

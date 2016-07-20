@@ -20,8 +20,7 @@
 // Measurement and manipulation classes
 #include "Vannes.h"					// Controlling valves
 #include "Temperature.h"			// Temperature recording
-#include "Pressure.h"				// Pressure recording
-#include "Calorimeter.h"			// Calorimeter recording
+#include "SerialInstruments.h"		// Pressure & Calorimeter recording
 
 #include "Chrono.h"					// Time keeping
 
@@ -47,8 +46,7 @@ public:
 	// Instruments
 	CVannes* g_pVanne;									// Pointer to the valve opening class
 	CTemperature* g_pTemperature;						// Pointer to the class that deals with temperature recording
-	CCalorimeter * g_pCalorimeter;						// Pointer to the class that deals with calorimeter recording
-	CPressure* g_pPressure;								// Pointer to the class that deals with pressure recording
+	SerialInstruments * g_pSerialInstruments;			// Pointer to the class that deals with calorimeter & pressure recording
 
 	ExperimentSettings* experimentSettings;				//
 	ExperimentSettings experimentLocalSettings;			// 
