@@ -33,6 +33,8 @@ public:
 	BOOL ExchangeData(ExperimentData pParam);
 	BOOL DisplayMessage(int pParam, int pInt1 = default_val, int pInt2 = default_val, double pDouble = default_val);								// Simple display message which takes an int
 
+	BOOL DisplayMessage(int pParam, CString m);
+
 	// Messageboxes
 	BOOL DisplayMessageBox(int message, UINT nType, bool blocksProgram, double pDouble1 = default_val, double pDouble2 = default_val);
 };

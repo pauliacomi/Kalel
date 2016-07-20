@@ -21,17 +21,17 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{DA8012D6-5479-45D1-ABA7-F4564E6ABDB3}</ProjectGuid>
     <RootNamespace>Kaolla</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
     <Keyword>MFCProj</Keyword>
     <ProjectName>Kalel</ProjectName>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v140_xp</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
-    <UseOfMfc>Dynamic</UseOfMfc>
+    <UseOfMfc>Static</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -223,6 +223,7 @@
     <ClInclude Include="Donnees_Experience.h" />
     <ClInclude Include="GrapheView.h" />
     <ClInclude Include="InfoEtape.h" />
+    <ClInclude Include="Instruments.h" />
     <ClInclude Include="Kaolla.h" />
     <ClInclude Include="KaollaDoc.h" />
     <ClInclude Include="KaollaView.h" />
@@ -320,6 +321,7 @@
     <ClCompile Include="Donnees_Experience.cpp" />
     <ClCompile Include="GrapheView.cpp" />
     <ClCompile Include="InfoEtape.cpp" />
+    <ClCompile Include="Instruments.cpp" />
     <ClCompile Include="Kaolla.cpp" />
     <ClCompile Include="KaollaDoc.cpp" />
     <ClCompile Include="KaollaView.cpp" />

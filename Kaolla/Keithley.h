@@ -16,28 +16,19 @@ public:
 	Keithley(void);
 	~Keithley(void);
 
+private:
+	CRITICAL_SECTION Sync_keithley;
+
+public:
+
 	bool OpenCOM(int nId);
 	bool CloseCOM();
 	bool InitKeithley();
 
-	// Channel 1 functions
+	bool ReadChannel(int chanNo, double* result);
 
-	bool ReadChannel1(std::string* result);
-	bool ReadChannel1(double* resultat);
-	bool ReadChannel1(std::string* result, double* resultat);
-	std::string ReadChannel1();
-	double ReadChannel1_double();
-
-	// Channel 2 functions
-
-	bool ReadChannel2(std::string* result);
-	bool ReadChannel2(double* resultat);
-	bool ReadChannel2(std::string* result, double* resultat);
-	std::string ReadChannel2();
-	double ReadChannel2_double();
-
-
-	double Conversion(std::string resultat);
+	bool ReadChannel1(double* result); 
+	bool ReadChannel2(double* result);
 };
 #endif
 

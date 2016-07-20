@@ -3,8 +3,10 @@
 #include "Keithley.h"
 #include "Mensor.h"
 #include "FluxConverter.h"
+#include "Instruments.h"
 
 class CPressure
+	:public Instruments
 {
 public:
 	CPressure();
@@ -29,14 +31,11 @@ public:
 
 	// Pass in the references to double variables to get the pressure
 	bool ReadLowRange(double* pressureLowrange);
-
-	// Pass in the references to float variables to get the pressure
-	bool ReadLowRange(double* pressureLowrange, char* message);
-
+	
 	// Pass in the references to double variables to get the pressure
 	bool ReadHighRange(double* pressureHighRange);
 
-	// Pass in the references to float variables to get the pressure
-	bool ReadHighRange(double* pressureHighRange, char* message);
+	void GetErrorLowRange(std::string * err);
+	void GetErrorHighRange(std::string * err);
 };
 

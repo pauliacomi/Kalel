@@ -1,3 +1,18 @@
+/**********************************************
+*
+*
+*
+*
+*
+*
+*	Calls to underlying functionality may use the same USB or serial port. 
+*	Because of this, any "Read" call must be contained into a syncronisation primitive (here a CriticalSection)
+*
+*
+*
+*
+***********************************************/
+
 #include "StdAfx.h"
 #include "Automation.h"
 
@@ -87,9 +102,17 @@ DWORD WINAPI Automation::ThreadProc_ReadTemperature(LPVOID lpParam)
 void Automation::ReadCalorimeter()
 {
 	// Read the value from the calorimeter
-	double calorimeter;
-	if (g_pCalorimeter->Read(&calorimeter) == false) {
-		
+	double calorimeter = NULL;
+	bool success;
+	
+	EnterCriticalSection(&criticalSection);
+	success = g_pCalorimeter->Read(&calorimeter);
+	LeaveCriticalSection(&criticalSection);
+
+	if (success == false) {
+		std::string error;
+		g_pCalorimeter->GetError(&error);
+		messageHandler.DisplayMessage(GENERIC_STRING, error.c_str());
 	}
 
 	// Write it in the shared object
@@ -102,9 +125,17 @@ void Automation::ReadCalorimeter()
 void Automation::ReadLowPressure()
 {
 	// Read the value from the calorimeter
-	double pressureLowRange;
-	if (g_pPressure->ReadLowRange(&pressureLowRange) == false) {
+	double pressureLowRange = NULL;
+	bool success;
 
+	EnterCriticalSection(&criticalSection);
+	success = g_pPressure->ReadLowRange(&pressureLowRange);
+	LeaveCriticalSection(&criticalSection);
+
+	if (success == false) {
+		std::string error;
+		g_pPressure->GetErrorLowRange(&error);
+		messageHandler.DisplayMessage(GENERIC_STRING, error.c_str());
 	}
 	
 	// Write it in the shared object
@@ -117,9 +148,17 @@ void Automation::ReadLowPressure()
 void Automation::ReadHighPressure()
 {
 	// Read the value from the calorimeter
-	double pressureHighRange;
-	if (g_pPressure->ReadLowRange(&pressureHighRange) == false) {
+	double pressureHighRange = NULL;
+	bool success;
 
+	EnterCriticalSection(&criticalSection);
+	success = g_pPressure->ReadHighRange(&pressureHighRange);
+	LeaveCriticalSection(&criticalSection);
+
+	if (success == false) {
+		std::string error;
+		g_pPressure->GetErrorHighRange(&error);
+		messageHandler.DisplayMessage(GENERIC_STRING, error.c_str());
 	}
 
 	// Write it in the shared object
@@ -131,10 +170,17 @@ void Automation::ReadHighPressure()
 void Automation::ReadTemperatures()	// another problem is that the threads are reading something from the automation thread and may cause unexpected behaviour
 {
 	// Read the value from the calorimeter
-	double dTemperatureCalo, dTemperatureCage, dTemperaturePiece;
-	if (g_pTemperature->Read(&dTemperatureCalo, &dTemperatureCage, &dTemperaturePiece) == false) {
-		string error;
+	double dTemperatureCalo = NULL, dTemperatureCage = NULL, dTemperaturePiece = NULL;
+	bool success;
+
+	EnterCriticalSection(&criticalSection);
+	success = g_pTemperature->Read(&dTemperatureCalo, &dTemperatureCage, &dTemperaturePiece);
+	LeaveCriticalSection(&criticalSection);
+
+	if (success == false) {
+		std::string error;
 		g_pTemperature->GetError(&error);
+		messageHandler.DisplayMessage(GENERIC_STRING, error.c_str());
 	}
 
 	// Write it in the shared object

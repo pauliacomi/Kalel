@@ -8,7 +8,6 @@
 
 using namespace std;
 
-CRITICAL_SECTION Sync_mensor;
 //=====================================================================
 //                    Serial Port Configuration
 //
@@ -26,8 +25,6 @@ CRITICAL_SECTION Sync_mensor;
 
 Mensor::Mensor(void) : LiaisonRS232()
 { 
-	errorKeep = "Mensor non connecté";
-
 	// Initialize the critical section
 	InitializeCriticalSection(&Sync_mensor);
 }
@@ -44,23 +41,16 @@ Mensor::~Mensor(void)
 
 bool Mensor::OpenCOM(int nId)
 {
-	bool ouverture = LiaisonRS232::OpenCOM(nId);
+	bool success = LiaisonRS232::OpenCOM(nId);
 	
-	// créer un flux de sortie
-    ostringstream nPort;
-    // écrire un nombre dans le flux
-    nPort << nId;
-    // récupérer une chaîne de caractères
-    string port = nPort.str();
-
-	if (ouverture)
+	if (success)
 	{
-		errorKeep = "Le Mensor est ouvert au port COM" + port;
+		errorKeep = "Le Mensor est ouvert au port COM" + to_string(nId);
 		return true;
 	}
 	else
 	{
-		errorKeep = "Erreur : Ouverture du Mensor échoué au port COM" + port;
+		errorKeep = "Erreur : Ouverture du Mensor échoué au port COM" + to_string(nId);
 		return false;
 	}
 }
@@ -91,7 +81,7 @@ bool Mensor::ReadMensor(double* pression)
 {
 	int nBytesWritten = 0;
 	int nbOctetsLus = 0;
-
+	bool success;
 
 	// Start by sending message to ask for the data
 	
@@ -103,9 +93,11 @@ bool Mensor::ReadMensor(double* pression)
 	sprintf_s(buffer,"#1?<cr>\n");
 	
 	EnterCriticalSection(&Sync_mensor);
-	WriteCOM(buffer, (int)strlen(buffer), &nBytesWritten);
+	success = WriteCOM(buffer, (int)strlen(buffer), &nBytesWritten);
 	LeaveCriticalSection(&Sync_mensor);
 
+	if (!success)
+		return false;
 
 	// Then receive the data in an array
 
@@ -119,8 +111,11 @@ bool Mensor::ReadMensor(double* pression)
 	// suivants qui représentent la pression
 
 	EnterCriticalSection(&Sync_mensor);
-	while(ReadCOM(buffer, 256)==-1){}	//really??
+	success = ReadCOM(buffer, 256);
 	LeaveCriticalSection(&Sync_mensor);
+
+	if (!success)
+		return false;
 
 	string resultat = buffer;
 	resultat = resultat.substr(4,nbOctetsLus-6);
@@ -128,11 +123,3 @@ bool Mensor::ReadMensor(double* pression)
 	errorKeep = "Lecture du Mensor effectué";
 	return true;
 }
-
-double Mensor::ReadMensor()
-{
-	double pression;
-	ReadMensor(&pression);
-	return pression;
-}
-

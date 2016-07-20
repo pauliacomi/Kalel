@@ -273,7 +273,7 @@ void Automation::Initialisation()
 
 	// Initialise instruments
 	g_pVanne = new CVannes();
-	g_pTemperature = new CTemperature;
+	g_pTemperature = new CTemperature();
 	g_pCalorimeter = new CCalorimeter();
 	g_pPressure = new CPressure();
 

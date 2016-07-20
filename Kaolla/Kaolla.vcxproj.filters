@@ -385,7 +385,10 @@
       <Filter>Header Files\Backend\Wrapper Classes</Filter>
     </ClInclude>
     <ClInclude Include="ConnectionMesure.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Old</Filter>
+    </ClInclude>
+    <ClInclude Include="Instruments.h">
+      <Filter>Header Files\Backend\Wrapper Classes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -702,7 +705,10 @@
       <Filter>Source Files\Backend\Wrapper Classes</Filter>
     </ClCompile>
     <ClCompile Include="ConnectionMesure.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Old</Filter>
+    </ClCompile>
+    <ClCompile Include="Instruments.cpp">
+      <Filter>Source Files\Backend\Wrapper Classes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

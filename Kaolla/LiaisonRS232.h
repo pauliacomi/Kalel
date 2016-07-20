@@ -18,7 +18,7 @@ public:
 	bool OpenCOM(int nId);
 
 	// Read the COM port
-	int ReadCOM(char* buffer, int nBytesToRead);
+	bool ReadCOM(char* buffer, int nBytesToRead);
 
 	// Write to the COM port
 	bool WriteCOM(void* buffer, int nBytesToWrite, int* pBytesWritten);
@@ -33,6 +33,6 @@ protected:
 	HANDLE g_hCOM;
 	COMMTIMEOUTS g_cto;
 	DCB g_dcb;
-	string errorKeep;
+	std::string errorKeep;
 };
 #endif

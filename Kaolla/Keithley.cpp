@@ -8,12 +8,10 @@
 
 using namespace std;
 
-CRITICAL_SECTION Sync_keithley;
 
 Keithley::Keithley(void) : LiaisonRS232()
 {
 	g_dcb.BaudRate = 19200;				// On a le moyen d'augmenter le BaudRate du keithley.
-	errorKeep = "Keithley non connecté";
 
 	// Initialize the critical section
 	InitializeCriticalSection(&Sync_keithley);
@@ -35,22 +33,15 @@ Keithley::~Keithley(void)
 bool Keithley::OpenCOM(int nId)
 {
 	bool ouverture = LiaisonRS232::OpenCOM(nId);
-	
-	// créer un flux de sortie
-    ostringstream nPort;
-    // écrire un nombre dans le flux
-    nPort << nId;
-    // récupérer une chaîne de caractères
-    string port = nPort.str();
 
 	if (ouverture)
 	{
-		errorKeep = "Keithley ouvert au port COM" + port;
+		errorKeep = "Keithley ouvert au port COM" + to_string(nId);
 		return true;
 	}
 	else
 	{
-		errorKeep += "\nErreur : Ouverture du Keithley échoué au port COM" + port;
+		errorKeep += "\nErreur : Ouverture du Keithley échoué au port COM" + to_string(nId);
 		return false;
 	}
 }
@@ -117,19 +108,17 @@ bool Keithley::InitKeithley()
 }
 
 
-//==================================================
-// Fonctions du channel1
-
 
 // La fonction renverra si la lecture s'est faite ou pas (true ou false)
 // Elle donnera aussi le retour de lecture du Keithley qu'on mettra 
 // dans 'result' (mis en parametre)
 
-bool Keithley::ReadChannel1(string* result)
+bool Keithley::ReadChannel(int chanNo, double* result)
 {
 	int nBytesWritten = 0;
 	int nbOctetsLus = 0;
 	char buffer[256];
+	bool success;
 
 	// Start by sending message to ask for the data
 
@@ -141,13 +130,14 @@ bool Keithley::ReadChannel1(string* result)
 	//	:SENS:CHAN1 => Select channel to measure; 0,1 or 2 (0=internal temperature sensor).
 	//				   EXPERIMENT_TYPE_MANUAL du Keithley 14-8
 
-	sprintf_s(buffer,"*CLS\nSENS:CHAN 1\n:READ?\n");
+	sprintf_s(buffer,"*CLS\nSENS:CHAN %d\n:READ?\n", chanNo);
 
 	EnterCriticalSection(&Sync_keithley);
-	WriteCOM(buffer, (int)strlen(buffer), &nBytesWritten);
+	success = WriteCOM(buffer, (int)strlen(buffer), &nBytesWritten);
 	LeaveCriticalSection(&Sync_keithley);
 
-
+	if (!success)
+		return false;
 
 	// Then receive the data in an array
 
@@ -173,16 +163,16 @@ bool Keithley::ReadChannel1(string* result)
 	// On pourra voir si on rajoute une fonction pour verifier que la valeur renvoyer est la bonne.
 
 	EnterCriticalSection(&Sync_keithley);
-	while(ReadCOM(buffer, 256)==-1){}
+	success = ReadCOM(buffer, 256);
 	LeaveCriticalSection(&Sync_keithley);
 
 	// On ne va garder de 'buffer' que les 15 premiers caracteres. On elimine le retour a la ligne
 	// On mettra cette chaine de caractere dans 'resultat'.
 	string temp = buffer;
 	temp = temp.substr(0,15);
-	*result = temp;
+	*result = atof(temp.c_str());
 
-	errorKeep = "Lecture du Channel 1 effectué";
+	errorKeep = "Lecture du Channel " + to_string(chanNo) + " effectué";
 	return true;
 }
 
@@ -193,126 +183,10 @@ bool Keithley::ReadChannel1(string* result)
 
 bool Keithley::ReadChannel1(double* resultat)
 {
-	string temp;
-	bool read = ReadChannel1(&temp);
-	*resultat = atof(temp.c_str());
-	return read;
+	return ReadChannel(1, resultat);
 }
-
-
-bool Keithley::ReadChannel1(string* result, double* resultat)
-{
-	string temp;
-	bool read = ReadChannel1(&temp);
-	*result = temp;
-	*resultat = atof(temp.c_str());
-	return read;
-}
-
-
-string Keithley::ReadChannel1()
-{
-	string result;
-	ReadChannel1(&result);
-	return result;
-}
-
-double Keithley::ReadChannel1_double()
-{
-	double resultat;
-	ReadChannel1(&resultat);
-	return resultat;
-}
-
-//=============================================
-// Fonctions du Channel2
-
-bool Keithley::ReadChannel2(string* result)
-{
-	int nBytesWritten = 0;
-	int nbOctetsLus = 0;
-	char buffer[256];
-
-	sprintf_s(buffer,"*CLS\nSENS:CHAN 2\n:READ?\n");
-
-//printf("Envoi des donnes...\n");
-
-	EnterCriticalSection(&Sync_keithley);
-	WriteCOM(buffer, (int)strlen(buffer), &nBytesWritten);
-	LeaveCriticalSection(&Sync_keithley);
-
-	EnterCriticalSection(&Sync_keithley);
-	while(ReadCOM(buffer, 256)==-1){}
-	LeaveCriticalSection(&Sync_keithley);
-
-	// Si tout va bien, nbOctetsLus = 16
-	// Le Keithley nous renvoie 16 octets qui represente une chaine de caracteres donnant
-	// la valeur scientifique de la mesure
-	//
-	// Exemples : 
-	//	-1.16305416E-01(13)
-	//  +1.23456753E+02(13)
-	//
-	// Le premier caractère est le signe de la valeur
-	// Du 2eme au 11eme caractere, c'est la valeur décimal de la mesure
-	// le 12eme caractere est 'E'
-	// le 13eme caractere esr le signe de la puissance 10
-	// le 14eme et 15eme caractere sont la puissance 10
-	// le 16eme caractere est le caractere 13 representant le retour a la ligne :
-	//							<cr> Carriage return en code ascii
-	//
-	// On rajoute a buffer[16] (representant le 17eme caractere)le caractere '\0' qui est
-	// la fin d'une chaine.
-	//
-	// On pourra voir si on rajoute une fonction pour verifier que la valeur renvoyer est la bonne.
-
-
-	// On ne va garder de 'buffer' que les 15 premiers caracteres. On elimine le retour a la ligne
-	// On mettra cette chaine de caractere dans 'resultat'.
-	string temp = buffer;
-	temp = temp.substr(0,15);
-	*result = temp;
-
-	errorKeep = "Lecture du Channel 2 effectué";
-	return true;
-}
-
 
 bool Keithley::ReadChannel2(double* resultat)
 {
-	string temp;
-	bool read = ReadChannel2(&temp);
-	*resultat = atof(temp.c_str());
-	return read;
+	return ReadChannel(2, resultat);
 }
-
-
-bool Keithley::ReadChannel2(string* result, double* resultat)
-{
-	string temp;
-	bool read = ReadChannel2(&temp);
-	*result = temp;
-	*resultat = atof(temp.c_str());
-	return read;
-}
-
-
-string Keithley::ReadChannel2()
-{
-	string result;
-	ReadChannel2(&result);
-	return result;
-}
-
-double Keithley::ReadChannel2_double()
-{
-	double resultat;
-	ReadChannel2(&resultat);
-	return resultat;
-}
-
-//==================================
-// Autres fonctions
-
-double Keithley::Conversion(string resultat)
-{return atof(resultat.c_str());}

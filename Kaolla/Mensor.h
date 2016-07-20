@@ -12,6 +12,7 @@ class Mensor :
 {
 private:
 	char buffer[256];
+	CRITICAL_SECTION Sync_mensor;
 
 public:
 	Mensor(void);
@@ -20,7 +21,6 @@ public:
 	bool OpenCOM(int nId);
 	bool CloseCOM();
 	bool ReadMensor(double* pression);
-	double ReadMensor();
 
 };
 #endif
