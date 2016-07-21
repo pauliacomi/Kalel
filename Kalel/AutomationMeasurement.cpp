@@ -104,18 +104,15 @@ void Automation::ReadCalorimeter()
 	// Read the value from the calorimeter
 	double calorimeter = NULL;
 	bool success;
+	std::string error;
 	
 	EnterCriticalSection(&criticalSection);
 	success = g_pSerialInstruments->ReadCalorimeter(&calorimeter);
+	if(!success)
+		g_pSerialInstruments->GetErrorCalrimeter(&error);
 	LeaveCriticalSection(&criticalSection);
 
 	if (success == false) {
-		std::string error;
-
-		EnterCriticalSection(&criticalSection);
-		g_pSerialInstruments->GetErrorCalrimeter(&error);
-		LeaveCriticalSection(&criticalSection);
-
 		messageHandler.DisplayMessage(GENERIC_STRING, error.c_str());
 	}
 
@@ -131,18 +128,15 @@ void Automation::ReadLowPressure()
 	// Read the value from the calorimeter
 	double pressureLowRange = NULL;
 	bool success;
+	std::string error;
 
 	EnterCriticalSection(&criticalSection);
 	success = g_pSerialInstruments->ReadPressureLowRange(&pressureLowRange);
+	if(!success)
+		g_pSerialInstruments->GetErrorLowRange(&error);
 	LeaveCriticalSection(&criticalSection);
 
 	if (success == false) {
-		std::string error;
-		EnterCriticalSection(&criticalSection);
-
-		g_pSerialInstruments->GetErrorLowRange(&error);
-		LeaveCriticalSection(&criticalSection);
-
 		messageHandler.DisplayMessage(GENERIC_STRING, error.c_str());
 	}
 	
@@ -158,18 +152,15 @@ void Automation::ReadHighPressure()
 	// Read the value from the calorimeter
 	double pressureHighRange = NULL;
 	bool success;
+	std::string error;
 
 	EnterCriticalSection(&criticalSection);
 	success = g_pSerialInstruments->ReadPressureHighRange(&pressureHighRange);
+	if(!success)
+		g_pSerialInstruments->GetErrorHighRange(&error);
 	LeaveCriticalSection(&criticalSection);
 
 	if (success == false) {
-		std::string error;
-
-		EnterCriticalSection(&criticalSection);
-		g_pSerialInstruments->GetErrorHighRange(&error);
-		LeaveCriticalSection(&criticalSection);
-
 		messageHandler.DisplayMessage(GENERIC_STRING, error.c_str());
 	}
 
@@ -184,18 +175,15 @@ void Automation::ReadTemperatures()
 	// Read the value from the calorimeter
 	double dTemperatureCalo = NULL, dTemperatureCage = NULL, dTemperaturePiece = NULL;
 	bool success;
+	std::string error;
 
 	EnterCriticalSection(&criticalSection);
 	success = g_pTemperature->Read(&dTemperatureCalo, &dTemperatureCage, &dTemperaturePiece);
+	if(!success)
+		g_pTemperature->GetError(&error);
 	LeaveCriticalSection(&criticalSection);
 
 	if (success == false) {
-		std::string error;
-
-		EnterCriticalSection(&criticalSection);
-		g_pTemperature->GetError(&error);
-		LeaveCriticalSection(&criticalSection);
-
 		messageHandler.DisplayMessage(GENERIC_STRING, error.c_str());
 	}
 
