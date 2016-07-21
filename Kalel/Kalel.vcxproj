@@ -20,7 +20,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{DA8012D6-5479-45D1-ABA7-F4564E6ABDB3}</ProjectGuid>
-    <RootNamespace>Kaolla</RootNamespace>
+    <RootNamespace>Kalel</RootNamespace>
     <Keyword>MFCProj</Keyword>
     <ProjectName>Kalel</ProjectName>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
