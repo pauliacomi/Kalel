@@ -240,12 +240,6 @@
     <ClInclude Include="Dialogue_TypeExperience.h">
       <Filter>Header Files\GUI\Dialogs</Filter>
     </ClInclude>
-    <ClInclude Include="Donnees_Experience.h">
-      <Filter>Header Files\GUI\Dialogs</Filter>
-    </ClInclude>
-    <ClInclude Include="Parametres_appareil.h">
-      <Filter>Header Files\GUI\Dialogs</Filter>
-    </ClInclude>
     <ClInclude Include="CDesorption.h">
       <Filter>Header Files\Old\Tabs</Filter>
     </ClInclude>
@@ -383,6 +377,9 @@
     </ClInclude>
     <ClInclude Include="KalelView.h">
       <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="ApparatusParameters.h">
+      <Filter>Header Files\GUI\Dialogs</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -528,12 +525,6 @@
       <Filter>Source Files\Old\Manip\Manip_AutoGaz\MSV</Filter>
     </ClCompile>
     <ClCompile Include="Dialogue_TypeExperience.cpp">
-      <Filter>Source Files\GUI\Dialogs</Filter>
-    </ClCompile>
-    <ClCompile Include="Donnees_Experience.cpp">
-      <Filter>Source Files\GUI\Dialogs</Filter>
-    </ClCompile>
-    <ClCompile Include="Parametres_appareil.cpp">
       <Filter>Source Files\GUI\Dialogs</Filter>
     </ClCompile>
     <ClCompile Include="Connection_port.cpp">
@@ -697,6 +688,9 @@
     </ClCompile>
     <ClCompile Include="KalelViewDisplay.cpp">
       <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="ApparatusParameters.cpp">
+      <Filter>Source Files\GUI\Dialogs</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

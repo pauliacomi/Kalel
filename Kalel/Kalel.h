@@ -35,7 +35,6 @@ public:
 	// menu commands
 	void OnParamatresAppareil();
 	void OnConnectionPorts();
-	void OnDonneesExperience();
 
 	// update commands
 	afx_msg void OnUpdateDonneesExperience(CCmdUI *pCmdUI);

@@ -14,9 +14,8 @@
 #include "ThreadManager.h"
 
 // Dialog Box includes
-#include "Parametres_appareil.h"
+#include "ApparatusParameters.h"
 #include "Connection_port.h"
-#include "Donnees_Experience.h"
 
 
 #ifdef _DEBUG
@@ -34,7 +33,6 @@ BEGIN_MESSAGE_MAP(CKalelApp, CWinApp)
 	// New menu based commands
 	ON_COMMAND(ID_PARAMATRES_APPAREIL, &CKalelApp::OnParamatresAppareil)
 	ON_COMMAND(ID_CONNECTION_PORTS, &CKalelApp::OnConnectionPorts)
-	ON_COMMAND(ID_DONNEES_EXPERIENCE, &CKalelApp::OnDonneesExperience)
 	ON_COMMAND(ID_MSV_AMPOULE, &CKalelView::OnMsvAmpoule)
 	ON_COMMAND(ID_MSV_BOUTEILLE, &CKalelView::OnMsvBouteille)
 	ON_COMMAND(ID_CHANGEMENT_BOUTEILLE, &CKalelView::OnChangementBouteille)
@@ -207,24 +205,15 @@ void CKalelApp::OnAppAbout()
 
 void CKalelApp::OnParamatresAppareil()
 {
-	CParametres_appareil m_parametres_appareil;
-	m_parametres_appareil.DoModal();
+	ApparatusParameters apparatusParameters;
+	apparatusParameters.DoModal();
 }
 
 void CKalelApp::OnConnectionPorts()
 {
 	CConnection_port m_connection_ports;
 	m_connection_ports.DoModal();
-	ASSERT(0);
 	//ChangementDev(GetPortVannes(), GetPortTemperatures());
-}
-
-void CKalelApp::OnDonneesExperience()
-{
-	CDonnees_Experience m_donnees_experience;
-	ASSERT(0);
-	//m_donnees_experience.SetStrDonneesExperience(GetDonneesExperience());
-	m_donnees_experience.DoModal();
 }
 
 
