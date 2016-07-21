@@ -3,15 +3,15 @@
 #include "ResourceParametresAppareil.h"
 
 
-// Dialogbox CParametres_appareil
+// Dialogbox ApparatusParameters
 
-class CParametres_appareil : public CDialog
+class ApparatusParameters : public CDialog
 {
-	DECLARE_DYNAMIC(CParametres_appareil)
+	DECLARE_DYNAMIC(ApparatusParameters)
 
 public:
-	CParametres_appareil(CWnd* pParent = NULL);   // standard constructor
-	virtual ~CParametres_appareil();
+	ApparatusParameters(CWnd* pParent = NULL);   // standard constructor
+	virtual ~ApparatusParameters();
 
 // Données de boîte de dialogue
 	enum { IDD = IDD_PARAMETRES_APPAREIL };
