@@ -93,7 +93,7 @@ bool NI_USB_6008::ActionDigital(char chan[], uInt32 w_data[])
 	int32       written;
 
 	// Create Digital Output (DO) Task and Channel
-	DAQmxErrChk (DAQmxCreateTask ("", &taskHandle)) ;
+	DAQmxErrChk (DAQmxCreateTask ("OperateValves", &taskHandle)) ;
 	DAQmxErrChk (DAQmxCreateDOChan(taskHandle,chan,"",DAQmx_Val_ChanForAllLines));
 
 	// Start Task (configure port)

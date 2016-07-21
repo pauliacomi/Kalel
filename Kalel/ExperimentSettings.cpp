@@ -20,6 +20,11 @@ ExperimentSettings::~ExperimentSettings(void)
 	DeleteCriticalSection(&criticalSection);
 }
 
+void ExperimentSettings::ResetData()
+{
+	experimentType = EXPERIMENT_TYPE_UNDEF;
+}
+
 ExperimentSettings & ExperimentSettings::operator=(const ExperimentSettings * p) {
 	if (this != p) {  // make sure not same object
 

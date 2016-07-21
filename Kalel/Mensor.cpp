@@ -45,12 +45,12 @@ bool Mensor::OpenCOM(int nId)
 	
 	if (success)
 	{
-		errorKeep = "Le Mensor est ouvert au port COM" + to_string(nId);
+		errorKeep = "Mensor open: COM" + to_string(nId);
 		return true;
 	}
 	else
 	{
-		errorKeep = "Erreur : Ouverture du Mensor échoué au port COM" + to_string(nId);
+		errorKeep += "\nMensor opening failed: COM" + to_string(nId);
 		return false;
 	}
 }
@@ -61,12 +61,12 @@ bool Mensor::CloseCOM()
 
 	if (fermeture)
 	{
-		errorKeep = "Le Mensor est fermé";
+		errorKeep = "Mensor closed";
 		return true;
 	}
 	else
 	{
-		errorKeep = "Erreur : La fermeture du Mensor a échoué";
+		errorKeep += "\nMensor closing failed";
 		return false;
 	}
 }
@@ -120,6 +120,6 @@ bool Mensor::ReadMensor(double* pression)
 	string resultat = buffer;
 	resultat = resultat.substr(4,nbOctetsLus-6);
 	*pression = atof(resultat.c_str()); //conversion du string en float
-	errorKeep = "Lecture du Mensor effectué";
+	errorKeep = "Mensor read";
 	return true;
 }

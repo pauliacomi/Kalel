@@ -2,15 +2,15 @@
 #ifndef DEFINE_AUTOMATION_SETTINGS_H
 #define DEFINE_AUTOMATION_SETTINGS_H
 
-
+// Time values
 #define T_BETWEEN_RECORD				4		//seconds
 #define T_BETWEEN_MEASURE				500		//miliseconds
-#define TEMP_SECURITY					1		//degreee celsius
 
 #define ERROR_MESURE					-300000
 
 // Temperature range for security checks
-#define securite_temperature			5		// °C
+#define securite_temperature				5		// °C
+#define security_temperature_initial		1		// °C
 
 // Used to see how many times a dose will be attempted
 #define tentatives_possible				2		// Tentatives avant d'augmenter le multiplicateur

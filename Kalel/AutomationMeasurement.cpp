@@ -111,9 +111,11 @@ void Automation::ReadCalorimeter()
 
 	if (success == false) {
 		std::string error;
+
 		EnterCriticalSection(&criticalSection);
 		g_pSerialInstruments->GetErrorCalrimeter(&error);
 		LeaveCriticalSection(&criticalSection);
+
 		messageHandler.DisplayMessage(GENERIC_STRING, error.c_str());
 	}
 
@@ -137,8 +139,10 @@ void Automation::ReadLowPressure()
 	if (success == false) {
 		std::string error;
 		EnterCriticalSection(&criticalSection);
+
 		g_pSerialInstruments->GetErrorLowRange(&error);
 		LeaveCriticalSection(&criticalSection);
+
 		messageHandler.DisplayMessage(GENERIC_STRING, error.c_str());
 	}
 	
@@ -161,9 +165,11 @@ void Automation::ReadHighPressure()
 
 	if (success == false) {
 		std::string error;
+
 		EnterCriticalSection(&criticalSection);
 		g_pSerialInstruments->GetErrorHighRange(&error);
 		LeaveCriticalSection(&criticalSection);
+
 		messageHandler.DisplayMessage(GENERIC_STRING, error.c_str());
 	}
 
@@ -173,7 +179,7 @@ void Automation::ReadHighPressure()
 	LeaveCriticalSection(&criticalSection);
 }
 
-void Automation::ReadTemperatures()	// another problem is that the threads are reading something from the automation thread and may cause unexpected behaviour
+void Automation::ReadTemperatures()
 {
 	// Read the value from the calorimeter
 	double dTemperatureCalo = NULL, dTemperatureCage = NULL, dTemperaturePiece = NULL;
@@ -185,9 +191,11 @@ void Automation::ReadTemperatures()	// another problem is that the threads are r
 
 	if (success == false) {
 		std::string error;
+
 		EnterCriticalSection(&criticalSection);
 		g_pTemperature->GetError(&error);
 		LeaveCriticalSection(&criticalSection);
+
 		messageHandler.DisplayMessage(GENERIC_STRING, error.c_str());
 	}
 

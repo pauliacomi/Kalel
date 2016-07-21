@@ -4,11 +4,16 @@
 #include "Automation.h"
 
 
-void Automation::InitialisationSecurityManual()
+void Automation::InitialisationSecurity()
 {
-	security_PressureHigh = false;
-	security_TemperatureHigh = false;
-	security_TemperatureLow = false;
+	securityActivated = GetActivationSecurite();
+
+	security_PressureHigh_HighRange = GetPressionSecuriteHautePression();
+	security_PressureHigh_LowRange = GetPressionSecuriteBassePression();
+
+	security_PressureHigh_flag = false;
+	security_TemperatureHigh_flag = false;
+	security_TemperatureLow_flag = false;
 }
 
 void Automation::SecuriteHautePression()
@@ -31,14 +36,14 @@ void Automation::SecuriteTemperatures()
 void Automation::SecuriteHautePressionManuelle()
 {
 	// Check the result
-	if (experimentLocalData.pressureHigh >= GetPressionSecuriteHautePression())
+	if (experimentLocalData.pressureHigh >= security_PressureHigh_HighRange)
 	{
-		if (!security_PressureHigh) {
+		if (!security_PressureHigh_flag) {
 			// Set the flag
-			security_PressureHigh = true;
+			security_PressureHigh_flag = true;
 
 			// Alert user
-			messageHandler.DisplayMessageBox(MESSAGE_WARNING_PHIGH_BOX, MB_ICONERROR, false, GetPressionSecuriteHautePression());
+			messageHandler.DisplayMessageBox(MESSAGE_WARNING_PHIGH_BOX, MB_ICONERROR, false, security_PressureHigh_HighRange);
 			messageHandler.DisplayMessage(MESSAGE_WARNING_PHIGH);
 
 			// Play a sound
@@ -46,11 +51,11 @@ void Automation::SecuriteHautePressionManuelle()
 		}
 	}
 	else
-		if (security_PressureHigh)
+		if (security_PressureHigh_flag)
 		{
 			messageHandler.DisplayMessage(MESSAGE_WARNING_PHNORMAL);
 			MessageBeep(MB_ICONINFORMATION);
-			security_PressureHigh = FALSE;
+			security_PressureHigh_flag = FALSE;
 		}
 }
 
@@ -61,12 +66,12 @@ void Automation::SecuriteTemperaturesManuelle()
 	// Check calorimeter temperature high
 	if (experimentLocalData.temperatureCalo >= experimentLocalSettings.dataGeneral.temperature_experience + securite_temperature)
 	{
-		if (!security_TemperatureHigh) {
+		if (!security_TemperatureHigh_flag) {
 			// Set the flag
-			security_TemperatureHigh = true;
+			security_TemperatureHigh_flag = true;
 
 			// Alert user
-			messageHandler.DisplayMessageBox(MESSAGE_WARNING_THIGH_BOX, MB_ICONERROR, false, GetPressionSecuriteHautePression());
+			messageHandler.DisplayMessageBox(MESSAGE_WARNING_THIGH_BOX, MB_ICONERROR, false, experimentLocalSettings.dataGeneral.temperature_experience + securite_temperature);
 			messageHandler.DisplayMessage(MESSAGE_WARNING_CALOT_HIGH);
 
 			// Play a sound
@@ -74,22 +79,22 @@ void Automation::SecuriteTemperaturesManuelle()
 		}
 	}
 	else
-		if (security_TemperatureHigh)
+		if (security_TemperatureHigh_flag)
 		{
 			messageHandler.DisplayMessage(MESSAGE_WARNING_CALOT_NORMAL);
 			MessageBeep(MB_ICONINFORMATION);
-			security_TemperatureHigh = FALSE;
+			security_TemperatureHigh_flag = FALSE;
 		}
 
 	// Check calorimeter temperature low
 	if (experimentLocalData.temperatureCalo <= experimentLocalSettings.dataGeneral.temperature_experience - securite_temperature)
 	{
-		if (!security_TemperatureLow) {
+		if (!security_TemperatureLow_flag) {
 			// Set the flag
-			security_TemperatureLow = true;
+			security_TemperatureLow_flag = true;
 
 			// Alert user
-			messageHandler.DisplayMessageBox(MESSAGE_WARNING_TLOW_BOX, MB_ICONERROR, false, GetPressionSecuriteHautePression());
+			messageHandler.DisplayMessageBox(MESSAGE_WARNING_TLOW_BOX, MB_ICONERROR, false, experimentLocalSettings.dataGeneral.temperature_experience - securite_temperature);
 			messageHandler.DisplayMessage(MESSAGE_WARNING_CALOT_LOW);
 
 			// Play a sound
@@ -97,21 +102,18 @@ void Automation::SecuriteTemperaturesManuelle()
 		}
 	}
 	else
-		if (security_TemperatureLow)
+		if (security_TemperatureLow_flag)
 		{
 			messageHandler.DisplayMessage(MESSAGE_WARNING_CALOT_NORMAL);
 			MessageBeep(MB_ICONINFORMATION);
-			security_TemperatureLow = FALSE;
+			security_TemperatureLow_flag = FALSE;
 		}
 }
 
 
 void Automation::SecuriteHautePressionAuto()
 {
-	// Check if the security is acivated from the config files
-	bool mesure_de_securite = GetActivationSecurite();
-
-	if (mesure_de_securite)
+	if (securityActivated)
 	{
 		if (experimentLocalData.experimentStage != STAGE_UNDER_VACUUM)
 		{
@@ -137,10 +139,7 @@ void Automation::SecuriteHautePressionAuto()
 
 void Automation::SecuriteTemperaturesAuto()
 {
-	// Check if the security is acivated from the config files
-	bool mesure_de_securite = GetActivationSecurite();
-	
-	if (mesure_de_securite)
+	if (securityActivated)
 	{
 		if (experimentLocalData.experimentStage != STAGE_UNDER_VACUUM)
 		{

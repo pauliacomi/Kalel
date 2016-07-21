@@ -36,12 +36,12 @@ bool Keithley::OpenCOM(int nId)
 
 	if (ouverture)
 	{
-		errorKeep = "Keithley ouvert au port COM" + to_string(nId);
+		errorKeep = "Keithley open: COM" + to_string(nId);
 		return true;
 	}
 	else
 	{
-		errorKeep += "\nErreur : Ouverture du Keithley échoué au port COM" + to_string(nId);
+		errorKeep += "\nKeithley opening failed: COM" + to_string(nId);
 		return false;
 	}
 }
@@ -52,12 +52,12 @@ bool Keithley::CloseCOM()
 
 	if (fermeture)
 	{
-		errorKeep = "Le Keithley est fermé";
+		errorKeep = "Keithley closed";
 		return true;
 	}
 	else
 	{
-		errorKeep += "\nErreur : La fermeture du Keithley a échoué";
+		errorKeep += "\nKeithley closing failed";
 		return false;
 	}
 }
@@ -97,12 +97,12 @@ bool Keithley::InitKeithley()
 
 	if(success)
 	{
-		errorKeep = "Initialisation du Keithley réussie";
+		errorKeep = "Keithley initialised";
 		return true;
 	}
 	else
 	{
-		errorKeep = "Initialisation échouée";
+		errorKeep += "\nKeithley initialisation failure";
 		return false;
 	}
 }
@@ -172,7 +172,7 @@ bool Keithley::ReadChannel(int chanNo, double* result)
 	temp = temp.substr(0,15);
 	*result = atof(temp.c_str());
 
-	errorKeep = "Lecture du Channel " + to_string(chanNo) + " effectué";
+	errorKeep = "Channel " + to_string(chanNo) + " read";
 	return true;
 }
 

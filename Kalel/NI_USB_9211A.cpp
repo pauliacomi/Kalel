@@ -63,7 +63,7 @@ bool NI_USB_9211A::LectureThermocouple ()
 	sprintf_s(chan,"Dev%d/ai0:3",DevNI_USB_9211A);
 
 	// Create task
-	DAQmxErrChk (DAQmxCreateTask ("", &taskHandle));
+	DAQmxErrChk (DAQmxCreateTask ("ReadThermocouple", &taskHandle));
 	DAQmxErrChk (DAQmxCreateAIThrmcplChan (taskHandle, chan, "", min, max, DAQmx_Val_DegC , DAQmx_Val_K_Type_TC, DAQmx_Val_BuiltIn , 0, ""));
 	
 	// Run task

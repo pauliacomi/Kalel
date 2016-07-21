@@ -118,7 +118,7 @@ bool LiaisonRS232::ReadCOM(char *buffer, int nBytesToRead)
 
 	if (osReader.hEvent == NULL) {
 		// Error creating overlapped event; abort.
-		errorKeep = "Error creating overlapped event";
+		errorKeep = "Error creating COM read overlapped event";
 		noErrors = false;
 	}
 
@@ -188,21 +188,6 @@ bool LiaisonRS232::ReadCOM(char *buffer, int nBytesToRead)
 	if (noErrors)
 		return true;
 	return false;
-
-
-	///// old 
-	//DWORD result;
-	//ReadFile(g_hCOM, buffer, nBytesToRead, &result, NULL);
-
-	//if(result==0)//test de la lecture du port
-	//{
-	//	return -1;
-	//}
-	//else
-	//{
-	//	buffer[result]='\0';
-	//	return (result+1);
-	//}
 }
 
 bool LiaisonRS232::WriteCOM(void* buffer, int nBytesToWrite, int* pBytesWritten)
@@ -216,7 +201,7 @@ bool LiaisonRS232::WriteCOM(void* buffer, int nBytesToWrite, int* pBytesWritten)
 
 	if (osWrite.hEvent == NULL) {
 		// Error creating overlapped event; abort.
-		errorKeep = "Error creating overlapped event";
+		errorKeep = "Error creating COM write overlapped event";
 		return false;
 	}
 

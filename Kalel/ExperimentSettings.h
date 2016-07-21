@@ -33,6 +33,8 @@ public:
 	vector<Donnees_Doses> dataAdsorption;
 	vector<Donnees_Desorption> dataDesorption;
 
+	void ResetData();
+
 	// Overload equals function
 	ExperimentSettings & ExperimentSettings::operator=(const ExperimentSettings * p);
 };

@@ -2,16 +2,13 @@
 #include "Vannes.h"
 
 #define nb_essais 3
-#define temps_ms 500
+#define temps_ms 100
 
 
 
 CVannes::CVannes(void) : NI_USB_6008()
 {
 	NI_USB_6008::SetDevNI_USB_6008(GetPortVannes());
-
-	// Close everything from the start?
-	ToutFermer();
 }
 
 CVannes::~CVannes(void)

@@ -88,10 +88,6 @@ public:
 	// Standards data types 
 	//------------------------------------------------------------
 
-	// Bools to keep track of security
-	bool security_PressureHigh;
-	bool security_TemperatureHigh;
-	bool security_TemperatureLow;
 
 	// Case switch int for the experiment states (running/paused/etc)
 	bool checking;
@@ -139,7 +135,18 @@ private:
 
 protected:
 
-	void InitialisationSecurityManual();
+	bool securityActivated;
+
+	// Keep limits in memory
+	float security_PressureHigh_HighRange;
+	float security_PressureHigh_LowRange;
+
+	// Bool flags to keep track of security
+	bool security_PressureHigh_flag;
+	bool security_TemperatureHigh_flag;
+	bool security_TemperatureLow_flag;
+
+	void InitialisationSecurity();
 
 	void SecuriteHautePression();
 	void SecuriteHautePressionManuelle();

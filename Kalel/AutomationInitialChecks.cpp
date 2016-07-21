@@ -27,7 +27,6 @@ void Automation::Verifications()
 
 int Automation::VerificationSecurity()
 {
-	bool securityActivated = GetActivationSecurite();
 	if (!securityActivated)
 	{
 		// Ask user if they want to continue
@@ -126,12 +125,12 @@ int Automation::VerificationTemperature()
 		// Vérification des températures
 		messageHandler.DisplayMessage(MESSAGE_CHECK_INITIAL_TEMPERATURE);
 
-		if ((experimentLocalData.temperatureCalo < experimentLocalSettings.dataGeneral.temperature_experience - TEMP_SECURITY) || (experimentLocalData.temperatureCalo > experimentLocalSettings.dataGeneral.temperature_experience + TEMP_SECURITY) ||
-			(experimentLocalData.temperatureCage < experimentLocalSettings.dataGeneral.temperature_experience - TEMP_SECURITY) || (experimentLocalData.temperatureCage > experimentLocalSettings.dataGeneral.temperature_experience + TEMP_SECURITY))
+		if ((experimentLocalData.temperatureCalo < experimentLocalSettings.dataGeneral.temperature_experience - security_temperature_initial) || (experimentLocalData.temperatureCalo > experimentLocalSettings.dataGeneral.temperature_experience + security_temperature_initial) ||
+			(experimentLocalData.temperatureCage < experimentLocalSettings.dataGeneral.temperature_experience - security_temperature_initial) || (experimentLocalData.temperatureCage > experimentLocalSettings.dataGeneral.temperature_experience + security_temperature_initial))
 		{
 			// Tell GUI we are waiting
 			messageHandler.DisplayMessage(MESSAGE_WAIT_TEMP_EQUILIBRATION);
-			messageHandler.DisplayMessageBox(MESSAGE_CHECK_TEMPERATURE_DIFF, MB_ICONQUESTION | MB_YESNOCANCEL, true, experimentLocalData.temperatureCalo, experimentLocalSettings.dataGeneral.temperature_experience - TEMP_SECURITY);
+			messageHandler.DisplayMessageBox(MESSAGE_CHECK_TEMPERATURE_DIFF, MB_ICONQUESTION | MB_YESNOCANCEL, true, experimentLocalData.temperatureCalo, experimentLocalSettings.dataGeneral.temperature_experience - security_temperature_initial);
 			
 			::SetEvent(h_eventPause);
 			experimentLocalData.experimentStepStatus = STEP_STATUS_INPROGRESS;			// never will end if the user selects continue anyway
@@ -148,8 +147,8 @@ int Automation::VerificationTemperature()
 			experimentLocalData.experimentStepStatus = STEP_STATUS_END;
 		}
 		// Loop until the temperature is stable
-		if ((experimentLocalData.temperatureCalo > experimentLocalSettings.dataGeneral.temperature_experience - TEMP_SECURITY) || (experimentLocalData.temperatureCalo < experimentLocalSettings.dataGeneral.temperature_experience + TEMP_SECURITY) ||
-			(experimentLocalData.temperatureCage > experimentLocalSettings.dataGeneral.temperature_experience - TEMP_SECURITY) || (experimentLocalData.temperatureCage < experimentLocalSettings.dataGeneral.temperature_experience + TEMP_SECURITY))
+		if ((experimentLocalData.temperatureCalo > experimentLocalSettings.dataGeneral.temperature_experience - security_temperature_initial) || (experimentLocalData.temperatureCalo < experimentLocalSettings.dataGeneral.temperature_experience + security_temperature_initial) ||
+			(experimentLocalData.temperatureCage > experimentLocalSettings.dataGeneral.temperature_experience - security_temperature_initial) || (experimentLocalData.temperatureCage < experimentLocalSettings.dataGeneral.temperature_experience + security_temperature_initial))
 		{
 			experimentLocalData.experimentStepStatus = STEP_STATUS_END;
 		}

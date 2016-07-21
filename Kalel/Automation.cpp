@@ -56,6 +56,7 @@ void Automation::Execution()
 			RecordDataChange();
 		}
 
+		// Go through any automatic functionality
 		if (experimentLocalData.experimentCommandsRequested) {
 			switch (experimentLocalSettings.experimentType)		// We look at the type of experiment
 			{
@@ -118,18 +119,20 @@ void Automation::Execution()
 		// Send the data to be displayed to the GUI
 		messageHandler.ExchangeData(experimentLocalData);
 		
+
+		// Now run through the possible events
 		if (checking)
 		{
 			// Switch to see if the thread is still inactive
 			switch (::WaitForMultipleObjects(4, events, FALSE, T_BETWEEN_MEASURE)) // (ms) Poll time
 			{
 
-			case WAIT_OBJECT_0:					// Complete stop of thread, might need extra things
+			case WAIT_OBJECT_0:												// Complete stop of thread, might need extra things
 				running = false;
 				::ResetEvent(h_eventShutdown);	// Reset the event
 				break;
 
-			case WAIT_OBJECT_0 + 1:
+			case WAIT_OBJECT_0 + 1:										    // Pause thread
 				if (experimentLocalData.experimentInProgress)
 				{
 					timerExperiment.ArretTemps();
@@ -143,7 +146,7 @@ void Automation::Execution()
 				::ResetEvent(h_eventPause);	// Reset the event
 				break;
 
-			case WAIT_OBJECT_0 + 2:
+			case WAIT_OBJECT_0 + 2:											 // Resume thread
 				if (experimentLocalData.experimentInProgress)
 				{
 					timerExperiment.RepriseTemps();
@@ -157,7 +160,7 @@ void Automation::Execution()
 				::ResetEvent(h_eventResume);	// Reset the event
 				break;
 
-			case WAIT_OBJECT_0 + 3:
+			case WAIT_OBJECT_0 + 3:											  // Shutdown thread
 				Shutdown();
 				::ResetEvent(h_eventReset);	// Reset the event
 				break;
@@ -263,13 +266,32 @@ void Automation::Initialisation()
 	h_MeasurementThread[2] = NULL;
 	h_MeasurementThread[3] = NULL;
 
+	// Initialise events
+	//   - Non signalled by default
+	//   - With manual reinitiallisation
+	h_MeasurementThreadStartEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
+	h_eventShutdown = CreateEvent(NULL, TRUE, FALSE, NULL);
+	h_eventResume = CreateEvent(NULL, TRUE, FALSE, NULL);
+	h_eventPause = CreateEvent(NULL, TRUE, FALSE, NULL);
+	h_eventReset = CreateEvent(NULL, TRUE, FALSE, NULL);
+
+	events[0] = h_eventShutdown;
+	events[1] = h_eventPause;
+	events[2] = h_eventResume;
+	events[3] = h_eventReset;
+
 	// Initialise automatic variables
 	experimentLocalData.ResetData();
-	experimentLocalSettings.experimentType = EXPERIMENT_TYPE_UNDEF;	// reset function?
+	experimentLocalSettings.ResetData();
 
-	// Initialise data
+	// Initialise local settings copy
 	SetData();
+
+	// Initialise message handler
 	messageHandler.SetHandle(experimentLocalSettings.GUIhandle);
+
+	// Initialisation of the critical section
+	InitializeCriticalSection(&criticalSection);
 
 	// Initialise instruments
 	g_pVanne = new CVannes();
@@ -281,23 +303,7 @@ void Automation::Initialisation()
 	}
 
 	// Initialise security
-	InitialisationSecurityManual();
-
-	// Initialisation of the critical section
-	InitializeCriticalSection(&criticalSection);
-
-	// Create the events
-	//   - Non signalled by default
-	//   - With manual reinitiallisation
-	h_MeasurementThreadStartEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
-	h_eventShutdown = CreateEvent(NULL, TRUE, FALSE, NULL);
-	h_eventResume = CreateEvent(NULL, TRUE, FALSE, NULL);
-	h_eventPause = CreateEvent(NULL, TRUE, FALSE, NULL);
-	h_eventReset = CreateEvent(NULL, TRUE, FALSE, NULL);
-	events[0] = h_eventShutdown;
-	events[1] = h_eventPause;
-	events[2] = h_eventResume;
-	events[3] = h_eventReset;
+	InitialisationSecurity();
 
 	// If the shutdown event is called externally, it will default to a cancel
 	// Otherwise the flag will be changed from inside the code
@@ -308,7 +314,7 @@ void Automation::Initialisation()
 void Automation::DeInitialise()
 {
 	// Close valves/pump
-	ControlMechanismsCloseAll();  // - causes memory leak when ran at the end of the program
+	ControlMechanismsCloseAll();
 
 	// Delete instruments
 	delete g_pVanne;
