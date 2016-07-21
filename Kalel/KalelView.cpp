@@ -1,16 +1,16 @@
 
-// KaollaView.cpp : implementation of the CKaollaView class
+// KalelView.cpp : implementation of the CKalelView class
 //
 
 #include "stdafx.h"
 // SHARED_HANDLERS can be defined in an ATL project implementing preview, thumbnail
 // and search filter handlers and allows sharing of document code with that project.
 #ifndef SHARED_HANDLERS
-#include "Kaolla.h"
+#include "Kalel.h"
 #endif
 
-#include "KaollaDoc.h"
-#include "KaollaView.h"
+#include "KalelDoc.h"
+#include "KalelView.h"
 
 #include "DefinePostMessages.h"				// Message definitions
 #include "ExperimentPropertySheet.h"		// The dialog asking the user to input the experiment parameters
@@ -20,78 +20,78 @@
 #endif
 
 
-// CKaollaView
+// CKalelView
 
-IMPLEMENT_DYNCREATE(CKaollaView, CFormView)
+IMPLEMENT_DYNCREATE(CKalelView, CFormView)
 
-BEGIN_MESSAGE_MAP(CKaollaView, CFormView)
+BEGIN_MESSAGE_MAP(CKalelView, CFormView)
 	// Custom messages for threads
-	ON_MESSAGE(WM_EXCHANGEDATA, &CKaollaView::ExchangeData)							// Calls to save the incoming data from the thread
-	ON_MESSAGE(WM_THREADFINISHEDREG, &CKaollaView::OnRegularThreadFinished)			// Calls when manual functionality ends
-	ON_MESSAGE(WM_UPDATEBUTTONS, &CKaollaView::OnThreadRequestButtonUpdate)			// Calls to update a specific button pair and associated display
-	ON_MESSAGE(WM_DISPLAYMESSAGE, &CKaollaView::AffichageMessages)					// Displays a message from the automation thread 
-	ON_MESSAGE(WM_DISPLAYMESSAGEBOX, &CKaollaView::MessageBoxAlert)					// Displays an messageBOX to alert user of something
-	ON_MESSAGE(WM_DISPLAYMESSAGEBOXCONF, &CKaollaView::MessageBoxConfirmation)		// Displays an messageBOX to or ask user for confirmation
-	//ON_MESSAGE(WM_GRAPHRESET, &CKaollaDoc::GraphReset)
+	ON_MESSAGE(WM_EXCHANGEDATA, &CKalelView::ExchangeData)							// Calls to save the incoming data from the thread
+	ON_MESSAGE(WM_THREADFINISHEDREG, &CKalelView::OnRegularThreadFinished)			// Calls when manual functionality ends
+	ON_MESSAGE(WM_UPDATEBUTTONS, &CKalelView::OnThreadRequestButtonUpdate)			// Calls to update a specific button pair and associated display
+	ON_MESSAGE(WM_DISPLAYMESSAGE, &CKalelView::AffichageMessages)					// Displays a message from the automation thread 
+	ON_MESSAGE(WM_DISPLAYMESSAGEBOX, &CKalelView::MessageBoxAlert)					// Displays an messageBOX to alert user of something
+	ON_MESSAGE(WM_DISPLAYMESSAGEBOXCONF, &CKalelView::MessageBoxConfirmation)		// Displays an messageBOX to or ask user for confirmation
+	//ON_MESSAGE(WM_GRAPHRESET, &CKalelDoc::GraphReset)
 
 	// Messages from the manip class
 
-	//ON_MESSAGE(WM_GRAPHADDMESUREMENT, &CKaollaDoc::GraphAddMeasurement)
-	//ON_MESSAGE(WM_GRAPHSETTITLE, &CKaollaDoc::GraphSetTitle)
-	//ON_MESSAGE(WM_GRAPHDATAAUTOSTEP, &CKaollaDoc::Graph)
-	//ON_MESSAGE(WM_DISPLAYMEASUREMENT, &CKaollaView::AffichageMesures)
-	//ON_MESSAGE(WM_DISPLAYSTEP, &CKaollaView::AffichageEtape)
-	//ON_MESSAGE(WM_UNLOCKMENU, &CKaollaView::DebloqueMenu)
-	//ON_MESSAGE(WM_UPDATEDISPLAY, &CKaollaView::MiseAJour)
-	//ON_MESSAGE(WM_ENABLESTARTBUTTON, &CKaollaView::UnlockStartButton)
+	//ON_MESSAGE(WM_GRAPHADDMESUREMENT, &CKalelDoc::GraphAddMeasurement)
+	//ON_MESSAGE(WM_GRAPHSETTITLE, &CKalelDoc::GraphSetTitle)
+	//ON_MESSAGE(WM_GRAPHDATAAUTOSTEP, &CKalelDoc::Graph)
+	//ON_MESSAGE(WM_DISPLAYMEASUREMENT, &CKalelView::AffichageMesures)
+	//ON_MESSAGE(WM_DISPLAYSTEP, &CKalelView::AffichageEtape)
+	//ON_MESSAGE(WM_UNLOCKMENU, &CKalelView::DebloqueMenu)
+	//ON_MESSAGE(WM_UPDATEDISPLAY, &CKalelView::MiseAJour)
+	//ON_MESSAGE(WM_ENABLESTARTBUTTON, &CKalelView::UnlockStartButton)
 	
-	ON_MESSAGE(WM_DISPLAYADDMESSAGE, &CKaollaView::RajoutAffichageMessages)
-	ON_MESSAGE(WM_DISPLAYADDSTEP, &CKaollaView::RajoutAffichageEtape)
-	ON_MESSAGE(WM_CANCELEXPERIMENT, &CKaollaView::Annuler)
+	ON_MESSAGE(WM_DISPLAYADDMESSAGE, &CKalelView::RajoutAffichageMessages)
+	ON_MESSAGE(WM_DISPLAYADDSTEP, &CKalelView::RajoutAffichageEtape)
+	ON_MESSAGE(WM_CANCELEXPERIMENT, &CKalelView::Annuler)
 
 	// Messages for UI buttons used for simple instrument manipulation
-	ON_BN_CLICKED(IDC_OUVRIR1, &CKaollaView::OnBnClickedOuvrir1)
-	ON_BN_CLICKED(IDC_OUVRIR2, &CKaollaView::OnBnClickedOuvrir2)
-	ON_BN_CLICKED(IDC_OUVRIR3, &CKaollaView::OnBnClickedOuvrir3)
-	ON_BN_CLICKED(IDC_OUVRIR4, &CKaollaView::OnBnClickedOuvrir4)
-	ON_BN_CLICKED(IDC_OUVRIR5, &CKaollaView::OnBnClickedOuvrir5)
-	ON_BN_CLICKED(IDC_OUVRIR6, &CKaollaView::OnBnClickedOuvrir6)
-	ON_BN_CLICKED(IDC_OUVRIR7, &CKaollaView::OnBnClickedOuvrir7)
-	ON_BN_CLICKED(IDC_OUVRIR8, &CKaollaView::OnBnClickedOuvrir8)
-	ON_BN_CLICKED(IDC_FERMER1, &CKaollaView::OnBnClickedFermer1)
-	ON_BN_CLICKED(IDC_FERMER2, &CKaollaView::OnBnClickedFermer2)
-	ON_BN_CLICKED(IDC_FERMER3, &CKaollaView::OnBnClickedFermer3)
-	ON_BN_CLICKED(IDC_FERMER4, &CKaollaView::OnBnClickedFermer4)
-	ON_BN_CLICKED(IDC_FERMER5, &CKaollaView::OnBnClickedFermer5)
-	ON_BN_CLICKED(IDC_FERMER6, &CKaollaView::OnBnClickedFermer6)
-	ON_BN_CLICKED(IDC_FERMER7, &CKaollaView::OnBnClickedFermer7)
-	ON_BN_CLICKED(IDC_FERMER8, &CKaollaView::OnBnClickedFermer8)
-	ON_BN_CLICKED(IDC_ACTIVER_EV1, &CKaollaView::OnBnClickedActiverEV1)
-	ON_BN_CLICKED(IDC_DESACTIVER_EV1, &CKaollaView::OnBnClickedDesactiverEV1)
-	ON_BN_CLICKED(IDC_ACTIVER_EV2, &CKaollaView::OnBnClickedActiverEV2)
-	ON_BN_CLICKED(IDC_DESACTIVER_EV2, &CKaollaView::OnBnClickedDesactiverEV2)
-	ON_BN_CLICKED(IDC_ACTIVER_POMPE, &CKaollaView::OnBnClickedActiverPompe)
-	ON_BN_CLICKED(IDC_DESACTIVER_POMPE, &CKaollaView::OnBnClickedDesactiverPompe)
+	ON_BN_CLICKED(IDC_OUVRIR1, &CKalelView::OnBnClickedOuvrir1)
+	ON_BN_CLICKED(IDC_OUVRIR2, &CKalelView::OnBnClickedOuvrir2)
+	ON_BN_CLICKED(IDC_OUVRIR3, &CKalelView::OnBnClickedOuvrir3)
+	ON_BN_CLICKED(IDC_OUVRIR4, &CKalelView::OnBnClickedOuvrir4)
+	ON_BN_CLICKED(IDC_OUVRIR5, &CKalelView::OnBnClickedOuvrir5)
+	ON_BN_CLICKED(IDC_OUVRIR6, &CKalelView::OnBnClickedOuvrir6)
+	ON_BN_CLICKED(IDC_OUVRIR7, &CKalelView::OnBnClickedOuvrir7)
+	ON_BN_CLICKED(IDC_OUVRIR8, &CKalelView::OnBnClickedOuvrir8)
+	ON_BN_CLICKED(IDC_FERMER1, &CKalelView::OnBnClickedFermer1)
+	ON_BN_CLICKED(IDC_FERMER2, &CKalelView::OnBnClickedFermer2)
+	ON_BN_CLICKED(IDC_FERMER3, &CKalelView::OnBnClickedFermer3)
+	ON_BN_CLICKED(IDC_FERMER4, &CKalelView::OnBnClickedFermer4)
+	ON_BN_CLICKED(IDC_FERMER5, &CKalelView::OnBnClickedFermer5)
+	ON_BN_CLICKED(IDC_FERMER6, &CKalelView::OnBnClickedFermer6)
+	ON_BN_CLICKED(IDC_FERMER7, &CKalelView::OnBnClickedFermer7)
+	ON_BN_CLICKED(IDC_FERMER8, &CKalelView::OnBnClickedFermer8)
+	ON_BN_CLICKED(IDC_ACTIVER_EV1, &CKalelView::OnBnClickedActiverEV1)
+	ON_BN_CLICKED(IDC_DESACTIVER_EV1, &CKalelView::OnBnClickedDesactiverEV1)
+	ON_BN_CLICKED(IDC_ACTIVER_EV2, &CKalelView::OnBnClickedActiverEV2)
+	ON_BN_CLICKED(IDC_DESACTIVER_EV2, &CKalelView::OnBnClickedDesactiverEV2)
+	ON_BN_CLICKED(IDC_ACTIVER_POMPE, &CKalelView::OnBnClickedActiverPompe)
+	ON_BN_CLICKED(IDC_DESACTIVER_POMPE, &CKalelView::OnBnClickedDesactiverPompe)
 
 	// Buttons which are used for automatic/advanced functionality
-	ON_BN_CLICKED(IDC_LANCER, &CKaollaView::OnBnClickedLancer)
-	ON_BN_CLICKED(IDC_ARRETER, &CKaollaView::OnBnClickedArreter)
-	ON_BN_CLICKED(IDC_REPRISE, &CKaollaView::OnBnClickedReprise)
-	ON_BN_CLICKED(IDC_ARRET_SOUS_VIDE, &CKaollaView::OnBnClickedArretSousVide)
-	ON_BN_CLICKED(IDC_PAUSE, &CKaollaView::OnBnClickedPause)
-	ON_BN_CLICKED(IDC_PROCHAINE_COMMANDE, &CKaollaView::OnBnClickedProchaineCommande)
-	ON_BN_CLICKED(IDC_PROCHAINE_DOSE, &CKaollaView::OnBnClickedProchaineDose)
-	ON_BN_CLICKED(IDC_PROCHAINE_ETAPE, &CKaollaView::OnBnClickedProchaineEtape)
+	ON_BN_CLICKED(IDC_LANCER, &CKalelView::OnBnClickedLancer)
+	ON_BN_CLICKED(IDC_ARRETER, &CKalelView::OnBnClickedArreter)
+	ON_BN_CLICKED(IDC_REPRISE, &CKalelView::OnBnClickedReprise)
+	ON_BN_CLICKED(IDC_ARRET_SOUS_VIDE, &CKalelView::OnBnClickedArretSousVide)
+	ON_BN_CLICKED(IDC_PAUSE, &CKalelView::OnBnClickedPause)
+	ON_BN_CLICKED(IDC_PROCHAINE_COMMANDE, &CKalelView::OnBnClickedProchaineCommande)
+	ON_BN_CLICKED(IDC_PROCHAINE_DOSE, &CKalelView::OnBnClickedProchaineDose)
+	ON_BN_CLICKED(IDC_PROCHAINE_ETAPE, &CKalelView::OnBnClickedProchaineEtape)
 
-	ON_BN_CLICKED(IDC_BUTTON_PARAMETRES_EXPERIENCE, &CKaollaView::OnBnClickedButtonParametresExperience)
+	ON_BN_CLICKED(IDC_BUTTON_PARAMETRES_EXPERIENCE, &CKalelView::OnBnClickedButtonParametresExperience)
 
 	ON_WM_TIMER()					// timer for update of the values
 END_MESSAGE_MAP()
 
-// CKaollaView construction/destruction
+// CKalelView construction/destruction
 
-CKaollaView::CKaollaView()
-	: CFormView(CKaollaView::IDD)
+CKalelView::CKalelView()
+	: CFormView(CKalelView::IDD)
 	, m_StrEditMessages(_T(""))
 	, m_StrCalo(_T(""))
 	, m_StrBassePression(_T(""))
@@ -119,7 +119,7 @@ CKaollaView::CKaollaView()
 }
 
 
-CKaollaView::~CKaollaView()
+CKalelView::~CKalelView()
 {
 	delete threadManager;
 	delete experimentSettings;
@@ -127,7 +127,7 @@ CKaollaView::~CKaollaView()
 }
 
 // Liaising between variables and controls
-void CKaollaView::DoDataExchange(CDataExchange* pDX)
+void CKalelView::DoDataExchange(CDataExchange* pDX)
 {
 	CFormView::DoDataExchange(pDX);
 	DDX_Text(pDX, IDC_EDIT_MESSAGES, m_StrEditMessages);
@@ -159,7 +159,7 @@ void CKaollaView::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_TEMOIN_POMPE, m_StrTemoinPompe);
 }
 
-BOOL CKaollaView::PreCreateWindow(CREATESTRUCT& cs)
+BOOL CKalelView::PreCreateWindow(CREATESTRUCT& cs)
 {
 	// TODO: Modify the Window class or styles here by modifying
 	//  the CREATESTRUCT cs
@@ -167,13 +167,13 @@ BOOL CKaollaView::PreCreateWindow(CREATESTRUCT& cs)
 	return CFormView::PreCreateWindow(cs);
 }
 
-void CKaollaView::OnInitialUpdate()
+void CKalelView::OnInitialUpdate()
 {
 	CFormView::OnInitialUpdate();
 	GetParentFrame()->RecalcLayout();
 
 	// Get a pointer to the app itself for access to the menu availability
-	pApp = static_cast<CKaollaApp *>(AfxGetApp());
+	pApp = static_cast<CKalelApp *>(AfxGetApp());
 
 	// Deactivate the buttons that should not be available
 	GetDlgItem(IDC_ARRETER)->EnableWindow(FALSE);
@@ -206,11 +206,11 @@ void CKaollaView::OnInitialUpdate()
 }
 
 
-// CKaollaView drawing
+// CKalelView drawing
 
-void CKaollaView::OnDraw(CDC* /*pDC*/)
+void CKalelView::OnDraw(CDC* /*pDC*/)
 {
-	CKaollaDoc* pDoc = GetDocument();
+	CKalelDoc* pDoc = GetDocument();
 	ASSERT_VALID(pDoc);
 	if (!pDoc)
 		return;
@@ -219,32 +219,32 @@ void CKaollaView::OnDraw(CDC* /*pDC*/)
 }
 
 
-// CKaollaView diagnostics
+// CKalelView diagnostics
 
 #ifdef _DEBUG
-void CKaollaView::AssertValid() const
+void CKalelView::AssertValid() const
 {
 	CFormView::AssertValid();
 }
 
-void CKaollaView::Dump(CDumpContext& dc) const
+void CKalelView::Dump(CDumpContext& dc) const
 {
 	CFormView::Dump(dc);
 }
 
-CKaollaDoc* CKaollaView::GetDocument() const // non-debug version is inline
+CKalelDoc* CKalelView::GetDocument() const // non-debug version is inline
 {
-	ASSERT(m_pDocument->IsKindOf(RUNTIME_CLASS(CKaollaDoc)));
-	return (CKaollaDoc*)m_pDocument;
+	ASSERT(m_pDocument->IsKindOf(RUNTIME_CLASS(CKalelDoc)));
+	return (CKalelDoc*)m_pDocument;
 }
 #endif //_DEBUG
 
 
 // Returns a pointer to the view itself or NULL if it fails
-CKaollaView * CKaollaView::GetView()
+CKalelView * CKalelView::GetView()
 {
 	CDocTemplate* pTemplate;
-	CKaollaApp* pAppl = static_cast<CKaollaApp *>(AfxGetApp());
+	CKalelApp* pAppl = static_cast<CKalelApp *>(AfxGetApp());
 
 	POSITION pos = pAppl->GetFirstDocTemplatePosition();
 	while (pos != NULL)
@@ -267,9 +267,9 @@ CKaollaView * CKaollaView::GetView()
 				ASSERT(pView);
 				if (::IsWindow(pView->GetSafeHwnd()))
 				{
-					if (pView->IsKindOf(RUNTIME_CLASS(CKaollaView)))
+					if (pView->IsKindOf(RUNTIME_CLASS(CKalelView)))
 					{
-						CKaollaView* pKV = static_cast<CKaollaView *>(pView);
+						CKalelView* pKV = static_cast<CKalelView *>(pView);
 						return pKV;
 					}
 				}
@@ -280,9 +280,9 @@ CKaollaView * CKaollaView::GetView()
 	return NULL;
 }
 
-// CKaollaView message handlers
+// CKalelView message handlers
 
-void CKaollaView::DoEvents(void)
+void CKalelView::DoEvents(void)
 {
 	MSG msg;
 
@@ -293,19 +293,19 @@ void CKaollaView::DoEvents(void)
 	}
 }
 
-void CKaollaView::OnMsvAmpoule(void)
+void CKalelView::OnMsvAmpoule(void)
 {
 	ASSERT(0);
 	//MiseSousVideAmpoule(GetSafeHwnd());
 }
 
-void CKaollaView::OnMsvBouteille()
+void CKalelView::OnMsvBouteille()
 {
 	ASSERT(0);
 	//MiseSousVideBouteille(GetSafeHwnd());
 }
 
-void CKaollaView::OnChangementBouteille()
+void CKalelView::OnChangementBouteille()
 {
 	ASSERT(0);
 	//ChangementBouteille(GetSafeHwnd());
@@ -316,7 +316,7 @@ void CKaollaView::OnChangementBouteille()
 // Thread callback commands
 **********************************************************************************************************************************/
 
-LRESULT CKaollaView::OnRegularThreadFinished(WPARAM, LPARAM) {
+LRESULT CKalelView::OnRegularThreadFinished(WPARAM, LPARAM) {
 
 	pApp->experimentRunning = false;
 	pApp->menuIsAvailable = true;
@@ -329,7 +329,7 @@ LRESULT CKaollaView::OnRegularThreadFinished(WPARAM, LPARAM) {
 }
 
 // When the experiment is signalled as cancelled from the thread or it times out
-LRESULT CKaollaView::Annuler(WPARAM, LPARAM)
+LRESULT CKalelView::Annuler(WPARAM, LPARAM)
 {
 	// Signal that this is the experiment end
 	pApp->experimentRunning = false;

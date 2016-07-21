@@ -1,5 +1,5 @@
 
-// KaollaView.h : interface of the CKaollaView class
+// KalelView.h : interface of the CKalelView class
 //
 
 #pragma once
@@ -18,16 +18,16 @@
 #include "ExperimentSettings.h"			// Where returned data from results is stored
 #include "ExperimentPropertySheet.h"	// Dialog box for setting experimental properties
 
-#include "KaollaDoc.h"
-#include "Kaolla.h"
+#include "KalelDoc.h"
+#include "Kalel.h"
 
 
-class CKaollaView : public CFormView
+class CKalelView : public CFormView
 {
 
 public:
-	CKaollaApp* pApp;				// pointer to the main app
-	CKaollaDoc* m_mainDocument;		// pointer to the main document
+	CKalelApp* pApp;				// pointer to the main app
+	CKalelDoc* m_mainDocument;		// pointer to the main document
 	ThreadManager* threadManager;
 
 	// Storage for all the data
@@ -69,16 +69,16 @@ public:
 	CString m_StrTemoinPompe;
 
 protected: // create from serialization only
-	CKaollaView();
-	DECLARE_DYNCREATE(CKaollaView)
+	CKalelView();
+	DECLARE_DYNCREATE(CKalelView)
 
 public:
-	enum { IDD = IDD_KAOLLA_FORM };
+	enum { IDD = IDD_Kalel_FORM };
 
 // Attributes
 public:
-	CKaollaDoc* GetDocument() const;
-	static CKaollaView * GetView();
+	CKalelDoc* GetDocument() const;
+	static CKalelView * GetView();
 
 
 // Operations
@@ -94,7 +94,7 @@ protected:
 
 // Implementation
 public:
-	virtual ~CKaollaView();
+	virtual ~CKalelView();
 #ifdef _DEBUG
 	virtual void AssertValid() const;
 	virtual void Dump(CDumpContext& dc) const;
@@ -107,7 +107,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 public:
-	//------- KaollaView
+	//------- KalelView
 
 	void DoEvents(void);
 	void OnMsvAmpoule(void);
@@ -123,7 +123,7 @@ public:
 
 protected:
 
-	//-------- KaollaView_Affichage
+	//-------- KalelView_Affichage
 
 public:
 	LRESULT AffichageMessages(WPARAM wParam, LPARAM lParam);
@@ -138,7 +138,7 @@ public:
 
 	void OnTimer(UINT nIDEvent);	//timer for window update
 
-	//-------- KaollaView_Boutons
+	//-------- KalelView_Boutons
 public:
 	void OnBnClickedLancer();
 	void OnBnClickedArreter();
@@ -152,7 +152,7 @@ public:
 	void OnBnClickedProchaineEtape();
 	void OnBnClickedReprise();
 
-	//-------- KaollaView_Boutons_Vannes
+	//-------- KalelView_Boutons_Vannes
 public:
 	void AskThreadForManualCommand(int instrument, int i, bool askToActivate);
 	LRESULT OnThreadRequestButtonUpdate(WPARAM wParam, LPARAM lParam);
@@ -184,8 +184,8 @@ public:
 };
 
 
-#ifndef _DEBUG  // debug version in KaollaView.cpp
-inline CKaollaDoc* CKaollaView::GetDocument() const
-   { return reinterpret_cast<CKaollaDoc*>(m_pDocument); }
+#ifndef _DEBUG  // debug version in KalelView.cpp
+inline CKalelDoc* CKalelView::GetDocument() const
+   { return reinterpret_cast<CKalelDoc*>(m_pDocument); }
 #endif
 

@@ -2,7 +2,7 @@
 //
 
 #include "stdafx.h"
-#include "Kaolla.h"
+#include "Kalel.h"
 #include "Parametres_experience.h"
 #include "MessageBoxTexts.h"			// For the required strings
 

@@ -1,5 +1,5 @@
 
-// KaollaDoc.h : interface of the CKaollaDoc class
+// KalelDoc.h : interface of the CKalelDoc class
 //
 
 
@@ -7,11 +7,11 @@
 
 #include "ExperimentData.h"
 
-class CKaollaDoc : public CDocument
+class CKalelDoc : public CDocument
 {
 protected: // create from serialization only
-	CKaollaDoc();
-	DECLARE_DYNCREATE(CKaollaDoc)
+	CKalelDoc();
+	DECLARE_DYNCREATE(CKalelDoc)
 
 // Attributes
 public:	
@@ -23,7 +23,7 @@ public:
 
 // Operations
 public:
-	static CKaollaDoc * GetDocument();
+	static CKalelDoc * GetDocument();
 	CArrayMesure * GetTableauMesures();
 
 // Overrides
@@ -37,7 +37,7 @@ public:
 
 // Implementation
 public:
-	virtual ~CKaollaDoc();
+	virtual ~CKalelDoc();
 #ifdef _DEBUG
 	virtual void AssertValid() const;
 	virtual void Dump(CDumpContext& dc) const;

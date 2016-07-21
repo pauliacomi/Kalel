@@ -1,12 +1,12 @@
 
-// KaollaView_Boutons.cpp : all the code for the buttons in the view except the valve buttons
+// KalelView_Boutons.cpp : all the code for the buttons in the view except the valve buttons
 //
 
 #include "stdafx.h"
-#include "Kaolla.h"
+#include "Kalel.h"
 
-#include "KaollaDoc.h"
-#include "KaollaView.h"
+#include "KalelDoc.h"
+#include "KalelView.h"
 
 #include "ThreadManager.h"
 
@@ -14,7 +14,7 @@
 
 
 // When clicking on the Launch button
-void CKaollaView::OnBnClickedLancer()
+void CKalelView::OnBnClickedLancer()
 {
 	// Create the experiment type window
 	CDialogue_TypeExperience dialogExperimentType;
@@ -66,14 +66,14 @@ void CKaollaView::OnBnClickedLancer()
 }
 
 // When clicking on the Stop button
-void CKaollaView::OnBnClickedArreter()
+void CKalelView::OnBnClickedArreter()
 {
 	threadManager->ResetThread();
 }
 
 
 // Clicking the other buttons in the view
-void CKaollaView::OnBnClickedButtonParametresExperience()
+void CKalelView::OnBnClickedButtonParametresExperience()
 {
 	if (pApp->experimentRunning) {
 
@@ -87,39 +87,39 @@ void CKaollaView::OnBnClickedButtonParametresExperience()
 	}
 }
 
-void CKaollaView::OnBnClickedArretSousVide()
+void CKalelView::OnBnClickedArretSousVide()
 {
 	//ArretSousVideThreads();
 }
 
-void CKaollaView::OnBnClickedPause()
+void CKalelView::OnBnClickedPause()
 {
 	threadManager->PauseThread();
 }
 
-void CKaollaView::OnBnClickedProchaineCommande()
+void CKalelView::OnBnClickedProchaineCommande()
 {
 	//ProchaineCommandeThreads();
 }
 
-void CKaollaView::OnBnClickedProchaineDose()
+void CKalelView::OnBnClickedProchaineDose()
 {
 	//ProchaineDoseThreads();
 }
 
-void CKaollaView::OnBnClickedProchaineEtape()
+void CKalelView::OnBnClickedProchaineEtape()
 {
 	//ProchaineEtapeThreads();
 }
 
-void CKaollaView::OnBnClickedReprise()
+void CKalelView::OnBnClickedReprise()
 {
 	threadManager->StartThread();
 }
 
 
 // Copy all data from a property sheet dialog to the local object
-void CKaollaView::GetExperimentData(ExperimentPropertySheet * pDialogExperimentProperties) {
+void CKalelView::GetExperimentData(ExperimentPropertySheet * pDialogExperimentProperties) {
 
 	// Use a critical section to avoid data races
 	EnterCriticalSection(&experimentSettings->criticalSection);
@@ -147,7 +147,7 @@ void CKaollaView::GetExperimentData(ExperimentPropertySheet * pDialogExperimentP
 
 }
 
-void CKaollaView::UpdateButtons() {
+void CKalelView::UpdateButtons() {
 
 	bool eRun = !pApp->menuIsAvailable;
 

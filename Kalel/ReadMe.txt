@@ -1,47 +1,47 @@
 ================================================================================
-    MICROSOFT FOUNDATION CLASS LIBRARY : Kaolla Project Overview
+    MICROSOFT FOUNDATION CLASS LIBRARY : Kalel Project Overview
 ===============================================================================
 
-The application wizard has created this Kaolla application for
+The application wizard has created this Kalel application for
 you.  This application not only demonstrates the basics of using the Microsoft
 Foundation Classes but is also a starting point for writing your application.
 
 This file contains a summary of what you will find in each of the files that
-make up your Kaolla application.
+make up your Kalel application.
 
-Kaolla.vcxproj
+Kalel.vcxproj
     This is the main project file for VC++ projects generated using an application wizard.
     It contains information about the version of Visual C++ that generated the file, and
     information about the platforms, configurations, and project features selected with the
     application wizard.
 
-Kaolla.vcxproj.filters
+Kalel.vcxproj.filters
     This is the filters file for VC++ projects generated using an Application Wizard. 
     It contains information about the assciation between the files in your project 
     and the filters. This association is used in the IDE to show grouping of files with
     similar extensions under a specific node (for e.g. ".cpp" files are associated with the
     "Source Files" filter).
 
-Kaolla.h
+Kalel.h
     This is the main header file for the application.  It includes other
     project specific headers (including Resource.h) and declares the
-    CKaollaApp application class.
+    CKalelApp application class.
 
-Kaolla.cpp
+Kalel.cpp
     This is the main application source file that contains the application
-    class CKaollaApp.
+    class CKalelApp.
 
-Kaolla.rc
+Kalel.rc
     This is a listing of all of the Microsoft Windows resources that the
     program uses.  It includes the icons, bitmaps, and cursors that are stored
     in the RES subdirectory.  This file can be directly edited in Microsoft
     Visual C++. Your project resources are in 1033.
 
-res\Kaolla.ico
+res\Kalel.ico
     This is an icon file, which is used as the application's icon.  This
-    icon is included by the main resource file Kaolla.rc.
+    icon is included by the main resource file Kalel.rc.
 
-res\Kaolla.rc2
+res\Kalel.rc2
     This file contains resources that are not edited by Microsoft
     Visual C++. You should place all resources not editable by
     the resource editor in this file.
@@ -59,20 +59,20 @@ res\Toolbar.bmp
     This bitmap file is used to create tiled images for the toolbar.
     The initial toolbar and status bar are constructed in the CMainFrame
     class. Edit this toolbar bitmap using the resource editor, and
-    update the IDR_MAINFRAME TOOLBAR array in Kaolla.rc to add
+    update the IDR_MAINFRAME TOOLBAR array in Kalel.rc to add
     toolbar buttons.
 /////////////////////////////////////////////////////////////////////////////
 
 The application wizard creates one document type and one view:
 
-KaollaDoc.h, KaollaDoc.cpp - the document
-    These files contain your CKaollaDoc class.  Edit these files to
+KalelDoc.h, KalelDoc.cpp - the document
+    These files contain your CKalelDoc class.  Edit these files to
     add your special document data and to implement file saving and loading
-    (via CKaollaDoc::Serialize).
+    (via CKalelDoc::Serialize).
 
-KaollaView.h, KaollaView.cpp - the view of the document
-    These files contain your CKaollaView class.
-    CKaollaView objects are used to view CKaollaDoc objects.
+KalelView.h, KalelView.cpp - the view of the document
+    These files contain your CKalelView class.
+    CKalelView objects are used to view CKalelDoc objects.
 
 
 
@@ -81,14 +81,14 @@ KaollaView.h, KaollaView.cpp - the view of the document
 
 Help Support:
 
-hlp\Kaolla.hhp
+hlp\Kalel.hhp
     This file is a help project file. It contains the data needed to
     compile the help files into a .chm file.
 
-hlp\Kaolla.hhc
+hlp\Kalel.hhc
     This file lists the contents of the help project.
 
-hlp\Kaolla.hhk
+hlp\Kalel.hhk
     This file contains an index of the help topics.
 
 hlp\afxcore.htm
@@ -116,13 +116,13 @@ Other standard files:
 
 StdAfx.h, StdAfx.cpp
     These files are used to build a precompiled header (PCH) file
-    named Kaolla.pch and a precompiled types file named StdAfx.obj.
+    named Kalel.pch and a precompiled types file named StdAfx.obj.
 
 Resource.h
     This is the standard header file, which defines new resource IDs.
     Microsoft Visual C++ reads and updates this file.
 
-Kaolla.manifest
+Kalel.manifest
 	Application manifest files are used by Windows XP to describe an applications
 	dependency on specific versions of Side-by-Side assemblies. The loader uses this
 	information to load the appropriate assembly from the assembly cache or private

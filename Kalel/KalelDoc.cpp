@@ -1,16 +1,16 @@
 
-// KaollaDoc.cpp : implementation of the CKaollaDoc class
+// KalelDoc.cpp : implementation of the CKalelDoc class
 //
 
 #include "stdafx.h"
 // SHARED_HANDLERS can be defined in an ATL project implementing preview, thumbnail
 // and search filter handlers and allows sharing of document code with that project.
 #ifndef SHARED_HANDLERS
-#include "Kaolla.h"
+#include "Kalel.h"
 #endif
 
 
-#include "KaollaDoc.h"
+#include "KalelDoc.h"
 
 #include <propkey.h>
 
@@ -20,27 +20,27 @@
 #define new DEBUG_NEW
 #endif
 
-// CKaollaDoc
+// CKalelDoc
 
-IMPLEMENT_DYNCREATE(CKaollaDoc, CDocument)
+IMPLEMENT_DYNCREATE(CKalelDoc, CDocument)
 
-BEGIN_MESSAGE_MAP(CKaollaDoc, CDocument)
+BEGIN_MESSAGE_MAP(CKalelDoc, CDocument)
 END_MESSAGE_MAP()
 
 
-// CKaollaDoc construction/destruction
+// CKalelDoc construction/destruction
 
-CKaollaDoc::CKaollaDoc()
+CKalelDoc::CKalelDoc()
 {
 	TitreGrapheEtape = _T("");
 	GraphInitialize(NULL, NULL);
 }
 
-CKaollaDoc::~CKaollaDoc()
+CKalelDoc::~CKalelDoc()
 {
 }
 
-BOOL CKaollaDoc::OnNewDocument()
+BOOL CKalelDoc::OnNewDocument()
 {
 	if (!CDocument::OnNewDocument())
 		return FALSE;
@@ -52,9 +52,9 @@ BOOL CKaollaDoc::OnNewDocument()
 }
 
 
-// CKaollaDoc serialization
+// CKalelDoc serialization
 
-void CKaollaDoc::Serialize(CArchive& ar)
+void CKalelDoc::Serialize(CArchive& ar)
 {
 	if (ar.IsStoring())
 	{
@@ -69,7 +69,7 @@ void CKaollaDoc::Serialize(CArchive& ar)
 #ifdef SHARED_HANDLERS
 
 // Support for thumbnails
-void CKaollaDoc::OnDrawThumbnail(CDC& dc, LPRECT lprcBounds)
+void CKalelDoc::OnDrawThumbnail(CDC& dc, LPRECT lprcBounds)
 {
 	// Modify this code to draw the document's data
 	dc.FillSolidRect(lprcBounds, RGB(255, 255, 255));
@@ -90,7 +90,7 @@ void CKaollaDoc::OnDrawThumbnail(CDC& dc, LPRECT lprcBounds)
 }
 
 // Support for Search Handlers
-void CKaollaDoc::InitializeSearchContent()
+void CKalelDoc::InitializeSearchContent()
 {
 	CString strSearchContent;
 	// Set search contents from document's data. 
@@ -100,7 +100,7 @@ void CKaollaDoc::InitializeSearchContent()
 	SetSearchContent(strSearchContent);
 }
 
-void CKaollaDoc::SetSearchContent(const CString& value)
+void CKalelDoc::SetSearchContent(const CString& value)
 {
 	if (value.IsEmpty())
 	{
@@ -120,15 +120,15 @@ void CKaollaDoc::SetSearchContent(const CString& value)
 
 #endif // SHARED_HANDLERS
 
-// CKaollaDoc diagnostics
+// CKalelDoc diagnostics
 
 #ifdef _DEBUG
-void CKaollaDoc::AssertValid() const
+void CKalelDoc::AssertValid() const
 {
 	CDocument::AssertValid();
 }
 
-void CKaollaDoc::Dump(CDumpContext& dc) const
+void CKalelDoc::Dump(CDumpContext& dc) const
 {
 	CDocument::Dump(dc);
 }
@@ -136,15 +136,15 @@ void CKaollaDoc::Dump(CDumpContext& dc) const
 
 
 // Returns a pointer to the document itself
-CKaollaDoc * CKaollaDoc::GetDocument()
+CKalelDoc * CKalelDoc::GetDocument()
 {
 	CFrameWnd * pFrame = (CFrameWnd *)(AfxGetApp()->m_pMainWnd);
-	return (CKaollaDoc *)pFrame->GetActiveDocument();
+	return (CKalelDoc *)pFrame->GetActiveDocument();
 }
 
-//-------------------- CKaollaDoc custom functions
+//-------------------- CKalelDoc custom functions
 
-LRESULT CKaollaDoc::GraphInitialize(WPARAM wParam, LPARAM lParam)
+LRESULT CKalelDoc::GraphInitialize(WPARAM wParam, LPARAM lParam)
 {
 	TempsMinimum = NULL;
 	MesureMinimum = NULL;
@@ -154,7 +154,7 @@ LRESULT CKaollaDoc::GraphInitialize(WPARAM wParam, LPARAM lParam)
 }
 
 // Add a measurement to the graph -- Regular
-bool CKaollaDoc::GraphAddMeasurement(ExperimentData expData)
+bool CKalelDoc::GraphAddMeasurement(ExperimentData expData)
 {
 	int lastMeasurement;
 	bool result = false;
@@ -197,7 +197,7 @@ bool CKaollaDoc::GraphAddMeasurement(ExperimentData expData)
 }
 
 
-LRESULT CKaollaDoc::GraphReset(WPARAM , LPARAM ) {
+LRESULT CKalelDoc::GraphReset(WPARAM , LPARAM ) {
 	
 	m_TableauMesures.RemoveAll();
 	TempsMinimum = NULL;
@@ -229,7 +229,7 @@ messageHandler.GraphSetTitle(titre);
 
 
 // ?
-CArrayMesure* CKaollaDoc::GetTableauMesures(void)
+CArrayMesure* CKalelDoc::GetTableauMesures(void)
 {
 	return &m_TableauMesures;
 }

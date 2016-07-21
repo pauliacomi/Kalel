@@ -1,7 +1,7 @@
 
 #include "stdafx.h"
 
-#include "KaollaView.h"
+#include "KalelView.h"
 #include "ThreadManager.h"
 
 

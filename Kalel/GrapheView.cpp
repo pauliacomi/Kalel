@@ -2,8 +2,8 @@
 //
 
 #include "stdafx.h"
-#include "Kaolla.h"
-#include "KaollaDoc.h"
+#include "Kalel.h"
+#include "KalelDoc.h"
 #include "GrapheView.h"
 
 #include "ExperimentData.h"
@@ -45,7 +45,7 @@ END_MESSAGE_MAP()
 
 void CGrapheView::OnDraw(CDC* pDC)
 {
-	CKaollaDoc* pDoc = GetDocument();
+	CKalelDoc* pDoc = GetDocument();
 	ASSERT_VALID(pDoc);
 	CRect rect_grapheView;
 	GetClientRect(rect_grapheView);
@@ -195,7 +195,7 @@ void CGrapheView::OnDraw(CDC* pDC)
 // ------------------------------------------------
 
 
-void CGrapheView::trace_axe(CRect place_graphe, CRect axe_graphe, CDC *pDC, CKaollaDoc* pDoc,CString titre)
+void CGrapheView::trace_axe(CRect place_graphe, CRect axe_graphe, CDC *pDC, CKalelDoc* pDoc,CString titre)
 {
 	// ----------- Traçage des axes -------------------------
 	pDC->SetTextColor(RGB(255,255,255));
@@ -250,7 +250,7 @@ void CGrapheView::trace_axe(CRect place_graphe, CRect axe_graphe, CDC *pDC, CKao
 
 
 void CGrapheView::trace_echelle(CRect graphe,CRect axe_graphe,int max_pression,int min_pression,double max_calo,double min_calo,
-								CDC *pDC, CKaollaDoc* pDoc, float min_temps)
+								CDC *pDC, CKalelDoc* pDoc, float min_temps)
 {
 	// intervalle : entre 2 traits
 	// il y aura donc (nb_intervalle + 1) traits
@@ -397,7 +397,7 @@ void CGrapheView::trace_echelle(CRect graphe,CRect axe_graphe,int max_pression,i
 
 
 void CGrapheView::trace_graphe(CRect graphe,int max_pression,int min_pression,double max_calo,double min_calo,
-							   CDC *pDC,CKaollaDoc *pDoc,float min_temps,int PremiereMesure)
+							   CDC *pDC,CKalelDoc *pDoc,float min_temps,int PremiereMesure)
 {
 	// rapport = hauteur du graphe / (max_calo - min_calo)
 	// rapport = valeur (bar ou µV) par pixel
@@ -1059,10 +1059,10 @@ int CGrapheView::NbrIntervalles(double max)
 }
 
 
-CKaollaDoc* CGrapheView::GetDocument() const // la version non déboguée est en ligne
+CKalelDoc* CGrapheView::GetDocument() const // la version non déboguée est en ligne
 {
-	ASSERT(m_pDocument->IsKindOf(RUNTIME_CLASS(CKaollaDoc)));
-	return (CKaollaDoc*)m_pDocument;
+	ASSERT(m_pDocument->IsKindOf(RUNTIME_CLASS(CKalelDoc)));
+	return (CKalelDoc*)m_pDocument;
 }
 
 // Diagnostics de CGrapheView

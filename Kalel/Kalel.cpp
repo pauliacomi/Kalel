@@ -1,15 +1,15 @@
 
-// Kaolla.cpp : Defines the class behaviors for the application.
+// Kalel.cpp : Defines the class behaviors for the application.
 //
 
 #include "stdafx.h"
 #include "afxwinappex.h"
 #include "afxdialogex.h"
 #include "MainFrm.h"
-#include "Kaolla.h"
+#include "Kalel.h"
 
-#include "KaollaDoc.h"
-#include "KaollaView.h"
+#include "KalelDoc.h"
+#include "KalelView.h"
 
 #include "ThreadManager.h"
 
@@ -24,33 +24,33 @@
 #endif
 
 
-// CKaollaApp
+// CKalelApp
 
-BEGIN_MESSAGE_MAP(CKaollaApp, CWinApp)
-	ON_COMMAND(ID_APP_ABOUT, &CKaollaApp::OnAppAbout)
+BEGIN_MESSAGE_MAP(CKalelApp, CWinApp)
+	ON_COMMAND(ID_APP_ABOUT, &CKalelApp::OnAppAbout)
 	// Standard file based document commands
 	ON_COMMAND(ID_FILE_NEW, &CWinApp::OnFileNew)
 	ON_COMMAND(ID_FILE_OPEN, &CWinApp::OnFileOpen)
 	// New menu based commands
-	ON_COMMAND(ID_PARAMATRES_APPAREIL, &CKaollaApp::OnParamatresAppareil)
-	ON_COMMAND(ID_CONNECTION_PORTS, &CKaollaApp::OnConnectionPorts)
-	ON_COMMAND(ID_DONNEES_EXPERIENCE, &CKaollaApp::OnDonneesExperience)
-	ON_COMMAND(ID_MSV_AMPOULE, &CKaollaView::OnMsvAmpoule)
-	ON_COMMAND(ID_MSV_BOUTEILLE, &CKaollaView::OnMsvBouteille)
-	ON_COMMAND(ID_CHANGEMENT_BOUTEILLE, &CKaollaView::OnChangementBouteille)
+	ON_COMMAND(ID_PARAMATRES_APPAREIL, &CKalelApp::OnParamatresAppareil)
+	ON_COMMAND(ID_CONNECTION_PORTS, &CKalelApp::OnConnectionPorts)
+	ON_COMMAND(ID_DONNEES_EXPERIENCE, &CKalelApp::OnDonneesExperience)
+	ON_COMMAND(ID_MSV_AMPOULE, &CKalelView::OnMsvAmpoule)
+	ON_COMMAND(ID_MSV_BOUTEILLE, &CKalelView::OnMsvBouteille)
+	ON_COMMAND(ID_CHANGEMENT_BOUTEILLE, &CKalelView::OnChangementBouteille)
 	// New update based commands
-	ON_UPDATE_COMMAND_UI(ID_PARAMATRES_APPAREIL, &CKaollaApp::OnUpdateParamatresAppareil)
-	ON_UPDATE_COMMAND_UI(ID_CONNECTION_PORTS, &CKaollaApp::OnUpdateConnectionPorts)
-	ON_UPDATE_COMMAND_UI(ID_MSV_AMPOULE, &CKaollaApp::OnUpdateMsvAmpoule)
-	ON_UPDATE_COMMAND_UI(ID_MSV_BOUTEILLE, &CKaollaApp::OnUpdateMsvBouteille)
-	ON_UPDATE_COMMAND_UI(ID_CHANGEMENT_BOUTEILLE, &CKaollaApp::OnUpdateChangementBouteille)
-	ON_UPDATE_COMMAND_UI(ID_DONNEES_EXPERIENCE, &CKaollaApp::OnUpdateDonneesExperience)
+	ON_UPDATE_COMMAND_UI(ID_PARAMATRES_APPAREIL, &CKalelApp::OnUpdateParamatresAppareil)
+	ON_UPDATE_COMMAND_UI(ID_CONNECTION_PORTS, &CKalelApp::OnUpdateConnectionPorts)
+	ON_UPDATE_COMMAND_UI(ID_MSV_AMPOULE, &CKalelApp::OnUpdateMsvAmpoule)
+	ON_UPDATE_COMMAND_UI(ID_MSV_BOUTEILLE, &CKalelApp::OnUpdateMsvBouteille)
+	ON_UPDATE_COMMAND_UI(ID_CHANGEMENT_BOUTEILLE, &CKalelApp::OnUpdateChangementBouteille)
+	ON_UPDATE_COMMAND_UI(ID_DONNEES_EXPERIENCE, &CKalelApp::OnUpdateDonneesExperience)
 END_MESSAGE_MAP()
 
 
-// CKaollaApp construction
+// CKalelApp construction
 
-CKaollaApp::CKaollaApp()
+CKalelApp::CKalelApp()
 {
 	// support Restart Manager
 	m_dwRestartManagerSupportFlags = AFX_RESTART_MANAGER_SUPPORT_ALL_ASPECTS;
@@ -71,14 +71,14 @@ CKaollaApp::CKaollaApp()
 	// Place all significant initialization in InitInstance
 }
 
-// The one and only CKaollaApp object
+// The one and only CKalelApp object
 
-CKaollaApp theApp;
+CKalelApp theApp;
 
 
-// CKaollaApp initialization
+// CKalelApp initialization
 
-BOOL CKaollaApp::InitInstance()
+BOOL CKalelApp::InitInstance()
 {
 
 	// InitCommonControlsEx() is required on Windows XP if an application
@@ -124,9 +124,9 @@ BOOL CKaollaApp::InitInstance()
 	CSingleDocTemplate* pDocTemplate;
 	pDocTemplate = new CSingleDocTemplate(
 		IDR_MAINFRAME,
-		RUNTIME_CLASS(CKaollaDoc),
+		RUNTIME_CLASS(CKalelDoc),
 		RUNTIME_CLASS(CMainFrame),       // main SDI frame window
-		RUNTIME_CLASS(CKaollaView));
+		RUNTIME_CLASS(CKalelView));
 	if (!pDocTemplate)
 		return FALSE;
 	AddDocTemplate(pDocTemplate);
@@ -149,7 +149,7 @@ BOOL CKaollaApp::InitInstance()
 	return TRUE;
 }
 
-int CKaollaApp::ExitInstance()
+int CKalelApp::ExitInstance()
 {
 	//TODO: handle additional resources you may have added
 	AfxOleTerm(FALSE);
@@ -159,7 +159,7 @@ int CKaollaApp::ExitInstance()
 
 
 ///////////////////////////////
-// CKaollaApp message handlers
+// CKalelApp message handlers
 
 
 // CAboutDlg dialog used for App About
@@ -195,7 +195,7 @@ BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
 END_MESSAGE_MAP()
 
 // App command to run the dialog
-void CKaollaApp::OnAppAbout()
+void CKalelApp::OnAppAbout()
 {
 	CAboutDlg aboutDlg;
 	aboutDlg.DoModal();
@@ -205,13 +205,13 @@ void CKaollaApp::OnAppAbout()
 ///////////////////////////////
 // Custom functions to process when menu buttons are pressed
 
-void CKaollaApp::OnParamatresAppareil()
+void CKalelApp::OnParamatresAppareil()
 {
 	CParametres_appareil m_parametres_appareil;
 	m_parametres_appareil.DoModal();
 }
 
-void CKaollaApp::OnConnectionPorts()
+void CKalelApp::OnConnectionPorts()
 {
 	CConnection_port m_connection_ports;
 	m_connection_ports.DoModal();
@@ -219,7 +219,7 @@ void CKaollaApp::OnConnectionPorts()
 	//ChangementDev(GetPortVannes(), GetPortTemperatures());
 }
 
-void CKaollaApp::OnDonneesExperience()
+void CKalelApp::OnDonneesExperience()
 {
 	CDonnees_Experience m_donnees_experience;
 	ASSERT(0);
@@ -230,32 +230,32 @@ void CKaollaApp::OnDonneesExperience()
 
 // Make sure that the functionalities are only available when the experiment is not running
 
-void CKaollaApp::OnUpdateParamatresAppareil(CCmdUI *pCmdUI)
+void CKalelApp::OnUpdateParamatresAppareil(CCmdUI *pCmdUI)
 {
 	pCmdUI->Enable(menuIsAvailable);
 }
 
-void CKaollaApp::OnUpdateConnectionPorts(CCmdUI *pCmdUI)
+void CKalelApp::OnUpdateConnectionPorts(CCmdUI *pCmdUI)
 {
 	pCmdUI->Enable(menuIsAvailable);
 }
 
-void CKaollaApp::OnUpdateDonneesExperience(CCmdUI *pCmdUI)
+void CKalelApp::OnUpdateDonneesExperience(CCmdUI *pCmdUI)
 {
 	pCmdUI->Enable(!menuIsAvailable);
 }
 
-void CKaollaApp::OnUpdateMsvAmpoule(CCmdUI *pCmdUI)
+void CKalelApp::OnUpdateMsvAmpoule(CCmdUI *pCmdUI)
 {
 	pCmdUI->Enable(menuIsAvailable);
 }
 
-void CKaollaApp::OnUpdateMsvBouteille(CCmdUI *pCmdUI)
+void CKalelApp::OnUpdateMsvBouteille(CCmdUI *pCmdUI)
 {
 	pCmdUI->Enable(menuIsAvailable);
 }
 
-void CKaollaApp::OnUpdateChangementBouteille(CCmdUI *pCmdUI)
+void CKalelApp::OnUpdateChangementBouteille(CCmdUI *pCmdUI)
 {
 	pCmdUI->Enable(menuIsAvailable);
 }

@@ -1,5 +1,5 @@
 
-// Kaolla.h : main header file for the Kaolla application
+// Kalel.h : main header file for the Kalel application
 //
 #pragma once
 
@@ -10,14 +10,14 @@
 #include "resource.h"				// main symbols
 #include "StringTable.h"			// For all the strings in the program
 
-// CKaollaApp:
-// See Kaolla.cpp for the implementation of this class
+// CKalelApp:
+// See Kalel.cpp for the implementation of this class
 //
 
-class CKaollaApp : public CWinApp
+class CKalelApp : public CWinApp
 {
 public:
-	CKaollaApp();
+	CKalelApp();
 
 	// Global flags
 	bool menuIsAvailable;
@@ -46,4 +46,4 @@ public:
 	afx_msg void OnUpdateChangementBouteille(CCmdUI *pCmdUI);
 };
 
-extern CKaollaApp theApp;
+extern CKalelApp theApp;

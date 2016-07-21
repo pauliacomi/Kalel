@@ -1,12 +1,12 @@
 
-// KaollaView_Boutons.cpp : all the code for the valve buttons in the view
+// KalelView_Boutons.cpp : all the code for the valve buttons in the view
 //
 
 #include "stdafx.h"
-#include "Kaolla.h"
+#include "Kalel.h"
 
-#include "KaollaDoc.h"
-#include "KaollaView.h"
+#include "KalelDoc.h"
+#include "KalelView.h"
 
 #include "ThreadManager.h"
 
@@ -17,7 +17,7 @@
 
 
 // Single function to ask for thread start of manual controls
-void CKaollaView::AskThreadForManualCommand(int instrumentType, int instrumentNumber, bool shouldBeActivated) {
+void CKalelView::AskThreadForManualCommand(int instrumentType, int instrumentNumber, bool shouldBeActivated) {
 
 	// Create a new list object
 	ListOfInstrumentButtons list(instrumentType, instrumentNumber, shouldBeActivated);
@@ -41,7 +41,7 @@ void CKaollaView::AskThreadForManualCommand(int instrumentType, int instrumentNu
 
 
 // Single function to update UI when receiving the command that the thread posted before finishing
-LRESULT CKaollaView::OnThreadRequestButtonUpdate(WPARAM wParam, LPARAM lParam) {
+LRESULT CKalelView::OnThreadRequestButtonUpdate(WPARAM wParam, LPARAM lParam) {
 
 	// Cast the parameters object and take ownership
 	const ManualActionParam *maParam = reinterpret_cast<ManualActionParam*>(wParam);
@@ -81,72 +81,72 @@ LRESULT CKaollaView::OnThreadRequestButtonUpdate(WPARAM wParam, LPARAM lParam) {
 
 
 // Clicking on valve "open" type buttons
-void CKaollaView::OnBnClickedOuvrir1()
+void CKalelView::OnBnClickedOuvrir1()
 {	AskThreadForManualCommand(INSTRUMENT_VALVE,1,true);	}
 
-void CKaollaView::OnBnClickedOuvrir2()
+void CKalelView::OnBnClickedOuvrir2()
 {	AskThreadForManualCommand(INSTRUMENT_VALVE,2,true);	}
 
-void CKaollaView::OnBnClickedOuvrir3()
+void CKalelView::OnBnClickedOuvrir3()
 {	AskThreadForManualCommand(INSTRUMENT_VALVE,3,true);	}
 
-void CKaollaView::OnBnClickedOuvrir4()
+void CKalelView::OnBnClickedOuvrir4()
 {	AskThreadForManualCommand(INSTRUMENT_VALVE,4,true);	}
 
-void CKaollaView::OnBnClickedOuvrir5()
+void CKalelView::OnBnClickedOuvrir5()
 {	AskThreadForManualCommand(INSTRUMENT_VALVE,5,true);	}
 
-void CKaollaView::OnBnClickedOuvrir6()
+void CKalelView::OnBnClickedOuvrir6()
 {	AskThreadForManualCommand(INSTRUMENT_VALVE,6,true);	}
 
-void CKaollaView::OnBnClickedOuvrir7()
+void CKalelView::OnBnClickedOuvrir7()
 {	AskThreadForManualCommand(INSTRUMENT_VALVE,7,true);	}
 
-void CKaollaView::OnBnClickedOuvrir8()
+void CKalelView::OnBnClickedOuvrir8()
 {	AskThreadForManualCommand(INSTRUMENT_VALVE,8,true);	}
 
 
 // Clicking on valve "close" type buttons
-void CKaollaView::OnBnClickedFermer1()
+void CKalelView::OnBnClickedFermer1()
 {	AskThreadForManualCommand(INSTRUMENT_VALVE, 1, false);	}
 
-void CKaollaView::OnBnClickedFermer2()
+void CKalelView::OnBnClickedFermer2()
 {	AskThreadForManualCommand(INSTRUMENT_VALVE, 2, false);	}
 
-void CKaollaView::OnBnClickedFermer3()
+void CKalelView::OnBnClickedFermer3()
 {	AskThreadForManualCommand(INSTRUMENT_VALVE, 3, false);	}
 
-void CKaollaView::OnBnClickedFermer4()
+void CKalelView::OnBnClickedFermer4()
 {	AskThreadForManualCommand(INSTRUMENT_VALVE, 4, false);	}
 
-void CKaollaView::OnBnClickedFermer5()
+void CKalelView::OnBnClickedFermer5()
 {	AskThreadForManualCommand(INSTRUMENT_VALVE, 5, false);	}
 
-void CKaollaView::OnBnClickedFermer6()
+void CKalelView::OnBnClickedFermer6()
 {	AskThreadForManualCommand(INSTRUMENT_VALVE, 6, false);	}
 
-void CKaollaView::OnBnClickedFermer7()
+void CKalelView::OnBnClickedFermer7()
 {	AskThreadForManualCommand(INSTRUMENT_VALVE, 7, false);	}
 
-void CKaollaView::OnBnClickedFermer8()
+void CKalelView::OnBnClickedFermer8()
 {	AskThreadForManualCommand(INSTRUMENT_VALVE, 8, false);	}
 
 
 // The other buttons
-void CKaollaView::OnBnClickedActiverEV1()
+void CKalelView::OnBnClickedActiverEV1()
 {	AskThreadForManualCommand(INSTRUMENT_EV, 1, true);	}
 
-void CKaollaView::OnBnClickedDesactiverEV1()
+void CKalelView::OnBnClickedDesactiverEV1()
 {	AskThreadForManualCommand(INSTRUMENT_EV, 1, false);	}
 
-void CKaollaView::OnBnClickedActiverEV2()
+void CKalelView::OnBnClickedActiverEV2()
 {	AskThreadForManualCommand(INSTRUMENT_EV, 2, true);;	}
 
-void CKaollaView::OnBnClickedDesactiverEV2()
+void CKalelView::OnBnClickedDesactiverEV2()
 {	AskThreadForManualCommand(INSTRUMENT_EV, 2, false);	}
 
-void CKaollaView::OnBnClickedActiverPompe()
+void CKalelView::OnBnClickedActiverPompe()
 {	AskThreadForManualCommand(INSTRUMENT_PUMP, 1, true);;	}
 
-void CKaollaView::OnBnClickedDesactiverPompe()
+void CKalelView::OnBnClickedDesactiverPompe()
 {	AskThreadForManualCommand(INSTRUMENT_PUMP, 1, false);	}

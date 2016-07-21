@@ -223,9 +223,9 @@
     <ClInclude Include="GrapheView.h" />
     <ClInclude Include="InfoEtape.h" />
     <ClInclude Include="SerialInstruments.h" />
-    <ClInclude Include="Kaolla.h" />
-    <ClInclude Include="KaollaDoc.h" />
-    <ClInclude Include="KaollaView.h" />
+    <ClInclude Include="Kalel.h" />
+    <ClInclude Include="KalelDoc.h" />
+    <ClInclude Include="KalelView.h" />
     <ClInclude Include="Keithley.h" />
     <ClInclude Include="LiaisonRS232.h" />
     <ClInclude Include="ListeEtape.h" />
@@ -319,12 +319,12 @@
     <ClCompile Include="GrapheView.cpp" />
     <ClCompile Include="InfoEtape.cpp" />
     <ClCompile Include="SerialInstruments.cpp" />
-    <ClCompile Include="Kaolla.cpp" />
-    <ClCompile Include="KaollaDoc.cpp" />
-    <ClCompile Include="KaollaView.cpp" />
-    <ClCompile Include="KaollaViewDisplay.cpp" />
-    <ClCompile Include="KaollaViewButtons.cpp" />
-    <ClCompile Include="KaollaViewButtonsValves.cpp" />
+    <ClCompile Include="Kalel.cpp" />
+    <ClCompile Include="KalelDoc.cpp" />
+    <ClCompile Include="KalelView.cpp" />
+    <ClCompile Include="KalelViewDisplay.cpp" />
+    <ClCompile Include="KalelViewButtons.cpp" />
+    <ClCompile Include="KalelViewButtonsValves.cpp" />
     <ClCompile Include="Keithley.cpp" />
     <ClCompile Include="LiaisonRS232.cpp" />
     <ClCompile Include="ListOfInstrumentButtons.cpp" />
@@ -507,7 +507,7 @@
     <ResourceCompile Include="ConnectionPort.rc" />
     <ResourceCompile Include="DialogUser.rc" />
     <ResourceCompile Include="DialogGas.rc" />
-    <ResourceCompile Include="Kaolla.rc" />
+    <ResourceCompile Include="Kalel.rc" />
     <ResourceCompile Include="StringTable.rc" />
     <ResourceCompile Include="Onglets.rc" />
     <ResourceCompile Include="OngletsEtapes.rc" />
@@ -516,11 +516,11 @@
     <ResourceCompile Include="TypeExperience.rc" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\Kaolla.rc2" />
+    <None Include="res\Kalel.rc2" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="res\Kaolla.ico" />
-    <Image Include="res\KaollaDoc.ico" />
+    <Image Include="res\Kalel.ico" />
+    <Image Include="res\KalelDoc.ico" />
     <Image Include="res\Toolbar.bmp" />
   </ItemGroup>
   <ItemGroup>

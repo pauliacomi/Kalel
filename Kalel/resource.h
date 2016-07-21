@@ -1,14 +1,14 @@
 //{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ generated include file.
-// Used by Kaolla.rc
+// Used by Kalel.rc
 //
 #define IDD_ABOUTBOX                    100
 #define IDP_OLE_INIT_FAILED             101
 #define IDD_DONNEES_EXPERIENCE          102
-#define IDD_KAOLLA_FORM                 103
+#define IDD_Kalel_FORM                 103
 #define IDD_DIALOGBAR                   104
 #define IDR_MAINFRAME                   128
-#define IDR_KaollaTYPE                  130
+#define IDR_KalelTYPE                  130
 #define IDC_OUVRIR1                     1000
 #define IDC_FERMER1                     1001
 #define IDC_OUVRIR2                     1002

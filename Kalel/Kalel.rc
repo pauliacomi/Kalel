@@ -30,9 +30,9 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDR_MAINFRAME           ICON                    "res\\Kaolla.ico"
+IDR_MAINFRAME           ICON                    "res\\Kalel.ico"
 
-IDR_KaollaTYPE          ICON                    "res\\KaollaDoc.ico"
+IDR_KalelTYPE          ICON                    "res\\KalelDoc.ico"
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -93,16 +93,16 @@ END
 
 IDD_ABOUTBOX DIALOGEX 0, 0, 170, 62
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "About Kaolla"
+CAPTION "About Kalel"
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     ICON            IDR_MAINFRAME,IDC_STATIC,14,14,21,20
-    LTEXT           "Kaolla, Version 1.0",IDC_STATIC,42,14,114,8,SS_NOPREFIX
+    LTEXT           "Kalel, Version 1.0",IDC_STATIC,42,14,114,8,SS_NOPREFIX
     LTEXT           "Copyright (C) 2016",IDC_STATIC,42,26,114,8
     DEFPUSHBUTTON   "OK",IDOK,113,41,50,14,WS_GROUP
 END
 
-IDD_KAOLLA_FORM DIALOGEX 0, 0, 396, 543
+IDD_Kalel_FORM DIALOGEX 0, 0, 396, 543
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
@@ -234,12 +234,12 @@ BEGIN
         BLOCK "040904b0"
         BEGIN
             VALUE "CompanyName", "Madirel"
-            VALUE "FileDescription", "Kaolla Gaz"
+            VALUE "FileDescription", "Kalel Gaz"
             VALUE "FileVersion", "1.0.0.1"
-            VALUE "InternalName", "Kaolla.exe"
+            VALUE "InternalName", "Kalel.exe"
             VALUE "LegalCopyright", "(c) Madirel.  All rights reserved."
-            VALUE "OriginalFilename", "Kaolla.exe"
-            VALUE "ProductName", "Kaolla"
+            VALUE "OriginalFilename", "Kalel.exe"
+            VALUE "ProductName", "Kalel"
             VALUE "ProductVersion", "1.0.0.1"
         END
     END
@@ -266,7 +266,7 @@ BEGIN
         BOTTOMMARGIN, 55
     END
 
-    IDD_KAOLLA_FORM, DIALOG
+    IDD_Kalel_FORM, DIALOG
     BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 178
@@ -296,7 +296,7 @@ END
 // AFX_DIALOG_LAYOUT
 //
 
-IDD_KAOLLA_FORM AFX_DIALOG_LAYOUT
+IDD_Kalel_FORM AFX_DIALOG_LAYOUT
 BEGIN
     0
 END
@@ -314,12 +314,12 @@ END
 
 STRINGTABLE
 BEGIN
-    IDR_MAINFRAME           "Kaolla\n\nKaolla\n\n\nKaolla.Document\nKaolla.Document"
+    IDR_MAINFRAME           "Kalel\n\nKalel\n\n\nKalel.Document\nKalel.Document"
 END
 
 STRINGTABLE
 BEGIN
-    AFX_IDS_APP_TITLE       "Kaolla"
+    AFX_IDS_APP_TITLE       "Kalel"
     AFX_IDS_IDLEMESSAGE     "Ready"
 END
 
@@ -468,7 +468,7 @@ BEGIN
     "\r\n"
     "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)\r\n"
     "LANGUAGE 9, 1\r\n"
-    "#include ""res\\Kaolla.rc2""  // non-Microsoft Visual C++ edited resources\r\n"
+    "#include ""res\\Kalel.rc2""  // non-Microsoft Visual C++ edited resources\r\n"
     "#include ""afxres.rc""      // Standard components\r\n"
     "#endif\r\n"
     "\0"
@@ -526,7 +526,7 @@ BEGIN
     END
     POPUP "&Aide"
     BEGIN
-        MENUITEM "&À propos de Kaolla...",      ID_APP_ABOUT
+        MENUITEM "&À propos de Kalel...",      ID_APP_ABOUT
     END
 END
 
@@ -546,7 +546,7 @@ END
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
 LANGUAGE 9, 1
-#include "res\Kaolla.rc2"  // non-Microsoft Visual C++ edited resources
+#include "res\Kalel.rc2"  // non-Microsoft Visual C++ edited resources
 #include "afxres.rc"      // Standard components
 #endif
 

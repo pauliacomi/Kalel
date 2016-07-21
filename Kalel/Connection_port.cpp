@@ -2,7 +2,7 @@
 //
 
 #include "stdafx.h"
-#include "Kaolla.h"
+#include "Kalel.h"
 #include "Connection_port.h"
 
 // Boîte de dialogue CConnection_port

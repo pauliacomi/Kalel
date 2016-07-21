@@ -1,11 +1,11 @@
 #include "stdafx.h"
-#include "Kaolla.h"
+#include "Kalel.h"
 
-#include "KaollaDoc.h"
-#include "KaollaView.h"
+#include "KalelDoc.h"
+#include "KalelView.h"
 
 
-LRESULT CKaollaView::ExchangeData(WPARAM, LPARAM incomingExperimentData)
+LRESULT CKalelView::ExchangeData(WPARAM, LPARAM incomingExperimentData)
 {
 	// Get the incoming pointer and cast it as a smart pointer
 	std::auto_ptr<ExperimentData> tempExpData(reinterpret_cast<ExperimentData*>(incomingExperimentData));
@@ -19,7 +19,7 @@ LRESULT CKaollaView::ExchangeData(WPARAM, LPARAM incomingExperimentData)
 // --------------- Displays -----------------------------
 
 
-void CKaollaView::OnTimer(UINT nIDEvent)
+void CKalelView::OnTimer(UINT nIDEvent)
 {
 	// Convert to strings
 	m_StrCalo.Format(_T("%.2f"), experimentData.resultCalorimeter);
@@ -62,7 +62,7 @@ void CKaollaView::OnTimer(UINT nIDEvent)
 
 
 // Write on the dialog box reserved for new messages
-LRESULT CKaollaView::AffichageMessages(WPARAM, LPARAM lParam)
+LRESULT CKalelView::AffichageMessages(WPARAM, LPARAM lParam)
 {
 	// Get the incoming pointer and cast it as a smart pointer
 	std::auto_ptr<CString> message(reinterpret_cast<CString*>(lParam));
@@ -85,7 +85,7 @@ LRESULT CKaollaView::AffichageMessages(WPARAM, LPARAM lParam)
 
 
 // Write on the dialog box reserved for new measurements
-LRESULT CKaollaView::AffichageMesures(ExperimentData expD)
+LRESULT CKalelView::AffichageMesures(ExperimentData expD)
 {
 	CString mesure;
 
@@ -102,7 +102,7 @@ LRESULT CKaollaView::AffichageMesures(ExperimentData expD)
 }
 
 // Display the step
-LRESULT CKaollaView::AffichageEtape(ExperimentData expD)
+LRESULT CKalelView::AffichageEtape(ExperimentData expD)
 {
 
 	CString temp;
@@ -193,7 +193,7 @@ LRESULT CKaollaView::AffichageEtape(ExperimentData expD)
 }
 
 
-LRESULT CKaollaView::RajoutAffichageEtape(WPARAM, LPARAM)
+LRESULT CKalelView::RajoutAffichageEtape(WPARAM, LPARAM)
 {
 	CString rajout;
 
@@ -209,7 +209,7 @@ LRESULT CKaollaView::RajoutAffichageEtape(WPARAM, LPARAM)
 
 // ------------ Dialog Boxes ----
 
-LRESULT CKaollaView::MessageBoxAlert(WPARAM wParam, LPARAM lParam)
+LRESULT CKalelView::MessageBoxAlert(WPARAM wParam, LPARAM lParam)
 {
 	// Get the incoming pointer and cast it as a smart pointer
 	std::auto_ptr<CString> message(reinterpret_cast<CString*>(lParam));
@@ -230,7 +230,7 @@ LRESULT CKaollaView::MessageBoxAlert(WPARAM wParam, LPARAM lParam)
 	return result;
 }
 
-LRESULT CKaollaView::MessageBoxConfirmation(WPARAM wParam, LPARAM lParam)
+LRESULT CKalelView::MessageBoxConfirmation(WPARAM wParam, LPARAM lParam)
 {
 	// Get the incoming pointer and cast it as a smart pointer
 	std::auto_ptr<CString> message(reinterpret_cast<CString*>(lParam));
@@ -278,7 +278,7 @@ LRESULT CKaollaView::MessageBoxConfirmation(WPARAM wParam, LPARAM lParam)
 
 
 // Temporary overload
-LRESULT CKaollaView::AffichageMessages(CString message)
+LRESULT CKalelView::AffichageMessages(CString message)
 {
 	// On rajoute le nouveau message 
 	m_StrEditMessages += message;
@@ -296,7 +296,7 @@ LRESULT CKaollaView::AffichageMessages(CString message)
 	return 0;
 }
 
-LRESULT CKaollaView::RajoutAffichageMessages(WPARAM, LPARAM)
+LRESULT CKalelView::RajoutAffichageMessages(WPARAM, LPARAM)
 {
 	CString rajout;
 

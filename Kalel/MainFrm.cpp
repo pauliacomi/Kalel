@@ -5,9 +5,9 @@
 #include "stdafx.h"
 #include "MainFrm.h"
 
-#include "Kaolla.h"
-#include "KaollaDoc.h"
-#include "KaollaView.h"
+#include "Kalel.h"
+#include "KalelDoc.h"
+#include "KalelView.h"
 #include "GrapheView.h"
 
 #ifdef _DEBUG
@@ -79,7 +79,7 @@ BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT /*lpcs*/,
 		return FALSE;
 	}
 	if (!m_wndSplitter.CreateView(0, 0, RUNTIME_CLASS(CGrapheView), CSize(rect.right / 2, rect.bottom), pContext) ||
-		!m_wndSplitter.CreateView(0, 1, RUNTIME_CLASS(CKaollaView), CSize(rect.right / 2, rect.bottom), pContext))
+		!m_wndSplitter.CreateView(0, 1, RUNTIME_CLASS(CKalelView), CSize(rect.right / 2, rect.bottom), pContext))
 	{
 		m_wndSplitter.DestroyWindow();
 		return FALSE;
@@ -123,8 +123,8 @@ void CMainFrame::OnSysCommand(UINT nID, LPARAM lParam)
 {
 	if (nID == SC_CLOSE)
 	{
-		CKaollaApp* pApp = static_cast<CKaollaApp *>(AfxGetApp());
-		CKaollaView* pView = CKaollaView::GetView();
+		CKalelApp* pApp = static_cast<CKalelApp *>(AfxGetApp());
+		CKalelView* pView = CKalelView::GetView();
 
 		if (pApp->experimentRunning)
 		{

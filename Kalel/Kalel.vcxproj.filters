@@ -165,15 +165,6 @@
     <ClInclude Include="targetver.h">
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
-    <ClInclude Include="Kaolla.h">
-      <Filter>Header Files\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="KaollaDoc.h">
-      <Filter>Header Files\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="KaollaView.h">
-      <Filter>Header Files\GUI</Filter>
-    </ClInclude>
     <ClInclude Include="MainFrm.h">
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
@@ -384,17 +375,17 @@
     <ClInclude Include="SerialInstruments.h">
       <Filter>Header Files\Backend\Wrapper Classes</Filter>
     </ClInclude>
+    <ClInclude Include="Kalel.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="KalelDoc.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="KalelView.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Kaolla.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="KaollaDoc.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="KaollaView.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
     <ClCompile Include="MainFrm.cpp">
       <Filter>Source Files\GUI</Filter>
     </ClCompile>
@@ -599,15 +590,6 @@
     <ClCompile Include="ManipValves.cpp">
       <Filter>Source Files\Old\Manip\Manip</Filter>
     </ClCompile>
-    <ClCompile Include="KaollaViewDisplay.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="KaollaViewButtons.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="KaollaViewButtonsValves.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
     <ClCompile Include="ManualActionParam.cpp">
       <Filter>Source Files\Utils</Filter>
     </ClCompile>
@@ -698,11 +680,26 @@
     <ClCompile Include="SerialInstruments.cpp">
       <Filter>Source Files\Backend\Wrapper Classes</Filter>
     </ClCompile>
+    <ClCompile Include="Kalel.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="KalelDoc.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="KalelView.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="KalelViewButtons.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="KalelViewButtonsValves.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="KalelViewDisplay.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="Kaolla.rc">
-      <Filter>Resource Files</Filter>
-    </ResourceCompile>
     <ResourceCompile Include="Steps.rc">
       <Filter>Resource Files\Strings</Filter>
     </ResourceCompile>
@@ -733,20 +730,18 @@
     <ResourceCompile Include="DialogCell.rc">
       <Filter>Resource Files\DialogBoxes</Filter>
     </ResourceCompile>
+    <ResourceCompile Include="Kalel.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\Kaolla.rc2">
-      <Filter>Resource Files</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="res\KaollaDoc.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="res\Kaolla.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
     <Image Include="res\Toolbar.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\Kalel.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\KalelDoc.ico">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
@@ -754,5 +749,10 @@
     <Library Include="NIDAQmx.lib">
       <Filter>Header Files\Backend\USB</Filter>
     </Library>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\Kalel.rc2">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

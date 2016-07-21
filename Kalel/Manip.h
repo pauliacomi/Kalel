@@ -13,10 +13,10 @@
 
 // CHECK THESE INCLUDES
 
-#include "Kaolla.h"
-#include "KaollaDoc.h"
+#include "Kalel.h"
+#include "KalelDoc.h"
 
-#include "KaollaView.h"
+#include "KalelView.h"
 
 #include "time.h"
 
