@@ -10,8 +10,13 @@ void Automation::StageEquilibration()
 		experimentLocalData.experimentStepStatus = STEP_STATUS_END;											// Set next step
 		messageHandler.DisplayMessage(MESSAGE_EQUILIBRATION_STARTED);										// Let GUI know the step change
 
+		// Create, open and write the columns in the:
+		EnteteCreate();				// Entete TXT
+		EnteteCSVCreate();			// Entete CSV
+		FileMeasurementOpen();		// Measurement file
+
 		// Set the time to wait
-		WaitSeconds(experimentLocalData.timeToEquilibrate = experimentLocalSettings.dataDivers.temps_ligne_base);	//* 60;);		/// remove the commenting!!
+		WaitSeconds(experimentLocalData.timeToEquilibrate = experimentLocalSettings.dataDivers.temps_ligne_base * 60);		/// remove the commenting!!
 	}
 
 	if (experimentLocalData.experimentStepStatus == STEP_STATUS_END) {
