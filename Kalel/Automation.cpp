@@ -52,8 +52,9 @@ void Automation::Execution()
 	{
 		// Check if there is any change in the experiment settings
 		if (DataIsNew()) {
-			SetData();
-			RecordDataChange();
+			ExperimentSettings tempSettings = SetData();
+			RecordDataChange(tempSettings);
+			experimentLocalSettings = tempSettings;
 		}
 
 		// Go through any automatic functionality
@@ -96,7 +97,7 @@ void Automation::Execution()
 			timerMeasurement.TempsActuel() > T_BETWEEN_RECORD)						// and the enough time between measurements
 		{
 			// Save the data to the file
-			EnregistrementFichierMesures();
+			FileMeasurementRecord();
 
 			// Restart the timer to record time between measurements
 			timerMeasurement.TopChrono();
@@ -191,9 +192,9 @@ bool Automation::ExecutionManual()
 		experimentLocalData.experimentRecording = true;
 
 		// Create open and write the columns in the:
-		EcritureEntete();				// Entete TXT
-		EcritureEnteteCSV();			// Entete CSV
-		FileMeasurementOpen();			// Measurement file
+		EnteteCreate();				// Entete TXT
+		EnteteCSVCreate();			// Entete CSV
+		FileMeasurementOpen();		// Measurement file
 
 		timerExperiment.TopChrono();	// Start global experiment timer	
 		timerMeasurement.TopChrono();	// Start the timer to record time between measurements
@@ -285,7 +286,7 @@ void Automation::Initialisation()
 	experimentLocalSettings.ResetData();
 
 	// Initialise local settings copy
-	SetData();
+	experimentLocalSettings = SetData();
 
 	// Initialise message handler
 	messageHandler.SetHandle(experimentLocalSettings.GUIhandle);
@@ -333,14 +334,18 @@ void Automation::DeInitialise()
 }
 
 
-void Automation::SetData()
+ExperimentSettings Automation::SetData()
 {
+	ExperimentSettings tempSettings;
+
 	// Copy the data from the main thread
 	EnterCriticalSection(&experimentSettings->criticalSection);
-	experimentLocalSettings = experimentSettings;
+	tempSettings = experimentSettings;
 	experimentSettings->dataModified = false;
 	experimentSettings->continueAnyway = false;
 	LeaveCriticalSection(&experimentSettings->criticalSection);
+
+	return tempSettings;
 }
 
 bool Automation::DataIsNew()
@@ -349,11 +354,7 @@ bool Automation::DataIsNew()
 	bool check = false;
 
 	EnterCriticalSection(&experimentSettings->criticalSection);
-	if (experimentSettings->dataModified == false)
-		check = false;
-	else {
-		check = true;
-	}
+	check = experimentSettings->dataModified;
 	LeaveCriticalSection(&experimentSettings->criticalSection);
 
 	return check;

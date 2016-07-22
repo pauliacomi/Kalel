@@ -104,7 +104,7 @@ public:
 	//------------------------------------------------------------
 
 public:
-	void SetData();
+	ExperimentSettings SetData();
 	bool DataIsNew();
 	void Execution();
 
@@ -167,42 +167,93 @@ protected:
 	void WaitSeconds(int nbsecondes);
 
 
+
 /**********************************************************************************************************************************
+*
 // File Writing Functions
+*
 ***********************************************************************************************************************************/
 
 protected:
 
 	/**********************************************************************
-	Returns the full path and name of the written file or its associated entete
+	* Write the first section of an entete and save it
+	* Inputs: none
+	***********************************************************************/
+	void EnteteCreate();
+
+	/**********************************************************************
+	* Write the first section of an CSV entete and save it
+	* Inputs: none
+	***********************************************************************/
+	void EnteteCSVCreate();
+
+	/**********************************************************************
+	* Opens the measurement file for the first time and stores its link in the fileStream ofstream
+	* Also writes columns in the CSV
+	* Inputs: none
+	***********************************************************************/
+	void FileMeasurementOpen();
+
+	/**********************************************************************
+	* Closes the measurement file
+	* Inputs: none
+	***********************************************************************/
+	void FileMeasurementClose();
+	
+	/**********************************************************************
+	* Records a measurement
+	* Inputs: none
+	***********************************************************************/
+	void FileMeasurementRecord();
+
+
+
+	/**********************************************************************
+	* Writes the base of the entete
+	* Inputs:
+	*        bool csv: Ask for a comma separated value format if true
+	***********************************************************************/
+	std::string EnteteBase(bool csv);
+
+	/**********************************************************************
+	* Writes the settings from the general tab
+	* Inputs:
+	*        bool csv: Ask for a comma separated value format if true
+	***********************************************************************/
+	std::string EnteteGeneral(bool csv);
+
+	/**********************************************************************
+	* Writes the settings from the diverse tab
+	* Inputs:
+	*        bool csv: Ask for a comma separated value format if true
+	***********************************************************************/
+	std::string EnteteDivers(bool csv);
+	
+	/**********************************************************************
+	* Writes the adsorption steps
+	* Inputs:
+	*        bool csv: Ask for a comma separated value format if true
+	***********************************************************************/
+	std::string EnteteAdsorption(bool csv);
+
+	/**********************************************************************
+	* Writes the desorption steps
+	* Inputs:
+	*        bool csv: Ask for a comma separated value format if true
+	***********************************************************************/
+	std::string EnteteDesorption(bool csv);
+
+
+	/**********************************************************************
+	* Returns the full path and title of the file to be written
 	* Inputs:
 	*        string extension: Extension you want the file to have
 	*        bool entete: specify true to get the entete string or false for the regular file
 	***********************************************************************/
-	std::string NomFichier(std::string extension, bool entete);
+	std::string BuildFileName(std::string extension, bool entete);
 
-	// Opens the measurement file for the first time and stores its link in the fileStream ofstream
-	void FileMeasurementOpen();
-	// Closes the measurement file
-	void FileMeasurementClose();
-	// Records a measurement
-	void EnregistrementFichierMesures();
-
-	// Write the start of an entete
-	std::string EnteteBase();
-	// Write the start of the CSV entete
-	std::string EnteteBaseCSV();
-	// Write the main body of an entete
-	std::string EnteteGeneral();
-	// Write the main body of a CSV entete
-	std::string EnteteGeneralCSV();
-
-	// Write the start of an entete and save it??
-	void EcritureEntete();
-	// Write the start of a CSV entete and save it??
-	void EcritureEnteteCSV();
-
-	void RecordDataChange();
+	void RecordDataChange(ExperimentSettings newSettings);
 
 /**********************************************************************************************************************************
 // Measurements functions and threads
