@@ -212,7 +212,7 @@ string Automation::EnteteAdsorption(bool csv)
 
 	ostringstream text("", ios_base::app);
 
-	for (size_t i = 0; i < experimentLocalSettings.dataAdsorption.size; i++)
+	for (size_t i = 0; i < experimentLocalSettings.dataAdsorption.size(); i++)
 	{	
 		text << "-----------------------------------------------------"																								<< finl;
 		text << "Adsorption stage number"							<< divider	<< i + 1	 																		<< finl;
@@ -243,7 +243,7 @@ string Automation::EnteteDesorption(bool csv)
 
 	ostringstream text("", ios_base::app);
 
-	for (size_t i = 0; i < experimentLocalSettings.dataDesorption.size; i++)
+	for (size_t i = 0; i < experimentLocalSettings.dataDesorption.size(); i++)
 	{	
 		text << "-----------------------------------------------------"																								<< finl;
 		text << "Desorption stage number"							<< divider	<< i + 1																			<< finl;
@@ -259,34 +259,117 @@ string Automation::EnteteDesorption(bool csv)
 }
 
 
-
-void Automation::RecordDataChange(ExperimentSettings newSettings)
+/**********************************************************************
+* Writes any settings changes into the entete files
+* Inputs:
+*        ExperimentSettings newSettings: The settings file to compare to the current one
+*        bool csv: Ask to write to the comma separated value file if true
+***********************************************************************/
+void Automation::RecordDataChange(ExperimentSettings newSettings, bool csv)
 {
-	ostringstream char_changement("", ios_base::app);
-
-	char_changement << endl << "-----------------------------------------------------" << endl;
-
-	/*if (moyennes_doses.a_effectuer)
-	{
-
-		char_changement << "Rajout de l'étape : " << << endl;
-		char_changementCSV << "Rajout de l'étape : "<< << endl;
-
-		char_changement << EnteteMoyennesDoses();
-		char_changementCSV << EnteteMoyennesDosesCSV();
-
-	}
+	// Check if csv file is requested
+	string divider;
+	if (csv)
+		divider = ";";
 	else
+		divider = " : ";
+
+	// Create string stream
+	ostringstream text("", ios_base::app);
+
+	// Check for changes in adsorption
+	for (size_t i = 0; i < experimentLocalSettings.dataAdsorption.size(); i++)
 	{
-		char_changement << "Suppression de l'étape : " << << endl;
-		char_changementCSV << "Suppression de l'étape :" << << endl;
+		if (experimentLocalSettings.dataAdsorption[i] != newSettings.dataAdsorption[i] )
+		{
+
+			text << endl << "-----------------------------------------------------" << finl;
+			text << "Settings changed"												<< finl;
+			text << "Step" << divider << experimentLocalData.adsorptionCounter		<< finl;
+			text << "Dose" << divider << experimentLocalData.experimentDose			<< finl;
+
+			if (experimentLocalSettings.dataAdsorption[i].delta_pression != newSettings.dataAdsorption[i].delta_pression)
+			{
+				text << "Delta pression par désorption"						<< divider << newSettings.dataAdsorption[i].delta_pression		<< divider << "bar" << finl;
+			}
+
+			if (experimentLocalSettings.dataAdsorption[i].temps_volume != newSettings.dataAdsorption[i].temps_volume)
+			{
+				text << "Temps de l'expérience dans le volume référenciel"	<< divider << newSettings.dataAdsorption[i].temps_volume		<< divider << "min" << finl;
+			}
+
+			if (experimentLocalSettings.dataAdsorption[i].temps_adsorption != newSettings.dataAdsorption[i].temps_adsorption)
+			{
+				text << "Temps de l'expérience dans la désorption"			<< divider << newSettings.dataAdsorption[i].temps_adsorption	<< divider << "min" << finl;
+			}
+
+			if (experimentLocalSettings.dataAdsorption[i].pression_finale != newSettings.dataAdsorption[i].pression_finale)
+			{
+				text << "Pression finale"									<< divider << newSettings.dataAdsorption[i].pression_finale		<< divider << "bar" << finl;
+			}
+		}
 	}
 
-	string strChangement = char_changement.str();
-	string strChangementCSV = char_changementCSV.str();
+	// Check for changes in desorption
+	for (size_t i = 0; i < experimentLocalSettings.dataDesorption.size(); i++)
+	{
+		if (experimentLocalSettings.dataDesorption[i] != newSettings.dataDesorption[i])
+		{
+			text << endl << "-----------------------------------------------------" << finl;
+			text << "Settings changed"												<< finl;
+			text << "Step" << divider << experimentLocalData.adsorptionCounter		<< finl;
+			text << "Dose" << divider << experimentLocalData.experimentDose			<< finl;
 
-	RajoutFichierEntete(strChangement);
-	RajoutFichierEnteteCSV(strChangementCSV);*/
+			if (experimentLocalSettings.dataDesorption[i] != newSettings.dataDesorption[i])
+			{
+				if (experimentLocalSettings.dataDesorption[i].delta_pression != newSettings.dataDesorption[i].delta_pression)
+				{
+					text << "Delta pression par désorption"						<< divider << newSettings.dataDesorption[i].delta_pression		<< divider << "bar" << finl;
+				}
+
+				if (experimentLocalSettings.dataDesorption[i].temps_volume != newSettings.dataAdsorption[i].temps_volume)
+				{
+					text << "Temps de l'expérience dans le volume référenciel"	<< divider << newSettings.dataDesorption[i].temps_volume		<< divider << "min" << finl;
+				}
+
+				if (experimentLocalSettings.dataDesorption[i].temps_desorption != newSettings.dataDesorption[i].temps_desorption)
+				{
+					text << "Temps de l'expérience dans la désorption"			<< divider << newSettings.dataDesorption[i].temps_desorption	<< divider << "min" << finl;
+				}
+
+				if (experimentLocalSettings.dataDesorption[i].pression_finale != newSettings.dataAdsorption[i].pression_finale)
+				{
+					text << "Pression finale"									<< divider << newSettings.dataDesorption[i].pression_finale		<< divider << "bar" << finl;
+				}
+
+				if (experimentLocalSettings.dataDesorption[i].derniere_etape != newSettings.dataDesorption[i].derniere_etape)
+				{
+					if (newSettings.dataDesorption[i].derniere_etape)
+					{
+						text << "Avec dernière étape à partie du vide" << endl;
+					}
+					else
+					{
+						text << "Sans dernière étape à partie du vide" << endl;
+					}
+				}
+			}
+		}
+	}
+
+	// Get title
+	string title;
+	if (csv)
+		title = BuildFileName("csv", true).c_str();
+	else
+		title = BuildFileName("txt", true).c_str();
+
+	// Write to file
+	ofstream file;
+	file.open(title, ios::out | ios::app);
+	file << text.str() << endl;
+	file.close();
+
 }
 
 
@@ -308,7 +391,7 @@ std::string Automation::BuildFileName(std::string extension, bool entete)
 	// Check for validity, if not, put the file in the C: drive
 	if (!PathIsDirectory(_T(fileNameBuffer)))
 	{
-		messageHandler.DisplayMessageBox(ERROR_PATHUNDEF, MB_ICONWARNING | MB_OK, false);
+		messageHandler.DisplayMessageBox(ERROR_PATHUNDEF, MB_ICONERROR | MB_OK, false);
 		sprintf_s(fileNameBuffer, "C:/");
 	}
 

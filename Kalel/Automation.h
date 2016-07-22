@@ -246,14 +246,21 @@ protected:
 
 
 	/**********************************************************************
+	* Writes any settings changes into the entete files
+	* Inputs:
+	*        ExperimentSettings newSettings: The settings file to compare to the current one
+	*        bool csv: Ask to write to the comma separated value file if true
+	***********************************************************************/
+	void RecordDataChange(ExperimentSettings newSettings, bool csv);
+
+
+	/**********************************************************************
 	* Returns the full path and title of the file to be written
 	* Inputs:
 	*        string extension: Extension you want the file to have
 	*        bool entete: specify true to get the entete string or false for the regular file
 	***********************************************************************/
 	std::string BuildFileName(std::string extension, bool entete);
-
-	void RecordDataChange(ExperimentSettings newSettings);
 
 /**********************************************************************************************************************************
 // Measurements functions and threads

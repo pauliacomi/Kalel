@@ -53,9 +53,11 @@ void Automation::Execution()
 		// Check if there is any change in the experiment settings
 		if (DataIsNew()) {
 			ExperimentSettings tempSettings = SetData();
-			RecordDataChange(tempSettings);
+			RecordDataChange(tempSettings, false);
+			RecordDataChange(tempSettings, true);
 			experimentLocalSettings = tempSettings;
 		}
+
 
 		// Go through any automatic functionality
 		if (experimentLocalData.experimentCommandsRequested) {
@@ -187,6 +189,9 @@ bool Automation::ExecutionManual()
 		messageHandler.DisplayMessage(MESSAGE_EXPSTART);
 		messageHandler.ExperimentStart();
 
+		// Get data
+		experimentLocalSettings = SetData();
+
 		// Record start
 		experimentLocalData.experimentInProgress = true;
 		experimentLocalData.experimentRecording = true;
@@ -220,6 +225,7 @@ bool Automation::ExecutionAuto()
 		messageHandler.DisplayMessage(MESSAGE_FILLLINE);
 		messageHandler.DisplayMessage(MESSAGE_EXPSTART);
 
+		// Write variables to starting position
 		experimentLocalData.experimentInProgress = true;
 		experimentLocalData.experimentStage = STAGE_VERIFICATIONS;
 		experimentLocalData.experimentStepStatus = STEP_STATUS_START;
