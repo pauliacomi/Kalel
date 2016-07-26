@@ -206,7 +206,7 @@
     <ClInclude Include="Classes_experiences.h" />
     <ClInclude Include="CMoyennesDoses.h" />
     <ClInclude Include="ConnectionMesure.h" />
-    <ClInclude Include="Connection_port.h" />
+    <ClInclude Include="ConnectionPort.h" />
     <ClInclude Include="DefinePostMessages.h" />
     <ClInclude Include="ExperimentData.h" />
     <ClInclude Include="ExperimentPropertySheet.h" />
@@ -219,7 +219,7 @@
     <ClInclude Include="DialogCell.h" />
     <ClInclude Include="DialogUser.h" />
     <ClInclude Include="DialogGas.h" />
-    <ClInclude Include="Dialogue_TypeExperience.h" />
+    <ClInclude Include="Dialog_TypeExperiment.h" />
     <ClInclude Include="GrapheView.h" />
     <ClInclude Include="InfoEtape.h" />
     <ClInclude Include="SerialInstruments.h" />
@@ -267,6 +267,7 @@
     <ClInclude Include="tinystr.h" />
     <ClInclude Include="tinyxml.h" />
     <ClInclude Include="Vannes.h" />
+    <ClInclude Include="VerifInstrument.h" />
     <ClInclude Include="XSBrowseFolder.h" />
   </ItemGroup>
   <ItemGroup>
@@ -302,9 +303,9 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="ConnectionMesure.cpp" />
-    <ClCompile Include="Connection_port.cpp" />
-    <ClCompile Include="Connection_port_fct.cpp" />
-    <ClCompile Include="Connection_port_Verifications.cpp" />
+    <ClCompile Include="ConnectionPort.cpp" />
+    <ClCompile Include="ConnectionPort_fct.cpp" />
+    <ClCompile Include="ConnectionPort_Verifications.cpp" />
     <ClCompile Include="ExperimentData.cpp" />
     <ClCompile Include="ExperimentPropertySheet.cpp" />
     <ClCompile Include="FluxConverter.cpp" />
@@ -314,7 +315,7 @@
     <ClCompile Include="DialogCell.cpp" />
     <ClCompile Include="DialogUser.cpp" />
     <ClCompile Include="DialogGas.cpp" />
-    <ClCompile Include="Dialogue_TypeExperience.cpp" />
+    <ClCompile Include="Dialog_TypeExperiment.cpp" />
     <ClCompile Include="GrapheView.cpp" />
     <ClCompile Include="InfoEtape.cpp" />
     <ClCompile Include="SerialInstruments.cpp" />

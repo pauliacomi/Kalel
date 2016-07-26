@@ -1,8 +1,9 @@
 #include "stdafx.h"
 #include "Kalel.h"
-#include "Connection_port.h"
+#include "ConnectionPort.h"
 
-void CConnection_port::Verifications()
+
+void ConnectionPort::Verifications()
 {
 	InitialisationVerifications();
 
@@ -21,7 +22,7 @@ void CConnection_port::Verifications()
 
 }
 
-void CConnection_port::InitialisationVerifications()
+void ConnectionPort::InitialisationVerifications()
 {
 	index_verifInstrument = 0;
 	bPbm = FALSE;
@@ -41,7 +42,7 @@ void CConnection_port::InitialisationVerifications()
 
 
 
-void CConnection_port::VerificationPortUSB()
+void ConnectionPort::VerificationPortUSB()
 {
 	if(m_nIndexPortVannes == m_nIndexPortTemperatures)
 	{
@@ -53,7 +54,7 @@ void CConnection_port::VerificationPortUSB()
 	}
 }
 
-void CConnection_port::VerificationPortCOM()
+void ConnectionPort::VerificationPortCOM()
 {
 	for(int i=0;i<index_verifInstrument-1;i++)
 	{
@@ -72,7 +73,7 @@ void CConnection_port::VerificationPortCOM()
 }
 
 
-void CConnection_port::VerificationLectureMesures()
+void ConnectionPort::VerificationLectureMesures()
 {
 	if(CM_Calo.index == -1)
 	{
@@ -93,7 +94,7 @@ void CConnection_port::VerificationLectureMesures()
 	}
 }
 
-bool CConnection_port::AucunInstrumentBranche()
+bool ConnectionPort::AucunInstrumentBranche()
 {
 	// Aucun appareil branché
 	if(m_nIndexTypeInstrument1 == INDEX_AUCUN && 
@@ -110,7 +111,7 @@ bool CConnection_port::AucunInstrumentBranche()
 
 
 
-void CConnection_port::VerifInstrument1()
+void ConnectionPort::VerifInstrument1()
 {
 	VerifUnInstrument(1,
 					  m_nIndexTypeInstrument1,
@@ -121,7 +122,7 @@ void CConnection_port::VerifInstrument1()
 					  m_nPortInstrument1+1);
 }
 
-void CConnection_port::VerifInstrument2()
+void ConnectionPort::VerifInstrument2()
 {
 	VerifUnInstrument(2,
 					  m_nIndexTypeInstrument2,
@@ -132,7 +133,7 @@ void CConnection_port::VerifInstrument2()
 					  m_nPortInstrument2+1);
 }
 
-void CConnection_port::VerifInstrument3()
+void ConnectionPort::VerifInstrument3()
 {
 	VerifUnInstrument(3,
 					  m_nIndexTypeInstrument3,
@@ -144,7 +145,7 @@ void CConnection_port::VerifInstrument3()
 }
 
 
-void CConnection_port::VerifUnInstrument(int num_instr,int m_nIndex,BOOL m_bKeithleyVoie1,BOOL m_bKeithleyVoie2,int m_nInstrumentKeithleyVoie2,int m_nMensor,int PortInstr)
+void ConnectionPort::VerifUnInstrument(int num_instr,int m_nIndex,BOOL m_bKeithleyVoie1,BOOL m_bKeithleyVoie2,int m_nInstrumentKeithleyVoie2,int m_nMensor,int PortInstr)
 {
 	switch(m_nIndex)
 	{
@@ -192,7 +193,7 @@ void CConnection_port::VerifUnInstrument(int num_instr,int m_nIndex,BOOL m_bKeit
 	}
 }
 
-void CConnection_port::VerifMesure(ConnectionMesure* CM,int num_instr,int voie_mesure,CString* StrPbm,BOOL* bPbmMesure)
+void ConnectionPort::VerifMesure(ConnectionMesure* CM,int num_instr,int voie_mesure,CString* StrPbm,BOOL* bPbmMesure)
 {
 	if(CM->index != -1)
 	{
@@ -206,7 +207,7 @@ void CConnection_port::VerifMesure(ConnectionMesure* CM,int num_instr,int voie_m
 	*StrPbm += temp;
 }
 
-void CConnection_port::EnregistrementVerifications()
+void ConnectionPort::EnregistrementVerifications()
 {
 	if(CM_Calo.index == -1)
 		SetMesureCalo(FALSE);

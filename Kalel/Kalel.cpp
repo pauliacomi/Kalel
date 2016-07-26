@@ -15,7 +15,7 @@
 
 // Dialog Box includes
 #include "ApparatusParameters.h"
-#include "Connection_port.h"
+#include "ConnectionPort.h"
 
 
 #ifdef _DEBUG
@@ -211,9 +211,8 @@ void CKalelApp::OnParamatresAppareil()
 
 void CKalelApp::OnConnectionPorts()
 {
-	CConnection_port m_connection_ports;
+	ConnectionPort m_connection_ports;
 	m_connection_ports.DoModal();
-	//ChangementDev(GetPortVannes(), GetPortTemperatures());
 }
 
 

@@ -3,39 +3,45 @@
 
 #include "stdafx.h"
 #include "Kalel.h"
-#include "Connection_port.h"
+#include "ConnectionPort.h"
 
-// Boîte de dialogue CConnection_port
+#include "Parametres.h"
 
-IMPLEMENT_DYNAMIC(CConnection_port, CDialog)
+// Boîte de dialogue ConnectionPort
 
-CConnection_port::CConnection_port(CWnd* pParent /*=NULL*/)
-	: CDialog(CConnection_port::IDD, pParent)
+IMPLEMENT_DYNAMIC(ConnectionPort, CDialog)
+
+ConnectionPort::ConnectionPort(CWnd* pParent /*=NULL*/)
+	: CDialog(ConnectionPort::IDD, pParent)
 	, m_nIndexTypeInstrument1(INDEX_AUCUN)
 	, m_nIndexTypeInstrument2(INDEX_AUCUN)
 	, m_nIndexTypeInstrument3(INDEX_AUCUN)
+
 	, m_nPortInstrument1(0)
 	, m_nPortInstrument2(0)
 	, m_nPortInstrument3(0)
+
 	, m_bInstrument1KeithleyVoie1(FALSE)
 	, m_bInstrument1KeithleyVoie2(FALSE)
 	, m_bInstrument2KeithleyVoie1(FALSE)
 	, m_bInstrument2KeithleyVoie2(FALSE)
 	, m_bInstrument3KeithleyVoie1(FALSE)
 	, m_bInstrument3KeithleyVoie2(FALSE)
+
 	, m_nInstrument1Mensor(0)
 	, m_nInstrument2Mensor(0)
 	, m_nInstrument3Mensor(0)
+
 	, m_nIndexPortVannes(0)
 	, m_nIndexPortTemperatures(0)
 {
 }
 
-CConnection_port::~CConnection_port()
+ConnectionPort::~ConnectionPort()
 {
 }
 
-void CConnection_port::DoDataExchange(CDataExchange* pDX)
+void ConnectionPort::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_COMBO_TYPE_INSTRUMENT1, m_CBTypeInstrument1);
@@ -80,26 +86,22 @@ void CConnection_port::DoDataExchange(CDataExchange* pDX)
 	DDX_CBIndex(pDX, IDC_PORT_TEMPERATURES, m_nIndexPortTemperatures);
 }
 
-BOOL CConnection_port::OnCommand(WPARAM wParam, LPARAM lParam)
-{
-	return CDialog::OnCommand(wParam, lParam);
-}
 
-BEGIN_MESSAGE_MAP(CConnection_port, CDialog)
-	ON_BN_CLICKED(IDOK, &CConnection_port::OnBnClickedOk)
-	ON_BN_CLICKED(IDCANCEL, &CConnection_port::OnBnClickedCancel)
-	ON_CBN_SELCHANGE(IDC_COMBO_TYPE_INSTRUMENT1, &CConnection_port::OnCbnSelchangeComboTypeInstrument1)
-	ON_CBN_SELCHANGE(IDC_COMBO_TYPE_INSTRUMENT2, &CConnection_port::OnCbnSelchangeComboTypeInstrument2)
-	ON_CBN_SELCHANGE(IDC_COMBO_TYPE_INSTRUMENT3, &CConnection_port::OnCbnSelchangeComboTypeInstrument3)
-	ON_BN_CLICKED(IDC_CHECK_INSTRUMENT1_KEITHLEY_VOIE2, &CConnection_port::OnBnClickedCheckInstrument1KeithleyVoie2)
-	ON_BN_CLICKED(IDC_CHECK_INSTRUMENT2_KEITHLEY_VOIE2, &CConnection_port::OnBnClickedCheckInstrument2KeithleyVoie2)
-	ON_BN_CLICKED(IDC_CHECK_INSTRUMENT3_KEITHLEY_VOIE2, &CConnection_port::OnBnClickedCheckInstrument3KeithleyVoie2)
+BEGIN_MESSAGE_MAP(ConnectionPort, CDialog)
+	ON_BN_CLICKED(IDOK, &ConnectionPort::OnBnClickedOk)
+	ON_BN_CLICKED(IDCANCEL, &ConnectionPort::OnBnClickedCancel)
+	ON_CBN_SELCHANGE(IDC_COMBO_TYPE_INSTRUMENT1, &ConnectionPort::OnCbnSelchangeComboTypeInstrument1)
+	ON_CBN_SELCHANGE(IDC_COMBO_TYPE_INSTRUMENT2, &ConnectionPort::OnCbnSelchangeComboTypeInstrument2)
+	ON_CBN_SELCHANGE(IDC_COMBO_TYPE_INSTRUMENT3, &ConnectionPort::OnCbnSelchangeComboTypeInstrument3)
+	ON_BN_CLICKED(IDC_CHECK_INSTRUMENT1_KEITHLEY_VOIE2, &ConnectionPort::OnBnClickedCheckInstrument1KeithleyVoie2)
+	ON_BN_CLICKED(IDC_CHECK_INSTRUMENT2_KEITHLEY_VOIE2, &ConnectionPort::OnBnClickedCheckInstrument2KeithleyVoie2)
+	ON_BN_CLICKED(IDC_CHECK_INSTRUMENT3_KEITHLEY_VOIE2, &ConnectionPort::OnBnClickedCheckInstrument3KeithleyVoie2)
 END_MESSAGE_MAP()
 
 
-// Gestionnaires de messages de CConnection_port
+// Gestionnaires de messages de ConnectionPort
 
-BOOL CConnection_port::OnInitDialog()
+BOOL ConnectionPort::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
@@ -111,7 +113,7 @@ BOOL CConnection_port::OnInitDialog()
 
 
 
-void CConnection_port::OnBnClickedOk()
+void ConnectionPort::OnBnClickedOk()
 {
 	UpdateData(TRUE);
 
@@ -155,7 +157,7 @@ void CConnection_port::OnBnClickedOk()
 	}
 }
 
-void CConnection_port::OnBnClickedCancel()
+void ConnectionPort::OnBnClickedCancel()
 {
 	InitConnection_port();
 	OnCancel();
@@ -163,42 +165,42 @@ void CConnection_port::OnBnClickedCancel()
 
 
 
-void CConnection_port::OnCbnSelchangeComboTypeInstrument1()
+void ConnectionPort::OnCbnSelchangeComboTypeInstrument1()
 {
 	UpdateData(TRUE);
 	ShowItemInstrument1();
 	UpdateData(FALSE);
 }
 
-void CConnection_port::OnCbnSelchangeComboTypeInstrument2()
+void ConnectionPort::OnCbnSelchangeComboTypeInstrument2()
 {
 	UpdateData(TRUE);
 	ShowItemInstrument2();
 	UpdateData(FALSE);
 }
 
-void CConnection_port::OnCbnSelchangeComboTypeInstrument3()
+void ConnectionPort::OnCbnSelchangeComboTypeInstrument3()
 {
 	UpdateData(TRUE);
 	ShowItemInstrument3();
 	UpdateData(FALSE);
 }
 
-void CConnection_port::OnBnClickedCheckInstrument1KeithleyVoie2()
+void ConnectionPort::OnBnClickedCheckInstrument1KeithleyVoie2()
 {
 	UpdateData(TRUE);
 	m_CBInstrument1KeithleyVoie2.EnableWindow (m_bInstrument1KeithleyVoie2);
 	UpdateData(FALSE);
 }
 
-void CConnection_port::OnBnClickedCheckInstrument2KeithleyVoie2()
+void ConnectionPort::OnBnClickedCheckInstrument2KeithleyVoie2()
 {
 	UpdateData(TRUE);
 	m_CBInstrument2KeithleyVoie2.EnableWindow (m_bInstrument2KeithleyVoie2);
 	UpdateData(FALSE);
 }
 
-void CConnection_port::OnBnClickedCheckInstrument3KeithleyVoie2()
+void ConnectionPort::OnBnClickedCheckInstrument3KeithleyVoie2()
 {
 	UpdateData(TRUE);
 	m_CBInstrument3KeithleyVoie2.EnableWindow (m_bInstrument3KeithleyVoie2);
@@ -208,7 +210,7 @@ void CConnection_port::OnBnClickedCheckInstrument3KeithleyVoie2()
 //-----------------------
 
 
-void CConnection_port::EnregistrementConnection_port()
+void ConnectionPort::EnregistrementConnection_port()
 {
 	EnregistrementParametresInstrument1();
 	EnregistrementParametresInstrument2();
@@ -219,7 +221,7 @@ void CConnection_port::EnregistrementConnection_port()
 }
 
 
-void CConnection_port::InitConnection_port()
+void ConnectionPort::InitConnection_port()
 {
 	InitDonneesInstrument1();
 	InitDonneesInstrument2();
@@ -233,8 +235,6 @@ void CConnection_port::InitConnection_port()
 	ShowItemInstrument1();
 	ShowItemInstrument2();
 	ShowItemInstrument3();
-
-
 }
 
 

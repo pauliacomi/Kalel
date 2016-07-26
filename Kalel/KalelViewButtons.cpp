@@ -10,14 +10,14 @@
 
 #include "ThreadManager.h"
 
-#include "Dialogue_TypeExperience.h"		// The dialog asking the user for the experiment type
+#include "Dialog_TypeExperiment.h"		// The dialog asking the user for the experiment type
 
 
 // When clicking on the Launch button
 void CKalelView::OnBnClickedLancer()
 {
 	// Create the experiment type window
-	CDialogue_TypeExperience dialogExperimentType;
+	Dialog_TypeExperiment dialogExperimentType;
 	if (dialogExperimentType.DoModal() == IDOK)
 	{
 		// Save user choice

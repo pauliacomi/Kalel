@@ -1,23 +1,20 @@
 #pragma once
 #include "afxwin.h"
-
 #include "ResourceConnectionPort.h"
-
-#include "Parametres.h"
 
 #include "ConnectionMesure.h"
 #include "VerifInstrument.h"
 #include "DefineInstruments.h"
 
-// Boîte de dialogue CConnection_port
+// Boîte de dialogue ConnectionPort
 
-class CConnection_port : public CDialog
+class ConnectionPort : public CDialog
 {
-	DECLARE_DYNAMIC(CConnection_port)
+	DECLARE_DYNAMIC(ConnectionPort)
 
 public:
-	CConnection_port(CWnd* pParent = NULL);   // constructeur standard
-	virtual ~CConnection_port();
+	ConnectionPort(CWnd* pParent = NULL);   // constructeur standard
+	virtual ~ConnectionPort();
 
 // Données de boîte de dialogue
 	enum { IDD = IDD_CONNECTION_PORT };
@@ -107,8 +104,6 @@ public:
 
 	// Connection_port
 
-protected:
-	virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
 public:
 	virtual BOOL OnInitDialog();
 	afx_msg void OnBnClickedOk();

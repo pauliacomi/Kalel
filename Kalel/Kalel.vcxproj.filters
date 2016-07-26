@@ -234,12 +234,6 @@
     <ClInclude Include="Manip_AutoGaz.h">
       <Filter>Header Files\Old\Manip</Filter>
     </ClInclude>
-    <ClInclude Include="Connection_port.h">
-      <Filter>Header Files\GUI\Dialogs\Connection Port</Filter>
-    </ClInclude>
-    <ClInclude Include="Dialogue_TypeExperience.h">
-      <Filter>Header Files\GUI\Dialogs</Filter>
-    </ClInclude>
     <ClInclude Include="CDesorption.h">
       <Filter>Header Files\Old\Tabs</Filter>
     </ClInclude>
@@ -380,6 +374,15 @@
     </ClInclude>
     <ClInclude Include="ApparatusParameters.h">
       <Filter>Header Files\GUI\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="Dialog_TypeExperiment.h">
+      <Filter>Header Files\GUI\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="ConnectionPort.h">
+      <Filter>Header Files\GUI\Dialogs\Connection Port</Filter>
+    </ClInclude>
+    <ClInclude Include="VerifInstrument.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -523,18 +526,6 @@
     </ClCompile>
     <ClCompile Include="Manip_AutoGaz_MiseSousVide_Bouteille.cpp">
       <Filter>Source Files\Old\Manip\Manip_AutoGaz\MSV</Filter>
-    </ClCompile>
-    <ClCompile Include="Dialogue_TypeExperience.cpp">
-      <Filter>Source Files\GUI\Dialogs</Filter>
-    </ClCompile>
-    <ClCompile Include="Connection_port.cpp">
-      <Filter>Source Files\GUI\Dialogs\Connection Port</Filter>
-    </ClCompile>
-    <ClCompile Include="Connection_port_fct.cpp">
-      <Filter>Source Files\GUI\Dialogs\Connection Port</Filter>
-    </ClCompile>
-    <ClCompile Include="Connection_port_Verifications.cpp">
-      <Filter>Source Files\GUI\Dialogs\Connection Port</Filter>
     </ClCompile>
     <ClCompile Include="CAdsorptionContinue.cpp">
       <Filter>Source Files\Old\Tabs</Filter>
@@ -691,6 +682,18 @@
     </ClCompile>
     <ClCompile Include="ApparatusParameters.cpp">
       <Filter>Source Files\GUI\Dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="Dialog_TypeExperiment.cpp">
+      <Filter>Source Files\GUI\Dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="ConnectionPort.cpp">
+      <Filter>Source Files\GUI\Dialogs\Connection Port</Filter>
+    </ClCompile>
+    <ClCompile Include="ConnectionPort_fct.cpp">
+      <Filter>Source Files\GUI\Dialogs\Connection Port</Filter>
+    </ClCompile>
+    <ClCompile Include="ConnectionPort_Verifications.cpp">
+      <Filter>Source Files\GUI\Dialogs\Connection Port</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

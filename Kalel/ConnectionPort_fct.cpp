@@ -1,10 +1,12 @@
 #include "stdafx.h"
 #include "Kalel.h"
-#include "Connection_port.h"
+#include "ConnectionPort.h"
+
+#include "Parametres.h"
 
 /* --------- InitDonnees ----------------*/
 
-void CConnection_port::InitDonneesInstrument1()
+void ConnectionPort::InitDonneesInstrument1()
 {
 	InitDonneesInstrument(GetTypeInstrument1(),
 						  &m_nIndexTypeInstrument1,
@@ -18,7 +20,7 @@ void CConnection_port::InitDonneesInstrument1()
 						  GetFonctionInstrument1());
 }
 
-void CConnection_port::InitDonneesInstrument2()
+void ConnectionPort::InitDonneesInstrument2()
 {
 	InitDonneesInstrument(GetTypeInstrument2(),
 						  &m_nIndexTypeInstrument2,
@@ -31,7 +33,7 @@ void CConnection_port::InitDonneesInstrument2()
 						  GetCOMInstrument2()-1,
 						  GetFonctionInstrument2());
 }
-void CConnection_port::InitDonneesInstrument3()
+void ConnectionPort::InitDonneesInstrument3()
 {
 	InitDonneesInstrument(GetTypeInstrument3(),
 						  &m_nIndexTypeInstrument3,
@@ -45,7 +47,7 @@ void CConnection_port::InitDonneesInstrument3()
 						  GetFonctionInstrument3());
 }
 
-void CConnection_port::InitDonneesInstrument(int TypeInstr,int* m_nIndex,int* m_nPortInstrument,BOOL* m_bInstrumentKeithleyVoie1,BOOL* m_bInstrumentKeithleyVoie2,CComboBox* m_CBInstrumentKeithleyVoie2,int* m_nIndexInstrumentKeithleyVoie2,int* m_nInstrumentMensor,int GetPort,int GetFonction)
+void ConnectionPort::InitDonneesInstrument(int TypeInstr,int* m_nIndex,int* m_nPortInstrument,BOOL* m_bInstrumentKeithleyVoie1,BOOL* m_bInstrumentKeithleyVoie2,CComboBox* m_CBInstrumentKeithleyVoie2,int* m_nIndexInstrumentKeithleyVoie2,int* m_nInstrumentMensor,int GetPort,int GetFonction)
 {
 	switch(TypeInstr)
 	{
@@ -111,7 +113,7 @@ void CConnection_port::InitDonneesInstrument(int TypeInstr,int* m_nIndex,int* m_
 /* ----------- EnregistrementParametresInstrument ----------- */
 
 
-void CConnection_port::EnregistrementParametresInstrument1()
+void ConnectionPort::EnregistrementParametresInstrument1()
 {
 	EnregistrementParametresInstrument(1,
 									   m_nIndexTypeInstrument1,
@@ -122,7 +124,7 @@ void CConnection_port::EnregistrementParametresInstrument1()
 									   m_nInstrument1Mensor);
 }
 
-void CConnection_port::EnregistrementParametresInstrument2()
+void ConnectionPort::EnregistrementParametresInstrument2()
 {
 	EnregistrementParametresInstrument(2,
 									   m_nIndexTypeInstrument2,
@@ -133,7 +135,7 @@ void CConnection_port::EnregistrementParametresInstrument2()
 									   m_nInstrument2Mensor);
 }
 
-void CConnection_port::EnregistrementParametresInstrument3()
+void ConnectionPort::EnregistrementParametresInstrument3()
 {
 	EnregistrementParametresInstrument(3,
 									   m_nIndexTypeInstrument3,
@@ -144,7 +146,7 @@ void CConnection_port::EnregistrementParametresInstrument3()
 									   m_nInstrument3Mensor);
 }
 
-void CConnection_port::EnregistrementParametresInstrument(int num_instr,int m_nIndex,int COMInstrument,bool m_bInstrumentKeithleyVoie1, bool m_bInstrumentKeithleyVoie2,int m_nIndexInstrumentKeithleyVoie2,int m_nInstrumentMensor)
+void ConnectionPort::EnregistrementParametresInstrument(int num_instr,int m_nIndex,int COMInstrument,bool m_bInstrumentKeithleyVoie1, bool m_bInstrumentKeithleyVoie2,int m_nIndexInstrumentKeithleyVoie2,int m_nInstrumentMensor)
 {	
 	int fonction;
 	switch(m_nIndex)
@@ -191,7 +193,7 @@ void CConnection_port::EnregistrementParametresInstrument(int num_instr,int m_nI
 /* ------------- ShowItem ------------------ */
 
 
-void CConnection_port::ShowItemInstrument1()
+void ConnectionPort::ShowItemInstrument1()
 {
 	ShowItem(m_nIndexTypeInstrument1,
 			 m_bInstrument1KeithleyVoie2,
@@ -202,7 +204,7 @@ void CConnection_port::ShowItemInstrument1()
 			 &m_CBInstrument1Mensor);
 }
 
-void CConnection_port::ShowItemInstrument2()
+void ConnectionPort::ShowItemInstrument2()
 {
 	ShowItem(m_nIndexTypeInstrument2,
 			 m_bInstrument2KeithleyVoie2,
@@ -213,7 +215,7 @@ void CConnection_port::ShowItemInstrument2()
 			 &m_CBInstrument2Mensor);
 }
 
-void CConnection_port::ShowItemInstrument3()
+void ConnectionPort::ShowItemInstrument3()
 {
 	ShowItem(m_nIndexTypeInstrument3,
 			 m_bInstrument3KeithleyVoie2,
@@ -224,7 +226,7 @@ void CConnection_port::ShowItemInstrument3()
 			 &m_CBInstrument3Mensor);
 }
 
-void CConnection_port::ShowItem(int m_nIndex,bool m_bInstrumentKeithleyVoie2,CComboBox* m_CBPortInstrument,CButton* m_CheckInstrumentKeithleyVoie1,CButton* m_CheckInstrumentKeithleyVoie2,CComboBox* m_CBInstrumentKeithleyVoie2,CComboBox* m_CBInstrumentMensor)
+void ConnectionPort::ShowItem(int m_nIndex,bool m_bInstrumentKeithleyVoie2,CComboBox* m_CBPortInstrument,CButton* m_CheckInstrumentKeithleyVoie1,CButton* m_CheckInstrumentKeithleyVoie2,CComboBox* m_CBInstrumentKeithleyVoie2,CComboBox* m_CBInstrumentMensor)
 {
 	switch(m_nIndex)
 	{
