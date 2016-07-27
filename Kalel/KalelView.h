@@ -18,6 +18,10 @@
 #include "ExperimentSettings.h"			// Where returned data from results is stored
 #include "ExperimentPropertySheet.h"	// Dialog box for setting experimental properties
 
+// Dialog Box includes
+#include "ApparatusParameters.h"
+#include "ConnectionPort.h"
+
 #include "KalelDoc.h"
 #include "Kalel.h"
 
@@ -113,10 +117,13 @@ public:
 	void OnMsvAmpoule(void);
 	void OnMsvBouteille(void);
 	void OnChangementBouteille(void);
+	void DisplayPortDialog(void);
+	void DisplayApparatusSettingsDialog(void);
 
 	void GetExperimentData(ExperimentPropertySheet * dialogExperimentProperties);
 
 	void UpdateButtons();
+
 
 	// Thread callbacks
 	LRESULT OnRegularThreadFinished(WPARAM wParam, LPARAM);

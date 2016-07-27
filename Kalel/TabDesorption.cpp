@@ -112,10 +112,10 @@ void TabDesorption::OnOK()
 void TabDesorption::Reinitialisation()
 {
 	m_bDesorption = FALSE;
-	m_fDeltaPressionDesorption = 1.0;
+	m_fDeltaPressionDesorption = 1.0f;
 	m_nTempsVolumeDesorption = 5;
 	m_nTempsDesorption = 90;
-	m_fPressionFinaleDesorption = 0.1;
+	m_fPressionFinaleDesorption = 0.1f;
 	m_bDerniereEtapeDesorption = FALSE;
 
 	CheckUnGreyOut();

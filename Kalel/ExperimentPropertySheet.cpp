@@ -23,7 +23,7 @@ ExperimentPropertySheet::ExperimentPropertySheet(UINT nIDCaption, CWnd* pParentW
 ExperimentPropertySheet::ExperimentPropertySheet(LPCTSTR pszCaption, CWnd* pParentWnd, UINT iSelectPage)
 	: CMFCPropertySheet(pszCaption, pParentWnd, iSelectPage)
 	, numberOfAdsorptions(3)
-	, numberOfDesorptions(0)
+	, numberOfDesorptions(1)
 {
 	// Choose the view of the property page
 	SetLook(CMFCPropertySheet::PropSheetLook_List, 150);

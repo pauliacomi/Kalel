@@ -689,12 +689,6 @@
     <ClCompile Include="ConnectionPort.cpp">
       <Filter>Source Files\GUI\Dialogs\Connection Port</Filter>
     </ClCompile>
-    <ClCompile Include="ConnectionPort_fct.cpp">
-      <Filter>Source Files\GUI\Dialogs\Connection Port</Filter>
-    </ClCompile>
-    <ClCompile Include="ConnectionPort_Verifications.cpp">
-      <Filter>Source Files\GUI\Dialogs\Connection Port</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Steps.rc">

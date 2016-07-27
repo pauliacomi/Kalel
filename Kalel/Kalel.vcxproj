@@ -304,8 +304,6 @@
     </ClCompile>
     <ClCompile Include="ConnectionMesure.cpp" />
     <ClCompile Include="ConnectionPort.cpp" />
-    <ClCompile Include="ConnectionPort_fct.cpp" />
-    <ClCompile Include="ConnectionPort_Verifications.cpp" />
     <ClCompile Include="ExperimentData.cpp" />
     <ClCompile Include="ExperimentPropertySheet.cpp" />
     <ClCompile Include="FluxConverter.cpp" />
