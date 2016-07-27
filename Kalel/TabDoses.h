@@ -33,6 +33,8 @@ protected:
 protected:
 	CString m_caption;	// Title of the page
 
+	HANDLE h_parent;	// Handle to propertysheet
+
 	BOOL m_bDoses;
 	bool checkDoses;
 
@@ -69,6 +71,7 @@ protected:
 // Message Handlers
 protected:
 	void OnBnClickedCheckDoses();
+	void DeletePage();
 };
 
 #endif // !TABDOSES_H

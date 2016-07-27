@@ -264,9 +264,6 @@
     <ClInclude Include="ListOfInstrumentButtons.h">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="DefinePostMessages.h">
-      <Filter>Header Files\Resources\Automation</Filter>
-    </ClInclude>
     <ClInclude Include="TabGeneral.h">
       <Filter>Header Files\GUI\Dialogs\Experimental Parameters\Tabs</Filter>
     </ClInclude>
@@ -357,9 +354,6 @@
     <ClInclude Include="Vannes.h">
       <Filter>Header Files\Backend\Wrapper Classes</Filter>
     </ClInclude>
-    <ClInclude Include="ConnectionMesure.h">
-      <Filter>Header Files\Old</Filter>
-    </ClInclude>
     <ClInclude Include="SerialInstruments.h">
       <Filter>Header Files\Backend\Wrapper Classes</Filter>
     </ClInclude>
@@ -383,6 +377,12 @@
     </ClInclude>
     <ClInclude Include="VerifInstrument.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ConnectionMesure.h">
+      <Filter>Header Files\GUI\Dialogs\Connection Port</Filter>
+    </ClInclude>
+    <ClInclude Include="DefinePostMessages.h">
+      <Filter>Header Files\Resources</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -656,9 +656,6 @@
     <ClCompile Include="Vannes.cpp">
       <Filter>Source Files\Backend\Wrapper Classes</Filter>
     </ClCompile>
-    <ClCompile Include="ConnectionMesure.cpp">
-      <Filter>Source Files\Old</Filter>
-    </ClCompile>
     <ClCompile Include="SerialInstruments.cpp">
       <Filter>Source Files\Backend\Wrapper Classes</Filter>
     </ClCompile>
@@ -687,6 +684,9 @@
       <Filter>Source Files\GUI\Dialogs</Filter>
     </ClCompile>
     <ClCompile Include="ConnectionPort.cpp">
+      <Filter>Source Files\GUI\Dialogs\Connection Port</Filter>
+    </ClCompile>
+    <ClCompile Include="ConnectionMesure.cpp">
       <Filter>Source Files\GUI\Dialogs\Connection Port</Filter>
     </ClCompile>
   </ItemGroup>

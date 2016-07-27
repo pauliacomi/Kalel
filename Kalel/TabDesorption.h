@@ -70,6 +70,7 @@ protected:
 // Message Handlers
 protected:
 	void OnBnClickedCheckDesorption();
+	void DeletePage();
 };
 
 #endif // !TABDESORPTION_H

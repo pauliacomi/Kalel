@@ -6,6 +6,7 @@
 #include "TabDesorption.h"
 
 #include "General.h"			// For some definitions
+#include "DefinePostMessages.h"		// For custom message definitions
 
 // TabDesorption
 
@@ -188,6 +189,7 @@ void TabDesorption::ActionCheck_Desorption()
 
 BEGIN_MESSAGE_MAP(TabDesorption, CMFCPropertyPage)
 	ON_BN_CLICKED(IDC_CHECK_DESORPTION, &TabDesorption::OnBnClickedCheckDesorption)
+	ON_BN_CLICKED(IDC_BUTTON1, &TabDoses::DeletePage)
 END_MESSAGE_MAP()
 
 // TabDesorption message handlers
@@ -197,4 +199,9 @@ void TabDesorption::OnBnClickedCheckDesorption()
 	UpdateData(TRUE);
 	EnableDesorption(m_bDesorption);
 	UpdateData(FALSE);
+}
+
+void TabDesorption::DeletePage()
+{
+	::SendMessage(GetParent()->GetSafeHwnd(), WM_PP_ADSORPTION_DELETE, NULL, NULL);
 }

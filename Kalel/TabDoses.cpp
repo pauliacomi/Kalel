@@ -7,6 +7,7 @@
 #include "afxdialogex.h"
 
 #include "General.h"			// For some definitions
+#include "DefinePostMessages.h"		// For custom message definitions
 
 // TabDoses dialog
 
@@ -181,6 +182,7 @@ void TabDoses::ActionCheck_Doses()
 
 BEGIN_MESSAGE_MAP(TabDoses, CMFCPropertyPage)
 	ON_BN_CLICKED(IDC_CHECK_DOSES, &TabDoses::OnBnClickedCheckDoses)
+	ON_BN_CLICKED(IDC_BUTTON1, &TabDoses::DeletePage)
 END_MESSAGE_MAP()
 
 
@@ -191,4 +193,9 @@ void TabDoses::OnBnClickedCheckDoses()
 	UpdateData(TRUE);
 	EnableDoses(m_bDoses);
 	UpdateData(FALSE);
+}
+
+void TabDoses::DeletePage()
+{
+	::SendMessage(GetParent()->GetSafeHwnd(), WM_PP_ADSORPTION_DELETE, NULL, NULL);
 }

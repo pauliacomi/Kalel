@@ -7,6 +7,7 @@
 
 
 #include "DefineStages.h"			// For the types of experiments used
+#include "DefinePostMessages.h"		// For custom message definitions
 
 
 
@@ -43,7 +44,9 @@ ExperimentPropertySheet::ExperimentPropertySheet(LPCTSTR pszCaption, CWnd* pPare
 		AddDesorption(i);
 	}
 	
+	// Resize the number of tabs
 	availableTabs.resize(nb_permanent_tabs + numberOfAdsorptions + numberOfDesorptions);
+
 	for (size_t i = 0; i < availableTabs.size(); i++)
 	{
 		availableTabs[i] = false;
@@ -70,6 +73,9 @@ BOOL ExperimentPropertySheet::OnInitDialog()
 {
 	BOOL bResult = CMFCPropertySheet::OnInitDialog();
 
+	//
+	// Adding new buttons
+
 	// Find a bottom-left point for the edit control in the client area
 	CRect rect;
 	GetClientRect(&rect);
@@ -88,6 +94,9 @@ BOOL ExperimentPropertySheet::OnInitDialog()
 	m_addAdsorption.SetFont(GetFont());
 	m_addDesorption.Create(_T("+DES"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, CRect(nLeft + nWidth + nOffset, nTop, nRight + nWidth, nBottom), this, IDC_PLUSDES);
 	m_addDesorption.SetFont(GetFont());
+
+	// Done adding buttons
+	//
 
 	return bResult;
 }
@@ -303,8 +312,8 @@ BEGIN_MESSAGE_MAP(ExperimentPropertySheet, CMFCPropertySheet)
 	//}}AFX_MSG_MAP
 	ON_BN_CLICKED(IDC_PLUSADS, OnButtonAddAdsorption)
 	ON_BN_CLICKED(IDC_PLUSDES, OnButtonAddDesorption)
-	ON_BN_CLICKED(IDC_MINUSADS, OnButtonRemoveAdsorption)
-	ON_BN_CLICKED(IDC_MINUDES, OnButtonRemoveDesorption)
+	ON_MESSAGE(WM_PP_ADSORPTION_DELETE, OnButtonRemoveAdsorption)
+	ON_MESSAGE(WM_PP_DESORPTION_DELETE, OnButtonRemoveDesorption)
 END_MESSAGE_MAP()
 
 
@@ -331,7 +340,7 @@ void ExperimentPropertySheet::OnButtonAddAdsorption()
 	}
 }
 
-void ExperimentPropertySheet::OnButtonAddDesorption()
+void ExperimentPropertySheet::OnButtonAddDesorption(void)
 {
 	if (experimentType == EXPERIMENT_TYPE_MANUAL) {
 		AfxMessageBox(ERROR_NOT_APPLICABLE);
@@ -352,14 +361,83 @@ void ExperimentPropertySheet::OnButtonAddDesorption()
 	}
 }
 
-void ExperimentPropertySheet::OnButtonRemoveAdsorption()
+LRESULT ExperimentPropertySheet::OnButtonRemoveAdsorption(WPARAM, LPARAM)
 {
 	RemovePage(numberOfAdsorptions);
 	adsorptionTabs.erase(adsorptionTabs.end());
+
+	return 0;
 }
 
-void ExperimentPropertySheet::OnButtonRemoveDesorption()
+LRESULT ExperimentPropertySheet::OnButtonRemoveDesorption(WPARAM, LPARAM)
 {
 	RemovePage(numberOfDesorptions);
 	desorptionTabs.erase(desorptionTabs.end());
+
+	return 0;
 }
+
+
+//
+//void ExperimentPropertySheet::InsertPageAt(CPropertyPage* pPage, int nPos)
+//{
+//	ASSERT_VALID(this);
+//	ENSURE_VALID(pPage);
+//	ASSERT_KINDOF(CPropertyPage, pPage);
+//
+//
+//	// add page to internal list
+//	m_pages.InsertAt(nPos, pPage);
+//
+//	// add page externally
+//	if (m_hWnd != NULL)
+//	{
+//		// determine size of PROPSHEETPAGE array
+//		PROPSHEETPAGE* ppsp = const_cast<PROPSHEETPAGE*>(m_psh.ppsp);
+//		int nBytes = 0;
+//		int nNextBytes;
+//		for (UINT i = 0; i < m_psh.nPages; i++)
+//		{
+//			nNextBytes = nBytes + ppsp->dwSize;
+//			if ((nNextBytes < nBytes) || (nNextBytes < (int)ppsp->dwSize))
+//				AfxThrowMemoryException();
+//			nBytes = nNextBytes;
+//			(BYTE*&)ppsp += ppsp->dwSize;
+//		}
+//
+//		nNextBytes = nBytes + pPage->m_psp.dwSize;
+//		if ((nNextBytes < nBytes) || (nNextBytes < (int)pPage->m_psp.dwSize))
+//			AfxThrowMemoryException();
+//
+//		// build new prop page array
+//		ppsp = (PROPSHEETPAGE*)realloc((void*)m_psh.ppsp, nNextBytes);
+//		if (ppsp == NULL)
+//			AfxThrowMemoryException();
+//		m_psh.ppsp = ppsp;
+//
+//		// copy processed PROPSHEETPAGE struct to end
+//		(BYTE*&)ppsp += nBytes;
+//		Checked::memcpy_s(ppsp, nNextBytes - nBytes, &pPage->m_psp, pPage->m_psp.dwSize);
+//		pPage->PreProcessPageTemplate(*ppsp, IsWizard());
+//		if (!pPage->m_strHeaderTitle.IsEmpty())
+//		{
+//			ppsp->pszHeaderTitle = pPage->m_strHeaderTitle;
+//			ppsp->dwFlags |= PSP_USEHEADERTITLE;
+//		}
+//		if (!pPage->m_strHeaderSubTitle.IsEmpty())
+//		{
+//			ppsp->pszHeaderSubTitle = pPage->m_strHeaderSubTitle;
+//			ppsp->dwFlags |= PSP_USEHEADERSUBTITLE;
+//		}
+//		HPROPSHEETPAGE hPSP = AfxCreatePropertySheetPage(ppsp);
+//		if (hPSP == NULL)
+//			AfxThrowMemoryException();
+//
+//		if (!SendMessage(PSM_INSERTPAGE, nPos, (LPARAM)hPSP))
+//		{
+//			AfxDestroyPropertySheetPage(hPSP);
+//			AfxThrowMemoryException();
+//		}
+//		++m_psh.nPages;
+//	}
+//}

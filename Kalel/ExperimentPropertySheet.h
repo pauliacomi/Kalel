@@ -45,6 +45,7 @@ public:
 	TabDoses * m_dose;
 	TabDesorption * m_desorption;
 	TabContinuousAdsorption m_continuousAdsorption;
+
 	vector<TabDoses*> adsorptionTabs;
 	vector<TabDesorption*> desorptionTabs;
 
@@ -76,8 +77,8 @@ public:
 	void AddDesorption(int i);	// Adds one new adsorption experiment tab
 	void OnButtonAddAdsorption();
 	void OnButtonAddDesorption();
-	void OnButtonRemoveAdsorption();
-	void OnButtonRemoveDesorption();
+	LRESULT OnButtonRemoveAdsorption(WPARAM wParam, LPARAM lParam);
+	LRESULT OnButtonRemoveDesorption(WPARAM wParam, LPARAM lParam);
 	void AddTab(CPropertyPage * tab, int checkTab);			// Adds a tab, checking if it is available first
 	void RemoveTab(CPropertyPage * tab, int checkTab);		// Removes a tab, checking if it is available first
 
@@ -96,6 +97,8 @@ public:
 	void ReinitialisationAuto();		// Reinitialise the data in all the tabs
 	void ReinitialisationManual();		// Reinitialise the data only in the general tab
 
+	//Inserts the page at a given Index
+	void InsertPageAt(CPropertyPage* pPageToInsert, int nPos);
 };
 
 #endif // !EXPERIMENTPROPERTYSHEET_H
