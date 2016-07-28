@@ -13,7 +13,7 @@ class TabDoses : public CMFCPropertyPage
 	DECLARE_DYNAMIC(TabDoses)
 
 public:
-	TabDoses(CString i);
+	TabDoses(int i);
 	virtual ~TabDoses();
 
 	// Dialog Data
@@ -37,6 +37,7 @@ protected:
 
 	BOOL m_bDoses;
 	bool checkDoses;
+	int position;
 
 	int m_nTimeAdsorptionDoses;
 	int m_nTimeVolumeDoses;
@@ -57,6 +58,7 @@ public:
 	// Functions
 public:
 	void Reinitialisation();
+	void Rename(int number);
 
 protected:
 	void WriteData();
@@ -68,10 +70,11 @@ protected:
 	void CheckUnGreyOut();
 	void ActionCheck_Doses();
 
+	void DeletePage();
+
 // Message Handlers
 protected:
 	void OnBnClickedCheckDoses();
-	void DeletePage();
 };
 
 #endif // !TABDOSES_H

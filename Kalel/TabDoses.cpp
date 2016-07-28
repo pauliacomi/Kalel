@@ -13,13 +13,11 @@
 
 IMPLEMENT_DYNAMIC(TabDoses, CMFCPropertyPage)
 
-TabDoses::TabDoses(CString i)
+TabDoses::TabDoses(int number)
 	: CMFCPropertyPage(TabDoses::IDD)
 {
 	// Set title from its initialisation
-	m_caption = i;
-	m_psp.pszTitle = m_caption;
-	m_psp.dwFlags |= PSP_USETITLE;
+	Rename(number);
 
 	Reinitialisation();
 }
@@ -180,9 +178,22 @@ void TabDoses::ActionCheck_Doses()
 		UnGreyOut();
 }
 
+void TabDoses::Rename(int number) {
+
+	position = number;
+
+	// Set title from its initialisation
+	CString tabtitle;
+	tabtitle.Format(_T("Adsorption %d"), position);
+
+	m_caption = tabtitle;
+	m_psp.pszTitle = m_caption;
+	m_psp.dwFlags |= PSP_USETITLE;
+}
+
 BEGIN_MESSAGE_MAP(TabDoses, CMFCPropertyPage)
 	ON_BN_CLICKED(IDC_CHECK_DOSES, &TabDoses::OnBnClickedCheckDoses)
-	ON_BN_CLICKED(IDC_BUTTON1, &TabDoses::DeletePage)
+	ON_BN_CLICKED(IDC_BUTTON_ADS_REMOVE, &TabDoses::DeletePage)
 END_MESSAGE_MAP()
 
 
@@ -197,5 +208,6 @@ void TabDoses::OnBnClickedCheckDoses()
 
 void TabDoses::DeletePage()
 {
-	::SendMessage(GetParent()->GetSafeHwnd(), WM_PP_ADSORPTION_DELETE, NULL, NULL);
+	::SendMessage(GetParent()->GetSafeHwnd(), WM_PP_ADSORPTION_DELETE, NULL, static_cast<LPARAM>(position));
 }
+

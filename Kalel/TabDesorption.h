@@ -13,7 +13,7 @@ class TabDesorption : public CMFCPropertyPage
 	DECLARE_DYNAMIC(TabDesorption)
 
 public:
-	TabDesorption(CString i);
+	TabDesorption(int number);
 	virtual ~TabDesorption();
 
 	// Dialog Data
@@ -34,6 +34,7 @@ protected:
 	CString m_caption;	// Title of the page
 
 	bool checkDesorption;
+	int position;
 
 	BOOL m_bDesorption;
 	BOOL m_bDerniereEtapeDesorption;
@@ -56,6 +57,7 @@ public:
 // Functions
 public:
 	void Reinitialisation();
+	void Rename(int number);
 
 protected:
 	void WriteData();

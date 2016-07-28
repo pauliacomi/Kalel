@@ -37,11 +37,11 @@ ExperimentPropertySheet::ExperimentPropertySheet(LPCTSTR pszCaption, CWnd* pPare
 	// Dynamically generate the tabs
 	for (int i = 0; i < numberOfAdsorptions; i++)
 	{
-		AddAdsorption(i);
+		AddAdsorption(i+1);
 	}
 	for (int i = 0; i < numberOfDesorptions; i++)
 	{
-		AddDesorption(i);
+		AddDesorption(i+1);
 	}
 	
 	// Resize the number of tabs
@@ -116,11 +116,14 @@ void ExperimentPropertySheet::SetProprietiesManual(void)
 		SetTitle(title);
 
 		// Remove any existing tabs and add the general tab
+		RemoveTab(p_generalPP, tab_general);
+		RemoveTab(p_diversPP, tab_divers);
 		RemoveAllTabs();
+
 		AddTab(p_generalPP, tab_general);
 
 		// Make sure the tab data is blank
-		ReinitialisationManual();
+		Reinitialisation(false);
 	}
 
 }
@@ -139,11 +142,16 @@ void ExperimentPropertySheet::SetProprietiesAuto(void)
 		SetTitle(title);
 
 		// Remove any existing tabs and re-add all the tabs
+		RemoveTab(p_generalPP, tab_general);
+		RemoveTab(p_diversPP, tab_divers);
 		RemoveAllTabs();
+
+		AddTab(p_generalPP, tab_general);
+		AddTab(p_diversPP, tab_divers);
 		AddAllTabs();
 
 		// Make sure the tab data is blanks
-		ReinitialisationAuto();
+		Reinitialisation(true);
 	}
 }
 
@@ -211,34 +219,29 @@ void ExperimentPropertySheet::SetProprietiesModif(int etape_en_cours)
 }
 
 // Reinitialise the data in all the tabs
-void ExperimentPropertySheet::ReinitialisationAuto()
+void ExperimentPropertySheet::Reinitialisation(bool automatic)
 {
 	m_general.Reinitialisation();
-	m_divers.Reinitialisation();
 
-	for (size_t i = 0; i < adsorptionTabs.size(); i++)
+	if (automatic)
 	{
-		adsorptionTabs[i]->Reinitialisation();
+		m_divers.Reinitialisation();
+
+		for (size_t i = 0; i < adsorptionTabs.size(); i++)
+		{
+			adsorptionTabs[i]->Reinitialisation();
+		}
+		for (size_t i = 0; i < desorptionTabs.size(); i++)
+		{
+			desorptionTabs[i]->Reinitialisation();
+		}
+
+		m_continuousAdsorption.Reinitialisation();
 	}
-	for (size_t i = 0; i < desorptionTabs.size(); i++)
-	{
-		desorptionTabs[i]->Reinitialisation();
-	}
-
-	m_continuousAdsorption.Reinitialisation();
 }
-
-// Reinitialise the data only in the general tab
-void ExperimentPropertySheet::ReinitialisationManual()
-{
-	m_general.Reinitialisation();
-}
-
 
 // Asks all the tabs to be added
 void ExperimentPropertySheet::AddAllTabs() {
-	AddTab(p_generalPP, tab_general);
-	AddTab(p_diversPP, tab_divers);
 	for (size_t i = 0; i < adsorptionTabs.size(); i++)
 	{
 		AddTab(adsorptionTabs[i], nb_permanent_tabs + i);
@@ -253,8 +256,6 @@ void ExperimentPropertySheet::AddAllTabs() {
 // Asks all the tabs to be removed
 void ExperimentPropertySheet::RemoveAllTabs()
 {
-	RemoveTab(p_generalPP, tab_general);
-	RemoveTab(p_diversPP, tab_divers);
 	for (size_t i = 0; i < adsorptionTabs.size(); i++)
 	{
 		RemoveTab(adsorptionTabs[i], nb_permanent_tabs + i);
@@ -268,22 +269,16 @@ void ExperimentPropertySheet::RemoveAllTabs()
 
 void ExperimentPropertySheet::AddAdsorption(int i)
 {
-	CString tabtitle;
-	tabtitle.Format(_T("Adsorption %d"), i + 1);
-
-	m_dose = new TabDoses(tabtitle);
-	adsorptionTabs.push_back(m_dose);
-	adsorptionTabPointers.push_back(adsorptionTabs[i]);
+	m_adsorption = new TabDoses(i);
+	adsorptionTabs.push_back(m_adsorption);
+	adsorptionTabPointers.push_back(adsorptionTabs[i-1]);
 }
 
 void ExperimentPropertySheet::AddDesorption(int i)
 {
-	CString tabtitle;
-	tabtitle.Format(_T("Desorption %d"), i + 1);
-
-	m_desorption = new TabDesorption(tabtitle);
+	m_desorption = new TabDesorption(i);
 	desorptionTabs.push_back(m_desorption);
-	desorptionTabPointers.push_back(desorptionTabs[i]);
+	desorptionTabPointers.push_back(desorptionTabs[i-1]);
 }
 
 
@@ -310,10 +305,10 @@ BEGIN_MESSAGE_MAP(ExperimentPropertySheet, CMFCPropertySheet)
 	//{{AFX_MSG_MAP(CMyPropertySheet)
 	// NOTE - the ClassWizard will add and remove mapping macros here.
 	//}}AFX_MSG_MAP
-	ON_BN_CLICKED(IDC_PLUSADS, OnButtonAddAdsorption)
-	ON_BN_CLICKED(IDC_PLUSDES, OnButtonAddDesorption)
-	ON_MESSAGE(WM_PP_ADSORPTION_DELETE, OnButtonRemoveAdsorption)
-	ON_MESSAGE(WM_PP_DESORPTION_DELETE, OnButtonRemoveDesorption)
+	ON_BN_CLICKED(IDC_PLUSADS, OnButtonAddAdsorption)					// Clicking the add adsorption button
+	ON_BN_CLICKED(IDC_PLUSDES, OnButtonAddDesorption)					// Clicking the add desorption button
+	ON_MESSAGE(WM_PP_ADSORPTION_DELETE, OnButtonRemoveAdsorption)		// Clicking the delete button, inside one of the property sheets
+	ON_MESSAGE(WM_PP_DESORPTION_DELETE, OnButtonRemoveDesorption)		// Clicking the delete button, inside one of the property sheets
 END_MESSAGE_MAP()
 
 
@@ -325,17 +320,21 @@ void ExperimentPropertySheet::OnButtonAddAdsorption()
 		AfxMessageBox(ERROR_NOT_APPLICABLE);
 	}
 	else {
-		if (numberOfAdsorptions > 5) {
+		if (numberOfAdsorptions > nb_max_tabs) {
 			AfxMessageBox(ERROR_TOO_MANY_TABS);
 		}
 		else {
-			numberOfAdsorptions++;
+			// increment the number of adsorption tabs
+			numberOfAdsorptions++;						
 
-			availableTabs.resize(availableTabs.size() + 1);
-			availableTabs[availableTabs.size() - 1] = false;
+			// set the position of an iterator where we want to insert the new element
+			std::vector<bool>::iterator pos = availableTabs.begin() + (nb_permanent_tabs + numberOfAdsorptions - 1); 
+			availableTabs.insert(pos, false);			// Now insert a false at the position
+			AddAdsorption(numberOfAdsorptions);
 
-			AddAdsorption(numberOfAdsorptions - 1);
-			AddTab(adsorptionTabs[adsorptionTabs.size() - 1], availableTabs.size() - 1);
+			// Reset the tabs
+			RemoveAllTabs();
+			AddAllTabs();
 		}
 	}
 }
@@ -346,98 +345,81 @@ void ExperimentPropertySheet::OnButtonAddDesorption(void)
 		AfxMessageBox(ERROR_NOT_APPLICABLE);
 	}
 	else {
-		if (numberOfAdsorptions > 5) {
+		if (numberOfDesorptions > nb_max_tabs) {
 			AfxMessageBox(ERROR_TOO_MANY_TABS);
 		}
 		else {
-			numberOfAdsorptions++;
+			// increment the number of desorption tabs
+			numberOfDesorptions++;
 
-			availableTabs.resize(availableTabs.size() + 1);
-			availableTabs[availableTabs.size() - 1] = false;
-
-			AddDesorption(numberOfDesorptions - 1);
-			AddTab(desorptionTabs[desorptionTabs.size() - 1], availableTabs.size() - 1);
+			// set the position of an iterator where we want to insert the new element
+			std::vector<bool>::iterator pos = availableTabs.begin() + (nb_permanent_tabs + numberOfAdsorptions + numberOfDesorptions - 1);
+			availableTabs.insert(pos, false);			// Now insert a false at the position
+			AddDesorption(numberOfDesorptions);
+			
+			// Reset the tabs
+			RemoveAllTabs();
+			AddAllTabs();
 		}
 	}
 }
 
-LRESULT ExperimentPropertySheet::OnButtonRemoveAdsorption(WPARAM, LPARAM)
+LRESULT ExperimentPropertySheet::OnButtonRemoveAdsorption(WPARAM, LPARAM lParam)
 {
-	RemovePage(numberOfAdsorptions);
-	adsorptionTabs.erase(adsorptionTabs.end());
+	int pageToRemove = static_cast<int>(lParam);
+
+	SetActivePage(0);															// First go to page number 1
+	RemovePage(nb_permanent_tabs + pageToRemove - 1);							// Then remove from propertysheet list
+
+	// Erase bool from available tabs
+	std::vector<bool>::iterator pos = availableTabs.begin() + (nb_permanent_tabs + pageToRemove - 1);
+	availableTabs.erase(pos);
+	
+	// Erase the page itself from the list of pages
+	std::vector<TabDoses*>::iterator pos2 = adsorptionTabs.begin() + pageToRemove - 1;
+	adsorptionTabs.erase(pos2);
+
+	numberOfAdsorptions--;														// Decrement the number of adsorption 
+
+	// Rename all remaining pages
+	for (size_t i = 0; i < numberOfAdsorptions; i++)
+	{
+		adsorptionTabs[i]->Rename(i+1);
+	}
+
+	// Reset the tabs
+	RemoveAllTabs();
+	AddAllTabs();
 
 	return 0;
 }
 
-LRESULT ExperimentPropertySheet::OnButtonRemoveDesorption(WPARAM, LPARAM)
+LRESULT ExperimentPropertySheet::OnButtonRemoveDesorption(WPARAM, LPARAM lParam)
 {
-	RemovePage(numberOfDesorptions);
-	desorptionTabs.erase(desorptionTabs.end());
+	int pageToRemove = static_cast<int>(lParam);
+
+	SetActivePage(0);																	// First go to page number 1
+	RemovePage(nb_permanent_tabs + numberOfAdsorptions + pageToRemove - 1);				// Then remove from propertysheet list
+
+																						// Erase bool from available tabs
+	std::vector<bool>::iterator pos = availableTabs.begin() + (nb_permanent_tabs + numberOfAdsorptions + pageToRemove - 1);
+	availableTabs.erase(pos);
+
+	// Erase the page itself from the list of pages
+	std::vector<TabDesorption *>::iterator pos2 = desorptionTabs.begin() + pageToRemove - 1;
+	desorptionTabs.erase(pos2);
+
+	numberOfDesorptions--;														// Decrement the number of adsorption 
+
+																				// Rename all remaining pages
+	for (size_t i = 0; i < numberOfDesorptions; i++)
+	{
+		desorptionTabs[i]->Rename(i + 1);
+	}
+
+	// Reset the tabs
+	RemoveAllTabs();
+	AddAllTabs();
 
 	return 0;
 }
-
-
-//
-//void ExperimentPropertySheet::InsertPageAt(CPropertyPage* pPage, int nPos)
-//{
-//	ASSERT_VALID(this);
-//	ENSURE_VALID(pPage);
-//	ASSERT_KINDOF(CPropertyPage, pPage);
-//
-//
-//	// add page to internal list
-//	m_pages.InsertAt(nPos, pPage);
-//
-//	// add page externally
-//	if (m_hWnd != NULL)
-//	{
-//		// determine size of PROPSHEETPAGE array
-//		PROPSHEETPAGE* ppsp = const_cast<PROPSHEETPAGE*>(m_psh.ppsp);
-//		int nBytes = 0;
-//		int nNextBytes;
-//		for (UINT i = 0; i < m_psh.nPages; i++)
-//		{
-//			nNextBytes = nBytes + ppsp->dwSize;
-//			if ((nNextBytes < nBytes) || (nNextBytes < (int)ppsp->dwSize))
-//				AfxThrowMemoryException();
-//			nBytes = nNextBytes;
-//			(BYTE*&)ppsp += ppsp->dwSize;
-//		}
-//
-//		nNextBytes = nBytes + pPage->m_psp.dwSize;
-//		if ((nNextBytes < nBytes) || (nNextBytes < (int)pPage->m_psp.dwSize))
-//			AfxThrowMemoryException();
-//
-//		// build new prop page array
-//		ppsp = (PROPSHEETPAGE*)realloc((void*)m_psh.ppsp, nNextBytes);
-//		if (ppsp == NULL)
-//			AfxThrowMemoryException();
-//		m_psh.ppsp = ppsp;
-//
-//		// copy processed PROPSHEETPAGE struct to end
-//		(BYTE*&)ppsp += nBytes;
-//		Checked::memcpy_s(ppsp, nNextBytes - nBytes, &pPage->m_psp, pPage->m_psp.dwSize);
-//		pPage->PreProcessPageTemplate(*ppsp, IsWizard());
-//		if (!pPage->m_strHeaderTitle.IsEmpty())
-//		{
-//			ppsp->pszHeaderTitle = pPage->m_strHeaderTitle;
-//			ppsp->dwFlags |= PSP_USEHEADERTITLE;
-//		}
-//		if (!pPage->m_strHeaderSubTitle.IsEmpty())
-//		{
-//			ppsp->pszHeaderSubTitle = pPage->m_strHeaderSubTitle;
-//			ppsp->dwFlags |= PSP_USEHEADERSUBTITLE;
-//		}
-//		HPROPSHEETPAGE hPSP = AfxCreatePropertySheetPage(ppsp);
-//		if (hPSP == NULL)
-//			AfxThrowMemoryException();
-//
-//		if (!SendMessage(PSM_INSERTPAGE, nPos, (LPARAM)hPSP))
-//		{
-//			AfxDestroyPropertySheetPage(hPSP);
-//			AfxThrowMemoryException();
-//		}
-//		++m_psh.nPages;
-//	}
-//}

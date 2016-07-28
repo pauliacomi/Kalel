@@ -21,6 +21,7 @@
 #define tab_adsorption_continue	6
 
 #define nb_permanent_tabs		2
+#define nb_max_tabs				5
 
 class ExperimentPropertySheet : public CMFCPropertySheet
 {
@@ -42,7 +43,7 @@ public:
 	// PropertyPages declared
 	TabGeneral m_general;
 	TabDivers m_divers;
-	TabDoses * m_dose;
+	TabDoses * m_adsorption;
 	TabDesorption * m_desorption;
 	TabContinuousAdsorption m_continuousAdsorption;
 
@@ -94,11 +95,8 @@ public:
 	// It allows only the tabs which have parameters that can be mofified to be showed
 	void SetProprietiesModif(int etape_en_cours);
 
-	void ReinitialisationAuto();		// Reinitialise the data in all the tabs
-	void ReinitialisationManual();		// Reinitialise the data only in the general tab
+	void Reinitialisation(bool automatic);		// Reinitialise the data in all the tabs
 
-	//Inserts the page at a given Index
-	void InsertPageAt(CPropertyPage* pPageToInsert, int nPos);
 };
 
 #endif // !EXPERIMENTPROPERTYSHEET_H

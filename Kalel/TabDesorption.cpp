@@ -12,13 +12,11 @@
 
 IMPLEMENT_DYNAMIC(TabDesorption, CMFCPropertyPage)
 
-TabDesorption::TabDesorption(CString i)
+TabDesorption::TabDesorption(int number)
 	: CMFCPropertyPage(TabDesorption::IDD)
 {
 	// Set title from its initialisation
-	m_caption = i;
-	m_psp.pszTitle = m_caption;
-	m_psp.dwFlags |= PSP_USETITLE;
+	Rename(number);
 
 	Reinitialisation();
 }
@@ -187,9 +185,23 @@ void TabDesorption::ActionCheck_Desorption()
 		UnGreyOut();
 }
 
+void TabDesorption::Rename(int number) {
+
+	position = number;
+
+	// Set title from its initialisation
+	CString tabtitle;
+	tabtitle.Format(_T("Desorption %d"), position);
+
+	m_caption = tabtitle;
+	m_psp.pszTitle = m_caption;
+	m_psp.dwFlags |= PSP_USETITLE;
+}
+
+
 BEGIN_MESSAGE_MAP(TabDesorption, CMFCPropertyPage)
 	ON_BN_CLICKED(IDC_CHECK_DESORPTION, &TabDesorption::OnBnClickedCheckDesorption)
-	ON_BN_CLICKED(IDC_BUTTON1, &TabDoses::DeletePage)
+	ON_BN_CLICKED(IDC_BUTTON_DES_REMOVE, &TabDesorption::DeletePage)
 END_MESSAGE_MAP()
 
 // TabDesorption message handlers
@@ -203,5 +215,5 @@ void TabDesorption::OnBnClickedCheckDesorption()
 
 void TabDesorption::DeletePage()
 {
-	::SendMessage(GetParent()->GetSafeHwnd(), WM_PP_ADSORPTION_DELETE, NULL, NULL);
+	::SendMessage(GetParent()->GetSafeHwnd(), WM_PP_DESORPTION_DELETE, NULL, static_cast<LPARAM>(position));
 }
