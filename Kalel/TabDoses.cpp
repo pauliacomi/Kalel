@@ -76,7 +76,6 @@ BOOL TabDoses::OnInitDialog()
 	m_SpinFinalPressureDoses.SetFormat("%1.3f");
 	m_SpinFinalPressureDoses.UpdateBuddy();
 
-	EnableDoses(m_bDoses);
 	ActionCheck_Doses();
 
 	return TRUE;  // return TRUE unless you set the focus to a control

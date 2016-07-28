@@ -270,15 +270,16 @@ void ExperimentPropertySheet::RemoveAllTabs()
 void ExperimentPropertySheet::AddAdsorption(int i)
 {
 	m_adsorption = new TabDoses(i);
-	adsorptionTabs.push_back(m_adsorption);
-	adsorptionTabPointers.push_back(adsorptionTabs[i-1]);
+
+	// Insert page
+	std::vector<TabDoses*>::iterator pos2 = adsorptionTabs.begin() + i - 1;
+	adsorptionTabs.insert(pos2, m_adsorption);
 }
 
 void ExperimentPropertySheet::AddDesorption(int i)
 {
 	m_desorption = new TabDesorption(i);
 	desorptionTabs.push_back(m_desorption);
-	desorptionTabPointers.push_back(desorptionTabs[i-1]);
 }
 
 
