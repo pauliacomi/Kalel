@@ -51,37 +51,85 @@ void TabGeneral::DoDataExchange(CDataExchange* pDX)
 
 BOOL TabGeneral::OnInitDialog()
 {
-	CMFCPropertyPage::OnInitDialog();
-
 	// If there's no configuration, initialise the XML file storing the gasses
-	if (!ConfigsExists()){
+	if (!ConfigsExists()) {
 		Initialisation_XML();
 	}
 
+	// Get settings from storage
+	m_Path = _T(allSettings.chemin.c_str());
+	m_Comments = _T(allSettings.commentaires.c_str());
+	experimentDate = allSettings.date_experience.c_str();
+	m_FileName = _T(allSettings.fichier.c_str());
+	m_SampleMass = allSettings.masse_echantillon;
+	m_SampleName = _T(allSettings.nom_echantillon.c_str());
+	m_ExperimentTemperature = allSettings.temperature_experience;
+	gasExp = allSettings.gaz;
+	userExp = allSettings.experimentateur;
+
+	StrSurnom = _T(userExp.surnom.c_str());
+	StrEchantillon = m_SampleName;
+	StrGaz = _T(gasExp.symbole.c_str());
+
+	// Get array and find if there'a an already existing index
 	gasArray = GetGazs();
+	m_GasIndex = -1;
+	for (size_t i = 0; i < gasArray.size(); i++)
+	{
+		if (gasArray[i].nom == allSettings.gaz.nom)
+		{
+			m_GasIndex = i;
+			break;
+		}
+	}
+
+	// Get array and find if there'a an already existing index
 	userArray = GetExperimentateurs();
-	for (unsigned int i = 0; i<gasArray.size(); i++)
+	m_UserIndex = -1;
+	for (size_t i = 0;  i< userArray.size(); i++)
+	{
+		if (userArray[i].surnom == allSettings.experimentateur.surnom)
+		{
+			m_UserIndex = i;
+			break;
+		}
+	}
+
+	// Initialize dialog
+	CMFCPropertyPage::OnInitDialog();
+
+	// Populate list with values
+	for (size_t i = 0; i < gasArray.size(); i++)
 	{
 		CString symbol;
 		symbol.Format(_T("%s"), gasArray[i].symbole.c_str());
 		m_CBGas.InsertString(-1, symbol);
 	}
 
-	for (unsigned int i = 0; i<userArray.size(); i++)
+	for (size_t i = 0; i < userArray.size(); i++)
 	{
 		CString user;
 		user.Format(_T("%s"), userArray[i].surnom.c_str());
 		m_CBUser.InsertString(-1, user);
 	}
 
+	// Set indexes which was taken earlier
+	if (m_GasIndex != -1)
+	{
+		m_CBGas.SetTopIndex(m_GasIndex);
+	}// Set index which was taken earlier
+
+	if (m_UserIndex != -1)
+	{
+		m_CBUser.SetTopIndex(m_UserIndex);
+	}
+
 	m_SpinSampleMass.SetRange(0, 1000000);
-	m_SpinSampleMass.SetPos(1);
 	m_SpinSampleMass.SetInc(-0.0001);
 	m_SpinSampleMass.SetFormat("%1.4f");
 	m_SpinSampleMass.UpdateBuddy();
 
 	m_SpinTemperatureExperiment.SetRange(0, 300);
-	m_SpinTemperatureExperiment.SetPos(30);
 	m_SpinTemperatureExperiment.SetInc(-1);
 	m_SpinTemperatureExperiment.SetFormat("%1.f");
 	m_SpinTemperatureExperiment.UpdateBuddy();
@@ -104,42 +152,6 @@ BOOL TabGeneral::OnApply()
 
 void TabGeneral::OnCancel()
 {
-	m_Path = _T(allSettings.chemin.c_str());
-	m_Comments = _T(allSettings.commentaires.c_str());
-	experimentDate = allSettings.date_experience.c_str();
-	userExp = allSettings.experimentateur;
-	m_FileName = _T(allSettings.fichier.c_str());
-	gasExp = allSettings.gaz;
-	m_SampleMass = allSettings.masse_echantillon;
-	m_SampleName = _T(allSettings.nom_echantillon.c_str());
-	m_ExperimentTemperature = allSettings.temperature_experience;
-
-	// remettre le bon index du gaz
-	m_GasIndex = -1;
-	for (unsigned int i = 0; i<gasArray.size(); i++)
-	{
-		if (gasArray[i].nom == allSettings.gaz.nom)
-		{
-			m_GasIndex = i;
-			break;
-		}
-	}
-
-	// remettre le bon index de l'expériementateur
-	m_UserIndex = -1;
-	for (unsigned int i = 0; i<userArray.size(); i++)
-	{
-		if (userArray[i].surnom == allSettings.experimentateur.surnom)
-		{
-			m_UserIndex = i;
-			break;
-		}
-	}
-
-	StrSurnom = _T(userExp.surnom.c_str());
-	StrEchantillon = m_SampleName;
-	StrGaz = _T(gasExp.symbole.c_str());
-
 	CMFCPropertyPage::OnCancel();
 }
 
@@ -181,34 +193,42 @@ void TabGeneral::UpdateDate(void)
 
 void TabGeneral::Reinitialisation(void)
 {
-	UpdateDate();
-	m_FileName.Format(TEXT_NEWFILETEXT, StrDate);
-	m_Path = _T(GetCheminFichierGeneral().c_str());
-	m_SampleName.Format(TEXT_SAMPLE);
+	// Get settings from storage
+	m_Path = _T(allSettings.chemin.c_str());
+	m_Comments = _T(allSettings.commentaires.c_str());
+	experimentDate = allSettings.date_experience.c_str();
+	m_FileName = _T(allSettings.fichier.c_str());
+	m_SampleMass = allSettings.masse_echantillon;
+	m_SampleName = _T(allSettings.nom_echantillon.c_str());
+	m_ExperimentTemperature = allSettings.temperature_experience;
 
-	m_SampleMass = 1.0f;
+	gasExp = allSettings.gaz;
+	// remettre le bon index du gaz
 	m_GasIndex = -1;
-	m_Comments = _T("");
+	for (unsigned int i = 0; i<gasArray.size(); i++)
+	{
+		if (gasArray[i].nom == allSettings.gaz.nom)
+		{
+			m_GasIndex = i;
+			break;
+		}
+	}
+
+	userExp = allSettings.experimentateur;
+	// remettre le bon index de l'expériementateur
 	m_UserIndex = -1;
-	m_ExperimentTemperature = 30;
+	for (unsigned int i = 0; i<userArray.size(); i++)
+	{
+		if (userArray[i].surnom == allSettings.experimentateur.surnom)
+		{
+			m_UserIndex = i;
+			break;
+		}
+	}
 
-	StrCalo = _T(GetEnteteCalo().c_str());
-	StrSurnom = _T("");
-	StrEchantillon = _T("");
-	StrGaz = _T("");
-
-	userExp.nom = "";
-	userExp.surnom = "";
-
-	gasExp.nom = "";
-	gasExp.symbole = "";
-	gasExp.masse_moleculaire = 0;
-	gasExp.pression_critique = 0;
-	gasExp.temperature_critique = 0;
-	gasExp.temperature_ebullition = 0;
-
-	/* Reinitialisation of the data with zero values */
-	WriteData();
+	StrSurnom = _T(userExp.surnom.c_str());
+	StrEchantillon = m_SampleName;
+	StrGaz = _T(gasExp.symbole.c_str());
 }
 
 void TabGeneral::WriteData()
@@ -225,6 +245,7 @@ void TabGeneral::WriteData()
 	allSettings.nom_echantillon = m_SampleName.GetBuffer();
 	allSettings.temperature_experience = m_ExperimentTemperature;
 }
+
 
 void TabGeneral::GreyOut(BOOL active)
 {
@@ -247,7 +268,15 @@ void TabGeneral::GreyOut(BOOL active)
 }
 
 
+void TabGeneral::ToggleGreyOut()
+{
+	if (checkGeneral == true)
+		GreyOut(TRUE);
+	else
+		GreyOut(FALSE);
 
+	checkGeneral = !checkGeneral;
+}
 
 
 

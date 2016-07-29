@@ -17,7 +17,6 @@ IMPLEMENT_DYNAMIC(TabDivers, CMFCPropertyPage)
 TabDivers::TabDivers()
 	: CMFCPropertyPage(TabDivers::IDD)
 {
-	Reinitialisation();
 }
 
 TabDivers::~TabDivers()
@@ -28,51 +27,83 @@ void TabDivers::DoDataExchange(CDataExchange* pDX)
 {
 	CMFCPropertyPage::DoDataExchange(pDX);
 
-	DDX_Control(pDX, IDC_COMBO_CELLULE, m_CBCellule);
-	DDX_CBIndex(pDX, IDC_COMBO_CELLULE, m_IndexCellule);
-	DDX_Control(pDX, IDC_EDIT_VOLUME_TOTAL, m_EditVolumeTotal);
 	DDX_Text(pDX, IDC_EDIT_VOLUME_TOTAL, m_fVolumeTotal);
-	DDX_Control(pDX, IDC_EDIT_VOLUME_CALO, m_EditVolumeCalo);
 	DDX_Text(pDX, IDC_EDIT_VOLUME_CALO, m_fVolumeCalo);
 	DDX_Text(pDX, IDC_EDIT_TEMPS_LIGNE_BASE, m_nTempsLigneBase);
-	DDX_Control(pDX, IDC_CHECK_MISE_SOUS_VIDE, m_CheckMiseSousVide);
-	DDX_Check(pDX, IDC_CHECK_MISE_SOUS_VIDE, m_bMiseSousVide);
-	DDX_Control(pDX, IDC_EDIT_TEMPS_VIDE, m_EditTempsVide);
 	DDX_Text(pDX, IDC_EDIT_TEMPS_VIDE, m_nTempsVide);
 
+	DDX_Check(pDX, IDC_CHECK_MISE_SOUS_VIDE, m_bMiseSousVide);
+
+	DDX_CBIndex(pDX, IDC_COMBO_CELLULE, m_IndexCellule);
+
+	DDX_Control(pDX, IDC_COMBO_CELLULE, m_CBCellule);
+	DDX_Control(pDX, IDC_EDIT_VOLUME_TOTAL, m_EditVolumeTotal);
+	DDX_Control(pDX, IDC_EDIT_VOLUME_CALO, m_EditVolumeCalo);
+	DDX_Control(pDX, IDC_CHECK_MISE_SOUS_VIDE, m_CheckMiseSousVide);
+	DDX_Control(pDX, IDC_EDIT_TEMPS_VIDE, m_EditTempsVide);
 	DDX_Control(pDX, IDC_SPIN_TEMPS_LIGNE_BASE, m_SpinTempsLigneBase);
 	DDX_Control(pDX, IDC_SPIN_TEMPS_VIDE, m_SpinTempsVide);
 }
 
 BOOL TabDivers::OnInitDialog()
 {
+	// Get settings from storage
+	m_bMiseSousVide = allSettings.mise_sous_vide_fin_experience;
+	m_nTempsLigneBase = allSettings.temps_ligne_base;
+	m_nTempsVide = allSettings.temps_vide;
+
+	cellExp = allSettings.cellule;
+	m_fVolumeTotal = cellExp.volume_total;
+	m_fVolumeCalo = cellExp.volume_calo;
+
+	// Get array and find if there'a an already existing index
+	cellList = GetCellules();
+	m_IndexCellule = -1;
+	for (size_t i = 0; i < cellList.size(); i++)
+	{
+		if (cellList[i].numero == allSettings.cellule.numero)
+		{
+			m_IndexCellule = i;
+			break;
+		}
+	}
+
+	// Initialize dialog
 	CMFCPropertyPage::OnInitDialog();
 
-	cellList = GetCellules();
+
+	// Populate cell list with cells
 	if (cellList.size() == 0)
 	{
 		GetDlgItem(IDC_COMBO_CELLULE)->EnableWindow(false);
-		m_IndexCellule = -1;
+	}
+	else
+	{
+		for (size_t i = 0; i < cellList.size(); i++)
+		{
+			CString StrNumero;
+			StrNumero.Format(_T("%s"), cellList[i].numero.c_str());
+			m_CBCellule.InsertString(-1, StrNumero);
+		}
 	}
 
-	for (UINT i = 0; i<cellList.size(); i++)
+	// Set index which was taken earlier
+	if (m_IndexCellule != -1)
 	{
-		CString StrNumero;
-		StrNumero.Format(_T("%s"), cellList[i].numero.c_str());
-		m_CBCellule.InsertString(-1, StrNumero);
+		m_CBCellule.SetTopIndex(m_IndexCellule);
 	}
+
 
 	m_SpinTempsLigneBase.SetRange(0, 1000000);
-	m_SpinTempsLigneBase.SetPos(15);
 	m_SpinTempsLigneBase.SetInc(-1);
 	m_SpinTempsLigneBase.SetFormat("%1.f");
 	m_SpinTempsLigneBase.UpdateBuddy();
 
 	m_SpinTempsVide.SetRange(0, 10000000);
-	m_SpinTempsVide.SetPos(90);
 	m_SpinTempsVide.SetInc(-1);
 	m_SpinTempsVide.SetFormat("%1.f");
 	m_SpinTempsVide.UpdateBuddy();
+
 
 	EnableMiseSousVide(m_bMiseSousVide);
 
@@ -92,6 +123,17 @@ BOOL TabDivers::OnApply()
 }
 
 void TabDivers::OnCancel()
+{
+	CMFCPropertyPage::OnCancel();
+}
+
+void TabDivers::OnOK()
+{
+	WriteData();
+	CMFCPropertyPage::OnOK();
+}
+
+void TabDivers::Reinitialisation()
 {
 	// remettre le bon index de la cellule
 	m_IndexCellule = -1;
@@ -119,36 +161,10 @@ void TabDivers::OnCancel()
 	}
 
 	m_bMiseSousVide = allSettings.mise_sous_vide_fin_experience;
-
 	m_nTempsLigneBase = allSettings.temps_ligne_base;
-	m_SpinTempsLigneBase.SetPos(m_nTempsLigneBase);
-
 	m_nTempsVide = allSettings.temps_vide;
-	m_SpinTempsVide.SetPos(m_nTempsVide);
 
-	CMFCPropertyPage::OnCancel();
-}
-
-void TabDivers::OnOK()
-{
-	WriteData();
-	CMFCPropertyPage::OnOK();
-}
-
-void TabDivers::Reinitialisation()
-{
-	m_IndexCellule = -1;
-	m_fVolumeTotal = 0;
-	m_fVolumeCalo = 0;
-	m_nTempsLigneBase = 15;
-	m_nTempsVide = 90;
-	m_bMiseSousVide = FALSE;
-
-	cellExp.numero = "";
-	cellExp.volume_calo = 0;
-	cellExp.volume_total = 0;
-
-	WriteData();
+	EnableMiseSousVide(m_bMiseSousVide);
 }
 
 void TabDivers::WriteData()

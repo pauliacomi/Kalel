@@ -51,7 +51,7 @@ void ExperimentSettings::ResetData(int initialAdsorptions, int initialDesorption
 	dataGeneral.experimentateur.nom = "";
 	dataGeneral.experimentateur.surnom = "";
 
-	temp.Format(TEXT_NEWFILETEXT, cF.getDateUnderline());
+	temp.Format(TEXT_NEWFILETEXT, cF.getDate());
 	dataGeneral.fichier = temp.GetBuffer();
 	dataGeneral.gaz.nom = "";
 	dataGeneral.gaz.symbole = "";

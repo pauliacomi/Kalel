@@ -5,7 +5,6 @@
 #include "Kalel.h"
 #include "TabDesorption.h"
 
-#include "General.h"			// For some definitions
 #include "DefinePostMessages.h"		// For custom message definitions
 
 // TabDesorption
@@ -18,7 +17,8 @@ TabDesorption::TabDesorption(int number)
 	// Set title from its initialisation
 	Rename(number);
 
-	Reinitialisation();
+	// Variable for greying out
+	checkDesorption = false;
 }
 
 TabDesorption::~TabDesorption()
@@ -49,28 +49,32 @@ BOOL TabDesorption::OnCommand(WPARAM wParam, LPARAM lParam)
 
 BOOL TabDesorption::OnInitDialog()
 {
+	// Get settings from storage
+	m_fDeltaPressionDesorption = allSettings.delta_pression;
+	m_bDerniereEtapeDesorption = allSettings.derniere_etape;
+	m_fPressionFinaleDesorption = allSettings.pression_finale;
+	m_nTempsDesorption = allSettings.temps_desorption;
+	m_nTempsVolumeDesorption = allSettings.temps_volume;
+
+	// Initialize dialog
 	CMFCPropertyPage::OnInitDialog();
 
 	m_SpinDeltaPressionDesorption.SetRange(0, 10000000);
-	m_SpinDeltaPressionDesorption.SetPos(1.000);
 	m_SpinDeltaPressionDesorption.SetInc(-0.001);
 	m_SpinDeltaPressionDesorption.SetFormat("%1.3f");
 	m_SpinDeltaPressionDesorption.UpdateBuddy();
 
 	m_SpinTempsVolumeDesorption.SetRange(0, 100000000);
-	m_SpinTempsVolumeDesorption.SetPos(5);
 	m_SpinTempsVolumeDesorption.SetInc(-1);
 	m_SpinTempsVolumeDesorption.SetFormat("%1.f");
 	m_SpinTempsVolumeDesorption.UpdateBuddy();
 
 	m_SpinTempsDesorption.SetRange(0, 1000000000);
-	m_SpinTempsDesorption.SetPos(90);
 	m_SpinTempsDesorption.SetInc(-1);
 	m_SpinTempsDesorption.SetFormat("%1.f");
 	m_SpinTempsDesorption.UpdateBuddy();
 
 	m_SpinPressionFinaleDesorption.SetRange(0.0, 100000);
-	m_SpinPressionFinaleDesorption.SetPos(0.1);
 	m_SpinPressionFinaleDesorption.SetInc(-0.001);
 	m_SpinPressionFinaleDesorption.SetFormat("%1.3f");
 	m_SpinPressionFinaleDesorption.UpdateBuddy();
@@ -86,14 +90,6 @@ BOOL TabDesorption::OnApply()
 
 void TabDesorption::OnCancel()
 {
-	m_bDesorption = allSettings.a_effectuer;
-
-	m_fDeltaPressionDesorption = allSettings.delta_pression;
-	m_bDerniereEtapeDesorption = allSettings.derniere_etape;
-	m_fPressionFinaleDesorption = allSettings.pression_finale;
-	m_nTempsDesorption = allSettings.temps_desorption;
-	m_nTempsVolumeDesorption = allSettings.temps_volume;
-
 	CMFCPropertyPage::OnCancel();
 }
 
@@ -105,14 +101,13 @@ void TabDesorption::OnOK()
 
 void TabDesorption::Reinitialisation()
 {
-	m_bDesorption = FALSE;
-	m_fDeltaPressionDesorption = 1.0f;
-	m_nTempsVolumeDesorption = 5;
-	m_nTempsDesorption = 90;
-	m_fPressionFinaleDesorption = 0.1f;
-	m_bDerniereEtapeDesorption = FALSE;
-
-	WriteData();
+	m_fDeltaPressionDesorption = allSettings.delta_pression;
+	m_bDerniereEtapeDesorption = allSettings.derniere_etape;
+	m_fPressionFinaleDesorption = allSettings.pression_finale;
+	m_nTempsDesorption = allSettings.temps_desorption;
+	m_nTempsVolumeDesorption = allSettings.temps_volume;
+	
+	UpdateData(false);
 }
 
 void TabDesorption::WriteData()
@@ -148,19 +143,20 @@ void TabDesorption::GreyOut(BOOL active)
 }
 
 
-void TabDesorption::ActionCheck_Desorption()
+void TabDesorption::ToggleGreyOut()
 {
-	if (checkDesorption == GREY_OUT)
+	if (checkDesorption == true)
 		GreyOut(TRUE);
 	else
 		GreyOut(FALSE);
+
+	checkDesorption = !checkDesorption;
 }
 
 void TabDesorption::Rename(int number) {
 
 	position = number;
 
-	// Set title from its initialisation
 	CString tabtitle;
 	tabtitle.Format(_T("Desorption %d"), position);
 

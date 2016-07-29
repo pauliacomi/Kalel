@@ -18,7 +18,8 @@ IMPLEMENT_DYNAMIC(ExperimentPropertySheet, CMFCPropertySheet)
 ExperimentPropertySheet::ExperimentPropertySheet(UINT nIDCaption, CWnd* pParentWnd, UINT iSelectPage)
 	:CMFCPropertySheet(nIDCaption, pParentWnd, iSelectPage)
 {
-
+	// Choose the view of the property page
+	SetLook(CMFCPropertySheet::PropSheetLook_List, 150);
 }
 
 ExperimentPropertySheet::ExperimentPropertySheet(LPCTSTR pszCaption, CWnd* pParentWnd, UINT iSelectPage)
@@ -26,7 +27,6 @@ ExperimentPropertySheet::ExperimentPropertySheet(LPCTSTR pszCaption, CWnd* pPare
 {
 	// Choose the view of the property page
 	SetLook(CMFCPropertySheet::PropSheetLook_List, 150);
-
 }
 
 ExperimentPropertySheet::~ExperimentPropertySheet()
@@ -44,41 +44,53 @@ ExperimentPropertySheet::~ExperimentPropertySheet()
 
 void ExperimentPropertySheet::Initiate(ExperimentSettings * experimentSettings)
 {
+	// Save number of adsorption / desorptions
+	numberOfAdsorptions = experimentSettings->dataAdsorption.size();
+	numberOfDesorptions = experimentSettings->dataDesorption.size();
+
+
 	// Populate tabs from the experiment settings
+	// General tabs
 	m_general.allSettings = experimentSettings->dataGeneral;
 	m_divers.allSettings = experimentSettings->dataDivers;
-
-	// Dynamically generate the tabs
-	for (int i = 0; i < experimentSettings->dataAdsorption.size(); i++)
+	// Adsorption
+	for (int i = 0; i < numberOfAdsorptions; i++)
 	{
 		TabDoses * tempTab = new TabDoses(i + 1);
 		tempTab->allSettings = experimentSettings->dataAdsorption[i];
 
 		// Insert page
-		std::vector<TabDoses*>::iterator pos = adsorptionTabs.begin() + i;
-		adsorptionTabs.insert(pos, tempTab);
+		adsorptionTabs.push_back(tempTab);
 	}
-
+	// Desorption
 	for (int i = 0; i < numberOfDesorptions; i++)
 	{
 		TabDesorption * tempTab = new TabDesorption(i + 1);
 		tempTab->allSettings = experimentSettings->dataDesorption[i];
 
 		// Insert page
-		std::vector<TabDesorption*>::iterator pos = desorptionTabs.begin() + i;
-		desorptionTabs.insert(pos, tempTab);
+		desorptionTabs.push_back(tempTab);
 	}
 
-	//// Resize the bool storage for tab availability
-	//availableTabs.resize(nb_permanent_tabs + numberOfAdsorptions + numberOfDesorptions);
-
-	//for (size_t i = 0; i < availableTabs.size(); i++)
-	//{
-	//	availableTabs[i] = false;
-	//}
-
-	// Instantiate the property sheet as a manual experiment no matter what the user chooses afterwards
-	SetProprietiesManual();
+	// Resize the bool storage for tab availability
+	availableTabs.resize(nb_permanent_tabs + numberOfAdsorptions + numberOfDesorptions);
+	for (size_t i = 0; i < availableTabs.size(); i++)
+	{
+		availableTabs[i] = false;
+	}
+	
+	// Instantiate the correct type of dialog
+	switch (experimentSettings->experimentType)
+	{
+	case EXPERIMENT_TYPE_MANUAL:
+		SetProprietiesManual();
+		break;
+	case EXPERIMENT_TYPE_AUTO:
+		SetProprietiesAuto();
+		break;
+	default:
+		ASSERT(0);  // Should never be reached
+	}
 }
 
 BOOL ExperimentPropertySheet::OnInitDialog()
@@ -129,9 +141,6 @@ void ExperimentPropertySheet::SetProprietiesManual(void)
 
 		// Add the general tab
 		AddTab(&m_general, tab_general);
-
-		// Make sure the tab data is blank
-		Reinitialisation(false);
 	}
 
 }
@@ -153,9 +162,6 @@ void ExperimentPropertySheet::SetProprietiesAuto(void)
 		AddTab(&m_general, tab_general);
 		AddTab(&m_divers, tab_divers);
 		AddStepTabs();
-
-		// Make sure the tab data is blank
-		Reinitialisation(true);
 	}
 }
 
@@ -248,20 +254,20 @@ void ExperimentPropertySheet::RemoveStepTabs()
 
 // Adds a tab, checking if it is available first
 void ExperimentPropertySheet::AddTab(CPropertyPage * tab, int checkTab) {
-	/*if (availableTabs[checkTab] == false)
-	{*/
+	if (availableTabs[checkTab] == false)
+	{
 		AddPage(tab);
-		/*availableTabs[checkTab] = true;
-	}*/
+		availableTabs[checkTab] = true;
+	}
 }
 
 // Removes a tab, checking if it is available first
 void ExperimentPropertySheet::RemoveTab(CPropertyPage * tab, int checkTab) {
-	/*if (availableTabs[checkTab] == true)
-	{*/
+	if (availableTabs[checkTab] == true)
+	{
 		RemovePage(tab);
-	/*	availableTabs[checkTab] = false;
-	}*/
+		availableTabs[checkTab] = false;
+	}
 }
 
 
@@ -302,9 +308,9 @@ void ExperimentPropertySheet::OnButtonAddAdsorption()
 			// increment the number of adsorption tabs
 			numberOfAdsorptions++;
 
-			//// Set the position of an iterator where we want to insert the new element
-			//std::vector<bool>::iterator pos = availableTabs.begin() + index;
-			//availableTabs.insert(pos, false);
+			// Set the position of an iterator where we want to insert the new element
+			std::vector<bool>::iterator pos = availableTabs.begin() + index;
+			availableTabs.insert(pos, false);
 
 			// Create the page
 			TabDoses * tempTab = new TabDoses(index - nb_permanent_tabs + 1);
@@ -354,9 +360,9 @@ void ExperimentPropertySheet::OnButtonAddDesorption(void)
 			// increment the number of adsorption tabs
 			numberOfDesorptions++;
 
-			//// Set the position of an iterator where we want to insert the new element
-			//std::vector<bool>::iterator pos = availableTabs.begin() + index;
-			//availableTabs.insert(pos, false);
+			// Set the position of an iterator where we want to insert the new element
+			std::vector<bool>::iterator pos = availableTabs.begin() + index;
+			availableTabs.insert(pos, false);
 
 			// Create the page
 			TabDesorption * tempTab = new TabDesorption(index - numberOfAdsorptions - nb_permanent_tabs + 1);
@@ -389,9 +395,9 @@ LRESULT ExperimentPropertySheet::OnButtonRemoveAdsorption(WPARAM, LPARAM lParam)
 	SetActivePage(0);															// First go to page number 1
 	RemovePage(nb_permanent_tabs + pageToRemove - 1);							// Then remove from propertysheet list
 
-	//// Erase bool from available tabs
-	//std::vector<bool>::iterator pos = availableTabs.begin() + (nb_permanent_tabs + pageToRemove - 1);
-	//availableTabs.erase(pos);
+	// Erase bool from available tabs
+	std::vector<bool>::iterator pos = availableTabs.begin() + (nb_permanent_tabs + pageToRemove - 1);
+	availableTabs.erase(pos);
 	
 	// Erase the page itself from the list of pages
 	std::vector<TabDoses*>::iterator pos2 = adsorptionTabs.begin() + pageToRemove - 1;
@@ -419,9 +425,9 @@ LRESULT ExperimentPropertySheet::OnButtonRemoveDesorption(WPARAM, LPARAM lParam)
 	SetActivePage(0);																	// First go to page number 1
 	RemovePage(nb_permanent_tabs + numberOfAdsorptions + pageToRemove - 1);				// Then remove from propertysheet list
 
-	//																					// Erase bool from available tabs
-	//std::vector<bool>::iterator pos = availableTabs.begin() + (nb_permanent_tabs + numberOfAdsorptions + pageToRemove - 1);
-	//availableTabs.erase(pos);
+	// Erase bool from available tabs
+	std::vector<bool>::iterator pos = availableTabs.begin() + (nb_permanent_tabs + numberOfAdsorptions + pageToRemove - 1);
+	availableTabs.erase(pos);
 
 	// Erase the page itself from the list of pages
 	std::vector<TabDesorption *>::iterator pos2 = desorptionTabs.begin() + pageToRemove - 1;

@@ -62,7 +62,7 @@ protected:
 
 public:
 	int experimentType;
-	vector<bool> availableTabs;
+	vector<bool> availableTabs;   /// it is here to prevent a tab being added twice, might be useleess but need to reprogram stuff
 
 // custom functions
 

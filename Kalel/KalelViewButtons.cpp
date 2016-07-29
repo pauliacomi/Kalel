@@ -27,19 +27,6 @@ void CKalelView::OnBnClickedLancer()
 		// Create dialog
 		ExperimentPropertySheet dialogExperimentProperties(_T(""));
 		dialogExperimentProperties.Initiate(experimentSettings);
-		
-		// Instantiate the correct type of dialog
-		switch (experimentSettings->experimentType)
-		{
-		case EXPERIMENT_TYPE_MANUAL:
-			dialogExperimentProperties.SetProprietiesManual();
-			break;
-		case EXPERIMENT_TYPE_AUTO:
-			dialogExperimentProperties.SetProprietiesAuto();
-			break;
-		default:
-			ASSERT(0);  // Should never be reached
-		}
 
 		if (dialogExperimentProperties.DoModal() == IDOK)
 		{
@@ -64,6 +51,9 @@ void CKalelView::OnBnClickedLancer()
 		}
 		else
 		{
+			// Save the data from the dialog
+			GetExperimentData(&dialogExperimentProperties, true);
+
 			// Roll back by calling stop function
 			Annuler(NULL,NULL);
 		}
@@ -129,9 +119,6 @@ void CKalelView::OnBnClickedReprise()
 // Copy all data from a property sheet dialog to the local object
 void CKalelView::GetExperimentData(ExperimentPropertySheet * pDialogExperimentProperties, bool initialRequest) {
 
-	// Use a critical section to avoid data races
-	EnterCriticalSection(&experimentSettings->criticalSection);
-
 	if (initialRequest)
 	{
 		// Raise the flag for data modified
@@ -145,17 +132,20 @@ void CKalelView::GetExperimentData(ExperimentPropertySheet * pDialogExperimentPr
 			experimentSettings->dataDivers = pDialogExperimentProperties->m_divers.allSettings;
 			for (size_t i = 0; i < pDialogExperimentProperties->adsorptionTabs.size(); i++)
 			{
-				experimentSettings->dataAdsorption.push_back(pDialogExperimentProperties->adsorptionTabs[i]->allSettings);
+				experimentSettings->dataAdsorption[i] = pDialogExperimentProperties->adsorptionTabs[i]->allSettings;
 			}
 			for (size_t i = 0; i < pDialogExperimentProperties->desorptionTabs.size(); i++)
 			{
-				experimentSettings->dataDesorption.push_back(pDialogExperimentProperties->desorptionTabs[i]->allSettings);
+				experimentSettings->dataDesorption[i] = pDialogExperimentProperties->desorptionTabs[i]->allSettings;
 			}
 		}
 	}
 
 	else
 	{
+		// Use a critical section to avoid data races
+		EnterCriticalSection(&experimentSettings->criticalSection);
+
 		// Must check if everything is the same
 		for (size_t i = 0; i < pDialogExperimentProperties->adsorptionTabs.size(); i++)
 		{
@@ -169,12 +159,10 @@ void CKalelView::GetExperimentData(ExperimentPropertySheet * pDialogExperimentPr
 		{
 			experimentSettings->dataDesorption.push_back(pDialogExperimentProperties->desorptionTabs[i]->allSettings);
 		}
+
+		// Leave the critical section
+		LeaveCriticalSection(&experimentSettings->criticalSection);
 	}
-
-	
-
-	// Leave the critical section
-	LeaveCriticalSection(&experimentSettings->criticalSection);
 
 }
 

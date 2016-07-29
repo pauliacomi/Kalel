@@ -206,7 +206,6 @@
     <ClInclude Include="ExperimentData.h" />
     <ClInclude Include="ExperimentPropertySheet.h" />
     <ClInclude Include="FluxConverter.h" />
-    <ClInclude Include="General.h" />
     <ClInclude Include="DefineStages.h" />
     <ClInclude Include="DefineInstruments.h" />
     <ClInclude Include="DefineAutomationSettings.h" />

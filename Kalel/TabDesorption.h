@@ -59,10 +59,10 @@ public:
 	void Reinitialisation();
 	void Rename(int number);
 	void GreyOut(BOOL active);
+	void ToggleGreyOut();
 
 protected:
 	void WriteData();
-	void ActionCheck_Desorption();
 
 // Message Handlers
 protected:

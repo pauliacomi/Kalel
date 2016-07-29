@@ -31,6 +31,8 @@ protected:
 
 // Variables
 protected:
+	bool checkGeneral;			// for greying out
+
 	CString m_FileName;
 	CString m_Path;
 	CString m_SampleName;
@@ -69,6 +71,7 @@ public:
 public:
 	void Reinitialisation(void);
 	void GreyOut(BOOL active);
+	void ToggleGreyOut();
 
 protected:
 	void UpdateDate(void);

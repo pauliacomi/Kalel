@@ -288,9 +288,6 @@
     <ClInclude Include="DefineInstruments.h">
       <Filter>Header Files\Resources\Automation</Filter>
     </ClInclude>
-    <ClInclude Include="General.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
     <ClInclude Include="DefineStages.h">
       <Filter>Header Files\Resources\Automation</Filter>
     </ClInclude>

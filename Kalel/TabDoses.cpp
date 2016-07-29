@@ -6,7 +6,6 @@
 #include "TabDoses.h"
 #include "afxdialogex.h"
 
-#include "General.h"			// For some definitions
 #include "DefinePostMessages.h"		// For custom message definitions
 
 // TabDoses dialog
@@ -19,7 +18,8 @@ TabDoses::TabDoses(int number)
 	// Set title from its initialisation
 	Rename(number);
 
-	Reinitialisation();
+	// Variable for greying out
+	checkDoses = false;
 }
 
 TabDoses::~TabDoses()
@@ -48,28 +48,31 @@ BOOL TabDoses::OnCommand(WPARAM wParam, LPARAM lParam)
 
 BOOL TabDoses::OnInitDialog()
 {
+	// Get settings from storage
+	m_fDeltaPressureDoses = allSettings.delta_pression;
+	m_fFinalPressureDoses = allSettings.pression_finale;
+	m_nTimeAdsorptionDoses = allSettings.temps_adsorption;
+	m_nTimeVolumeDoses = allSettings.temps_volume;
+
+	// Initialize dialog
 	CMFCPropertyPage::OnInitDialog();
 
 	m_SpinDeltaPressureDoses.SetRange(0, 1000000);
-	m_SpinDeltaPressureDoses.SetPos(0.100);
 	m_SpinDeltaPressureDoses.SetInc(-0.001);
 	m_SpinDeltaPressureDoses.SetFormat("%1.3f");
 	m_SpinDeltaPressureDoses.UpdateBuddy();
 
 	m_SpinTimeVolumeDoses.SetRange(0, 100000000);
-	m_SpinTimeVolumeDoses.SetPos(5);
 	m_SpinTimeVolumeDoses.SetInc(-1);
 	m_SpinTimeVolumeDoses.SetFormat("%1.f");
 	m_SpinTimeVolumeDoses.UpdateBuddy();
 
 	m_SpinTimeAdsorptionDoses.SetRange(0, 10000000);
-	m_SpinTimeAdsorptionDoses.SetPos(90);
 	m_SpinTimeAdsorptionDoses.SetInc(-1);
 	m_SpinTimeAdsorptionDoses.SetFormat("%1.f");
 	m_SpinTimeAdsorptionDoses.UpdateBuddy();
 
 	m_SpinFinalPressureDoses.SetRange(0, 100000000);
-	m_SpinFinalPressureDoses.SetPos(1);
 	m_SpinFinalPressureDoses.SetInc(-0.001);
 	m_SpinFinalPressureDoses.SetFormat("%1.3f");
 	m_SpinFinalPressureDoses.UpdateBuddy();
@@ -85,12 +88,6 @@ BOOL TabDoses::OnApply()
 
 void TabDoses::OnCancel()
 {
-	m_bDoses = allSettings.a_effectuer;
-	m_fDeltaPressureDoses = allSettings.delta_pression;
-	m_fFinalPressureDoses = allSettings.pression_finale;
-	m_nTimeAdsorptionDoses = allSettings.temps_adsorption;
-	m_nTimeVolumeDoses = allSettings.temps_volume;
-
 	CMFCPropertyPage::OnCancel();
 }
 
@@ -102,15 +99,12 @@ void TabDoses::OnOK()
 
 void TabDoses::Reinitialisation()
 {
-	m_bDoses = FALSE;
-	m_fDeltaPressureDoses = 0.1f;
-	m_nTimeVolumeDoses = 5;
-	m_nTimeAdsorptionDoses = 90;
-	m_fFinalPressureDoses = 1.0f;
+	m_fDeltaPressureDoses = allSettings.delta_pression;
+	m_fFinalPressureDoses = allSettings.pression_finale;
+	m_nTimeAdsorptionDoses = allSettings.temps_adsorption;
+	m_nTimeVolumeDoses = allSettings.temps_volume;
 
-	checkDoses = UN_GREY_OUT;
-
-	WriteData();
+	UpdateData(false);
 }
 
 void TabDoses::WriteData()
@@ -143,19 +137,20 @@ void TabDoses::GreyOut(BOOL active)
 	GetDlgItem(IDC_SPIN_PRESSION_FINALE_DOSES)->EnableWindow(active);
 }
 
-void TabDoses::ActionCheck_Doses()
+void TabDoses::ToggleGreyOut()
 {
-	if (checkDoses == GREY_OUT)
+	if (checkDoses == true)
 		GreyOut(TRUE);
 	else
 		GreyOut(FALSE);
+
+	checkDoses = !checkDoses;
 }
 
 void TabDoses::Rename(int number) {
 
 	position = number;
 
-	// Set title from its initialisation
 	CString tabtitle;
 	tabtitle.Format(_T("Adsorption %d"), position);
 
