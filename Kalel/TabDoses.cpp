@@ -30,8 +30,6 @@ void TabDoses::DoDataExchange(CDataExchange* pDX)
 {
 	CMFCPropertyPage::DoDataExchange(pDX);
 
-	DDX_Control(pDX, IDC_CHECK_DOSES, m_CheckDoses);
-	DDX_Check(pDX, IDC_CHECK_DOSES, m_bDoses);
 	DDX_Text(pDX, IDC_EDIT_DELTA_PRESSION_DOSES, m_fDeltaPressureDoses);
 	DDX_Control(pDX, IDC_SPIN_DELTA_PRESSION_DOSES, m_SpinDeltaPressureDoses);
 	DDX_Text(pDX, IDC_EDIT_TEMPS_VOLUME_DOSES, m_nTimeVolumeDoses);
@@ -75,8 +73,6 @@ BOOL TabDoses::OnInitDialog()
 	m_SpinFinalPressureDoses.SetInc(-0.001);
 	m_SpinFinalPressureDoses.SetFormat("%1.3f");
 	m_SpinFinalPressureDoses.UpdateBuddy();
-
-	ActionCheck_Doses();
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 }
@@ -126,7 +122,7 @@ void TabDoses::WriteData()
 	allSettings.temps_volume = m_nTimeVolumeDoses;
 }
 
-void TabDoses::EnableDoses(BOOL active)
+void TabDoses::GreyOut(BOOL active)
 {
 	GetDlgItem(IDC_STATIC_DPPMY_TEXT)->EnableWindow(active);
 	GetDlgItem(IDC_STATIC_DPPMY_BAR)->EnableWindow(active);
@@ -147,34 +143,12 @@ void TabDoses::EnableDoses(BOOL active)
 	GetDlgItem(IDC_SPIN_PRESSION_FINALE_DOSES)->EnableWindow(active);
 }
 
-void TabDoses::GreyOut()
-{
-	GetDlgItem(IDC_CHECK_DOSES)->EnableWindow(FALSE);
-}
-
-void TabDoses::UnGreyOut()
-{
-	UpdateData(TRUE);
-	GetDlgItem(IDC_CHECK_DOSES)->EnableWindow(TRUE);
-	UpdateData(FALSE);
-}
-
-void TabDoses::CheckGreyOut()
-{
-	checkDoses = GREY_OUT;
-}
-
-void TabDoses::CheckUnGreyOut()
-{
-	checkDoses = UN_GREY_OUT;
-}
-
 void TabDoses::ActionCheck_Doses()
 {
 	if (checkDoses == GREY_OUT)
-		GreyOut();
+		GreyOut(TRUE);
 	else
-		UnGreyOut();
+		GreyOut(FALSE);
 }
 
 void TabDoses::Rename(int number) {
@@ -191,19 +165,11 @@ void TabDoses::Rename(int number) {
 }
 
 BEGIN_MESSAGE_MAP(TabDoses, CMFCPropertyPage)
-	ON_BN_CLICKED(IDC_CHECK_DOSES, &TabDoses::OnBnClickedCheckDoses)
 	ON_BN_CLICKED(IDC_BUTTON_ADS_REMOVE, &TabDoses::DeletePage)
 END_MESSAGE_MAP()
 
 
 // TabDoses message handlers
-
-void TabDoses::OnBnClickedCheckDoses()
-{
-	UpdateData(TRUE);
-	EnableDoses(m_bDoses);
-	UpdateData(FALSE);
-}
 
 void TabDoses::DeletePage()
 {

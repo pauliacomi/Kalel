@@ -250,8 +250,7 @@
     <ClInclude Include="ResourceConnectionPort.h" />
     <ClInclude Include="ResourceDialogUser.h" />
     <ClInclude Include="ResourceDialogGas.h" />
-    <ClInclude Include="ResourceOnglets.h" />
-    <ClInclude Include="ResourceOngletsEtapes.h" />
+    <ClInclude Include="ResourceDialogExperimentSettings.h" />
     <ClInclude Include="ResourceParametresAppareil.h" />
     <ClInclude Include="ResourceTypeExperience.h" />
     <ClInclude Include="SpinBtnCtrl.h" />
@@ -506,8 +505,7 @@
     <ResourceCompile Include="DialogGas.rc" />
     <ResourceCompile Include="Kalel.rc" />
     <ResourceCompile Include="StringTable.rc" />
-    <ResourceCompile Include="Onglets.rc" />
-    <ResourceCompile Include="OngletsEtapes.rc" />
+    <ResourceCompile Include="DialogExperimentSettings.rc" />
     <ResourceCompile Include="ParametresAppareil.rc" />
     <ResourceCompile Include="Steps.rc" />
     <ResourceCompile Include="TypeExperience.rc" />

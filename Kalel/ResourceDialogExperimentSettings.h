@@ -64,6 +64,38 @@
 #define IDC_BUTTON_ADS_REMOVE           5598
 #define IDC_BUTTON_DES_REMOVE           5599
 
+#define IDD_GENERAL                     5601
+#define IDD_DIVERS                      5602
+#define IDC_SPIN_MASSE_ECHANTILLON      5603
+#define IDC_NOM_FICHIER                 5604
+#define IDC_NOM_ECHANTILLON             5605
+#define IDC_MASSE_ECHANTILLON           5606
+#define IDC_COMBO_EXPERIMENTATEUR       5607
+#define IDC_BUTTON_EXPERIMENTATEUR      5608
+#define IDC_BUTTON_GAZ                  5609
+#define IDC_COMBO_GAZ                   5610
+#define IDC_COMMENTAIRES                5611
+#define IDC_NOM_CHEMIN                  5612
+#define IDC_PARCOURIR_DOSSIER           5613
+#define IDC_TEMPERATURE_EXPERIENCE      5614
+#define IDC_SPIN_TEMPERATURE_EXPERIENCE 5615
+#define IDC_COMBO_CELLULE               5616
+#define IDC_BUTTON_CELLULE              5617
+#define IDC_EDIT_VOLUME_TOTAL           5618
+#define IDC_EDIT_VOLUME_CALO            5619
+#define IDC_EDIT_TEMPS_LIGNE_BASE       5620
+#define IDC_CHECK_MISE_SOUS_VIDE        5621
+#define IDC_SPIN_TEMPS_LIGNE_BASE       5622
+#define IDC_EDIT_TEMPS_VIDE             5623
+#define IDC_SPIN_TEMPS_VIDE             5624
+#define IDC_STATIC_MISE_SOUS_VIDE       5625
+#define IDC_STATIC_MISE_SOUS_VIDE2      5626
+#define IDC_PLUSADS                     5627
+#define IDC_PLUSDES                     5628
+#define IDC_MINUSADS                    5629
+#define IDC_MINUDES                     5630
+
+
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED

@@ -226,6 +226,26 @@ void TabGeneral::WriteData()
 	allSettings.temperature_experience = m_ExperimentTemperature;
 }
 
+void TabGeneral::GreyOut(BOOL active)
+{
+	GetDlgItem(IDC_COMBO_GAZ)->EnableWindow(active);
+	GetDlgItem(IDC_COMBO_EXPERIMENTATEUR)->EnableWindow(active);
+
+	GetDlgItem(IDC_BUTTON_EXPERIMENTATEUR)->EnableWindow(active);
+	GetDlgItem(IDC_BUTTON_GAZ)->EnableWindow(active);
+	GetDlgItem(IDC_PARCOURIR_DOSSIER)->EnableWindow(active);
+
+	GetDlgItem(IDC_NOM_FICHIER)->EnableWindow(active);
+	GetDlgItem(IDC_NOM_CHEMIN)->EnableWindow(active);
+	GetDlgItem(IDC_NOM_ECHANTILLON)->EnableWindow(active);
+	GetDlgItem(IDC_MASSE_ECHANTILLON)->EnableWindow(active);
+	GetDlgItem(IDC_TEMPERATURE_EXPERIENCE)->EnableWindow(active);
+	GetDlgItem(IDC_COMMENTAIRES)->EnableWindow(active);
+
+	GetDlgItem(IDC_SPIN_MASSE_ECHANTILLON)->EnableWindow(active);
+	GetDlgItem(IDC_SPIN_TEMPERATURE_EXPERIENCE)->EnableWindow(active);
+}
+
 
 BEGIN_MESSAGE_MAP(TabGeneral, CMFCPropertyPage)
 	ON_CBN_SELCHANGE(IDC_COMBO_GAZ, &TabGeneral::OnCbnSelchangeComboGaz)

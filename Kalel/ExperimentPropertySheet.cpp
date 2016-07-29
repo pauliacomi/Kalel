@@ -37,14 +37,22 @@ ExperimentPropertySheet::ExperimentPropertySheet(LPCTSTR pszCaption, CWnd* pPare
 	// Dynamically generate the tabs
 	for (int i = 0; i < numberOfAdsorptions; i++)
 	{
-		AddAdsorption(i+1);
+		m_adsorption = new TabDoses(i+1);
+
+		// Insert page
+		std::vector<TabDoses*>::iterator pos = adsorptionTabs.begin() + i;
+		adsorptionTabs.insert(pos, m_adsorption);
 	}
 	for (int i = 0; i < numberOfDesorptions; i++)
 	{
-		AddDesorption(i+1);
+		m_desorption = new TabDesorption(i+1);
+
+		// Insert page
+		std::vector<TabDesorption*>::iterator pos = desorptionTabs.begin() + i;
+		desorptionTabs.insert(pos, m_desorption);
 	}
 	
-	// Resize the number of tabs
+	// Resize the bool storage for tab availability
 	availableTabs.resize(nb_permanent_tabs + numberOfAdsorptions + numberOfDesorptions);
 
 	for (size_t i = 0; i < availableTabs.size(); i++)
@@ -115,11 +123,7 @@ void ExperimentPropertySheet::SetProprietiesManual(void)
 		title.Format(TITLE_MANUALPARAM);
 		SetTitle(title);
 
-		// Remove any existing tabs and add the general tab
-		RemoveTab(p_generalPP, tab_general);
-		RemoveTab(p_diversPP, tab_divers);
-		RemoveAllTabs();
-
+		// Add the general tab
 		AddTab(p_generalPP, tab_general);
 
 		// Make sure the tab data is blank
@@ -141,16 +145,12 @@ void ExperimentPropertySheet::SetProprietiesAuto(void)
 		title.Format(TITLE_AUTOPARAM);
 		SetTitle(title);
 
-		// Remove any existing tabs and re-add all the tabs
-		RemoveTab(p_generalPP, tab_general);
-		RemoveTab(p_diversPP, tab_divers);
-		RemoveAllTabs();
-
+		// Add all the tabs
 		AddTab(p_generalPP, tab_general);
 		AddTab(p_diversPP, tab_divers);
-		AddAllTabs();
+		AddStepTabs();
 
-		// Make sure the tab data is blanks
+		// Make sure the tab data is blank
 		Reinitialisation(true);
 	}
 }
@@ -163,59 +163,32 @@ void ExperimentPropertySheet::SetProprietiesModif(int etape_en_cours)
 	CString title;
 	title.Format(TITLE_MODIFPARAM);
 	SetTitle(title);
-
-	// Remove any existing tabs
-	RemoveAllTabs();
 	
-	if (experimentType == EXPERIMENT_TYPE_MANUAL)
-	{
-		AddTab(p_generalPP, tab_general);
-	}
-	if (experimentType == EXPERIMENT_TYPE_MANUAL)
-	{
-
-	}
-	
-	// Add the tabs needed
+	// Add all the tabs 
 	AddTab(p_generalPP, tab_general);
+	AddTab(p_diversPP, tab_divers);
+	AddStepTabs();
 
+	// Grey out the ones that should not be modified
+	m_general.GreyOut(FALSE);
 
 	// Add only allowed tabs
-	/*switch (etape_en_cours)
+	switch (etape_en_cours)
 	{
 	case STAGE_TEMP:
-	case STAGE_EQ_LINE:
-	case STAGE_CONT_ADSORPTON:
-		RajouterPetitesDoses();
-		RajouterMoyennesDoses();
-		RajouterGrandesDoses();
-		RajouterDesorption();
+	case STAGE_EQUILIBRATION:
+	case STAGE_CONTINUOUS_ADSORPTION:
 		break;
-	case STAGE_SMALL_DOSES:
-		RajouterPetitesDoses();
-		RajouterMoyennesDoses();
-		RajouterGrandesDoses();
-		RajouterDesorption();
-		m_smalldoses.GriserCheck_PetitesDoses();
-		break;
-	case STAGE_MEDIUM_DOSES:
-		RajouterMoyennesDoses();
-		RajouterGrandesDoses();
-		RajouterDesorption();
-		m_mediumdoses.GriserCheck_MoyennesDoses();
-		break;
-	case STAGE_BIG_DOSES:
-		RajouterGrandesDoses();
-		RajouterDesorption();
-		m_grandesdoses.GriserCheck_GrandesDoses();
+	case STAGE_ADSORPTION:
+
 		break;
 	case STAGE_DESORPTION:
-		RajouterDesorption();
-		m_desorption.GriserCheck_Desorption();
 		break;
 	default:
 		break;
-	}*/
+	}
+
+
 }
 
 // Reinitialise the data in all the tabs
@@ -231,6 +204,7 @@ void ExperimentPropertySheet::Reinitialisation(bool automatic)
 		{
 			adsorptionTabs[i]->Reinitialisation();
 		}
+
 		for (size_t i = 0; i < desorptionTabs.size(); i++)
 		{
 			desorptionTabs[i]->Reinitialisation();
@@ -241,7 +215,7 @@ void ExperimentPropertySheet::Reinitialisation(bool automatic)
 }
 
 // Asks all the tabs to be added
-void ExperimentPropertySheet::AddAllTabs() {
+void ExperimentPropertySheet::AddStepTabs() {
 	for (size_t i = 0; i < adsorptionTabs.size(); i++)
 	{
 		AddTab(adsorptionTabs[i], nb_permanent_tabs + i);
@@ -254,7 +228,7 @@ void ExperimentPropertySheet::AddAllTabs() {
 }
 
 // Asks all the tabs to be removed
-void ExperimentPropertySheet::RemoveAllTabs()
+void ExperimentPropertySheet::RemoveStepTabs()
 {
 	for (size_t i = 0; i < adsorptionTabs.size(); i++)
 	{
@@ -265,21 +239,6 @@ void ExperimentPropertySheet::RemoveAllTabs()
 		RemoveTab(desorptionTabs[i], nb_permanent_tabs + numberOfAdsorptions + i);
 	}
 	//AddTab(p_adsorptioncontinuePP);
-}
-
-void ExperimentPropertySheet::AddAdsorption(int i)
-{
-	m_adsorption = new TabDoses(i);
-
-	// Insert page
-	std::vector<TabDoses*>::iterator pos2 = adsorptionTabs.begin() + i - 1;
-	adsorptionTabs.insert(pos2, m_adsorption);
-}
-
-void ExperimentPropertySheet::AddDesorption(int i)
-{
-	m_desorption = new TabDesorption(i);
-	desorptionTabs.push_back(m_desorption);
 }
 
 
@@ -317,25 +276,52 @@ END_MESSAGE_MAP()
 
 void ExperimentPropertySheet::OnButtonAddAdsorption()
 {
-	if (experimentType == EXPERIMENT_TYPE_MANUAL) {
+	if (experimentType == EXPERIMENT_TYPE_MANUAL) {			// Check if the experiment type allows the addition of tabs
 		AfxMessageBox(ERROR_NOT_APPLICABLE);
 	}
 	else {
-		if (numberOfAdsorptions > nb_max_tabs) {
+		if (numberOfAdsorptions > nb_max_tabs) {			// Check if the maximum allowed doses have been reached, yes i know it's bad to hardcode it
 			AfxMessageBox(ERROR_TOO_MANY_TABS);
 		}
 		else {
-			// increment the number of adsorption tabs
-			numberOfAdsorptions++;						
 
-			// set the position of an iterator where we want to insert the new element
-			std::vector<bool>::iterator pos = availableTabs.begin() + (nb_permanent_tabs + numberOfAdsorptions - 1); 
-			availableTabs.insert(pos, false);			// Now insert a false at the position
-			AddAdsorption(numberOfAdsorptions);
+			// Set the index for where to insert the tab. If no adsorption tab is selected then insert at the end
+			int index = GetActiveIndex();
+			if (index < nb_permanent_tabs || index >= nb_permanent_tabs + numberOfAdsorptions) {
+				index = nb_permanent_tabs + numberOfAdsorptions;
+			}
+			else
+			{
+				index++;
+			}
+
+			// increment the number of adsorption tabs
+			numberOfAdsorptions++;
+
+			// Set the position of an iterator where we want to insert the new element
+			std::vector<bool>::iterator pos = availableTabs.begin() + index;
+			availableTabs.insert(pos, false);
+
+			// Create the page
+			m_adsorption = new TabDoses(index - nb_permanent_tabs + 1);
+
+			// Insert page
+			std::vector<TabDoses*>::iterator pos2 = adsorptionTabs.begin() + (index - nb_permanent_tabs);
+			adsorptionTabs.insert(pos2, m_adsorption);
+
+
+			// Rename all remaining pages
+			for (size_t i = 0; i < numberOfAdsorptions; i++)
+			{
+				adsorptionTabs[i]->Rename(i + 1);
+			}
 
 			// Reset the tabs
-			RemoveAllTabs();
-			AddAllTabs();
+			RemoveStepTabs();
+			AddStepTabs();
+
+			// Show new page
+			SetActivePage(index);
 		}
 	}
 }
@@ -350,17 +336,44 @@ void ExperimentPropertySheet::OnButtonAddDesorption(void)
 			AfxMessageBox(ERROR_TOO_MANY_TABS);
 		}
 		else {
-			// increment the number of desorption tabs
+
+			// Set the index for where to insert the tab. If no adsorption tab is selected then insert at the end
+			int index = GetActiveIndex();
+			if (index < nb_permanent_tabs + numberOfAdsorptions || index >= nb_permanent_tabs + numberOfAdsorptions + numberOfDesorptions) {
+				index = nb_permanent_tabs + numberOfAdsorptions + numberOfDesorptions;
+			}
+			else
+			{
+				index++;
+			}
+
+			// increment the number of adsorption tabs
 			numberOfDesorptions++;
 
-			// set the position of an iterator where we want to insert the new element
-			std::vector<bool>::iterator pos = availableTabs.begin() + (nb_permanent_tabs + numberOfAdsorptions + numberOfDesorptions - 1);
-			availableTabs.insert(pos, false);			// Now insert a false at the position
-			AddDesorption(numberOfDesorptions);
-			
+			// Set the position of an iterator where we want to insert the new element
+			std::vector<bool>::iterator pos = availableTabs.begin() + index;
+			availableTabs.insert(pos, false);
+
+			// Create the page
+			m_desorption = new TabDesorption(index - numberOfAdsorptions - nb_permanent_tabs + 1);
+
+			// Insert page
+			std::vector<TabDesorption*>::iterator pos2 = desorptionTabs.begin() + (index - numberOfAdsorptions - nb_permanent_tabs);
+			desorptionTabs.insert(pos2, m_desorption);
+
+
+			// Rename all remaining pages
+			for (size_t i = 0; i < numberOfDesorptions; i++)
+			{
+				desorptionTabs[i]->Rename(i + 1);
+			}
+
 			// Reset the tabs
-			RemoveAllTabs();
-			AddAllTabs();
+			RemoveStepTabs();
+			AddStepTabs();
+
+			// Show new page
+			SetActivePage(index);
 		}
 	}
 }
@@ -389,8 +402,8 @@ LRESULT ExperimentPropertySheet::OnButtonRemoveAdsorption(WPARAM, LPARAM lParam)
 	}
 
 	// Reset the tabs
-	RemoveAllTabs();
-	AddAllTabs();
+	RemoveStepTabs();
+	AddStepTabs();
 
 	return 0;
 }
@@ -412,15 +425,15 @@ LRESULT ExperimentPropertySheet::OnButtonRemoveDesorption(WPARAM, LPARAM lParam)
 
 	numberOfDesorptions--;														// Decrement the number of adsorption 
 
-																				// Rename all remaining pages
+	// Rename all remaining pages
 	for (size_t i = 0; i < numberOfDesorptions; i++)
 	{
 		desorptionTabs[i]->Rename(i + 1);
 	}
 
 	// Reset the tabs
-	RemoveAllTabs();
-	AddAllTabs();
+	RemoveStepTabs();
+	AddStepTabs();
 
 	return 0;
 }

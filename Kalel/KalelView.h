@@ -38,9 +38,6 @@ public:
 	ExperimentSettings * experimentSettings;
 	ExperimentData experimentData;
 
-	// Experiment property dialog
-	ExperimentPropertySheet * dialogExperimentProperties;
-
 	// Some storage variables for each MFC control
 	CEdit pEditMessages;
 	CEdit pEditMesures;
@@ -120,7 +117,7 @@ public:
 	void DisplayPortDialog(void);
 	void DisplayApparatusSettingsDialog(void);
 
-	void GetExperimentData(ExperimentPropertySheet * dialogExperimentProperties);
+	void GetExperimentData(ExperimentPropertySheet * dialogExperimentProperties, bool initialRequest);
 
 	void UpdateButtons();
 

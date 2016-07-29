@@ -3,7 +3,7 @@
 #define TABDESORPTION_H
 
 
-#include "ResourceOngletsEtapes.h"	// For resources
+#include "ResourceDialogExperimentSettings.h"	// For resources
 #include "SpinBtnCtrl.h"			// For the Spin Button class
 #include "Classes_experiences.h"	// Definitions for all classes used in this file
 
@@ -58,20 +58,14 @@ public:
 public:
 	void Reinitialisation();
 	void Rename(int number);
+	void GreyOut(BOOL active);
 
 protected:
 	void WriteData();
-	void EnableDesorption(BOOL active);
-
-	void GreyOut();
-	void UnGreyOut();
-	void CheckGreyOut();
-	void CheckUnGreyOut();
 	void ActionCheck_Desorption();
 
 // Message Handlers
 protected:
-	void OnBnClickedCheckDesorption();
 	void DeletePage();
 };
 

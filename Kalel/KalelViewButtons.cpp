@@ -18,25 +18,30 @@ void CKalelView::OnBnClickedLancer()
 {
 	// Create the experiment type window
 	Dialog_TypeExperiment dialogExperimentType;
+	dialogExperimentType.SetData
+
 	if (dialogExperimentType.DoModal() == IDOK)
 	{
 		// Save user choice
 		experimentSettings->experimentType = dialogExperimentType.TypeExperience;
+
+		// Create dialog
+		ExperimentPropertySheet dialogExperimentProperties(_T(""));
 		
 		// Instantiate the correct type of dialog
 		switch (experimentSettings->experimentType)
 		{
 		case EXPERIMENT_TYPE_MANUAL:
-			dialogExperimentProperties->SetProprietiesManual();
+			dialogExperimentProperties.SetProprietiesManual();
 			break;
 		case EXPERIMENT_TYPE_AUTO:
-			dialogExperimentProperties->SetProprietiesAuto();
+			dialogExperimentProperties.SetProprietiesAuto();
 			break;
 		default:
 			ASSERT(0);  // Should never be reached
 		}
 
-		if (dialogExperimentProperties->DoModal() == IDOK)
+		if (dialogExperimentProperties.DoModal() == IDOK)
 		{
 			// the start button is blocked
 			GetDlgItem(IDC_LANCER)->EnableWindow(FALSE);
@@ -52,7 +57,7 @@ void CKalelView::OnBnClickedLancer()
 			GetDocument()->GraphInitialize(NULL, NULL);
 
 			// Get the data from the dialog
-			GetExperimentData(dialogExperimentProperties);
+			GetExperimentData(&dialogExperimentProperties, true);
 
 			// Launch the threads
 			threadManager->StartThread();
@@ -77,12 +82,15 @@ void CKalelView::OnBnClickedButtonParametresExperience()
 {
 	if (pApp->experimentRunning) {
 
-		dialogExperimentProperties->SetProprietiesModif(experimentData.experimentStage);
+		// Create dialog
+		ExperimentPropertySheet dialogExperimentProperties(_T(""));
 
-		if (dialogExperimentProperties->DoModal() == IDOK)
+		dialogExperimentProperties.SetProprietiesModif(experimentData.experimentStage);
+
+		if (dialogExperimentProperties.DoModal() == IDOK)
 		{
 			// Get the data from the dialog
-			GetExperimentData(dialogExperimentProperties);
+			GetExperimentData(&dialogExperimentProperties, false);
 		}
 	}
 }
@@ -119,21 +127,42 @@ void CKalelView::OnBnClickedReprise()
 
 
 // Copy all data from a property sheet dialog to the local object
-void CKalelView::GetExperimentData(ExperimentPropertySheet * pDialogExperimentProperties) {
+void CKalelView::GetExperimentData(ExperimentPropertySheet * pDialogExperimentProperties, bool initialRequest) {
 
 	// Use a critical section to avoid data races
 	EnterCriticalSection(&experimentSettings->criticalSection);
 
-	// Raise the flag for data modified
-	experimentSettings->dataModified = true;
-
-	// Copy data accross
-	experimentSettings->dataGeneral = pDialogExperimentProperties->m_general.allSettings;
-	if (experimentSettings->experimentType == EXPERIMENT_TYPE_AUTO)
+	if (initialRequest)
 	{
-		experimentSettings->dataDivers = pDialogExperimentProperties->m_divers.allSettings;
+		// Raise the flag for data modified
+		experimentSettings->dataModified = true;
+
+		// Just copy data accross
+		experimentSettings->dataGeneral = pDialogExperimentProperties->m_general.allSettings;
+
+		if (experimentSettings->experimentType == EXPERIMENT_TYPE_AUTO)
+		{
+			experimentSettings->dataDivers = pDialogExperimentProperties->m_divers.allSettings;
+			for (size_t i = 0; i < pDialogExperimentProperties->adsorptionTabs.size(); i++)
+			{
+				experimentSettings->dataAdsorption.push_back(pDialogExperimentProperties->adsorptionTabs[i]->allSettings);
+			}
+			for (size_t i = 0; i < pDialogExperimentProperties->desorptionTabs.size(); i++)
+			{
+				experimentSettings->dataDesorption.push_back(pDialogExperimentProperties->desorptionTabs[i]->allSettings);
+			}
+		}
+	}
+
+	else
+	{
+		// Must check if everything is the same
 		for (size_t i = 0; i < pDialogExperimentProperties->adsorptionTabs.size(); i++)
 		{
+			if (true)
+			{
+
+			}
 			experimentSettings->dataAdsorption.push_back(pDialogExperimentProperties->adsorptionTabs[i]->allSettings);
 		}
 		for (size_t i = 0; i < pDialogExperimentProperties->desorptionTabs.size(); i++)
@@ -141,6 +170,8 @@ void CKalelView::GetExperimentData(ExperimentPropertySheet * pDialogExperimentPr
 			experimentSettings->dataDesorption.push_back(pDialogExperimentProperties->desorptionTabs[i]->allSettings);
 		}
 	}
+
+	
 
 	// Leave the critical section
 	LeaveCriticalSection(&experimentSettings->criticalSection);

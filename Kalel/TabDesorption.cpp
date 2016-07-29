@@ -29,8 +29,6 @@ void TabDesorption::DoDataExchange(CDataExchange* pDX)
 {
 	CMFCPropertyPage::DoDataExchange(pDX);
 
-	DDX_Control(pDX, IDC_CHECK_DESORPTION, m_CheckDesorption);
-	DDX_Check(pDX, IDC_CHECK_DESORPTION, m_bDesorption);
 	DDX_Text(pDX, IDC_EDIT_DELTA_PRESSION_DESORPTION, m_fDeltaPressionDesorption);
 	DDX_Control(pDX, IDC_SPIN_DELTA_PRESSION_DESORPTION, m_SpinDeltaPressionDesorption);
 	DDX_Text(pDX, IDC_EDIT_TEMPS_VOLUME_DESORPTION, m_nTempsVolumeDesorption);
@@ -77,9 +75,6 @@ BOOL TabDesorption::OnInitDialog()
 	m_SpinPressionFinaleDesorption.SetFormat("%1.3f");
 	m_SpinPressionFinaleDesorption.UpdateBuddy();
 
-	EnableDesorption(m_bDesorption);
-	ActionCheck_Desorption();
-
 	return TRUE;  // return TRUE unless you set the focus to a control
 }
 
@@ -117,8 +112,6 @@ void TabDesorption::Reinitialisation()
 	m_fPressionFinaleDesorption = 0.1f;
 	m_bDerniereEtapeDesorption = FALSE;
 
-	CheckUnGreyOut();
-
 	WriteData();
 }
 
@@ -132,7 +125,7 @@ void TabDesorption::WriteData()
 	allSettings.temps_volume = m_nTempsVolumeDesorption;
 }
 
-void TabDesorption::EnableDesorption(BOOL active)
+void TabDesorption::GreyOut(BOOL active)
 {
 	GetDlgItem(IDC_STATIC_D_DPD_TEXT)->EnableWindow(active);
 	GetDlgItem(IDC_STATIC_D_DPD_BAR)->EnableWindow(active);
@@ -155,34 +148,12 @@ void TabDesorption::EnableDesorption(BOOL active)
 }
 
 
-void TabDesorption::GreyOut()
-{
-	GetDlgItem(IDC_CHECK_DESORPTION)->EnableWindow(FALSE);
-}
-
-void TabDesorption::UnGreyOut()
-{
-	UpdateData(TRUE);
-	GetDlgItem(IDC_CHECK_DESORPTION)->EnableWindow(TRUE);
-	UpdateData(FALSE);
-}
-
-void TabDesorption::CheckGreyOut()
-{
-	checkDesorption = GREY_OUT;
-}
-
-void TabDesorption::CheckUnGreyOut()
-{
-	checkDesorption = UN_GREY_OUT;
-}
-
 void TabDesorption::ActionCheck_Desorption()
 {
 	if (checkDesorption == GREY_OUT)
-		GreyOut();
+		GreyOut(TRUE);
 	else
-		UnGreyOut();
+		GreyOut(FALSE);
 }
 
 void TabDesorption::Rename(int number) {
@@ -200,18 +171,11 @@ void TabDesorption::Rename(int number) {
 
 
 BEGIN_MESSAGE_MAP(TabDesorption, CMFCPropertyPage)
-	ON_BN_CLICKED(IDC_CHECK_DESORPTION, &TabDesorption::OnBnClickedCheckDesorption)
 	ON_BN_CLICKED(IDC_BUTTON_DES_REMOVE, &TabDesorption::DeletePage)
 END_MESSAGE_MAP()
 
 // TabDesorption message handlers
 
-void TabDesorption::OnBnClickedCheckDesorption()
-{
-	UpdateData(TRUE);
-	EnableDesorption(m_bDesorption);
-	UpdateData(FALSE);
-}
 
 void TabDesorption::DeletePage()
 {

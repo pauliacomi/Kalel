@@ -2,7 +2,7 @@
 #ifndef TABGENERAL_H
 #define TABGENERAL_H
 
-#include "ResourceOnglets.h"		// For resources
+#include "ResourceDialogExperimentSettings.h"		// For resources
 #include "SpinBtnCtrl.h"			// For the Spin Button class
 #include "Classes_experiences.h"	// Definitions for all classes used in this file
 #include <vector>					// Using the vector class
@@ -69,6 +69,7 @@ public:
 // Functions
 public:
 	void Reinitialisation(void);
+	void GreyOut(BOOL active);
 
 protected:
 	void UpdateDate(void);

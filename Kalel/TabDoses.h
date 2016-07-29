@@ -3,7 +3,7 @@
 #define TABDOSES_H
 
 
-#include "ResourceOngletsEtapes.h"	// For resources
+#include "ResourceDialogExperimentSettings.h"	// For resources
 #include "SpinBtnCtrl.h"			// For the Spin Button class
 #include "Classes_experiences.h"	// Definitions for all classes used in this file
 
@@ -59,22 +59,15 @@ public:
 public:
 	void Reinitialisation();
 	void Rename(int number);
+	void GreyOut(BOOL active);
 
 protected:
 	void WriteData();
-	void EnableDoses(BOOL active);
-
-	void GreyOut();
-	void UnGreyOut();
-	void CheckGreyOut();
-	void CheckUnGreyOut();
 	void ActionCheck_Doses();
-
-	void DeletePage();
 
 // Message Handlers
 protected:
-	void OnBnClickedCheckDoses();
+	void DeletePage();
 };
 
 #endif // !TABDOSES_H

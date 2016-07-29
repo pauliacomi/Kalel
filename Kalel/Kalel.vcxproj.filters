@@ -300,12 +300,6 @@
     <ClInclude Include="ResourceConnectionPort.h">
       <Filter>Header Files\Resources\DialogBoxes</Filter>
     </ClInclude>
-    <ClInclude Include="ResourceOnglets.h">
-      <Filter>Header Files\Resources\DialogBoxes</Filter>
-    </ClInclude>
-    <ClInclude Include="ResourceOngletsEtapes.h">
-      <Filter>Header Files\Resources\DialogBoxes</Filter>
-    </ClInclude>
     <ClInclude Include="ResourceParametresAppareil.h">
       <Filter>Header Files\Resources\DialogBoxes</Filter>
     </ClInclude>
@@ -383,6 +377,9 @@
     </ClInclude>
     <ClInclude Include="DefinePostMessages.h">
       <Filter>Header Files\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceDialogExperimentSettings.h">
+      <Filter>Header Files\Resources\DialogBoxes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -697,12 +694,6 @@
     <ResourceCompile Include="ConnectionPort.rc">
       <Filter>Resource Files\DialogBoxes</Filter>
     </ResourceCompile>
-    <ResourceCompile Include="Onglets.rc">
-      <Filter>Resource Files\DialogBoxes</Filter>
-    </ResourceCompile>
-    <ResourceCompile Include="OngletsEtapes.rc">
-      <Filter>Resource Files\DialogBoxes</Filter>
-    </ResourceCompile>
     <ResourceCompile Include="ParametresAppareil.rc">
       <Filter>Resource Files\DialogBoxes</Filter>
     </ResourceCompile>
@@ -723,6 +714,9 @@
     </ResourceCompile>
     <ResourceCompile Include="Kalel.rc">
       <Filter>Resource Files</Filter>
+    </ResourceCompile>
+    <ResourceCompile Include="DialogExperimentSettings.rc">
+      <Filter>Resource Files\DialogBoxes</Filter>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>

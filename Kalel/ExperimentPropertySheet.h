@@ -10,6 +10,8 @@
 #include "TabDoses.h"
 #include "TabDesorption.h"
 #include "TabContinuousAdsorption.h"
+#include "ResourceDialogExperimentSettings.h"
+
 
 // Other includes
 #include <vector>		// Using a vector to keep the collection of tabs in
@@ -72,10 +74,8 @@ public:
 // custom functions
 
 public:
-	void AddAllTabs();		// Asks all the tabs to be added
-	void RemoveAllTabs();	// Asks all the tabs to be removed
-	void AddAdsorption(int i);	// Adds one new adsorption experiment tab
-	void AddDesorption(int i);	// Adds one new adsorption experiment tab
+	void AddStepTabs();		// Asks all the tabs to be added
+	void RemoveStepTabs();	// Asks all the tabs to be removed
 	void OnButtonAddAdsorption();
 	void OnButtonAddDesorption();
 	LRESULT OnButtonRemoveAdsorption(WPARAM wParam, LPARAM lParam);

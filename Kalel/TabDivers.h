@@ -2,7 +2,7 @@
 #ifndef TABDIVERS_H
 #define TABDIVERS_H
 
-#include "ResourceOnglets.h"		// For resources
+#include "ResourceDialogExperimentSettings.h"		// For resources
 #include "SpinBtnCtrl.h"			// For the Spin Button class
 #include "Classes_experiences.h"	// Definitions for all classes used in this file
 #include <vector>					// Using the vector class

@@ -118,7 +118,6 @@ CKalelView::~CKalelView()
 {
 	delete threadManager;
 	delete experimentSettings;
-	delete dialogExperimentProperties;
 }
 
 // Liaising between variables and controls
@@ -191,7 +190,6 @@ void CKalelView::OnInitialUpdate()
 	UpdateButtons();
 
 	// Create the experiment parameter window
-	dialogExperimentProperties = new ExperimentPropertySheet(_T(""));
 	experimentSettings = new ExperimentSettings();							// Create a new experiment storage
 	experimentSettings->GUIhandle = GetSafeHwnd();							// Save the window handle
 	threadManager = new ThreadManager(experimentSettings);;  // the class dealing with managing threads
