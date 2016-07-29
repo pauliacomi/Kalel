@@ -3,7 +3,7 @@
 
 #include "stdafx.h"
 #include "Kalel.h"
-#include "ConnectionPort.h"
+#include "DialogConnectionPort.h"
 
 #include "Parametres.h"
 

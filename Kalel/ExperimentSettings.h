@@ -8,7 +8,8 @@
 class ExperimentSettings
 {
 public:
-	ExperimentSettings(void);
+	ExperimentSettings();
+	ExperimentSettings(int initialAdsorptions, int initialDesorptions);
 	~ExperimentSettings(void);
 
 public:
@@ -26,7 +27,7 @@ public:
 	bool dataModified;
 	bool continueAnyway;
 
-	// Experimental data storage
+	// Settings storage
 
 	Donnees_General dataGeneral;
 	Donnees_Divers dataDivers;
@@ -34,6 +35,7 @@ public:
 	vector<Donnees_Desorption> dataDesorption;
 
 	void ResetData();
+	void ResetData(int initialAdsorptions, int initialDesorptions);
 
 	// Overload equals function
 	ExperimentSettings & ExperimentSettings::operator=(const ExperimentSettings * p);

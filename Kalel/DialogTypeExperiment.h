@@ -3,15 +3,15 @@
 #include "afxwin.h"
 #include "ResourceTypeExperience.h"
 
-// Boîte de dialogue Dialog_TypeExperiment
+// Boîte de dialogue DialogTypeExperiment
 
-class Dialog_TypeExperiment : public CDialog
+class DialogTypeExperiment : public CDialog
 {
-	DECLARE_DYNAMIC(Dialog_TypeExperiment)
+	DECLARE_DYNAMIC(DialogTypeExperiment)
 
 public:
-	Dialog_TypeExperiment(CWnd* pParent = NULL);   // constructeur standard
-	virtual ~Dialog_TypeExperiment();
+	DialogTypeExperiment(CWnd* pParent = NULL);   // constructeur standard
+	virtual ~DialogTypeExperiment();
 
 // Données de boîte de dialogue
 	enum { IDD = IDD_TYPE_EXPERIENCE };

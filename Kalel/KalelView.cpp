@@ -190,9 +190,12 @@ void CKalelView::OnInitialUpdate()
 	UpdateButtons();
 
 	// Create the experiment parameter window
-	experimentSettings = new ExperimentSettings();							// Create a new experiment storage
-	experimentSettings->GUIhandle = GetSafeHwnd();							// Save the window handle
-	threadManager = new ThreadManager(experimentSettings);;  // the class dealing with managing threads
+	int initialAdsorptions = 3;
+	int initialDesorptions = 1;
+	experimentSettings = new ExperimentSettings(initialAdsorptions, initialDesorptions);			// Create a new experiment storage
+	experimentSettings->GUIhandle = GetSafeHwnd();													// Save the window handle
+
+	threadManager = new ThreadManager(experimentSettings);											// the class dealing with managing threads
 
 	// Set the timer for the window update
 	SetTimer(1, 100, NULL);

@@ -195,23 +195,17 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ApparatusParameters.h" />
+    <ClInclude Include="CommonFunctions.h" />
+    <ClInclude Include="DialogMachineParameters.h" />
     <ClInclude Include="Automation.h" />
-    <ClInclude Include="CAdsorptionContinue.h" />
-    <ClInclude Include="CDesorption.h" />
-    <ClInclude Include="CDivers.h" />
-    <ClInclude Include="CGeneral.h" />
-    <ClInclude Include="CGrandesDoses.h" />
     <ClInclude Include="Chrono.h" />
     <ClInclude Include="Classes_experiences.h" />
-    <ClInclude Include="CMoyennesDoses.h" />
     <ClInclude Include="ConnectionMesure.h" />
-    <ClInclude Include="ConnectionPort.h" />
+    <ClInclude Include="DialogConnectionPort.h" />
     <ClInclude Include="DefinePostMessages.h" />
     <ClInclude Include="ExperimentData.h" />
     <ClInclude Include="ExperimentPropertySheet.h" />
     <ClInclude Include="FluxConverter.h" />
-    <ClInclude Include="CPetitesDoses.h" />
     <ClInclude Include="General.h" />
     <ClInclude Include="DefineStages.h" />
     <ClInclude Include="DefineInstruments.h" />
@@ -219,7 +213,7 @@
     <ClInclude Include="DialogCell.h" />
     <ClInclude Include="DialogUser.h" />
     <ClInclude Include="DialogGas.h" />
-    <ClInclude Include="Dialog_TypeExperiment.h" />
+    <ClInclude Include="DialogTypeExperiment.h" />
     <ClInclude Include="GrapheView.h" />
     <ClInclude Include="InfoEtape.h" />
     <ClInclude Include="SerialInstruments.h" />
@@ -228,12 +222,20 @@
     <ClInclude Include="KalelView.h" />
     <ClInclude Include="Keithley.h" />
     <ClInclude Include="LiaisonRS232.h" />
-    <ClInclude Include="ListeEtape.h" />
+    <ClInclude Include="ListeEtape.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="ListOfInstrumentButtons.h" />
     <ClInclude Include="MainFrm.h" />
-    <ClInclude Include="Manip.h" />
-    <ClInclude Include="Manip_Auto.h" />
-    <ClInclude Include="Manip_AutoGaz.h" />
+    <ClInclude Include="Manip.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Manip_Auto.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Manip_AutoGaz.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="ManualActionParam.h" />
     <ClInclude Include="Mensor.h" />
     <ClInclude Include="ExperimentSettings.h" />
@@ -242,7 +244,6 @@
     <ClInclude Include="NI_USB_6008.h" />
     <ClInclude Include="NI_USB_9211A.h" />
     <ClInclude Include="Parametres.h" />
-    <ClInclude Include="Parametres_experience.h" />
     <ClInclude Include="ParserXML.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="StringTable.h" />
@@ -270,7 +271,8 @@
     <ClInclude Include="XSBrowseFolder.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ApparatusParameters.cpp" />
+    <ClCompile Include="CommonFunctions.cpp" />
+    <ClCompile Include="DialogMachineParameters.cpp" />
     <ClCompile Include="Automation.cpp" />
     <ClCompile Include="AutomationFileWriting.cpp" />
     <ClCompile Include="AutomationInitialChecks.cpp" />
@@ -281,38 +283,17 @@
     <ClCompile Include="AutomationTimeKeeping.cpp" />
     <ClCompile Include="AutomationVacuum.cpp" />
     <ClCompile Include="AutomationValves.cpp" />
-    <ClCompile Include="CAdsorptionContinue.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="CDesorption.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="CDivers.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="CGeneral.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="CGrandesDoses.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="Chrono.cpp" />
     <ClCompile Include="Classes_experiences.cpp" />
-    <ClCompile Include="CMoyennesDoses.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="ConnectionMesure.cpp" />
-    <ClCompile Include="ConnectionPort.cpp" />
+    <ClCompile Include="DialogConnectionPort.cpp" />
     <ClCompile Include="ExperimentData.cpp" />
     <ClCompile Include="ExperimentPropertySheet.cpp" />
     <ClCompile Include="FluxConverter.cpp" />
-    <ClCompile Include="CPetitesDoses.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="DialogCell.cpp" />
     <ClCompile Include="DialogUser.cpp" />
     <ClCompile Include="DialogGas.cpp" />
-    <ClCompile Include="Dialog_TypeExperiment.cpp" />
+    <ClCompile Include="DialogTypeExperiment.cpp" />
     <ClCompile Include="GrapheView.cpp" />
     <ClCompile Include="InfoEtape.cpp" />
     <ClCompile Include="SerialInstruments.cpp" />
@@ -473,9 +454,6 @@
     <ClCompile Include="NI_USB_6008.cpp" />
     <ClCompile Include="NI_USB_9211A.cpp" />
     <ClCompile Include="Parametres.cpp" />
-    <ClCompile Include="Parametres_experience.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="ParserXML.cpp" />
     <ClCompile Include="SpinBtnCtrl.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -526,7 +504,7 @@
   </ImportGroup>
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties RESOURCE_FILE="Kaolla.rc" />
+      <UserProperties RESOURCE_FILE="" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>

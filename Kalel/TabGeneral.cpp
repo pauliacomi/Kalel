@@ -53,7 +53,7 @@ BOOL TabGeneral::OnInitDialog()
 {
 	CMFCPropertyPage::OnInitDialog();
 
-	// If there's no configuration, initialise the XML file
+	// If there's no configuration, initialise the XML file storing the gasses
 	if (!ConfigsExists()){
 		Initialisation_XML();
 	}
@@ -245,6 +245,13 @@ void TabGeneral::GreyOut(BOOL active)
 	GetDlgItem(IDC_SPIN_MASSE_ECHANTILLON)->EnableWindow(active);
 	GetDlgItem(IDC_SPIN_TEMPERATURE_EXPERIENCE)->EnableWindow(active);
 }
+
+
+
+
+
+
+// Message map
 
 
 BEGIN_MESSAGE_MAP(TabGeneral, CMFCPropertyPage)

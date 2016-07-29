@@ -3,43 +3,43 @@
 
 #include "stdafx.h"
 #include "Kalel.h"
-#include "Dialog_TypeExperiment.h"
+#include "DialogTypeExperiment.h"
 
 
 #include "Parametres.h"			// Accexsing the parameters file 
 #include "DefineStages.h"		// Experiment types
 
-// Dialog box Dialog_TypeExperiment
+// Dialog box DialogTypeExperiment
 
-IMPLEMENT_DYNAMIC(Dialog_TypeExperiment, CDialog)
+IMPLEMENT_DYNAMIC(DialogTypeExperiment, CDialog)
 
 // Constructor and destructor
-Dialog_TypeExperiment::Dialog_TypeExperiment(CWnd* pParent /*=NULL*/)
-	: CDialog(Dialog_TypeExperiment::IDD, pParent)
+DialogTypeExperiment::DialogTypeExperiment(CWnd* pParent /*=NULL*/)
+	: CDialog(DialogTypeExperiment::IDD, pParent)
 	, m_bExperienceAuto(FALSE)
 {
 	TypeExperience = EXPERIMENT_TYPE_UNDEF;
 }
 
-Dialog_TypeExperiment::~Dialog_TypeExperiment()
+DialogTypeExperiment::~DialogTypeExperiment()
 {
 }
 
 // Data exchange and message map
-void Dialog_TypeExperiment::DoDataExchange(CDataExchange* pDX)
+void DialogTypeExperiment::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
 	DDX_Radio(pDX, IDC_RADIO_TYPE_EXPERIENCE_AUTO, m_bExperienceAuto);
 }
 
 
-BEGIN_MESSAGE_MAP(Dialog_TypeExperiment, CDialog)
+BEGIN_MESSAGE_MAP(DialogTypeExperiment, CDialog)
 END_MESSAGE_MAP()
 
 
-// Message management of Dialog_TypeExperiment
+// Message management of DialogTypeExperiment
 
-BOOL Dialog_TypeExperiment::OnInitDialog()
+BOOL DialogTypeExperiment::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 	
@@ -70,7 +70,7 @@ BOOL Dialog_TypeExperiment::OnInitDialog()
 	return TRUE;  // return TRUE unless you set the focus to a control
 }
 
-void Dialog_TypeExperiment::OnOK()
+void DialogTypeExperiment::OnOK()
 {
 	UpdateData(TRUE);
 	if (m_bExperienceAuto == FALSE)
@@ -81,7 +81,7 @@ void Dialog_TypeExperiment::OnOK()
 	CDialog::OnOK();
 }
 
-void Dialog_TypeExperiment::OnCancel()
+void DialogTypeExperiment::OnCancel()
 {
 	TypeExperience = EXPERIMENT_TYPE_UNDEF;
 

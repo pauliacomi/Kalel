@@ -19,8 +19,8 @@
 #include "ExperimentPropertySheet.h"	// Dialog box for setting experimental properties
 
 // Dialog Box includes
-#include "ApparatusParameters.h"
-#include "ConnectionPort.h"
+#include "DialogMachineParameters.h"
+#include "DialogConnectionPort.h"
 
 #include "KalelDoc.h"
 #include "Kalel.h"

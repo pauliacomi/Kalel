@@ -94,9 +94,6 @@
     <Filter Include="Source Files\Utils\XML">
       <UniqueIdentifier>{8ba33742-ab29-4bfd-a2ee-4e0d241affa6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Old\Tabs">
-      <UniqueIdentifier>{72b9ecbd-d296-43ad-899d-8e7aea0b8862}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Automation\Class">
       <UniqueIdentifier>{8f6f7548-7262-4113-88ac-25c61bac649c}</UniqueIdentifier>
     </Filter>
@@ -129,9 +126,6 @@
     </Filter>
     <Filter Include="Source Files\GUI\Dialogs\Experiment Parameters\Tabs">
       <UniqueIdentifier>{4d4336e8-a13f-4388-8c9a-ea7f631adb05}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Old\Tabs">
-      <UniqueIdentifier>{d67e7c8e-39e0-49a9-8413-62147908061e}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\GUI\Dialogs\Experimental Parameters\Tabs">
       <UniqueIdentifier>{c2f3920c-056e-4c6f-9fa9-65c03e393e14}</UniqueIdentifier>
@@ -234,27 +228,6 @@
     <ClInclude Include="Manip_AutoGaz.h">
       <Filter>Header Files\Old\Manip</Filter>
     </ClInclude>
-    <ClInclude Include="CDesorption.h">
-      <Filter>Header Files\Old\Tabs</Filter>
-    </ClInclude>
-    <ClInclude Include="CDivers.h">
-      <Filter>Header Files\Old\Tabs</Filter>
-    </ClInclude>
-    <ClInclude Include="CGeneral.h">
-      <Filter>Header Files\Old\Tabs</Filter>
-    </ClInclude>
-    <ClInclude Include="CGrandesDoses.h">
-      <Filter>Header Files\Old\Tabs</Filter>
-    </ClInclude>
-    <ClInclude Include="CMoyennesDoses.h">
-      <Filter>Header Files\Old\Tabs</Filter>
-    </ClInclude>
-    <ClInclude Include="CPetitesDoses.h">
-      <Filter>Header Files\Old\Tabs</Filter>
-    </ClInclude>
-    <ClInclude Include="CAdsorptionContinue.h">
-      <Filter>Header Files\Old\Tabs</Filter>
-    </ClInclude>
     <ClInclude Include="FluxConverter.h">
       <Filter>Header Files\Parameters</Filter>
     </ClInclude>
@@ -305,9 +278,6 @@
     </ClInclude>
     <ClInclude Include="ResourceTypeExperience.h">
       <Filter>Header Files\Resources\DialogBoxes</Filter>
-    </ClInclude>
-    <ClInclude Include="Parametres_experience.h">
-      <Filter>Header Files\Old</Filter>
     </ClInclude>
     <ClInclude Include="DialogGas.h">
       <Filter>Header Files\GUI\Dialogs\Experimental Parameters\Stored Parameters</Filter>
@@ -360,15 +330,6 @@
     <ClInclude Include="KalelView.h">
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
-    <ClInclude Include="ApparatusParameters.h">
-      <Filter>Header Files\GUI\Dialogs</Filter>
-    </ClInclude>
-    <ClInclude Include="Dialog_TypeExperiment.h">
-      <Filter>Header Files\GUI\Dialogs</Filter>
-    </ClInclude>
-    <ClInclude Include="ConnectionPort.h">
-      <Filter>Header Files\GUI\Dialogs\Connection Port</Filter>
-    </ClInclude>
     <ClInclude Include="VerifInstrument.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -380,6 +341,18 @@
     </ClInclude>
     <ClInclude Include="ResourceDialogExperimentSettings.h">
       <Filter>Header Files\Resources\DialogBoxes</Filter>
+    </ClInclude>
+    <ClInclude Include="DialogTypeExperiment.h">
+      <Filter>Header Files\GUI\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="DialogMachineParameters.h">
+      <Filter>Header Files\GUI\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="DialogConnectionPort.h">
+      <Filter>Header Files\GUI\Dialogs\Connection Port</Filter>
+    </ClInclude>
+    <ClInclude Include="CommonFunctions.h">
+      <Filter>Header Files\Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -524,27 +497,6 @@
     <ClCompile Include="Manip_AutoGaz_MiseSousVide_Bouteille.cpp">
       <Filter>Source Files\Old\Manip\Manip_AutoGaz\MSV</Filter>
     </ClCompile>
-    <ClCompile Include="CAdsorptionContinue.cpp">
-      <Filter>Source Files\Old\Tabs</Filter>
-    </ClCompile>
-    <ClCompile Include="CDesorption.cpp">
-      <Filter>Source Files\Old\Tabs</Filter>
-    </ClCompile>
-    <ClCompile Include="CDivers.cpp">
-      <Filter>Source Files\Old\Tabs</Filter>
-    </ClCompile>
-    <ClCompile Include="CGeneral.cpp">
-      <Filter>Source Files\Old\Tabs</Filter>
-    </ClCompile>
-    <ClCompile Include="CGrandesDoses.cpp">
-      <Filter>Source Files\Old\Tabs</Filter>
-    </ClCompile>
-    <ClCompile Include="CMoyennesDoses.cpp">
-      <Filter>Source Files\Old\Tabs</Filter>
-    </ClCompile>
-    <ClCompile Include="CPetitesDoses.cpp">
-      <Filter>Source Files\Old\Tabs</Filter>
-    </ClCompile>
     <ClCompile Include="FluxConverter.cpp">
       <Filter>Source Files\Parameters</Filter>
     </ClCompile>
@@ -598,9 +550,6 @@
     </ClCompile>
     <ClCompile Include="ThreadManager.cpp">
       <Filter>Source Files\Automation</Filter>
-    </ClCompile>
-    <ClCompile Include="Parametres_experience.cpp">
-      <Filter>Source Files\Old</Filter>
     </ClCompile>
     <ClCompile Include="Automation.cpp">
       <Filter>Source Files\Automation\Class</Filter>
@@ -674,17 +623,20 @@
     <ClCompile Include="KalelViewDisplay.cpp">
       <Filter>Source Files\GUI</Filter>
     </ClCompile>
-    <ClCompile Include="ApparatusParameters.cpp">
-      <Filter>Source Files\GUI\Dialogs</Filter>
-    </ClCompile>
-    <ClCompile Include="Dialog_TypeExperiment.cpp">
-      <Filter>Source Files\GUI\Dialogs</Filter>
-    </ClCompile>
-    <ClCompile Include="ConnectionPort.cpp">
-      <Filter>Source Files\GUI\Dialogs\Connection Port</Filter>
-    </ClCompile>
     <ClCompile Include="ConnectionMesure.cpp">
       <Filter>Source Files\GUI\Dialogs\Connection Port</Filter>
+    </ClCompile>
+    <ClCompile Include="DialogTypeExperiment.cpp">
+      <Filter>Source Files\GUI\Dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="DialogMachineParameters.cpp">
+      <Filter>Source Files\GUI\Dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="DialogConnectionPort.cpp">
+      <Filter>Source Files\GUI\Dialogs\Connection Port</Filter>
+    </ClCompile>
+    <ClCompile Include="CommonFunctions.cpp">
+      <Filter>Source Files\Utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

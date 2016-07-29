@@ -2,10 +2,10 @@
 #ifndef TABDOSES_H
 #define TABDOSES_H
 
-
 #include "ResourceDialogExperimentSettings.h"	// For resources
-#include "SpinBtnCtrl.h"			// For the Spin Button class
-#include "Classes_experiences.h"	// Definitions for all classes used in this file
+#include "SpinBtnCtrl.h"						// For the Spin Button class
+#include "Classes_experiences.h"				// Definitions for all classes used in this file
+
 
 
 class TabDoses : public CMFCPropertyPage
@@ -21,8 +21,8 @@ public:
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-	virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
 	virtual BOOL OnInitDialog();
+	virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
 	virtual BOOL OnApply();
 	virtual void OnCancel();
 	virtual void OnOK();

@@ -10,7 +10,9 @@
 #include "TabDoses.h"
 #include "TabDesorption.h"
 #include "TabContinuousAdsorption.h"
-#include "ResourceDialogExperimentSettings.h"
+
+// Experiment settings class
+#include "ExperimentSettings.h"
 
 
 // Other includes
@@ -34,6 +36,7 @@ public:
 	ExperimentPropertySheet(LPCTSTR pszCaption, CWnd* pParentWnd = NULL, UINT iSelectPage = 0);
 	virtual ~ExperimentPropertySheet();
 
+	void Initiate(ExperimentSettings * experimentSettings);
 	BOOL OnInitDialog();
 
 protected:
@@ -45,23 +48,13 @@ public:
 	// PropertyPages declared
 	TabGeneral m_general;
 	TabDivers m_divers;
-	TabDoses * m_adsorption;
-	TabDesorption * m_desorption;
-	TabContinuousAdsorption m_continuousAdsorption;
-
 	vector<TabDoses*> adsorptionTabs;
 	vector<TabDesorption*> desorptionTabs;
+	TabContinuousAdsorption m_continuousAdsorption;
 
 protected:
 	CMFCButton m_addAdsorption;
 	CMFCButton m_addDesorption;
-
-	// Pointers for class polymorphism
-	CPropertyPage * p_generalPP;
-	CPropertyPage * p_diversPP;
-	CPropertyPage * p_adsorptioncontinuePP;
-	vector<CPropertyPage*> adsorptionTabPointers;
-	vector<CPropertyPage*> desorptionTabPointers;
 
 	// Number of tabs
 	int numberOfAdsorptions;
