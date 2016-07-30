@@ -91,8 +91,8 @@ BOOL TabDivers::OnInitDialog()
 	if (m_IndexCellule != -1)
 	{
 		m_CBCellule.SetTopIndex(m_IndexCellule);
+		UpdateData(false);
 	}
-
 
 	m_SpinTempsLigneBase.SetRange(0, 1000000);
 	m_SpinTempsLigneBase.SetInc(-1);

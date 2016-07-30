@@ -117,11 +117,13 @@ BOOL TabGeneral::OnInitDialog()
 	if (m_GasIndex != -1)
 	{
 		m_CBGas.SetTopIndex(m_GasIndex);
-	}// Set index which was taken earlier
+		UpdateData(false);
+	}
 
 	if (m_UserIndex != -1)
 	{
 		m_CBUser.SetTopIndex(m_UserIndex);
+		UpdateData(false);
 	}
 
 	m_SpinSampleMass.SetRange(0, 1000000);
