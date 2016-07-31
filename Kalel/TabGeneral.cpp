@@ -21,7 +21,6 @@ IMPLEMENT_DYNAMIC(TabGeneral, CMFCPropertyPage)
 TabGeneral::TabGeneral()
 	: CMFCPropertyPage(TabGeneral::IDD)
 {
-	Reinitialisation();
 }
 
 TabGeneral::~TabGeneral()
@@ -35,14 +34,14 @@ void TabGeneral::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_NOM_FICHIER, m_FileName);
 	DDX_Text(pDX, IDC_NOM_CHEMIN, m_Path);
 	DDX_Text(pDX, IDC_NOM_ECHANTILLON, m_SampleName);
-	DDX_Text(pDX, IDC_MASSE_ECHANTILLON, m_SampleMass);
+	DDX_Text(pDX, IDC_MASSE_ECHANTILLON,m_SampleMass);
+	DDX_Control(pDX, IDC_SPIN_MASSE_ECHANTILLON, m_SpinSampleMass);
 	DDX_Text(pDX, IDC_TEMPERATURE_EXPERIENCE, m_ExperimentTemperature);
+	DDX_Control(pDX, IDC_SPIN_TEMPERATURE_EXPERIENCE, m_SpinTemperatureExperiment);
 	DDX_Text(pDX, IDC_COMMENTAIRES, m_Comments);
 
-	DDX_Control(pDX, IDC_SPIN_MASSE_ECHANTILLON, m_SpinSampleMass);
 	DDX_Control(pDX, IDC_COMBO_GAZ, m_CBGas);
 	DDX_CBIndex(pDX, IDC_COMBO_GAZ, m_GasIndex);
-	DDX_Control(pDX, IDC_SPIN_TEMPERATURE_EXPERIENCE, m_SpinTemperatureExperiment);
 	DDX_Control(pDX, IDC_COMMENTAIRES, m_EditComments);
 	DDX_Control(pDX, IDC_COMBO_EXPERIMENTATEUR, m_CBUser);
 	DDX_CBIndex(pDX, IDC_COMBO_EXPERIMENTATEUR, m_UserIndex);
@@ -67,6 +66,7 @@ BOOL TabGeneral::OnInitDialog()
 	gasExp = allSettings.gaz;
 	userExp = allSettings.experimentateur;
 
+	StrCalo = _T(GetEnteteCalo().c_str());
 	StrSurnom = _T(userExp.surnom.c_str());
 	StrEchantillon = m_SampleName;
 	StrGaz = _T(gasExp.symbole.c_str());
@@ -135,6 +135,10 @@ BOOL TabGeneral::OnInitDialog()
 	m_SpinTemperatureExperiment.SetInc(-1);
 	m_SpinTemperatureExperiment.SetFormat("%1.f");
 	m_SpinTemperatureExperiment.UpdateBuddy();
+
+	ToggleGreyOut();
+
+	UpdateData(FALSE);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 }
@@ -228,6 +232,7 @@ void TabGeneral::Reinitialisation(void)
 		}
 	}
 
+	StrCalo = _T(GetEnteteCalo().c_str());
 	StrSurnom = _T(userExp.surnom.c_str());
 	StrEchantillon = m_SampleName;
 	StrGaz = _T(gasExp.symbole.c_str());
@@ -273,11 +278,9 @@ void TabGeneral::GreyOut(BOOL active)
 void TabGeneral::ToggleGreyOut()
 {
 	if (checkGeneral == true)
-		GreyOut(TRUE);
+		GreyOut(FALSE); 
 	else
-		GreyOut(FALSE);
-
-	checkGeneral = !checkGeneral;
+		GreyOut(TRUE);
 }
 
 

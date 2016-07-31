@@ -77,6 +77,8 @@ BOOL TabDoses::OnInitDialog()
 	m_SpinFinalPressureDoses.SetFormat("%1.3f");
 	m_SpinFinalPressureDoses.UpdateBuddy();
 
+	ToggleGreyOut();
+
 	return TRUE;  // return TRUE unless you set the focus to a control
 }
 
@@ -135,16 +137,15 @@ void TabDoses::GreyOut(BOOL active)
 	GetDlgItem(IDC_SPIN_TEMPS_ADSORPTION_DOSES)->EnableWindow(active);
 	GetDlgItem(IDC_EDIT_PRESSION_FINALE_DOSES)->EnableWindow(active);
 	GetDlgItem(IDC_SPIN_PRESSION_FINALE_DOSES)->EnableWindow(active);
+	GetDlgItem(IDC_BUTTON_ADS_REMOVE)->EnableWindow(active);
 }
 
 void TabDoses::ToggleGreyOut()
 {
 	if (checkDoses == true)
-		GreyOut(TRUE);
-	else
 		GreyOut(FALSE);
-
-	checkDoses = !checkDoses;
+	else
+		GreyOut(TRUE);
 }
 
 void TabDoses::Rename(int number) {

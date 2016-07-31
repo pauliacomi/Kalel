@@ -33,7 +33,6 @@ protected:
 protected:
 	CString m_caption;	// Title of the page
 
-	bool checkDesorption;
 	int position;
 
 	BOOL m_bDesorption;
@@ -53,6 +52,7 @@ protected:
 
 public:
 	Donnees_Desorption allSettings;
+	bool checkDesorption;			//For greying out
 
 // Functions
 public:

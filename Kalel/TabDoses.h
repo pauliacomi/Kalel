@@ -36,7 +36,6 @@ protected:
 	HANDLE h_parent;	// Handle to propertysheet
 
 	BOOL m_bDoses;
-	bool checkDoses;
 	int position;
 
 	int m_nTimeAdsorptionDoses;
@@ -53,7 +52,7 @@ protected:
 
 public:
 	Donnees_Doses allSettings;
-
+	bool checkDoses;				// for greying out
 	
 	// Functions
 public:

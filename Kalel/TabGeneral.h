@@ -31,7 +31,6 @@ protected:
 
 // Variables
 protected:
-	bool checkGeneral;			// for greying out
 
 	CString m_FileName;
 	CString m_Path;
@@ -66,6 +65,7 @@ protected:
 	// All the settings are stored here
 public:
 	Donnees_General allSettings;
+	bool checkGeneral;			// for greying out
 
 // Functions
 public:

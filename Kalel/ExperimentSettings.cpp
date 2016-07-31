@@ -12,10 +12,6 @@ ExperimentSettings::ExperimentSettings()
 }
 
 ExperimentSettings::ExperimentSettings(int initialAdsorptions, int initialDesorptions)
-: GUIhandle(NULL)
-, dataModified(false)
-, continueAnyway(false)
-, experimentType(EXPERIMENT_TYPE_UNDEF)
 {
 	// Initialisation of the critical section
 	InitializeCriticalSection(&criticalSection);
@@ -38,6 +34,9 @@ void ExperimentSettings::ResetData()
 
 void ExperimentSettings::ResetData(int initialAdsorptions, int initialDesorptions)
 {
+	GUIhandle = NULL;
+	dataModified = false;
+	continueAnyway = false;
 	experimentType = EXPERIMENT_TYPE_UNDEF;
 	
 	// Initialisation of settings
@@ -51,7 +50,7 @@ void ExperimentSettings::ResetData(int initialAdsorptions, int initialDesorption
 	dataGeneral.experimentateur.nom = "";
 	dataGeneral.experimentateur.surnom = "";
 
-	temp.Format(TEXT_NEWFILETEXT, cF.getDate());
+	temp.Format(TEXT_NEWFILETEXT, cF.getDateUnderline());
 	dataGeneral.fichier = temp.GetBuffer();
 	dataGeneral.gaz.nom = "";
 	dataGeneral.gaz.symbole = "";

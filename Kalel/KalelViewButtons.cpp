@@ -46,8 +46,8 @@ void CKalelView::OnBnClickedLancer()
 			// Get the data from the dialog
 			GetExperimentData(&dialogExperimentProperties, true);
 
-			// Launch the threads
-			threadManager->StartThread();
+			// Raise the flag for data modified
+			experimentSettings->dataModified = true;
 		}
 		else
 		{
@@ -74,8 +74,19 @@ void CKalelView::OnBnClickedButtonParametresExperience()
 
 		// Create dialog
 		ExperimentPropertySheet dialogExperimentProperties(_T(""));
+		dialogExperimentProperties.Initiate(experimentSettings);
 
-		dialogExperimentProperties.SetProprietiesModif(experimentData.experimentStage);
+		int counter = 0;
+		if (experimentData.experimentStage = STAGE_ADSORPTION)
+		{
+			counter = experimentData.adsorptionCounter;
+		}
+		if (experimentData.experimentStage = STAGE_DESORPTION)
+		{
+			counter = experimentData.desorptionCounter;
+		}
+
+		dialogExperimentProperties.SetProprietiesModif(experimentData.experimentStage, counter);
 
 		if (dialogExperimentProperties.DoModal() == IDOK)
 		{
@@ -121,22 +132,22 @@ void CKalelView::GetExperimentData(ExperimentPropertySheet * pDialogExperimentPr
 
 	if (initialRequest)
 	{
-		// Raise the flag for data modified
-		experimentSettings->dataModified = true;
-
-		// Just copy data accross
+		// Copy data across
 		experimentSettings->dataGeneral = pDialogExperimentProperties->m_general.allSettings;
 
 		if (experimentSettings->experimentType == EXPERIMENT_TYPE_AUTO)
 		{
 			experimentSettings->dataDivers = pDialogExperimentProperties->m_divers.allSettings;
+		
+			experimentSettings->dataAdsorption.clear();
 			for (size_t i = 0; i < pDialogExperimentProperties->adsorptionTabs.size(); i++)
 			{
-				experimentSettings->dataAdsorption[i] = pDialogExperimentProperties->adsorptionTabs[i]->allSettings;
+				experimentSettings->dataAdsorption.push_back(pDialogExperimentProperties->adsorptionTabs[i]->allSettings);
 			}
+			experimentSettings->dataDesorption.clear();
 			for (size_t i = 0; i < pDialogExperimentProperties->desorptionTabs.size(); i++)
 			{
-				experimentSettings->dataDesorption[i] = pDialogExperimentProperties->desorptionTabs[i]->allSettings;
+				experimentSettings->dataDesorption.push_back(pDialogExperimentProperties->desorptionTabs[i]->allSettings);
 			}
 		}
 	}
@@ -146,18 +157,67 @@ void CKalelView::GetExperimentData(ExperimentPropertySheet * pDialogExperimentPr
 		// Use a critical section to avoid data races
 		EnterCriticalSection(&experimentSettings->criticalSection);
 
+		
 		// Must check if everything is the same
-		for (size_t i = 0; i < pDialogExperimentProperties->adsorptionTabs.size(); i++)
-		{
-			if (true)
-			{
+		
+		bool modified = false;
 
-			}
-			experimentSettings->dataAdsorption.push_back(pDialogExperimentProperties->adsorptionTabs[i]->allSettings);
-		}
-		for (size_t i = 0; i < pDialogExperimentProperties->desorptionTabs.size(); i++)
+		if (pDialogExperimentProperties->adsorptionTabs.size() != experimentSettings->dataAdsorption.size() 
+			&& pDialogExperimentProperties->desorptionTabs.size() != experimentSettings->dataDesorption.size())
 		{
-			experimentSettings->dataDesorption.push_back(pDialogExperimentProperties->desorptionTabs[i]->allSettings);
+			modified = true;
+		}
+		else
+		{
+			if (pDialogExperimentProperties->m_general.allSettings != experimentSettings->dataGeneral)
+			{
+				modified = true;
+			}
+
+			if (pDialogExperimentProperties->m_divers.allSettings != experimentSettings->dataDivers)
+			{
+				modified = true;
+			}
+
+			for (size_t i = 0; i < pDialogExperimentProperties->adsorptionTabs.size(); i++)
+			{
+				if (pDialogExperimentProperties->adsorptionTabs[i]->allSettings != experimentSettings->dataAdsorption[i])
+				{
+					modified = true;
+				}
+			}
+			for (size_t i = 0; i < pDialogExperimentProperties->desorptionTabs.size(); i++)
+			{
+				if (pDialogExperimentProperties->desorptionTabs[i]->allSettings != experimentSettings->dataDesorption[i])
+				{
+					modified = true;
+				}
+			}
+		}
+		
+		if (modified)
+		{
+			// Raise the flag for data modified
+			experimentSettings->dataModified = true;
+
+			// Copy data across
+			experimentSettings->dataGeneral = pDialogExperimentProperties->m_general.allSettings;
+
+			if (experimentSettings->experimentType == EXPERIMENT_TYPE_AUTO)
+			{
+				experimentSettings->dataDivers = pDialogExperimentProperties->m_divers.allSettings;
+
+				experimentSettings->dataAdsorption.clear();
+				for (size_t i = 0; i < pDialogExperimentProperties->adsorptionTabs.size(); i++)
+				{
+					experimentSettings->dataAdsorption.push_back(pDialogExperimentProperties->adsorptionTabs[i]->allSettings);
+				}
+				experimentSettings->dataDesorption.clear();
+				for (size_t i = 0; i < pDialogExperimentProperties->desorptionTabs.size(); i++)
+				{
+					experimentSettings->dataDesorption.push_back(pDialogExperimentProperties->desorptionTabs[i]->allSettings);
+				}
+			}
 		}
 
 		// Leave the critical section

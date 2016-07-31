@@ -41,12 +41,6 @@ void TabDesorption::DoDataExchange(CDataExchange* pDX)
 }
 
 
-BOOL TabDesorption::OnCommand(WPARAM wParam, LPARAM lParam)
-{
-	SetModified(TRUE);
-	return CMFCPropertyPage::OnCommand(wParam, lParam);
-}
-
 BOOL TabDesorption::OnInitDialog()
 {
 	// Get settings from storage
@@ -79,7 +73,16 @@ BOOL TabDesorption::OnInitDialog()
 	m_SpinPressionFinaleDesorption.SetFormat("%1.3f");
 	m_SpinPressionFinaleDesorption.UpdateBuddy();
 
+	ToggleGreyOut();
+
 	return TRUE;  // return TRUE unless you set the focus to a control
+}
+
+
+BOOL TabDesorption::OnCommand(WPARAM wParam, LPARAM lParam)
+{
+	SetModified(TRUE);
+	return CMFCPropertyPage::OnCommand(wParam, lParam);
 }
 
 BOOL TabDesorption::OnApply()
@@ -140,17 +143,16 @@ void TabDesorption::GreyOut(BOOL active)
 	GetDlgItem(IDC_EDIT_PRESSION_FINALE_DESORPTION)->EnableWindow(active);
 	GetDlgItem(IDC_SPIN_PRESSION_FINALE_DESORPTION)->EnableWindow(active);
 	GetDlgItem(IDC_CHECK_DESORPTION_DERNIERE_ETAPE)->EnableWindow(active);
+	GetDlgItem(IDC_BUTTON_DES_REMOVE)->EnableWindow(active);
 }
 
 
 void TabDesorption::ToggleGreyOut()
 {
 	if (checkDesorption == true)
-		GreyOut(TRUE);
-	else
 		GreyOut(FALSE);
-
-	checkDesorption = !checkDesorption;
+	else
+		GreyOut(TRUE);
 }
 
 void TabDesorption::Rename(int number) {

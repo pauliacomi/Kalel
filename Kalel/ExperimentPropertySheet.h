@@ -60,6 +60,11 @@ protected:
 	int numberOfAdsorptions;
 	int numberOfDesorptions;
 
+	// Availability
+	bool modified;
+	int experimentStage;
+	int experimentSubStage;
+
 public:
 	int experimentType;
 	vector<bool> availableTabs;   /// it is here to prevent a tab being added twice, might be useleess but need to reprogram stuff
@@ -86,7 +91,7 @@ public:
 
 	// Sets the experiment type as modified
 	// It allows only the tabs which have parameters that can be mofified to be showed
-	void SetProprietiesModif(int etape_en_cours);
+	void SetProprietiesModif(int stage, int substage);
 
 	void Reinitialisation(bool automatic);		// Reinitialise the data in all the tabs
 
