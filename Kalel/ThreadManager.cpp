@@ -244,10 +244,3 @@ void ThreadManager::ThreadManualAction()
 	::PostMessage(localMP->windowHandle, WM_UPDATEBUTTONS, (WPARAM)localMP, actionSuccessful);
 
 }
-
-
-void ThreadManager::ChangementDev(int dev_vanne, int dev_temp)
-{
-	pVanne->SetDevNI_USB_6008(dev_vanne);
-	//pTemperature->SetDevNI_USB_9211A(dev_temp);
-}

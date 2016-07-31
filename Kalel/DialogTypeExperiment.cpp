@@ -3,43 +3,43 @@
 
 #include "stdafx.h"
 #include "Kalel.h"
-#include "Dialogue_TypeExperience.h"
+#include "DialogTypeExperiment.h"
 
 
 #include "Parametres.h"			// Accexsing the parameters file 
 #include "DefineStages.h"		// Experiment types
 
-// Dialog box CDialogue_TypeExperience
+// Dialog box DialogTypeExperiment
 
-IMPLEMENT_DYNAMIC(CDialogue_TypeExperience, CDialog)
+IMPLEMENT_DYNAMIC(DialogTypeExperiment, CDialog)
 
 // Constructor and destructor
-CDialogue_TypeExperience::CDialogue_TypeExperience(CWnd* pParent /*=NULL*/)
-	: CDialog(CDialogue_TypeExperience::IDD, pParent)
+DialogTypeExperiment::DialogTypeExperiment(CWnd* pParent /*=NULL*/)
+	: CDialog(DialogTypeExperiment::IDD, pParent)
 	, m_bExperienceAuto(FALSE)
 {
 	TypeExperience = EXPERIMENT_TYPE_UNDEF;
 }
 
-CDialogue_TypeExperience::~CDialogue_TypeExperience()
+DialogTypeExperiment::~DialogTypeExperiment()
 {
 }
 
 // Data exchange and message map
-void CDialogue_TypeExperience::DoDataExchange(CDataExchange* pDX)
+void DialogTypeExperiment::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
 	DDX_Radio(pDX, IDC_RADIO_TYPE_EXPERIENCE_AUTO, m_bExperienceAuto);
 }
 
 
-BEGIN_MESSAGE_MAP(CDialogue_TypeExperience, CDialog)
+BEGIN_MESSAGE_MAP(DialogTypeExperiment, CDialog)
 END_MESSAGE_MAP()
 
 
-// Message management of CDialogue_TypeExperience
+// Message management of DialogTypeExperiment
 
-BOOL CDialogue_TypeExperience::OnInitDialog()
+BOOL DialogTypeExperiment::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 	
@@ -56,7 +56,7 @@ BOOL CDialogue_TypeExperience::OnInitDialog()
 	GetDlgItem(IDC_RADIO_TYPE_EXPERIENCE_AUTO)->EnableWindow(TRUE);
 	GetDlgItem(IDOK)->EnableWindow(TRUE);
 
-	// I have no clue why this is duplicated ---------------------->
+	// Disable the button for automatic experiment if there is no mention of a high range pressure sensor in the parameters file
 	if(!GetMesureHautePression())
 	{
 		m_bExperienceAuto = FALSE;
@@ -70,7 +70,7 @@ BOOL CDialogue_TypeExperience::OnInitDialog()
 	return TRUE;  // return TRUE unless you set the focus to a control
 }
 
-void CDialogue_TypeExperience::OnOK()
+void DialogTypeExperiment::OnOK()
 {
 	UpdateData(TRUE);
 	if (m_bExperienceAuto == FALSE)
@@ -81,7 +81,7 @@ void CDialogue_TypeExperience::OnOK()
 	CDialog::OnOK();
 }
 
-void CDialogue_TypeExperience::OnCancel()
+void DialogTypeExperiment::OnCancel()
 {
 	TypeExperience = EXPERIMENT_TYPE_UNDEF;
 

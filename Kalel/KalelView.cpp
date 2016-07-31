@@ -33,11 +33,6 @@ BEGIN_MESSAGE_MAP(CKalelView, CFormView)
 	ON_MESSAGE(WM_DISPLAYMESSAGEBOX, &CKalelView::MessageBoxAlert)					// Displays an messageBOX to alert user of something
 	ON_MESSAGE(WM_DISPLAYMESSAGEBOXCONF, &CKalelView::MessageBoxConfirmation)		// Displays an messageBOX to or ask user for confirmation
 	//ON_MESSAGE(WM_GRAPHRESET, &CKalelDoc::GraphReset)
-
-	// Messages from the manip class
-
-	//ON_MESSAGE(WM_GRAPHADDMESUREMENT, &CKalelDoc::GraphAddMeasurement)
-	//ON_MESSAGE(WM_GRAPHSETTITLE, &CKalelDoc::GraphSetTitle)
 	//ON_MESSAGE(WM_GRAPHDATAAUTOSTEP, &CKalelDoc::Graph)
 	//ON_MESSAGE(WM_DISPLAYMEASUREMENT, &CKalelView::AffichageMesures)
 	//ON_MESSAGE(WM_DISPLAYSTEP, &CKalelView::AffichageEtape)
@@ -123,7 +118,6 @@ CKalelView::~CKalelView()
 {
 	delete threadManager;
 	delete experimentSettings;
-	delete dialogExperimentProperties;
 }
 
 // Liaising between variables and controls
@@ -196,10 +190,12 @@ void CKalelView::OnInitialUpdate()
 	UpdateButtons();
 
 	// Create the experiment parameter window
-	dialogExperimentProperties = new ExperimentPropertySheet(_T(""));
-	experimentSettings = new ExperimentSettings();							// Create a new experiment storage
-	experimentSettings->GUIhandle = GetSafeHwnd();							// Save the window handle
-	threadManager = new ThreadManager(experimentSettings);;  // the class dealing with managing threads
+	int initialAdsorptions = 3;
+	int initialDesorptions = 1;
+	experimentSettings = new ExperimentSettings(initialAdsorptions, initialDesorptions);			// Create a new experiment storage
+	experimentSettings->GUIhandle = GetSafeHwnd();													// Save the window handle
+
+	threadManager = new ThreadManager(experimentSettings);											// the class dealing with managing threads
 
 	// Set the timer for the window update
 	SetTimer(1, 100, NULL);
@@ -309,6 +305,18 @@ void CKalelView::OnChangementBouteille()
 {
 	ASSERT(0);
 	//ChangementBouteille(GetSafeHwnd());
+}
+
+void CKalelView::DisplayPortDialog(void)
+{
+	ApparatusParameters apparatusParameters;
+	apparatusParameters.DoModal();
+}
+
+void CKalelView::DisplayApparatusSettingsDialog(void)
+{
+	ConnectionPort m_connection_ports;
+	m_connection_ports.DoModal();
 }
 
 

@@ -3,7 +3,7 @@
 
 #include "stdafx.h"
 #include "Kalel.h"
-#include "ApparatusParameters.h"
+#include "DialogMachineParameters.h"
 
 #include "Parametres.h"
 

@@ -18,6 +18,10 @@
 #include "ExperimentSettings.h"			// Where returned data from results is stored
 #include "ExperimentPropertySheet.h"	// Dialog box for setting experimental properties
 
+// Dialog Box includes
+#include "DialogMachineParameters.h"
+#include "DialogConnectionPort.h"
+
 #include "KalelDoc.h"
 #include "Kalel.h"
 
@@ -33,9 +37,6 @@ public:
 	// Storage for all the data
 	ExperimentSettings * experimentSettings;
 	ExperimentData experimentData;
-
-	// Experiment property dialog
-	ExperimentPropertySheet * dialogExperimentProperties;
 
 	// Some storage variables for each MFC control
 	CEdit pEditMessages;
@@ -113,10 +114,13 @@ public:
 	void OnMsvAmpoule(void);
 	void OnMsvBouteille(void);
 	void OnChangementBouteille(void);
+	void DisplayPortDialog(void);
+	void DisplayApparatusSettingsDialog(void);
 
-	void GetExperimentData(ExperimentPropertySheet * dialogExperimentProperties);
+	void GetExperimentData(ExperimentPropertySheet * dialogExperimentProperties, bool initialRequest);
 
 	void UpdateButtons();
+
 
 	// Thread callbacks
 	LRESULT OnRegularThreadFinished(WPARAM wParam, LPARAM);

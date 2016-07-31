@@ -11,6 +11,10 @@
 #include "TabDesorption.h"
 #include "TabContinuousAdsorption.h"
 
+// Experiment settings class
+#include "ExperimentSettings.h"
+
+
 // Other includes
 #include <vector>		// Using a vector to keep the collection of tabs in
 
@@ -21,6 +25,7 @@
 #define tab_adsorption_continue	6
 
 #define nb_permanent_tabs		2
+#define nb_max_tabs				5
 
 class ExperimentPropertySheet : public CMFCPropertySheet
 {
@@ -31,6 +36,7 @@ public:
 	ExperimentPropertySheet(LPCTSTR pszCaption, CWnd* pParentWnd = NULL, UINT iSelectPage = 0);
 	virtual ~ExperimentPropertySheet();
 
+	void Initiate(ExperimentSettings * experimentSettings);
 	BOOL OnInitDialog();
 
 protected:
@@ -42,42 +48,36 @@ public:
 	// PropertyPages declared
 	TabGeneral m_general;
 	TabDivers m_divers;
-	TabDoses * m_dose;
-	TabDesorption * m_desorption;
-	TabContinuousAdsorption m_continuousAdsorption;
 	vector<TabDoses*> adsorptionTabs;
 	vector<TabDesorption*> desorptionTabs;
+	TabContinuousAdsorption m_continuousAdsorption;
 
 protected:
 	CMFCButton m_addAdsorption;
 	CMFCButton m_addDesorption;
 
-	// Pointers for class polymorphism
-	CPropertyPage * p_generalPP;
-	CPropertyPage * p_diversPP;
-	CPropertyPage * p_adsorptioncontinuePP;
-	vector<CPropertyPage*> adsorptionTabPointers;
-	vector<CPropertyPage*> desorptionTabPointers;
-
 	// Number of tabs
 	int numberOfAdsorptions;
 	int numberOfDesorptions;
 
+	// Availability
+	bool modified;
+	int experimentStage;
+	int experimentSubStage;
+
 public:
 	int experimentType;
-	vector<bool> availableTabs;
+	vector<bool> availableTabs;   /// it is here to prevent a tab being added twice, might be useleess but need to reprogram stuff
 
 // custom functions
 
 public:
-	void AddAllTabs();		// Asks all the tabs to be added
-	void RemoveAllTabs();	// Asks all the tabs to be removed
-	void AddAdsorption(int i);	// Adds one new adsorption experiment tab
-	void AddDesorption(int i);	// Adds one new adsorption experiment tab
+	void AddStepTabs();		// Asks all the tabs to be added
+	void RemoveStepTabs();	// Asks all the tabs to be removed
 	void OnButtonAddAdsorption();
 	void OnButtonAddDesorption();
-	void OnButtonRemoveAdsorption();
-	void OnButtonRemoveDesorption();
+	LRESULT OnButtonRemoveAdsorption(WPARAM wParam, LPARAM lParam);
+	LRESULT OnButtonRemoveDesorption(WPARAM wParam, LPARAM lParam);
 	void AddTab(CPropertyPage * tab, int checkTab);			// Adds a tab, checking if it is available first
 	void RemoveTab(CPropertyPage * tab, int checkTab);		// Removes a tab, checking if it is available first
 
@@ -91,10 +91,9 @@ public:
 
 	// Sets the experiment type as modified
 	// It allows only the tabs which have parameters that can be mofified to be showed
-	void SetProprietiesModif(int etape_en_cours);
+	void SetProprietiesModif(int stage, int substage);
 
-	void ReinitialisationAuto();		// Reinitialise the data in all the tabs
-	void ReinitialisationManual();		// Reinitialise the data only in the general tab
+	void Reinitialisation(bool automatic);		// Reinitialise the data in all the tabs
 
 };
 

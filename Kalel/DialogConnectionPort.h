@@ -1,23 +1,20 @@
 #pragma once
 #include "afxwin.h"
-
 #include "ResourceConnectionPort.h"
-
-#include "Parametres.h"
 
 #include "ConnectionMesure.h"
 #include "VerifInstrument.h"
 #include "DefineInstruments.h"
 
-// Boîte de dialogue CConnection_port
+// Boîte de dialogue ConnectionPort
 
-class CConnection_port : public CDialog
+class ConnectionPort : public CDialog
 {
-	DECLARE_DYNAMIC(CConnection_port)
+	DECLARE_DYNAMIC(ConnectionPort)
 
 public:
-	CConnection_port(CWnd* pParent = NULL);   // constructeur standard
-	virtual ~CConnection_port();
+	ConnectionPort(CWnd* pParent = NULL);   // constructeur standard
+	virtual ~ConnectionPort();
 
 // Données de boîte de dialogue
 	enum { IDD = IDD_CONNECTION_PORT };
@@ -107,8 +104,6 @@ public:
 
 	// Connection_port
 
-protected:
-	virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
 public:
 	virtual BOOL OnInitDialog();
 	afx_msg void OnBnClickedOk();
@@ -125,36 +120,20 @@ public:
 
 	// Connection_port_fct
 
-	void InitDonneesInstrument1();
-	void InitDonneesInstrument2();
-	void InitDonneesInstrument3();
 	void InitDonneesInstrument(int TypeInstr,int* m_nIndex,int* m_nPortInstrument,BOOL* m_bInstrumentKeithleyVoie1,BOOL* m_bInstrumentKeithleyVoie2,CComboBox* m_CBInstrumentKeithleyVoie2,int* m_nIndexInstrumentKeithleyVoie2,int* m_nInstrumentMensor,int GetPort,int GetFonction);
-
-	void EnregistrementParametresInstrument1();
-	void EnregistrementParametresInstrument2();
-	void EnregistrementParametresInstrument3();
 	void EnregistrementParametresInstrument(int num_instr,int m_nIndex,int COMInstrument,bool m_bInstrumentKeithleyVoie1, bool m_bInstrumentKeithleyVoie2,int m_nIndexInstrumentKeithleyVoie2,int m_nInstrumentMensor);
-
-	void ShowItemInstrument1();
-	void ShowItemInstrument2();
-	void ShowItemInstrument3();
 	void ShowItem(int m_nIndex,bool m_bInstrumentKeithleyVoie2,CComboBox* m_CBPortInstrument,CButton* m_CheckInstrumentKeithleyVoie1,CButton* m_CheckInstrumentKeithleyVoie2,CComboBox* m_CBInstrumentKeithleyVoie2,CComboBox* m_CBInstrumentMensor);
 
 
 	// Connection_port_Verifications
 
-	void Verifications();	
-
-	void InitialisationVerifications();
+	void Verifications();
 
 	void VerificationPortUSB();
 	void VerificationPortCOM();
 	void VerificationLectureMesures();
 	bool AucunInstrumentBranche();
 
-	void VerifInstrument1();
-	void VerifInstrument2();
-	void VerifInstrument3();
 	void VerifUnInstrument(int num_instr,int m_nIndex,BOOL m_bKeithleyVoie1,BOOL m_bKeithleyVoie2,int m_nInstrumentKeithleyVoie2,int m_nMensor,int PortInstr);
 	void VerifMesure(ConnectionMesure* CM,int num_instr,int voie_mesure,CString* StrPbm,BOOL* bPbmMesure);
 	void EnregistrementVerifications();

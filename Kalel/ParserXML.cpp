@@ -131,8 +131,6 @@ vector<experimentateur> GetExperimentateurs()
 
 	root = handle_root.Node();
 
-
-	int compteur = 0;
 	while(root)
 	{
 		// On crée une variable "experimentateur" et 

@@ -5,21 +5,20 @@
 #include "Kalel.h"
 #include "TabDesorption.h"
 
-#include "General.h"			// For some definitions
+#include "DefinePostMessages.h"		// For custom message definitions
 
 // TabDesorption
 
 IMPLEMENT_DYNAMIC(TabDesorption, CMFCPropertyPage)
 
-TabDesorption::TabDesorption(CString i)
+TabDesorption::TabDesorption(int number)
 	: CMFCPropertyPage(TabDesorption::IDD)
 {
 	// Set title from its initialisation
-	m_caption = i;
-	m_psp.pszTitle = m_caption;
-	m_psp.dwFlags |= PSP_USETITLE;
+	Rename(number);
 
-	Reinitialisation();
+	// Variable for greying out
+	checkDesorption = false;
 }
 
 TabDesorption::~TabDesorption()
@@ -30,8 +29,6 @@ void TabDesorption::DoDataExchange(CDataExchange* pDX)
 {
 	CMFCPropertyPage::DoDataExchange(pDX);
 
-	DDX_Control(pDX, IDC_CHECK_DESORPTION, m_CheckDesorption);
-	DDX_Check(pDX, IDC_CHECK_DESORPTION, m_bDesorption);
 	DDX_Text(pDX, IDC_EDIT_DELTA_PRESSION_DESORPTION, m_fDeltaPressionDesorption);
 	DDX_Control(pDX, IDC_SPIN_DELTA_PRESSION_DESORPTION, m_SpinDeltaPressionDesorption);
 	DDX_Text(pDX, IDC_EDIT_TEMPS_VOLUME_DESORPTION, m_nTempsVolumeDesorption);
@@ -44,44 +41,48 @@ void TabDesorption::DoDataExchange(CDataExchange* pDX)
 }
 
 
-BOOL TabDesorption::OnCommand(WPARAM wParam, LPARAM lParam)
-{
-	SetModified(TRUE);
-	return CMFCPropertyPage::OnCommand(wParam, lParam);
-}
-
 BOOL TabDesorption::OnInitDialog()
 {
+	// Get settings from storage
+	m_fDeltaPressionDesorption = allSettings.delta_pression;
+	m_bDerniereEtapeDesorption = allSettings.derniere_etape;
+	m_fPressionFinaleDesorption = allSettings.pression_finale;
+	m_nTempsDesorption = allSettings.temps_desorption;
+	m_nTempsVolumeDesorption = allSettings.temps_volume;
+
+	// Initialize dialog
 	CMFCPropertyPage::OnInitDialog();
 
 	m_SpinDeltaPressionDesorption.SetRange(0, 10000000);
-	m_SpinDeltaPressionDesorption.SetPos(1.000);
 	m_SpinDeltaPressionDesorption.SetInc(-0.001);
 	m_SpinDeltaPressionDesorption.SetFormat("%1.3f");
 	m_SpinDeltaPressionDesorption.UpdateBuddy();
 
 	m_SpinTempsVolumeDesorption.SetRange(0, 100000000);
-	m_SpinTempsVolumeDesorption.SetPos(5);
 	m_SpinTempsVolumeDesorption.SetInc(-1);
 	m_SpinTempsVolumeDesorption.SetFormat("%1.f");
 	m_SpinTempsVolumeDesorption.UpdateBuddy();
 
 	m_SpinTempsDesorption.SetRange(0, 1000000000);
-	m_SpinTempsDesorption.SetPos(90);
 	m_SpinTempsDesorption.SetInc(-1);
 	m_SpinTempsDesorption.SetFormat("%1.f");
 	m_SpinTempsDesorption.UpdateBuddy();
 
 	m_SpinPressionFinaleDesorption.SetRange(0.0, 100000);
-	m_SpinPressionFinaleDesorption.SetPos(0.1);
 	m_SpinPressionFinaleDesorption.SetInc(-0.001);
 	m_SpinPressionFinaleDesorption.SetFormat("%1.3f");
 	m_SpinPressionFinaleDesorption.UpdateBuddy();
 
-	EnableDesorption(m_bDesorption);
-	ActionCheck_Desorption();
+	ToggleGreyOut();
 
 	return TRUE;  // return TRUE unless you set the focus to a control
+}
+
+
+BOOL TabDesorption::OnCommand(WPARAM wParam, LPARAM lParam)
+{
+	SetModified(TRUE);
+	return CMFCPropertyPage::OnCommand(wParam, lParam);
 }
 
 BOOL TabDesorption::OnApply()
@@ -92,14 +93,6 @@ BOOL TabDesorption::OnApply()
 
 void TabDesorption::OnCancel()
 {
-	m_bDesorption = allSettings.a_effectuer;
-
-	m_fDeltaPressionDesorption = allSettings.delta_pression;
-	m_bDerniereEtapeDesorption = allSettings.derniere_etape;
-	m_fPressionFinaleDesorption = allSettings.pression_finale;
-	m_nTempsDesorption = allSettings.temps_desorption;
-	m_nTempsVolumeDesorption = allSettings.temps_volume;
-
 	CMFCPropertyPage::OnCancel();
 }
 
@@ -111,16 +104,13 @@ void TabDesorption::OnOK()
 
 void TabDesorption::Reinitialisation()
 {
-	m_bDesorption = FALSE;
-	m_fDeltaPressionDesorption = 1.0;
-	m_nTempsVolumeDesorption = 5;
-	m_nTempsDesorption = 90;
-	m_fPressionFinaleDesorption = 0.1;
-	m_bDerniereEtapeDesorption = FALSE;
-
-	CheckUnGreyOut();
-
-	WriteData();
+	m_fDeltaPressionDesorption = allSettings.delta_pression;
+	m_bDerniereEtapeDesorption = allSettings.derniere_etape;
+	m_fPressionFinaleDesorption = allSettings.pression_finale;
+	m_nTempsDesorption = allSettings.temps_desorption;
+	m_nTempsVolumeDesorption = allSettings.temps_volume;
+	
+	UpdateData(false);
 }
 
 void TabDesorption::WriteData()
@@ -133,7 +123,7 @@ void TabDesorption::WriteData()
 	allSettings.temps_volume = m_nTempsVolumeDesorption;
 }
 
-void TabDesorption::EnableDesorption(BOOL active)
+void TabDesorption::GreyOut(BOOL active)
 {
 	GetDlgItem(IDC_STATIC_D_DPD_TEXT)->EnableWindow(active);
 	GetDlgItem(IDC_STATIC_D_DPD_BAR)->EnableWindow(active);
@@ -153,48 +143,39 @@ void TabDesorption::EnableDesorption(BOOL active)
 	GetDlgItem(IDC_EDIT_PRESSION_FINALE_DESORPTION)->EnableWindow(active);
 	GetDlgItem(IDC_SPIN_PRESSION_FINALE_DESORPTION)->EnableWindow(active);
 	GetDlgItem(IDC_CHECK_DESORPTION_DERNIERE_ETAPE)->EnableWindow(active);
+	GetDlgItem(IDC_BUTTON_DES_REMOVE)->EnableWindow(active);
 }
 
 
-void TabDesorption::GreyOut()
+void TabDesorption::ToggleGreyOut()
 {
-	GetDlgItem(IDC_CHECK_DESORPTION)->EnableWindow(FALSE);
-}
-
-void TabDesorption::UnGreyOut()
-{
-	UpdateData(TRUE);
-	GetDlgItem(IDC_CHECK_DESORPTION)->EnableWindow(TRUE);
-	UpdateData(FALSE);
-}
-
-void TabDesorption::CheckGreyOut()
-{
-	checkDesorption = GREY_OUT;
-}
-
-void TabDesorption::CheckUnGreyOut()
-{
-	checkDesorption = UN_GREY_OUT;
-}
-
-void TabDesorption::ActionCheck_Desorption()
-{
-	if (checkDesorption == GREY_OUT)
-		GreyOut();
+	if (checkDesorption == true)
+		GreyOut(FALSE);
 	else
-		UnGreyOut();
+		GreyOut(TRUE);
 }
+
+void TabDesorption::Rename(int number) {
+
+	position = number;
+
+	CString tabtitle;
+	tabtitle.Format(_T("Desorption %d"), position);
+
+	m_caption = tabtitle;
+	m_psp.pszTitle = m_caption;
+	m_psp.dwFlags |= PSP_USETITLE;
+}
+
 
 BEGIN_MESSAGE_MAP(TabDesorption, CMFCPropertyPage)
-	ON_BN_CLICKED(IDC_CHECK_DESORPTION, &TabDesorption::OnBnClickedCheckDesorption)
+	ON_BN_CLICKED(IDC_BUTTON_DES_REMOVE, &TabDesorption::DeletePage)
 END_MESSAGE_MAP()
 
 // TabDesorption message handlers
 
-void TabDesorption::OnBnClickedCheckDesorption()
+
+void TabDesorption::DeletePage()
 {
-	UpdateData(TRUE);
-	EnableDesorption(m_bDesorption);
-	UpdateData(FALSE);
+	::SendMessage(GetParent()->GetSafeHwnd(), WM_PP_DESORPTION_DELETE, NULL, static_cast<LPARAM>(position));
 }

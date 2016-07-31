@@ -3,7 +3,7 @@
 #define TABDESORPTION_H
 
 
-#include "ResourceOngletsEtapes.h"	// For resources
+#include "ResourceDialogExperimentSettings.h"	// For resources
 #include "SpinBtnCtrl.h"			// For the Spin Button class
 #include "Classes_experiences.h"	// Definitions for all classes used in this file
 
@@ -13,7 +13,7 @@ class TabDesorption : public CMFCPropertyPage
 	DECLARE_DYNAMIC(TabDesorption)
 
 public:
-	TabDesorption(CString i);
+	TabDesorption(int number);
 	virtual ~TabDesorption();
 
 	// Dialog Data
@@ -33,7 +33,7 @@ protected:
 protected:
 	CString m_caption;	// Title of the page
 
-	bool checkDesorption;
+	int position;
 
 	BOOL m_bDesorption;
 	BOOL m_bDerniereEtapeDesorption;
@@ -52,24 +52,21 @@ protected:
 
 public:
 	Donnees_Desorption allSettings;
+	bool checkDesorption;			//For greying out
 
 // Functions
 public:
 	void Reinitialisation();
+	void Rename(int number);
+	void GreyOut(BOOL active);
+	void ToggleGreyOut();
 
 protected:
 	void WriteData();
-	void EnableDesorption(BOOL active);
-
-	void GreyOut();
-	void UnGreyOut();
-	void CheckGreyOut();
-	void CheckUnGreyOut();
-	void ActionCheck_Desorption();
 
 // Message Handlers
 protected:
-	void OnBnClickedCheckDesorption();
+	void DeletePage();
 };
 
 #endif // !TABDESORPTION_H

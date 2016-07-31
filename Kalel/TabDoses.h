@@ -2,10 +2,10 @@
 #ifndef TABDOSES_H
 #define TABDOSES_H
 
+#include "ResourceDialogExperimentSettings.h"	// For resources
+#include "SpinBtnCtrl.h"						// For the Spin Button class
+#include "Classes_experiences.h"				// Definitions for all classes used in this file
 
-#include "ResourceOngletsEtapes.h"	// For resources
-#include "SpinBtnCtrl.h"			// For the Spin Button class
-#include "Classes_experiences.h"	// Definitions for all classes used in this file
 
 
 class TabDoses : public CMFCPropertyPage
@@ -13,7 +13,7 @@ class TabDoses : public CMFCPropertyPage
 	DECLARE_DYNAMIC(TabDoses)
 
 public:
-	TabDoses(CString i);
+	TabDoses(int i);
 	virtual ~TabDoses();
 
 	// Dialog Data
@@ -21,8 +21,8 @@ public:
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-	virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
 	virtual BOOL OnInitDialog();
+	virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
 	virtual BOOL OnApply();
 	virtual void OnCancel();
 	virtual void OnOK();
@@ -33,8 +33,10 @@ protected:
 protected:
 	CString m_caption;	// Title of the page
 
+	HANDLE h_parent;	// Handle to propertysheet
+
 	BOOL m_bDoses;
-	bool checkDoses;
+	int position;
 
 	int m_nTimeAdsorptionDoses;
 	int m_nTimeVolumeDoses;
@@ -50,25 +52,21 @@ protected:
 
 public:
 	Donnees_Doses allSettings;
-
+	bool checkDoses;				// for greying out
 	
 	// Functions
 public:
 	void Reinitialisation();
+	void Rename(int number);
+	void GreyOut(BOOL active);
+	void ToggleGreyOut();
 
 protected:
 	void WriteData();
-	void EnableDoses(BOOL active);
-
-	void GreyOut();
-	void UnGreyOut();
-	void CheckGreyOut();
-	void CheckUnGreyOut();
-	void ActionCheck_Doses();
 
 // Message Handlers
 protected:
-	void OnBnClickedCheckDoses();
+	void DeletePage();
 };
 
 #endif // !TABDOSES_H

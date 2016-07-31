@@ -11,12 +11,6 @@
 #include "KalelDoc.h"
 #include "KalelView.h"
 
-#include "ThreadManager.h"
-
-// Dialog Box includes
-#include "ApparatusParameters.h"
-#include "Connection_port.h"
-
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -26,16 +20,19 @@
 // CKalelApp
 
 BEGIN_MESSAGE_MAP(CKalelApp, CWinApp)
+
+	// Standard document commands
 	ON_COMMAND(ID_APP_ABOUT, &CKalelApp::OnAppAbout)
-	// Standard file based document commands
 	ON_COMMAND(ID_FILE_NEW, &CWinApp::OnFileNew)
 	ON_COMMAND(ID_FILE_OPEN, &CWinApp::OnFileOpen)
-	// New menu based commands
-	ON_COMMAND(ID_PARAMATRES_APPAREIL, &CKalelApp::OnParamatresAppareil)
-	ON_COMMAND(ID_CONNECTION_PORTS, &CKalelApp::OnConnectionPorts)
+
+	// New menu based commands to main view
+	ON_COMMAND(ID_PARAMATRES_APPAREIL, &CKalelView::DisplayPortDialog)
+	ON_COMMAND(ID_CONNECTION_PORTS, &CKalelView::DisplayApparatusSettingsDialog)
 	ON_COMMAND(ID_MSV_AMPOULE, &CKalelView::OnMsvAmpoule)
 	ON_COMMAND(ID_MSV_BOUTEILLE, &CKalelView::OnMsvBouteille)
 	ON_COMMAND(ID_CHANGEMENT_BOUTEILLE, &CKalelView::OnChangementBouteille)
+
 	// New update based commands
 	ON_UPDATE_COMMAND_UI(ID_PARAMATRES_APPAREIL, &CKalelApp::OnUpdateParamatresAppareil)
 	ON_UPDATE_COMMAND_UI(ID_CONNECTION_PORTS, &CKalelApp::OnUpdateConnectionPorts)
@@ -43,6 +40,7 @@ BEGIN_MESSAGE_MAP(CKalelApp, CWinApp)
 	ON_UPDATE_COMMAND_UI(ID_MSV_BOUTEILLE, &CKalelApp::OnUpdateMsvBouteille)
 	ON_UPDATE_COMMAND_UI(ID_CHANGEMENT_BOUTEILLE, &CKalelApp::OnUpdateChangementBouteille)
 	ON_UPDATE_COMMAND_UI(ID_DONNEES_EXPERIENCE, &CKalelApp::OnUpdateDonneesExperience)
+
 END_MESSAGE_MAP()
 
 
@@ -197,23 +195,6 @@ void CKalelApp::OnAppAbout()
 {
 	CAboutDlg aboutDlg;
 	aboutDlg.DoModal();
-}
-
-
-///////////////////////////////
-// Custom functions to process when menu buttons are pressed
-
-void CKalelApp::OnParamatresAppareil()
-{
-	ApparatusParameters apparatusParameters;
-	apparatusParameters.DoModal();
-}
-
-void CKalelApp::OnConnectionPorts()
-{
-	CConnection_port m_connection_ports;
-	m_connection_ports.DoModal();
-	//ChangementDev(GetPortVannes(), GetPortTemperatures());
 }
 
 
