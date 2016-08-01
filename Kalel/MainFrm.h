@@ -21,7 +21,6 @@ public:
 public:
 	virtual BOOL OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext);
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
-	virtual void OnUpdateFrameTitle(BOOL bAddToTitle);
 
 // Implementation
 public:

@@ -98,15 +98,7 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 	cs.cy = ::GetSystemMetrics(SM_CYSCREEN);
 	cs.cx = ::GetSystemMetrics(SM_CXSCREEN);
 
-	cs.style &= ~FWS_ADDTOTITLE;
-	return CFrameWnd::PreCreateWindow(cs);
-
 	return TRUE;
-}
-
-void CMainFrame::OnUpdateFrameTitle(BOOL bAddToTitle)
-{
-	SetWindowText("Kalel");
 }
 
 // CMainFrame diagnostics
