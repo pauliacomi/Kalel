@@ -14,9 +14,9 @@ void Automation::SampleVacuum()
 		experimentLocalData.experimentStepStatus = STEP_STATUS_INPROGRESS;												// Set next step
 		messageHandler.DisplayMessage(MESSAGE_DESORPTION_STAGE_START);													// Let GUI know the step change
 
-		ControlMechanismsCloseAll();																					// Close all valves
-		ActivatePump();
-		ValveOpen(5);
+		ControlMechanismsCloseAll();								// Close all valves
+		ActivatePump();											    // Activate the pump
+		ValveOpen(5);												// Open V5
 
 		messageHandler.DisplayMessage(_T("Début Mise sous vide de la haute pression\r\n"));
 		messageHandler.DisplayStep(_T("Mise sous vide : Haute Pression"));
@@ -24,10 +24,11 @@ void Automation::SampleVacuum()
 
 		break;
 
+
 	case STEP_STATUS_INPROGRESS:
-		
 		if (experimentLocalData.pressureHigh > GetPressionSecuriteBassePression()) {
 
+			// Open, then close v8 and v7
 			ValveOpenClose(8);
 			ValveOpenClose(7);
 		}
@@ -42,11 +43,11 @@ void Automation::SampleVacuum()
 		}
 		break;
 
+
 	case STEP_STATUS_INPROGRESS + 1:
+		if (experimentLocalData.pressureHigh > pression_pompe) {
 
-
-		if (experimentLocalData.pressureHigh > ?????) {
-
+			// Open, then close v8 and v7
 			ValveOpenClose(8);
 			ValveOpenClose(7);
 		}
@@ -61,24 +62,28 @@ void Automation::SampleVacuum()
 		}
 		break;
 
+
 	case STEP_STATUS_INPROGRESS + 2:
+		if (experimentLocalSettings.dataDivers.mise_sous_vide_fin_experience)
+			WaitMinutes(experimentLocalSettings.dataDivers.temps_vide);
+		else
+			WaitMinutes(temps_defaut);
 
-
-	
+		CString nom_etape = _T("Mise sous vide : Dernier équilibre sous vide");
+		experimentLocalData.experimentStage = STEP_STATUS_END;
 		break;
+
 
 	case STEP_STATUS_END:
-		experimentLocalData.experimentStepStatus = STEP_STATUS_START;													// Let GUI know the step change
+		if (experimentLocalData.experimentWaiting == false)
+		{
+			experimentLocalData.experimentStepStatus = STEP_STATUS_START;													// Let GUI know the step change
 
-		if (experimentLocalData.desorptionCounter < experimentLocalSettings.dataDesorption.size())
-		{
-			experimentLocalData.desorptionCounter++;
-		}
-		else
-		{
-			experimentLocalData.experimentStage = STAGE_END_AUTOMATIC;														// Set desorption if all adsorption stages have been finished
+			ControlMechanismsCloseAll();
+			experimentLocalData.experimentStage = STAGE_END_AUTOMATIC;
 		}
 		break;
+	}
 }
 
 void Automation::BottleVacuum()

@@ -28,7 +28,7 @@
 #define temps_fermeture					temps_ouverture		// => temps_fermeture identique a temps ouverture
 
 // Defines for putting under vacuum
-#define pression_pompe					0.5
+#define pression_pompe					0.5 // Minimum pressure to be put directly on the pump
 #define temps_en_cas_d_urgence			10 // minutes
 #define temps_defaut					30 // minutes
 

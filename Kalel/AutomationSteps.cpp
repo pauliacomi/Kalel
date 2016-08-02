@@ -293,7 +293,7 @@ void Automation::StageDesorption()
 		}
 		else
 		{
-			experimentLocalData.experimentStage = STAGE_END_AUTOMATIC;														// Set desorption if all adsorption stages have been finished
+			experimentLocalData.experimentStage = STAGE_UNDER_VACUUM;														// Set desorption if all adsorption stages have been finished
 		}
 		break;
 	}

@@ -290,6 +290,9 @@ bool Automation::ExecutionAuto()
 	case STAGE_DESORPTION:
 		StageDesorption();
 		break;
+	case STAGE_UNDER_VACUUM:
+		StageDesorption();
+		break;
 	case STAGE_END_AUTOMATIC:
 
 		// If the experiment has finished
