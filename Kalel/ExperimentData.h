@@ -11,20 +11,20 @@ public:
 // Variables
 //**************************************************
 
-	bool experimentInProgress;				// Boolean for checking whether the experiment is started or not
-	bool experimentRecording;				// Boolean for checking whether the data is being recorded at each measurement
-	bool experimentWaiting;					// Boolean for 
-	bool experimentCommandsRequested;		// Boolean for 
+	bool experimentInProgress;				// Boolean stating whether the experiment is started or not
+	bool experimentRecording;				// Boolean stating whether the data is being recorded at each measurement
+	bool experimentWaiting;					// Boolean stating the experiment is currently waiting
+	bool experimentCommandsRequested;		// Boolean stating that any automation is requested (manual,automatic etc)
 
 	// Parameters for storing where program has reached
 
-	int experimentStage;					// Current experiment stage, the main part of the program (equilibration, adsorption, desorption etc.)
-	int experimentPreviousStage;			// Previous experiment stage
-	int experimentDose;						// Current experiment dose that is currently underway (ex: 2nd dose of adsorption step 1)
-	int experimentStepStatus;				// Current step status, for each step this can be STARTING, ENDING or UNDERWAY
-	int experimentSubstepStage;				// Current dose substep, can be at injection, equilibration etc
-	int experimentMeasurements;				// Number of measurmements made, happen every T_BETWEEN_MEASUREMENT
+	int experimentStage;					// Current experiment stage, the main part of the program (verification, equilibration, adsorption, desorption etc.)
 	int verificationStep;					// The security check steps
+	int experimentStepStatus;				// Current step status, for each step this can be STARTING, ENDING or IN_PROGRESS
+	int experimentSubstepStage;				// Current dose substep, can be at injection, equilibration etc
+	int experimentDose;						// Current experiment dose that is currently underway (ex: 2nd dose of adsorption step 1)
+	int experimentMeasurements;				// Number of measurmements made, happen every T_BETWEEN_MEASUREMENT
+	int experimentPreviousStage;			// Previous experiment stage
 
 	// Time
 	double experimentTime;					// Time from the experiment start
@@ -33,8 +33,8 @@ public:
 	
 	// Counters
 	int injectionAttemptCounter;			// Counter for the injections
-	int adsorptionCounter;					// Counter for the number of adsorption settings inputted by the user
-	int desorptionCounter;					// Counter for the number of desorption settings inputted by the user
+	int adsorptionCounter;					// Counter for the number of adsorption settings (small, medium, large etc) inputted by the user, starts at 0
+	int desorptionCounter;					// Counter for the number of desorption settings (small, medium, large etc) inputted by the user, starts at 0
 
 	// Text
 	CString textMessages;

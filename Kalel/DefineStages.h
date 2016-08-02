@@ -69,6 +69,7 @@
 #define STOP_UNDEF			20511
 #define STOP_NORMAL			20512
 #define STOP_CANCEL			20513
+#define STOP_COMPLETE		20514
 
 // Next default values for new objects
 // 

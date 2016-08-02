@@ -5,8 +5,8 @@
 
 Automation::Automation(ExperimentSettings* exps)
 	: running(true)
-	, checking(true)
 {
+	// Save reference to experiment settings
 	experimentSettings = exps;
 
 	// Initialise class members
@@ -50,16 +50,26 @@ void Automation::Execution()
 	// Infinite loop, it is broken from the inside
 	while (running)
 	{
+		/*
+		*
+		*		SETTINGS RETRIEVAL
+		*
+		*/
+
 		// Check if there is any change in the experiment settings
 		if (DataIsNew()) {
-			ExperimentSettings tempSettings = SetData();
-			RecordDataChange(tempSettings, false);
-			RecordDataChange(tempSettings, true);
-			experimentLocalSettings = tempSettings;
+			experimentLocalSettings = SetData();
+			RecordDataChange(experimentLocalSettings, false);		// non-CSV
+			RecordDataChange(experimentLocalSettings, true);		// CSV
 		}
 
+		/*
+		*
+		*		AUTOMATION
+		*
+		*/
 
-		// Go through any automatic functionality
+		// Go through any functionality
 		if (experimentLocalData.experimentCommandsRequested) {
 			switch (experimentLocalSettings.experimentType)		// We look at the type of experiment
 			{
@@ -83,16 +93,34 @@ void Automation::Execution()
 			}
 		}
 
+		/*
+		*
+		*		DEVICE AND TIME READING
+		*
+		*/
+
 		// Start threads and read the data
 		ThreadMeasurement();
+
+		// Record time
+		experimentLocalData.experimentTime = timerExperiment.TempsActuel();			// Save the time at which the measurement took place
+		experimentLocalData.timeToEquilibrateCurrent = timerWaiting.TempsActuel();	// Save the waiting time if it exists
+
+		/*
+		*
+		*		SECURITY CHECKS
+		*
+		*/
 
 		// Do the security checks
 		SecuriteTemperatures();
 		SecuriteHautePression();
 
-		// Record time
-		experimentLocalData.experimentTime = timerExperiment.TempsActuel();			// Save the time at which the measurement took place
-		experimentLocalData.timeToEquilibrateCurrent = timerWaiting.TempsActuel();	// Save the waiting time if it exists
+		/*
+		*
+		*		FILE WRITING AND MEASUREMENT RESET
+		*
+		*/
 
 		// Write data
 		if (experimentLocalData.experimentRecording	&&								// If we started recording
@@ -108,6 +136,12 @@ void Automation::Execution()
 			experimentLocalData.experimentMeasurements++;
 		}
 
+		/*
+		*
+		*		NON-BLOCKING WAITING FUNCTIONALITY
+		*
+		*/
+
 		// If waiting complete
 		if (experimentLocalData.experimentWaiting &&														// If the wait functionality is requested																					
 			experimentLocalData.timeToEquilibrateCurrent > experimentLocalData.timeToEquilibrate) {			//and the time has been completed
@@ -119,62 +153,71 @@ void Automation::Execution()
 			experimentLocalData.experimentWaiting = false;
 		}
 
+		/*
+		*
+		*		DATA EXCHANGE WITH GUI
+		*
+		*/
+
 		// Send the data to be displayed to the GUI
 		messageHandler.ExchangeData(experimentLocalData);
 		
+		/*
+		*
+		*		EVENT-BASED LOOP TIMING
+		*		// Checks for thread states
+		*/
 
 		// Now run through the possible events
-		if (checking)
+		switch (::WaitForMultipleObjects(4, events, FALSE, T_BETWEEN_MEASURE)) // (ms) Poll time
 		{
-			// Switch to see if the thread is still inactive
-			switch (::WaitForMultipleObjects(4, events, FALSE, T_BETWEEN_MEASURE)) // (ms) Poll time
+
+		case WAIT_OBJECT_0:												// Complete stop of thread, SHOULD NEVER BE USED
+			running = false;
+			shutdownReason = STOP_COMPLETE;
+			Shutdown();
+			::ResetEvent(h_eventShutdown);	// Reset the event
+			break;
+
+		case WAIT_OBJECT_0 + 1:										    // Pause thread
+			if (experimentLocalData.experimentInProgress)
 			{
+				timerExperiment.ArretTemps();
+				timerMeasurement.ArretTemps();
+				timerWaiting.ArretTemps();
+				experimentLocalData.experimentRecording = false;
 
-			case WAIT_OBJECT_0:												// Complete stop of thread, might need extra things
-				running = false;
-				::ResetEvent(h_eventShutdown);	// Reset the event
-				break;
-
-			case WAIT_OBJECT_0 + 1:										    // Pause thread
-				if (experimentLocalData.experimentInProgress)
-				{
-					timerExperiment.ArretTemps();
-					timerMeasurement.ArretTemps();
-					timerWaiting.ArretTemps();
-					experimentLocalData.experimentRecording = false;
-
-					messageHandler.DisplayMessage(MESSAGE_EXPPAUSE);
-				}
-				experimentLocalData.experimentCommandsRequested = false;
-				::ResetEvent(h_eventPause);	// Reset the event
-				break;
-
-			case WAIT_OBJECT_0 + 2:											 // Resume thread
-				if (experimentLocalData.experimentInProgress)
-				{
-					timerExperiment.RepriseTemps();
-					timerMeasurement.RepriseTemps();
-					timerWaiting.RepriseTemps();
-					experimentLocalData.experimentRecording = true;
-
-					messageHandler.DisplayMessage(MESSAGE_EXPRESUME);
-				}
-				experimentLocalData.experimentCommandsRequested = true;
-				::ResetEvent(h_eventResume);	// Reset the event
-				break;
-
-			case WAIT_OBJECT_0 + 3:											  // Shutdown thread
-				Shutdown();
-				::ResetEvent(h_eventReset);	// Reset the event
-				break;
-
-			case WAIT_TIMEOUT:
-				break;
-
-			default:
-				ASSERT(FALSE); // unknown error
-				break;
+				messageHandler.DisplayMessage(MESSAGE_EXPPAUSE);
 			}
+			experimentLocalData.experimentCommandsRequested = false;
+			::ResetEvent(h_eventPause);	// Reset the event
+			break;
+
+		case WAIT_OBJECT_0 + 2:											 // Resume thread
+			if (experimentLocalData.experimentInProgress)
+			{
+				timerExperiment.RepriseTemps();
+				timerMeasurement.RepriseTemps();
+				timerWaiting.RepriseTemps();
+				experimentLocalData.experimentRecording = true;
+
+				messageHandler.DisplayMessage(MESSAGE_EXPRESUME);
+			}
+			experimentLocalData.experimentCommandsRequested = true;
+			::ResetEvent(h_eventResume);	// Reset the event
+			break;
+
+		case WAIT_OBJECT_0 + 3:											  // Shutdown thread
+			Shutdown();
+			::ResetEvent(h_eventReset);	// Reset the event
+			break;
+
+		case WAIT_TIMEOUT:
+			break;
+
+		default:
+			ASSERT(FALSE); // unknown error
+			break;
 		}
 	}
 }
@@ -247,14 +290,15 @@ bool Automation::ExecutionAuto()
 	case STAGE_DESORPTION:
 		StageDesorption();
 		break;
-	case STAGE_CONTINUOUS_ADSORPTION:
-		break;
 	case STAGE_END_AUTOMATIC:
 
 		// If the experiment has finished
 		shutdownReason = STOP_NORMAL;	// set a normal shutdown
 		::SetEvent(h_eventReset);	// end then set the event
 
+		break;
+
+	case STAGE_CONTINUOUS_ADSORPTION:
 		break;
 	default:
 		ASSERT(0); // Error

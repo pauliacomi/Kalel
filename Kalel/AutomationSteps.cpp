@@ -2,6 +2,13 @@
 #include "Automation.h"
 
 
+/*
+*
+*
+*			EQUILIBRATION
+*
+*
+*/
 
 void Automation::StageEquilibration()
 {
@@ -10,13 +17,24 @@ void Automation::StageEquilibration()
 		experimentLocalData.experimentStepStatus = STEP_STATUS_END;											// Set next step
 		messageHandler.DisplayMessage(MESSAGE_EQUILIBRATION_STARTED);										// Let GUI know the step change
 
+		// This is where we start recording
+
+		// Record start
+		experimentLocalData.experimentInProgress = true;
+		experimentLocalData.experimentRecording = true;
+
 		// Create, open and write the columns in the:
 		EnteteCreate();				// Entete TXT
 		EnteteCSVCreate();			// Entete CSV
 		FileMeasurementOpen();		// Measurement file
 
+		timerExperiment.TopChrono();	// Start global experiment timer	
+		timerMeasurement.TopChrono();	// Start the timer to record time between measurements
+
+
 		// Set the time to wait
-		WaitSeconds(experimentLocalData.timeToEquilibrate = experimentLocalSettings.dataDivers.temps_ligne_base * 60);		/// remove the commenting!!
+		//WaitSeconds(experimentLocalData.timeToEquilibrate = experimentLocalSettings.dataDivers.temps_ligne_base * 60);
+		WaitMinutes(experimentLocalData.timeToEquilibrate = experimentLocalSettings.dataDivers.temps_ligne_base);
 	}
 
 	if (experimentLocalData.experimentStepStatus == STEP_STATUS_END) {
@@ -31,7 +49,13 @@ void Automation::StageEquilibration()
 
 
 
-
+/*
+*
+*
+*			ADSORPTION
+*
+*
+*/
 
 
 void Automation::StageAdsorption()
@@ -39,7 +63,6 @@ void Automation::StageAdsorption()
 	switch (experimentLocalData.experimentStepStatus)
 	{
 	case STEP_STATUS_START:
-		experimentLocalData.experimentRecording = true;																	// Ensure we are recording
 		experimentLocalData.experimentStepStatus = STEP_STATUS_INPROGRESS;												// Set next step
 		messageHandler.DisplayMessage(MESSAGE_ADSORPTION_STAGE_START);													// Let GUI know the step change
 
@@ -78,7 +101,6 @@ void Automation::StageAdsorption()
 
 void Automation::SubstepsAdsorption()
 {
-
 
 	if (experimentLocalData.experimentSubstepStage == SUBSTEP_STATUS_START)
 	{
@@ -228,7 +250,13 @@ void Automation::SubstepsAdsorption()
 
 
 
-
+/*
+*
+*
+*			DESORPTION
+*
+*
+*/
 
 
 
@@ -265,7 +293,7 @@ void Automation::StageDesorption()
 		}
 		else
 		{
-			experimentLocalData.experimentStage = STAGE_DESORPTION;														// Set desorption if all adsorption stages have been finished
+			experimentLocalData.experimentStage = STAGE_END_AUTOMATIC;														// Set desorption if all adsorption stages have been finished
 		}
 		break;
 	}

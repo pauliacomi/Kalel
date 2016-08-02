@@ -48,8 +48,8 @@ public:
 	CTemperature* g_pTemperature;						// Pointer to the class that deals with temperature recording
 	SerialInstruments * g_pSerialInstruments;			// Pointer to the class that deals with calorimeter & pressure recording
 
-	ExperimentSettings* experimentSettings;				//
-	ExperimentSettings experimentLocalSettings;			// 
+	ExperimentSettings* experimentSettings;				// Pointer to the experiment settings from the main class, this is only read, never written
+	ExperimentSettings experimentLocalSettings;			// Pointer to local storage of settings
 	ExperimentData experimentLocalData;					// 
 	
 	
@@ -90,7 +90,6 @@ public:
 
 
 	// Case switch int for the experiment states (running/paused/etc)
-	bool checking;
 	bool running;
 	bool paused;
 	int shutdownReason;

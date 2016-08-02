@@ -58,7 +58,7 @@ ThreadManager::~ThreadManager()
 
 
 
-HRESULT ThreadManager::StartThread() {
+HRESULT ThreadManager::ResumeThread() {
 
 	HRESULT hr = S_OK;
 
@@ -182,6 +182,9 @@ void ThreadManager::ThreadMainWorker()
 }
 
 
+
+// Manual actions
+
 void ThreadManager::ManualAction()
 {
 	//start thread
@@ -242,5 +245,4 @@ void ThreadManager::ThreadManualAction()
 
 	// Ask for the app to show the change, pass the locally created object which must be deleted there
 	::PostMessage(localMP->windowHandle, WM_UPDATEBUTTONS, (WPARAM)localMP, actionSuccessful);
-
 }

@@ -3,13 +3,52 @@
 #define DEFINEPOSTMESSAGES_H
 
 // Define windows message for threads
-#define WM_THREADAFFICHAGE			WM_USER + 6
+/***************************************************************
+*                           WM_THREADFINISHEDREG
+* Inputs:
+*       WPARAM: ignored, 0
+*       LPARAM: RGB value to use for coloring
+* Result: LRESULT
+*	Logically void, 0, always
+* Effect:
+*	Causes the view to repaint itself in the specified color
+***************************************************************/
 #define WM_THREADFINISHEDREG		WM_USER + 7
-#define WM_THREADFINISHED2			WM_USER + 8
+
+/***************************************************************
+*                           WM_UPDATEBUTTONS
+* Inputs:
+*       WPARAM: ignored, 0
+*       LPARAM: RGB value to use for coloring
+* Result: LRESULT
+*	Logically void, 0, always
+* Effect:
+*	Causes the view to repaint itself in the specified color
+***************************************************************/
 #define WM_UPDATEBUTTONS			WM_USER + 100
 
 // Calls to display parametrs 
+/***************************************************************
+*                           WM_UPDATEBUTTONS
+* Inputs:
+*       WPARAM: ignored, 0
+*       LPARAM: RGB value to use for coloring
+* Result: LRESULT
+*	Logically void, 0, always
+* Effect:
+*	Causes the view to repaint itself in the specified color
+***************************************************************/
 #define WM_DISPLAY_PORT_DIALOG						WM_USER + 9
+/***************************************************************
+*                           WM_UPDATEBUTTONS
+* Inputs:
+*       WPARAM: ignored, 0
+*       LPARAM: RGB value to use for coloring
+* Result: LRESULT
+*	Logically void, 0, always
+* Effect:
+*	Causes the view to repaint itself in the specified color
+***************************************************************/
 #define WM_DISPLAY_APPARATUS_SETTINGS_DIALOG		WM_USER + 10
 
 // Calls to Document

@@ -18,7 +18,7 @@ void ExperimentData::ResetData()
 	experimentInProgress = false;
 	experimentRecording = false;
 	experimentWaiting = false;
-	experimentCommandsRequested = false;
+	experimentCommandsRequested = true;
 
 	experimentStage = STAGE_UNDEF;
 	experimentPreviousStage = STAGE_UNDEF;

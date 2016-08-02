@@ -246,7 +246,7 @@ LRESULT CKalelView::MessageBoxConfirmation(WPARAM wParam, LPARAM lParam)
 		}
 		else {
 			if (result == IDYES || result == IDOK) {
-				threadManager->StartThread();
+				threadManager->ResumeThread();
 				continuer = false;
 			}
 			if (result == IDNO) {
@@ -254,7 +254,7 @@ LRESULT CKalelView::MessageBoxConfirmation(WPARAM wParam, LPARAM lParam)
 				experimentSettings->continueAnyway = true;
 				experimentSettings->dataModified = true;
 				LeaveCriticalSection(&experimentSettings->criticalSection);
-				threadManager->StartThread();
+				threadManager->ResumeThread();
 				continuer = false;
 			}
 		}

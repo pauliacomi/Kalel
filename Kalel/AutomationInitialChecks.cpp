@@ -133,7 +133,7 @@ int Automation::VerificationTemperature()
 			messageHandler.DisplayMessageBox(MESSAGE_CHECK_TEMPERATURE_DIFF, MB_ICONQUESTION | MB_YESNOCANCEL, true, experimentLocalData.temperatureCalo, experimentLocalSettings.dataGeneral.temperature_experience - security_temperature_initial);
 			
 			::SetEvent(h_eventPause);
-			experimentLocalData.experimentStepStatus = STEP_STATUS_INPROGRESS;			// never will end if the user selects continue anyway
+			experimentLocalData.experimentStepStatus = STEP_STATUS_INPROGRESS;
 		}
 		else
 		{
