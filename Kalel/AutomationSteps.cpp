@@ -115,7 +115,7 @@ void Automation::SubstepsAdsorption()
 	if (experimentLocalData.experimentSubstepStage == SUBSTEP_STATUS_INJECTION)
 	{
 		messageHandler.DisplayMessage(MESSAGE_INJECTION_ATTEMPT, experimentLocalData.injectionAttemptCounter);			// Tell GUI about current injection
-		ValveOpenClose(2);																								// Injection, should think about waiting within the valves without sleep
+		ValveOpenClose(2);																								// Injection
 		ValveOpenClose(3);
 		ValveOpenClose(4);
 		WaitSeconds(30);
@@ -307,7 +307,8 @@ void Automation::SubstepsDesorption()
 	{
 		experimentLocalData.injectionAttemptCounter = 0;																							// Reset adsorption attempt counter
 		experimentLocalData.pressureHighOld = experimentLocalData.pressureHigh;																		// Save the injection pressure for later
-		messageHandler.DisplayMessage(MESSAGE_ADSORPTION_DOSE_START, experimentLocalData.adsorptionCounter, experimentLocalData.experimentDose);	// Tell GUI about current dose
+		messageHandler.DisplayMessage(MESSAGE_DESORPTION_DOSE_START, experimentLocalData.adsorptionCounter, experimentLocalData.experimentDose);	// Tell GUI about current dose
+		ActivatePump();
 		experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_INJECTION;																		// Move to injection
 	}
 
@@ -316,9 +317,8 @@ void Automation::SubstepsDesorption()
 	if (experimentLocalData.experimentSubstepStage == SUBSTEP_STATUS_INJECTION)
 	{
 		messageHandler.DisplayMessage(MESSAGE_INJECTION_ATTEMPT, experimentLocalData.injectionAttemptCounter);			// Tell GUI about current injection
-		ValveOpenClose(2);																								// Injection, should think about waiting within the valves without sleep
-		ValveOpenClose(3);
-		ValveOpenClose(4);
+		ValveOpenClose(8);																								// Injection, should think about waiting within the valves without sleep
+		ValveOpenClose(7);
 		WaitSeconds(2);
 		experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_INJECTION_CHK;										// Move to injection check
 	}
@@ -374,6 +374,7 @@ void Automation::SubstepsDesorption()
 			// If completeted successfully go to equilibration
 			else
 			{
+				DeactivatePump();
 				experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_ADSORPTION;													// Go to adsorption
 				WaitSeconds(experimentLocalSettings.dataAdsorption[experimentLocalData.adsorptionCounter].temps_volume);				// Set the time to wait for equilibration in the reference volume
 			}
