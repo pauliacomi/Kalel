@@ -62,8 +62,8 @@ LiaisonRS232::~LiaisonRS232()
 bool LiaisonRS232::OpenCOM(int pnId)
 {
 	// Construct port specifier
-	char szCOM[5];
-    sprintf_s(szCOM, "COM%d", pnId);
+	CString szCOM;
+    szCOM.Format("\\\\.\\COM%d", pnId);
 	
 	// Open COM port
     g_hCOM = CreateFile(
@@ -182,11 +182,13 @@ bool LiaisonRS232::ReadCOM(char *buffer, int nBytesToRead)
 	// close event handle
 	CloseHandle(osReader.hEvent);
 
-	if(!readingComplete)
+	if (!readingComplete){
 
+	}
 
-	if (noErrors)
+	if (noErrors) {
 		return true;
+	}
 	return false;
 }
 
