@@ -65,8 +65,7 @@ void Automation::Shutdown()
 		FileMeasurementClose();
 
 		// Experiment has been finished normally
-		CString tempString = _T("Thread completely shutdown");
-		messageHandler.DisplayMessage(tempString);
+		messageHandler.DisplayMessage(MESSAGE_THREAD_SHUTDOWN);
 
 		break;
 

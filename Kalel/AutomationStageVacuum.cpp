@@ -4,7 +4,7 @@
 #include "StdAfx.h"
 #include "Automation.h"
 
-void Automation::StageVacuum(bool separateFunctionality = false)
+void Automation::StageVacuum(bool separateFunctionality)
 {
 	switch (experimentLocalData.experimentStepStatus)
 	{
