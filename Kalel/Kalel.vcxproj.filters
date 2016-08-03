@@ -154,6 +154,9 @@
     <Filter Include="Source Files\Automation\Class\Automation Stages">
       <UniqueIdentifier>{f3b9aae6-ded0-42ee-b37d-b1e1182d079e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Automation\Class\Functionality">
+      <UniqueIdentifier>{7851c4a5-dc0a-46bd-986a-cb1a7c147a49}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -642,6 +645,9 @@
       <Filter>Source Files\Automation\Class\Automation Stages</Filter>
     </ClCompile>
     <ClCompile Include="AutomationStageInitialChecks.cpp">
+      <Filter>Source Files\Automation\Class\Automation Stages</Filter>
+    </ClCompile>
+    <ClCompile Include="AutomationStageVacuum.cpp">
       <Filter>Source Files\Automation\Class\Automation Stages</Filter>
     </ClCompile>
   </ItemGroup>

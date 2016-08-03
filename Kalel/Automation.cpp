@@ -58,9 +58,10 @@ void Automation::Execution()
 
 		// Check if there is any change in the experiment settings
 		if (DataIsNew()) {
-			experimentLocalSettings = SetData();
-			RecordDataChange(experimentLocalSettings, false);		// non-CSV
-			RecordDataChange(experimentLocalSettings, true);		// CSV
+			ExperimentSettings tempSettings = SetData();	// We have the two settings coexisting to record any changes
+			RecordDataChange(tempSettings, false);			// non-CSV
+			RecordDataChange(tempSettings, true);			// CSV
+			experimentLocalSettings = tempSettings;			// Now save the new settings as the old ones
 		}
 
 		/*

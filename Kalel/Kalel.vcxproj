@@ -272,6 +272,7 @@
   <ItemGroup>
     <ClCompile Include="AutomationStageDesorption.cpp" />
     <ClCompile Include="AutomationStageEquilibration.cpp" />
+    <ClCompile Include="AutomationStageVacuum.cpp" />
     <ClCompile Include="CommonFunctions.cpp" />
     <ClCompile Include="DialogMachineParameters.cpp" />
     <ClCompile Include="Automation.cpp" />

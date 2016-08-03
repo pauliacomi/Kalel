@@ -250,7 +250,7 @@ protected:
 	*        ExperimentSettings newSettings: The settings file to compare to the current one
 	*        bool csv: Ask to write to the comma separated value file if true
 	***********************************************************************/
-	void RecordDataChange(ExperimentSettings newSettings, bool csv);
+	void RecordDataChange(const ExperimentSettings& newSettings, bool csv);
 
 
 	/**********************************************************************
@@ -338,6 +338,7 @@ protected:
 	void SubstepsAdsorption();
 	void StageDesorption();
 	void SubstepsDesorption();
+	void StageVacuum(bool separateFunctionality = false);
 
 
 	/**********************************************************************************************************************************
