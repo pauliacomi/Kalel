@@ -18,8 +18,8 @@ void Automation::SampleVacuum()
 		ActivatePump();											    // Activate the pump
 		ValveOpen(5);												// Open V5
 
-		messageHandler.DisplayMessage(_T("Début Mise sous vide de la haute pression\r\n"));
-		messageHandler.DisplayStep(_T("Mise sous vide : Haute Pression"));
+		messageHandler.DisplayMessage(MESSAGE_VACUUM_STAGE_START);
+		messageHandler.DisplayMessage(MESSAGE_VACUUM_HIGHPRESSURE_START);
 		experimentLocalData.experimentStepStatus = STEP_STATUS_INPROGRESS;
 
 		break;
@@ -34,9 +34,8 @@ void Automation::SampleVacuum()
 		}
 		else
 		{
-			messageHandler.DisplayMessage(_T("Fin Mise sous vide de la haute pression\r\n"));
-			messageHandler.DisplayMessage(_T("Début Mise sous vide de la basse pression\r\n"));
-			messageHandler.DisplayStep(_T("Mise sous vide : Basse Pression"));
+			messageHandler.DisplayMessage(MESSAGE_VACUUM_HIGHPRESSURE_END);
+			messageHandler.DisplayMessage(MESSAGE_VACUUM_LOWPRESSURE_START);
 			ValveOpen(6);
 
 			experimentLocalData.experimentStepStatus = STEP_STATUS_INPROGRESS + 1;
@@ -53,7 +52,7 @@ void Automation::SampleVacuum()
 		}
 		else
 		{
-			messageHandler.DisplayMessage(_T("Fin Mise sous vide de la basse pression\r\n"));
+			messageHandler.DisplayMessage(MESSAGE_VACUUM_LOWPRESSURE_END);
 
 			ValveOpen(8);
 			ValveOpen(7);
@@ -64,12 +63,14 @@ void Automation::SampleVacuum()
 
 
 	case STEP_STATUS_INPROGRESS + 2:
+
+		messageHandler.DisplayMessage(MESSAGE_VACUUM_FINALOUTGAS_START);
+
 		if (experimentLocalSettings.dataDivers.mise_sous_vide_fin_experience)
 			WaitMinutes(experimentLocalSettings.dataDivers.temps_vide);
 		else
 			WaitMinutes(temps_defaut);
 
-		CString nom_etape = _T("Mise sous vide : Dernier équilibre sous vide");
 		experimentLocalData.experimentStage = STEP_STATUS_END;
 		break;
 
@@ -77,9 +78,14 @@ void Automation::SampleVacuum()
 	case STEP_STATUS_END:
 		if (experimentLocalData.experimentWaiting == false)
 		{
+			messageHandler.DisplayMessage(MESSAGE_VACUUM_FINALOUTGAS_END);
+
 			experimentLocalData.experimentStepStatus = STEP_STATUS_START;													// Let GUI know the step change
 
 			ControlMechanismsCloseAll();
+			
+			messageHandler.DisplayMessage(MESSAGE_VACUUM_STAGE_END);
+
 			experimentLocalData.experimentStage = STAGE_END_AUTOMATIC;
 		}
 		break;

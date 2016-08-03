@@ -1,6 +1,14 @@
 #include "StdAfx.h"
 #include "Automation.h"
 
+/*
+*
+*
+*			INITIAL CHECKS
+*
+*
+*/
+
 
 void Automation::Verifications()
 {

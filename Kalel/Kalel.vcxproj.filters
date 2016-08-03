@@ -151,6 +151,9 @@
     <Filter Include="Source Files\Backend\Wrapper Classes">
       <UniqueIdentifier>{f69c1726-0f15-433b-82e1-f46680256b52}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Automation\Class\Automation Stages">
+      <UniqueIdentifier>{f3b9aae6-ded0-42ee-b37d-b1e1182d079e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -554,9 +557,6 @@
     <ClCompile Include="AutomationFileWriting.cpp">
       <Filter>Source Files\Automation\Class</Filter>
     </ClCompile>
-    <ClCompile Include="AutomationInitialChecks.cpp">
-      <Filter>Source Files\Automation\Class</Filter>
-    </ClCompile>
     <ClCompile Include="AutomationMeasurement.cpp">
       <Filter>Source Files\Automation\Class</Filter>
     </ClCompile>
@@ -564,9 +564,6 @@
       <Filter>Source Files\Automation\Class</Filter>
     </ClCompile>
     <ClCompile Include="AutomationShutdown.cpp">
-      <Filter>Source Files\Automation\Class</Filter>
-    </ClCompile>
-    <ClCompile Include="AutomationSteps.cpp">
       <Filter>Source Files\Automation\Class</Filter>
     </ClCompile>
     <ClCompile Include="AutomationTimeKeeping.cpp">
@@ -589,9 +586,6 @@
     </ClCompile>
     <ClCompile Include="DialogCell.cpp">
       <Filter>Source Files\GUI\Dialogs\Experiment Parameters\Stored Parameters</Filter>
-    </ClCompile>
-    <ClCompile Include="AutomationVacuum.cpp">
-      <Filter>Source Files\Automation\Class</Filter>
     </ClCompile>
     <ClCompile Include="Temperature.cpp">
       <Filter>Source Files\Backend\Wrapper Classes</Filter>
@@ -634,6 +628,21 @@
     </ClCompile>
     <ClCompile Include="CommonFunctions.cpp">
       <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="AutomationVacuum.cpp">
+      <Filter>Source Files\Automation\Class\Automation Stages</Filter>
+    </ClCompile>
+    <ClCompile Include="AutomationStageDesorption.cpp">
+      <Filter>Source Files\Automation\Class\Automation Stages</Filter>
+    </ClCompile>
+    <ClCompile Include="AutomationStageEquilibration.cpp">
+      <Filter>Source Files\Automation\Class\Automation Stages</Filter>
+    </ClCompile>
+    <ClCompile Include="AutomationStageAdsoprtion.cpp">
+      <Filter>Source Files\Automation\Class\Automation Stages</Filter>
+    </ClCompile>
+    <ClCompile Include="AutomationStageInitialChecks.cpp">
+      <Filter>Source Files\Automation\Class\Automation Stages</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
