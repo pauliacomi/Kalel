@@ -138,17 +138,30 @@ SerialInstruments::~SerialInstruments()
 // initiation functions
 //
 
-bool SerialInstruments::Init()
+bool SerialInstruments::Init(std::string * errorInit)
 {
+	bool successs = true;
+	errorInit->clear();
+	std::string tempErr;
+
 	// Now that we have all the data we can call the initiator functions
-	if (!InitiateCalorimeter());
-		//return false;
-	if (!InitiatePressureLowRange());
-		//return false;
-	if (!InitiatePressureHighRange());
-		//return false;
+	if (!InitiateCalorimeter()) {
+		GetErrorCalrimeter(&tempErr);
+		*errorInit = *errorInit + tempErr + "\n";
+		successs = false;
+	}
+	if (!InitiatePressureLowRange()) {
+		GetErrorLowRange(&tempErr);
+		*errorInit = *errorInit + tempErr + "\n";;
+		successs = false;
+	}
+	if (!InitiatePressureHighRange()) {
+		GetErrorHighRange(&tempErr);
+		*errorInit = *errorInit + tempErr + "\n";;
+		successs = false;
+	}
 	
-	return true;
+	return successs;
 }
 
 bool SerialInstruments::InitiateCalorimeter()
@@ -163,8 +176,10 @@ bool SerialInstruments::InitiateCalorimeter()
 
 			if (keithley->OpenCOM(calorimeterCOM))
 			{
-				keithley->InitKeithley();
-				return true;
+				if (keithley->InitKeithley())
+					return true;
+				else
+					return false;
 			}
 			else
 				return false;
@@ -186,8 +201,10 @@ bool SerialInstruments::InitiatePressureLowRange()
 
 			if (keithley->OpenCOM(pressureLowRangeCOM))
 			{
-				keithley->InitKeithley();
-				return true;
+				if (keithley->InitKeithley())
+					return true;
+				else
+					return false;
 			}
 			else
 				return false;
@@ -218,8 +235,10 @@ bool SerialInstruments::InitiatePressureHighRange()
 
 			if (keithley->OpenCOM(pressureHighRangeCOM))
 			{
-				keithley->InitKeithley();
-				return true;
+				if (keithley->InitKeithley())
+					return true;
+				else
+					return false;
 			}
 			else
 				return false;

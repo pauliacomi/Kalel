@@ -19,8 +19,10 @@ Keithley::Keithley(void) : LiaisonRS232()
 
 Keithley::~Keithley(void)
 {
-	// Close the connection
-	LiaisonRS232::CloseCOM();
+	if (connectionOpen) {
+		// Close the connection
+		LiaisonRS232::CloseCOM();
+	}
 
 	// Delete the critical section
 	DeleteCriticalSection(&Sync_keithley);
@@ -32,9 +34,9 @@ Keithley::~Keithley(void)
 
 bool Keithley::OpenCOM(int nId)
 {
-	bool ouverture = LiaisonRS232::OpenCOM(nId);
+	connectionOpen = LiaisonRS232::OpenCOM(nId);
 
-	if (ouverture)
+	if (connectionOpen)
 	{
 		errorKeep = "Keithley open: COM" + to_string(nId);
 		return true;
@@ -68,32 +70,37 @@ bool Keithley::InitKeithley()
 	int nbOctetsLus = 0;
 	char buffer[256];
 	
-	//On met dans 'buffer' les instructions a donne au keithley pour qu'il puisse s'initialiser.
+	// On met dans 'buffer' les instructions a donne au keithley pour qu'il puisse s'initialiser.
 	//
-	//	*RST => Reset command : Returns the 2182 to the *RST default conditions 
-	//							EXPERIMENT_TYPE_MANUAL du Keithley, page 12-12
-	//	*CLS => Clear status : Clears all event registers and Error Queue 
-	//						   EXPERIMENT_TYPE_MANUAL du Keithley, page 12-2
-	//	:SENS:VOLT:CHAN1:LPAS OFF => :SENS:VOLT     Path to configure DC Volts
-	//								  :CHAN1        Channel 1 voltage commands
-	//								   :LPAS OFF    Control analog filter for DCV1
-	//								 EXPERIMENT_TYPE_MANUAL du Keithley 14-8
-	//	:SENS:VOLT:CHAN1:DFIL:STAT OFF => :DFIL      Configure and control digital filter
-	//									   :STAT OFF Enable or disable digital filter
-	//									  EXPERIMENT_TYPE_MANUAL du Keithley 14-8
+	//		*RST => Reset command : Returns the 2182 to the *RST default conditions 
+	//								EXPERIMENT_TYPE_MANUAL du Keithley, page 12-12
+	//		*CLS => Clear status : Clears all event registers and Error Queue 
+	//							   EXPERIMENT_TYPE_MANUAL du Keithley, page 12-2
+	//		:SENS:VOLT:CHANx:LPAS OFF => :SENS:VOLT     Path to configure DC Volts
+	//									 :CHAN1			Channel x voltage commands
+	//									 :LPAS OFF		Control analog filter for DCV1
+	//									 EXPERIMENT_TYPE_MANUAL du Keithley 14-8
+	//		:SENS:VOLT:CHANx:DFIL:STAT OFF => :DFIL			Configure and control digital filter
+	//										  :STAT OFF		Enable or disable digital filter
+	//										  EXPERIMENT_TYPE_MANUAL du Keithley 14-8
 	//
-	//On fait les 2 dernieres instructions egalement pour le channel 2.
-	//Le caractere '\n' represente le saut de ligne et permet de signaler la fin d'une execution
+	// On fait les 2 dernieres instructions egalement pour le channel 2.
+	// Le caractere '\n' represente le saut de ligne et permet de signaler la fin d'une execution
 
-	sprintf_s(buffer,"*RST\n*CLS\n:SENS:VOLT:CHAN1:LPAS OFF\n:SENS:VOLT:CHAN1:DFIL:STAT OFF\n:SENS:VOLT:CHAN2:LPAS OFF\n:SENS:VOLT:CHAN2:DFIL:STAT OFF\n");
+	sprintf_s(buffer, sizeof(buffer),
+		"%s%s%s%s%s%s",		// six strings
+		"*RST\n",
+		"*CLS\n",
+		":SENS:VOLT:CHAN1:LPAS OFF\n",
+		":SENS:VOLT:CHAN1:DFIL:STAT OFF\n",
+		":SENS:VOLT:CHAN2:LPAS OFF\n"
+		":SENS:VOLT:CHAN2:DFIL:STAT OFF\n");
 
 
 	//On va ecrire dans le port COM pour initialiser le Keithley.
 	//Si on a pu ecrire au COM - WriteCOM retournant 'true' - l'initialisation a ete effectue,
 	//on retourne 'true', sinon, on retourne 'false'
-	EnterCriticalSection(&Sync_keithley);
 	bool success = WriteCOM(buffer, (int)strlen(buffer), &nBytesWritten);
-	LeaveCriticalSection(&Sync_keithley);
 
 	if(success)
 	{
@@ -120,6 +127,13 @@ bool Keithley::ReadChannel(int chanNo, double* result)
 	char buffer[256];
 	bool success;
 
+	// The reading and writing has to be successive, otherwise a thread can ask for the read of one channel 
+	// and actually read the result of another channel read which was requested from another thread.
+	// Normally critical section SHOULD NOT be used with potentially blocking parts of code
+	// Due to the OVERLAPPED reading and writing of the serial port, we are guaranteed not to block the thread for more than MAX_READ + MAX_WRITE (about 500 ms) 
+	
+	EnterCriticalSection(&Sync_keithley);
+
 	// Start by sending message to ask for the data
 
 	//On met dans 'buffer' les instructions a donne au keithley pour qu'il puisse nous donner
@@ -130,14 +144,17 @@ bool Keithley::ReadChannel(int chanNo, double* result)
 	//	:SENS:CHAN1 => Select channel to measure; 0,1 or 2 (0=internal temperature sensor).
 	//				   EXPERIMENT_TYPE_MANUAL du Keithley 14-8
 
-	sprintf_s(buffer,"*CLS\nSENS:CHAN %d\n:READ?\n", chanNo);
+	sprintf_s(buffer, sizeof(buffer),
+		"%s%s%d%s%s",
+		"*CLS\n",
+		":SENS:CHAN ", chanNo,"\n",
+		":READ?\n");
 
-	EnterCriticalSection(&Sync_keithley);
 	success = WriteCOM(buffer, (int)strlen(buffer), &nBytesWritten);
-	LeaveCriticalSection(&Sync_keithley);
-
-	if (!success)
+	if (!success) {
+		LeaveCriticalSection(&Sync_keithley);
 		return false;
+	}
 
 	// Then receive the data in an array
 
@@ -162,10 +179,15 @@ bool Keithley::ReadChannel(int chanNo, double* result)
 	//
 	// On pourra voir si on rajoute une fonction pour verifier que la valeur renvoyer est la bonne.
 
-	EnterCriticalSection(&Sync_keithley);
 	success = ReadCOM(buffer, 256);
-	LeaveCriticalSection(&Sync_keithley);
+	if (!success) {
+		LeaveCriticalSection(&Sync_keithley);
+		return false;
+	}
 
+	// Can now leave the critical section 
+	LeaveCriticalSection(&Sync_keithley);
+	
 	// On ne va garder de 'buffer' que les 15 premiers caracteres. On elimine le retour a la ligne
 	// On mettra cette chaine de caractere dans 'resultat'.
 	string temp = buffer;

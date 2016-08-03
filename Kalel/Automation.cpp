@@ -349,12 +349,16 @@ void Automation::Initialisation()
 	InitializeCriticalSection(&criticalSection);
 
 	// Initialise instruments
+	std::string errorInit;
+
 	g_pVanne = new CVannes();
 	g_pTemperature = new CTemperature();
 	g_pSerialInstruments = new SerialInstruments();
-	if (!g_pSerialInstruments->Init())
+	if (!g_pSerialInstruments->Init(&errorInit))
 	{
-		//messageHandler.DisplayMessage(g_pSerialInstruments)
+		CString errorString;
+		errorString.Format("%s",errorInit.c_str());
+		messageHandler.DisplayMessageBox(MESSAGE_INSTRUMENT_INIT_FAIL, MB_ICONERROR | MB_OK, false, errorString);
 	}
 
 	// Initialise security

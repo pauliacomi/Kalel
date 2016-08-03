@@ -36,7 +36,7 @@ protected:
 	FluxConverter converter;
 
 public:
-	bool Init();
+	bool Init(std::string * errorInit);
 
 	bool InitiateCalorimeter();
 	bool ReadCalorimeter(double * calorimeter);
