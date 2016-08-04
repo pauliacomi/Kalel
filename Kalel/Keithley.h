@@ -18,6 +18,8 @@ public:
 
 private:
 	CRITICAL_SECTION Sync_keithley;
+	bool connectionOpen = false;
+	bool readingPort = false;
 
 public:
 

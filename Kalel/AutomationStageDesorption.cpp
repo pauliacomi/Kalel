@@ -63,6 +63,7 @@ void Automation::SubstepsDesorption()
 		messageHandler.DisplayMessage(MESSAGE_DESORPTION_DOSE_START, experimentLocalData.desorptionCounter, experimentLocalData.experimentDose);	// Tell GUI about current dose
 		
 		ActivatePump();
+		WaitSeconds(TIME_WAIT_PUMP);
 		
 		experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_INPROGRESS;																		// Move to injection
 	}
@@ -75,7 +76,7 @@ void Automation::SubstepsDesorption()
 		
 		ValveOpenClose(8);																								// Injection, should think about waiting within the valves without sleep
 		ValveOpenClose(7);
-		WaitSeconds(2);
+		WaitSeconds(TIME_WAIT_VALVES);
 		
 		experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_INPROGRESS + 1;										// Move to injection check
 	}
@@ -147,6 +148,7 @@ void Automation::SubstepsDesorption()
 			ValveOpenClose(3);
 			ValveOpenClose(2);
 			ValveOpenClose(4);
+			WaitSeconds(TIME_WAIT_VALVES);
 
 			experimentLocalData.pressureFinal = experimentLocalData.pressureHigh;		// Save pressure after open/close
 		}

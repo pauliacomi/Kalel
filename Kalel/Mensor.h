@@ -12,7 +12,7 @@ class Mensor :
 {
 private:
 	char buffer[256];
-	CRITICAL_SECTION Sync_mensor;
+	bool connectionOpen = false;
 
 public:
 	Mensor(void);

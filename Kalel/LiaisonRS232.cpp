@@ -10,7 +10,8 @@ using namespace std;
 
 #define RX_SIZE         4096    /* taille tampon d'entrée  */
 #define TX_SIZE         4096    /* taille tampon de sortie */
-#define MAX_WAIT_READ   500		/* temps max d'attente pour lecture (en ms) */
+#define MAX_WAIT_READ   200		/* temps max d'attente pour lecture (en ms) */
+#define MAX_WAIT_WRITE  200		/* temps max d'attente pour lecture (en ms) */
 
 
 LiaisonRS232::LiaisonRS232()
@@ -62,8 +63,8 @@ LiaisonRS232::~LiaisonRS232()
 bool LiaisonRS232::OpenCOM(int pnId)
 {
 	// Construct port specifier
-	char szCOM[5];
-    sprintf_s(szCOM, "COM%d", pnId);
+	CString szCOM;
+    szCOM.Format("\\\\.\\COM%d", pnId);
 	
 	// Open COM port
     g_hCOM = CreateFile(
@@ -80,6 +81,7 @@ bool LiaisonRS232::OpenCOM(int pnId)
     if(g_hCOM == INVALID_HANDLE_VALUE)
     {
         errorKeep = "Error opening port COM" + to_string(pnId);
+		g_hCOM = NULL;
         return false;
     }
 
@@ -106,6 +108,13 @@ bool LiaisonRS232::OpenCOM(int pnId)
 
 bool LiaisonRS232::ReadCOM(char *buffer, int nBytesToRead)
 {
+	// Start by checking if port is open
+	if (!g_hCOM) {
+		errorKeep = "Port must be opened first";
+		return false;
+	}
+
+	// Now define required variables
 	DWORD dwRead;
 	DWORD dwRes;
 	BOOL fWaitingOnRead = FALSE;
@@ -122,11 +131,19 @@ bool LiaisonRS232::ReadCOM(char *buffer, int nBytesToRead)
 		noErrors = false;
 	}
 
-
+	/*
+	REQUEST READ
+	*/
 	// If not already reading
 	if (!fWaitingOnRead && noErrors) {
 		// Issue read operation.
-		if (!ReadFile(g_hCOM, buffer, nBytesToRead, &dwRead, &osReader)) {
+		bool ok = ::ReadFile(	g_hCOM, 		  // Handle
+								buffer, 		  // Where to write the data
+								nBytesToRead, 	  // Amount to read
+								&dwRead, 		  // Amount actually read
+								&osReader);		  // Overlapped event
+
+		if (!ok) {
 			if (GetLastError() != ERROR_IO_PENDING) {	// read not delayed?					
 				errorKeep = "Error issuing read command";
 				noErrors = false;
@@ -140,7 +157,9 @@ bool LiaisonRS232::ReadCOM(char *buffer, int nBytesToRead)
 		}
 	}
 
-
+	/*
+	WAIT TO READ
+	*/
 	// Wait for pending read to complete
 	if (fWaitingOnRead && noErrors && !readingComplete) {
 		dwRes = WaitForSingleObject(osReader.hEvent, MAX_WAIT_READ);
@@ -167,7 +186,7 @@ bool LiaisonRS232::ReadCOM(char *buffer, int nBytesToRead)
 			case WAIT_TIMEOUT:
 				//
 				// timeouts are not reported because they happen too often
-				// OutputDebugString("Timeout in Reader & Status checking\n\r");
+				// errorKeep = "Timeout in Reader & Status checking";
 				//
 				break;
 
@@ -179,19 +198,31 @@ bool LiaisonRS232::ReadCOM(char *buffer, int nBytesToRead)
 		}
 	}
 
+	/*
+	END
+	*/
 	// close event handle
 	CloseHandle(osReader.hEvent);
 
-	if(!readingComplete)
+	if (!readingComplete){
 
+	}
 
-	if (noErrors)
+	if (noErrors) {
 		return true;
+	}
 	return false;
 }
 
 bool LiaisonRS232::WriteCOM(void* buffer, int nBytesToWrite, int* pBytesWritten)
 {
+	// Start by checking if port is open
+	if (!g_hCOM) {
+		errorKeep = "Port must be opened first";
+		return false;
+	}
+
+	// Now define required variables
 	OVERLAPPED osWrite = { 0 };
 	DWORD dwRes;
 	bool fRes;
@@ -207,7 +238,13 @@ bool LiaisonRS232::WriteCOM(void* buffer, int nBytesToWrite, int* pBytesWritten)
 
 
 	// Issue write.
-	if (!WriteFile(g_hCOM, buffer, nBytesToWrite, (LPDWORD)pBytesWritten, &osWrite)) {
+	bool ok = ::WriteFile(	g_hCOM, 					   // Handle
+							buffer, 					   // Data to write
+							nBytesToWrite,				   // Length of data
+							(LPDWORD)pBytesWritten,		   // Amount written
+							&osWrite);					   // Overlapped event
+
+	if (!ok) {
 		if (GetLastError() != ERROR_IO_PENDING) {
 			// WriteFile failed, but isn't delayed. Report error and abort.
 			errorKeep = "Error writing to COM";
@@ -215,13 +252,15 @@ bool LiaisonRS232::WriteCOM(void* buffer, int nBytesToWrite, int* pBytesWritten)
 		}
 		else {
 			// Write is pending.
-			dwRes = WaitForSingleObject(osWrite.hEvent, INFINITE);
+			dwRes = WaitForSingleObject(osWrite.hEvent, MAX_WAIT_WRITE);
 			switch (dwRes)
 			{
 				// OVERLAPPED structure's event has been signaled. 
 			case WAIT_OBJECT_0:
-				if (!GetOverlappedResult(g_hCOM, &osWrite, (LPDWORD)pBytesWritten, FALSE))
+				if (!GetOverlappedResult(g_hCOM, &osWrite, (LPDWORD)pBytesWritten, FALSE)) {
+					errorKeep = "Error writing to COM";
 					fRes = false;
+				}
 				else
 					// Write operation completed successfully.
 					fRes = true;

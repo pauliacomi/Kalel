@@ -106,11 +106,9 @@ void Automation::ReadCalorimeter()
 	bool success;
 	std::string error;
 	
-	EnterCriticalSection(&criticalSection);
 	success = g_pSerialInstruments->ReadCalorimeter(&calorimeter);
 	if(!success)
 		g_pSerialInstruments->GetErrorCalrimeter(&error);
-	LeaveCriticalSection(&criticalSection);
 
 	if (success == false) {
 		messageHandler.DisplayMessage(GENERIC_STRING, error.c_str());
@@ -130,11 +128,9 @@ void Automation::ReadLowPressure()
 	bool success;
 	std::string error;
 
-	EnterCriticalSection(&criticalSection);
 	success = g_pSerialInstruments->ReadPressureLowRange(&pressureLowRange);
 	if(!success)
 		g_pSerialInstruments->GetErrorLowRange(&error);
-	LeaveCriticalSection(&criticalSection);
 
 	if (success == false) {
 		messageHandler.DisplayMessage(GENERIC_STRING, error.c_str());
@@ -154,11 +150,9 @@ void Automation::ReadHighPressure()
 	bool success;
 	std::string error;
 
-	EnterCriticalSection(&criticalSection);
 	success = g_pSerialInstruments->ReadPressureHighRange(&pressureHighRange);
 	if(!success)
 		g_pSerialInstruments->GetErrorHighRange(&error);
-	LeaveCriticalSection(&criticalSection);
 
 	if (success == false) {
 		messageHandler.DisplayMessage(GENERIC_STRING, error.c_str());
@@ -177,11 +171,9 @@ void Automation::ReadTemperatures()
 	bool success;
 	std::string error;
 
-	EnterCriticalSection(&criticalSection);
 	success = g_pTemperature->Read(&dTemperatureCalo, &dTemperatureCage, &dTemperaturePiece);
 	if(!success)
 		g_pTemperature->GetError(&error);
-	LeaveCriticalSection(&criticalSection);
 
 	if (success == false) {
 		messageHandler.DisplayMessage(GENERIC_STRING, error.c_str());

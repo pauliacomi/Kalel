@@ -120,6 +120,26 @@ BOOL MFCMessageHandler::DisplayMessageBox(int pParam, UINT nType, bool blocksPro
 	return 0;
 }
 
+BOOL MFCMessageHandler::DisplayMessageBox(int pParam, UINT nType, bool blocksProgram, CString pString)
+{
+	// Create a new pointer 
+	CString * message = new CString;
+	message->Format(pParam, pString);
+
+	// Check if the message box is supposed to alert the user or ask for input
+	// Other thread is now responsible for deleting this object
+	if (blocksProgram)
+	{
+		::PostMessage(windowHandle, WM_DISPLAYMESSAGEBOXCONF, nType, (LPARAM)message);
+	}
+	else
+	{
+		::PostMessage(windowHandle, WM_DISPLAYMESSAGEBOX, nType, (LPARAM)message);
+	}
+
+	return 0;
+}
+
 void MFCMessageHandler::ExperimentStart()
 {
 	GraphReset();

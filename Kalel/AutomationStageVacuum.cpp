@@ -4,7 +4,7 @@
 #include "StdAfx.h"
 #include "Automation.h"
 
-void Automation::StageVacuum(bool separateFunctionality = false)
+void Automation::StageVacuum(bool separateFunctionality)
 {
 	switch (experimentLocalData.experimentStepStatus)
 	{
@@ -15,7 +15,9 @@ void Automation::StageVacuum(bool separateFunctionality = false)
 
 		ControlMechanismsCloseAll();								// Close all valves
 		ActivatePump();											    // Activate the pump
+		WaitSeconds(TIME_WAIT_PUMP);
 		ValveOpen(5);												// Open V5
+		WaitSeconds(TIME_WAIT_VALVES);
 
 		break;
 
@@ -26,6 +28,7 @@ void Automation::StageVacuum(bool separateFunctionality = false)
 			// Open, then close v8 and v7
 			ValveOpenClose(8);
 			ValveOpenClose(7);
+			WaitSeconds(TIME_WAIT_VALVES);
 		}
 		else
 		{
@@ -44,6 +47,7 @@ void Automation::StageVacuum(bool separateFunctionality = false)
 			// Open, then close v8 and v7
 			ValveOpenClose(8);
 			ValveOpenClose(7);
+			WaitSeconds(TIME_WAIT_VALVES);
 		}
 		else
 		{
@@ -51,6 +55,7 @@ void Automation::StageVacuum(bool separateFunctionality = false)
 
 			ValveOpen(8);
 			ValveOpen(7);
+			WaitSeconds(TIME_WAIT_VALVES);
 
 			experimentLocalData.experimentStepStatus = STEP_STATUS_INPROGRESS + 2;
 		}

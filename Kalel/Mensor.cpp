@@ -25,25 +25,22 @@ using namespace std;
 
 Mensor::Mensor(void) : LiaisonRS232()
 { 
-	// Initialize the critical section
-	InitializeCriticalSection(&Sync_mensor);
 }
 
 
 Mensor::~Mensor(void)
 {
-	// Close the connection
-	LiaisonRS232::CloseCOM();
-
-	// Delete the critical section
-	DeleteCriticalSection(&Sync_mensor);
+	if (connectionOpen) {
+		// Close the connection
+		LiaisonRS232::CloseCOM();
+	}
 }
 
 bool Mensor::OpenCOM(int nId)
 {
-	bool success = LiaisonRS232::OpenCOM(nId);
+	connectionOpen = LiaisonRS232::OpenCOM(nId);
 	
-	if (success)
+	if (connectionOpen)
 	{
 		errorKeep = "Mensor open: COM" + to_string(nId);
 		return true;
@@ -92,10 +89,7 @@ bool Mensor::ReadMensor(double* pression)
 	// dans le code ascii
 	sprintf_s(buffer,"#1?<cr>\n");
 	
-	EnterCriticalSection(&Sync_mensor);
 	success = WriteCOM(buffer, (int)strlen(buffer), &nBytesWritten);
-	LeaveCriticalSection(&Sync_mensor);
-
 	if (!success)
 		return false;
 
@@ -110,10 +104,7 @@ bool Mensor::ReadMensor(double* pression)
 	//On ignore donc les 4 premiers caractères et on prend les nbOctetsLus-6
 	// suivants qui représentent la pression
 
-	EnterCriticalSection(&Sync_mensor);
 	success = ReadCOM(buffer, 256);
-	LeaveCriticalSection(&Sync_mensor);
-
 	if (!success)
 		return false;
 

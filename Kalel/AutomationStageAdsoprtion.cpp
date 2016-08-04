@@ -70,7 +70,7 @@ void Automation::SubstepsAdsorption()
 		ValveOpenClose(2);																								// Injection
 		ValveOpenClose(3);
 		ValveOpenClose(4);
-		WaitSeconds(30);
+		WaitSeconds(TIME_WAIT_VALVES);
 		experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_CHECK;										// Move to injection check
 	}
 
@@ -134,18 +134,20 @@ void Automation::SubstepsAdsorption()
 	if (experimentLocalData.experimentSubstepStage == SUBSTEP_STATUS_ABORT &&
 		experimentLocalData.experimentWaiting == false)
 	{
+		// Turn on pump
+		if (!PompeEstActive()) {
+			EVActivate(1);
+			EVActivate(2);
+			ActivatePump();
+			WaitSeconds(TIME_WAIT_PUMP);
+			messageHandler.DisplayMessage(MESSAGE_OUTGAS_ATTEMPT);
+		}
+
 		if (experimentLocalData.pressureFinal - experimentLocalData.pressureInitial > marge_multiplicateur * (experimentLocalSettings.dataAdsorption[experimentLocalData.adsorptionCounter].delta_pression))
 		{
-			// Turn on pump
-			if (!PompeEstActive()) {
-				EVActivate(1);
-				EVActivate(2);
-				ActivatePump();
-				messageHandler.DisplayMessage(MESSAGE_OUTGAS_ATTEMPT);
-			}
-
 			ValveOpenClose(8);
 			ValveOpenClose(7);
+			WaitSeconds(TIME_WAIT_VALVES);
 
 			experimentLocalData.pressureFinal = experimentLocalData.pressureHigh;		// Save pressure after open/close
 		}
