@@ -133,8 +133,8 @@ public:
 	LRESULT AffichageMessages(WPARAM wParam, LPARAM lParam);
 	LRESULT AffichageMessages(CString message);								// Temporary overload
 	LRESULT RajoutAffichageMessages(WPARAM wParam, LPARAM lParam);
-	LRESULT AffichageMesures(ExperimentData expD);
-	LRESULT AffichageEtape(ExperimentData expD);
+	LRESULT AffichageMesures();
+	LRESULT AffichageEtape();
 	LRESULT RajoutAffichageEtape(WPARAM wParam, LPARAM lParam);
 	LRESULT ExchangeData(WPARAM wParam, LPARAM lParam);
 	LRESULT MessageBoxAlert(WPARAM wParam, LPARAM lParam);

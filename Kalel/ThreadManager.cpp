@@ -25,13 +25,13 @@ ThreadManager::ThreadManager(ExperimentSettings * expD)
 	experimentSettings = expD;
 
 	// Create the thread in a suspended state
-	m_threadMainControlLoop = AfxBeginThread(ThreadMainWorkerStarter, this, NULL, NULL, CREATE_SUSPENDED, NULL);
+	//m_threadMainControlLoop = AfxBeginThread(ThreadMainWorkerStarter, this, NULL, NULL, CREATE_SUSPENDED, NULL);
 
 	// Make sure thread is not accidentally deleted
-	m_threadMainControlLoop->m_bAutoDelete = FALSE;
+	//m_threadMainControlLoop->m_bAutoDelete = FALSE;
 
 	// Now resume the thread
-	m_threadMainControlLoop->ResumeThread();
+	//m_threadMainControlLoop->ResumeThread();
 }
 
 ThreadManager::~ThreadManager()

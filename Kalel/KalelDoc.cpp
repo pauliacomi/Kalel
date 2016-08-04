@@ -178,19 +178,19 @@ bool CKalelDoc::GraphAddMeasurement(ExperimentData expData)
 
 		if (expData.experimentMeasurements > m_TableauMesures[lastMeasurement].experimentMeasurements) {
 
-		maxPressure = max(maxPressure, expData.pressureLow);
-		maxPressure = max(maxPressure, expData.pressureHigh);
+			maxPressure = max(maxPressure, expData.pressureLow);
+			maxPressure = max(maxPressure, expData.pressureHigh);
 		
-		minPressure = min(minPressure, expData.pressureLow);
-		minPressure = min(minPressure, expData.pressureHigh);
+			minPressure = min(minPressure, expData.pressureLow);
+			minPressure = min(minPressure, expData.pressureHigh);
 		
-		maxCalo = max(maxCalo, expData.resultCalorimeter);
-		minCalo = min(minCalo, expData.resultCalorimeter);
+			maxCalo = max(maxCalo, expData.resultCalorimeter);
+			minCalo = min(minCalo, expData.resultCalorimeter);
 
-		m_TableauMesures.SetSize(lastMeasurement + 2);
-		m_TableauMesures[lastMeasurement+1] = expData;
+			m_TableauMesures.SetSize(lastMeasurement + 2);
+			m_TableauMesures[lastMeasurement+1] = expData;
 
-		result = true;
+			result = true;
 		}
 	}
 	return result;

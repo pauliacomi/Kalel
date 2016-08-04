@@ -36,10 +36,6 @@ public:
 	int adsorptionCounter;					// Counter for the number of adsorption settings (small, medium, large etc) inputted by the user, starts at 0
 	int desorptionCounter;					// Counter for the number of desorption settings (small, medium, large etc) inputted by the user, starts at 0
 
-	// Text
-	CString textMessages;
-	CString textMeasurements;
-
 	// Calorimeter
 	double resultCalorimeter;
 

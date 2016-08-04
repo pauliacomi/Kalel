@@ -44,14 +44,14 @@ void CKalelView::OnTimer(UINT nIDEvent)
 	SetDlgItemText(IDC_PRESSION_FINALE, m_StrPressionFinale);
 
 	// Write the current step
-	AffichageEtape(experimentData);
+	AffichageEtape();
 
 	// Write graph
 	bool recorded = GetDocument()->GraphAddMeasurement(experimentData);
 
 	// Write in measurement box
 	if (recorded) {
-		AffichageMesures(experimentData);
+		AffichageMesures();
 	}
 
 	// Update all views
@@ -85,7 +85,7 @@ LRESULT CKalelView::AffichageMessages(WPARAM, LPARAM lParam)
 
 
 // Write on the dialog box reserved for new measurements
-LRESULT CKalelView::AffichageMesures(ExperimentData expD)
+LRESULT CKalelView::AffichageMesures()
 {
 	CString mesure;
 
@@ -102,30 +102,30 @@ LRESULT CKalelView::AffichageMesures(ExperimentData expD)
 }
 
 // Display the step
-LRESULT CKalelView::AffichageEtape(ExperimentData expD)
+LRESULT CKalelView::AffichageEtape()
 {
 
 	CString temp;
 	
-	temp.Format(expD.experimentStage);
+	temp.Format(experimentData.experimentStage);
 
 	m_StrEtape = temp;
 
-	if (expD.verificationStep != STEP_VERIFICATIONS_UNDEF && expD.verificationStep != STEP_VERIFICATIONS_COMPLETE)
+	if (experimentData.verificationStep != STEP_VERIFICATIONS_UNDEF && experimentData.verificationStep != STEP_VERIFICATIONS_COMPLETE)
 	{
-		temp.Format(expD.verificationStep);
+		temp.Format(experimentData.verificationStep);
 		m_StrEtape += ",   Substage: " + temp;
 	}
 
-	if (expD.experimentWaiting == true)
+	if (experimentData.experimentWaiting == true)
 	{
-		if (expD.timeToEquilibrate / 60 > 1)
+		if (experimentData.timeToEquilibrate / 60 > 1)
 		{
-			temp.Format(" *** Waiting: %.0f min %.0f s /  %.0f min %.0f s", floorf(expD.timeToEquilibrateCurrent / 60.0f), fmodf(expD.timeToEquilibrateCurrent, 60.0f), floorf(expD.timeToEquilibrate / 60.0f), fmodf(expD.timeToEquilibrate, 60.0f));
+			temp.Format(" *** Waiting: %.0f min %.0f s /  %.0f min %.0f s", floorf(experimentData.timeToEquilibrateCurrent / 60.0f), fmodf(experimentData.timeToEquilibrateCurrent, 60.0f), floorf(experimentData.timeToEquilibrate / 60.0f), fmodf(experimentData.timeToEquilibrate, 60.0f));
 		}
 		else
 		{
-			temp.Format(" *** Waiting: %.0f s /  %.0f s", expD.timeToEquilibrateCurrent, expD.timeToEquilibrate);
+			temp.Format(" *** Waiting: %.0f s /  %.0f s", experimentData.timeToEquilibrateCurrent, experimentData.timeToEquilibrate);
 		}
 		m_StrEtape += temp;
 	}
