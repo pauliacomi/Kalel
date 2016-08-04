@@ -35,6 +35,24 @@ void Automation::SecuriteTemperatures()
 
 void Automation::SecuriteHautePressionManuelle()
 {
+	// Check for the pressure being higher than low pressure limit
+	if (experimentLocalData.pressureLow > GetPressionSecuriteBassePression())
+	{
+		// If valve 6 is open and pressure is higher than specified, close valve 6
+		if (EstOuvert_Vanne(6))
+		{
+			messageHandler.DisplayMessage(MESSAGE_WARNING_PHIGH_V6, experimentLocalData.pressureHigh, GetPressionSecuriteBassePression());
+			ValveClose(6);
+		}
+	}
+	else
+	{
+		if (!EstOuvert_Vanne(6))
+		{
+			ValveOpen(6);
+		}
+	}
+
 	// Check the result
 	if (experimentLocalData.pressureHigh >= security_PressureHigh_HighRange)
 	{
@@ -125,6 +143,13 @@ void Automation::SecuriteHautePressionAuto()
 				{
 					messageHandler.DisplayMessage(MESSAGE_WARNING_PHIGH_V6, experimentLocalData.pressureHigh, GetPressionSecuriteBassePression());
 					ValveClose(6);
+				}
+			}
+			else
+			{
+				if (!EstOuvert_Vanne(6))
+				{
+					ValveOpen(6);
 				}
 			}
 

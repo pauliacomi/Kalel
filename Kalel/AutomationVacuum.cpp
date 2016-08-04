@@ -8,7 +8,7 @@
 
 void Automation::SampleVacuum()
 {
-
+	StageVacuum(true);
 }
 
 void Automation::BottleVacuum()

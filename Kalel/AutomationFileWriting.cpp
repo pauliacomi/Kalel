@@ -265,7 +265,7 @@ string Automation::EnteteDesorption(bool csv)
 *        ExperimentSettings newSettings: The settings file to compare to the current one
 *        bool csv: Ask to write to the comma separated value file if true
 ***********************************************************************/
-void Automation::RecordDataChange(ExperimentSettings newSettings, bool csv)
+void Automation::RecordDataChange(const ExperimentSettings& newSettings, bool csv)
 {
 	// Check if csv file is requested
 	string divider;

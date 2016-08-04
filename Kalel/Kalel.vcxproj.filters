@@ -151,6 +151,12 @@
     <Filter Include="Source Files\Backend\Wrapper Classes">
       <UniqueIdentifier>{f69c1726-0f15-433b-82e1-f46680256b52}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Automation\Class\Automation Stages">
+      <UniqueIdentifier>{f3b9aae6-ded0-42ee-b37d-b1e1182d079e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Automation\Class\Functionality">
+      <UniqueIdentifier>{7851c4a5-dc0a-46bd-986a-cb1a7c147a49}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -413,30 +419,6 @@
     <ClCompile Include="Manip.cpp">
       <Filter>Source Files\Old\Manip\Manip</Filter>
     </ClCompile>
-    <ClCompile Include="Manip_Auto_Arret.cpp">
-      <Filter>Source Files\Old\Manip\Manip_Auto</Filter>
-    </ClCompile>
-    <ClCompile Include="Manip_Auto.cpp">
-      <Filter>Source Files\Old\Manip\Manip_Auto</Filter>
-    </ClCompile>
-    <ClCompile Include="Manip_Auto_Donnees.cpp">
-      <Filter>Source Files\Old\Manip\Manip_Auto</Filter>
-    </ClCompile>
-    <ClCompile Include="Manip_Auto_Fichier.cpp">
-      <Filter>Source Files\Old\Manip\Manip_Auto</Filter>
-    </ClCompile>
-    <ClCompile Include="Manip_Auto_LireAfficher.cpp">
-      <Filter>Source Files\Old\Manip\Manip_Auto</Filter>
-    </ClCompile>
-    <ClCompile Include="Manip_Auto_Probleme_Injection.cpp">
-      <Filter>Source Files\Old\Manip\Manip_Auto</Filter>
-    </ClCompile>
-    <ClCompile Include="Manip_Auto_Vannes.cpp">
-      <Filter>Source Files\Old\Manip\Manip_Auto</Filter>
-    </ClCompile>
-    <ClCompile Include="Manip_Auto_Verifications.cpp">
-      <Filter>Source Files\Old\Manip\Manip_Auto</Filter>
-    </ClCompile>
     <ClCompile Include="Manip_AutoGaz.cpp">
       <Filter>Source Files\Old\Manip\Manip_AutoGaz</Filter>
     </ClCompile>
@@ -551,30 +533,6 @@
     <ClCompile Include="Automation.cpp">
       <Filter>Source Files\Automation\Class</Filter>
     </ClCompile>
-    <ClCompile Include="AutomationFileWriting.cpp">
-      <Filter>Source Files\Automation\Class</Filter>
-    </ClCompile>
-    <ClCompile Include="AutomationInitialChecks.cpp">
-      <Filter>Source Files\Automation\Class</Filter>
-    </ClCompile>
-    <ClCompile Include="AutomationMeasurement.cpp">
-      <Filter>Source Files\Automation\Class</Filter>
-    </ClCompile>
-    <ClCompile Include="AutomationSecurity.cpp">
-      <Filter>Source Files\Automation\Class</Filter>
-    </ClCompile>
-    <ClCompile Include="AutomationShutdown.cpp">
-      <Filter>Source Files\Automation\Class</Filter>
-    </ClCompile>
-    <ClCompile Include="AutomationSteps.cpp">
-      <Filter>Source Files\Automation\Class</Filter>
-    </ClCompile>
-    <ClCompile Include="AutomationTimeKeeping.cpp">
-      <Filter>Source Files\Automation\Class</Filter>
-    </ClCompile>
-    <ClCompile Include="AutomationValves.cpp">
-      <Filter>Source Files\Automation\Class</Filter>
-    </ClCompile>
     <ClCompile Include="ExperimentSettings.cpp">
       <Filter>Source Files\Automation</Filter>
     </ClCompile>
@@ -589,9 +547,6 @@
     </ClCompile>
     <ClCompile Include="DialogCell.cpp">
       <Filter>Source Files\GUI\Dialogs\Experiment Parameters\Stored Parameters</Filter>
-    </ClCompile>
-    <ClCompile Include="AutomationVacuum.cpp">
-      <Filter>Source Files\Automation\Class</Filter>
     </ClCompile>
     <ClCompile Include="Temperature.cpp">
       <Filter>Source Files\Backend\Wrapper Classes</Filter>
@@ -634,6 +589,66 @@
     </ClCompile>
     <ClCompile Include="CommonFunctions.cpp">
       <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="AutomationStageDesorption.cpp">
+      <Filter>Source Files\Automation\Class\Automation Stages</Filter>
+    </ClCompile>
+    <ClCompile Include="AutomationStageEquilibration.cpp">
+      <Filter>Source Files\Automation\Class\Automation Stages</Filter>
+    </ClCompile>
+    <ClCompile Include="AutomationStageAdsoprtion.cpp">
+      <Filter>Source Files\Automation\Class\Automation Stages</Filter>
+    </ClCompile>
+    <ClCompile Include="AutomationStageInitialChecks.cpp">
+      <Filter>Source Files\Automation\Class\Automation Stages</Filter>
+    </ClCompile>
+    <ClCompile Include="AutomationStageVacuum.cpp">
+      <Filter>Source Files\Automation\Class\Automation Stages</Filter>
+    </ClCompile>
+    <ClCompile Include="AutomationFileWriting.cpp">
+      <Filter>Source Files\Automation\Class\Functionality</Filter>
+    </ClCompile>
+    <ClCompile Include="AutomationMeasurement.cpp">
+      <Filter>Source Files\Automation\Class\Functionality</Filter>
+    </ClCompile>
+    <ClCompile Include="AutomationSecurity.cpp">
+      <Filter>Source Files\Automation\Class\Functionality</Filter>
+    </ClCompile>
+    <ClCompile Include="AutomationTimeKeeping.cpp">
+      <Filter>Source Files\Automation\Class\Functionality</Filter>
+    </ClCompile>
+    <ClCompile Include="AutomationValves.cpp">
+      <Filter>Source Files\Automation\Class\Functionality</Filter>
+    </ClCompile>
+    <ClCompile Include="AutomationShutdown.cpp">
+      <Filter>Source Files\Automation\Class\Functionality</Filter>
+    </ClCompile>
+    <ClCompile Include="AutomationVacuum.cpp">
+      <Filter>Source Files\Automation\Class\Functionality</Filter>
+    </ClCompile>
+    <ClCompile Include="Manip_Auto_Verifications.cpp">
+      <Filter>Source Files\Old\Manip\Manip_Auto</Filter>
+    </ClCompile>
+    <ClCompile Include="Manip_Auto_Vannes.cpp">
+      <Filter>Source Files\Old\Manip\Manip_Auto</Filter>
+    </ClCompile>
+    <ClCompile Include="Manip_Auto_Probleme_Injection.cpp">
+      <Filter>Source Files\Old\Manip\Manip_Auto</Filter>
+    </ClCompile>
+    <ClCompile Include="Manip_Auto_Fichier.cpp">
+      <Filter>Source Files\Old\Manip\Manip_Auto</Filter>
+    </ClCompile>
+    <ClCompile Include="Manip_Auto_LireAfficher.cpp">
+      <Filter>Source Files\Old\Manip\Manip_Auto</Filter>
+    </ClCompile>
+    <ClCompile Include="Manip_Auto_Arret.cpp">
+      <Filter>Source Files\Old\Manip\Manip_Auto</Filter>
+    </ClCompile>
+    <ClCompile Include="Manip_Auto_Donnees.cpp">
+      <Filter>Source Files\Old\Manip\Manip_Auto</Filter>
+    </ClCompile>
+    <ClCompile Include="Manip_Auto.cpp">
+      <Filter>Source Files\Old\Manip\Manip_Auto</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

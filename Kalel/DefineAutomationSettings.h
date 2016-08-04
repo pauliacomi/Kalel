@@ -20,15 +20,17 @@
 #define marge_injection					0.01	//bar   Si on ne dépasse pas cette marge, on consiède que la pression n'a pas changé
 #define marge_multiplicateur			1.2		//bar
 
-// Time to wait after opening or closing valves
-#define TimeInterval					5		// intervalle 5s, temps d'attente en plus après ouverture des vannes
+// Time to wait
+#define TIME_WAIT_VALVES					5			// intervalle 5s, temps d'attente en plus après ouverture des vannes
+#define TIME_WAIT_PUMP						10			// intervalle 5s, temps d'attente en plus après ouverture des vannes
+
 
 // Opening and closing times for the valves
 #define temps_ouverture					1000				//ms = 1s
 #define temps_fermeture					temps_ouverture		// => temps_fermeture identique a temps ouverture
 
 // Defines for putting under vacuum
-#define pression_pompe					0.5
+#define pression_pompe					0.5 // Minimum pressure to be put directly on the pump
 #define temps_en_cas_d_urgence			10 // minutes
 #define temps_defaut					30 // minutes
 

@@ -29,7 +29,7 @@ private:
 
 	// Public interface methods
 public:
-	HRESULT StartThread();
+	HRESULT ResumeThread();
 	HRESULT PauseThread();
 	HRESULT ResetThread();
 	HRESULT ShutdownThread();

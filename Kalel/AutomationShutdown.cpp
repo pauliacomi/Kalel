@@ -55,6 +55,20 @@ void Automation::Shutdown()
 
 		break;
 
+	case STOP_COMPLETE:		// This option is used if the application is closed
+							// It then resets everything
+
+		//When thread finishes, let main window know to unlock menu
+		messageHandler.ExperimentEnd();
+
+		// Close measurement file
+		FileMeasurementClose();
+
+		// Experiment has been finished normally
+		messageHandler.DisplayMessage(MESSAGE_THREAD_SHUTDOWN);
+
+		break;
+
 	default:
 		ASSERT(0);		// Error, should never be reached
 		break;

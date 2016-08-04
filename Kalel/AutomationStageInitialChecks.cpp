@@ -1,6 +1,14 @@
 #include "StdAfx.h"
 #include "Automation.h"
 
+/*
+*
+*
+*			INITIAL CHECKS
+*
+*
+*/
+
 
 void Automation::Verifications()
 {
@@ -69,10 +77,10 @@ int Automation::VerificationResidualPressure()
 			ValveOpen(6);
 
 			// Tell GUI we are waiting
-			messageHandler.DisplayMessage(MESSAGE_WAIT_TIME, TimeInterval);
+			messageHandler.DisplayMessage(MESSAGE_WAIT_TIME, TIME_WAIT_VALVES);
 
 			// Set the time to wait
-			WaitSeconds(TimeInterval);
+			WaitSeconds(TIME_WAIT_VALVES);
 		}
 		// Continue to next step
 		experimentLocalData.experimentStepStatus = STEP_STATUS_INPROGRESS;
@@ -84,10 +92,10 @@ int Automation::VerificationResidualPressure()
 			ValveOpen(5);
 
 			// Tell GUI we are waiting
-			messageHandler.DisplayMessage(MESSAGE_WAIT_TIME, TimeInterval);
+			messageHandler.DisplayMessage(MESSAGE_WAIT_TIME, TIME_WAIT_VALVES);
 
 			// Set the time to wait
-			WaitSeconds(TimeInterval);
+			WaitSeconds(TIME_WAIT_VALVES);
 
 			// Continue to next step
 			experimentLocalData.experimentStepStatus = STEP_STATUS_END;
@@ -133,7 +141,7 @@ int Automation::VerificationTemperature()
 			messageHandler.DisplayMessageBox(MESSAGE_CHECK_TEMPERATURE_DIFF, MB_ICONQUESTION | MB_YESNOCANCEL, true, experimentLocalData.temperatureCalo, experimentLocalSettings.dataGeneral.temperature_experience - security_temperature_initial);
 			
 			::SetEvent(h_eventPause);
-			experimentLocalData.experimentStepStatus = STEP_STATUS_INPROGRESS;			// never will end if the user selects continue anyway
+			experimentLocalData.experimentStepStatus = STEP_STATUS_INPROGRESS;
 		}
 		else
 		{
