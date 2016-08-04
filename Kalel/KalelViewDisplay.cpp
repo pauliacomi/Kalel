@@ -22,15 +22,15 @@ LRESULT CKalelView::ExchangeData(WPARAM, LPARAM incomingExperimentData)
 void CKalelView::OnTimer(UINT nIDEvent)
 {
 	// Convert to strings
-	m_StrCalo.Format(_T("%.2f"), experimentData.resultCalorimeter);
-	m_StrBassePression.Format(_T("%.2f"), experimentData.pressureLow);
-	m_StrHautePression.Format(_T("%.2f"), experimentData.pressureHigh);
+	m_StrCalo.Format(_T("%.9e"), experimentData.resultCalorimeter);
+	m_StrBassePression.Format(_T("%.6f"), experimentData.pressureLow);
+	m_StrHautePression.Format(_T("%.6f"), experimentData.pressureHigh);
 	m_StrTemperatureCalo.Format(_T("%.2f"), experimentData.temperatureCalo);
 	m_StrTemperatureCage.Format(_T("%.2f"), experimentData.temperatureCage);
 	m_StrTemperaturePiece.Format(_T("%.2f"), experimentData.temperatureRoom);
 	m_StrTemps.Format(_T("%.1f"), experimentData.experimentTime);
-	m_StrPressionInitiale.Format(_T("%.1f"), experimentData.pressureInitial);
-	m_StrPressionFinale.Format(_T("%.1f"), experimentData.pressureFinal);
+	m_StrPressionInitiale.Format(_T("%.6f"), experimentData.pressureInitial);
+	m_StrPressionFinale.Format(_T("%.6f"), experimentData.pressureFinal);
 
 	// Refresh textboxes
 	SetDlgItemText(IDC_CALO, m_StrCalo);
