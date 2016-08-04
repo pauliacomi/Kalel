@@ -162,7 +162,7 @@ bool LiaisonRS232::ReadCOM(char *buffer, int nBytesToRead)
 	*/
 	// Wait for pending read to complete
 	if (fWaitingOnRead && noErrors && !readingComplete) {
-		dwRes = WaitForSingleObject(osReader.hEvent, MAX_WAIT_WRITE);
+		dwRes = WaitForSingleObject(osReader.hEvent, MAX_WAIT_READ);
 		switch (dwRes)
 		{
 			// Read completed.
@@ -252,13 +252,15 @@ bool LiaisonRS232::WriteCOM(void* buffer, int nBytesToWrite, int* pBytesWritten)
 		}
 		else {
 			// Write is pending.
-			dwRes = WaitForSingleObject(osWrite.hEvent, INFINITE);
+			dwRes = WaitForSingleObject(osWrite.hEvent, MAX_WAIT_WRITE);
 			switch (dwRes)
 			{
 				// OVERLAPPED structure's event has been signaled. 
 			case WAIT_OBJECT_0:
-				if (!GetOverlappedResult(g_hCOM, &osWrite, (LPDWORD)pBytesWritten, FALSE))
+				if (!GetOverlappedResult(g_hCOM, &osWrite, (LPDWORD)pBytesWritten, FALSE)) {
+					errorKeep = "Error writing to COM";
 					fRes = false;
+				}
 				else
 					// Write operation completed successfully.
 					fRes = true;
