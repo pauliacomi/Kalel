@@ -557,24 +557,6 @@
     <ClCompile Include="Automation.cpp">
       <Filter>Source Files\Automation\Class</Filter>
     </ClCompile>
-    <ClCompile Include="AutomationFileWriting.cpp">
-      <Filter>Source Files\Automation\Class</Filter>
-    </ClCompile>
-    <ClCompile Include="AutomationMeasurement.cpp">
-      <Filter>Source Files\Automation\Class</Filter>
-    </ClCompile>
-    <ClCompile Include="AutomationSecurity.cpp">
-      <Filter>Source Files\Automation\Class</Filter>
-    </ClCompile>
-    <ClCompile Include="AutomationShutdown.cpp">
-      <Filter>Source Files\Automation\Class</Filter>
-    </ClCompile>
-    <ClCompile Include="AutomationTimeKeeping.cpp">
-      <Filter>Source Files\Automation\Class</Filter>
-    </ClCompile>
-    <ClCompile Include="AutomationValves.cpp">
-      <Filter>Source Files\Automation\Class</Filter>
-    </ClCompile>
     <ClCompile Include="ExperimentSettings.cpp">
       <Filter>Source Files\Automation</Filter>
     </ClCompile>
@@ -632,9 +614,6 @@
     <ClCompile Include="CommonFunctions.cpp">
       <Filter>Source Files\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="AutomationVacuum.cpp">
-      <Filter>Source Files\Automation\Class\Automation Stages</Filter>
-    </ClCompile>
     <ClCompile Include="AutomationStageDesorption.cpp">
       <Filter>Source Files\Automation\Class\Automation Stages</Filter>
     </ClCompile>
@@ -649,6 +628,27 @@
     </ClCompile>
     <ClCompile Include="AutomationStageVacuum.cpp">
       <Filter>Source Files\Automation\Class\Automation Stages</Filter>
+    </ClCompile>
+    <ClCompile Include="AutomationFileWriting.cpp">
+      <Filter>Source Files\Automation\Class\Functionality</Filter>
+    </ClCompile>
+    <ClCompile Include="AutomationMeasurement.cpp">
+      <Filter>Source Files\Automation\Class\Functionality</Filter>
+    </ClCompile>
+    <ClCompile Include="AutomationSecurity.cpp">
+      <Filter>Source Files\Automation\Class\Functionality</Filter>
+    </ClCompile>
+    <ClCompile Include="AutomationTimeKeeping.cpp">
+      <Filter>Source Files\Automation\Class\Functionality</Filter>
+    </ClCompile>
+    <ClCompile Include="AutomationValves.cpp">
+      <Filter>Source Files\Automation\Class\Functionality</Filter>
+    </ClCompile>
+    <ClCompile Include="AutomationShutdown.cpp">
+      <Filter>Source Files\Automation\Class\Functionality</Filter>
+    </ClCompile>
+    <ClCompile Include="AutomationVacuum.cpp">
+      <Filter>Source Files\Automation\Class\Functionality</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

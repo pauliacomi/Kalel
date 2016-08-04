@@ -20,8 +20,10 @@
 #define marge_injection					0.01	//bar   Si on ne dépasse pas cette marge, on consiède que la pression n'a pas changé
 #define marge_multiplicateur			1.2		//bar
 
-// Time to wait after opening or closing valves
-#define TimeInterval					5		// intervalle 5s, temps d'attente en plus après ouverture des vannes
+// Time to wait
+#define TIME_WAIT_VALVES					5			// intervalle 5s, temps d'attente en plus après ouverture des vannes
+#define TIME_WAIT_PUMP						10			// intervalle 5s, temps d'attente en plus après ouverture des vannes
+
 
 // Opening and closing times for the valves
 #define temps_ouverture					1000				//ms = 1s

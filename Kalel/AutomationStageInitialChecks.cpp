@@ -77,10 +77,10 @@ int Automation::VerificationResidualPressure()
 			ValveOpen(6);
 
 			// Tell GUI we are waiting
-			messageHandler.DisplayMessage(MESSAGE_WAIT_TIME, TimeInterval);
+			messageHandler.DisplayMessage(MESSAGE_WAIT_TIME, TIME_WAIT_VALVES);
 
 			// Set the time to wait
-			WaitSeconds(TimeInterval);
+			WaitSeconds(TIME_WAIT_VALVES);
 		}
 		// Continue to next step
 		experimentLocalData.experimentStepStatus = STEP_STATUS_INPROGRESS;
@@ -92,10 +92,10 @@ int Automation::VerificationResidualPressure()
 			ValveOpen(5);
 
 			// Tell GUI we are waiting
-			messageHandler.DisplayMessage(MESSAGE_WAIT_TIME, TimeInterval);
+			messageHandler.DisplayMessage(MESSAGE_WAIT_TIME, TIME_WAIT_VALVES);
 
 			// Set the time to wait
-			WaitSeconds(TimeInterval);
+			WaitSeconds(TIME_WAIT_VALVES);
 
 			// Continue to next step
 			experimentLocalData.experimentStepStatus = STEP_STATUS_END;
