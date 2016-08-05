@@ -1,5 +1,5 @@
 #pragma once
-
+#include "ExperimentData.h"
 
 // Vue CGrapheView
 
@@ -13,18 +13,27 @@ protected:
 	CGrapheView();           // constructeur protégé utilisé par la création dynamique
 	virtual ~CGrapheView();
 
+	void OnInitialUpdate();
+
 public:
 	CKalelDoc* GetDocument() const;
 
-	void trace_axe(CRect place_graphe, CRect axe_graphe, CDC *pDC, CKalelDoc* pDoc,CString);
-	void trace_echelle(CRect graphe,CRect axe_graphe,int max_pression,int min_pression,double max_calo,double min_calo,
-					   CDC *pDC, CKalelDoc* pDoc,float min_temps = 0.0);
-	void trace_graphe(CRect graphe,int max_pression,int min_pression,double max_calo,double min_calo,
-					  CDC *pDC,CKalelDoc *pDoc,float min_temps=0.0,int PremiereMesure=0);
-	void trace_legende(CRect rect, COLORREF color, CString texte, CDC* pDC);
-	void traceContour(CRect rect, CDC *pDC);
+	void TraceAxis(CRect place_graphe, CRect axe_graphe, CDC *pDC,CString);
+	void TraceScale(CRect graphe,CRect axe_graphe,int max_pression,int min_pression,double max_calo,double min_calo,
+					   CDC *pDC,float min_temps = 0.0);
+	void TraceGraph(CRect graphe,int max_pression,int min_pression,double max_calo,double min_calo,
+					  CDC *pDC,float min_temps=0.0,int PremiereMesure=0);
+	void TraceLegend(CRect rect, COLORREF color, CString texte, CDC* pDC);
+	void TraceContour(CRect rect, CDC *pDC);
 	double MaxPressionEchelle(double max_p);
 	int NbrIntervalles(double max);
+
+private:
+	CArrayMesure * measurementArray;
+	double maxPressure, minPressure, maxCalo, minCalo;
+	CString titleGrapheEtape;
+	float timeMinimum;
+	int measurementMinimum, stageName;
 
 public:
 	virtual void OnDraw(CDC* pDC);      // substitué pour dessiner cette vue

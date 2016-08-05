@@ -46,7 +46,7 @@ void CKalelView::OnBnClickedLancer()
 			UpdateButtons();
 			
 			// Reset the graph
-			GetDocument()->GraphInitialize(NULL, NULL);
+			GetDocument()->GraphReset(NULL, NULL);
 
 			// Get the data from the dialog
 			EnterCriticalSection(&experimentSettings->criticalSection);

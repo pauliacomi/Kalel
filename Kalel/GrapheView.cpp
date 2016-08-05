@@ -2,11 +2,11 @@
 //
 
 #include "stdafx.h"
+#include "GrapheView.h"
+//
 #include "Kalel.h"
 #include "KalelDoc.h"
-#include "GrapheView.h"
-
-#include "ExperimentData.h"
+#include "StringTable.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -28,165 +28,188 @@
 
 IMPLEMENT_DYNCREATE(CGrapheView, CView)
 
+BEGIN_MESSAGE_MAP(CGrapheView, CView)
+END_MESSAGE_MAP()
+
 CGrapheView::CGrapheView()
 {
-
+	titleGrapheEtape = _T("");
+	timeMinimum = 0;
+	measurementMinimum = 0;
+	stageName = 0;
 }
 
 CGrapheView::~CGrapheView()
 {
 }
 
-BEGIN_MESSAGE_MAP(CGrapheView, CView)
-END_MESSAGE_MAP()
+void CGrapheView::OnInitialUpdate()
+{
+	CView::OnInitialUpdate();
+
+	CKalelDoc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
+	measurementArray = &pDoc->m_TableauMesures;
+}
+
 
 
 // Dessin CGrapheView
 
 void CGrapheView::OnDraw(CDC* pDC)
 {
-	CKalelDoc* pDoc = GetDocument();
-	ASSERT_VALID(pDoc);
 	CRect rect_grapheView;
 	GetClientRect(rect_grapheView);
 
-	int limite_hauteur = 12*border + hauteur_legende;
+	// Code marked with REQ #001 is here to stop flickering
+	CPaintDC ScreenDC(this); // device context for painting											// REQ #001
+	CBitmap bm;																						// REQ #001
+	bm.CreateCompatibleBitmap(&ScreenDC, rect_grapheView.Width(), rect_grapheView.Height());		// REQ #001
+	pDC->SelectObject(&bm);																			// REQ #001
+
+	int limite_hauteur = 12 * border + hauteur_legende;
 	int limite_largeur = 150;
 
 	if((rect_grapheView.Height() < limite_hauteur) || (rect_grapheView.Width() < limite_largeur))
 	{
 		// Si la place pour les graphes est trop petit on met un message d'avertissement
-
-		// SetTextColor : désigne la couleur du texte
-		pDC->SetTextColor(RGB(0,0,0));
-		pDC->SetBkMode(TRANSPARENT);
-		// pDC->DrawText(const CString &str,LPRECT lpRect,UINT nFormat)
 		// On écrit 'str' dans le lpRect avec le format nFormat
-		pDC->DrawText(_T("Espace trop petit"),rect_grapheView,DT_CENTER);
+		CString textToWrite;
+		textToWrite.Format(ERROR_GRAPH_TOO_SMALL);
+
+		pDC->SetTextColor(RGB(255,0,0));
+		pDC->SetBkMode(TRANSPARENT);
+		pDC->DrawText(textToWrite, rect_grapheView, DT_CENTER | DT_SINGLELINE | DT_VCENTER);
 	}
 
-	else{if(!pDoc->m_TableauMesures.IsEmpty())  // si m_TableauMesures n'est pas vide
-	{
+	else{
+		if (!measurementArray->IsEmpty())
+		{
 
-		// Acquisition des données 
-		ExperimentData* TableauMesures=pDoc->m_TableauMesures.GetData();
-		int fort_index=pDoc->m_TableauMesures.GetUpperBound();
-		int taille=pDoc->m_TableauMesures.GetSize();
+			// Acquisition des données 
+			ExperimentData* TableauMesures = measurementArray->GetData();
+			int fort_index = measurementArray->GetUpperBound();
+			int taille = measurementArray->GetSize();
 
-		// Valeurs utilisées pour les échelles et les axes d'abscisses et d'ordonnées
-		int max_pression=MaxPressionEchelle(pDoc->maxPressure);
-		int min_pression = 0;
-		double max_calo=pDoc->maxCalo;
-		double min_calo=pDoc->minCalo;
+			// Valeurs utilisées pour les échelles et les axes d'abscisses et d'ordonnées
+			// Set the maximums and minimums
+			maxPressure = max(maxPressure, TableauMesures->pressureLow);
+			maxPressure = max(maxPressure, TableauMesures->pressureHigh);
+			maxPressure = MaxPressionEchelle(maxPressure);
 
-		// Les graphes
+			minPressure = min(minPressure, TableauMesures->pressureLow);
+			minPressure = min(minPressure, TableauMesures->pressureHigh);
+			minPressure = 0;
 
-		// On divisera l'espace pour les graphes en 3 : 
-		//   - La partie du haut pour le graphe complet
-		//   - La partie du milieu pour le graphe par étape
-		//   - La petite partie du bas pour la légende
-
-		CRect grapheHaut,grapheMilieu,grapheBas;
-
-		grapheHaut = CRect(rect_grapheView.left + border,rect_grapheView.top,
-						   rect_grapheView.right - border,(rect_grapheView.bottom-hauteur_legende)/2);
-
-		grapheMilieu = CRect(rect_grapheView.left + border,grapheHaut.bottom,
-						     rect_grapheView.right - border,rect_grapheView.bottom-hauteur_legende);
-
-		grapheBas = CRect(rect_grapheView.left + border,grapheMilieu.bottom,
-						  rect_grapheView.right- border,rect_grapheView.bottom);
+			maxCalo = max(maxCalo, TableauMesures->resultCalorimeter);
+			minCalo = min(minCalo, TableauMesures->resultCalorimeter);
 
 
-		// ----------------------------------------------------------------
-		// -------------- Graphe complet ----------------------------------
-		// ----------------------------------------------------------------
+			// Les graphes
 
-		// place_grapheComplet : La place qui est réservé pour tracer le graphe complet
-		CRect place_grapheComplet = grapheHaut;
-		// où sera tracé l'axe tout simplement
-		CRect axe_grapheComplet;     
-		axe_grapheComplet = CRect (place_grapheComplet.left  + border,
-								   place_grapheComplet.top   + border,
-								   place_grapheComplet.right - border,
-								   place_grapheComplet.bottom- 3*border);
+			// On divisera l'espace pour les graphes en 3 : 
+			//   - La partie du haut pour le graphe complet
+			//   - La partie du milieu pour le graphe par étape
+			//   - La petite partie du bas pour la légende
 
-		// grapheComplet : Où seront tracés les points
-		CRect grapheComplet = CRect (axe_grapheComplet.left,
-									 axe_grapheComplet.top + border,
-									 axe_grapheComplet.right,
-									 axe_grapheComplet.bottom - border);
+			CRect grapheHaut,grapheMilieu,grapheBas;
+
+			grapheHaut = CRect(rect_grapheView.left + border,rect_grapheView.top,
+							   rect_grapheView.right - border,(rect_grapheView.bottom-hauteur_legende)/2);
+
+			grapheMilieu = CRect(rect_grapheView.left + border,grapheHaut.bottom,
+								 rect_grapheView.right - border,rect_grapheView.bottom-hauteur_legende);
+
+			grapheBas = CRect(rect_grapheView.left + border,grapheMilieu.bottom,
+							  rect_grapheView.right- border,rect_grapheView.bottom);
+
+
+			// ----------------------------------------------------------------
+			// -------------- Graphe complet ----------------------------------
+			// ----------------------------------------------------------------
+
+			// place_grapheComplet : La place qui est réservé pour tracer le graphe complet
+			CRect place_grapheComplet = grapheHaut;
+			// où sera tracé l'axe tout simplement
+			CRect axe_grapheComplet;     
+			axe_grapheComplet = CRect (place_grapheComplet.left  + border,
+									   place_grapheComplet.top   + border,
+									   place_grapheComplet.right - border,
+									   place_grapheComplet.bottom- 3*border);
+
+			// grapheComplet : Où seront tracés les points
+			CRect grapheComplet = CRect (axe_grapheComplet.left,
+										 axe_grapheComplet.top + border,
+										 axe_grapheComplet.right,
+										 axe_grapheComplet.bottom - border);
 		
-		CString titreComplet = _T("Graphe Complet");
-		trace_axe(place_grapheComplet,axe_grapheComplet,pDC,pDoc,titreComplet);
+			CString titreComplet = _T("Graphe Complet");
+			TraceAxis(place_grapheComplet,axe_grapheComplet,pDC,titreComplet);
 
-		trace_echelle(grapheComplet,axe_grapheComplet,max_pression,/*0*/min_pression,max_calo,min_calo,pDC,pDoc);
-		trace_graphe(grapheComplet,max_pression,/*0*/min_pression,max_calo,min_calo,pDC,pDoc);
+			TraceScale(grapheComplet, axe_grapheComplet, maxPressure, minPressure, maxCalo, minCalo, pDC);
+			TraceGraph(grapheComplet, maxPressure, minPressure, maxCalo, minCalo, pDC);
 
 
 
-		// ----------------------------------------------------------------
-		// ------------- Graphe Etape -------------------------------------
-		// ----------------------------------------------------------------
+			// ----------------------------------------------------------------
+			// ------------- Graphe Etape -------------------------------------
+			// ----------------------------------------------------------------
 
-		CRect place_grapheEtape = grapheMilieu;
-		CRect axe_grapheEtape;     // où sera tracé l'axe tout simplement
-		axe_grapheEtape = CRect (place_grapheEtape.left  + border,
-								 place_grapheEtape.top   + border,
-								 place_grapheEtape.right - border,
-								 place_grapheEtape.bottom- 3*border);
+			CRect place_grapheEtape = grapheMilieu;
+			CRect axe_grapheEtape;     // où sera tracé l'axe tout simplement
+			axe_grapheEtape = CRect (place_grapheEtape.left  + border,
+									 place_grapheEtape.top   + border,
+									 place_grapheEtape.right - border,
+									 place_grapheEtape.bottom- 3*border);
 
-		CRect grapheEtape = CRect (axe_grapheEtape.left,
-								   axe_grapheEtape.top + border,
-								   axe_grapheEtape.right,
-								   axe_grapheEtape.bottom - border);
+			CRect grapheEtape = CRect (axe_grapheEtape.left,
+									   axe_grapheEtape.top + border,
+									   axe_grapheEtape.right,
+									   axe_grapheEtape.bottom - border);
+		
+			TraceAxis(place_grapheEtape, axe_grapheEtape, pDC, titleGrapheEtape);
+			TraceScale(grapheEtape, axe_grapheEtape, maxPressure, minPressure, maxCalo, minCalo, pDC, timeMinimum);
+			TraceGraph(grapheEtape, maxPressure, minPressure, maxCalo, minCalo, pDC, timeMinimum, measurementMinimum);
 		
 
-		CString titreEtape;
-		titreEtape = pDoc->TitreGrapheEtape;
+			// ------------------------------------------------------------
+			// --------------- Légende ------------------------------------
+			// ------------------------------------------------------------
 
-		trace_axe(place_grapheEtape,axe_grapheEtape,pDC,pDoc,titreEtape);
-
-		trace_echelle(grapheEtape,axe_grapheEtape,max_pression,min_pression,max_calo,min_calo,pDC,pDoc,pDoc->TempsMinimum);
-		trace_graphe(grapheEtape,max_pression,min_pression,max_calo,min_calo,pDC,pDoc,pDoc->TempsMinimum,pDoc->MesureMinimum);
+			CRect legende = grapheBas;
+			//traceContour(legende,pDC);
 		
+			CRect legende_calo = CRect(legende.left,
+									   legende.top,
+									   legende.right/3,
+									   legende.bottom);
 
-		// ------------------------------------------------------------
-		// --------------- Légende ------------------------------------
-		// ------------------------------------------------------------
+			CRect legende_basse_pression = CRect(legende_calo.right,
+												 legende.top,
+												 2*legende.right/3,
+												 legende.bottom);
 
-		CRect legende = grapheBas;
-		//traceContour(legende,pDC);
+			CRect legende_haute_pression = CRect(legende_basse_pression.right,
+												 legende.top,
+												 legende.right,
+												 legende.bottom);
+
+			COLORREF color1 = RGB(255,0,0);
+			COLORREF color2 = RGB(0,185,0);
+			COLORREF color3 = RGB(0,0,255);
+
+			CString texte1 = _T("Calo");
+			CString texte2 = _T("Basse Pression");
+			CString texte3 = _T("Haute Pression");
+
+			TraceLegend(legende_calo,color1,texte1,pDC);
+			TraceLegend(legende_basse_pression,color2,texte2,pDC);
+			TraceLegend(legende_haute_pression,color3,texte3,pDC);
 		
-		CRect legende_calo = CRect(legende.left,
-								   legende.top,
-								   legende.right/3,
-								   legende.bottom);
+		}
+	}
 
-		CRect legende_basse_pression = CRect(legende_calo.right,
-											 legende.top,
-											 2*legende.right/3,
-											 legende.bottom);
-
-		CRect legende_haute_pression = CRect(legende_basse_pression.right,
-											 legende.top,
-											 legende.right,
-											 legende.bottom);
-
-		COLORREF color1 = RGB(255,0,0);
-		COLORREF color2 = RGB(0,185,0);
-		COLORREF color3 = RGB(0,0,255);
-
-		CString texte1 = _T("Calo");
-		CString texte2 = _T("Basse Pression");
-		CString texte3 = _T("Haute Pression");
-
-		trace_legende(legende_calo,color1,texte1,pDC);
-		trace_legende(legende_basse_pression,color2,texte2,pDC);
-		trace_legende(legende_haute_pression,color3,texte3,pDC);
-		
-	}}
-
+	ScreenDC.BitBlt(0, 0, rect_grapheView.Width(), rect_grapheView.Height(), pDC, 0, 0, SRCCOPY);		// REQ #001
 }
 
 
@@ -195,7 +218,7 @@ void CGrapheView::OnDraw(CDC* pDC)
 // ------------------------------------------------
 
 
-void CGrapheView::trace_axe(CRect place_graphe, CRect axe_graphe, CDC *pDC, CKalelDoc* pDoc,CString titre)
+void CGrapheView::TraceAxis(CRect place_graphe, CRect axe_graphe, CDC *pDC, CString titre)
 {
 	// ----------- Traçage des axes -------------------------
 	pDC->SetTextColor(RGB(255,255,255));
@@ -220,25 +243,23 @@ void CGrapheView::trace_axe(CRect place_graphe, CRect axe_graphe, CDC *pDC, CKal
 							  place_graphe.bottom);
 
 	CString texte_max_pression;
-	texte_max_pression.Format(_T("Max : %0.2f Bar"),pDoc->maxPressure);
+	texte_max_pression.Format(_T("Max : %0.2f Bar"), maxPressure);
 	pDC->SetTextColor(RGB(0,0,0));
 	pDC->DrawText(texte_max_pression,enteteComplet,DT_LEFT);
 
 	CString texte_max_calo;
-	//texte_max_calo.Format(_T("Max : %0.2f W"),pDoc->max_calo);
-	texte_max_calo.Format(_T("Max : %0.2E W"),pDoc->maxCalo);
+	texte_max_calo.Format(_T("Max : %0.2E W"), maxCalo);
 	pDC->DrawText(texte_max_calo,enteteComplet,DT_RIGHT);
 
 	//affichage du titre
 	pDC->DrawText(titre,enteteComplet,DT_CENTER);
 
 	CString texte_min_pression;
-	texte_min_pression.Format(_T("Min : %0.2f Bar"),pDoc->minPressure);
+	texte_min_pression.Format(_T("Min : %0.2f Bar"), minPressure);
 	pDC->DrawText(texte_min_pression,piedComplet,DT_LEFT);
 
 	CString texte_min_calo;
-	//texte_min_calo.Format(_T("Min : %0.2f W"),pDoc->min_calo);
-	texte_min_calo.Format(_T("Min : %0.2E W"),pDoc->minCalo);
+	texte_min_calo.Format(_T("Min : %0.2E W"), minCalo);
 	pDC->DrawText(texte_min_calo,piedComplet,DT_RIGHT);
 }
 
@@ -249,8 +270,8 @@ void CGrapheView::trace_axe(CRect place_graphe, CRect axe_graphe, CDC *pDC, CKal
 
 
 
-void CGrapheView::trace_echelle(CRect graphe,CRect axe_graphe,int max_pression,int min_pression,double max_calo,double min_calo,
-								CDC *pDC, CKalelDoc* pDoc, float min_temps)
+void CGrapheView::TraceScale(CRect graphe,CRect axe_graphe,int max_pression,int min_pression,double max_calo,double min_calo,
+								CDC *pDC, float min_temps)
 {
 	// intervalle : entre 2 traits
 	// il y aura donc (nb_intervalle + 1) traits
@@ -355,8 +376,9 @@ void CGrapheView::trace_echelle(CRect graphe,CRect axe_graphe,int max_pression,i
 
 
 	// ----- marquage du temps ----------------------------------------------
-	int nb_trait_abs=4; 
-	int temps = (int)pDoc->m_TableauMesures[pDoc->m_TableauMesures.GetUpperBound()].experimentTime;
+	int nb_trait_abs=4;
+	CArrayMesure &tempAM = *measurementArray;
+	int temps = (int)tempAM[tempAM.GetUpperBound()].experimentTime;
 
 	for (int i=0;i<=nb_trait_abs;i++)
 	{
@@ -396,13 +418,14 @@ void CGrapheView::trace_echelle(CRect graphe,CRect axe_graphe,int max_pression,i
 
 
 
-void CGrapheView::trace_graphe(CRect graphe,int max_pression,int min_pression,double max_calo,double min_calo,
-							   CDC *pDC,CKalelDoc *pDoc,float min_temps,int PremiereMesure)
+void CGrapheView::TraceGraph(CRect graphe,int max_pression,int min_pression,double max_calo,double min_calo,
+							   CDC *pDC,float min_temps,int PremiereMesure)
 {
 	// rapport = hauteur du graphe / (max_calo - min_calo)
 	// rapport = valeur (bar ou µV) par pixel
 	float rapport_calo, rapport_pression, rapport_temps;
-	float max_temps = pDoc->m_TableauMesures[pDoc->m_TableauMesures.GetUpperBound()].experimentTime;
+	CArrayMesure &tempAM = *measurementArray;
+	float max_temps = tempAM[tempAM.GetUpperBound()].experimentTime;
 	float ecart_temps = max_temps-min_temps;
 	float ecart_calo = max_calo-min_calo;
 	float ecart_pression = max_pression-min_pression;
@@ -436,9 +459,9 @@ void CGrapheView::trace_graphe(CRect graphe,int max_pression,int min_pression,do
 
 	//conversion des points pour le graphe
 	int j=0;
-	for(int i=PremiereMesure;i<=pDoc->m_TableauMesures.GetUpperBound() && j<valeur;i++)
+	for(int i=PremiereMesure;i<=m_TableauMesures->GetUpperBound() && j<valeur;i++)
 	{
-		int saut_de_mesure = (int)(((pDoc->m_TableauMesures.GetUpperBound()-PremiereMesure) / 1000)+1);
+		int saut_de_mesure = (int)(((m_TableauMesures->GetUpperBound()-PremiereMesure) / 1000)+1);
 
 		if((i-PremiereMesure) % saut_de_mesure == 0)
 		{
@@ -457,7 +480,7 @@ void CGrapheView::trace_graphe(CRect graphe,int max_pression,int min_pression,do
 	}
 
 	
-	//UINT	nb_points=pDoc->m_TableauMesures.GetSize() - PremiereMesure;
+	//UINT	nb_points=m_TableauMesures->GetSize() - PremiereMesure;
 	UINT nb_points = j;
 
 	// traçage des courbes
@@ -498,7 +521,7 @@ void CGrapheView::trace_graphe(CRect graphe,int max_pression,int min_pression,do
 	// const int valeur = TAILLE_POINT;
 	const int valeur = NOMBREPOINTS;
 
-	int dif = pDoc->m_TableauMesures.GetSize() / valeur;
+	int dif = m_TableauMesures->GetSize() / valeur;
 	
 
 	// Liste de POINT afin de créer plusieurs lignes entre ces points
@@ -507,11 +530,11 @@ void CGrapheView::trace_graphe(CRect graphe,int max_pression,int min_pression,do
 
 	//conversion des points pour le graphe
 	int j=0;
-	//for(int i=PremiereMesure;i<=pDoc->m_TableauMesures.GetUpperBound() && j<valeur;i++)
-	for(int i=PremiereMesure;i<=pDoc->m_TableauMesures.GetUpperBound() && j<valeur;i=i+(dif+1))
+	//for(int i=PremiereMesure;i<=m_TableauMesures->GetUpperBound() && j<valeur;i++)
+	for(int i=PremiereMesure;i<=m_TableauMesures->GetUpperBound() && j<valeur;i=i+(dif+1))
 	{
 
-		int saut_de_mesure = (int)(((pDoc->m_TableauMesures.GetUpperBound()-PremiereMesure) / 1000)+1);
+		int saut_de_mesure = (int)(((m_TableauMesures->GetUpperBound()-PremiereMesure) / 1000)+1);
 
 		if((i-PremiereMesure) % saut_de_mesure == 0)
 		{
@@ -531,7 +554,7 @@ void CGrapheView::trace_graphe(CRect graphe,int max_pression,int min_pression,do
 	}
 
 
-	//UINT	nb_points=pDoc->m_TableauMesures.GetSize() - PremiereMesure;
+	//UINT	nb_points=m_TableauMesures->GetSize() - PremiereMesure;
 	UINT nb_points = j;
 
 	// traçage des courbes
@@ -572,7 +595,7 @@ void CGrapheView::trace_graphe(CRect graphe,int max_pression,int min_pression,do
 	// const int valeur = TAILLE_POINT;
 	const int valeur = NOMBREPOINTS;
 
-	int dif = (pDoc->m_TableauMesures.GetSize() - PremiereMesure) / (valeur-1);
+	int dif = (m_TableauMesures->GetSize() - PremiereMesure) / (valeur-1);
 
 	POINT temp_Calo, temp_Basse_pression, temp_Haute_pression;
 
@@ -609,9 +632,9 @@ void CGrapheView::trace_graphe(CRect graphe,int max_pression,int min_pression,do
 			GHaute_pression[j].y=temp_Haute_pression.y;
 			j++;
 		}
-		for(int i=PremiereMesure + compteur*(valeur-1);i<=pDoc->m_TableauMesures.GetUpperBound() && j<=valeur;i++)
+		for(int i=PremiereMesure + compteur*(valeur-1);i<=m_TableauMesures->GetUpperBound() && j<=valeur;i++)
 		{
-			int saut_de_mesure = (int)(((pDoc->m_TableauMesures.GetUpperBound()-PremiereMesure) / 1000)+1);
+			int saut_de_mesure = (int)(((m_TableauMesures->GetUpperBound()-PremiereMesure) / 1000)+1);
 
 			if((i-PremiereMesure) % saut_de_mesure == 0)
 			{
@@ -634,7 +657,7 @@ void CGrapheView::trace_graphe(CRect graphe,int max_pression,int min_pression,do
 		temp_Basse_pression=GBasse_pression[j-1];
 		temp_Haute_pression=GHaute_pression[j-1];
 
-		//UINT	nb_points=pDoc->m_TableauMesures.GetSize() - PremiereMesure;
+		//UINT	nb_points=m_TableauMesures->GetSize() - PremiereMesure;
 		UINT nb_points = j;
 
 		// traçage des courbes
@@ -677,7 +700,7 @@ void CGrapheView::trace_graphe(CRect graphe,int max_pression,int min_pression,do
 	// const int valeur = TAILLE_POINT;
 	const int valeur = NOMBREPOINTS;
 
-	int dif = (pDoc->m_TableauMesures.GetSize() - PremiereMesure) / valeur;
+	int dif = (m_TableauMesures->GetSize() - PremiereMesure) / valeur;
 
 	POINT temp_Calo, temp_Basse_pression, temp_Haute_pression;
 
@@ -714,9 +737,9 @@ void CGrapheView::trace_graphe(CRect graphe,int max_pression,int min_pression,do
 		//	GHaute_pression[j].y=temp_Haute_pression.y;
 		//	j++;
 		//}
-		for(int i=PremiereMesure + compteur*valeur;i<=pDoc->m_TableauMesures.GetUpperBound() && j<valeur;i++)
+		for(int i=PremiereMesure + compteur*valeur;i<=m_TableauMesures->GetUpperBound() && j<valeur;i++)
 		{
-			int saut_de_mesure = (int)(((pDoc->m_TableauMesures.GetUpperBound()-PremiereMesure) / 1000)+1);
+			int saut_de_mesure = (int)(((m_TableauMesures->GetUpperBound()-PremiereMesure) / 1000)+1);
 
 			if((i-PremiereMesure) % saut_de_mesure == 0)
 			{
@@ -735,7 +758,7 @@ void CGrapheView::trace_graphe(CRect graphe,int max_pression,int min_pression,do
 		}
 
 
-		//UINT	nb_points=pDoc->m_TableauMesures.GetSize() - PremiereMesure;
+		//UINT	nb_points=m_TableauMesures->GetSize() - PremiereMesure;
 		UINT nb_points = j;
 
 		// traçage des courbes
@@ -806,8 +829,8 @@ void CGrapheView::trace_graphe(CRect graphe,int max_pression,int min_pression,do
 	}
 */
 
-
-	// ----------------- Version 4 (tous les points)-----------------------------------------
+/*
+	/ ----------------- Version 4 (tous les points)-----------------------------------------
 
 	// traçage des courbes
 
@@ -820,7 +843,7 @@ void CGrapheView::trace_graphe(CRect graphe,int max_pression,int min_pression,do
 	CPen*pOldPen1=pDC->SelectObject(&newPen1);
 	pDC->SelectObject(&newPen1);
 
-	for(int i=PremiereMesure;i<=pDoc->m_TableauMesures.GetUpperBound();i++)
+	for(int i=PremiereMesure;i<=m_TableauMesures->GetUpperBound();i++)
 	{
 		POINT PCalo;
 		double abs_temps = graphe.left + rapport_temps * (pDoc->m_TableauMesures[i].experimentTime - min_temps);
@@ -840,7 +863,7 @@ void CGrapheView::trace_graphe(CRect graphe,int max_pression,int min_pression,do
 	CPen*pOldPen2=pDC->SelectObject(&newPen2);
 	pDC->SelectObject(&newPen2);
 
-	for(int i=PremiereMesure;i<=pDoc->m_TableauMesures.GetUpperBound();i++)
+	for(int i=PremiereMesure;i<=m_TableauMesures->GetUpperBound();i++)
 	{
 		POINT PBasse_pression;
 		double abs_temps = graphe.left + rapport_temps * (pDoc->m_TableauMesures[i].experimentTime - min_temps);
@@ -859,7 +882,7 @@ void CGrapheView::trace_graphe(CRect graphe,int max_pression,int min_pression,do
 	CPen*pOldPen3=pDC->SelectObject(&newPen3);
 	pDC->SelectObject(&newPen3);
 	
-	for(int i=PremiereMesure;i<=pDoc->m_TableauMesures.GetUpperBound();i++)
+	for(int i=PremiereMesure;i<=m_TableauMesures->GetUpperBound();i++)
 	{
 		POINT PHaute_pression;
 		double abs_temps = graphe.left + rapport_temps * (pDoc->m_TableauMesures[i].experimentTime - min_temps);
@@ -871,15 +894,15 @@ void CGrapheView::trace_graphe(CRect graphe,int max_pression,int min_pression,do
 			pDC->LineTo(PHaute_pression);
 	}
 	pDC->SelectObject(pOldPen3);
-
+	*/
 
 /*
 	// ----------------- Version 5 (une partie des points)-----------------------------------------
 
 	const int valeur = NOMBREPOINTS;
-	int dif = pDoc->m_TableauMesures.GetSize() / valeur;
+	int dif = m_TableauMesures->GetSize() / valeur;
 
-	int der_index=pDoc->m_TableauMesures.GetUpperBound();
+	int der_index=m_TableauMesures->GetUpperBound();
 
 	// traçage des courbes
 
@@ -892,7 +915,7 @@ void CGrapheView::trace_graphe(CRect graphe,int max_pression,int min_pression,do
 	CPen*pOldPen1=pDC->SelectObject(&newPen1);
 	pDC->SelectObject(&newPen1);
 
-	for(int i=PremiereMesure;i<=pDoc->m_TableauMesures.GetUpperBound();i=i+(dif+1))
+	for(int i=PremiereMesure;i<=m_TableauMesures->GetUpperBound();i=i+(dif+1))
 	{
 		POINT PCalo;
 		double abs_temps = graphe.left + rapport_temps * (pDoc->m_TableauMesures[i].temps - min_temps);
@@ -918,7 +941,7 @@ void CGrapheView::trace_graphe(CRect graphe,int max_pression,int min_pression,do
 	CPen*pOldPen2=pDC->SelectObject(&newPen2);
 	pDC->SelectObject(&newPen2);
 
-	for(int i=PremiereMesure;i<=pDoc->m_TableauMesures.GetUpperBound();i=i+(dif+1))
+	for(int i=PremiereMesure;i<=m_TableauMesures->GetUpperBound();i=i+(dif+1))
 	{
 		POINT PBasse_pression;
 		double abs_temps = graphe.left + rapport_temps * (pDoc->m_TableauMesures[i].temps - min_temps);
@@ -943,7 +966,7 @@ void CGrapheView::trace_graphe(CRect graphe,int max_pression,int min_pression,do
 	CPen*pOldPen3=pDC->SelectObject(&newPen3);
 	pDC->SelectObject(&newPen3);
 	
-	for(int i=PremiereMesure;i<=pDoc->m_TableauMesures.GetUpperBound();i=i+(dif+1))
+	for(int i=PremiereMesure;i<=m_TableauMesures->GetUpperBound();i=i+(dif+1))
 	{
 		POINT PHaute_pression;
 		double abs_temps = graphe.left + rapport_temps * (pDoc->m_TableauMesures[i].temps - min_temps);
@@ -970,7 +993,7 @@ void CGrapheView::trace_graphe(CRect graphe,int max_pression,int min_pression,do
 // -------------------------------------------------
 
 
-void CGrapheView::trace_legende(CRect rect, COLORREF color, CString texte, CDC* pDC)
+void CGrapheView::TraceLegend(CRect rect, COLORREF color, CString texte, CDC* pDC)
 {
 
 	// On trace une ligne de couleur représentative de la courbe	
@@ -993,7 +1016,7 @@ void CGrapheView::trace_legende(CRect rect, COLORREF color, CString texte, CDC* 
 
 
 // Fonction test pour voir le contour du rect alloué
-void CGrapheView::traceContour(CRect rect, CDC *pDC)
+void CGrapheView::TraceContour(CRect rect, CDC *pDC)
 {
 	pDC->SetTextColor(RGB(255,255,255));
 

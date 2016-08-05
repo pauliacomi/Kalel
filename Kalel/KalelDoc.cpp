@@ -32,8 +32,6 @@ END_MESSAGE_MAP()
 
 CKalelDoc::CKalelDoc()
 {
-	TitreGrapheEtape = _T("");
-	GraphInitialize(NULL, NULL);
 }
 
 CKalelDoc::~CKalelDoc()
@@ -144,16 +142,7 @@ CKalelDoc * CKalelDoc::GetDocument()
 
 //-------------------- CKalelDoc custom functions
 
-LRESULT CKalelDoc::GraphInitialize(WPARAM wParam, LPARAM lParam)
-{
-	TempsMinimum = NULL;
-	MesureMinimum = NULL;
-	NumeroEtape = NULL;
-
-	return 0;
-}
-
-// Add a measurement to the graph -- Regular
+// Add a measurement to the graph
 bool CKalelDoc::GraphAddMeasurement(ExperimentData expData)
 {
 	int lastMeasurement;
@@ -163,29 +152,12 @@ bool CKalelDoc::GraphAddMeasurement(ExperimentData expData)
 	{
 		m_TableauMesures.SetSize(1);
 		m_TableauMesures[0] = expData;
-
-		//Set the maximums and minimums
-
-		maxPressure = max(expData.pressureLow, expData.pressureHigh);
-		minPressure = min(expData.pressureLow, expData.pressureHigh);
-
-		maxCalo = expData.resultCalorimeter;
-		minCalo = expData.resultCalorimeter;
 	}
 	else
 	{
 		lastMeasurement = m_TableauMesures.GetUpperBound();
 
 		if (expData.experimentMeasurements > m_TableauMesures[lastMeasurement].experimentMeasurements) {
-
-			maxPressure = max(maxPressure, expData.pressureLow);
-			maxPressure = max(maxPressure, expData.pressureHigh);
-		
-			minPressure = min(minPressure, expData.pressureLow);
-			minPressure = min(minPressure, expData.pressureHigh);
-		
-			maxCalo = max(maxCalo, expData.resultCalorimeter);
-			minCalo = min(minCalo, expData.resultCalorimeter);
 
 			m_TableauMesures.SetSize(lastMeasurement + 2);
 			m_TableauMesures[lastMeasurement+1] = expData;
@@ -200,10 +172,6 @@ bool CKalelDoc::GraphAddMeasurement(ExperimentData expData)
 LRESULT CKalelDoc::GraphReset(WPARAM , LPARAM ) {
 	
 	m_TableauMesures.RemoveAll();
-	TempsMinimum = NULL;
-	MesureMinimum = NULL;
-	NumeroEtape = NULL;
-
 	return 0;
 }
 
@@ -226,10 +194,3 @@ titre.Format(_T("%dh - %dh d'expérience"), nb_heures * coeff, nb_heures*(coeff +
 messageHandler.GraphSetTitle(titre);
 }
 }*/
-
-
-// ?
-CArrayMesure* CKalelDoc::GetTableauMesures(void)
-{
-	return &m_TableauMesures;
-}
