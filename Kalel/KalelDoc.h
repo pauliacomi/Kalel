@@ -15,7 +15,7 @@ protected: // create from serialization only
 
 // Attributes
 public:	
-	CArrayMesure m_TableauMesures;
+	CArrayMeasurments m_TableauMesures;
 
 // Operations
 public:
@@ -45,7 +45,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 public:
-	bool GraphAddMeasurement(ExperimentData expData);
+	bool GraphAddMeasurement(ExperimentData * expData);
 	LRESULT GraphReset(WPARAM wParam, LPARAM lParam);
 	
 

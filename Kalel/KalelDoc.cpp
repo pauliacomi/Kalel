@@ -36,6 +36,11 @@ CKalelDoc::CKalelDoc()
 
 CKalelDoc::~CKalelDoc()
 {
+	for (size_t i = 0; i < m_TableauMesures.size(); i++)
+	{
+		delete m_TableauMesures[i];
+	}
+	m_TableauMesures.clear();
 }
 
 BOOL CKalelDoc::OnNewDocument()
@@ -143,25 +148,21 @@ CKalelDoc * CKalelDoc::GetDocument()
 //-------------------- CKalelDoc custom functions
 
 // Add a measurement to the graph
-bool CKalelDoc::GraphAddMeasurement(ExperimentData expData)
+bool CKalelDoc::GraphAddMeasurement(ExperimentData * expData)
 {
 	int lastMeasurement;
 	bool result = false;
 
-	if (m_TableauMesures.IsEmpty())
+	if (m_TableauMesures.size() == 0)
 	{
-		m_TableauMesures.SetSize(1);
-		m_TableauMesures[0] = expData;
+		m_TableauMesures.push_back(expData);
+		result = true;
 	}
 	else
 	{
-		lastMeasurement = m_TableauMesures.GetUpperBound();
+		if (expData->experimentMeasurements > m_TableauMesures.back()->experimentMeasurements) {
 
-		if (expData.experimentMeasurements > m_TableauMesures[lastMeasurement].experimentMeasurements) {
-
-			m_TableauMesures.SetSize(lastMeasurement + 2);
-			m_TableauMesures[lastMeasurement+1] = expData;
-
+			m_TableauMesures.push_back(expData);
 			result = true;
 		}
 	}
@@ -170,8 +171,13 @@ bool CKalelDoc::GraphAddMeasurement(ExperimentData expData)
 
 
 LRESULT CKalelDoc::GraphReset(WPARAM , LPARAM ) {
-	
-	m_TableauMesures.RemoveAll();
+
+	for (size_t i = 0; i < m_TableauMesures.size(); i++)
+	{
+		delete m_TableauMesures[i];
+	}
+
+	m_TableauMesures.clear();
 	return 0;
 }
 

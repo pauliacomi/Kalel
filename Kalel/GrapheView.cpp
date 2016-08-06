@@ -83,13 +83,11 @@ void CGrapheView::OnDraw(CDC* pDC)
 	}
 
 	else{
-		if (!measurementArray->IsEmpty())
+		if (measurementArray->size() != 0)
 		{
 
 			// Acquisition des données 
-			ExperimentData* TableauMesures = measurementArray->GetData();
-			int fort_index = measurementArray->GetUpperBound();
-			int taille = measurementArray->GetSize();
+			ExperimentData * TableauMesures = (*measurementArray).back();
 
 			// Valeurs utilisées pour les échelles et les axes d'abscisses et d'ordonnées
 			// Set the maximums and minimums
@@ -377,8 +375,7 @@ void CGrapheView::TraceScale(CRect graphe,CRect axe_graphe,int max_pression,int 
 
 	// ----- marquage du temps ----------------------------------------------
 	int nb_trait_abs=4;
-	CArrayMesure &tempAM = *measurementArray;
-	int temps = (int)tempAM[tempAM.GetUpperBound()].experimentTime;
+	int temps = (int)(*measurementArray).back()->experimentTime;
 
 	for (int i=0;i<=nb_trait_abs;i++)
 	{
@@ -424,11 +421,10 @@ void CGrapheView::TraceGraph(CRect graphe,int max_pression,int min_pression,doub
 	// rapport = hauteur du graphe / (max_calo - min_calo)
 	// rapport = valeur (bar ou µV) par pixel
 	float rapport_calo, rapport_pression, rapport_temps;
-	CArrayMesure &tempAM = *measurementArray;
-	float max_temps = tempAM[tempAM.GetUpperBound()].experimentTime;
-	float ecart_temps = max_temps-min_temps;
-	float ecart_calo = max_calo-min_calo;
-	float ecart_pression = max_pression-min_pression;
+	float max_temps = (*measurementArray).back()->experimentTime;
+	float ecart_temps = max_temps - min_temps;
+	float ecart_calo = max_calo - min_calo;
+	float ecart_pression = max_pression - min_pression;
 		
 	if (ecart_calo!=0)
 		rapport_calo = graphe.Height() / ecart_calo;
@@ -829,8 +825,8 @@ void CGrapheView::TraceGraph(CRect graphe,int max_pression,int min_pression,doub
 	}
 */
 
-/*
-	/ ----------------- Version 4 (tous les points)-----------------------------------------
+
+	// ----------------- Version 4 (tous les points)-----------------------------------------
 
 	// traçage des courbes
 
@@ -843,12 +839,11 @@ void CGrapheView::TraceGraph(CRect graphe,int max_pression,int min_pression,doub
 	CPen*pOldPen1=pDC->SelectObject(&newPen1);
 	pDC->SelectObject(&newPen1);
 
-	for(int i=PremiereMesure;i<=m_TableauMesures->GetUpperBound();i++)
+	for(int i=PremiereMesure;i <= measurementArray->size() - 1;i++)
 	{
 		POINT PCalo;
-		double abs_temps = graphe.left + rapport_temps * (pDoc->m_TableauMesures[i].experimentTime - min_temps);
-		PCalo.x = abs_temps;
-		PCalo.y = graphe.bottom - rapport_calo * (pDoc->m_TableauMesures[i].resultCalorimeter - min_calo);
+		PCalo.x = graphe.left + rapport_temps * ((*measurementArray)[i]->experimentTime - min_temps);
+		PCalo.y = graphe.bottom - rapport_calo * ((*measurementArray)[i]->resultCalorimeter - min_calo);
 		if(i==PremiereMesure)
 			pDC->MoveTo(PCalo);
 		else
@@ -863,12 +858,11 @@ void CGrapheView::TraceGraph(CRect graphe,int max_pression,int min_pression,doub
 	CPen*pOldPen2=pDC->SelectObject(&newPen2);
 	pDC->SelectObject(&newPen2);
 
-	for(int i=PremiereMesure;i<=m_TableauMesures->GetUpperBound();i++)
+	for(int i=PremiereMesure;i<= measurementArray->size() - 1;i++)
 	{
 		POINT PBasse_pression;
-		double abs_temps = graphe.left + rapport_temps * (pDoc->m_TableauMesures[i].experimentTime - min_temps);
-		PBasse_pression.x=abs_temps;
-		PBasse_pression.y=graphe.bottom - rapport_pression * (pDoc->m_TableauMesures[i].pressureLow - min_pression);
+		PBasse_pression.x = graphe.left + rapport_temps * ((*measurementArray)[i]->experimentTime - min_temps);
+		PBasse_pression.y = graphe.bottom - rapport_pression * ((*measurementArray)[i]->pressureLow - min_pression);
 		if(i==PremiereMesure)
 			pDC->MoveTo(PBasse_pression);
 		else
@@ -882,19 +876,18 @@ void CGrapheView::TraceGraph(CRect graphe,int max_pression,int min_pression,doub
 	CPen*pOldPen3=pDC->SelectObject(&newPen3);
 	pDC->SelectObject(&newPen3);
 	
-	for(int i=PremiereMesure;i<=m_TableauMesures->GetUpperBound();i++)
+	for(int i=PremiereMesure;i<= measurementArray->size() - 1;i++)
 	{
 		POINT PHaute_pression;
-		double abs_temps = graphe.left + rapport_temps * (pDoc->m_TableauMesures[i].experimentTime - min_temps);
-		PHaute_pression.x=abs_temps;	
-		PHaute_pression.y=graphe.bottom - rapport_pression * (pDoc->m_TableauMesures[i].pressureHigh - min_pression);
+		PHaute_pression.x = graphe.left + rapport_temps * ((*measurementArray)[i]->experimentTime - min_temps);
+		PHaute_pression.y = graphe.bottom - rapport_pression * ((*measurementArray)[i]->pressureHigh - min_pression);
 		if(i==PremiereMesure)
 			pDC->MoveTo(PHaute_pression);
 		else
 			pDC->LineTo(PHaute_pression);
 	}
 	pDC->SelectObject(pOldPen3);
-	*/
+	
 
 /*
 	// ----------------- Version 5 (une partie des points)-----------------------------------------
@@ -1028,8 +1021,6 @@ void CGrapheView::TraceContour(CRect rect, CDC *pDC)
 }
 
 
-
-
 double CGrapheView::MaxPressionEchelle(double max_p)
 {
 	if(max_p <=1)
@@ -1080,6 +1071,9 @@ int CGrapheView::NbrIntervalles(double max)
 		return 5;
 	return 4;
 }
+
+
+
 
 
 CKalelDoc* CGrapheView::GetDocument() const // la version non déboguée est en ligne

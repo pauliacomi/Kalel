@@ -12,7 +12,7 @@ class CGrapheView : public CView
 protected:
 	CGrapheView();           // constructeur protégé utilisé par la création dynamique
 	virtual ~CGrapheView();
-
+	
 	void OnInitialUpdate();
 
 public:
@@ -29,7 +29,7 @@ public:
 	int NbrIntervalles(double max);
 
 private:
-	CArrayMesure * measurementArray;
+	CArrayMeasurments * measurementArray;
 	double maxPressure, minPressure, maxCalo, minCalo;
 	CString titleGrapheEtape;
 	float timeMinimum;

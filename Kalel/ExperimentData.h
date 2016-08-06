@@ -2,6 +2,8 @@
 #ifndef EXPERIMENT_DATA
 #define EXPERIMENT_DATA
 
+#include <vector>
+
 class ExperimentData
 {
 public:
@@ -58,6 +60,7 @@ public:
 	ExperimentData & ExperimentData::operator=(const ExperimentData * p);
 };
 
-typedef CArray<ExperimentData, ExperimentData*> CArrayMesure;
+typedef std::vector<ExperimentData*> CArrayMeasurments;
+//typedef std::vector<ExperimentData, ExperimentData> CArrayMeasurments;
 
 #endif

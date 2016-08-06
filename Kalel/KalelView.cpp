@@ -110,6 +110,7 @@ CKalelView::CKalelView()
 	, m_StrTemoinEV1(_T(""))
 	, m_StrTemoinEV2(_T(""))
 	, m_StrTemoinPompe(_T(""))
+	, experimentData(NULL)
 {
 }
 
