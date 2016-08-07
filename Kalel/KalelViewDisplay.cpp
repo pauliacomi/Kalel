@@ -26,14 +26,14 @@ void CKalelView::OnTimer(UINT nIDEvent)
 	temp->pressureLow = 4 + sin(tempInt);
 	temp->resultCalorimeter = 20 + 4 * sin(tempInt);
 
-	if (tempInt == 50) {
+	bool recorded = GetDocument()->GraphAddMeasurement(temp);
+
+	GetDocument()->UpdateAllViews(this);
+
+	if (tempInt == 200) {
 		GetDocument()->GraphReset(NULL, NULL);
 		tempInt = 0;
 	}
-
-	bool recorded = GetDocument()->GraphAddMeasurement(temp);
-
-	//GetDocument()->UpdateAllViews(this);
 
 	if (experimentData != NULL) {
 		// Convert to strings
@@ -62,12 +62,12 @@ void CKalelView::OnTimer(UINT nIDEvent)
 		AffichageEtape();
 
 		// Write graph
-		//bool recorded = GetDocument()->GraphAddMeasurement(experimentData);
+		bool recorded = GetDocument()->GraphAddMeasurement(experimentData);
 
 		// Write in measurement box
-		/*if (recorded) {
+		if (recorded) {
 			AffichageMesures();
-		}*/
+		}
 
 		// Update all views
 		GetDocument()->UpdateAllViews(this);

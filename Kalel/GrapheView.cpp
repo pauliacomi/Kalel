@@ -16,13 +16,10 @@
 #define hauteur_legende 30
 
 #define TAILLE_POINT 15000
-
-#define MAXCALO 0.01
-#define MINCALO 0
-
 #define NOMBREPOINTS 2000
-
 #define INEXISTANT -255
+
+#define RECENT_HOURS 0.005
 
 // CGrapheView
 
@@ -87,20 +84,29 @@ void CGrapheView::OnDraw(CDC* pDC)
 		{
 
 			// Acquisition des données 
-			ExperimentData * TableauMesures = (*measurementArray).back();
+			ExperimentData * experimentData = (*measurementArray).back();
 
 			// Valeurs utilisées pour les échelles et les axes d'abscisses et d'ordonnées
 			// Set the maximums and minimums
-			maxPressure = max(maxPressure, TableauMesures->pressureLow);
-			maxPressure = max(maxPressure, TableauMesures->pressureHigh);
+			maxPressure = max(maxPressure, experimentData->pressureLow);
+			maxPressure = max(maxPressure, experimentData->pressureHigh);
 			maxPressure = MaxPressionEchelle(maxPressure);
 
-			minPressure = min(minPressure, TableauMesures->pressureLow);
-			minPressure = min(minPressure, TableauMesures->pressureHigh);
+			minPressure = min(minPressure, experimentData->pressureLow);
+			minPressure = min(minPressure, experimentData->pressureHigh);
 			minPressure = 0;
 
-			maxCalo = max(maxCalo, TableauMesures->resultCalorimeter);
-			minCalo = min(minCalo, TableauMesures->resultCalorimeter);
+			maxCalo = max(maxCalo, experimentData->resultCalorimeter);
+			minCalo = min(minCalo, experimentData->resultCalorimeter);
+
+			int displayedSeconds = RECENT_HOURS * 3600;
+			timeMinimum = experimentData->experimentTime - displayedSeconds;
+			float partialCoefficient = (experimentData->experimentTime / experimentData->experimentMeasurements);
+			measurementMinimum  = (int)(experimentData->experimentMeasurements - displayedSeconds / partialCoefficient);
+			if (measurementMinimum < 0)
+				measurementMinimum = 0;
+
+			//float timeMinimum = partialCoefficient * displayedSeconds;
 
 
 			// Les graphes
@@ -416,7 +422,7 @@ void CGrapheView::TraceScale(CRect graphe,CRect axe_graphe,int max_pression,int 
 
 
 void CGrapheView::TraceGraph(CRect graphe,int max_pression,int min_pression,double max_calo,double min_calo,
-							   CDC *pDC,float min_temps,int PremiereMesure)
+							   CDC *pDC,float min_temps,int firstMeasurement)
 {
 	// rapport = hauteur du graphe / (max_calo - min_calo)
 	// rapport = valeur (bar ou µV) par pixel
@@ -836,15 +842,14 @@ void CGrapheView::TraceGraph(CRect graphe,int max_pression,int min_pression,doub
 	// On sélectionne ce 'Pen' dans ce device context
 	// On sauve l'ancien 'Pen' par la même occasion
 	CPen newPen1(PS_SOLID,1,RGB(255,0,0));
-	CPen*pOldPen1=pDC->SelectObject(&newPen1);
-	pDC->SelectObject(&newPen1);
+	CPen * pOldPen1 = pDC->SelectObject(&newPen1);
 
-	for(int i=PremiereMesure;i <= measurementArray->size() - 1;i++)
+	for(int i = firstMeasurement;i <= measurementArray->size() - 1;i++)
 	{
 		POINT PCalo;
 		PCalo.x = graphe.left + rapport_temps * ((*measurementArray)[i]->experimentTime - min_temps);
 		PCalo.y = graphe.bottom - rapport_calo * ((*measurementArray)[i]->resultCalorimeter - min_calo);
-		if(i==PremiereMesure)
+		if(i == firstMeasurement)
 			pDC->MoveTo(PCalo);
 		else
 			pDC->LineTo(PCalo);
@@ -854,16 +859,15 @@ void CGrapheView::TraceGraph(CRect graphe,int max_pression,int min_pression,doub
 
 
 	// ------------ Basse pression en vert ----------------
-	CPen newPen2(PS_SOLID,1,RGB(0,185,0));
-	CPen*pOldPen2=pDC->SelectObject(&newPen2);
-	pDC->SelectObject(&newPen2);
+	CPen newPen2(PS_SOLID, 1, RGB(0, 185, 0));
+	CPen * pOldPen2 = pDC->SelectObject(&newPen2);
 
-	for(int i=PremiereMesure;i<= measurementArray->size() - 1;i++)
+	for(int i = firstMeasurement;i<= measurementArray->size() - 1;i++)
 	{
 		POINT PBasse_pression;
 		PBasse_pression.x = graphe.left + rapport_temps * ((*measurementArray)[i]->experimentTime - min_temps);
 		PBasse_pression.y = graphe.bottom - rapport_pression * ((*measurementArray)[i]->pressureLow - min_pression);
-		if(i==PremiereMesure)
+		if(i == firstMeasurement)
 			pDC->MoveTo(PBasse_pression);
 		else
 			pDC->LineTo(PBasse_pression);
@@ -873,15 +877,14 @@ void CGrapheView::TraceGraph(CRect graphe,int max_pression,int min_pression,doub
 
 	// ------------ Haute pression en bleu ----------------
 	CPen newPen3(PS_SOLID,1,RGB(0,0,255));
-	CPen*pOldPen3=pDC->SelectObject(&newPen3);
-	pDC->SelectObject(&newPen3);
+	CPen * pOldPen3=pDC->SelectObject(&newPen3);
 	
-	for(int i=PremiereMesure;i<= measurementArray->size() - 1;i++)
+	for(int i= firstMeasurement;i<= measurementArray->size() - 1;i++)
 	{
 		POINT PHaute_pression;
 		PHaute_pression.x = graphe.left + rapport_temps * ((*measurementArray)[i]->experimentTime - min_temps);
 		PHaute_pression.y = graphe.bottom - rapport_pression * ((*measurementArray)[i]->pressureHigh - min_pression);
-		if(i==PremiereMesure)
+		if(i == firstMeasurement)
 			pDC->MoveTo(PHaute_pression);
 		else
 			pDC->LineTo(PHaute_pression);
