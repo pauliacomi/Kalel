@@ -46,7 +46,7 @@ void CKalelView::OnBnClickedLancer()
 			UpdateButtons();
 			
 			// Reset the graph
-			GetDocument()->GraphInitialize(NULL, NULL);
+			GetDocument()->GraphReset(NULL, NULL);
 
 			// Get the data from the dialog
 			EnterCriticalSection(&experimentSettings->criticalSection);
@@ -89,17 +89,17 @@ void CKalelView::OnBnClickedButtonParametresExperience()
 		LeaveCriticalSection(&experimentSettings->criticalSection);
 
 		int counter = 0;
-		if (experimentData.experimentStage = STAGE_ADSORPTION)
+		if (experimentData->experimentStage = STAGE_ADSORPTION)
 		{
-			counter = experimentData.adsorptionCounter;
+			counter = experimentData->adsorptionCounter;
 		}
-		if (experimentData.experimentStage = STAGE_DESORPTION)
+		if (experimentData->experimentStage = STAGE_DESORPTION)
 		{
-			counter = experimentData.desorptionCounter;
+			counter = experimentData->desorptionCounter;
 		}
 
 		EnterCriticalSection(&experimentSettings->criticalSection);
-		dialogExperimentProperties.SetProprietiesModif(experimentData.experimentStage, counter);
+		dialogExperimentProperties.SetProprietiesModif(experimentData->experimentStage, counter);
 		LeaveCriticalSection(&experimentSettings->criticalSection);
 
 		if (dialogExperimentProperties.DoModal() == IDOK)

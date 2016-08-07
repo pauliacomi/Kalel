@@ -15,16 +15,11 @@ protected: // create from serialization only
 
 // Attributes
 public:	
-	CArrayMesure m_TableauMesures;
-	CString TitreGrapheEtape;
-	double maxPressure, minPressure, maxCalo, minCalo;
-	float TempsMinimum;
-	int MesureMinimum, NumeroEtape;
+	CArrayMeasurments m_TableauMesures;
 
 // Operations
 public:
 	static CKalelDoc * GetDocument();
-	CArrayMesure * GetTableauMesures();
 
 // Overrides
 public:
@@ -50,9 +45,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 public:
-	LRESULT GraphInitialize(WPARAM wParam, LPARAM lParam);
-	bool GraphAddMeasurement(ExperimentData expData);
-
+	bool GraphAddMeasurement(ExperimentData * expData);
 	LRESULT GraphReset(WPARAM wParam, LPARAM lParam);
 	
 

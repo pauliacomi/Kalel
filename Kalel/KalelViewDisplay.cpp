@@ -7,11 +7,8 @@
 
 LRESULT CKalelView::ExchangeData(WPARAM, LPARAM incomingExperimentData)
 {
-	// Get the incoming pointer and cast it as a smart pointer
-	std::auto_ptr<ExperimentData> tempExpData(reinterpret_cast<ExperimentData*>(incomingExperimentData));
-
-	// Copy the data across
-	experimentData = *tempExpData;
+	// Get the incoming pointer
+	experimentData = reinterpret_cast<ExperimentData*>(incomingExperimentData);
 
 	return 0;
 }
@@ -21,41 +18,43 @@ LRESULT CKalelView::ExchangeData(WPARAM, LPARAM incomingExperimentData)
 
 void CKalelView::OnTimer(UINT nIDEvent)
 {
-	// Convert to strings
-	m_StrCalo.Format(_T("%.2f"), experimentData.resultCalorimeter);
-	m_StrBassePression.Format(_T("%.2f"), experimentData.pressureLow);
-	m_StrHautePression.Format(_T("%.2f"), experimentData.pressureHigh);
-	m_StrTemperatureCalo.Format(_T("%.2f"), experimentData.temperatureCalo);
-	m_StrTemperatureCage.Format(_T("%.2f"), experimentData.temperatureCage);
-	m_StrTemperaturePiece.Format(_T("%.2f"), experimentData.temperatureRoom);
-	m_StrTemps.Format(_T("%.1f"), experimentData.experimentTime);
-	m_StrPressionInitiale.Format(_T("%.1f"), experimentData.pressureInitial);
-	m_StrPressionFinale.Format(_T("%.1f"), experimentData.pressureFinal);
+	if (experimentData != NULL) {
+		// Convert to strings
+		m_StrCalo.Format(_T("%.9e"), experimentData->resultCalorimeter);
+		m_StrBassePression.Format(_T("%.6f"), experimentData->pressureLow);
+		m_StrHautePression.Format(_T("%.6f"), experimentData->pressureHigh);
+		m_StrTemperatureCalo.Format(_T("%.2f"), experimentData->temperatureCalo);
+		m_StrTemperatureCage.Format(_T("%.2f"), experimentData->temperatureCage);
+		m_StrTemperaturePiece.Format(_T("%.2f"), experimentData->temperatureRoom);
+		m_StrTemps.Format(_T("%.1f"), experimentData->experimentTime);
+		m_StrPressionInitiale.Format(_T("%.6f"), experimentData->pressureInitial);
+		m_StrPressionFinale.Format(_T("%.6f"), experimentData->pressureFinal);
 
-	// Refresh textboxes
-	SetDlgItemText(IDC_CALO, m_StrCalo);
-	SetDlgItemText(IDC_BASSE_PRESSION, m_StrBassePression);
-	SetDlgItemText(IDC_HAUTE_PRESSION, m_StrHautePression);
-	SetDlgItemText(IDC_TEMPERATURE_CALO, m_StrTemperatureCalo);
-	SetDlgItemText(IDC_TEMPERATURE_CAGE, m_StrTemperatureCage);
-	SetDlgItemText(IDC_TEMPERATURE_PIECE, m_StrTemperaturePiece);
-	SetDlgItemText(IDC_TEMPS, m_StrTemps);
-	SetDlgItemText(IDC_PRESSION_INITIALE, m_StrPressionInitiale);
-	SetDlgItemText(IDC_PRESSION_FINALE, m_StrPressionFinale);
+		// Refresh textboxes
+		SetDlgItemText(IDC_CALO, m_StrCalo);
+		SetDlgItemText(IDC_BASSE_PRESSION, m_StrBassePression);
+		SetDlgItemText(IDC_HAUTE_PRESSION, m_StrHautePression);
+		SetDlgItemText(IDC_TEMPERATURE_CALO, m_StrTemperatureCalo);
+		SetDlgItemText(IDC_TEMPERATURE_CAGE, m_StrTemperatureCage);
+		SetDlgItemText(IDC_TEMPERATURE_PIECE, m_StrTemperaturePiece);
+		SetDlgItemText(IDC_TEMPS, m_StrTemps);
+		SetDlgItemText(IDC_PRESSION_INITIALE, m_StrPressionInitiale);
+		SetDlgItemText(IDC_PRESSION_FINALE, m_StrPressionFinale);
 
-	// Write the current step
-	AffichageEtape(experimentData);
+		// Write the current step
+		AffichageEtape();
 
-	// Write graph
-	bool recorded = GetDocument()->GraphAddMeasurement(experimentData);
+		// Write graph
+		bool recorded = GetDocument()->GraphAddMeasurement(experimentData);
 
-	// Write in measurement box
-	if (recorded) {
-		AffichageMesures(experimentData);
+		// Write in measurement box
+		if (recorded) {
+			AffichageMesures();
+		}
+
+		// Update all views
+		GetDocument()->UpdateAllViews(this);
 	}
-
-	// Update all views
-	GetDocument()->UpdateAllViews(this);
 
 	CFormView::OnTimer(nIDEvent);	// Call base class handler.
 }
@@ -85,11 +84,11 @@ LRESULT CKalelView::AffichageMessages(WPARAM, LPARAM lParam)
 
 
 // Write on the dialog box reserved for new measurements
-LRESULT CKalelView::AffichageMesures(ExperimentData expD)
+LRESULT CKalelView::AffichageMesures()
 {
 	CString mesure;
 
-	mesure.Format(_T("Time=%.2f  Calo=%.2f  LP=%.2f  HP=%.2f"), experimentData.experimentTime, experimentData.resultCalorimeter, experimentData.pressureLow, experimentData.pressureHigh);
+	mesure.Format(_T("Time=%.2f  Calo=%.2f  LP=%.2f  HP=%.2f"), experimentData->experimentTime, experimentData->resultCalorimeter, experimentData->pressureLow, experimentData->pressureHigh);
 
 	m_StrEditMesures += mesure;
 	m_StrEditMesures += "\r\n";
@@ -102,30 +101,30 @@ LRESULT CKalelView::AffichageMesures(ExperimentData expD)
 }
 
 // Display the step
-LRESULT CKalelView::AffichageEtape(ExperimentData expD)
+LRESULT CKalelView::AffichageEtape()
 {
 
 	CString temp;
 	
-	temp.Format(expD.experimentStage);
+	temp.Format(experimentData->experimentStage);
 
 	m_StrEtape = temp;
 
-	if (expD.verificationStep != STEP_VERIFICATIONS_UNDEF && expD.verificationStep != STEP_VERIFICATIONS_COMPLETE)
+	if (experimentData->verificationStep != STEP_VERIFICATIONS_UNDEF && experimentData->verificationStep != STEP_VERIFICATIONS_COMPLETE)
 	{
-		temp.Format(expD.verificationStep);
+		temp.Format(experimentData->verificationStep);
 		m_StrEtape += ",   Substage: " + temp;
 	}
 
-	if (expD.experimentWaiting == true)
+	if (experimentData->experimentWaiting == true)
 	{
-		if (expD.timeToEquilibrate / 60 > 1)
+		if (experimentData->timeToEquilibrate / 60 > 1)
 		{
-			temp.Format(" *** Waiting: %.0f min %.0f s /  %.0f min %.0f s", floorf(expD.timeToEquilibrateCurrent / 60.0f), fmodf(expD.timeToEquilibrateCurrent, 60.0f), floorf(expD.timeToEquilibrate / 60.0f), fmodf(expD.timeToEquilibrate, 60.0f));
+			temp.Format(" *** Waiting: %.0f min %.0f s /  %.0f min %.0f s", floorf(experimentData->timeToEquilibrateCurrent / 60.0f), fmodf(experimentData->timeToEquilibrateCurrent, 60.0f), floorf(experimentData->timeToEquilibrate / 60.0f), fmodf(experimentData->timeToEquilibrate, 60.0f));
 		}
 		else
 		{
-			temp.Format(" *** Waiting: %.0f s /  %.0f s", expD.timeToEquilibrateCurrent, expD.timeToEquilibrate);
+			temp.Format(" *** Waiting: %.0f s /  %.0f s", experimentData->timeToEquilibrateCurrent, experimentData->timeToEquilibrate);
 		}
 		m_StrEtape += temp;
 	}

@@ -2,6 +2,8 @@
 #ifndef EXPERIMENT_DATA
 #define EXPERIMENT_DATA
 
+#include <vector>
+
 class ExperimentData
 {
 public:
@@ -36,10 +38,6 @@ public:
 	int adsorptionCounter;					// Counter for the number of adsorption settings (small, medium, large etc) inputted by the user, starts at 0
 	int desorptionCounter;					// Counter for the number of desorption settings (small, medium, large etc) inputted by the user, starts at 0
 
-	// Text
-	CString textMessages;
-	CString textMeasurements;
-
 	// Calorimeter
 	double resultCalorimeter;
 
@@ -62,6 +60,7 @@ public:
 	ExperimentData & ExperimentData::operator=(const ExperimentData * p);
 };
 
-typedef CArray<ExperimentData, ExperimentData*> CArrayMesure;
+typedef std::vector<ExperimentData*> CArrayMeasurments;
+//typedef std::vector<ExperimentData, ExperimentData> CArrayMeasurments;
 
 #endif
