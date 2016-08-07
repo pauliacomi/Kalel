@@ -36,7 +36,7 @@ void ExperimentSettings::ResetData(int initialAdsorptions, int initialDesorption
 {
 	GUIhandle = NULL;
 	dataModified = false;
-	continueAnyway = false;
+	continueResult = E_INVALIDARG;
 	experimentType = EXPERIMENT_TYPE_UNDEF;
 	
 	// Initialisation of settings

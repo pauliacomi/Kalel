@@ -212,20 +212,11 @@ LRESULT CKalelView::MessageBoxAlert(WPARAM wParam, LPARAM lParam)
 {
 	// Get the incoming pointer and cast it as a smart pointer
 	std::auto_ptr<CString> message(reinterpret_cast<CString*>(lParam));
+	std::auto_ptr<UINT> nType(reinterpret_cast<UINT*>(wParam));
 	
 	int result;
 	bool continuer = true;
-	do{
-		result = AfxMessageBox(*message, wParam);
-		if(result==IDCANCEL || result == IDNO)
-		{
-			if(AfxMessageBox(PROMPT_RUNNINGEXP, MB_YESNO | MB_ICONWARNING,0)==IDYES)
-				continuer=false;
-		}
-		else
-			continuer=false;
-		
-	}while(continuer);
+	result = AfxMessageBox(*message, *nType);
 	return result;
 }
 
@@ -233,11 +224,12 @@ LRESULT CKalelView::MessageBoxConfirmation(WPARAM wParam, LPARAM lParam)
 {
 	// Get the incoming pointer and cast it as a smart pointer
 	std::auto_ptr<CString> message(reinterpret_cast<CString*>(lParam));
+	std::auto_ptr<UINT> nType(reinterpret_cast<UINT*>(wParam));
 
 	int result;
 	bool continuer = true;
 	do {
-		result = AfxMessageBox(*message, wParam);
+		result = AfxMessageBox(*message, *nType);
 		if (result == IDCANCEL)
 		{
 			if (AfxMessageBox(PROMPT_RUNNINGEXP, MB_YESNO | MB_ICONWARNING, 0) == IDYES)
@@ -250,7 +242,7 @@ LRESULT CKalelView::MessageBoxConfirmation(WPARAM wParam, LPARAM lParam)
 			}
 			if (result == IDNO) {
 				EnterCriticalSection(&experimentSettings->criticalSection);
-				experimentSettings->continueAnyway = true;
+				//experimentSettings->continueResult = true;
 				experimentSettings->dataModified = true;
 				LeaveCriticalSection(&experimentSettings->criticalSection);
 				threadManager->ResumeThread();
@@ -262,6 +254,40 @@ LRESULT CKalelView::MessageBoxConfirmation(WPARAM wParam, LPARAM lParam)
 }
 
 
+LRESULT CKalelView::MessageBoxStopExperiment(WPARAM wParam, LPARAM lParam)
+{
+	// Get the incoming pointer and cast it as a smart pointer
+	std::auto_ptr<CString> message(reinterpret_cast<CString*>(lParam));
+	std::auto_ptr<UINT> nType(reinterpret_cast<UINT*>(wParam));
+
+	int result;
+	bool continuer = true;
+	do {
+		result = AfxMessageBox(*message, *nType);
+		if (result == IDCANCEL)
+		{
+			if (AfxMessageBox(PROMPT_RUNNINGEXP, MB_YESNO | MB_ICONWARNING, 0) == IDYES)
+				continuer = false;
+		}
+		else {
+			if (result == IDYES) {
+				EnterCriticalSection(&experimentSettings->criticalSection);
+				experimentSettings->continueResult = S_OK;
+				experimentSettings->dataModified = true;
+				LeaveCriticalSection(&experimentSettings->criticalSection);
+				continuer = false;
+			}
+			if (result == IDNO) {
+				EnterCriticalSection(&experimentSettings->criticalSection);
+				experimentSettings->continueResult = E_ABORT;
+				experimentSettings->dataModified = true;
+				LeaveCriticalSection(&experimentSettings->criticalSection);
+				continuer = false;
+			}
+		}
+	} while (continuer);
+	return result;
+}
 
 
 

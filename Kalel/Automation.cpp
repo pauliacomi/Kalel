@@ -124,17 +124,19 @@ void Automation::Execution()
 		*/
 
 		// Write data
-		if (experimentLocalData.experimentRecording	&&								// If we started recording
-			timerMeasurement.TempsActuel() > T_BETWEEN_RECORD)						// and the enough time between measurements
+		if (timerMeasurement.TempsActuel() > T_BETWEEN_RECORD)						// If enough time between measurements
 		{
+			if(experimentLocalData.experimentRecording)								// If we started recording
+			{
 			// Save the data to the file
 			FileMeasurementRecord();
+			}
 
 			// Restart the timer to record time between measurements
 			timerMeasurement.TopChrono();
 			
 			// Increment the measurement number
-			experimentLocalData.experimentMeasurements++;
+			experimentLocalData.experimentGraphPoints++;
 		}
 
 		/*
@@ -181,36 +183,17 @@ void Automation::Execution()
 			break;
 
 		case WAIT_OBJECT_0 + 1:										    // Pause thread
-			if (experimentLocalData.experimentInProgress)
-			{
-				timerExperiment.ArretTemps();
-				timerMeasurement.ArretTemps();
-				timerWaiting.ArretTemps();
-				experimentLocalData.experimentRecording = false;
-
-				messageHandler.DisplayMessage(MESSAGE_EXPPAUSE);
-			}
-			experimentLocalData.experimentCommandsRequested = false;
+			Pause();
 			::ResetEvent(h_eventPause);	// Reset the event
 			break;
 
 		case WAIT_OBJECT_0 + 2:											 // Resume thread
-			if (experimentLocalData.experimentInProgress)
-			{
-				timerExperiment.RepriseTemps();
-				timerMeasurement.RepriseTemps();
-				timerWaiting.RepriseTemps();
-				experimentLocalData.experimentRecording = true;
-
-				messageHandler.DisplayMessage(MESSAGE_EXPRESUME);
-			}
-			experimentLocalData.experimentCommandsRequested = true;
+			Resume();
 			::ResetEvent(h_eventResume);	// Reset the event
 			break;
 
-		case WAIT_OBJECT_0 + 3:											  // Shutdown thread
+		case WAIT_OBJECT_0 + 3:											 // Reset thread
 			Shutdown();
-			::ResetEvent(h_eventReset);	// Reset the event
 			break;
 
 		case WAIT_TIMEOUT:
@@ -245,6 +228,8 @@ bool Automation::ExecutionManual()
 		EnteteCSVCreate();			// Entete CSV
 		FileMeasurementOpen();		// Measurement file
 
+		// Time
+		experimentLocalData.experimentTimeStart = time(0);
 		timerExperiment.TopChrono();	// Start global experiment timer	
 		timerMeasurement.TopChrono();	// Start the timer to record time between measurements
 
@@ -252,7 +237,7 @@ bool Automation::ExecutionManual()
 		experimentLocalData.experimentStage = STAGE_MANUAL;
 		experimentLocalData.experimentStepStatus = STEP_STATUS_INPROGRESS;
 		experimentLocalData.experimentCommandsRequested = false;
-		
+
 		return true;
 	}
 
@@ -334,11 +319,7 @@ void Automation::Initialisation()
 	events[1] = h_eventPause;
 	events[2] = h_eventResume;
 	events[3] = h_eventReset;
-
-	// Initialise automatic variables
-	experimentLocalData.ResetData();
-	experimentLocalSettings.ResetData();
-
+	
 	// Initialise local settings copy
 	experimentLocalSettings = SetData();
 
@@ -391,6 +372,21 @@ void Automation::DeInitialise()
 	DeleteCriticalSection(&criticalSection);
 }
 
+void Automation::ResetAutomation()
+{
+	// Reset all data from the experiment
+	experimentLocalData.ResetData();
+	experimentLocalSettings.ResetData();
+
+	// If the shutdown event is called externally, it will default to a cancel
+	// Otherwise the flag will be changed from inside the code
+	shutdownReason = STOP_CANCEL;
+
+	// Time
+	experimentLocalData.experimentTimeStart = time(0);
+	timerExperiment.TopChrono();	// Start global experiment timer	
+	timerMeasurement.TopChrono();	// Start the timer to record time between measurements
+}
 
 ExperimentSettings Automation::SetData()
 {
@@ -400,7 +396,7 @@ ExperimentSettings Automation::SetData()
 	EnterCriticalSection(&experimentSettings->criticalSection);
 	tempSettings = experimentSettings;
 	experimentSettings->dataModified = false;
-	experimentSettings->continueAnyway = false;
+	experimentSettings->continueResult = E_INVALIDARG;
 	LeaveCriticalSection(&experimentSettings->criticalSection);
 
 	return tempSettings;

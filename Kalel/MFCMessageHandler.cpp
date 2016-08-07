@@ -89,6 +89,7 @@ BOOL MFCMessageHandler::DisplayMessage(int pParam, CString m)
 BOOL MFCMessageHandler::DisplayMessageBox(int pParam, UINT nType, bool blocksProgram, double pDouble1, double pDouble2)
 {
 	// Create a new pointer 
+	UINT * type = new UINT(nType);
 	CString * message = new CString;
 
 	// Format the string. Yes I know it's not the best solution.
@@ -110,11 +111,11 @@ BOOL MFCMessageHandler::DisplayMessageBox(int pParam, UINT nType, bool blocksPro
 	// Other thread is now responsible for deleting this object
 	if (blocksProgram)
 	{
-		::PostMessage(windowHandle, WM_DISPLAYMESSAGEBOXCONF, nType, (LPARAM)message);
+		::PostMessage(windowHandle, WM_DISPLAYMESSAGEBOXCONF, (WPARAM)type, (LPARAM)message);
 	}
 	else
 	{
-		::PostMessage(windowHandle, WM_DISPLAYMESSAGEBOX, nType, (LPARAM)message);
+		::PostMessage(windowHandle, WM_DISPLAYMESSAGEBOX, (WPARAM)type, (LPARAM)message);
 	}
 
 	return 0;
@@ -123,6 +124,7 @@ BOOL MFCMessageHandler::DisplayMessageBox(int pParam, UINT nType, bool blocksPro
 BOOL MFCMessageHandler::DisplayMessageBox(int pParam, UINT nType, bool blocksProgram, CString pString)
 {
 	// Create a new pointer 
+	UINT * type = new UINT(nType);
 	CString * message = new CString;
 	message->Format(pParam, pString);
 
@@ -130,12 +132,26 @@ BOOL MFCMessageHandler::DisplayMessageBox(int pParam, UINT nType, bool blocksPro
 	// Other thread is now responsible for deleting this object
 	if (blocksProgram)
 	{
-		::PostMessage(windowHandle, WM_DISPLAYMESSAGEBOXCONF, nType, (LPARAM)message);
+		::PostMessage(windowHandle, WM_DISPLAYMESSAGEBOXCONF, (WPARAM)type, (LPARAM)message);
 	}
 	else
 	{
-		::PostMessage(windowHandle, WM_DISPLAYMESSAGEBOX, nType, (LPARAM)message);
+		::PostMessage(windowHandle, WM_DISPLAYMESSAGEBOX, (WPARAM)type, (LPARAM)message);
 	}
+
+	return 0;
+}
+
+BOOL MFCMessageHandler::DisplayMessageBoxQuit(int message)
+{
+	// Create a new pointer 
+	UINT * type = new UINT(MB_ICONQUESTION | MB_YESNO);
+	CString * lParam = new CString;
+	lParam->Format(message);
+
+	// Check if the message box is supposed to alert the user or ask for input
+	// Other thread is now responsible for deleting this object
+	::PostMessage(windowHandle, WM_DISPLAYMESSAGEBOXSTOPEX, (WPARAM)type, (LPARAM)lParam);
 
 	return 0;
 }
@@ -148,6 +164,7 @@ void MFCMessageHandler::ExperimentStart()
 void MFCMessageHandler::ExperimentEnd()
 {
 	::PostMessage(windowHandle, WM_THREADFINISHEDREG, NULL, NULL);
+	GraphReset();
 }
 
 void MFCMessageHandler::GraphReset() 

@@ -8,29 +8,60 @@ void Automation::Shutdown()
 	switch (shutdownReason)
 	{
 
-	case STOP_CANCEL:		// This option is used if the experiment is cancelled
-							// It then resets everything
+	case STOP_CANCEL:		// This asks the user if they want to continue stopping an experiment
 
-		//messageHandler.DisplayMessageBox(PROMPT_CANCELEXP, MB_ICONQUESTION | MB_OKCANCEL, true);
-		//::SetEvent(h_eventPause);
+		messageHandler.DisplayMessageBoxQuit(PROMPT_CANCELEXP);
+		
+		Pause();
 
-		//When thread finishes, let main window know to unlock menu
-		messageHandler.ExperimentEnd();
+		shutdownReason = STOP_INPROGRESS;
 
-		// Close measurement file
-		FileMeasurementClose();
+		break;
 
-		// Stop all timers 
-		timerExperiment.ArretTemps();
-		timerMeasurement.ArretTemps();
-		timerWaiting.ArretTemps();
+	case STOP_INPROGRESS:		// This option is used if the experiment is cancelled
+								// It then resets everything
+		if (experimentSettings->continueResult == S_OK)
+		{
+			Resume();
 
-		// Reset all data from the experiment
-		experimentLocalData.ResetData();
+			//When thread finishes, let main window know to unlock menu and reset graph
+			messageHandler.ExperimentEnd();
 
-		// Experiment has been cancelled
-		messageHandler.DisplayMessage(MESSAGE_EXPCANCEL);
+			// Close measurement file
+			FileMeasurementClose();
 
+			// Stop all timers 
+			timerExperiment.ArretTemps();
+			timerMeasurement.ArretTemps();
+			timerWaiting.ArretTemps();
+
+			// Experiment has been cancelled
+			messageHandler.DisplayMessage(MESSAGE_EXPCANCEL);
+
+			// Reset the event
+			::ResetEvent(h_eventReset);
+
+			// Run reset funtion
+			ResetAutomation();
+		}
+		if (experimentSettings->continueResult == E_ABORT)
+		{
+			if (experimentLocalData.experimentInProgress)
+			{
+				timerWaiting.RepriseTemps();
+				experimentLocalData.experimentRecording = true;
+
+				messageHandler.DisplayMessage(MESSAGE_EXPRESUME);
+			}
+			timerExperiment.RepriseTemps();
+			timerMeasurement.RepriseTemps();
+			experimentLocalData.experimentCommandsRequested = true;
+
+			shutdownReason = STOP_CANCEL;
+
+			// Reset the event
+			::ResetEvent(h_eventReset);
+		}
 		break;
 
 	case STOP_NORMAL:		// This option is used if the experiment finishes correctly
@@ -53,10 +84,12 @@ void Automation::Shutdown()
 		// Experiment has been finished normally
 		messageHandler.DisplayMessage(MESSAGE_EXPFINISH);
 
+		// Reset the event
+		::ResetEvent(h_eventReset);
+
 		break;
 
-	case STOP_COMPLETE:		// This option is used if the application is closed
-							// It then resets everything
+	case STOP_COMPLETE:		// This option is used if the automation thread is to be closed
 
 		//When thread finishes, let main window know to unlock menu
 		messageHandler.ExperimentEnd();
@@ -73,4 +106,34 @@ void Automation::Shutdown()
 		ASSERT(0);		// Error, should never be reached
 		break;
 	}
+}
+
+
+void Automation::Pause()
+{
+	if (experimentLocalData.experimentInProgress)
+	{
+		timerWaiting.ArretTemps();
+		experimentLocalData.experimentRecording = false;
+
+		messageHandler.DisplayMessage(MESSAGE_EXPPAUSE);
+	}
+	timerExperiment.ArretTemps();
+	timerMeasurement.ArretTemps();
+	experimentLocalData.experimentCommandsRequested = false;
+}
+
+
+void Automation::Resume()
+{
+	if (experimentLocalData.experimentInProgress)
+	{
+		timerWaiting.RepriseTemps();
+		experimentLocalData.experimentRecording = true;
+
+		messageHandler.DisplayMessage(MESSAGE_EXPRESUME);
+	}
+	timerExperiment.RepriseTemps();
+	timerMeasurement.RepriseTemps();
+	experimentLocalData.experimentCommandsRequested = true;
 }

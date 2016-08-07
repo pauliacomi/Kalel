@@ -150,7 +150,7 @@ int Automation::VerificationTemperature()
 		break;
 
 	case STEP_STATUS_INPROGRESS:
-		if (experimentLocalSettings.continueAnyway)
+		if (experimentLocalSettings.continueResult)
 		{
 			experimentLocalData.experimentStepStatus = STEP_STATUS_END;
 		}

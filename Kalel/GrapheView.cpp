@@ -98,8 +98,8 @@ void CGrapheView::OnDraw(CDC* pDC)
 
 			int displayedSeconds = RECENT_HOURS * 3600;
 			timeMinimum = experimentData->experimentTime - displayedSeconds;
-			float partialCoefficient = (experimentData->experimentTime / experimentData->experimentMeasurements);
-			measurementMinimum  = (int)(experimentData->experimentMeasurements - displayedSeconds / partialCoefficient);
+			float partialCoefficient = (experimentData->experimentTime / experimentData->experimentGraphPoints);
+			measurementMinimum  = (int)(experimentData->experimentGraphPoints - displayedSeconds / partialCoefficient);
 			if (measurementMinimum < 0)
 				measurementMinimum = 0;
 

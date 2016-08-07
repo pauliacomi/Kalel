@@ -25,9 +25,10 @@ void ExperimentData::ResetData()
 	experimentDose = 0;
 	experimentStepStatus = STEP_STATUS_UNDEF;
 	experimentSubstepStage = STEP_STATUS_START;
-	experimentMeasurements = 0;
+	experimentGraphPoints = 0;
 	verificationStep = STEP_VERIFICATIONS_UNDEF;
 
+	experimentTimeStart = NULL;
 	experimentTime = 0.f;
 	timeToEquilibrate = 0.f;
 	timeToEquilibrateCurrent = 0.f;
