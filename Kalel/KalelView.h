@@ -37,7 +37,6 @@ public:
 	// Storage for all the data
 	ExperimentSettings * experimentSettings;
 	ExperimentData * experimentData;
-	int tempInt = 0;
 
 	// Some storage variables for each MFC control
 	CEdit pEditMessages;

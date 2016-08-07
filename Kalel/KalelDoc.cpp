@@ -180,23 +180,3 @@ LRESULT CKalelDoc::GraphReset(WPARAM , LPARAM ) {
 	m_TableauMesures.clear();
 	return 0;
 }
-
-/*void CManip::DonneesManuelleGrapheEtape()
-{
-int nb_heures = 2;
-int nb_secondes = nb_heures * 3600;
-
-int coeff = (int)(temps_manip / nb_secondes);
-float temps_min = coeff * nb_secondes;
-
-
-if (true m_Doc->NumeroEtape < coeff + 1)
-{
-ASSERT(0);
-messageHandler.GraphDataAutoStep(temps_min, numero_mesure - 1, coeff + 1);
-
-CString titre;
-titre.Format(_T("%dh - %dh d'expérience"), nb_heures * coeff, nb_heures*(coeff + 1));
-messageHandler.GraphSetTitle(titre);
-}
-}*/

@@ -18,23 +18,6 @@ LRESULT CKalelView::ExchangeData(WPARAM, LPARAM incomingExperimentData)
 
 void CKalelView::OnTimer(UINT nIDEvent)
 {
-	tempInt++;
-	ExperimentData * temp = new ExperimentData();
-	temp->experimentMeasurements = tempInt;
-	temp->experimentTime = 0.2 * tempInt;
-	temp->pressureHigh = 4 + sin(tempInt);
-	temp->pressureLow = 4 + sin(tempInt);
-	temp->resultCalorimeter = 20 + 4 * sin(tempInt);
-
-	bool recorded = GetDocument()->GraphAddMeasurement(temp);
-
-	GetDocument()->UpdateAllViews(this);
-
-	if (tempInt == 200) {
-		GetDocument()->GraphReset(NULL, NULL);
-		tempInt = 0;
-	}
-
 	if (experimentData != NULL) {
 		// Convert to strings
 		m_StrCalo.Format(_T("%.9e"), experimentData->resultCalorimeter);

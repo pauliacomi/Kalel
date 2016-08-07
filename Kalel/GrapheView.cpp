@@ -3,13 +3,10 @@
 
 #include "stdafx.h"
 #include "GrapheView.h"
-//
-#include "Kalel.h"
-#include "KalelDoc.h"
-#include "StringTable.h"
 
-#include <stdio.h>
-#include <stdlib.h>
+//
+#include "KalelDoc.h"			// For the document pointer
+#include "StringTable.h"		// For the strings 
 
 
 #define border 15
@@ -64,8 +61,8 @@ void CGrapheView::OnDraw(CDC* pDC)
 	bm.CreateCompatibleBitmap(&ScreenDC, rect_grapheView.Width(), rect_grapheView.Height());		// REQ #001
 	pDC->SelectObject(&bm);																			// REQ #001
 
-	int limite_hauteur = 12 * border + hauteur_legende;
-	int limite_largeur = 150;
+	int limite_hauteur = 12 * border + hauteur_legende + 100;
+	int limite_largeur = 300;
 
 	if((rect_grapheView.Height() < limite_hauteur) || (rect_grapheView.Width() < limite_largeur))
 	{
@@ -147,7 +144,8 @@ void CGrapheView::OnDraw(CDC* pDC)
 										 axe_grapheComplet.right,
 										 axe_grapheComplet.bottom - border);
 		
-			CString titreComplet = _T("Graphe Complet");
+			CString titreComplet;
+			titreComplet.Format(GRAPH_COMPLETE);
 			TraceAxis(place_grapheComplet,axe_grapheComplet,pDC,titreComplet);
 
 			TraceScale(grapheComplet, axe_grapheComplet, maxPressure, minPressure, maxCalo, minCalo, pDC);
@@ -170,7 +168,8 @@ void CGrapheView::OnDraw(CDC* pDC)
 									   axe_grapheEtape.top + border,
 									   axe_grapheEtape.right,
 									   axe_grapheEtape.bottom - border);
-		
+			
+			titleGrapheEtape.Format(GRAPH_PART, RECENT_HOURS);
 			TraceAxis(place_grapheEtape, axe_grapheEtape, pDC, titleGrapheEtape);
 			TraceScale(grapheEtape, axe_grapheEtape, maxPressure, minPressure, maxCalo, minCalo, pDC, timeMinimum);
 			TraceGraph(grapheEtape, maxPressure, minPressure, maxCalo, minCalo, pDC, timeMinimum, measurementMinimum);
@@ -181,7 +180,6 @@ void CGrapheView::OnDraw(CDC* pDC)
 			// ------------------------------------------------------------
 
 			CRect legende = grapheBas;
-			//traceContour(legende,pDC);
 		
 			CRect legende_calo = CRect(legende.left,
 									   legende.top,
@@ -202,10 +200,12 @@ void CGrapheView::OnDraw(CDC* pDC)
 			COLORREF color2 = RGB(0,185,0);
 			COLORREF color3 = RGB(0,0,255);
 
-			CString texte1 = _T("Calo");
-			CString texte2 = _T("Basse Pression");
-			CString texte3 = _T("Haute Pression");
+			CString texte1, texte2, texte3;
+			texte1.Format(TEXT_CALORIMETER);
+			texte2.Format(TEXT_PRESSURE_HIGHRANGE);
+			texte3.Format(TEXT_PRESSURE_LOWRANGE);
 
+			TraceContour(legende, pDC);
 			TraceLegend(legende_calo,color1,texte1,pDC);
 			TraceLegend(legende_basse_pression,color2,texte2,pDC);
 			TraceLegend(legende_haute_pression,color3,texte3,pDC);
