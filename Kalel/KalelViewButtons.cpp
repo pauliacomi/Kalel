@@ -45,16 +45,13 @@ void CKalelView::OnBnClickedLancer()
 			pApp->menuIsAvailable = false;
 			UpdateButtons();
 			
-			// Reset the graph
-			GetDocument()->GraphReset(NULL, NULL);
-
 			// Get the data from the dialog
 			EnterCriticalSection(&experimentSettings->criticalSection);
 			GetExperimentData(&dialogExperimentProperties, true);
 			LeaveCriticalSection(&experimentSettings->criticalSection);
 
 			// Raise the flag for data modified
-			experimentSettings->dataModified = true;
+			threadManager->SetModifiedData();
 		}
 		else
 		{
@@ -64,7 +61,7 @@ void CKalelView::OnBnClickedLancer()
 			LeaveCriticalSection(&experimentSettings->criticalSection);
 
 			// Roll back by calling stop function
-			Annuler(NULL,NULL);
+			CancelBeforeStarting(NULL,NULL);
 		}
 	}
 }
@@ -72,7 +69,22 @@ void CKalelView::OnBnClickedLancer()
 // When clicking on the Stop button
 void CKalelView::OnBnClickedArreter()
 {
-	threadManager->ResetThread();
+	if (experimentData->experimentInProgress) {
+		int result = AfxMessageBox(PROMPT_CANCELEXP, MB_ICONQUESTION | MB_YESNO);
+		switch (result)
+		{
+		case IDYES:
+			threadManager->ResetThread();
+			break;
+		
+		case IDNO:
+			break;
+
+		default:
+			ASSERT(0);
+			break;
+		}
+	}
 }
 
 
@@ -210,7 +222,7 @@ void CKalelView::GetExperimentData(ExperimentPropertySheet * pDialogExperimentPr
 		if (modified)
 		{
 			// Raise the flag for data modified
-			experimentSettings->dataModified = true;
+			threadManager->SetModifiedData();
 
 			// Copy data across
 			experimentSettings->dataGeneral = pDialogExperimentProperties->m_general.allSettings;

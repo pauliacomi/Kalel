@@ -46,7 +46,7 @@ protected:
 
 public:
 	bool GraphAddMeasurement(ExperimentData * expData);
-	LRESULT GraphReset(WPARAM wParam, LPARAM lParam);
+	LRESULT GraphReset();
 	
 
 #ifdef SHARED_HANDLERS
