@@ -32,6 +32,7 @@ BEGIN_MESSAGE_MAP(CKalelView, CFormView)
 	ON_MESSAGE(WM_DISPLAYMESSAGE, &CKalelView::AffichageMessages)					// Displays a message from the automation thread 
 	ON_MESSAGE(WM_DISPLAYMESSAGEBOX, &CKalelView::MessageBoxAlert)					// Displays an messageBOX to alert user of something
 	ON_MESSAGE(WM_DISPLAYMESSAGEBOXCONF, &CKalelView::MessageBoxConfirmation)		// Displays an messageBOX to or ask user for confirmation
+	ON_MESSAGE(WM_DISPLAYMESSAGEBOXSTOPEX, &CKalelView::MessageBoxStopExperiment)		// Displays an messageBOX to or ask user for confirmation
 	//ON_MESSAGE(WM_GRAPHRESET, &CKalelDoc::GraphReset)
 	//ON_MESSAGE(WM_GRAPHDATAAUTOSTEP, &CKalelDoc::Graph)
 	//ON_MESSAGE(WM_DISPLAYMEASUREMENT, &CKalelView::AffichageMesures)
@@ -327,6 +328,11 @@ void CKalelView::DisplayApparatusSettingsDialog(void)
 
 LRESULT CKalelView::OnRegularThreadFinished(WPARAM, LPARAM) {
 
+	EnterCriticalSection(&experimentSettings->criticalSection);
+	experimentSettings->ResetData();
+	LeaveCriticalSection(&experimentSettings->criticalSection);
+
+	// Signal that this is the experiment end
 	pApp->experimentRunning = false;
 	pApp->menuIsAvailable = true;
 	UpdateButtons();
@@ -340,6 +346,10 @@ LRESULT CKalelView::OnRegularThreadFinished(WPARAM, LPARAM) {
 // When the experiment is signalled as cancelled from the thread or it times out
 LRESULT CKalelView::Annuler(WPARAM, LPARAM)
 {
+	EnterCriticalSection(&experimentSettings->criticalSection);
+	experimentSettings->ResetData();
+	LeaveCriticalSection(&experimentSettings->criticalSection);
+
 	// Signal that this is the experiment end
 	pApp->experimentRunning = false;
 	pApp->menuIsAvailable = true;

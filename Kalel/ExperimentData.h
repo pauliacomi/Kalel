@@ -3,6 +3,7 @@
 #define EXPERIMENT_DATA
 
 #include <vector>
+#include <ctime>
 
 class ExperimentData
 {
@@ -25,10 +26,11 @@ public:
 	int experimentStepStatus;				// Current step status, for each step this can be STARTING, ENDING or IN_PROGRESS
 	int experimentSubstepStage;				// Current dose substep, can be at injection, equilibration etc
 	int experimentDose;						// Current experiment dose that is currently underway (ex: 2nd dose of adsorption step 1)
-	int experimentMeasurements;				// Number of measurmements made, happen every T_BETWEEN_MEASUREMENT
+	int experimentGraphPoints;				// Number of measurmements made, happen every T_BETWEEN_MEASUREMENT
 	int experimentPreviousStage;			// Previous experiment stage
 
 	// Time
+	time_t experimentTimeStart;				// When the experiment started
 	double experimentTime;					// Time from the experiment start
 	double timeToEquilibrate;				// The amount of time that the waiting + recording functionality will run before returning to an active state
 	double timeToEquilibrateCurrent;		// The current time of waiting

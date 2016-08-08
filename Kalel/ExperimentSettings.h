@@ -25,7 +25,7 @@ public:
 
 	// Data modified boolean
 	bool dataModified;
-	bool continueAnyway;
+	LRESULT continueResult;
 
 	// Settings storage
 

@@ -38,6 +38,7 @@ public:
 	// Messageboxes
 	BOOL DisplayMessageBox(int message, UINT nType, bool blocksProgram, double pDouble1 = default_val, double pDouble2 = default_val);
 	BOOL DisplayMessageBox(int pParam, UINT nType, bool blocksProgram, CString pString);
+	BOOL DisplayMessageBoxQuit(int message);
 };
 
 

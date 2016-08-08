@@ -71,6 +71,7 @@
 #define STOP_NORMAL			20712
 #define STOP_CANCEL			20713
 #define STOP_COMPLETE		20714
+#define STOP_INPROGRESS		20715
 
 // Next default values for new objects
 // 

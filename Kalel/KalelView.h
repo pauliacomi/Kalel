@@ -139,6 +139,7 @@ public:
 	LRESULT ExchangeData(WPARAM wParam, LPARAM lParam);
 	LRESULT MessageBoxAlert(WPARAM wParam, LPARAM lParam);
 	LRESULT MessageBoxConfirmation(WPARAM wParam, LPARAM);
+	LRESULT MessageBoxStopExperiment(WPARAM wParam, LPARAM lParam);
 
 	void OnTimer(UINT nIDEvent);	//timer for window update
 

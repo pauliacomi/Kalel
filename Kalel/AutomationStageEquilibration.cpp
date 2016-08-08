@@ -27,12 +27,13 @@ void Automation::StageEquilibration()
 		EnteteCSVCreate();			// Entete CSV
 		FileMeasurementOpen();		// Measurement file
 
-		timerExperiment.TopChrono();	// Start global experiment timer	
-		timerMeasurement.TopChrono();	// Start the timer to record time between measurements
+		experimentLocalData.experimentTimeStart = time(0);		// Record experiment start time
+		timerExperiment.TopChrono();							// Start global experiment timer	
+		timerMeasurement.TopChrono();							// Start the timer to record time between measurements
 
 
-										// Set the time to wait
-										//WaitSeconds(experimentLocalData.timeToEquilibrate = experimentLocalSettings.dataDivers.temps_ligne_base * 60);
+		// Set the time to wait
+		//WaitSeconds(experimentLocalData.timeToEquilibrate = experimentLocalSettings.dataDivers.temps_ligne_base * 60);
 		WaitMinutes(experimentLocalData.timeToEquilibrate = experimentLocalSettings.dataDivers.temps_ligne_base);
 	}
 

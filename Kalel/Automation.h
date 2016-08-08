@@ -75,11 +75,12 @@ public:
 	// Events
 	HANDLE h_MeasurementThreadStartEvent;				// Handle event doing measurement thread signalling
 	
-	HANDLE events[4];									// Keeps all the events below in one array
+	HANDLE events[5];									// Keeps all the events below in one array
 	HANDLE h_eventShutdown;								// Handle event shutting down the thread
 	HANDLE h_eventResume;								// Handle event resuming the thread
 	HANDLE h_eventPause;								// Handle event pausing the thread
 	HANDLE h_eventReset;								// Handle event resetting the thread for a new experiment
+	HANDLE h_eventUserInput;							// Handle event waiting for the user to do something
 
 	// Threads
 	HANDLE h_MeasurementThread[4];						// Threads for measurement
@@ -120,6 +121,7 @@ private:
 	//------------------------------------------------------------
 
 	void Initialisation();
+	void ResetAutomation();
 
 	//------------------------------------------------------------
 	// Termination
@@ -327,6 +329,10 @@ protected:
 	***********************************************************************************************************************************/
 
 	void Shutdown();
+
+	void Pause();
+
+	void Resume();
 
 
 	/**********************************************************************************************************************************
