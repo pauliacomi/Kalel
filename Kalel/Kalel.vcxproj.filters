@@ -1,0 +1,707 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\Utils">
+      <UniqueIdentifier>{ad7ad7a6-c3a2-46d7-9123-1037aba281ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Utils">
+      <UniqueIdentifier>{9e00bc48-72f1-4a77-8a51-b338ab37a64c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Resources">
+      <UniqueIdentifier>{d6e2437e-54e3-4455-a156-54706713f396}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Parameters">
+      <UniqueIdentifier>{5c9404dc-8e53-4516-97a0-11c4d791f8be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Parameters">
+      <UniqueIdentifier>{9719e089-913d-4d04-8f59-f05994236ca0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Utils\MFC Utils">
+      <UniqueIdentifier>{7a54c94a-2875-4255-a1a0-14d2b9f92387}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Utils\MFC Utils">
+      <UniqueIdentifier>{d9c78f29-e452-4ed4-830e-27746c3880f9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GUI">
+      <UniqueIdentifier>{8c1edfac-6d83-46a2-88eb-dbcc4558b9ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GUI">
+      <UniqueIdentifier>{4f4953aa-6c4a-4d1a-b771-52a7a7f87598}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GUI\Dialogs">
+      <UniqueIdentifier>{6dcab2d7-bc04-40e8-b59a-8dd68d5f07e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GUI\Dialogs\Experiment Parameters">
+      <UniqueIdentifier>{0e8e0212-cbd1-445a-af00-cbec1019fcf3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GUI\Dialogs\Connection Port">
+      <UniqueIdentifier>{c60397cb-a9fb-48bf-8ba0-4007cf653a55}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GUI\Dialogs">
+      <UniqueIdentifier>{2cad08cf-60a9-49ee-b00e-540950be69bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GUI\Dialogs\Experimental Parameters">
+      <UniqueIdentifier>{0d2de8f3-e9b8-41a6-8110-e7f1365de972}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GUI\Dialogs\Connection Port">
+      <UniqueIdentifier>{ee1b43fb-d5e8-4df2-a9dd-ae3f1c4db1fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Automation">
+      <UniqueIdentifier>{5bc3f4b1-2555-401d-bbd2-a619181bed19}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Automation">
+      <UniqueIdentifier>{a132455e-bd67-4205-89ff-57e9c33a3e5c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Old">
+      <UniqueIdentifier>{dd43d28b-26fe-4dce-9e57-d53b2424173e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Old\Manip">
+      <UniqueIdentifier>{a56842c2-1f7d-4033-8d7d-b470d5d4146e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Old\Manip\Manip">
+      <UniqueIdentifier>{8a80b201-801f-4928-9dd0-e751e4c12c8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Old\Manip\Manip_Auto">
+      <UniqueIdentifier>{2aeacfee-561f-4952-bc35-7f2888267dd3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Old\Manip\Manip_AutoGaz">
+      <UniqueIdentifier>{7747c689-e2b6-48ad-9089-b60836ba4cd1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Old\Manip\Manip_AutoGaz\Stages">
+      <UniqueIdentifier>{26a06bb4-55cb-4dd0-8cdc-6c5492ab5a64}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Old\Manip\Manip_AutoGaz\MSV">
+      <UniqueIdentifier>{f37a788e-6f5a-480b-964a-205ef26bb2a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Backend">
+      <UniqueIdentifier>{b22e0119-9154-40a6-9382-128eee7e473d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Backend\RS232">
+      <UniqueIdentifier>{18ca9bec-3aab-43ec-91e0-a16ba38df627}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Utils\XML">
+      <UniqueIdentifier>{8ba33742-ab29-4bfd-a2ee-4e0d241affa6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Automation\Class">
+      <UniqueIdentifier>{8f6f7548-7262-4113-88ac-25c61bac649c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Backend">
+      <UniqueIdentifier>{a81e172e-df84-4e22-9d65-448cd81abe92}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Backend\RS232">
+      <UniqueIdentifier>{45a6839d-1ded-4ae2-af12-69bfce5d5a95}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Old">
+      <UniqueIdentifier>{96d2c0e6-0df0-4f78-9127-a353892d9380}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Old\Manip">
+      <UniqueIdentifier>{c6bd3aa8-2811-4fff-920c-8278501ba5b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Utils\XML">
+      <UniqueIdentifier>{1171cb4f-1756-4c73-9eea-4fc9ffd69c53}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Strings">
+      <UniqueIdentifier>{a8ea875c-77f0-4b5b-b25f-67dbeb5ad1f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\DialogBoxes">
+      <UniqueIdentifier>{1335dc40-154e-4059-8a02-4332a9cf87a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Resources\Strings">
+      <UniqueIdentifier>{3022b526-90bb-4146-b410-ccbdabb0e4d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Resources\DialogBoxes">
+      <UniqueIdentifier>{b01ec661-30b5-45c4-9cfe-29b4e5805132}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GUI\Dialogs\Experiment Parameters\Tabs">
+      <UniqueIdentifier>{4d4336e8-a13f-4388-8c9a-ea7f631adb05}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GUI\Dialogs\Experimental Parameters\Tabs">
+      <UniqueIdentifier>{c2f3920c-056e-4c6f-9fa9-65c03e393e14}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Resources\Automation">
+      <UniqueIdentifier>{045cb8c3-8d56-42b2-9919-fb488764a331}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GUI\Dialogs\Experimental Parameters\Stored Parameters">
+      <UniqueIdentifier>{b56bfbc8-4c46-4ccc-a046-b5810373e574}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GUI\Dialogs\Experiment Parameters\Stored Parameters">
+      <UniqueIdentifier>{2becea59-6e89-4f33-ab11-05baf2ed04cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Backend\USB">
+      <UniqueIdentifier>{dc56d958-654e-4892-8e96-414aa9ee30d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Backend\Wrapper Classes">
+      <UniqueIdentifier>{9a6ee88c-d35f-42c7-9867-4a61a9e66eaf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Backend\USB">
+      <UniqueIdentifier>{4923e287-e684-4a37-851e-0fba72e00832}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Backend\Wrapper Classes">
+      <UniqueIdentifier>{f69c1726-0f15-433b-82e1-f46680256b52}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Automation\Class\Automation Stages">
+      <UniqueIdentifier>{f3b9aae6-ded0-42ee-b37d-b1e1182d079e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Automation\Class\Functionality">
+      <UniqueIdentifier>{7851c4a5-dc0a-46bd-986a-cb1a7c147a49}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="targetver.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="MainFrm.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GrapheView.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Header Files\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="ParserXML.h">
+      <Filter>Header Files\Utils\XML</Filter>
+    </ClInclude>
+    <ClInclude Include="tinystr.h">
+      <Filter>Header Files\Utils\XML</Filter>
+    </ClInclude>
+    <ClInclude Include="tinyxml.h">
+      <Filter>Header Files\Utils\XML</Filter>
+    </ClInclude>
+    <ClInclude Include="Keithley.h">
+      <Filter>Header Files\Backend\RS232</Filter>
+    </ClInclude>
+    <ClInclude Include="LiaisonRS232.h">
+      <Filter>Header Files\Backend\RS232</Filter>
+    </ClInclude>
+    <ClInclude Include="Mensor.h">
+      <Filter>Header Files\Backend\RS232</Filter>
+    </ClInclude>
+    <ClInclude Include="NI_USB_6008.h">
+      <Filter>Header Files\Backend\USB</Filter>
+    </ClInclude>
+    <ClInclude Include="NI_USB_9211A.h">
+      <Filter>Header Files\Backend\USB</Filter>
+    </ClInclude>
+    <ClInclude Include="NIDAQmx.h">
+      <Filter>Header Files\Backend\USB</Filter>
+    </ClInclude>
+    <ClInclude Include="Parametres.h">
+      <Filter>Header Files\Parameters</Filter>
+    </ClInclude>
+    <ClInclude Include="Chrono.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Classes_experiences.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="InfoEtape.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="SpinBtnCtrl.h">
+      <Filter>Header Files\Utils\MFC Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="XSBrowseFolder.h">
+      <Filter>Header Files\Utils\MFC Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="ListeEtape.h">
+      <Filter>Header Files\Old\Manip</Filter>
+    </ClInclude>
+    <ClInclude Include="Manip.h">
+      <Filter>Header Files\Old\Manip</Filter>
+    </ClInclude>
+    <ClInclude Include="Manip_Auto.h">
+      <Filter>Header Files\Old\Manip</Filter>
+    </ClInclude>
+    <ClInclude Include="Manip_AutoGaz.h">
+      <Filter>Header Files\Old\Manip</Filter>
+    </ClInclude>
+    <ClInclude Include="FluxConverter.h">
+      <Filter>Header Files\Parameters</Filter>
+    </ClInclude>
+    <ClInclude Include="ManualActionParam.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="ListOfInstrumentButtons.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="TabGeneral.h">
+      <Filter>Header Files\GUI\Dialogs\Experimental Parameters\Tabs</Filter>
+    </ClInclude>
+    <ClInclude Include="ExperimentPropertySheet.h">
+      <Filter>Header Files\GUI\Dialogs\Experimental Parameters</Filter>
+    </ClInclude>
+    <ClInclude Include="TabDivers.h">
+      <Filter>Header Files\GUI\Dialogs\Experimental Parameters\Tabs</Filter>
+    </ClInclude>
+    <ClInclude Include="TabDoses.h">
+      <Filter>Header Files\GUI\Dialogs\Experimental Parameters\Tabs</Filter>
+    </ClInclude>
+    <ClInclude Include="TabDesorption.h">
+      <Filter>Header Files\GUI\Dialogs\Experimental Parameters\Tabs</Filter>
+    </ClInclude>
+    <ClInclude Include="TabContinuousAdsorption.h">
+      <Filter>Header Files\GUI\Dialogs\Experimental Parameters\Tabs</Filter>
+    </ClInclude>
+    <ClInclude Include="Automation.h">
+      <Filter>Header Files\Automation</Filter>
+    </ClInclude>
+    <ClInclude Include="ExperimentData.h">
+      <Filter>Header Files\Automation</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadManager.h">
+      <Filter>Header Files\Automation</Filter>
+    </ClInclude>
+    <ClInclude Include="ExperimentSettings.h">
+      <Filter>Header Files\Automation</Filter>
+    </ClInclude>
+    <ClInclude Include="MFCMessageHandler.h">
+      <Filter>Header Files\Automation</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceConnectionPort.h">
+      <Filter>Header Files\Resources\DialogBoxes</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceParametresAppareil.h">
+      <Filter>Header Files\Resources\DialogBoxes</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceTypeExperience.h">
+      <Filter>Header Files\Resources\DialogBoxes</Filter>
+    </ClInclude>
+    <ClInclude Include="DialogGas.h">
+      <Filter>Header Files\GUI\Dialogs\Experimental Parameters\Stored Parameters</Filter>
+    </ClInclude>
+    <ClInclude Include="DefineAutomationSettings.h">
+      <Filter>Header Files\Resources\Automation</Filter>
+    </ClInclude>
+    <ClInclude Include="DefineInstruments.h">
+      <Filter>Header Files\Resources\Automation</Filter>
+    </ClInclude>
+    <ClInclude Include="DefineStages.h">
+      <Filter>Header Files\Resources\Automation</Filter>
+    </ClInclude>
+    <ClInclude Include="StringTable.h">
+      <Filter>Header Files\Resources\Strings</Filter>
+    </ClInclude>
+    <ClInclude Include="DialogUser.h">
+      <Filter>Header Files\GUI\Dialogs\Experimental Parameters\Stored Parameters</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceDialogUser.h">
+      <Filter>Header Files\Resources\DialogBoxes</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceDialogGas.h">
+      <Filter>Header Files\Resources\DialogBoxes</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceDialogCell.h">
+      <Filter>Header Files\Resources\DialogBoxes</Filter>
+    </ClInclude>
+    <ClInclude Include="DialogCell.h">
+      <Filter>Header Files\GUI\Dialogs\Experimental Parameters\Stored Parameters</Filter>
+    </ClInclude>
+    <ClInclude Include="Temperature.h">
+      <Filter>Header Files\Backend\Wrapper Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Vannes.h">
+      <Filter>Header Files\Backend\Wrapper Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="SerialInstruments.h">
+      <Filter>Header Files\Backend\Wrapper Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Kalel.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="KalelDoc.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="KalelView.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="VerifInstrument.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ConnectionMesure.h">
+      <Filter>Header Files\GUI\Dialogs\Connection Port</Filter>
+    </ClInclude>
+    <ClInclude Include="DefinePostMessages.h">
+      <Filter>Header Files\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceDialogExperimentSettings.h">
+      <Filter>Header Files\Resources\DialogBoxes</Filter>
+    </ClInclude>
+    <ClInclude Include="DialogTypeExperiment.h">
+      <Filter>Header Files\GUI\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="DialogMachineParameters.h">
+      <Filter>Header Files\GUI\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="DialogConnectionPort.h">
+      <Filter>Header Files\GUI\Dialogs\Connection Port</Filter>
+    </ClInclude>
+    <ClInclude Include="CommonFunctions.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="MainFrm.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="GrapheView.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="ParserXML.cpp">
+      <Filter>Source Files\Utils\XML</Filter>
+    </ClCompile>
+    <ClCompile Include="tinystr.cpp">
+      <Filter>Source Files\Utils\XML</Filter>
+    </ClCompile>
+    <ClCompile Include="tinyxml.cpp">
+      <Filter>Source Files\Utils\XML</Filter>
+    </ClCompile>
+    <ClCompile Include="tinyxmlerror.cpp">
+      <Filter>Source Files\Utils\XML</Filter>
+    </ClCompile>
+    <ClCompile Include="tinyxmlparser.cpp">
+      <Filter>Source Files\Utils\XML</Filter>
+    </ClCompile>
+    <ClCompile Include="Keithley.cpp">
+      <Filter>Source Files\Backend\RS232</Filter>
+    </ClCompile>
+    <ClCompile Include="LiaisonRS232.cpp">
+      <Filter>Source Files\Backend\RS232</Filter>
+    </ClCompile>
+    <ClCompile Include="Mensor.cpp">
+      <Filter>Source Files\Backend\RS232</Filter>
+    </ClCompile>
+    <ClCompile Include="NI_USB_6008.cpp">
+      <Filter>Source Files\Backend\USB</Filter>
+    </ClCompile>
+    <ClCompile Include="NI_USB_9211A.cpp">
+      <Filter>Source Files\Backend\USB</Filter>
+    </ClCompile>
+    <ClCompile Include="Parametres.cpp">
+      <Filter>Source Files\Parameters</Filter>
+    </ClCompile>
+    <ClCompile Include="Chrono.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Classes_experiences.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="InfoEtape.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="SpinBtnCtrl.cpp">
+      <Filter>Source Files\Utils\MFC Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="XSBrowseFolder.cpp">
+      <Filter>Source Files\Utils\MFC Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Manip.cpp">
+      <Filter>Source Files\Old\Manip\Manip</Filter>
+    </ClCompile>
+    <ClCompile Include="Manip_AutoGaz.cpp">
+      <Filter>Source Files\Old\Manip\Manip_AutoGaz</Filter>
+    </ClCompile>
+    <ClCompile Include="Manip_AutoGaz_AEffectuer.cpp">
+      <Filter>Source Files\Old\Manip\Manip_AutoGaz</Filter>
+    </ClCompile>
+    <ClCompile Include="Manip_AutoGaz_Donnees.cpp">
+      <Filter>Source Files\Old\Manip\Manip_AutoGaz</Filter>
+    </ClCompile>
+    <ClCompile Include="Manip_AutoGaz_Execution.cpp">
+      <Filter>Source Files\Old\Manip\Manip_AutoGaz</Filter>
+    </ClCompile>
+    <ClCompile Include="Manip_AutoGaz_Fichier.cpp">
+      <Filter>Source Files\Old\Manip\Manip_AutoGaz</Filter>
+    </ClCompile>
+    <ClCompile Include="Manip_AutoGaz_LEA.cpp">
+      <Filter>Source Files\Old\Manip\Manip_AutoGaz</Filter>
+    </ClCompile>
+    <ClCompile Include="Manip_AutoGaz_Mesure.cpp">
+      <Filter>Source Files\Old\Manip\Manip_AutoGaz</Filter>
+    </ClCompile>
+    <ClCompile Include="Manip_AutoGaz_Proprietes_Experience.cpp">
+      <Filter>Source Files\Old\Manip\Manip_AutoGaz</Filter>
+    </ClCompile>
+    <ClCompile Include="Manip_AutoGaz_Vannes.cpp">
+      <Filter>Source Files\Old\Manip\Manip_AutoGaz</Filter>
+    </ClCompile>
+    <ClCompile Include="Manip_AutoGaz_Adsorption_Continue.cpp">
+      <Filter>Source Files\Old\Manip\Manip_AutoGaz\Stages</Filter>
+    </ClCompile>
+    <ClCompile Include="Manip_AutoGaz_Desorption.cpp">
+      <Filter>Source Files\Old\Manip\Manip_AutoGaz\Stages</Filter>
+    </ClCompile>
+    <ClCompile Include="Manip_AutoGaz_Grandes_Doses.cpp">
+      <Filter>Source Files\Old\Manip\Manip_AutoGaz\Stages</Filter>
+    </ClCompile>
+    <ClCompile Include="Manip_AutoGaz_Moyennes_Doses.cpp">
+      <Filter>Source Files\Old\Manip\Manip_AutoGaz\Stages</Filter>
+    </ClCompile>
+    <ClCompile Include="Manip_AutoGaz_Petites_Doses.cpp">
+      <Filter>Source Files\Old\Manip\Manip_AutoGaz\Stages</Filter>
+    </ClCompile>
+    <ClCompile Include="Manip_AutoGaz_Mise_Sous_Vide.cpp">
+      <Filter>Source Files\Old\Manip\Manip_AutoGaz\Stages</Filter>
+    </ClCompile>
+    <ClCompile Include="Manip_AutoGaz_Ligne_Base_Equilibre.cpp">
+      <Filter>Source Files\Old\Manip\Manip_AutoGaz\Stages</Filter>
+    </ClCompile>
+    <ClCompile Include="Manip_AutoGaz_MiseSousVide_ChangementBouteille.cpp">
+      <Filter>Source Files\Old\Manip\Manip_AutoGaz\MSV</Filter>
+    </ClCompile>
+    <ClCompile Include="Manip_AutoGaz_MiseSousVide_Ampoule.cpp">
+      <Filter>Source Files\Old\Manip\Manip_AutoGaz\MSV</Filter>
+    </ClCompile>
+    <ClCompile Include="Manip_AutoGaz_MiseSousVide_Bouteille.cpp">
+      <Filter>Source Files\Old\Manip\Manip_AutoGaz\MSV</Filter>
+    </ClCompile>
+    <ClCompile Include="FluxConverter.cpp">
+      <Filter>Source Files\Parameters</Filter>
+    </ClCompile>
+    <ClCompile Include="ManipData.cpp">
+      <Filter>Source Files\Old\Manip\Manip</Filter>
+    </ClCompile>
+    <ClCompile Include="ManipManualExecution.cpp">
+      <Filter>Source Files\Old\Manip\Manip</Filter>
+    </ClCompile>
+    <ClCompile Include="ManipFileWriting.cpp">
+      <Filter>Source Files\Old\Manip\Manip</Filter>
+    </ClCompile>
+    <ClCompile Include="ManipMeasurement.cpp">
+      <Filter>Source Files\Old\Manip\Manip</Filter>
+    </ClCompile>
+    <ClCompile Include="ManipSecurity.cpp">
+      <Filter>Source Files\Old\Manip\Manip</Filter>
+    </ClCompile>
+    <ClCompile Include="ManipTimeKeeping.cpp">
+      <Filter>Source Files\Old\Manip\Manip</Filter>
+    </ClCompile>
+    <ClCompile Include="ManipValves.cpp">
+      <Filter>Source Files\Old\Manip\Manip</Filter>
+    </ClCompile>
+    <ClCompile Include="ManualActionParam.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="ListOfInstrumentButtons.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="TabGeneral.cpp">
+      <Filter>Source Files\GUI\Dialogs\Experiment Parameters\Tabs</Filter>
+    </ClCompile>
+    <ClCompile Include="TabDivers.cpp">
+      <Filter>Source Files\GUI\Dialogs\Experiment Parameters\Tabs</Filter>
+    </ClCompile>
+    <ClCompile Include="TabDoses.cpp">
+      <Filter>Source Files\GUI\Dialogs\Experiment Parameters\Tabs</Filter>
+    </ClCompile>
+    <ClCompile Include="ExperimentPropertySheet.cpp">
+      <Filter>Source Files\GUI\Dialogs\Experiment Parameters</Filter>
+    </ClCompile>
+    <ClCompile Include="TabDesorption.cpp">
+      <Filter>Source Files\GUI\Dialogs\Experiment Parameters\Tabs</Filter>
+    </ClCompile>
+    <ClCompile Include="TabContinuousAdsorption.cpp">
+      <Filter>Source Files\GUI\Dialogs\Experiment Parameters\Tabs</Filter>
+    </ClCompile>
+    <ClCompile Include="ExperimentData.cpp">
+      <Filter>Source Files\Automation</Filter>
+    </ClCompile>
+    <ClCompile Include="ThreadManager.cpp">
+      <Filter>Source Files\Automation</Filter>
+    </ClCompile>
+    <ClCompile Include="Automation.cpp">
+      <Filter>Source Files\Automation\Class</Filter>
+    </ClCompile>
+    <ClCompile Include="ExperimentSettings.cpp">
+      <Filter>Source Files\Automation</Filter>
+    </ClCompile>
+    <ClCompile Include="MFCMessageHandler.cpp">
+      <Filter>Source Files\Automation</Filter>
+    </ClCompile>
+    <ClCompile Include="DialogGas.cpp">
+      <Filter>Source Files\GUI\Dialogs\Experiment Parameters\Stored Parameters</Filter>
+    </ClCompile>
+    <ClCompile Include="DialogUser.cpp">
+      <Filter>Source Files\GUI\Dialogs\Experiment Parameters\Stored Parameters</Filter>
+    </ClCompile>
+    <ClCompile Include="DialogCell.cpp">
+      <Filter>Source Files\GUI\Dialogs\Experiment Parameters\Stored Parameters</Filter>
+    </ClCompile>
+    <ClCompile Include="Temperature.cpp">
+      <Filter>Source Files\Backend\Wrapper Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="Vannes.cpp">
+      <Filter>Source Files\Backend\Wrapper Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="SerialInstruments.cpp">
+      <Filter>Source Files\Backend\Wrapper Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="Kalel.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="KalelDoc.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="KalelView.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="KalelViewButtons.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="KalelViewButtonsValves.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="KalelViewDisplay.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="ConnectionMesure.cpp">
+      <Filter>Source Files\GUI\Dialogs\Connection Port</Filter>
+    </ClCompile>
+    <ClCompile Include="DialogTypeExperiment.cpp">
+      <Filter>Source Files\GUI\Dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="DialogMachineParameters.cpp">
+      <Filter>Source Files\GUI\Dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="DialogConnectionPort.cpp">
+      <Filter>Source Files\GUI\Dialogs\Connection Port</Filter>
+    </ClCompile>
+    <ClCompile Include="CommonFunctions.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="AutomationStageDesorption.cpp">
+      <Filter>Source Files\Automation\Class\Automation Stages</Filter>
+    </ClCompile>
+    <ClCompile Include="AutomationStageEquilibration.cpp">
+      <Filter>Source Files\Automation\Class\Automation Stages</Filter>
+    </ClCompile>
+    <ClCompile Include="AutomationStageAdsoprtion.cpp">
+      <Filter>Source Files\Automation\Class\Automation Stages</Filter>
+    </ClCompile>
+    <ClCompile Include="AutomationStageInitialChecks.cpp">
+      <Filter>Source Files\Automation\Class\Automation Stages</Filter>
+    </ClCompile>
+    <ClCompile Include="AutomationStageVacuum.cpp">
+      <Filter>Source Files\Automation\Class\Automation Stages</Filter>
+    </ClCompile>
+    <ClCompile Include="AutomationFileWriting.cpp">
+      <Filter>Source Files\Automation\Class\Functionality</Filter>
+    </ClCompile>
+    <ClCompile Include="AutomationMeasurement.cpp">
+      <Filter>Source Files\Automation\Class\Functionality</Filter>
+    </ClCompile>
+    <ClCompile Include="AutomationSecurity.cpp">
+      <Filter>Source Files\Automation\Class\Functionality</Filter>
+    </ClCompile>
+    <ClCompile Include="AutomationTimeKeeping.cpp">
+      <Filter>Source Files\Automation\Class\Functionality</Filter>
+    </ClCompile>
+    <ClCompile Include="AutomationValves.cpp">
+      <Filter>Source Files\Automation\Class\Functionality</Filter>
+    </ClCompile>
+    <ClCompile Include="AutomationShutdown.cpp">
+      <Filter>Source Files\Automation\Class\Functionality</Filter>
+    </ClCompile>
+    <ClCompile Include="AutomationVacuum.cpp">
+      <Filter>Source Files\Automation\Class\Functionality</Filter>
+    </ClCompile>
+    <ClCompile Include="Manip_Auto_Verifications.cpp">
+      <Filter>Source Files\Old\Manip\Manip_Auto</Filter>
+    </ClCompile>
+    <ClCompile Include="Manip_Auto_Vannes.cpp">
+      <Filter>Source Files\Old\Manip\Manip_Auto</Filter>
+    </ClCompile>
+    <ClCompile Include="Manip_Auto_Probleme_Injection.cpp">
+      <Filter>Source Files\Old\Manip\Manip_Auto</Filter>
+    </ClCompile>
+    <ClCompile Include="Manip_Auto_Fichier.cpp">
+      <Filter>Source Files\Old\Manip\Manip_Auto</Filter>
+    </ClCompile>
+    <ClCompile Include="Manip_Auto_LireAfficher.cpp">
+      <Filter>Source Files\Old\Manip\Manip_Auto</Filter>
+    </ClCompile>
+    <ClCompile Include="Manip_Auto_Arret.cpp">
+      <Filter>Source Files\Old\Manip\Manip_Auto</Filter>
+    </ClCompile>
+    <ClCompile Include="Manip_Auto_Donnees.cpp">
+      <Filter>Source Files\Old\Manip\Manip_Auto</Filter>
+    </ClCompile>
+    <ClCompile Include="Manip_Auto.cpp">
+      <Filter>Source Files\Old\Manip\Manip_Auto</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Steps.rc">
+      <Filter>Resource Files\Strings</Filter>
+    </ResourceCompile>
+    <ResourceCompile Include="ConnectionPort.rc">
+      <Filter>Resource Files\DialogBoxes</Filter>
+    </ResourceCompile>
+    <ResourceCompile Include="ParametresAppareil.rc">
+      <Filter>Resource Files\DialogBoxes</Filter>
+    </ResourceCompile>
+    <ResourceCompile Include="TypeExperience.rc">
+      <Filter>Resource Files\DialogBoxes</Filter>
+    </ResourceCompile>
+    <ResourceCompile Include="StringTable.rc">
+      <Filter>Resource Files\Strings</Filter>
+    </ResourceCompile>
+    <ResourceCompile Include="DialogUser.rc">
+      <Filter>Resource Files\DialogBoxes</Filter>
+    </ResourceCompile>
+    <ResourceCompile Include="DialogGas.rc">
+      <Filter>Resource Files\DialogBoxes</Filter>
+    </ResourceCompile>
+    <ResourceCompile Include="DialogCell.rc">
+      <Filter>Resource Files\DialogBoxes</Filter>
+    </ResourceCompile>
+    <ResourceCompile Include="Kalel.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+    <ResourceCompile Include="DialogExperimentSettings.rc">
+      <Filter>Resource Files\DialogBoxes</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\Toolbar.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\Kalel.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\KalelDoc.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="NIDAQmx.lib">
+      <Filter>Header Files\Backend\USB</Filter>
+    </Library>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\Kalel.rc2">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
+</Project>

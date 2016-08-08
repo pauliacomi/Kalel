@@ -1,0 +1,156 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "ResourceDialogUser.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// French (France) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_FRA)
+LANGUAGE LANG_FRENCH, SUBLANG_FRENCH
+#pragma code_page(1252)
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "ResourceDialogUser.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_AJOUT_EXPERIMENTATEUR DIALOGEX 0, 0, 214, 145
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Ajouter"
+FONT 8, "MS Sans Serif", 400, 0, 0x1
+BEGIN
+    LTEXT           "Nom",IDC_STATIC,25,26,15,14,SS_CENTERIMAGE
+    EDITTEXT        IDC_NOM_AJOUT_EXPERIMENTATEUR,71,26,67,14,ES_AUTOHSCROLL
+    LTEXT           "Surnom",IDC_STATIC,25,52,25,14,SS_CENTERIMAGE
+    EDITTEXT        IDC_SURNOM_AJOUT_EXPERIMENTATEUR,71,52,67,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_AJOUT_EXPERIMENTATEUR,24,78,161,36,ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_READONLY | ES_WANTRETURN
+    PUSHBUTTON      "Ajouter",IDC_ADD_USER,148,124,50,14
+END
+
+IDD_MODIF_EXPERIMENTATEUR DIALOGEX 0, 0, 214, 145
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Modifier"
+FONT 8, "MS Sans Serif", 400, 0, 0x1
+BEGIN
+    LTEXT           "Experimentateur",IDC_STATIC,21,15,54,12,SS_CENTERIMAGE
+    COMBOBOX        IDC_COMBO_MODIF_EXPERIMENTATEUR,93,15,67,52,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Nom",IDC_STATIC,47,33,15,14,SS_CENTERIMAGE
+    EDITTEXT        IDC_NOM_MODIF_EXPERIMENTATEUR,93,33,67,14,ES_AUTOHSCROLL
+    LTEXT           "Surnom",IDC_STATIC,47,52,25,14,SS_CENTERIMAGE
+    EDITTEXT        IDC_SURNOM_MODIF_EXPERIMENTATEUR,93,52,67,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_MODIF_EXPERIMENTATEUR,24,78,161,36,ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_READONLY | ES_WANTRETURN
+    PUSHBUTTON      "Modifier",IDC_MODIFY_USER,148,124,50,14
+END
+
+IDD_SUPPR_EXPERIMENTATEUR DIALOGEX 0, 0, 214, 145
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Supprimer"
+FONT 8, "MS Sans Serif", 400, 0, 0x1
+BEGIN
+    LTEXT           "Experimentateur",IDC_STATIC,21,15,54,12,SS_CENTERIMAGE
+    COMBOBOX        IDC_COMBO_SUPPR_EXPERIMENTATEUR,93,15,67,52,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    EDITTEXT        IDC_EDIT_SUPPR_EXPERIMENTATEUR,24,78,161,36,ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_READONLY | ES_WANTRETURN
+    PUSHBUTTON      "Supprimer",IDC_DELETE_USER,148,124,50,14
+    LTEXT           "Nom",IDC_STATIC,47,33,15,14,SS_CENTERIMAGE
+    EDITTEXT        IDC_NOM_SUPPR_EXPERIMENTATEUR,93,33,67,14,ES_AUTOHSCROLL | ES_READONLY
+    LTEXT           "Surnom",IDC_STATIC,47,52,25,14,SS_CENTERIMAGE
+    EDITTEXT        IDC_SURNOM_SUPPR_EXPERIMENTATEUR,93,52,67,14,ES_AUTOHSCROLL | ES_READONLY
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_AJOUT_EXPERIMENTATEUR, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 207
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 138
+    END
+
+    IDD_MODIF_EXPERIMENTATEUR, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 207
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 138
+    END
+
+    IDD_SUPPR_EXPERIMENTATEUR, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 207
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 138
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// AFX_DIALOG_LAYOUT
+//
+
+IDD_SUPPR_EXPERIMENTATEUR AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+#endif    // French (France) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
