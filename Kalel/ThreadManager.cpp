@@ -25,14 +25,8 @@ ThreadManager::ThreadManager(ExperimentSettings * expD)
 	// Store the link to the experimental data
 	experimentSettings = expD;
 
-	// Create the thread in a suspended state
-	m_threadMainControlLoop = AfxBeginThread(ThreadMainWorkerStarter, this, NULL, NULL, CREATE_SUSPENDED, NULL);
-
-	// Make sure thread is not accidentally deleted
-	m_threadMainControlLoop->m_bAutoDelete = FALSE;
-
-	// Now resume the thread
-	m_threadMainControlLoop->ResumeThread();
+	// Start the thread
+	StartThread();
 }
 
 ThreadManager::~ThreadManager()
@@ -51,13 +45,27 @@ ThreadManager::~ThreadManager()
 
 
 
-//--------------------------------------------------------------------
+//---------------------------------------------------------------------------
 //
-// --------- Thread pausing, resetting, resuming and shutdown --------
+// --------- Thread start, pausing, resetting, resuming and shutdown --------
 //
-//--------------------------------------------------------------------
+//---------------------------------------------------------------------------
 
+HRESULT ThreadManager::StartThread() {
 
+	HRESULT hr = S_OK;
+
+	// Create the thread in a suspended state
+	m_threadMainControlLoop = AfxBeginThread(ThreadMainWorkerStarter, this, NULL, NULL, CREATE_SUSPENDED, NULL);
+
+	// Make sure thread is not accidentally deleted
+	m_threadMainControlLoop->m_bAutoDelete = FALSE;
+
+	// Now resume the thread
+	m_threadMainControlLoop->ResumeThread();
+
+	return hr;
+}
 
 HRESULT ThreadManager::ResumeThread() {
 
@@ -138,7 +146,7 @@ HRESULT ThreadManager::SetModifiedData()
 // If the thread does not quit in a short time it will be forcefully closed. Check if this is an error when using the function.
 HRESULT ThreadManager::ShutdownThread()
 {
-	HRESULT hr = S_OK;
+	HRESULT hr = E_ABORT;
 
 	// Close the worker thread
 	if (NULL != m_threadMainControlLoop)
@@ -161,6 +169,8 @@ HRESULT ThreadManager::ShutdownThread()
 
 		// NULL out pointer
 		m_threadMainControlLoop = NULL;
+
+		hr = S_OK;
 	}
 
 	return hr;

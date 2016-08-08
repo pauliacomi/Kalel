@@ -29,13 +29,13 @@ private:
 
 	// Public interface methods
 public:
+	HRESULT StartThread();
 	HRESULT ResumeThread();
 	HRESULT PauseThread();
 	HRESULT ResetThread();
 	HRESULT SetModifiedData();
 	HRESULT ShutdownThread();
 
-	void ChangementDev(int dev_vanne, int dev_temp);
 	void ManualAction();									// When a manual command is issued
 
 	// Private fields

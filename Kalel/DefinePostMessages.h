@@ -16,6 +16,18 @@
 #define WM_THREADFINISHEDREG		WM_USER + 7
 
 /***************************************************************
+*                           WM_THREADSHUTDOWN
+* Inputs:
+*       WPARAM: ignored, 0
+*       LPARAM: RGB value to use for coloring
+* Result: LRESULT
+*	Logically void, 0, always
+* Effect:
+*	Causes the view to repaint itself in the specified color
+***************************************************************/
+#define WM_THREADSHUTDOWN			WM_USER + 8
+
+/***************************************************************
 *                           WM_UPDATEBUTTONS
 * Inputs:
 *       WPARAM: ignored, 0

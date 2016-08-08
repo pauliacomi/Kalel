@@ -34,6 +34,7 @@ void Automation::Shutdown()
 							// It then resets everything
 
 		//When thread finishes, let main window know to unlock menu
+		messageHandler.DisplayMessage(MESSAGE_EXPFINISH);		// Experiment has been finished normally
 		messageHandler.ExperimentEnd();
 
 		// Close measurement file
@@ -47,24 +48,21 @@ void Automation::Shutdown()
 		// Reset all data from the experiment
 		experimentLocalData.ResetData();
 
-		// Experiment has been finished normally
-		messageHandler.DisplayMessage(MESSAGE_EXPFINISH);
-
 		// Reset the event
 		::ResetEvent(h_eventReset);
+
+		// Run reset funtion
+		ResetAutomation();
 
 		break;
 
 	case STOP_COMPLETE:		// This option is used if the automation thread is to be closed
 
-		//When thread finishes, let main window know to unlock menu
-		messageHandler.ExperimentEnd();
-
 		// Close measurement file
 		FileMeasurementClose();
 
-		// Experiment has been finished normally
-		messageHandler.DisplayMessage(MESSAGE_THREAD_SHUTDOWN);
+		//When thread finishes, let main window know to unlock menu
+		messageHandler.ThreadShutdown();
 
 		break;
 

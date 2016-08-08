@@ -158,6 +158,14 @@ void MFCMessageHandler::ExperimentEnd()
 	GraphReset();
 }
 
+void MFCMessageHandler::ThreadShutdown()
+{
+	::PostMessage(windowHandle, WM_THREADSHUTDOWN, NULL, NULL);
+	DisplayMessage(MESSAGE_THREAD_SHUTTINGDOWN);
+	GraphReset();
+}
+
+
 void MFCMessageHandler::GraphReset() 
 {
 	::PostMessage(windowHandle, WM_GRAPHRESET, NULL, NULL);
