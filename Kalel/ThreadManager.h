@@ -32,6 +32,7 @@ public:
 	HRESULT ResumeThread();
 	HRESULT PauseThread();
 	HRESULT ResetThread();
+	HRESULT SetModifiedData();
 	HRESULT ShutdownThread();
 
 	void ChangementDev(int dev_vanne, int dev_temp);

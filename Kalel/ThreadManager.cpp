@@ -3,6 +3,7 @@
 
 #include "KalelView.h"
 #include "ThreadManager.h"
+#include <atomic>
 
 
 
@@ -104,6 +105,25 @@ HRESULT ThreadManager::ResetThread()
 	{
 		// Signal the thread to reset
 		::SetEvent(automation->h_eventReset);
+	}
+	else
+	{
+		hr = S_FALSE;
+	}
+
+	return hr;
+}
+
+
+HRESULT ThreadManager::SetModifiedData()
+{
+	HRESULT hr = S_OK;
+
+	// Check if the thread exists
+	if (NULL != m_threadMainControlLoop)
+	{
+		// Set the atomic bool as modified
+		automation->dataModified = true;
 	}
 	else
 	{

@@ -7,6 +7,11 @@
 
 LRESULT CKalelView::ExchangeData(WPARAM, LPARAM incomingExperimentData)
 {
+	// Delete previous
+	if (experimentData != NULL) {
+		delete experimentData;
+		experimentData = NULL;
+	}							
 	// Get the incoming pointer
 	experimentData = reinterpret_cast<ExperimentData*>(incomingExperimentData);
 
@@ -50,13 +55,25 @@ void CKalelView::OnTimer(UINT nIDEvent)
 		// Write in measurement box
 		if (recorded) {
 			AffichageMesures();
-		}
 
-		// Update all views
-		GetDocument()->UpdateAllViews(this);
+			// Update all views
+			GetDocument()->UpdateAllViews(this);
+
+			// We have stored this value, deletion will be done later
+			experimentData = NULL;
+		}
 	}
 
 	CFormView::OnTimer(nIDEvent);	// Call base class handler.
+}
+
+LRESULT CKalelView::GraphReset(WPARAM wparam, LPARAM lParam)
+{
+	GetDocument()->GraphReset();
+	delete experimentData;
+	experimentData = NULL;
+
+	return 0;
 }
 
 
@@ -241,47 +258,8 @@ LRESULT CKalelView::MessageBoxConfirmation(WPARAM wParam, LPARAM lParam)
 				continuer = false;
 			}
 			if (result == IDNO) {
-				EnterCriticalSection(&experimentSettings->criticalSection);
-				//experimentSettings->continueResult = true;
-				experimentSettings->dataModified = true;
-				LeaveCriticalSection(&experimentSettings->criticalSection);
+				threadManager->SetModifiedData();
 				threadManager->ResumeThread();
-				continuer = false;
-			}
-		}
-	} while (continuer);
-	return result;
-}
-
-
-LRESULT CKalelView::MessageBoxStopExperiment(WPARAM wParam, LPARAM lParam)
-{
-	// Get the incoming pointer and cast it as a smart pointer
-	std::auto_ptr<CString> message(reinterpret_cast<CString*>(lParam));
-	std::auto_ptr<UINT> nType(reinterpret_cast<UINT*>(wParam));
-
-	int result;
-	bool continuer = true;
-	do {
-		result = AfxMessageBox(*message, *nType);
-		if (result == IDCANCEL)
-		{
-			if (AfxMessageBox(PROMPT_RUNNINGEXP, MB_YESNO | MB_ICONWARNING, 0) == IDYES)
-				continuer = false;
-		}
-		else {
-			if (result == IDYES) {
-				EnterCriticalSection(&experimentSettings->criticalSection);
-				experimentSettings->continueResult = S_OK;
-				experimentSettings->dataModified = true;
-				LeaveCriticalSection(&experimentSettings->criticalSection);
-				continuer = false;
-			}
-			if (result == IDNO) {
-				EnterCriticalSection(&experimentSettings->criticalSection);
-				experimentSettings->continueResult = E_ABORT;
-				experimentSettings->dataModified = true;
-				LeaveCriticalSection(&experimentSettings->criticalSection);
 				continuer = false;
 			}
 		}

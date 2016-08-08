@@ -25,7 +25,8 @@
 #include "Chrono.h"					// Time keeping
 
 // std::functionality
-#include <sstream>			
+#include <sstream>
+#include <atomic>
 
 class Automation
 {
@@ -71,6 +72,7 @@ public:
 	//------------------------------------------------------------
 
 	CRITICAL_SECTION criticalSection;					// Critical section for measurement thread sinchronisation
+	std::atomic_bool dataModified;
 
 	// Events
 	HANDLE h_MeasurementThreadStartEvent;				// Handle event doing measurement thread signalling

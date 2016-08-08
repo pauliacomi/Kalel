@@ -35,7 +35,6 @@ void ExperimentSettings::ResetData()
 void ExperimentSettings::ResetData(int initialAdsorptions, int initialDesorptions)
 {
 	GUIhandle = NULL;
-	dataModified = false;
 	continueResult = E_INVALIDARG;
 	experimentType = EXPERIMENT_TYPE_UNDEF;
 	
@@ -105,7 +104,7 @@ ExperimentSettings & ExperimentSettings::operator=(const ExperimentSettings * p)
 
 		GUIhandle = p->GUIhandle;
 		experimentType = p->experimentType;
-		dataModified = p->dataModified;
+		continueResult = p->continueResult;
 
 		dataGeneral = p->dataGeneral;
 		dataDivers = p->dataDivers;

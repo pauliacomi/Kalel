@@ -14,18 +14,16 @@ public:
 
 public:
 
-	// Critical Section
-	CRITICAL_SECTION criticalSection;
+	//
+	// Variables
+	//
+	
+	CRITICAL_SECTION criticalSection;	// Critical Section
+	HWND GUIhandle;						// Main GUI handle
 
-	// Main GUI handle
-	HWND GUIhandle;
+	int experimentType;					// General parameters
 
-	// General parameters
-	int experimentType;
-
-	// Data modified boolean
-	bool dataModified;
-	LRESULT continueResult;
+	LRESULT continueResult;				// Response when waiting for input
 
 	// Settings storage
 
@@ -33,6 +31,10 @@ public:
 	Donnees_Divers dataDivers;
 	vector<Donnees_Doses> dataAdsorption;
 	vector<Donnees_Desorption> dataDesorption;
+
+	//
+	// Functions
+	//
 
 	void ResetData();
 	void ResetData(int initialAdsorptions, int initialDesorptions);

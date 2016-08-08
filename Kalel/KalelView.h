@@ -143,11 +143,13 @@ public:
 
 	void OnTimer(UINT nIDEvent);	//timer for window update
 
+	LRESULT GraphReset(WPARAM wparam, LPARAM lParam);
+
 	//-------- KalelView_Boutons
 public:
 	void OnBnClickedLancer();
 	void OnBnClickedArreter();
-	LRESULT Annuler(WPARAM wParam, LPARAM lParam);
+	LRESULT CancelBeforeStarting(WPARAM wParam, LPARAM lParam);
 
 	void OnBnClickedButtonParametresExperience();
 	void OnBnClickedArretSousVide();

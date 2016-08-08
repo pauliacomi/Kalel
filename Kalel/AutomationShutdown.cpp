@@ -8,65 +8,26 @@ void Automation::Shutdown()
 	switch (shutdownReason)
 	{
 
-	case STOP_CANCEL:		// This asks the user if they want to continue stopping an experiment
-
-		messageHandler.DisplayMessageBoxQuit(PROMPT_CANCELEXP);
+	case STOP_CANCEL:		// This cancels an experiment in progress, GUI must ask check for experiment running
 		
-		Pause();
+		//When thread finishes, let main window know to unlock menu and reset graph
+		messageHandler.DisplayMessage(MESSAGE_EXPCANCEL);		// Experiment has been cancelled
+		messageHandler.ExperimentEnd();
 
-		shutdownReason = STOP_INPROGRESS;
+		// Close measurement file
+		FileMeasurementClose();
 
-		break;
+		// Stop all timers 
+		timerExperiment.ArretTemps();
+		timerMeasurement.ArretTemps();
+		timerWaiting.ArretTemps();
 
-	case STOP_INPROGRESS:		// This option is used if the experiment is cancelled
-								// It then resets everything
-		if (experimentSettings->continueResult == S_OK)
-		{
-			Resume();
+		// Reset the event
+		::ResetEvent(h_eventReset);
 
-			//When thread finishes, let main window know to unlock menu and reset graph
-			messageHandler.ExperimentEnd();
+		// Run reset funtion
+		ResetAutomation();
 
-			// Close measurement file
-			FileMeasurementClose();
-
-			// Stop all timers 
-			timerExperiment.ArretTemps();
-			timerMeasurement.ArretTemps();
-			timerWaiting.ArretTemps();
-
-			// Experiment has been cancelled
-			messageHandler.DisplayMessage(MESSAGE_EXPCANCEL);
-
-			// Reset the event
-			::ResetEvent(h_eventReset);
-
-			// Reset the flag
-			EnterCriticalSection(&experimentSettings->criticalSection);
-			experimentSettings->dataModified = false;
-			LeaveCriticalSection(&experimentSettings->criticalSection);
-
-			// Run reset funtion
-			ResetAutomation();
-		}
-		if (experimentSettings->continueResult == E_ABORT)
-		{
-				if (experimentLocalData.experimentInProgress)
-			{
-				timerWaiting.RepriseTemps();
-				experimentLocalData.experimentRecording = true;
-
-				messageHandler.DisplayMessage(MESSAGE_EXPRESUME);
-			}
-			timerExperiment.RepriseTemps();
-			timerMeasurement.RepriseTemps();
-			experimentLocalData.experimentCommandsRequested = true;
-
-			shutdownReason = STOP_CANCEL;
-
-			// Reset the event
-			::ResetEvent(h_eventReset);
-		}
 		break;
 
 	case STOP_NORMAL:		// This option is used if the experiment finishes correctly

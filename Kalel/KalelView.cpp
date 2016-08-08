@@ -32,8 +32,9 @@ BEGIN_MESSAGE_MAP(CKalelView, CFormView)
 	ON_MESSAGE(WM_DISPLAYMESSAGE, &CKalelView::AffichageMessages)					// Displays a message from the automation thread 
 	ON_MESSAGE(WM_DISPLAYMESSAGEBOX, &CKalelView::MessageBoxAlert)					// Displays an messageBOX to alert user of something
 	ON_MESSAGE(WM_DISPLAYMESSAGEBOXCONF, &CKalelView::MessageBoxConfirmation)		// Displays an messageBOX to or ask user for confirmation
-	ON_MESSAGE(WM_DISPLAYMESSAGEBOXSTOPEX, &CKalelView::MessageBoxStopExperiment)		// Displays an messageBOX to or ask user for confirmation
-	//ON_MESSAGE(WM_GRAPHRESET, &CKalelDoc::GraphReset)
+	ON_MESSAGE(WM_GRAPHRESET, &CKalelView::GraphReset)								// Resets the graph and delets all data
+	// Reset the graph and experiment settings
+	
 	//ON_MESSAGE(WM_GRAPHDATAAUTOSTEP, &CKalelDoc::Graph)
 	//ON_MESSAGE(WM_DISPLAYMEASUREMENT, &CKalelView::AffichageMesures)
 	//ON_MESSAGE(WM_DISPLAYSTEP, &CKalelView::AffichageEtape)
@@ -43,7 +44,7 @@ BEGIN_MESSAGE_MAP(CKalelView, CFormView)
 	
 	ON_MESSAGE(WM_DISPLAYADDMESSAGE, &CKalelView::RajoutAffichageMessages)
 	ON_MESSAGE(WM_DISPLAYADDSTEP, &CKalelView::RajoutAffichageEtape)
-	ON_MESSAGE(WM_CANCELEXPERIMENT, &CKalelView::Annuler)
+	ON_MESSAGE(WM_CANCELEXPERIMENT, &CKalelView::CancelBeforeStarting)
 
 	// Messages for UI buttons used for simple instrument manipulation
 	ON_BN_CLICKED(IDC_OUVRIR1, &CKalelView::OnBnClickedOuvrir1)
@@ -344,12 +345,8 @@ LRESULT CKalelView::OnRegularThreadFinished(WPARAM, LPARAM) {
 }
 
 // When the experiment is signalled as cancelled from the thread or it times out
-LRESULT CKalelView::Annuler(WPARAM, LPARAM)
+LRESULT CKalelView::CancelBeforeStarting(WPARAM, LPARAM)
 {
-	EnterCriticalSection(&experimentSettings->criticalSection);
-	experimentSettings->ResetData();
-	LeaveCriticalSection(&experimentSettings->criticalSection);
-
 	// Signal that this is the experiment end
 	pApp->experimentRunning = false;
 	pApp->menuIsAvailable = true;
