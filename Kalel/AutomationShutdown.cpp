@@ -41,12 +41,17 @@ void Automation::Shutdown()
 			// Reset the event
 			::ResetEvent(h_eventReset);
 
+			// Reset the flag
+			EnterCriticalSection(&experimentSettings->criticalSection);
+			experimentSettings->dataModified = false;
+			LeaveCriticalSection(&experimentSettings->criticalSection);
+
 			// Run reset funtion
 			ResetAutomation();
 		}
 		if (experimentSettings->continueResult == E_ABORT)
 		{
-			if (experimentLocalData.experimentInProgress)
+				if (experimentLocalData.experimentInProgress)
 			{
 				timerWaiting.RepriseTemps();
 				experimentLocalData.experimentRecording = true;

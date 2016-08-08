@@ -10,13 +10,85 @@ Automation::Automation(ExperimentSettings* exps)
 	experimentSettings = exps;
 
 	// Initialise class members
-	Initialisation();
+
+	// Initialise threads
+	h_MeasurementThread[0] = NULL;
+	h_MeasurementThread[1] = NULL;
+	h_MeasurementThread[2] = NULL;
+	h_MeasurementThread[3] = NULL;
+
+	// Initialise events
+	//   - Non signalled by default
+	//   - With manual reinitiallisation
+	h_MeasurementThreadStartEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
+	h_eventShutdown = CreateEvent(NULL, TRUE, FALSE, NULL);
+	h_eventResume = CreateEvent(NULL, TRUE, FALSE, NULL);
+	h_eventPause = CreateEvent(NULL, TRUE, FALSE, NULL);
+	h_eventReset = CreateEvent(NULL, TRUE, FALSE, NULL);
+	h_eventUserInput = CreateEvent(NULL, TRUE, FALSE, NULL);
+
+	events[0] = h_eventShutdown;
+	events[1] = h_eventPause;
+	events[2] = h_eventResume;
+	events[3] = h_eventReset;
+	events[4] = h_eventUserInput;
+
+	// Initialise local settings copy
+	experimentLocalSettings = SetData();
+
+	// Initialise message handler
+	messageHandler.SetHandle(experimentLocalSettings.GUIhandle);
+
+	// Initialisation of the critical section
+	InitializeCriticalSection(&criticalSection);
+
+	// Initialise instruments
+	std::string errorInit;
+
+	g_pVanne = new CVannes();
+	g_pTemperature = new CTemperature();
+	g_pSerialInstruments = new SerialInstruments();
+	if (!g_pSerialInstruments->Init(&errorInit))
+	{
+		CString errorString;
+		errorString.Format("%s", errorInit.c_str());
+		messageHandler.DisplayMessageBox(MESSAGE_INSTRUMENT_INIT_FAIL, MB_ICONERROR | MB_OK, false, errorString);
+	}
+
+	// Initialise security
+	InitialisationSecurity();
+
+	// If the shutdown event is called externally, it will default to a cancel
+	// Otherwise the flag will be changed from inside the code
+	shutdownReason = STOP_CANCEL;
+
+	// Time
+	experimentLocalData.experimentTimeStart = time(0);
+	timerExperiment.TopChrono();	// Start global experiment timer	
+	timerMeasurement.TopChrono();	// Start the timer to record time between measurements
 }
 
 
 Automation::~Automation()
 {
-	DeInitialise();
+	// Close valves/pump
+	ControlMechanismsCloseAll();
+
+	// Delete instruments
+	delete g_pVanne;
+	delete g_pTemperature;
+	delete g_pSerialInstruments;
+
+	// Destroy the events
+	CloseHandle(h_MeasurementThreadStartEvent);
+	CloseHandle(h_eventShutdown);
+	CloseHandle(h_eventResume);
+	CloseHandle(h_eventPause);
+	CloseHandle(h_eventReset);
+	CloseHandle(h_eventUserInput);
+
+	// Destroy the critical sections
+	DeleteCriticalSection(&criticalSection);
 }
 
 ////////////////////////////////////////////////////////
@@ -56,7 +128,6 @@ void Automation::Execution()
 		*
 		*/
 
-		// Check if there is any change in the experiment settings
 		if (DataIsNew()) {
 			ExperimentSettings tempSettings = SetData();	// We have the two settings coexisting to record any changes
 			RecordDataChange(tempSettings, false);			// non-CSV
@@ -172,27 +243,31 @@ void Automation::Execution()
 		*/
 
 		// Now run through the possible events
-		switch (::WaitForMultipleObjects(4, events, FALSE, T_BETWEEN_MEASURE)) // (ms) Poll time
+		switch (::WaitForMultipleObjects(5, events, FALSE, T_BETWEEN_MEASURE)) // (ms) Poll time
 		{
 
-		case WAIT_OBJECT_0:												// Complete stop of thread, SHOULD NEVER BE USED
+		case WAIT_OBJECT_0:												// Complete stop of thread
 			running = false;
 			shutdownReason = STOP_COMPLETE;
 			Shutdown();
 			::ResetEvent(h_eventShutdown);	// Reset the event
 			break;
 
-		case WAIT_OBJECT_0 + 1:										    // Pause thread
+		case WAIT_OBJECT_0 + 1:											// Pause thread
 			Pause();
 			::ResetEvent(h_eventPause);	// Reset the event
 			break;
 
-		case WAIT_OBJECT_0 + 2:											 // Resume thread
+		case WAIT_OBJECT_0 + 2:											// Resume thread
 			Resume();
 			::ResetEvent(h_eventResume);	// Reset the event
 			break;
 
-		case WAIT_OBJECT_0 + 3:											 // Reset thread
+		case WAIT_OBJECT_0 + 3:											// Reset thread
+			Shutdown();
+			break;
+
+		case WAIT_OBJECT_0 + 4:											// Wait for user input
 			Shutdown();
 			break;
 
@@ -248,6 +323,7 @@ bool Automation::ExecutionManual()
 
 bool Automation::ExecutionAuto()
 {
+	// First time running command
 	if (experimentLocalData.experimentStepStatus == STEP_STATUS_UNDEF){
 
 		// Send start messages
@@ -262,6 +338,7 @@ bool Automation::ExecutionAuto()
 		experimentLocalData.verificationStep = STEP_VERIFICATIONS_SECURITY;
 	}
 
+	// Stages of automatic experiment
 	switch (experimentLocalData.experimentStage)
 	{
 	case STAGE_VERIFICATIONS:
@@ -297,80 +374,7 @@ bool Automation::ExecutionAuto()
 	return true;
 }
 
-// Initialisation of all variables
-void Automation::Initialisation()
-{
-	// Initialise threads
-	h_MeasurementThread[0] = NULL;
-	h_MeasurementThread[1] = NULL;
-	h_MeasurementThread[2] = NULL;
-	h_MeasurementThread[3] = NULL;
 
-	// Initialise events
-	//   - Non signalled by default
-	//   - With manual reinitiallisation
-	h_MeasurementThreadStartEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
-	h_eventShutdown = CreateEvent(NULL, TRUE, FALSE, NULL);
-	h_eventResume = CreateEvent(NULL, TRUE, FALSE, NULL);
-	h_eventPause = CreateEvent(NULL, TRUE, FALSE, NULL);
-	h_eventReset = CreateEvent(NULL, TRUE, FALSE, NULL);
-
-	events[0] = h_eventShutdown;
-	events[1] = h_eventPause;
-	events[2] = h_eventResume;
-	events[3] = h_eventReset;
-	
-	// Initialise local settings copy
-	experimentLocalSettings = SetData();
-
-	// Initialise message handler
-	messageHandler.SetHandle(experimentLocalSettings.GUIhandle);
-
-	// Initialisation of the critical section
-	InitializeCriticalSection(&criticalSection);
-
-	// Initialise instruments
-	std::string errorInit;
-
-	g_pVanne = new CVannes();
-	g_pTemperature = new CTemperature();
-	g_pSerialInstruments = new SerialInstruments();
-	if (!g_pSerialInstruments->Init(&errorInit))
-	{
-		CString errorString;
-		errorString.Format("%s",errorInit.c_str());
-		messageHandler.DisplayMessageBox(MESSAGE_INSTRUMENT_INIT_FAIL, MB_ICONERROR | MB_OK, false, errorString);
-	}
-
-	// Initialise security
-	InitialisationSecurity();
-
-	// If the shutdown event is called externally, it will default to a cancel
-	// Otherwise the flag will be changed from inside the code
-	shutdownReason = STOP_CANCEL;
-}
-
-// Function which makes sure everything is shutdown gracefully
-void Automation::DeInitialise()
-{
-	// Close valves/pump
-	ControlMechanismsCloseAll();
-
-	// Delete instruments
-	delete g_pVanne;
-	delete g_pTemperature;
-	delete g_pSerialInstruments;
-
-	// Destroy the events
-	CloseHandle(h_MeasurementThreadStartEvent);
-	CloseHandle(h_eventShutdown);
-	CloseHandle(h_eventResume);
-	CloseHandle(h_eventPause);
-	CloseHandle(h_eventReset);
-	
-	// Destroy the critical sections
-	DeleteCriticalSection(&criticalSection);
-}
 
 void Automation::ResetAutomation()
 {
@@ -387,6 +391,8 @@ void Automation::ResetAutomation()
 	timerExperiment.TopChrono();	// Start global experiment timer	
 	timerMeasurement.TopChrono();	// Start the timer to record time between measurements
 }
+
+
 
 ExperimentSettings Automation::SetData()
 {
