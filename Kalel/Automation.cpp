@@ -10,6 +10,7 @@ Automation::Automation(ExperimentSettings* exps)
 	experimentSettings = exps;
 
 	// Initialise class members
+	dataModified = false;
 
 	// Initialise threads
 	h_MeasurementThread[0] = NULL;
@@ -128,11 +129,15 @@ void Automation::Execution()
 		*
 		*/
 
-		if (DataIsNew()) {
-			ExperimentSettings tempSettings = SetData();	// We have the two settings coexisting to record any changes
-			RecordDataChange(tempSettings, false);			// non-CSV
-			RecordDataChange(tempSettings, true);			// CSV
-			experimentLocalSettings = tempSettings;			// Now save the new settings as the old ones
+		if (dataModified) {
+			if (experimentLocalData.experimentInProgress == true) {
+				ExperimentSettings tempSettings = SetData();	// We have the two settings coexisting to record any changes
+				RecordDataChange(tempSettings, false);			// non-CSV
+				RecordDataChange(tempSettings, true);			// CSV
+				experimentLocalSettings = tempSettings;			// Now save the new settings as the old ones
+			}
+			else
+				experimentLocalSettings = SetData();
 		}
 
 		/*
@@ -286,10 +291,10 @@ bool Automation::ExecutionManual()
 {
 	if (experimentLocalData.experimentStepStatus == STEP_STATUS_UNDEF) {
 
-		// Send start messages
-		messageHandler.DisplayMessage(MESSAGE_FILLLINE);
-		messageHandler.DisplayMessage(MESSAGE_EXPSTART);
+		// Send start message
 		messageHandler.ExperimentStart();
+		
+		ResetAutomation();
 
 		// Get data
 		experimentLocalSettings = SetData();
@@ -302,11 +307,6 @@ bool Automation::ExecutionManual()
 		EnteteCreate();				// Entete TXT
 		EnteteCSVCreate();			// Entete CSV
 		FileMeasurementOpen();		// Measurement file
-
-		// Time
-		experimentLocalData.experimentTimeStart = time(0);
-		timerExperiment.TopChrono();	// Start global experiment timer	
-		timerMeasurement.TopChrono();	// Start the timer to record time between measurements
 
 		// Continue experiment
 		experimentLocalData.experimentStage = STAGE_MANUAL;
@@ -326,9 +326,8 @@ bool Automation::ExecutionAuto()
 	// First time running command
 	if (experimentLocalData.experimentStepStatus == STEP_STATUS_UNDEF){
 
-		// Send start messages
-		messageHandler.DisplayMessage(MESSAGE_FILLLINE);
-		messageHandler.DisplayMessage(MESSAGE_EXPSTART);
+		// Send start message
+		messageHandler.ExperimentStart();
 
 		// Write variables to starting position
 		experimentLocalData.experimentInProgress = true;
@@ -398,24 +397,12 @@ ExperimentSettings Automation::SetData()
 {
 	ExperimentSettings tempSettings;
 
-	// Copy the data from the main thread
+	// Copy the data from the main thread, no need for synchronisation as we are only copying
 	EnterCriticalSection(&experimentSettings->criticalSection);
 	tempSettings = experimentSettings;
-	experimentSettings->dataModified = false;
-	experimentSettings->continueResult = E_INVALIDARG;
 	LeaveCriticalSection(&experimentSettings->criticalSection);
+
+	dataModified = false;
 
 	return tempSettings;
-}
-
-bool Automation::DataIsNew()
-{
-	// Copy the data from the main thread
-	bool check = false;
-
-	EnterCriticalSection(&experimentSettings->criticalSection);
-	check = experimentSettings->dataModified;
-	LeaveCriticalSection(&experimentSettings->criticalSection);
-
-	return check;
 }

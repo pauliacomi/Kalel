@@ -36,11 +36,7 @@ CKalelDoc::CKalelDoc()
 
 CKalelDoc::~CKalelDoc()
 {
-	for (size_t i = 0; i < m_TableauMesures.size(); i++)
-	{
-		delete m_TableauMesures[i];
-	}
-	m_TableauMesures.clear();
+	GraphReset();
 }
 
 BOOL CKalelDoc::OnNewDocument()
@@ -170,7 +166,7 @@ bool CKalelDoc::GraphAddMeasurement(ExperimentData * expData)
 }
 
 
-LRESULT CKalelDoc::GraphReset(WPARAM , LPARAM ) {
+LRESULT CKalelDoc::GraphReset() {
 
 	for (size_t i = 0; i < m_TableauMesures.size(); i++)
 	{
