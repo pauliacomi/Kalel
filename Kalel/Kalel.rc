@@ -32,7 +32,7 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 // remains consistent on all systems.
 IDR_MAINFRAME           ICON                    "res\\Kalel.ico"
 
-IDR_KalelTYPE          ICON                    "res\\KalelDoc.ico"
+IDR_KalelTYPE           ICON                    "res\\KalelDoc.ico"
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -523,10 +523,16 @@ BEGIN
         MENUITEM "Mise sous vide sur l'&Ampoule", ID_MSV_AMPOULE
         MENUITEM "Mise sous vide jusqu'à la &Bouteille", ID_MSV_BOUTEILLE
         MENUITEM "&Changement de bouteille",    ID_CHANGEMENT_BOUTEILLE
+        POPUP "Background Thread"
+        BEGIN
+            MENUITEM "Start",                       ID_BACKGROUNDTHREAD_START
+            MENUITEM "Stop",                        ID_BACKGROUNDTHREAD_STOP
+            MENUITEM "Restart",                     ID_BACKGROUNDTHREAD_RESTART
+        END
     END
     POPUP "&Aide"
     BEGIN
-        MENUITEM "&À propos de Kalel...",      ID_APP_ABOUT
+        MENUITEM "&À propos de Kalel...",       ID_APP_ABOUT
     END
 END
 

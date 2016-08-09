@@ -186,6 +186,9 @@ public:
 	void OnBnClickedDesactiverEV2();
 	void OnBnClickedActiverPompe();
 	void OnBnClickedDesactiverPompe();
+	afx_msg void OnBackgroundthreadStart();
+	afx_msg void OnBackgroundthreadStop();
+	afx_msg void OnBackgroundthreadRestart();
 };
 
 

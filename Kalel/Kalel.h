@@ -32,17 +32,16 @@ public:
 	afx_msg void OnAppAbout();
 	DECLARE_MESSAGE_MAP()
 
-	// menu commands
-	void OnParamatresAppareil();
-	void OnConnectionPorts();
-
 	// update commands
-	afx_msg void OnUpdateDonneesExperience(CCmdUI *pCmdUI);
-	afx_msg void OnUpdateMsvAmpoule(CCmdUI *pCmdUI);
-	afx_msg void OnUpdateMsvBouteille(CCmdUI *pCmdUI);
-	afx_msg void OnUpdateParamatresAppareil(CCmdUI *pCmdUI);
-	afx_msg void OnUpdateConnectionPorts(CCmdUI *pCmdUI);
-	afx_msg void OnUpdateChangementBouteille(CCmdUI *pCmdUI);
+	void OnUpdateDonneesExperience(CCmdUI *pCmdUI);
+	void OnUpdateMsvAmpoule(CCmdUI *pCmdUI);
+	void OnUpdateMsvBouteille(CCmdUI *pCmdUI);
+	void OnUpdateParamatresAppareil(CCmdUI *pCmdUI);
+	void OnUpdateConnectionPorts(CCmdUI *pCmdUI);
+	void OnUpdateChangementBouteille(CCmdUI *pCmdUI);
+	void OnUpdateBackgroundthreadStart(CCmdUI * pCmdUI);
+	void OnUpdateBackgroundthreadStop(CCmdUI * pCmdUI);
+	void OnUpdateBackgroundthreadRestart(CCmdUI * pCmdUI);
 };
 
 extern CKalelApp theApp;

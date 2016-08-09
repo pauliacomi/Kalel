@@ -40,7 +40,9 @@ BEGIN_MESSAGE_MAP(CKalelApp, CWinApp)
 	ON_UPDATE_COMMAND_UI(ID_MSV_BOUTEILLE, &CKalelApp::OnUpdateMsvBouteille)
 	ON_UPDATE_COMMAND_UI(ID_CHANGEMENT_BOUTEILLE, &CKalelApp::OnUpdateChangementBouteille)
 	ON_UPDATE_COMMAND_UI(ID_DONNEES_EXPERIENCE, &CKalelApp::OnUpdateDonneesExperience)
-
+	ON_UPDATE_COMMAND_UI(ID_BACKGROUNDTHREAD_START, &CKalelApp::OnUpdateBackgroundthreadStart)
+	ON_UPDATE_COMMAND_UI(ID_BACKGROUNDTHREAD_STOP, &CKalelApp::OnUpdateBackgroundthreadStop)
+	ON_UPDATE_COMMAND_UI(ID_BACKGROUNDTHREAD_RESTART, &CKalelApp::OnUpdateBackgroundthreadRestart)
 END_MESSAGE_MAP()
 
 
@@ -230,3 +232,17 @@ void CKalelApp::OnUpdateChangementBouteille(CCmdUI *pCmdUI)
 	pCmdUI->Enable(menuIsAvailable);
 }
 
+void CKalelApp::OnUpdateBackgroundthreadStart(CCmdUI *pCmdUI)
+{
+	pCmdUI->Enable(!menuIsAvailable);
+}
+
+void CKalelApp::OnUpdateBackgroundthreadStop(CCmdUI *pCmdUI)
+{
+	pCmdUI->Enable(menuIsAvailable);
+}
+
+void CKalelApp::OnUpdateBackgroundthreadRestart(CCmdUI *pCmdUI)
+{
+	pCmdUI->Enable(!menuIsAvailable);
+}

@@ -82,6 +82,10 @@ BEGIN_MESSAGE_MAP(CKalelView, CFormView)
 	ON_BN_CLICKED(IDC_BUTTON_PARAMETRES_EXPERIENCE, &CKalelView::OnBnClickedButtonParametresExperience)
 
 	ON_WM_TIMER()					// timer for update of the values
+
+	ON_COMMAND(ID_BACKGROUNDTHREAD_START, &CKalelView::OnBackgroundthreadStart)
+	ON_COMMAND(ID_BACKGROUNDTHREAD_STOP, &CKalelView::OnBackgroundthreadStop)
+	ON_COMMAND(ID_BACKGROUNDTHREAD_RESTART, &CKalelView::OnBackgroundthreadRestart)
 END_MESSAGE_MAP()
 
 // CKalelView construction/destruction
@@ -359,4 +363,23 @@ LRESULT CKalelView::Annuler(WPARAM, LPARAM)
 	GetDlgItem(IDC_ARRETER)->EnableWindow(FALSE);
 
 	return 0;
+}
+
+
+void CKalelView::OnBackgroundthreadStart()
+{
+	threadManager->StartThread();
+}
+
+
+void CKalelView::OnBackgroundthreadStop()
+{
+	threadManager->ShutdownThread();
+}
+
+
+void CKalelView::OnBackgroundthreadRestart()
+{
+	threadManager->ShutdownThread();
+	threadManager->StartThread();
 }

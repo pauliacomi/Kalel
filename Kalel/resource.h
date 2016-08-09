@@ -86,13 +86,17 @@
 #define ID_MSV                          1156
 #define ID_MSV_BOUTEILLE                1157
 #define ID_CHANGEMENT_BOUTEILLE         1158
+#define ID_FONCTIONNALIT32788           32788
+#define ID_BACKGROUNDTHREAD_START       32789
+#define ID_BACKGROUNDTHREAD_STOP        32790
+#define ID_BACKGROUNDTHREAD_RESTART     32791
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        312
-#define _APS_NEXT_COMMAND_VALUE         32788
+#define _APS_NEXT_COMMAND_VALUE         32792
 #define _APS_NEXT_CONTROL_VALUE         1000
 #define _APS_NEXT_SYMED_VALUE           312
 #endif
