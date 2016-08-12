@@ -32,6 +32,10 @@ public:
 	afx_msg void OnAppAbout();
 	DECLARE_MESSAGE_MAP()
 
+	void OnBackgroundthreadStart();
+	void OnBackgroundthreadStop();
+	void OnBackgroundthreadRestart();
+
 	// update commands
 	void OnUpdateDonneesExperience(CCmdUI *pCmdUI);
 	void OnUpdateMsvAmpoule(CCmdUI *pCmdUI);

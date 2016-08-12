@@ -33,14 +33,9 @@ BEGIN_MESSAGE_MAP(CKalelView, CFormView)
 	ON_MESSAGE(WM_DISPLAYMESSAGEBOX, &CKalelView::MessageBoxAlert)					// Displays an messageBOX to alert user of something
 	ON_MESSAGE(WM_DISPLAYMESSAGEBOXCONF, &CKalelView::MessageBoxConfirmation)		// Displays an messageBOX to or ask user for confirmation
 	ON_MESSAGE(WM_GRAPHRESET, &CKalelView::GraphReset)								// Resets the graph and delets all data
-	// Reset the graph and experiment settings
-	
-	//ON_MESSAGE(WM_GRAPHDATAAUTOSTEP, &CKalelDoc::Graph)
-	//ON_MESSAGE(WM_DISPLAYMEASUREMENT, &CKalelView::AffichageMesures)
-	//ON_MESSAGE(WM_DISPLAYSTEP, &CKalelView::AffichageEtape)
-	//ON_MESSAGE(WM_UNLOCKMENU, &CKalelView::DebloqueMenu)
-	//ON_MESSAGE(WM_UPDATEDISPLAY, &CKalelView::MiseAJour)
-	//ON_MESSAGE(WM_ENABLESTARTBUTTON, &CKalelView::UnlockStartButton)
+	ON_MESSAGE(UWM_THREAD_START, &CKalelView::BackgroundThreadStart)
+	ON_MESSAGE(UWM_THREAD_STOP, &CKalelView::BackgroundThreadStop)
+	ON_MESSAGE(UWM_THREAD_RESTART, &CKalelView::BackgroundThreadRestart)
 	
 	ON_MESSAGE(WM_DISPLAYADDMESSAGE, &CKalelView::RajoutAffichageMessages)
 	ON_MESSAGE(WM_DISPLAYADDSTEP, &CKalelView::RajoutAffichageEtape)
@@ -79,14 +74,12 @@ BEGIN_MESSAGE_MAP(CKalelView, CFormView)
 	ON_BN_CLICKED(IDC_PROCHAINE_COMMANDE, &CKalelView::OnBnClickedProchaineCommande)
 	ON_BN_CLICKED(IDC_PROCHAINE_DOSE, &CKalelView::OnBnClickedProchaineDose)
 	ON_BN_CLICKED(IDC_PROCHAINE_ETAPE, &CKalelView::OnBnClickedProchaineEtape)
-
 	ON_BN_CLICKED(IDC_BUTTON_PARAMETRES_EXPERIENCE, &CKalelView::OnBnClickedButtonParametresExperience)
+	
 
-	ON_WM_TIMER()					// timer for update of the values
+	// timer for update of the values
+	ON_WM_TIMER()					
 
-	ON_COMMAND(ID_BACKGROUNDTHREAD_START, &CKalelView::OnBackgroundthreadStart)
-	ON_COMMAND(ID_BACKGROUNDTHREAD_STOP, &CKalelView::OnBackgroundthreadStop)
-	ON_COMMAND(ID_BACKGROUNDTHREAD_RESTART, &CKalelView::OnBackgroundthreadRestart)
 END_MESSAGE_MAP()
 
 // CKalelView construction/destruction
@@ -363,20 +356,22 @@ LRESULT CKalelView::CancelBeforeStarting(WPARAM, LPARAM)
 }
 
 
-void CKalelView::OnBackgroundthreadStart()
+LRESULT CKalelView::BackgroundThreadStart(WPARAM, LPARAM)
 {
-	threadManager->StartThread();
+	return threadManager->StartThread();
 }
 
 
-void CKalelView::OnBackgroundthreadStop()
+LRESULT CKalelView::BackgroundThreadStop(WPARAM, LPARAM)
 {
-	threadManager->ShutdownThread();
+	return threadManager->ShutdownThread();
 }
 
 
-void CKalelView::OnBackgroundthreadRestart()
+LRESULT CKalelView::BackgroundThreadRestart(WPARAM, LPARAM)
 {
 	threadManager->ShutdownThread();
 	threadManager->StartThread();
+	
+	return 0;
 }

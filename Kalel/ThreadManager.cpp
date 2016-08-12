@@ -149,7 +149,7 @@ HRESULT ThreadManager::ShutdownThread()
 	HRESULT hr = E_ABORT;
 
 	// Close the worker thread
-	if (NULL != m_threadMainControlLoop)
+	if (m_threadMainControlLoop != NULL)
 	{
 		// Signal the thread to exit
 		::SetEvent(automation->h_eventShutdown);
