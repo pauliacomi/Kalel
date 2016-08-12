@@ -61,8 +61,11 @@ void Automation::Shutdown()
 		// Close measurement file
 		FileMeasurementClose();
 
-		//When thread finishes, let main window know to unlock menu
+		// When thread finishes, let main window know to unlock menu
 		messageHandler.ThreadShutdown();
+
+		// Break loop
+		running = false;
 
 		break;
 

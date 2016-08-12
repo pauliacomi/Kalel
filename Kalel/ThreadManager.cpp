@@ -17,11 +17,7 @@ ThreadManager::ThreadManager(ExperimentSettings * expD)
 	, experimentSettings(NULL)
 
 	, automation(NULL)
-	, pVanne(NULL)
 {
-	// Create the required objects. Might be better to be done in the manip directly
-	pVanne = new CVannes();
-
 	// Store the link to the experimental data
 	experimentSettings = expD;
 
@@ -33,12 +29,6 @@ ThreadManager::~ThreadManager()
 {
 	// signal the thread to exit
 	ShutdownThread();
-
-	// close all valves
-	pVanne->FermerToutesLesVannes();
-
-	// delete allocations
-	delete pVanne;
 }
 
 
@@ -70,7 +60,9 @@ HRESULT ThreadManager::StartThread() {
 
 	}
 	else
+	{
 		hr = S_FALSE;
+	}
 
 	return hr;
 }
@@ -166,7 +158,7 @@ HRESULT ThreadManager::ShutdownThread()
 		::ResumeThread(m_threadMainControlLoop);
 
 		// Wait for the thread to exit. If it doesn't shut down on its own, throw an error
-		if (WAIT_TIMEOUT == WaitForSingleObject(m_threadMainControlLoop->m_hThread, INFINITE))
+		if (WaitForSingleObject(m_threadMainControlLoop->m_hThread, INFINITE) == WAIT_TIMEOUT)
 		{
 			hr = S_FALSE;
 		}
@@ -220,8 +212,10 @@ void ThreadManager::ThreadMainWorker()
 }
 
 
-
+//
 // Manual actions
+//
+//
 
 void ThreadManager::ManualAction()
 {
@@ -252,28 +246,31 @@ void ThreadManager::ThreadManualAction()
 	// Create local copy so we don't have to depend on main one which can get deleted
 	ManualActionParam * localMP = new ManualActionParam(maParam);
 
+	// Create the required objects. Might be better to be done in the manip directly
+	CVannes pVanne;
+
 	// Launch required functionality
 	switch (localMP->instrumentType)
 	{
 	case INSTRUMENT_VALVE:
 		if (localMP->shouldBeActivated)
-			actionSuccessful = pVanne->Ouvrir(localMP->instrumentNumber);
+			actionSuccessful = pVanne.Ouvrir(localMP->instrumentNumber);
 		else
-			actionSuccessful = pVanne->Fermer(localMP->instrumentNumber);
+			actionSuccessful = pVanne.Fermer(localMP->instrumentNumber);
 		break;
 
 	case INSTRUMENT_EV:
 		if (localMP->shouldBeActivated)
-			actionSuccessful = pVanne->ActiverEV(localMP->instrumentNumber);
+			actionSuccessful = pVanne.ActiverEV(localMP->instrumentNumber);
 		else
-			actionSuccessful = pVanne->DesactiverEV(localMP->instrumentNumber);
+			actionSuccessful = pVanne.DesactiverEV(localMP->instrumentNumber);
 		break;
 
 	case INSTRUMENT_PUMP:
 		if (localMP->shouldBeActivated)
-			actionSuccessful = pVanne->ActiverPompe();
+			actionSuccessful = pVanne.ActiverPompe();
 		else
-			actionSuccessful = pVanne->DesactiverPompe();
+			actionSuccessful = pVanne.DesactiverPompe();
 		break;
 
 	default:

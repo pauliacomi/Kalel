@@ -263,5 +263,5 @@ void CKalelApp::OnUpdateBackgroundthreadStop(CCmdUI *pCmdUI)
 
 void CKalelApp::OnUpdateBackgroundthreadRestart(CCmdUI *pCmdUI)
 {
-	pCmdUI->Enable(!menuIsAvailable);
+	pCmdUI->Enable(menuIsAvailable);
 }

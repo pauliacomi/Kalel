@@ -25,7 +25,6 @@ public:
 
 private:
 	Automation * automation;								// Main class that deals with the automatic functionality
-	CVannes * pVanne;										// Pointers for interfacing with the valves and temperature
 
 	// Public interface methods
 public:

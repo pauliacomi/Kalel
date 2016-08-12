@@ -6,7 +6,7 @@
 Automation::Automation(ExperimentSettings* exps)
 	: running(true)
 {
-	// Save reference to experiment settings
+	// Save pointer to experiment settings
 	experimentSettings = exps;
 
 	// Initialise class members
@@ -109,11 +109,8 @@ Automation::~Automation()
 //		6. IF RECORDING, save the data to the file, restart timer between measurements and increment measurement number
 //		7. IF WAITING, check whether the wait is complete and reset the wait
 //		8. Display the data to the GUI
-//		9. 
+//		9. Event-based wait. If any events are triggered in this time, the thread performs the requested action.
 //	}
-//
-//
-//
 //
 //
 //
@@ -252,7 +249,6 @@ void Automation::Execution()
 		{
 
 		case WAIT_OBJECT_0:												// Complete stop of thread
-			running = false;
 			shutdownReason = STOP_COMPLETE;
 			Shutdown();
 			::ResetEvent(h_eventShutdown);	// Reset the event
@@ -273,7 +269,6 @@ void Automation::Execution()
 			break;
 
 		case WAIT_OBJECT_0 + 4:											// Wait for user input
-			Shutdown();
 			break;
 
 		case WAIT_TIMEOUT:

@@ -140,6 +140,11 @@ BOOL TabGeneral::OnInitDialog()
 
 	UpdateData(FALSE);
 
+	if (!PathIsDirectory(m_Path))
+	{
+		AfxMessageBox(ERROR_PATHUNDEF, MB_ICONERROR | MB_OK);
+	}
+
 	return TRUE;  // return TRUE unless you set the focus to a control
 }
 
@@ -152,8 +157,15 @@ BOOL TabGeneral::OnCommand(WPARAM wParam, LPARAM lParam)
 
 BOOL TabGeneral::OnApply()
 {
-	WriteData();
-	return CMFCPropertyPage::OnApply();
+	if (!PathIsDirectory(m_Path))
+	{
+		AfxMessageBox(ERROR_PATHUNDEF, MB_ICONERROR | MB_OK);
+	}
+	else
+	{
+		WriteData();
+		return CMFCPropertyPage::OnApply();
+	}
 }
 
 void TabGeneral::OnCancel()
@@ -166,11 +178,12 @@ void TabGeneral::OnOK()
 	if (!PathIsDirectory(m_Path))
 	{
 		AfxMessageBox(ERROR_PATHUNDEF, MB_ICONERROR | MB_OK);
-		return;
 	}
-	WriteData();
-
-	CMFCPropertyPage::OnOK();
+	else
+	{
+		WriteData();
+		CMFCPropertyPage::OnOK();
+	}
 }
 
 
