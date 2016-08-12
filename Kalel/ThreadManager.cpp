@@ -54,15 +54,23 @@ ThreadManager::~ThreadManager()
 HRESULT ThreadManager::StartThread() {
 
 	HRESULT hr = S_OK;
+	
+	// Close the worker thread
+	if (m_threadMainControlLoop == NULL)
+	{
 
-	// Create the thread in a suspended state
-	m_threadMainControlLoop = AfxBeginThread(ThreadMainWorkerStarter, this, NULL, NULL, CREATE_SUSPENDED, NULL);
+		// Create the thread in a suspended state
+		m_threadMainControlLoop = AfxBeginThread(ThreadMainWorkerStarter, this, NULL, NULL, CREATE_SUSPENDED, NULL);
 
-	// Make sure thread is not accidentally deleted
-	m_threadMainControlLoop->m_bAutoDelete = FALSE;
+		// Make sure thread is not accidentally deleted
+		m_threadMainControlLoop->m_bAutoDelete = FALSE;
 
-	// Now resume the thread
-	m_threadMainControlLoop->ResumeThread();
+		// Now resume the thread
+		m_threadMainControlLoop->ResumeThread();
+
+	}
+	else
+		hr = S_FALSE;
 
 	return hr;
 }
@@ -72,7 +80,7 @@ HRESULT ThreadManager::ResumeThread() {
 	HRESULT hr = S_OK;
 
 	// Check if the thread exists
-	if (NULL != m_threadMainControlLoop)
+	if (m_threadMainControlLoop != NULL)
 	{
 		// Signal the thread to start
 		::SetEvent(automation->h_eventResume);
@@ -90,7 +98,7 @@ HRESULT ThreadManager::PauseThread() {
 	HRESULT hr = S_OK;
 
 	// Check if the thread exists
-	if (NULL != m_threadMainControlLoop)
+	if (m_threadMainControlLoop != NULL)
 	{
 		// Signal the thread to resume
 		::SetEvent(automation->h_eventPause);
@@ -109,7 +117,7 @@ HRESULT ThreadManager::ResetThread()
 	HRESULT hr = S_OK;
 
 	// Check if the thread exists
-	if (NULL != m_threadMainControlLoop)
+	if (m_threadMainControlLoop != NULL)
 	{
 		// Signal the thread to reset
 		::SetEvent(automation->h_eventReset);
@@ -128,7 +136,7 @@ HRESULT ThreadManager::SetModifiedData()
 	HRESULT hr = S_OK;
 
 	// Check if the thread exists
-	if (NULL != m_threadMainControlLoop)
+	if (m_threadMainControlLoop != NULL)
 	{
 		// Set the atomic bool as modified
 		automation->dataModified = true;
