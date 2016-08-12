@@ -326,9 +326,7 @@ void CKalelView::DisplayApparatusSettingsDialog(void)
 
 LRESULT CKalelView::OnRegularThreadFinished(WPARAM, LPARAM) {
 
-	EnterCriticalSection(&experimentSettings->criticalSection);
 	experimentSettings->ResetData();
-	LeaveCriticalSection(&experimentSettings->criticalSection);
 
 	// Signal that this is the experiment end
 	pApp->experimentRunning = false;

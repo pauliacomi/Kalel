@@ -393,9 +393,7 @@ ExperimentSettings Automation::SetData()
 	ExperimentSettings tempSettings;
 
 	// Copy the data from the main thread, no need for synchronisation as we are only copying
-	EnterCriticalSection(&experimentSettings->criticalSection);
 	tempSettings = experimentSettings;
-	LeaveCriticalSection(&experimentSettings->criticalSection);
 
 	dataModified = false;
 

@@ -39,17 +39,22 @@ public:
 // Global Variables
 ***********************************************************************************************************************************/
 
+protected:
+
 	//------------------------------------------------------------
 	// Pointers
 	//------------------------------------------------------------
-
 
 	// Instruments
 	CVannes* g_pVanne;									// Pointer to the valve opening class
 	CTemperature* g_pTemperature;						// Pointer to the class that deals with temperature recording
 	SerialInstruments * g_pSerialInstruments;			// Pointer to the class that deals with calorimeter & pressure recording
-
 	ExperimentSettings* experimentSettings;				// Pointer to the experiment settings from the main class, this is only read, never written
+
+	//------------------------------------------------------------
+	// Locally stored settings and data
+	//------------------------------------------------------------
+
 	ExperimentSettings experimentLocalSettings;			// Pointer to local storage of settings
 	ExperimentData experimentLocalData;					// 
 	
@@ -72,18 +77,21 @@ public:
 	//------------------------------------------------------------
 
 	CRITICAL_SECTION criticalSection;					// Critical section for measurement thread sinchronisation
-	std::atomic_bool dataModified;
 
 	// Events
 	HANDLE h_MeasurementThreadStartEvent;				// Handle event doing measurement thread signalling
 	
 	HANDLE events[5];									// Keeps all the events below in one array
+public:
+	std::atomic_bool dataModified;
+
 	HANDLE h_eventShutdown;								// Handle event shutting down the thread
 	HANDLE h_eventResume;								// Handle event resuming the thread
 	HANDLE h_eventPause;								// Handle event pausing the thread
 	HANDLE h_eventReset;								// Handle event resetting the thread for a new experiment
 	HANDLE h_eventUserInput;							// Handle event waiting for the user to do something
 
+protected:
 	// Threads
 	HANDLE h_MeasurementThread[4];						// Threads for measurement
 
@@ -101,16 +109,15 @@ public:
 /**********************************************************************************************************************************
 // Functions main cpp
 ***********************************************************************************************************************************/
+public:
+	void Execution();
+
+protected:
 	//------------------------------------------------------------
 	// Set Data
 	//------------------------------------------------------------
-
-public:
 	ExperimentSettings SetData();
-	bool DataIsNew();
-	void Execution();
 
-private:
 	//------------------------------------------------------------
 	// Execution
 	//------------------------------------------------------------
@@ -122,14 +129,7 @@ private:
 	// Initialisation
 	//------------------------------------------------------------
 
-	void Initialisation();
 	void ResetAutomation();
-
-	//------------------------------------------------------------
-	// Termination
-	//------------------------------------------------------------
-
-	void DeInitialise();
 
 
 /**********************************************************************************************************************************

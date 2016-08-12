@@ -22,16 +22,11 @@ void CKalelView::OnBnClickedLancer()
 	if (dialogExperimentType.DoModal() == IDOK)
 	{
 		// Save user choice
-		EnterCriticalSection(&experimentSettings->criticalSection);
 		experimentSettings->experimentType = dialogExperimentType.TypeExperience;
-		LeaveCriticalSection(&experimentSettings->criticalSection);
 
 		// Create dialog
 		ExperimentPropertySheet dialogExperimentProperties(_T(""));
-
-		EnterCriticalSection(&experimentSettings->criticalSection);
 		dialogExperimentProperties.Initiate(experimentSettings);
-		LeaveCriticalSection(&experimentSettings->criticalSection);
 
 		if (dialogExperimentProperties.DoModal() == IDOK)
 		{
@@ -46,9 +41,7 @@ void CKalelView::OnBnClickedLancer()
 			UpdateButtons();
 			
 			// Get the data from the dialog
-			EnterCriticalSection(&experimentSettings->criticalSection);
 			GetExperimentData(&dialogExperimentProperties, true);
-			LeaveCriticalSection(&experimentSettings->criticalSection);
 
 			// Raise the flag for data modified
 			threadManager->SetModifiedData();
@@ -56,9 +49,7 @@ void CKalelView::OnBnClickedLancer()
 		else
 		{
 			// Save the data from the dialog
-			EnterCriticalSection(&experimentSettings->criticalSection);
 			GetExperimentData(&dialogExperimentProperties, true);
-			LeaveCriticalSection(&experimentSettings->criticalSection);
 
 			// Roll back by calling stop function
 			CancelBeforeStarting(NULL,NULL);
@@ -95,10 +86,7 @@ void CKalelView::OnBnClickedButtonParametresExperience()
 
 		// Create dialog
 		ExperimentPropertySheet dialogExperimentProperties(_T(""));
-
-		EnterCriticalSection(&experimentSettings->criticalSection);
 		dialogExperimentProperties.Initiate(experimentSettings);
-		LeaveCriticalSection(&experimentSettings->criticalSection);
 
 		int counter = 0;
 		if (experimentData->experimentStage = STAGE_ADSORPTION)
@@ -110,28 +98,24 @@ void CKalelView::OnBnClickedButtonParametresExperience()
 			counter = experimentData->desorptionCounter;
 		}
 
-		EnterCriticalSection(&experimentSettings->criticalSection);
 		dialogExperimentProperties.SetProprietiesModif(experimentData->experimentStage, counter);
-		LeaveCriticalSection(&experimentSettings->criticalSection);
 
 		if (dialogExperimentProperties.DoModal() == IDOK)
 		{
 			// Get the data from the dialog
-			EnterCriticalSection(&experimentSettings->criticalSection);
 			GetExperimentData(&dialogExperimentProperties, false);
-			LeaveCriticalSection(&experimentSettings->criticalSection);
 		}
 	}
-}
-
-void CKalelView::OnBnClickedArretSousVide()
-{
-	//ArretSousVideThreads();
 }
 
 void CKalelView::OnBnClickedPause()
 {
 	threadManager->PauseThread();
+}
+
+void CKalelView::OnBnClickedReprise()
+{
+	threadManager->ResumeThread();
 }
 
 void CKalelView::OnBnClickedProchaineCommande()
@@ -149,10 +133,11 @@ void CKalelView::OnBnClickedProchaineEtape()
 	//ProchaineEtapeThreads();
 }
 
-void CKalelView::OnBnClickedReprise()
+void CKalelView::OnBnClickedArretSousVide()
 {
-	threadManager->ResumeThread();
+	//ArretSousVideThreads();
 }
+
 
 
 // Copy all data from a property sheet dialog to the local object

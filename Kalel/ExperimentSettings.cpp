@@ -13,9 +13,6 @@ ExperimentSettings::ExperimentSettings()
 
 ExperimentSettings::ExperimentSettings(int initialAdsorptions, int initialDesorptions)
 {
-	// Initialisation of the critical section
-	InitializeCriticalSection(&criticalSection);
-
 	// Data initialisation
 	ResetData(initialAdsorptions, initialDesorptions);
 }
@@ -23,8 +20,6 @@ ExperimentSettings::ExperimentSettings(int initialAdsorptions, int initialDesorp
 
 ExperimentSettings::~ExperimentSettings(void)
 {
-	// Destroy the critical sections
-	DeleteCriticalSection(&criticalSection);
 }
 
 void ExperimentSettings::ResetData()
@@ -35,7 +30,6 @@ void ExperimentSettings::ResetData()
 void ExperimentSettings::ResetData(int initialAdsorptions, int initialDesorptions)
 {
 	GUIhandle = NULL;
-	continueResult = E_INVALIDARG;
 	experimentType = EXPERIMENT_TYPE_UNDEF;
 	
 	// Initialisation of settings
@@ -104,7 +98,6 @@ ExperimentSettings & ExperimentSettings::operator=(const ExperimentSettings * p)
 
 		GUIhandle = p->GUIhandle;
 		experimentType = p->experimentType;
-		continueResult = p->continueResult;
 
 		dataGeneral = p->dataGeneral;
 		dataDivers = p->dataDivers;
