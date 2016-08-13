@@ -21,8 +21,9 @@
 #define marge_multiplicateur			1.2		//bar
 
 // Time to wait
-#define TIME_WAIT_VALVES					5			// intervalle 5s, temps d'attente en plus après ouverture des vannes
-#define TIME_WAIT_PUMP						10			// intervalle 5s, temps d'attente en plus après ouverture des vannes
+#define TIME_WAIT_VALVES					5	
+#define TIME_WAIT_VALVES_SHORT				2			
+#define TIME_WAIT_PUMP						10			
 
 
 // Opening and closing times for the valves

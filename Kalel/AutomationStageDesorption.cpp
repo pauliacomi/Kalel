@@ -54,7 +54,8 @@ void Automation::StageDesorption()
 void Automation::SubstepsDesorption()
 {
 	// Start desorption
-	if (experimentLocalData.experimentSubstepStage == SUBSTEP_STATUS_START)
+	if (experimentLocalData.experimentSubstepStage == SUBSTEP_STATUS_START &&
+		experimentLocalData.experimentWaiting == false)
 	{
 		experimentLocalData.injectionAttemptCounter = 0;																							// Reset desorption attempt counter
 		experimentLocalData.pressureInitial = experimentLocalData.pressureHigh;																		// Set the initial pressure
@@ -62,28 +63,58 @@ void Automation::SubstepsDesorption()
 		
 		messageHandler.DisplayMessage(MESSAGE_DESORPTION_DOSE_START, experimentLocalData.desorptionCounter, experimentLocalData.experimentDose);	// Tell GUI about current dose
 		
-		ActivatePump();
+		// Turn on pump
+		if (!PompeEstActive()) {
+			EVActivate(1);
+			EVActivate(2);
+			ActivatePump();
+			WaitSeconds(TIME_WAIT_PUMP);
+		}
 		WaitSeconds(TIME_WAIT_PUMP);
 		
-		experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_INPROGRESS;																		// Move to injection
+		experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_REMOVAL;																		// Move to removal
 	}
 
 
 	// Removal of gas
-	if (experimentLocalData.experimentSubstepStage == SUBSTEP_STATUS_INPROGRESS)
+	if (experimentLocalData.experimentSubstepStage == SUBSTEP_STATUS_REMOVAL &&
+		experimentLocalData.experimentWaiting == false)
 	{
 		messageHandler.DisplayMessage(MESSAGE_OUTGAS_ATTEMPT, experimentLocalData.injectionAttemptCounter);				// Tell GUI about current injection
 		
-		ValveOpenClose(8);																								// Injection, should think about waiting within the valves without sleep
-		ValveOpenClose(7);
-		WaitSeconds(TIME_WAIT_VALVES);
+		ValveOpen(8);																				
+		WaitSeconds(TIME_WAIT_VALVES_SHORT);
 		
-		experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_INPROGRESS + 1;										// Move to injection check
+		experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_REMOVAL + 1;		
+	}
+
+	if (experimentLocalData.experimentSubstepStage == SUBSTEP_STATUS_REMOVAL + 1 &&
+		experimentLocalData.experimentWaiting == false)
+	{
+		ValveClose(8);
+		WaitSeconds(TIME_WAIT_VALVES_SHORT);
+		experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_REMOVAL + 2;
+	}
+
+	if (experimentLocalData.experimentSubstepStage == SUBSTEP_STATUS_REMOVAL + 2 &&
+		experimentLocalData.experimentWaiting == false)
+	{
+		ValveOpen(7);
+		WaitSeconds(TIME_WAIT_VALVES_SHORT);
+		experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_REMOVAL + 3;
+	}
+
+	if (experimentLocalData.experimentSubstepStage == SUBSTEP_STATUS_REMOVAL + 3 &&
+		experimentLocalData.experimentWaiting == false)
+	{
+		ValveClose(7);
+		WaitSeconds(TIME_WAIT_VALVES_SHORT);
+		experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_CHECK;					// Move to removal check
 	}
 
 
 	// Check for removal
-	if (experimentLocalData.experimentSubstepStage == SUBSTEP_STATUS_INPROGRESS + 1 &&
+	if (experimentLocalData.experimentSubstepStage == SUBSTEP_STATUS_CHECK &&
 		experimentLocalData.experimentWaiting == false)
 	{
 		// Set the final pressure after gas removal
@@ -112,12 +143,12 @@ void Automation::SubstepsDesorption()
 
 				// Reset counter
 				experimentLocalData.injectionAttemptCounter = 0;
-				experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_INPROGRESS;
+				experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_REMOVAL;
 			}
 
 			// If not, increment the counter and try again
 			experimentLocalData.injectionAttemptCounter++;
-			experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_INPROGRESS;
+			experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_REMOVAL;
 		}
 		// If the removal succeeded
 		else
@@ -130,8 +161,13 @@ void Automation::SubstepsDesorption()
 			// If completeted successfully go to equilibration
 			else
 			{
-				DeactivatePump();
-				experimentLocalData.experimentSubstepStage = STEP_STATUS_INPROGRESS + 2;													// Go to desorption
+				// Deactivate pump
+				if (PompeEstActive()) {
+					EVDeactivate(1);
+					EVDeactivate(2);
+					DeactivatePump();
+				}
+				experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_DESORPTION;														// Go to desorption
 				WaitSeconds(experimentLocalSettings.dataDesorption[experimentLocalData.desorptionCounter].temps_volume);					// Set the time to wait for equilibration in the reference volume
 			}
 		}
@@ -145,23 +181,62 @@ void Automation::SubstepsDesorption()
 		if (experimentLocalData.pressureInitial - experimentLocalData.pressureFinal > marge_multiplicateur * (experimentLocalSettings.dataDesorption[experimentLocalData.desorptionCounter].delta_pression))
 		{
 			// Add some gas
-			ValveOpenClose(3);
-			ValveOpenClose(2);
-			ValveOpenClose(4);
-			WaitSeconds(TIME_WAIT_VALVES);
-
-			experimentLocalData.pressureFinal = experimentLocalData.pressureHigh;		// Save pressure after open/close
+			ValveOpen(2);
+			WaitSeconds(TIME_WAIT_VALVES_SHORT);
+			experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_ABORT + 1;
 		}
 		else
 		{
 			messageHandler.DisplayMessage(MESSAGE_INJECTION_END);
-			experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_INPROGRESS;		// Go back to injection
+			experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_REMOVAL;		// Go back to removal
 		}
+	}
+
+	if (experimentLocalData.experimentSubstepStage == SUBSTEP_STATUS_ABORT + 1 &&
+		experimentLocalData.experimentWaiting == false)
+	{
+		ValveClose(2);
+		WaitSeconds(TIME_WAIT_VALVES_SHORT);
+		experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_ABORT + 2;
+	}
+
+	if (experimentLocalData.experimentSubstepStage == SUBSTEP_STATUS_ABORT + 2 &&
+		experimentLocalData.experimentWaiting == false)
+	{
+		ValveOpen(3);
+		WaitSeconds(TIME_WAIT_VALVES_SHORT);
+		experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_ABORT + 3;
+	}
+
+	if (experimentLocalData.experimentSubstepStage == SUBSTEP_STATUS_ABORT + 3 &&
+		experimentLocalData.experimentWaiting == false)
+	{
+		ValveClose(3);
+		WaitSeconds(TIME_WAIT_VALVES_SHORT);
+		experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_ABORT + 4;
+	}
+
+	if (experimentLocalData.experimentSubstepStage == SUBSTEP_STATUS_ABORT + 4 &&
+		experimentLocalData.experimentWaiting == false)
+	{
+		ValveOpen(4);
+		WaitSeconds(TIME_WAIT_VALVES_SHORT);
+		experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_ABORT + 5;
+	}
+
+	if (experimentLocalData.experimentSubstepStage == SUBSTEP_STATUS_ABORT + 5 &&
+		experimentLocalData.experimentWaiting == false)
+	{
+		ValveClose(4);
+		WaitSeconds(TIME_WAIT_VALVES_SHORT);
+
+		experimentLocalData.pressureFinal = experimentLocalData.pressureHigh;							// Save pressure after open/close
+		experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_ABORT;								// Move back to the start
 	}
 
 
 	// Performing the desorption step
-	if (experimentLocalData.experimentSubstepStage == STEP_STATUS_INPROGRESS + 2 &&
+	if (experimentLocalData.experimentSubstepStage == SUBSTEP_STATUS_DESORPTION &&
 		experimentLocalData.experimentWaiting == false)
 	{
 		messageHandler.DisplayMessage(MESSAGE_DESORPTION_OPENV);

@@ -53,7 +53,8 @@ void Automation::StageAdsorption()
 void Automation::SubstepsAdsorption()
 {
 
-	if (experimentLocalData.experimentSubstepStage == SUBSTEP_STATUS_START)
+	if (experimentLocalData.experimentSubstepStage == SUBSTEP_STATUS_START &&
+		experimentLocalData.experimentWaiting == false)
 	{
 		experimentLocalData.injectionAttemptCounter = 0;																							// Reset adsorption attempt counter
 		experimentLocalData.pressureInitial = experimentLocalData.pressureHigh;																		// Set the initial pressure
@@ -63,23 +64,58 @@ void Automation::SubstepsAdsorption()
 	}
 	
 
-
+	// Injection
 	if (experimentLocalData.experimentSubstepStage == SUBSTEP_STATUS_INJECTION)
 	{
 		messageHandler.DisplayMessage(MESSAGE_INJECTION_ATTEMPT, experimentLocalData.injectionAttemptCounter);			// Tell GUI about current injection
-		ValveOpenClose(2);																								// Injection
-		ValveOpenClose(3);
-		ValveOpenClose(4);
-		WaitSeconds(TIME_WAIT_VALVES);
-		experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_CHECK;												// Move to injection check
+		ValveOpen(2);
+		WaitSeconds(TIME_WAIT_VALVES_SHORT);																			
+		experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_INJECTION + 1;										
 	}
 	
 	if (experimentLocalData.experimentSubstepStage == SUBSTEP_STATUS_INJECTION + 1 &&
 		experimentLocalData.experimentWaiting == false)
 	{
+		ValveClose(2);
+		WaitSeconds(TIME_WAIT_VALVES_SHORT);
+		experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_INJECTION + 2;
+	}
+
+	if (experimentLocalData.experimentSubstepStage == SUBSTEP_STATUS_INJECTION + 2 &&
+		experimentLocalData.experimentWaiting == false)
+	{
+		ValveOpen(3);
+		WaitSeconds(TIME_WAIT_VALVES_SHORT);
+		experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_INJECTION + 3;
+	}
+
+	if (experimentLocalData.experimentSubstepStage == SUBSTEP_STATUS_INJECTION + 3 &&
+		experimentLocalData.experimentWaiting == false)
+	{
+		ValveClose(3);
+		WaitSeconds(TIME_WAIT_VALVES_SHORT);
+		experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_INJECTION + 4;
+	}
+
+	if (experimentLocalData.experimentSubstepStage == SUBSTEP_STATUS_INJECTION + 4 &&
+		experimentLocalData.experimentWaiting == false)
+	{
+		ValveOpen(4);
+		WaitSeconds(TIME_WAIT_VALVES_SHORT);
+		experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_INJECTION + 5;
+	}
+
+	if (experimentLocalData.experimentSubstepStage == SUBSTEP_STATUS_INJECTION + 5 &&
+		experimentLocalData.experimentWaiting == false)
+	{
+		ValveClose(4);
+		WaitSeconds(TIME_WAIT_VALVES_SHORT);
+		experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_CHECK;								// Move to injection check
 	}
 
 
+
+	// Injection check
 	if (experimentLocalData.experimentSubstepStage == SUBSTEP_STATUS_CHECK &&
 		experimentLocalData.experimentWaiting == false)
 	{
@@ -135,6 +171,7 @@ void Automation::SubstepsAdsorption()
 
 
 
+	// Aborting
 	if (experimentLocalData.experimentSubstepStage == SUBSTEP_STATUS_ABORT &&
 		experimentLocalData.experimentWaiting == false)
 	{
@@ -144,16 +181,19 @@ void Automation::SubstepsAdsorption()
 			EVActivate(2);
 			ActivatePump();
 			WaitSeconds(TIME_WAIT_PUMP);
-			messageHandler.DisplayMessage(MESSAGE_OUTGAS_ATTEMPT);
 		}
+		messageHandler.DisplayMessage(MESSAGE_OUTGAS_ATTEMPT);
+		experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_ABORT + 1;
+	}
 
+	if (experimentLocalData.experimentSubstepStage == SUBSTEP_STATUS_ABORT + 1 &&
+		experimentLocalData.experimentWaiting == false)
+	{
 		if (experimentLocalData.pressureFinal - experimentLocalData.pressureInitial > marge_multiplicateur * (experimentLocalSettings.dataAdsorption[experimentLocalData.adsorptionCounter].delta_pression))
 		{
-			ValveOpenClose(8);
-			ValveOpenClose(7);
-			WaitSeconds(TIME_WAIT_VALVES);
-
-			experimentLocalData.pressureFinal = experimentLocalData.pressureHigh;		// Save pressure after open/close
+			ValveOpen(8);
+			WaitSeconds(TIME_WAIT_VALVES_SHORT);
+			experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_ABORT + 2;
 		}
 		else
 		{
@@ -165,8 +205,35 @@ void Automation::SubstepsAdsorption()
 			}
 
 			messageHandler.DisplayMessage(MESSAGE_OUTGAS_END);
-			experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_INJECTION;		// Go back to injection
+			experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_INJECTION;				// Go back to injection
 		}
+	}
+
+
+	if (experimentLocalData.experimentSubstepStage == SUBSTEP_STATUS_ABORT + 2 &&
+		experimentLocalData.experimentWaiting == false)
+	{
+		ValveClose(8);
+		WaitSeconds(TIME_WAIT_VALVES_SHORT);
+		experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_ABORT + 3;
+	}
+
+	if (experimentLocalData.experimentSubstepStage == SUBSTEP_STATUS_ABORT + 3 &&
+		experimentLocalData.experimentWaiting == false)
+	{
+		ValveOpen(7);
+		WaitSeconds(TIME_WAIT_VALVES_SHORT);
+		experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_ABORT + 4;
+	}
+
+	if (experimentLocalData.experimentSubstepStage == SUBSTEP_STATUS_ABORT + 4 &&
+		experimentLocalData.experimentWaiting == false)
+	{
+		ValveClose(7);
+		WaitSeconds(TIME_WAIT_VALVES_SHORT);
+
+		experimentLocalData.pressureFinal = experimentLocalData.pressureHigh;					// Save pressure after open/close
+		experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_ABORT + 1;					// Go back to the start
 	}
 
 
