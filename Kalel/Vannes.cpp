@@ -20,25 +20,32 @@ CVannes::~CVannes(void)
 bool CVannes::Ouvrir(int num)
 {
 	int tentative = 0;
-	bool action_reussie;
-	do{
+	bool action_reussie{ false };
+	while (!action_reussie && tentative <= nb_essais)
+	{
 		tentative++;
-		action_reussie = NI_USB_6008::OuvrirPort0(num-1);
-		Sleep(temps_ms);
-	}while(!action_reussie && tentative <= nb_essais);
-
+		action_reussie = NI_USB_6008::OuvrirPort0(num - 1);
+		if (!action_reussie)
+		{
+			Sleep(temps_ms);
+		}
+	}
 	return action_reussie;
 }
 
 bool CVannes::Fermer(int num)
 {
 	int tentative = 0;
-	bool action_reussie;
-	do{
+	bool action_reussie{ false };
+	while (!action_reussie && tentative <= nb_essais)
+	{
 		tentative++;
-		action_reussie = NI_USB_6008::FermerPort0(num-1);
-		Sleep(temps_ms);	// should probably remove these wait times
-	}while(!action_reussie && tentative <= nb_essais);
+		action_reussie = NI_USB_6008::FermerPort0(num - 1);
+		if (!action_reussie)
+		{
+			Sleep(temps_ms);
+		}
+	}
 
 	return action_reussie;
 }
@@ -46,78 +53,96 @@ bool CVannes::Fermer(int num)
 bool CVannes::FermerToutesLesVannes()
 {
 	int tentative = 0;
-	bool action_reussie;
-	do{
+	bool action_reussie{ false };
+	while (!action_reussie && tentative <= nb_essais)
+	{
 		tentative++;
 		action_reussie = NI_USB_6008::FermerPort0Tous();
-		Sleep(temps_ms);
-	}while(!action_reussie && tentative <= nb_essais);
-
+		if (!action_reussie)
+		{
+			Sleep(temps_ms);
+		}
+	}
 	return action_reussie;
 }
 
 bool CVannes::ActiverEV(int num)
 {
 	int tentative = 0;
-	bool action_reussie;
-	do{
+	bool action_reussie{ false };
+	while (!action_reussie && tentative <= nb_essais)
+	{
 		tentative++;
 		action_reussie = NI_USB_6008::OuvrirPort1(0 + num);
-		Sleep(temps_ms);
-	}while(!action_reussie && tentative <= nb_essais);
-
+		if (!action_reussie)
+		{
+			Sleep(temps_ms);
+		}
+	}
 	return action_reussie;
 }
 
 bool CVannes::DesactiverEV(int num)
 {
 	int tentative = 0;
-	bool action_reussie;
-	do {
+	bool action_reussie{ false };
+	while (!action_reussie && tentative <= nb_essais)
+	{
 		tentative++;
 		action_reussie = NI_USB_6008::FermerPort1(0 + num);
-		Sleep(temps_ms);
-	} while (!action_reussie && tentative <= nb_essais);
-
+		if (!action_reussie)
+		{
+			Sleep(temps_ms);
+		}
+	}
 	return action_reussie;
 }
 
 bool CVannes::ActiverPompe()
 {
 	int tentative = 0;
-	bool action_reussie;
-	do{
+	bool action_reussie{ false };
+	while (!action_reussie && tentative <= nb_essais)
+	{
 		tentative++;
 		action_reussie = NI_USB_6008::OuvrirPort1(2);
-		Sleep(temps_ms);
-	}while(!action_reussie && tentative <= nb_essais);
-
+		if (!action_reussie)
+		{
+			Sleep(temps_ms);
+		}
+	}
 	return action_reussie;
 }
 
 bool CVannes::DesactiverPompe()
 {
 	int tentative = 0;
-	bool action_reussie;
-	do{
+	bool action_reussie{ false };
+	while (!action_reussie && tentative <= nb_essais)
+	{
 		tentative++;
 		action_reussie = NI_USB_6008::FermerPort1(2);
-		Sleep(temps_ms);
-	}while(!action_reussie && tentative <= nb_essais);
-
+		if (!action_reussie)
+		{
+			Sleep(temps_ms);
+		}
+	}
 	return action_reussie;
 }
 
 bool CVannes::FermerLesEVEtLaPompe()
 {
 	int tentative = 0;
-	bool action_reussie;
-	do{
+	bool action_reussie{ false };
+	while (!action_reussie && tentative <= nb_essais)
+	{
 		tentative++;
 		action_reussie = NI_USB_6008::FermerPort1Tous();
-		Sleep(temps_ms);
-	}while(!action_reussie && tentative <= nb_essais);
-
+		if (!action_reussie)
+		{
+			Sleep(temps_ms);
+		}
+	}
 	return action_reussie;
 }
 

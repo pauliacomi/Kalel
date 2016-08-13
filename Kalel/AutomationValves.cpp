@@ -42,9 +42,9 @@ bool Automation::ValveOpenClose(int num_vanne)
 	messageHandler.DisplayMessage(MESSAGE_VALVE_OPENCLOSE, num_vanne);
 
 	bool ouverture_reussie = ValveOpen(num_vanne);
-	Sleep(temps_ouverture);
+	WaitSeconds(TIME_WAIT_VALVES);
 	bool fermeture_reussie = ValveClose(num_vanne);
-	Sleep(temps_fermeture);
+	WaitSeconds(TIME_WAIT_VALVES);
 	if (ouverture_reussie && fermeture_reussie)
 		return true;
 
