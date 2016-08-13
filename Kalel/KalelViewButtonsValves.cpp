@@ -44,7 +44,7 @@ void CKalelView::AskThreadForManualCommand(int instrumentType, int instrumentNum
 LRESULT CKalelView::OnThreadRequestButtonUpdate(WPARAM wParam, LPARAM lParam) {
 
 	// Cast the parameters object and take ownership
-	const ManualActionParam *maParam = reinterpret_cast<ManualActionParam*>(wParam);
+	std::auto_ptr<ManualActionParam> maParam(reinterpret_cast<ManualActionParam*>(wParam));
 
 	// Create a new list object
 	ListOfInstrumentButtons list(maParam->instrumentType, maParam->instrumentNumber, maParam->shouldBeActivated);
@@ -63,14 +63,12 @@ LRESULT CKalelView::OnThreadRequestButtonUpdate(WPARAM wParam, LPARAM lParam) {
 	}
 	else
 	{
-		AffichageMessages(list.GetTempTextboxMessage());
+		CString * temp = new CString(list.GetTempTextboxMessage());
+		AffichageMessages(0, (LPARAM) temp);
 	}
 
 	// unlock the menu
 	pApp->menuIsAvailable = true;
-
-	// Now delete the object
-	delete maParam;
 
 	return 0;
 }

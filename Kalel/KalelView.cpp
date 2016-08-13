@@ -28,7 +28,6 @@ BEGIN_MESSAGE_MAP(CKalelView, CFormView)
 	// Custom messages for threads
 	ON_MESSAGE(WM_EXCHANGEDATA, &CKalelView::ExchangeData)							// Calls to save the incoming data from the thread
 	ON_MESSAGE(WM_THREADFINISHEDREG, &CKalelView::OnRegularThreadFinished)			// Calls when manual functionality ends
-	ON_MESSAGE(WM_UPDATEBUTTONS, &CKalelView::OnThreadRequestButtonUpdate)			// Calls to update a specific button pair and associated display
 	ON_MESSAGE(WM_DISPLAYMESSAGE, &CKalelView::AffichageMessages)					// Displays a message from the automation thread 
 	ON_MESSAGE(WM_DISPLAYMESSAGEBOX, &CKalelView::MessageBoxAlert)					// Displays an messageBOX to alert user of something
 	ON_MESSAGE(WM_DISPLAYMESSAGEBOXCONF, &CKalelView::MessageBoxConfirmation)		// Displays an messageBOX to or ask user for confirmation
@@ -36,10 +35,10 @@ BEGIN_MESSAGE_MAP(CKalelView, CFormView)
 	ON_MESSAGE(UWM_THREAD_START, &CKalelView::BackgroundThreadStart)
 	ON_MESSAGE(UWM_THREAD_STOP, &CKalelView::BackgroundThreadStop)
 	ON_MESSAGE(UWM_THREAD_RESTART, &CKalelView::BackgroundThreadRestart)
-	
-	ON_MESSAGE(WM_DISPLAYADDMESSAGE, &CKalelView::RajoutAffichageMessages)
-	ON_MESSAGE(WM_DISPLAYADDSTEP, &CKalelView::RajoutAffichageEtape)
 	ON_MESSAGE(WM_CANCELEXPERIMENT, &CKalelView::CancelBeforeStarting)
+
+	// Manual command messages
+	ON_MESSAGE(WM_UPDATEBUTTONS, &CKalelView::OnThreadRequestButtonUpdate)			// Calls to update a specific button pair and associated display
 
 	// Messages for UI buttons used for simple instrument manipulation
 	ON_BN_CLICKED(IDC_OUVRIR1, &CKalelView::OnBnClickedOuvrir1)
@@ -75,7 +74,6 @@ BEGIN_MESSAGE_MAP(CKalelView, CFormView)
 	ON_BN_CLICKED(IDC_PROCHAINE_DOSE, &CKalelView::OnBnClickedProchaineDose)
 	ON_BN_CLICKED(IDC_PROCHAINE_ETAPE, &CKalelView::OnBnClickedProchaineEtape)
 	ON_BN_CLICKED(IDC_BUTTON_PARAMETRES_EXPERIENCE, &CKalelView::OnBnClickedButtonParametresExperience)
-	
 
 	// timer for update of the values
 	ON_WM_TIMER()					

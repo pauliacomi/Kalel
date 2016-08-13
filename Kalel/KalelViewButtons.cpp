@@ -135,7 +135,22 @@ void CKalelView::OnBnClickedProchaineEtape()
 
 void CKalelView::OnBnClickedArretSousVide()
 {
-	//ArretSousVideThreads();
+	/*if (experimentData->experimentInProgress) {
+		int result = AfxMessageBox(PROMPT_CANCELEXP, MB_ICONQUESTION | MB_YESNO);
+		switch (result)
+		{
+		case IDYES:
+			threadManager->ResetThread();
+			break;
+
+		case IDNO:
+			break;
+
+		default:
+			ASSERT(0);
+			break;
+		}
+	}*/
 }
 
 
