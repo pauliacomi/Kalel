@@ -325,6 +325,11 @@ bool Automation::ExecutionAuto()
 		// Send start message
 		messageHandler.ExperimentStart();
 
+		ResetAutomation();
+
+		// Get data
+		experimentLocalSettings = GetSettings();
+
 		// Write variables to starting position
 		experimentLocalData.experimentInProgress = true;
 		experimentLocalData.experimentStage = STAGE_VERIFICATIONS;

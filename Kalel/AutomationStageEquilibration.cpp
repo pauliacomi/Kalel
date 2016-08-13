@@ -18,9 +18,8 @@ void Automation::StageEquilibration()
 		messageHandler.DisplayMessage(MESSAGE_EQUILIBRATION_STARTED);										// Let GUI know the step change
 
 		// This is where we start recording
-		// Record start
-		experimentLocalData.experimentInProgress = true;
 		experimentLocalData.experimentRecording = true;
+		messageHandler.GraphReset();
 
 		// Create, open and write the columns in the:
 		EnteteCreate();				// Entete TXT
@@ -31,9 +30,7 @@ void Automation::StageEquilibration()
 		timerExperiment.TopChrono();							// Start global experiment timer	
 		timerMeasurement.TopChrono();							// Start the timer to record time between measurements
 
-
 		// Set the time to wait
-		//WaitSeconds(experimentLocalData.timeToEquilibrate = experimentLocalSettings.dataDivers.temps_ligne_base * 60);
 		WaitMinutes(experimentLocalData.timeToEquilibrate = experimentLocalSettings.dataDivers.temps_ligne_base);
 	}
 
