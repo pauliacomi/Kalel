@@ -19,12 +19,12 @@
 
 // CKalelApp
 
-BEGIN_MESSAGE_MAP(CKalelApp, CWinApp)
+BEGIN_MESSAGE_MAP(CKalelApp, CWinAppEx)
 
 	// Standard document commands
 	ON_COMMAND(ID_APP_ABOUT, &CKalelApp::OnAppAbout)
-	ON_COMMAND(ID_FILE_NEW, &CWinApp::OnFileNew)
-	ON_COMMAND(ID_FILE_OPEN, &CWinApp::OnFileOpen)
+	ON_COMMAND(ID_FILE_NEW, &CWinAppEx::OnFileNew)
+	ON_COMMAND(ID_FILE_OPEN, &CWinAppEx::OnFileOpen)
 
 	// New menu based commands to main view
 	ON_COMMAND(ID_PARAMATRES_APPAREIL, &CKalelView::DisplayPortDialog)
@@ -92,7 +92,7 @@ BOOL CKalelApp::InitInstance()
 	InitCtrls.dwICC = ICC_WIN95_CLASSES;
 	InitCommonControlsEx(&InitCtrls);
 
-	CWinApp::InitInstance();
+	CWinAppEx::InitInstance();
 
 
 	// Initialize OLE libraries
@@ -155,7 +155,7 @@ int CKalelApp::ExitInstance()
 	//TODO: handle additional resources you may have added
 	AfxOleTerm(FALSE);
 
-	return CWinApp::ExitInstance();
+	return CWinAppEx::ExitInstance();
 }
 
 

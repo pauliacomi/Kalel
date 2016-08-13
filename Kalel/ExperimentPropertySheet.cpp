@@ -63,6 +63,9 @@ void ExperimentPropertySheet::Initiate(ExperimentSettings * experimentSettings)
 
 		// Insert page
 		adsorptionTabs.push_back(tempTab);
+
+		// Null pointer
+		tempTab = NULL;
 	}
 	// Desorption
 	for (int i = 0; i < numberOfDesorptions; i++)
@@ -72,6 +75,9 @@ void ExperimentPropertySheet::Initiate(ExperimentSettings * experimentSettings)
 
 		// Insert page
 		desorptionTabs.push_back(tempTab);
+
+		// Null pointer
+		tempTab = NULL;
 	}
 
 	// Resize the bool storage for tab availability
@@ -420,6 +426,9 @@ LRESULT ExperimentPropertySheet::OnButtonRemoveAdsorption(WPARAM, LPARAM lParam)
 		std::vector<bool>::iterator pos = availableTabs.begin() + (nb_permanent_tabs + pageToRemove - 1);
 		availableTabs.erase(pos);
 
+		// Delete page
+		delete adsorptionTabs[pageToRemove - 1];
+
 		// Erase the page itself from the list of pages
 		std::vector<TabDoses*>::iterator pos2 = adsorptionTabs.begin() + pageToRemove - 1;
 		adsorptionTabs.erase(pos2);
@@ -460,6 +469,9 @@ LRESULT ExperimentPropertySheet::OnButtonRemoveDesorption(WPARAM, LPARAM lParam)
 		// Erase bool from available tabs
 		std::vector<bool>::iterator pos = availableTabs.begin() + (nb_permanent_tabs + numberOfAdsorptions + pageToRemove - 1);
 		availableTabs.erase(pos);
+
+		// Delete page
+		delete desorptionTabs[pageToRemove - 1];
 
 		// Erase the page itself from the list of pages
 		std::vector<TabDesorption *>::iterator pos2 = desorptionTabs.begin() + pageToRemove - 1;

@@ -14,7 +14,7 @@
 // See Kalel.cpp for the implementation of this class
 //
 
-class CKalelApp : public CWinApp
+class CKalelApp : public CWinAppEx
 {
 public:
 	CKalelApp();
