@@ -383,7 +383,7 @@ std::string Automation::BuildFileName(std::string extension, bool entete)
 	}
 
 	// Check if the user field is empty
-	if (strcmp(experimentLocalSettings.dataGeneral.experimentateur.surnom.c_str(), ""))		//??
+	if (experimentLocalSettings.dataGeneral.experimentateur.surnom.empty())
 	{
 		sprintf_s(fileNameBuffer, "%s/Nouveau_Fichier", experimentLocalSettings.dataGeneral.chemin.c_str());
 	}

@@ -361,6 +361,7 @@ LRESULT CKalelView::OnChangementBouteille(WPARAM, LPARAM)
 	else {
 		if (AfxMessageBox(PROMPT_CHANGE_BOTTLE, MB_YESNO | MB_ICONQUESTION) == IDYES)
 		{
+			ASSERT(0);
 			experimentSettings->experimentType = EXPERIMENT_TYPE_BOTTLE_VACUUM;
 
 			// the start button is blocked
