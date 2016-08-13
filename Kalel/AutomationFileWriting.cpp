@@ -251,7 +251,6 @@ string Automation::EnteteDesorption(bool csv)
 		text << "Temps de l'expérience dans le volume référenciel"	<< divider	<< experimentLocalSettings.dataDesorption[i].temps_volume		<< divider << "min" << finl;
 		text << "Temps de l'expérience dans l'adsorption "			<< divider	<< experimentLocalSettings.dataDesorption[i].temps_desorption	<< divider << "min" << finl;
 		text << "Pression finale"									<< divider	<< experimentLocalSettings.dataDesorption[i].pression_finale	<< divider << "bar" << finl;
-		text << "Dernière étape à partie du vide"					<< divider	<< experimentLocalSettings.dataDesorption[i].derniere_etape							<< finl;
 		text																																						<< finl;	
 	}
 
@@ -340,18 +339,6 @@ void Automation::RecordDataChange(const ExperimentSettings& newSettings, bool cs
 				if (experimentLocalSettings.dataDesorption[i].pression_finale != newSettings.dataAdsorption[i].pression_finale)
 				{
 					text << "Pression finale"									<< divider << newSettings.dataDesorption[i].pression_finale		<< divider << "bar" << finl;
-				}
-
-				if (experimentLocalSettings.dataDesorption[i].derniere_etape != newSettings.dataDesorption[i].derniere_etape)
-				{
-					if (newSettings.dataDesorption[i].derniere_etape)
-					{
-						text << "Avec dernière étape à partie du vide" << endl;
-					}
-					else
-					{
-						text << "Sans dernière étape à partie du vide" << endl;
-					}
 				}
 			}
 		}

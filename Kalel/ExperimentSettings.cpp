@@ -87,7 +87,6 @@ void ExperimentSettings::ResetData(int initialAdsorptions, int initialDesorption
 		desorptionStep.pression_finale = 5.0f;
 		desorptionStep.temps_desorption = 90;
 		desorptionStep.temps_volume = 15;
-		desorptionStep.derniere_etape = false;
 
 		dataDesorption.push_back(desorptionStep);
 	}
