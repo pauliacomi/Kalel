@@ -71,9 +71,13 @@ void Automation::SubstepsAdsorption()
 		ValveOpenClose(3);
 		ValveOpenClose(4);
 		WaitSeconds(TIME_WAIT_VALVES);
-		experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_CHECK;										// Move to injection check
+		experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_CHECK;												// Move to injection check
 	}
-
+	
+	if (experimentLocalData.experimentSubstepStage == SUBSTEP_STATUS_INJECTION + 1 &&
+		experimentLocalData.experimentWaiting == false)
+	{
+	}
 
 
 	if (experimentLocalData.experimentSubstepStage == SUBSTEP_STATUS_CHECK &&
