@@ -35,9 +35,6 @@ protected:
 
 	int position;
 
-	BOOL m_bDesorption;
-	BOOL m_bDerniereEtapeDesorption;
-
 	int m_nTempsDesorption;
 	int m_nTempsVolumeDesorption;
 	float m_fDeltaPressionDesorption;

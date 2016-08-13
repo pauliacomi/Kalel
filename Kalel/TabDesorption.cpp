@@ -112,7 +112,6 @@ void TabDesorption::Reinitialisation()
 
 void TabDesorption::WriteData()
 {
-	allSettings.a_effectuer = m_bDesorption;
 	allSettings.delta_pression = m_fDeltaPressionDesorption;
 	allSettings.pression_finale = m_fPressionFinaleDesorption;
 	allSettings.temps_desorption = m_nTempsDesorption;

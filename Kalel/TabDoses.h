@@ -35,7 +35,6 @@ protected:
 
 	HANDLE h_parent;	// Handle to propertysheet
 
-	BOOL m_bDoses;
 	int position;
 
 	int m_nTimeAdsorptionDoses;

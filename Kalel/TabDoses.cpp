@@ -111,7 +111,6 @@ void TabDoses::Reinitialisation()
 
 void TabDoses::WriteData()
 {
-	allSettings.a_effectuer = m_bDoses;
 	allSettings.delta_pression = m_fDeltaPressureDoses;
 	allSettings.pression_finale = m_fFinalPressureDoses;
 	allSettings.temps_adsorption = m_nTimeAdsorptionDoses;

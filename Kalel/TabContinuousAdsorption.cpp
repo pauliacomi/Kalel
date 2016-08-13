@@ -90,7 +90,6 @@ BOOL TabContinuousAdsorption::OnApply()
 
 void TabContinuousAdsorption::OnCancel()
 {
-	m_bAdsorptionContinue = allSettings.a_effectuer;
 	m_fPressionFinaleAdsorptionContinue = allSettings.pression_finale_adsorption_continue;
 	m_nTempsEquilibreContinue = allSettings.temps_equilibre_continue;
 	m_nTempsEtalonnageDebit = allSettings.temps_etalonnage_debit;
@@ -120,7 +119,6 @@ void TabContinuousAdsorption::Reinitialisation()
 
 void TabContinuousAdsorption::WriteData()
 {
-	allSettings.a_effectuer = m_bAdsorptionContinue;
 	allSettings.pression_finale_adsorption_continue = m_fPressionFinaleAdsorptionContinue;
 	allSettings.temps_equilibre_continue = m_nTempsEquilibreContinue;
 	allSettings.temps_etalonnage_debit = m_nTempsEtalonnageDebit;

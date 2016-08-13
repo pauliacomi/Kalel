@@ -77,7 +77,6 @@ public:
 class Donnees_Doses
 {
 public:
-	bool a_effectuer;
 	float delta_pression;
 	float pression_finale;
 	int temps_adsorption;
@@ -87,51 +86,9 @@ public:
 	bool operator!=(const Donnees_Doses &petites_doses);
 };
 
-
-/// Other doses classes - are replaced
-class Donnees_Petites_Doses
-{
-public:
-	bool a_effectuer;
-	float delta_pression;
-	float pression_finale;
-	int temps_adsorption;
-	int temps_volume;
-
-	Donnees_Petites_Doses operator=(const Donnees_Petites_Doses &petites_doses);
-	bool operator!=(const Donnees_Petites_Doses &petites_doses);
-};
-
-class Donnees_Moyennes_Doses
-{
-public:
-	bool a_effectuer;
-	float delta_pression;
-	float pression_finale;
-	int temps_adsorption;
-	int temps_volume;
-
-	Donnees_Moyennes_Doses operator=(const Donnees_Moyennes_Doses &moyennes_doses);
-	bool operator!=(const Donnees_Moyennes_Doses &moyennes_doses);
-};
-
-class Donnees_Grandes_Doses
-{
-public:
-	bool a_effectuer;
-	float delta_pression;
-	float pression_finale;
-	int temps_adsorption;
-	int temps_volume;
-
-	Donnees_Grandes_Doses operator=(const Donnees_Grandes_Doses &grandes_doses);
-	bool operator!=(const Donnees_Grandes_Doses &grandes_doses);
-};
-
 class Donnees_Desorption
 {
 public:
-	bool a_effectuer;
 	float delta_pression;
 	float pression_finale;
 	int temps_desorption;
@@ -144,7 +101,6 @@ public:
 class Donnees_Adsorption_Continue
 {
 public:
-	bool a_effectuer;
 	int temps_etalonnage_debit;
 	int temps_etalonnage_volume_inter;
 	int temps_equilibre_continue;
