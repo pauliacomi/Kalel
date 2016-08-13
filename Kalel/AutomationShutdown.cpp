@@ -59,7 +59,9 @@ void Automation::Shutdown()
 	case STOP_COMPLETE:		// This option is used if the automation thread is to be closed
 
 		// Close measurement file
-		FileMeasurementClose();
+		if (experimentLocalData.experimentRecording) {
+			FileMeasurementClose();
+		}
 
 		// When thread finishes, let main window know to unlock menu
 		messageHandler.ThreadShutdown();

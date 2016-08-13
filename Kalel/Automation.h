@@ -75,13 +75,17 @@ protected:
 	//------------------------------------------------------------
 	// Syncronisation primitives and threads
 	//------------------------------------------------------------
-
+protected:
 	CRITICAL_SECTION criticalSection;					// Critical section for measurement thread sinchronisation
 
 	// Events
 	HANDLE h_MeasurementThreadStartEvent;				// Handle event doing measurement thread signalling
-	
 	HANDLE events[5];									// Keeps all the events below in one array
+
+	// Case switch int for the experiment states (running/paused/etc)
+	volatile bool running;
+	volatile int shutdownReason;
+
 public:
 	std::atomic_bool sb_settingsModified;				// Atomic variable that can be set to let the thread know that there are new experiment settings 
 	std::atomic_bool sb_userContinue;						
@@ -95,16 +99,6 @@ public:
 protected:
 	// Threads
 	HANDLE h_MeasurementThread[4];						// Threads for measurement
-
-	//------------------------------------------------------------
-	// Standards data types 
-	//------------------------------------------------------------
-
-
-	// Case switch int for the experiment states (running/paused/etc)
-	bool running;
-	bool paused;
-	int shutdownReason;
 
 
 /**********************************************************************************************************************************

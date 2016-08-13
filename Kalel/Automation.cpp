@@ -130,9 +130,9 @@ void Automation::Execution()
 		if (sb_settingsModified) {
 			if (experimentLocalData.experimentInProgress == true) {
 				ExperimentSettings tempSettings = GetSettings();	// We have the two settings coexisting to record any changes
-				RecordDataChange(tempSettings, false);			// non-CSV
-				RecordDataChange(tempSettings, true);			// CSV
-				experimentLocalSettings = tempSettings;			// Now save the new settings as the old ones
+				RecordDataChange(tempSettings, false);				// non-CSV
+				RecordDataChange(tempSettings, true);				// CSV
+				experimentLocalSettings = tempSettings;				// Now save the new settings as the old ones
 			}
 			else
 				experimentLocalSettings = GetSettings();

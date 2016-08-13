@@ -150,14 +150,16 @@ bool CKalelDoc::GraphAddMeasurement(ExperimentData * expData)
 
 	if (m_TableauMesures.size() == 0)
 	{
-		m_TableauMesures.push_back(expData);
+		ExperimentData * newData = new ExperimentData(*expData);
+		m_TableauMesures.push_back(newData);
 		result = true;
 	}
 	else
 	{
 		if (expData->experimentGraphPoints > m_TableauMesures.back()->experimentGraphPoints) {
 
-			m_TableauMesures.push_back(expData);
+			ExperimentData * newData = new ExperimentData(*expData);
+			m_TableauMesures.push_back(newData);
 			result = true;
 		}
 	}

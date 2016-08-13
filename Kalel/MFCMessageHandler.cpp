@@ -16,33 +16,36 @@ MFCMessageHandler::~MFCMessageHandler()
 {
 }
 
-BOOL MFCMessageHandler::SetHandle(HWND h)
+bool MFCMessageHandler::SetHandle(HWND h)
 {
 	// Get view handler and check for validity
 	windowHandle = reinterpret_cast<HWND>(h);
 	ASSERT(windowHandle != NULL);
 
-	return 0;
+	return true;
 }
 
 
 // Functions for sending messages below
 
 
-BOOL MFCMessageHandler::ExchangeData(ExperimentData pParam)
+bool MFCMessageHandler::ExchangeData(ExperimentData pParam)
 {
 	// Create a new instance of the storage class and equate it to the local class
 	ExperimentData * newData = new ExperimentData();
 	*newData = pParam;
 
 	// Post the required message, now the main thread is responsible for deleting the new class
-	::PostMessage(windowHandle, WM_EXCHANGEDATA, NULL, (LPARAM)newData);
+	if (::PostMessage(windowHandle, WM_EXCHANGEDATA, NULL, (LPARAM)newData) == 0 ) {
+		delete newData;
+		return false;
+	}
 
-	return 0;
+	return true;
 }
 
 
-BOOL MFCMessageHandler::DisplayMessage(int pParam, int pInt1, int pInt2, double pDouble)
+bool MFCMessageHandler::DisplayMessage(int pParam, int pInt1, int pInt2, double pDouble)
 {
 	// Create a new pointer 
 	CString * message = new CString;
@@ -70,24 +73,30 @@ BOOL MFCMessageHandler::DisplayMessage(int pParam, int pInt1, int pInt2, double 
 	}
 
 	// Other thread is now responsible for deleting this object
-	::PostMessage(windowHandle, WM_DISPLAYMESSAGE, NULL, (LPARAM)message);
+	if(::PostMessage(windowHandle, WM_DISPLAYMESSAGE, NULL, (LPARAM)message) == 0) {
+		delete message;
+		return false;
+	}
 
-	return 0;
+	return true;
 }
 
-BOOL MFCMessageHandler::DisplayMessage(int pParam, CString m)
+bool MFCMessageHandler::DisplayMessage(int pParam, CString m)
 {
 	// Create a new pointer 
 	CString * message = new CString;
 	message->Format(pParam, m);
 	
 	// Other thread is now responsible for deleting this object
-	::PostMessage(windowHandle, WM_DISPLAYMESSAGE, NULL, (LPARAM)message);
+	if(::PostMessage(windowHandle, WM_DISPLAYMESSAGE, NULL, (LPARAM)message) == 0) {
+		delete message;
+		return false;
+	}
 
-	return 0;
+	return true;
 }
 
-BOOL MFCMessageHandler::DisplayMessageBox(int pParam, UINT nType, bool blocksProgram, double pDouble1, double pDouble2)
+bool MFCMessageHandler::DisplayMessageBox(int pParam, UINT nType, bool blocksProgram, double pDouble1, double pDouble2)
 {
 	// Create a new pointer 
 	UINT * type = new UINT(nType);
@@ -112,17 +121,23 @@ BOOL MFCMessageHandler::DisplayMessageBox(int pParam, UINT nType, bool blocksPro
 	// Other thread is now responsible for deleting this object
 	if (blocksProgram)
 	{
-		::PostMessage(windowHandle, WM_DISPLAYMESSAGEBOXCONF, (WPARAM)type, (LPARAM)message);
+		if(::PostMessage(windowHandle, WM_DISPLAYMESSAGEBOXCONF, (WPARAM)type, (LPARAM)message) == 0) {
+			delete message;
+			return false;
+		}
 	}
 	else
 	{
-		::PostMessage(windowHandle, WM_DISPLAYMESSAGEBOX, (WPARAM)type, (LPARAM)message);
+		if(::PostMessage(windowHandle, WM_DISPLAYMESSAGEBOX, (WPARAM)type, (LPARAM)message) == 0) {
+			delete message;
+			return false;
+		}
 	}
 
-	return 0;
+	return true;
 }
 
-BOOL MFCMessageHandler::DisplayMessageBox(int pParam, UINT nType, bool blocksProgram, CString pString)
+bool MFCMessageHandler::DisplayMessageBox(int pParam, UINT nType, bool blocksProgram, CString pString)
 {
 	// Create a new pointer 
 	UINT * type = new UINT(nType);
@@ -133,40 +148,54 @@ BOOL MFCMessageHandler::DisplayMessageBox(int pParam, UINT nType, bool blocksPro
 	// Other thread is now responsible for deleting this object
 	if (blocksProgram)
 	{
-		::PostMessage(windowHandle, WM_DISPLAYMESSAGEBOXCONF, (WPARAM)type, (LPARAM)message);
+		if(::PostMessage(windowHandle, WM_DISPLAYMESSAGEBOXCONF, (WPARAM)type, (LPARAM)message) == 0) {
+			delete message;
+			return false;
+		}
 	}
 	else
 	{
-		::PostMessage(windowHandle, WM_DISPLAYMESSAGEBOX, (WPARAM)type, (LPARAM)message);
+		if(::PostMessage(windowHandle, WM_DISPLAYMESSAGEBOX, (WPARAM)type, (LPARAM)message) == 0) {
+			delete message;
+			return false;
+		}
 	}
 
-	return 0;
+	return true;
 }
 
 
-void MFCMessageHandler::ExperimentStart()
+bool MFCMessageHandler::ExperimentStart()
 {
 	DisplayMessage(MESSAGE_FILLLINE);
 	DisplayMessage(MESSAGE_EXPSTART);
 	GraphReset();
+
+	return true;
 }
 
-void MFCMessageHandler::ExperimentEnd()
+bool MFCMessageHandler::ExperimentEnd()
 {
 	::PostMessage(windowHandle, WM_THREADFINISHEDREG, NULL, NULL);
 	DisplayMessage(MESSAGE_FILLLINE);
 	GraphReset();
+
+	return true;
 }
 
-void MFCMessageHandler::ThreadShutdown()
+bool MFCMessageHandler::ThreadShutdown()
 {
 	::PostMessage(windowHandle, WM_THREADSHUTDOWN, NULL, NULL);
 	DisplayMessage(MESSAGE_THREAD_SHUTTINGDOWN);
 	GraphReset();
+
+	return true;
 }
 
 
-void MFCMessageHandler::GraphReset() 
+bool MFCMessageHandler::GraphReset()
 {
 	::PostMessage(windowHandle, WM_GRAPHRESET, NULL, NULL);
+
+	return true;
 }

@@ -114,18 +114,35 @@ CKalelView::CKalelView()
 	, m_StrTemoinEV1(_T(""))
 	, m_StrTemoinEV2(_T(""))
 	, m_StrTemoinPompe(_T(""))
-	, experimentData(NULL)
+	, experimentData(nullptr)
 {
 }
 
 
 CKalelView::~CKalelView()
 {
-	delete threadManager;
-	delete experimentSettings;
-	if (experimentData != NULL) {
+	if (threadManager != nullptr) {
+		delete threadManager;
+	}
+	if (experimentSettings != nullptr) {
+		delete experimentSettings;
+	}
+	if (experimentData != nullptr) {
 		delete experimentData;
 	}
+}
+
+LRESULT CKalelView::ExchangeData(WPARAM, LPARAM incomingExperimentData)
+{
+	// Delete previous
+	if (experimentData != nullptr) {
+		delete experimentData;
+		experimentData = nullptr;
+	}
+	// Get the incoming pointer
+	experimentData = reinterpret_cast<ExperimentData*>(incomingExperimentData);
+
+	return 0;
 }
 
 // Liaising between variables and controls

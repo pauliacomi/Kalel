@@ -5,25 +5,12 @@
 #include "KalelView.h"
 
 
-LRESULT CKalelView::ExchangeData(WPARAM, LPARAM incomingExperimentData)
-{
-	// Delete previous
-	if (experimentData != NULL) {
-		delete experimentData;
-		experimentData = NULL;
-	}							
-	// Get the incoming pointer
-	experimentData = reinterpret_cast<ExperimentData*>(incomingExperimentData);
-
-	return 0;
-}
-
 // --------------- Displays -----------------------------
 
 
 void CKalelView::OnTimer(UINT nIDEvent)
 {
-	if (experimentData != NULL) {
+	if (experimentData != nullptr) {
 		// Convert to strings
 		m_StrCalo.Format(_T("%.9e"), experimentData->resultCalorimeter);
 		m_StrBassePression.Format(_T("%.6f"), experimentData->pressureLow);
@@ -58,9 +45,6 @@ void CKalelView::OnTimer(UINT nIDEvent)
 
 			// Update all views
 			GetDocument()->UpdateAllViews(this);
-
-			// We have stored this value, deletion will be done later
-			experimentData = NULL;
 		}
 	}
 
@@ -70,8 +54,6 @@ void CKalelView::OnTimer(UINT nIDEvent)
 LRESULT CKalelView::GraphReset(WPARAM, LPARAM)
 {
 	GetDocument()->GraphReset();
-	delete experimentData;
-	experimentData = NULL;
 
 	return 0;
 }

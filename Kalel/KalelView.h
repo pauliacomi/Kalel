@@ -5,7 +5,6 @@
 #pragma once
 
 #include "afxwin.h"
-#include <afxmt.h> // CEvent
 
 #include "StringTable.h"				// All strings in the program
 

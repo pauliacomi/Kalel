@@ -24,21 +24,21 @@ public:
 
 public:
 	// Set the handle
-	BOOL SetHandle(HWND h);
+	bool SetHandle(HWND h);
 
 	// PostMessage functions
-	void ExperimentStart();
-	void ExperimentEnd();
-	void ThreadShutdown();
-	void GraphReset();
-	BOOL ExchangeData(ExperimentData pParam);
-	BOOL DisplayMessage(int pParam, int pInt1 = default_val, int pInt2 = default_val, double pDouble = default_val);								// Simple display message which takes an int
+	bool ExperimentStart();
+	bool ExperimentEnd();
+	bool ThreadShutdown();
+	bool GraphReset();
+	bool ExchangeData(ExperimentData pParam);
+	bool DisplayMessage(int pParam, int pInt1 = default_val, int pInt2 = default_val, double pDouble = default_val);								// Simple display message which takes an int
 
-	BOOL DisplayMessage(int pParam, CString m);
+	bool DisplayMessage(int pParam, CString m);
 
 	// Messageboxes
-	BOOL DisplayMessageBox(int message, UINT nType, bool blocksProgram, double pDouble1 = default_val, double pDouble2 = default_val);
-	BOOL DisplayMessageBox(int pParam, UINT nType, bool blocksProgram, CString pString);
+	bool DisplayMessageBox(int message, UINT nType, bool blocksProgram, double pDouble1 = default_val, double pDouble2 = default_val);
+	bool DisplayMessageBox(int pParam, UINT nType, bool blocksProgram, CString pString);
 };
 
 

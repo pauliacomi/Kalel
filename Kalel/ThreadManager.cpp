@@ -163,10 +163,10 @@ HRESULT ThreadManager::SetUserContinue()
 // If the thread does not quit in a short time it will be forcefully closed. Check if this is an error when using the function.
 HRESULT ThreadManager::ShutdownThread()
 {
-	HRESULT hr = E_ABORT;
+	HRESULT hr = S_FALSE;
 
 	// Close the worker thread
-	if (m_threadMainControlLoop != NULL)
+	if (m_threadMainControlLoop != nullptr)
 	{
 		// Signal the thread to exit
 		::SetEvent(automation->h_eventShutdown);
@@ -180,12 +180,11 @@ HRESULT ThreadManager::ShutdownThread()
 			hr = S_FALSE;
 		}
 
-		// Delete thread
-		delete m_threadMainControlLoop;
+		// Delete threads
 		delete automation;
-
-		// NULL out pointer
-		m_threadMainControlLoop = NULL;
+		automation = nullptr;
+		delete m_threadMainControlLoop;
+		m_threadMainControlLoop = nullptr;
 
 		hr = S_OK;
 	}
