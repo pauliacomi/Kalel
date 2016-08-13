@@ -33,6 +33,7 @@ public:
 	HRESULT PauseThread();
 	HRESULT ResetThread();
 	HRESULT SetModifiedData();
+	HRESULT SetUserContinue();
 	HRESULT ShutdownThread();
 
 	void ManualAction();									// When a manual command is issued

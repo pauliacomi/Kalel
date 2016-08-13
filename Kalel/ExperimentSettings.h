@@ -32,7 +32,6 @@ public:
 	
 	HWND GUIhandle;						// Main GUI handle
 	int experimentType;					// General parameters
-	bool continueResult;
 
 	// Settings storage
 	Donnees_General dataGeneral;

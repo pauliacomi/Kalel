@@ -131,7 +131,7 @@ HRESULT ThreadManager::SetModifiedData()
 	if (m_threadMainControlLoop != NULL)
 	{
 		// Set the atomic bool as modified
-		automation->dataModified = true;
+		automation->sb_settingsModified = true;
 	}
 	else
 	{
@@ -141,6 +141,23 @@ HRESULT ThreadManager::SetModifiedData()
 	return hr;
 }
 
+HRESULT ThreadManager::SetUserContinue()
+{
+	HRESULT hr = S_OK;
+
+	// Check if the thread exists
+	if (m_threadMainControlLoop != NULL)
+	{
+		// Set the atomic bool as modified
+		automation->sb_userContinue = true;
+	}
+	else
+	{
+		hr = S_FALSE;
+	}
+
+	return hr;
+}
 
 // ShutdownThread function will check if thread is running and then send it the shutdown command
 // If the thread does not quit in a short time it will be forcefully closed. Check if this is an error when using the function.

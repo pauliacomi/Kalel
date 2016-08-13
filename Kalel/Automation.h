@@ -83,7 +83,8 @@ protected:
 	
 	HANDLE events[5];									// Keeps all the events below in one array
 public:
-	std::atomic_bool dataModified;
+	std::atomic_bool sb_settingsModified;				// Atomic variable that can be set to let the thread know that there are new experiment settings 
+	std::atomic_bool sb_userContinue;						
 
 	HANDLE h_eventShutdown;								// Handle event shutting down the thread
 	HANDLE h_eventResume;								// Handle event resuming the thread
@@ -116,7 +117,7 @@ protected:
 	//------------------------------------------------------------
 	// Set Data
 	//------------------------------------------------------------
-	ExperimentSettings SetData();
+	ExperimentSettings GetSettings();
 
 	//------------------------------------------------------------
 	// Execution
@@ -316,15 +317,11 @@ protected:
 
 	void Verifications();
 
-	int VerificationSecurity();
-
-	int VerificationValves();
-
-	int VerificationResidualPressure();
-
-	int VerificationTemperature();
-
-	int VerificationComplete();
+	bool VerificationSecurity();
+	bool VerificationValves();
+	bool VerificationResidualPressure();
+	bool VerificationTemperature();
+	bool VerificationComplete();
 
 	/**********************************************************************************************************************************
 	// Functions for shutdown checks

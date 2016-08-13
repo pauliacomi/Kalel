@@ -10,7 +10,8 @@ Automation::Automation(ExperimentSettings* exps)
 	experimentSettings = exps;
 
 	// Initialise class members
-	dataModified = false;
+	sb_settingsModified = false;
+	sb_userContinue = false;
 
 	// Initialise threads
 	h_MeasurementThread[0] = NULL;
@@ -35,7 +36,7 @@ Automation::Automation(ExperimentSettings* exps)
 	events[4] = h_eventUserInput;
 
 	// Initialise local settings copy
-	experimentLocalSettings = SetData();
+	experimentLocalSettings = GetSettings();
 
 	// Initialise message handler
 	messageHandler.SetHandle(experimentLocalSettings.GUIhandle);
@@ -126,15 +127,15 @@ void Automation::Execution()
 		*
 		*/
 
-		if (dataModified) {
+		if (sb_settingsModified) {
 			if (experimentLocalData.experimentInProgress == true) {
-				ExperimentSettings tempSettings = SetData();	// We have the two settings coexisting to record any changes
+				ExperimentSettings tempSettings = GetSettings();	// We have the two settings coexisting to record any changes
 				RecordDataChange(tempSettings, false);			// non-CSV
 				RecordDataChange(tempSettings, true);			// CSV
 				experimentLocalSettings = tempSettings;			// Now save the new settings as the old ones
 			}
 			else
-				experimentLocalSettings = SetData();
+				experimentLocalSettings = GetSettings();
 		}
 
 		/*
@@ -256,7 +257,7 @@ void Automation::Execution()
 
 		case WAIT_OBJECT_0 + 1:											// Pause thread
 			Pause();
-			::ResetEvent(h_eventPause);	// Reset the event
+			::ResetEvent(h_eventPause);		// Reset the event
 			break;
 
 		case WAIT_OBJECT_0 + 2:											// Resume thread
@@ -292,7 +293,7 @@ bool Automation::ExecutionManual()
 		ResetAutomation();
 
 		// Get data
-		experimentLocalSettings = SetData();
+		experimentLocalSettings = GetSettings();
 
 		// Record start
 		experimentLocalData.experimentInProgress = true;
@@ -388,14 +389,14 @@ void Automation::ResetAutomation()
 
 
 
-ExperimentSettings Automation::SetData()
+ExperimentSettings Automation::GetSettings()
 {
 	ExperimentSettings tempSettings;
 
 	// Copy the data from the main thread, no need for synchronisation as we are only copying
 	tempSettings = experimentSettings;
 
-	dataModified = false;
+	sb_settingsModified = false;
 
 	return tempSettings;
 }
