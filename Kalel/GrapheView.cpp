@@ -322,7 +322,6 @@ void CGrapheView::TraceScale(CRect graphe,CRect axe_graphe,int max_pression,int 
 
 	// ------ Echelle Calo -----------------------------------------
 	int nb_intervalles_calo = 1;//5;
-	//int ecart_calo = max_calo-min_calo;
 	double ecart_calo = max_calo-min_calo;
 		
 	for(int i=0;i<=nb_intervalles_calo;i++)

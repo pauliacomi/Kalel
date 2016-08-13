@@ -133,7 +133,7 @@ void Automation::SecuriteHautePressionAuto()
 {
 	if (securityActivated)
 	{
-		if (experimentLocalData.experimentStage != STAGE_UNDER_VACUUM)
+		if (experimentLocalData.experimentStage != STAGE_VACUUM_SAMPLE)
 		{
 			// Check for the pressure being higher than low pressure limit
 			if (experimentLocalData.pressureHigh > GetPressionSecuriteBassePression())
@@ -166,7 +166,7 @@ void Automation::SecuriteTemperaturesAuto()
 {
 	if (securityActivated)
 	{
-		if (experimentLocalData.experimentStage != STAGE_UNDER_VACUUM)
+		if (experimentLocalData.experimentStage != STAGE_VACUUM_SAMPLE)
 		{
 			if (experimentLocalData.temperatureCalo >= experimentLocalSettings.dataGeneral.temperature_experience + securite_temperature)
 			{

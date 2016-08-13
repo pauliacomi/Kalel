@@ -353,7 +353,7 @@ bool Automation::ExecutionAuto()
 	case STAGE_DESORPTION:
 		StageDesorption();
 		break;
-	case STAGE_UNDER_VACUUM:
+	case STAGE_VACUUM_SAMPLE:
 		StageDesorption();
 		break;
 	case STAGE_END_AUTOMATIC:

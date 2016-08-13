@@ -79,7 +79,7 @@ void CManip::SecuriteHautePressionAuto()
 	// Mesure de sécurité : 
 	if (mesure_de_securite)
 	{
-		if(etape_en_cours != STAGE_UNDER_VACUUM)
+		if(etape_en_cours != STAGE_VACUUM_SAMPLE)
 		{
 			if(resultat_hp > GetPressionSecuriteBassePression())
 			{
@@ -206,7 +206,7 @@ void CManip::SecuriteTemperaturesAuto()
 	// Mesure de sécurité : 
 	if (mesure_de_securite)
 	{
-		if(etape_en_cours != STAGE_UNDER_VACUUM)
+		if(etape_en_cours != STAGE_VACUUM_SAMPLE)
 		{
 			CString mess;
 			if(TemperatureCalo >= (float)general.temperature_experience + securite_temperature)//2)//5)

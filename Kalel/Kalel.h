@@ -30,7 +30,13 @@ public:
 
 // Implementation
 	afx_msg void OnAppAbout();
+	void DisplayPortDialog();
+	void DisplayApparatusSettingsDialog();
+	void OnMsvAmpoule();
+	void OnMsvBouteille();
 	DECLARE_MESSAGE_MAP()
+
+	void OnChangementBouteille();
 
 	void OnBackgroundthreadStart();
 	void OnBackgroundthreadStop();

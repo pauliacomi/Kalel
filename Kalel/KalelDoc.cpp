@@ -146,7 +146,6 @@ CKalelDoc * CKalelDoc::GetDocument()
 // Add a measurement to the graph
 bool CKalelDoc::GraphAddMeasurement(ExperimentData * expData)
 {
-	int lastMeasurement;
 	bool result = false;
 
 	if (m_TableauMesures.size() == 0)

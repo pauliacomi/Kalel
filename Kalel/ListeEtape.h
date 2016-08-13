@@ -17,13 +17,13 @@ const InfoEtape InfoPetitesDoses = InfoEtape(STAGE_SMALL_DOSES,_T("Petites Doses
 const InfoEtape InfoMoyennesDoses = InfoEtape(STAGE_MEDIUM_DOSES,_T("Moyennes Doses"),POINT_ARRET_LEA);
 const InfoEtape InfoGrandesDoses = InfoEtape(STAGE_BIG_DOSES,_T("Grandes Doses"),POINT_ARRET_LEA);
 const InfoEtape InfoDesorption = InfoEtape(STAGE_DESORPTION,_T("Désorption"),POINT_ARRET_LEA);
-const InfoEtape InfoMiseSousVide = InfoEtape(STAGE_UNDER_VACUUM,_T("Mise sous vide"),POINT_ARRET_MISE_SOUS_VIDE_LEA);
+const InfoEtape InfoMiseSousVide = InfoEtape(STAGE_VACUUM_SAMPLE,_T("Mise sous vide"),POINT_ARRET_MISE_SOUS_VIDE_LEA);
 
 const InfoEtape ListeEtape[] =	{InfoTemperature,InfoLigneBaseEquilibre,InfoAdsorptionContinue,
 								InfoPetitesDoses,InfoMoyennesDoses,InfoGrandesDoses,InfoDesorption,InfoMiseSousVide};
 /*
 const int ListeEtape[]={STAGE_TEMP,STAGE_EQ_LINE,STAGE_CONT_ADSORPTON,
-				  STAGE_SMALL_DOSES,STAGE_BIG_DOSES,STAGE_DESORPTION,STAGE_UNDER_VACUUM};	
+				  STAGE_SMALL_DOSES,STAGE_BIG_DOSES,STAGE_DESORPTION,STAGE_VACUUM_SAMPLE};	
 
 const CString ListeNomEtape[]={_T("STAGE_TEMP"),_T("Ligne de base et d'équilibre"),_T("Adsorption Continue"),
 						 _T("Petites Doses"), _T("Grandes Doses"), _T("Désorption"), _T("Mise sous vide")};

@@ -100,8 +100,6 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 
 	cs.style &= ~FWS_ADDTOTITLE;
 	return CFrameWnd::PreCreateWindow(cs);
-
-	return TRUE;
 }
 
 void CMainFrame::OnUpdateFrameTitle(BOOL bAddToTitle)

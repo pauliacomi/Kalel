@@ -43,7 +43,7 @@ void Automation::StageDesorption()
 		}
 		else
 		{
-			experimentLocalData.experimentStage = STAGE_UNDER_VACUUM;														// Set desorption if all desorption stages have been finished
+			experimentLocalData.experimentStage = STAGE_VACUUM_SAMPLE;													// Set sample vacuum if all desorption stages have been finished
 		}
 		break;
 	}

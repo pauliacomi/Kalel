@@ -79,7 +79,7 @@ void Automation::StageVacuum(bool separateFunctionality)
 				WaitMinutes(temps_defaut);
 		}
 
-		experimentLocalData.experimentStage = STEP_STATUS_END;
+		experimentLocalData.experimentStepStatus = STEP_STATUS_END;
 		break;
 
 
@@ -92,9 +92,18 @@ void Automation::StageVacuum(bool separateFunctionality)
 
 			ControlMechanismsCloseAll();
 
-			messageHandler.DisplayMessage(MESSAGE_VACUUM_STAGE_END);
+			if (separateFunctionality)
+			{
+				experimentLocalData.experimentStage = STAGE_UNDEF;
+				shutdownReason = STOP_NORMAL;								// set a normal shutdown
+				::SetEvent(h_eventReset);									// end then set the event
+			}
+			else
+			{
+				messageHandler.DisplayMessage(MESSAGE_VACUUM_STAGE_END);
 
-			experimentLocalData.experimentStage = STAGE_END_AUTOMATIC;
+				experimentLocalData.experimentStepStatus = STAGE_END_AUTOMATIC;
+			}
 		}
 		break;
 	}

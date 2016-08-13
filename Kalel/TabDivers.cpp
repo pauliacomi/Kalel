@@ -170,7 +170,7 @@ void TabDivers::Reinitialisation()
 void TabDivers::WriteData()
 {
 	allSettings.cellule = cellExp;
-	allSettings.mise_sous_vide_fin_experience = m_bMiseSousVide;
+	allSettings.mise_sous_vide_fin_experience = (bool)m_bMiseSousVide;
 	allSettings.temps_ligne_base = m_nTempsLigneBase;
 	allSettings.temps_vide = m_nTempsVide;
 }

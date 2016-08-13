@@ -67,7 +67,7 @@ void CKalelView::OnTimer(UINT nIDEvent)
 	CFormView::OnTimer(nIDEvent);	// Call base class handler.
 }
 
-LRESULT CKalelView::GraphReset(WPARAM wparam, LPARAM lParam)
+LRESULT CKalelView::GraphReset(WPARAM, LPARAM)
 {
 	GetDocument()->GraphReset();
 	delete experimentData;
@@ -209,19 +209,6 @@ LRESULT CKalelView::AffichageEtape()
 }
 
 
-LRESULT CKalelView::RajoutAffichageEtape(WPARAM, LPARAM)
-{
-	CString rajout;
-
-	CString m_StrRajout = m_StrEtape;
-	m_StrRajout += rajout;
-	SetDlgItemText(IDC_EDIT_ETAPE,m_StrRajout);
-
-	return 0;
-}
-
-
-
 
 // ------------ Dialog Boxes ----
 
@@ -231,10 +218,7 @@ LRESULT CKalelView::MessageBoxAlert(WPARAM wParam, LPARAM lParam)
 	std::auto_ptr<CString> message(reinterpret_cast<CString*>(lParam));
 	std::auto_ptr<UINT> nType(reinterpret_cast<UINT*>(wParam));
 	
-	int result;
-	bool continuer = true;
-	result = AfxMessageBox(*message, *nType);
-	return result;
+	return AfxMessageBox(*message, *nType);
 }
 
 LRESULT CKalelView::MessageBoxConfirmation(WPARAM wParam, LPARAM lParam)

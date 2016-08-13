@@ -9,7 +9,7 @@ using namespace std;
 void CManip_AutoGaz::MiseSousVide(LPVOID pParam)
 {
 	PointArretMiseSousVide();
-	etape_en_cours = STAGE_UNDER_VACUUM;
+	etape_en_cours = STAGE_VACUUM_SAMPLE;
 	DonneesAutoGrapheEtape();
 
 	messageHandler.DisplayMessage(_T("Début de la mise sous vide\r\n"));

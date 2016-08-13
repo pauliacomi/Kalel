@@ -34,7 +34,7 @@ void CManip_AutoGaz::EnregistrementFichierMesures()
 		{
 			case STAGE_EQ_LINE :
 			case STAGE_CONT_ADSORPTON :
-			case STAGE_UNDER_VACUUM :
+			case STAGE_VACUUM_SAMPLE :
 				fichier_mesure_autogaz << "0;";
 				break;
 			case STAGE_SMALL_DOSES :

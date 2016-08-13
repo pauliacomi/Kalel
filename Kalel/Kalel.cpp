@@ -27,11 +27,11 @@ BEGIN_MESSAGE_MAP(CKalelApp, CWinAppEx)
 	ON_COMMAND(ID_FILE_OPEN, &CWinAppEx::OnFileOpen)
 
 	// New menu based commands to main view
-	ON_COMMAND(ID_PARAMATRES_APPAREIL, &CKalelView::DisplayPortDialog)
-	ON_COMMAND(ID_CONNECTION_PORTS, &CKalelView::DisplayApparatusSettingsDialog)
-	ON_COMMAND(ID_MSV_AMPOULE, &CKalelView::OnMsvAmpoule)
-	ON_COMMAND(ID_MSV_BOUTEILLE, &CKalelView::OnMsvBouteille)
-	ON_COMMAND(ID_CHANGEMENT_BOUTEILLE, &CKalelView::OnChangementBouteille)
+	ON_COMMAND(ID_PARAMATRES_APPAREIL, &CKalelApp::DisplayPortDialog)
+	ON_COMMAND(ID_CONNECTION_PORTS, &CKalelApp::DisplayApparatusSettingsDialog)
+	ON_COMMAND(ID_MSV_AMPOULE, &CKalelApp::OnMsvAmpoule)
+	ON_COMMAND(ID_MSV_BOUTEILLE, &CKalelApp::OnMsvBouteille)
+	ON_COMMAND(ID_CHANGEMENT_BOUTEILLE, &CKalelApp::OnChangementBouteille)
 	ON_COMMAND(ID_BACKGROUNDTHREAD_START, &CKalelApp::OnBackgroundthreadStart)
 	ON_COMMAND(ID_BACKGROUNDTHREAD_STOP, &CKalelApp::OnBackgroundthreadStop)
 	ON_COMMAND(ID_BACKGROUNDTHREAD_RESTART, &CKalelApp::OnBackgroundthreadRestart)
@@ -202,22 +202,42 @@ void CKalelApp::OnAppAbout()
 	aboutDlg.DoModal();
 }
 
-void CKalelApp::OnBackgroundthreadStart()
-{
+void CKalelApp::DisplayPortDialog(){
+	PostMessage(CKalelView::GetView()->GetSafeHwnd(), UWM_DISP_PORT_DIALOG, 0, 0);
+}
+
+void CKalelApp::DisplayApparatusSettingsDialog(){
+	PostMessage(CKalelView::GetView()->GetSafeHwnd(), UWM_DISP_DEVSETTINGS_DIALOG, 0, 0);
+}
+
+
+void CKalelApp::OnMsvAmpoule(){
+	PostMessage(CKalelView::GetView()->GetSafeHwnd(), UWM_FUNC_VACUUM_SAMPLE, 0, 0);
+}
+
+void CKalelApp::OnMsvBouteille(){
+	PostMessage(CKalelView::GetView()->GetSafeHwnd(), UWM_FUNC_VACUUM_BOTTLE, 0, 0);
+}
+
+
+void CKalelApp::OnChangementBouteille(){
+	PostMessage(CKalelView::GetView()->GetSafeHwnd(), UWM_FUNC_CHANGE_BOTTLE, 0, 0);
+}
+
+void CKalelApp::OnBackgroundthreadStart(){
 	PostMessage(CKalelView::GetView()->GetSafeHwnd(), UWM_THREAD_START, 0, 0);
 }
 
 
-void CKalelApp::OnBackgroundthreadStop()
-{
+void CKalelApp::OnBackgroundthreadStop(){
 	PostMessage(CKalelView::GetView()->GetSafeHwnd(), UWM_THREAD_STOP, 0, 0);
 }
 
 
-void CKalelApp::OnBackgroundthreadRestart()
-{
+void CKalelApp::OnBackgroundthreadRestart(){
 	PostMessage(CKalelView::GetView()->GetSafeHwnd(), UWM_THREAD_RESTART, 0, 0);
 }
+
 
 // Make sure that the functionalities are only available when the experiment is not running
 

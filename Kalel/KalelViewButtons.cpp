@@ -89,11 +89,11 @@ void CKalelView::OnBnClickedButtonParametresExperience()
 		dialogExperimentProperties.Initiate(experimentSettings);
 
 		int counter = 0;
-		if (experimentData->experimentStage = STAGE_ADSORPTION)
+		if (experimentData->experimentStage == STAGE_ADSORPTION)
 		{
 			counter = experimentData->adsorptionCounter;
 		}
-		if (experimentData->experimentStage = STAGE_DESORPTION)
+		if (experimentData->experimentStage == STAGE_DESORPTION)
 		{
 			counter = experimentData->desorptionCounter;
 		}

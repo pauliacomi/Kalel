@@ -8,6 +8,12 @@
 
 void Automation::SampleVacuum()
 {
+	if (experimentLocalData.experimentStepStatus == STEP_STATUS_UNDEF) {
+		experimentLocalData.experimentStage = STAGE_VACUUM_SAMPLE;
+		experimentLocalData.experimentStepStatus = STEP_STATUS_START;
+		experimentLocalData.experimentInProgress = true;
+	}
+
 	StageVacuum(true);
 }
 

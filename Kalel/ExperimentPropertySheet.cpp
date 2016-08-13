@@ -444,9 +444,8 @@ LRESULT ExperimentPropertySheet::OnButtonRemoveAdsorption(WPARAM, LPARAM lParam)
 		// Reset the tabs
 		RemoveStepTabs();
 		AddStepTabs();
-
-		return 0;
 	}
+	return 0;
 }
 
 LRESULT ExperimentPropertySheet::OnButtonRemoveDesorption(WPARAM, LPARAM lParam)

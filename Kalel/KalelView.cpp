@@ -37,6 +37,13 @@ BEGIN_MESSAGE_MAP(CKalelView, CFormView)
 	ON_MESSAGE(UWM_THREAD_RESTART, &CKalelView::BackgroundThreadRestart)
 	ON_MESSAGE(WM_CANCELEXPERIMENT, &CKalelView::CancelBeforeStarting)
 
+	ON_MESSAGE(UWM_FUNC_VACUUM_SAMPLE, &CKalelView::OnMsvAmpoule)
+	ON_MESSAGE(UWM_FUNC_VACUUM_BOTTLE, &CKalelView::OnMsvBouteille)
+	ON_MESSAGE(UWM_FUNC_CHANGE_BOTTLE, &CKalelView::OnChangementBouteille)
+	ON_MESSAGE(UWM_DISP_PORT_DIALOG, &CKalelView::DisplayPortDialog)
+	ON_MESSAGE(UWM_DISP_DEVSETTINGS_DIALOG, &CKalelView::DisplayApparatusSettingsDialog)
+	
+
 	// Manual command messages
 	ON_MESSAGE(WM_UPDATEBUTTONS, &CKalelView::OnThreadRequestButtonUpdate)			// Calls to update a specific button pair and associated display
 
@@ -290,34 +297,95 @@ void CKalelView::DoEvents(void)
 	}
 }
 
-void CKalelView::OnMsvAmpoule(void)
+LRESULT CKalelView::OnMsvAmpoule(WPARAM, LPARAM)
 {
-	ASSERT(0);
-	//MiseSousVideAmpoule(GetSafeHwnd());
+	if (pApp->experimentRunning) {
+		AfxMessageBox(ERROR_EXP_INPROGRESS, MB_ICONEXCLAMATION | MB_OK);
+	}
+	else {
+		experimentSettings->experimentType = EXPERIMENT_TYPE_SAMPLE_VACUUM;
+
+		// the start button is blocked
+		GetDlgItem(IDC_LANCER)->EnableWindow(FALSE);
+		// the stop button is activated
+		GetDlgItem(IDC_ARRETER)->EnableWindow(TRUE);
+
+		// Block menu and set running flag
+		pApp->experimentRunning = true;
+		pApp->menuIsAvailable = false;
+		UpdateButtons();
+
+		// Raise the flag for data modified
+		threadManager->SetModifiedData();
+	}
+
+	return 0;
 }
 
-void CKalelView::OnMsvBouteille()
+LRESULT CKalelView::OnMsvBouteille(WPARAM, LPARAM)
 {
-	ASSERT(0);
-	//MiseSousVideBouteille(GetSafeHwnd());
+	if (pApp->experimentRunning) {
+		AfxMessageBox(ERROR_EXP_INPROGRESS, MB_ICONEXCLAMATION | MB_OK);
+	}
+	else {
+		experimentSettings->experimentType = EXPERIMENT_TYPE_BOTTLE_VACUUM;
+
+		// the start button is blocked
+		GetDlgItem(IDC_LANCER)->EnableWindow(FALSE);
+		// the stop button is activated
+		GetDlgItem(IDC_ARRETER)->EnableWindow(TRUE);
+
+		// Block menu and set running flag
+		pApp->experimentRunning = true;
+		pApp->menuIsAvailable = false;
+		UpdateButtons();
+
+		// Raise the flag for data modified
+		threadManager->SetModifiedData();
+	}
+
+	return 0;
 }
 
-void CKalelView::OnChangementBouteille()
+LRESULT CKalelView::OnChangementBouteille(WPARAM, LPARAM)
 {
-	ASSERT(0);
-	//ChangementBouteille(GetSafeHwnd());
+	if (pApp->experimentRunning) {
+		AfxMessageBox(ERROR_EXP_INPROGRESS, MB_ICONEXCLAMATION | MB_OK);
+	}
+	else {
+		experimentSettings->experimentType = EXPERIMENT_TYPE_SAMPLE_VACUUM;
+
+		// the start button is blocked
+		GetDlgItem(IDC_LANCER)->EnableWindow(FALSE);
+		// the stop button is activated
+		GetDlgItem(IDC_ARRETER)->EnableWindow(TRUE);
+
+		// Block menu and set running flag
+		pApp->experimentRunning = true;
+		pApp->menuIsAvailable = false;
+		UpdateButtons();
+
+		// Raise the flag for data modified
+		threadManager->SetModifiedData();
+	}
+
+	return 0;
 }
 
-void CKalelView::DisplayPortDialog(void)
+LRESULT CKalelView::DisplayPortDialog(WPARAM, LPARAM)
 {
 	ApparatusParameters apparatusParameters;
 	apparatusParameters.DoModal();
+
+	return 0;
 }
 
-void CKalelView::DisplayApparatusSettingsDialog(void)
+LRESULT CKalelView::DisplayApparatusSettingsDialog(WPARAM, LPARAM)
 {
 	ConnectionPort m_connection_ports;
 	m_connection_ports.DoModal();
+
+	return 0;
 }
 
 

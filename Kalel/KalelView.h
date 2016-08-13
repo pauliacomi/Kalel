@@ -107,51 +107,51 @@ protected:
 protected:
 	DECLARE_MESSAGE_MAP()
 
-public:
+protected:
 	//------- KalelView
 
 	void DoEvents(void);
-	void OnMsvAmpoule(void);
-	void OnMsvBouteille(void);
-	void OnChangementBouteille(void);
-	void DisplayPortDialog(void);
-	void DisplayApparatusSettingsDialog(void);
+
+	LRESULT OnMsvAmpoule(WPARAM wParam, LPARAM lParam);
+	LRESULT OnMsvBouteille(WPARAM wParam, LPARAM lParam);
+	LRESULT OnChangementBouteille(WPARAM wParam, LPARAM lParam);
+	LRESULT DisplayPortDialog(WPARAM wParam, LPARAM lParam);
+	LRESULT DisplayApparatusSettingsDialog(WPARAM wParam, LPARAM lParam);
 
 	void GetExperimentData(ExperimentPropertySheet * dialogExperimentProperties, bool initialRequest);
-
 	void UpdateButtons();
 
+	LRESULT ExchangeData(WPARAM wParam, LPARAM lParam);
+	LRESULT BackgroundThreadStart(WPARAM wParam, LPARAM lParam);
+	LRESULT BackgroundThreadStop(WPARAM wParam, LPARAM lParam);
+	LRESULT BackgroundThreadRestart(WPARAM wParam, LPARAM lParam);
 
 	// Thread callbacks
 	LRESULT OnRegularThreadFinished(WPARAM wParam, LPARAM);
+	LRESULT CancelBeforeStarting(WPARAM wParam, LPARAM lParam);
 
 protected:
 
 	//-------- KalelView_Affichage
 
-public:
+protected:
+	void OnTimer(UINT nIDEvent);	//timer for window update
+
 	LRESULT AffichageMessages(WPARAM wParam, LPARAM lParam);
 	LRESULT AffichageMesures();
 	LRESULT AffichageEtape();
-	LRESULT RajoutAffichageEtape(WPARAM wParam, LPARAM lParam);
-	LRESULT ExchangeData(WPARAM wParam, LPARAM lParam);
 	LRESULT MessageBoxAlert(WPARAM wParam, LPARAM lParam);
 	LRESULT MessageBoxConfirmation(WPARAM wParam, LPARAM);
-
-	LRESULT BackgroundThreadStart(WPARAM wParam, LPARAM lParam);
-	LRESULT BackgroundThreadStop(WPARAM wParam, LPARAM lParam);
-	LRESULT BackgroundThreadRestart(WPARAM wParam, LPARAM lParam);
-
-	void OnTimer(UINT nIDEvent);	//timer for window update
-
 	LRESULT GraphReset(WPARAM wparam, LPARAM lParam);
 
+	
+	//
 	//-------- KalelView_Boutons
-public:
+	//
+
+protected:
 	void OnBnClickedLancer();
 	void OnBnClickedArreter();
-	LRESULT CancelBeforeStarting(WPARAM wParam, LPARAM lParam);
-
 	void OnBnClickedButtonParametresExperience();
 	void OnBnClickedArretSousVide();
 	void OnBnClickedPause();
@@ -160,8 +160,11 @@ public:
 	void OnBnClickedProchaineEtape();
 	void OnBnClickedReprise();
 
+	//
 	//-------- KalelView_Boutons_Vannes
-public:
+	//
+
+protected:
 	void AskThreadForManualCommand(int instrument, int i, bool askToActivate);
 	LRESULT OnThreadRequestButtonUpdate(WPARAM wParam, LPARAM lParam);
 
