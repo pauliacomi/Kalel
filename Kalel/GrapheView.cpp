@@ -16,7 +16,7 @@
 #define NOMBREPOINTS 2000
 #define INEXISTANT -255
 
-#define RECENT_HOURS 0.005
+#define RECENT_HOURS (float)0.01
 
 // CGrapheView
 

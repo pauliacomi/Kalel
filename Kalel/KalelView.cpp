@@ -118,6 +118,9 @@ CKalelView::~CKalelView()
 {
 	delete threadManager;
 	delete experimentSettings;
+	if (experimentData != NULL) {
+		delete experimentData;
+	}
 }
 
 // Liaising between variables and controls

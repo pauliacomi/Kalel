@@ -22,7 +22,7 @@ ThreadManager::ThreadManager(ExperimentSettings * expD)
 	experimentSettings = expD;
 
 	// Start the thread
-	//StartThread();
+	StartThread();
 }
 
 ThreadManager::~ThreadManager()
