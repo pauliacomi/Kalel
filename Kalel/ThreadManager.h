@@ -25,7 +25,6 @@ public:
 
 private:
 	Automation * automation;								// Main class that deals with the automatic functionality
-	CVannes * pVanne;										// Pointers for interfacing with the valves and temperature
 
 	// Public interface methods
 public:
@@ -34,6 +33,7 @@ public:
 	HRESULT PauseThread();
 	HRESULT ResetThread();
 	HRESULT SetModifiedData();
+	HRESULT SetUserContinue();
 	HRESULT ShutdownThread();
 
 	void ManualAction();									// When a manual command is issued

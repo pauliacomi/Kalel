@@ -7,40 +7,37 @@
 
 class ExperimentSettings
 {
-public:
-	ExperimentSettings();
-	ExperimentSettings(int initialAdsorptions, int initialDesorptions);
-	~ExperimentSettings(void);
-
-public:
-
-	//
-	// Variables
-	//
-	
-	CRITICAL_SECTION criticalSection;	// Critical Section
-	HWND GUIhandle;						// Main GUI handle
-
-	int experimentType;					// General parameters
-
-	LRESULT continueResult;				// Response when waiting for input
-
-	// Settings storage
-
-	Donnees_General dataGeneral;
-	Donnees_Divers dataDivers;
-	vector<Donnees_Doses> dataAdsorption;
-	vector<Donnees_Desorption> dataDesorption;
 
 	//
 	// Functions
 	//
 
+public:
+	ExperimentSettings();
+	ExperimentSettings(int initialAdsorptions, int initialDesorptions);
+	~ExperimentSettings(void);
+
 	void ResetData();
 	void ResetData(int initialAdsorptions, int initialDesorptions);
 
+
 	// Overload equals function
 	ExperimentSettings & ExperimentSettings::operator=(const ExperimentSettings * p);
+
+	//
+	// Variables
+	//
+
+public:
+	
+	HWND GUIhandle;						// Main GUI handle
+	int experimentType;					// General parameters
+
+	// Settings storage
+	Donnees_General dataGeneral;
+	Donnees_Divers dataDivers;
+	vector<Donnees_Doses> dataAdsorption;
+	vector<Donnees_Desorption> dataDesorption;
 };
 
 #endif

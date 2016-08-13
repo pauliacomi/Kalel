@@ -136,12 +136,10 @@ void CMainFrame::OnSysCommand(UINT nID, LPARAM lParam)
 
 		if (pApp->experimentRunning)
 		{
-			if (AfxMessageBox(PROMPT_RUNNINGEXP,
-				MB_YESNO | MB_ICONQUESTION, 0) == IDYES)
+			if (AfxMessageBox(PROMPT_RUNNINGEXP, MB_YESNO | MB_ICONQUESTION, 0) == IDNO)
 			{
-				pView->OnBnClickedArreter();
+				return; // do not close
 			}
-			return; // do not close
 		}
 	}
 

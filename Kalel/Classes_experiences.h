@@ -136,7 +136,6 @@ public:
 	float pression_finale;
 	int temps_desorption;
 	int temps_volume;
-	bool derniere_etape;
 
 	Donnees_Desorption operator=(const Donnees_Desorption &desorption);
 	bool operator!=(const Donnees_Desorption &desorption);

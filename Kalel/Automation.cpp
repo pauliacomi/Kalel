@@ -6,11 +6,12 @@
 Automation::Automation(ExperimentSettings* exps)
 	: running(true)
 {
-	// Save reference to experiment settings
+	// Save pointer to experiment settings
 	experimentSettings = exps;
 
 	// Initialise class members
-	dataModified = false;
+	sb_settingsModified = false;
+	sb_userContinue = false;
 
 	// Initialise threads
 	h_MeasurementThread[0] = NULL;
@@ -35,7 +36,7 @@ Automation::Automation(ExperimentSettings* exps)
 	events[4] = h_eventUserInput;
 
 	// Initialise local settings copy
-	experimentLocalSettings = SetData();
+	experimentLocalSettings = GetSettings();
 
 	// Initialise message handler
 	messageHandler.SetHandle(experimentLocalSettings.GUIhandle);
@@ -109,11 +110,8 @@ Automation::~Automation()
 //		6. IF RECORDING, save the data to the file, restart timer between measurements and increment measurement number
 //		7. IF WAITING, check whether the wait is complete and reset the wait
 //		8. Display the data to the GUI
-//		9. 
+//		9. Event-based wait. If any events are triggered in this time, the thread performs the requested action.
 //	}
-//
-//
-//
 //
 //
 //
@@ -129,15 +127,15 @@ void Automation::Execution()
 		*
 		*/
 
-		if (dataModified) {
+		if (sb_settingsModified) {
 			if (experimentLocalData.experimentInProgress == true) {
-				ExperimentSettings tempSettings = SetData();	// We have the two settings coexisting to record any changes
+				ExperimentSettings tempSettings = GetSettings();	// We have the two settings coexisting to record any changes
 				RecordDataChange(tempSettings, false);			// non-CSV
 				RecordDataChange(tempSettings, true);			// CSV
 				experimentLocalSettings = tempSettings;			// Now save the new settings as the old ones
 			}
 			else
-				experimentLocalSettings = SetData();
+				experimentLocalSettings = GetSettings();
 		}
 
 		/*
@@ -252,7 +250,6 @@ void Automation::Execution()
 		{
 
 		case WAIT_OBJECT_0:												// Complete stop of thread
-			running = false;
 			shutdownReason = STOP_COMPLETE;
 			Shutdown();
 			::ResetEvent(h_eventShutdown);	// Reset the event
@@ -260,7 +257,7 @@ void Automation::Execution()
 
 		case WAIT_OBJECT_0 + 1:											// Pause thread
 			Pause();
-			::ResetEvent(h_eventPause);	// Reset the event
+			::ResetEvent(h_eventPause);		// Reset the event
 			break;
 
 		case WAIT_OBJECT_0 + 2:											// Resume thread
@@ -273,7 +270,6 @@ void Automation::Execution()
 			break;
 
 		case WAIT_OBJECT_0 + 4:											// Wait for user input
-			Shutdown();
 			break;
 
 		case WAIT_TIMEOUT:
@@ -297,7 +293,7 @@ bool Automation::ExecutionManual()
 		ResetAutomation();
 
 		// Get data
-		experimentLocalSettings = SetData();
+		experimentLocalSettings = GetSettings();
 
 		// Record start
 		experimentLocalData.experimentInProgress = true;
@@ -393,16 +389,14 @@ void Automation::ResetAutomation()
 
 
 
-ExperimentSettings Automation::SetData()
+ExperimentSettings Automation::GetSettings()
 {
 	ExperimentSettings tempSettings;
 
 	// Copy the data from the main thread, no need for synchronisation as we are only copying
-	EnterCriticalSection(&experimentSettings->criticalSection);
 	tempSettings = experimentSettings;
-	LeaveCriticalSection(&experimentSettings->criticalSection);
 
-	dataModified = false;
+	sb_settingsModified = false;
 
 	return tempSettings;
 }

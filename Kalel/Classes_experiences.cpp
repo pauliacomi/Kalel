@@ -231,7 +231,6 @@ Donnees_Desorption Donnees_Desorption::operator=(const Donnees_Desorption &STAGE
 	pression_finale = STAGE_DESORPTION.pression_finale;
 	temps_desorption = STAGE_DESORPTION.temps_desorption;
 	temps_volume = STAGE_DESORPTION.temps_volume;
-	derniere_etape = STAGE_DESORPTION.derniere_etape;
 
 	return *this;
 }
@@ -242,8 +241,7 @@ bool Donnees_Desorption::operator!=(const Donnees_Desorption &STAGE_DESORPTION)
 			delta_pression != STAGE_DESORPTION.delta_pression ||
 			pression_finale != STAGE_DESORPTION.pression_finale ||
 			temps_desorption != STAGE_DESORPTION.temps_desorption ||
-			temps_volume != STAGE_DESORPTION.temps_volume ||
-			derniere_etape != STAGE_DESORPTION.derniere_etape)
+			temps_volume != STAGE_DESORPTION.temps_volume)
 		return TRUE;
 	return FALSE;
 }

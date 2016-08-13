@@ -32,6 +32,9 @@ BEGIN_MESSAGE_MAP(CKalelApp, CWinApp)
 	ON_COMMAND(ID_MSV_AMPOULE, &CKalelView::OnMsvAmpoule)
 	ON_COMMAND(ID_MSV_BOUTEILLE, &CKalelView::OnMsvBouteille)
 	ON_COMMAND(ID_CHANGEMENT_BOUTEILLE, &CKalelView::OnChangementBouteille)
+	ON_COMMAND(ID_BACKGROUNDTHREAD_START, &CKalelApp::OnBackgroundthreadStart)
+	ON_COMMAND(ID_BACKGROUNDTHREAD_STOP, &CKalelApp::OnBackgroundthreadStop)
+	ON_COMMAND(ID_BACKGROUNDTHREAD_RESTART, &CKalelApp::OnBackgroundthreadRestart)
 
 	// New update based commands
 	ON_UPDATE_COMMAND_UI(ID_PARAMATRES_APPAREIL, &CKalelApp::OnUpdateParamatresAppareil)
@@ -199,6 +202,22 @@ void CKalelApp::OnAppAbout()
 	aboutDlg.DoModal();
 }
 
+void CKalelApp::OnBackgroundthreadStart()
+{
+	PostMessage(CKalelView::GetView()->GetSafeHwnd(), UWM_THREAD_START, 0, 0);
+}
+
+
+void CKalelApp::OnBackgroundthreadStop()
+{
+	PostMessage(CKalelView::GetView()->GetSafeHwnd(), UWM_THREAD_STOP, 0, 0);
+}
+
+
+void CKalelApp::OnBackgroundthreadRestart()
+{
+	PostMessage(CKalelView::GetView()->GetSafeHwnd(), UWM_THREAD_RESTART, 0, 0);
+}
 
 // Make sure that the functionalities are only available when the experiment is not running
 
@@ -244,5 +263,5 @@ void CKalelApp::OnUpdateBackgroundthreadStop(CCmdUI *pCmdUI)
 
 void CKalelApp::OnUpdateBackgroundthreadRestart(CCmdUI *pCmdUI)
 {
-	pCmdUI->Enable(!menuIsAvailable);
+	pCmdUI->Enable(menuIsAvailable);
 }

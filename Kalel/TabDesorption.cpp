@@ -37,7 +37,6 @@ void TabDesorption::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_SPIN_TEMPS_DESORPTION, m_SpinTempsDesorption);
 	DDX_Text(pDX, IDC_EDIT_PRESSION_FINALE_DESORPTION, m_fPressionFinaleDesorption);
 	DDX_Control(pDX, IDC_SPIN_PRESSION_FINALE_DESORPTION, m_SpinPressionFinaleDesorption);
-	DDX_Check(pDX, IDC_CHECK_DESORPTION_DERNIERE_ETAPE, m_bDerniereEtapeDesorption);
 }
 
 
@@ -45,7 +44,6 @@ BOOL TabDesorption::OnInitDialog()
 {
 	// Get settings from storage
 	m_fDeltaPressionDesorption = allSettings.delta_pression;
-	m_bDerniereEtapeDesorption = allSettings.derniere_etape;
 	m_fPressionFinaleDesorption = allSettings.pression_finale;
 	m_nTempsDesorption = allSettings.temps_desorption;
 	m_nTempsVolumeDesorption = allSettings.temps_volume;
@@ -105,7 +103,6 @@ void TabDesorption::OnOK()
 void TabDesorption::Reinitialisation()
 {
 	m_fDeltaPressionDesorption = allSettings.delta_pression;
-	m_bDerniereEtapeDesorption = allSettings.derniere_etape;
 	m_fPressionFinaleDesorption = allSettings.pression_finale;
 	m_nTempsDesorption = allSettings.temps_desorption;
 	m_nTempsVolumeDesorption = allSettings.temps_volume;
@@ -117,7 +114,6 @@ void TabDesorption::WriteData()
 {
 	allSettings.a_effectuer = m_bDesorption;
 	allSettings.delta_pression = m_fDeltaPressionDesorption;
-	allSettings.derniere_etape = m_bDerniereEtapeDesorption;
 	allSettings.pression_finale = m_fPressionFinaleDesorption;
 	allSettings.temps_desorption = m_nTempsDesorption;
 	allSettings.temps_volume = m_nTempsVolumeDesorption;
@@ -142,7 +138,6 @@ void TabDesorption::GreyOut(BOOL active)
 	GetDlgItem(IDC_SPIN_TEMPS_DESORPTION)->EnableWindow(active);
 	GetDlgItem(IDC_EDIT_PRESSION_FINALE_DESORPTION)->EnableWindow(active);
 	GetDlgItem(IDC_SPIN_PRESSION_FINALE_DESORPTION)->EnableWindow(active);
-	GetDlgItem(IDC_CHECK_DESORPTION_DERNIERE_ETAPE)->EnableWindow(active);
 	GetDlgItem(IDC_BUTTON_DES_REMOVE)->EnableWindow(active);
 }
 

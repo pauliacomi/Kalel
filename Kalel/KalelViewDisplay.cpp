@@ -249,8 +249,10 @@ LRESULT CKalelView::MessageBoxConfirmation(WPARAM wParam, LPARAM lParam)
 		result = AfxMessageBox(*message, *nType);
 		if (result == IDCANCEL)
 		{
-			if (AfxMessageBox(PROMPT_RUNNINGEXP, MB_YESNO | MB_ICONWARNING, 0) == IDYES)
+			if (AfxMessageBox(PROMPT_CANCELEXP, MB_YESNO | MB_ICONWARNING, 0) == IDYES) {
+				threadManager->ResetThread();
 				continuer = false;
+			}
 		}
 		else {
 			if (result == IDYES || result == IDOK) {
@@ -258,7 +260,7 @@ LRESULT CKalelView::MessageBoxConfirmation(WPARAM wParam, LPARAM lParam)
 				continuer = false;
 			}
 			if (result == IDNO) {
-				threadManager->SetModifiedData();
+				threadManager->SetUserContinue();
 				threadManager->ResumeThread();
 				continuer = false;
 			}
