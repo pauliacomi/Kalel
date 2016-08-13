@@ -33,5 +33,6 @@
 #define pression_pompe					0.5 // Minimum pressure to be put directly on the pump
 #define temps_en_cas_d_urgence			10 // minutes
 #define temps_defaut					30 // minutes
+#define temps_bouteille					5 // minutes
 
 #endif

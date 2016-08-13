@@ -303,20 +303,23 @@ LRESULT CKalelView::OnMsvAmpoule(WPARAM, LPARAM)
 		AfxMessageBox(ERROR_EXP_INPROGRESS, MB_ICONEXCLAMATION | MB_OK);
 	}
 	else {
-		experimentSettings->experimentType = EXPERIMENT_TYPE_SAMPLE_VACUUM;
+		if (AfxMessageBox(PROMPT_VACUUM_SAMPLE, MB_YESNO | MB_ICONQUESTION) == IDYES)
+		{
+			experimentSettings->experimentType = EXPERIMENT_TYPE_SAMPLE_VACUUM;
 
-		// the start button is blocked
-		GetDlgItem(IDC_LANCER)->EnableWindow(FALSE);
-		// the stop button is activated
-		GetDlgItem(IDC_ARRETER)->EnableWindow(TRUE);
+			// the start button is blocked
+			GetDlgItem(IDC_LANCER)->EnableWindow(FALSE);
+			// the stop button is activated
+			GetDlgItem(IDC_ARRETER)->EnableWindow(TRUE);
 
-		// Block menu and set running flag
-		pApp->experimentRunning = true;
-		pApp->menuIsAvailable = false;
-		UpdateButtons();
+			// Block menu and set running flag
+			pApp->experimentRunning = true;
+			pApp->menuIsAvailable = false;
+			UpdateButtons();
 
-		// Raise the flag for data modified
-		threadManager->SetModifiedData();
+			// Raise the flag for data modified
+			threadManager->SetModifiedData();
+		}
 	}
 
 	return 0;
@@ -328,20 +331,23 @@ LRESULT CKalelView::OnMsvBouteille(WPARAM, LPARAM)
 		AfxMessageBox(ERROR_EXP_INPROGRESS, MB_ICONEXCLAMATION | MB_OK);
 	}
 	else {
-		experimentSettings->experimentType = EXPERIMENT_TYPE_BOTTLE_VACUUM;
+		if(AfxMessageBox(PROMPT_VACUUM_BOTTLE, MB_YESNO | MB_ICONQUESTION) == IDYES)
+		{
+			experimentSettings->experimentType = EXPERIMENT_TYPE_BOTTLE_VACUUM;
 
-		// the start button is blocked
-		GetDlgItem(IDC_LANCER)->EnableWindow(FALSE);
-		// the stop button is activated
-		GetDlgItem(IDC_ARRETER)->EnableWindow(TRUE);
+			// the start button is blocked
+			GetDlgItem(IDC_LANCER)->EnableWindow(FALSE);
+			// the stop button is activated
+			GetDlgItem(IDC_ARRETER)->EnableWindow(TRUE);
 
-		// Block menu and set running flag
-		pApp->experimentRunning = true;
-		pApp->menuIsAvailable = false;
-		UpdateButtons();
+			// Block menu and set running flag
+			pApp->experimentRunning = true;
+			pApp->menuIsAvailable = false;
+			UpdateButtons();
 
-		// Raise the flag for data modified
-		threadManager->SetModifiedData();
+			// Raise the flag for data modified
+			threadManager->SetModifiedData();
+		}
 	}
 
 	return 0;
@@ -353,20 +359,23 @@ LRESULT CKalelView::OnChangementBouteille(WPARAM, LPARAM)
 		AfxMessageBox(ERROR_EXP_INPROGRESS, MB_ICONEXCLAMATION | MB_OK);
 	}
 	else {
-		experimentSettings->experimentType = EXPERIMENT_TYPE_SAMPLE_VACUUM;
+		if (AfxMessageBox(PROMPT_CHANGE_BOTTLE, MB_YESNO | MB_ICONQUESTION) == IDYES)
+		{
+			experimentSettings->experimentType = EXPERIMENT_TYPE_BOTTLE_VACUUM;
 
-		// the start button is blocked
-		GetDlgItem(IDC_LANCER)->EnableWindow(FALSE);
-		// the stop button is activated
-		GetDlgItem(IDC_ARRETER)->EnableWindow(TRUE);
+			// the start button is blocked
+			GetDlgItem(IDC_LANCER)->EnableWindow(FALSE);
+			// the stop button is activated
+			GetDlgItem(IDC_ARRETER)->EnableWindow(TRUE);
 
-		// Block menu and set running flag
-		pApp->experimentRunning = true;
-		pApp->menuIsAvailable = false;
-		UpdateButtons();
+			// Block menu and set running flag
+			pApp->experimentRunning = true;
+			pApp->menuIsAvailable = false;
+			UpdateButtons();
 
-		// Raise the flag for data modified
-		threadManager->SetModifiedData();
+			// Raise the flag for data modified
+			threadManager->SetModifiedData();
+		}
 	}
 
 	return 0;
