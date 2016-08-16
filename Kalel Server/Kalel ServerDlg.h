@@ -4,7 +4,6 @@
 
 #pragma once
 
-
 // CKalelServerDlg dialog
 class CKalelServerDlg : public CDHtmlDialog
 {
@@ -33,4 +32,5 @@ protected:
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
 	DECLARE_DHTML_EVENT_MAP()
+
 };

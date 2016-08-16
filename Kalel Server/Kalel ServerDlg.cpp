@@ -7,6 +7,7 @@
 #include "Kalel ServerDlg.h"
 #include "afxdialogex.h"
 #include "Server.h"
+#include "Client.h"
 #include <thread>
 
 #ifdef _DEBUG
@@ -36,13 +37,27 @@ void CKalelServerDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CKalelServerDlg, CDHtmlDialog)
 END_MESSAGE_MAP()
 
-void server() {
-	Server server;
-	server.server();
+void server(void) {
+	try
+	{
+		Server server;
+		server.Run();
+	}
+	catch (const std::string& e)
+	{
+		AfxMessageBox(_T("Error"));
+	}
 }
 void client() {
-	Server client;
-	client.client();
+	try
+	{
+		Client client;
+		client.Run();
+	}
+	catch (const std::string& e)
+	{
+		AfxMessageBox(_T("Error"));
+	}
 }
 
 // CKalelServerDlg message handlers

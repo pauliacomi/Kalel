@@ -1,15 +1,11 @@
 #pragma once
 
-
 class Server
 {
 public:
 	Server();
 	~Server();
-	void sockCreate();
-	void server();
-	int client();
-	void sockOpen();
+	void Run();
 	void sockClose(SOCKET sock);
 
 private:
