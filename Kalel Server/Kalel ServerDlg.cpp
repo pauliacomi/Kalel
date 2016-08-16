@@ -6,6 +6,8 @@
 #include "Kalel Server.h"
 #include "Kalel ServerDlg.h"
 #include "afxdialogex.h"
+#include "Server.h"
+#include <thread>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -34,6 +36,14 @@ void CKalelServerDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CKalelServerDlg, CDHtmlDialog)
 END_MESSAGE_MAP()
 
+void server() {
+	Server server;
+	server.server();
+}
+void client() {
+	Server client;
+	client.client();
+}
 
 // CKalelServerDlg message handlers
 
@@ -47,6 +57,9 @@ BOOL CKalelServerDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// Set small icon
 
 	// TODO: Add extra initialization here
+
+	std::thread (server).detach();
+	std::thread (client).detach();
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }

@@ -1,10 +1,18 @@
 #pragma once
+
+
 class Server
 {
 public:
 	Server();
 	~Server();
-	int sockOpen(SOCKET sock);
-	int sockClose(SOCKET sock);
+	void sockCreate();
+	void server();
+	int client();
+	void sockOpen();
+	void sockClose(SOCKET sock);
+
+private:
+	SOCKET serverSocket = INVALID_SOCKET;
 };
 
