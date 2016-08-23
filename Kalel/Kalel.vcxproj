@@ -22,7 +22,7 @@
     <ProjectGuid>{DA8012D6-5479-45D1-ABA7-F4564E6ABDB3}</ProjectGuid>
     <RootNamespace>Kalel</RootNamespace>
     <Keyword>MFCProj</Keyword>
-    <ProjectName>Kalel</ProjectName>
+    <ProjectName>Kalel Client</ProjectName>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />

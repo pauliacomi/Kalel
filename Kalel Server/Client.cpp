@@ -19,27 +19,30 @@ typedef	SOCKET int;			/* To make sure the POSIX-int handle can be compared to th
 
 #include "Client.h"
 #include <string>
+#include <exception>
 
 
-#define PORT		"32001" /* Port to connect to */
 
 
 Client::Client()
+	: clientSocket{ INVALID_SOCKET }
+	, result{NULL}
+	, peer{NULL}
 {
 #ifdef _WIN32
 	/* Initialise Winsock */
-	const int iReqWinsockVer = 2;					// Minimum winsock version required
-	const int iReqWinsockRev = 2;					// Minimum winsock revison required
+	const int iReqWinsockVer = 2;					// Minimum winsock version asked
+	const int iReqWinsockRev = 2;					// Minimum winsock revison asked
 	const WORD wVersion = MAKEWORD(iReqWinsockVer, iReqWinsockRev);
 	WSADATA wsaData;
 
 	if (WSAStartup(wVersion, &wsaData) != 0) {
-		std::string a("WSAStartup failed");
-		throw a;
+		stringex.set("WSAStartup failed");
+		throw stringex;
 	}
 	if (LOBYTE(wsaData.wVersion) < iReqWinsockVer) {
-		std::string a("Version not supported");
-		throw a;
+		stringex.set("Version not supported");
+		throw stringex;
 	}
 
 #endif
@@ -48,77 +51,100 @@ Client::Client()
 
 Client::~Client()
 {
+	if (clientSocket != INVALID_SOCKET) {
+		Close(clientSocket);
+	}
+	if (result != NULL) {
+		freeaddrinfo(result);
+		result = NULL;
+	}
 #ifdef _WIN32
 	WSACleanup();
 #endif
 }
 
-int Client::Run()
+void Client::Connect(PCSTR ip, PCSTR port)
 {
-	char *sendbuf = "this is a test";
-
-	char recvbuf[512];
-	int recvbuflen = 512;
-	int iResult;
-
-	SOCKET clientSocket = INVALID_SOCKET;
+	int iResult;											// Error result
 
 	// Create the address info struct
-	struct addrinfo *result = NULL,
-		//*ptr = NULL,
-		hints;
+	struct addrinfo hints;									// The requested address
 
 	memset(&hints, 0, sizeof hints);						// Fill addrinfo with zeroes
-	hints.ai_family = AF_INET;								// IPv4 family
+	hints.ai_family = AF_UNSPEC;							// IPv4/IPv6 family
 	hints.ai_socktype = SOCK_STREAM;						// Stream socket
 	hints.ai_protocol = IPPROTO_TCP;						// Using TCP protocol
 	hints.ai_flags = AI_PASSIVE;							// Caller intends to use the returned socket address structure in a call to the bind function
 
+
 	// Resolve the local address and port to be used by the client
-	if (getaddrinfo("127.0.0.1", PORT, &hints, &result) != 0) {
+	if (getaddrinfo(ip, "http", &hints, &result) != 0) {
 		std::string a("Getaddrinfo failed");
 		throw a;
 	}
+	// Loop through all the results and bind to the first we can
+	for (struct addrinfo * i = result; i != NULL; i = i->ai_next)
+	{
+		// Create the socket
+		clientSocket = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
+		if (clientSocket == INVALID_SOCKET) {
+			std::string a("Socket failed");
+			throw a;
+		}
 
-	// Create the socket
-	clientSocket = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
+		// Connect to server.
+		iResult = connect(clientSocket, result->ai_addr, (int)result->ai_addrlen);
+		if (iResult == SOCKET_ERROR) {
+			std::string a("Unable to connect to server!");
+			continue;
+			throw a;
+		}
+
+		break;	// if we got here we are connected
+	}
+
 	if (clientSocket == INVALID_SOCKET) {
-		std::string a("Socket failed");
+		std::string a("Unable to connect to server!");
 		throw a;
 	}
 
-	// Connect to server.
-	iResult = connect(clientSocket, result->ai_addr, (int)result->ai_addrlen);
+	/*iResult = getpeername(clientSocket, peer, sizeof(struct sockaddr));
 	if (iResult == SOCKET_ERROR) {
-		Close(clientSocket);
-	}
+		std::string a("Cannot get identity!");
+		throw a;
+	}*/
 
-	if (clientSocket == INVALID_SOCKET) {
-		printf("Unable to connect to server!\n");
-		return 1;
-	}
+	// clears no longer needed address info
+	freeaddrinfo(result);
+	result = NULL;
+}
+
+void Client::Send(static char * sendbuf)
+{
+	int bytesSent;											// Error result
+	int total{ 0 };											// how many bytes we've sent
+	int length{ (int)strlen(sendbuf) };						// how many bytes we have left to send
 
 	// Send an initial buffer
-	iResult = send(clientSocket, sendbuf, (int)strlen(sendbuf), 0);
-	if (iResult == SOCKET_ERROR) {
-		printf("send failed with error: %d\n", WSAGetLastError());
-		Close(clientSocket);
-		return 1;
+	while (total < strlen(sendbuf))
+	{
+		bytesSent = send(clientSocket, sendbuf + total, length, 0);
+		if (bytesSent == SOCKET_ERROR) {
+			std::string a("Send failed");
+			throw a;
+		}
+		total += bytesSent;
+		length -= bytesSent;
 	}
+}
 
-	printf("Bytes Sent: %ld\n", iResult);
-
-	// shutdown the connection since no more data will be sent
-	iResult = shutdown(clientSocket, SD_SEND);
-	if (iResult == SOCKET_ERROR) {
-		printf("shutdown failed with error: %d\n", WSAGetLastError());
-		Close(clientSocket);
-		return 1;
-	}
-
+void Client::Receive()
+{
+	int iResult;											// Error result
+	char recvbuf[512];
+	int recvbuflen = 512;
 	// Receive until the peer closes the connection
 	do {
-
 		iResult = recv(clientSocket, recvbuf, recvbuflen, 0);
 		if (iResult > 0)
 			printf("Bytes received: %d\n", iResult);
@@ -128,11 +154,6 @@ int Client::Run()
 			printf("recv failed with error: %d\n", WSAGetLastError());
 
 	} while (iResult > 0);
-
-	// cleanup
-	Close(clientSocket);
-
-	return 0;
 }
 
 
@@ -154,9 +175,26 @@ void Client::Close(SOCKET sock)
 	}
 #endif
 
-	if (status == SOCKET_ERROR)
-	{
-		std::string a("close socket failed");
-		throw a;
-	}
+	//if (status == SOCKET_ERROR)
+	//{
+	//	std::string a("close socket failed");
+	//	throw a;
+	//}
 }
+
+class stringexception : public std::exception
+{
+protected:
+	std::string err;
+
+public:
+	void set(std::string err)
+	{
+		this->err = err;
+	}
+
+	virtual const char* what() const throw()
+	{
+		return err.c_str();
+	}
+} stringex;

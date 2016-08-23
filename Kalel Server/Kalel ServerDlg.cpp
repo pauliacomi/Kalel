@@ -6,14 +6,14 @@
 #include "Kalel Server.h"
 #include "Kalel ServerDlg.h"
 #include "afxdialogex.h"
-#include "Server.h"
 #include "Client.h"
 #include <thread>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
-
+#define IP "localhost"
+#define PORT "27015"
 
 // CKalelServerDlg dialog
 
@@ -37,29 +37,6 @@ void CKalelServerDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CKalelServerDlg, CDHtmlDialog)
 END_MESSAGE_MAP()
 
-void server(void) {
-	try
-	{
-		Server server;
-		server.Run();
-	}
-	catch (const std::string& e)
-	{
-		AfxMessageBox(_T("Error"));
-	}
-}
-void client() {
-	try
-	{
-		Client client;
-		client.Run();
-	}
-	catch (const std::string& e)
-	{
-		AfxMessageBox(_T("Error"));
-	}
-}
-
 // CKalelServerDlg message handlers
 
 BOOL CKalelServerDlg::OnInitDialog()
@@ -73,8 +50,16 @@ BOOL CKalelServerDlg::OnInitDialog()
 
 	// TODO: Add extra initialization here
 
-	std::thread (server).detach();
-	std::thread (client).detach();
+	try
+	{
+		server.Listen();
+		server.Accept();
+	}
+	catch (const std::exception& e)
+	{
+		CString error(e.what());
+		AfxMessageBox(error);
+	}
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }

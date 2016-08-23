@@ -157,6 +157,12 @@
     <Filter Include="Source Files\Automation\Class\Functionality">
       <UniqueIdentifier>{7851c4a5-dc0a-46bd-986a-cb1a7c147a49}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Netcode">
+      <UniqueIdentifier>{b6713951-1d2e-44cb-872e-37f2bb08d348}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Netcode">
+      <UniqueIdentifier>{86bb1a4f-8bb8-40c4-a012-712795723bfd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />

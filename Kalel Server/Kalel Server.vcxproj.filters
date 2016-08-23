@@ -39,17 +39,17 @@
     <ClInclude Include="Resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Server.h">
-      <Filter>Header Files\Netcode</Filter>
-    </ClInclude>
-    <ClInclude Include="Socket.h">
-      <Filter>Header Files\Netcode</Filter>
+    <ClInclude Include="json.hpp">
+      <Filter>Source Files\Netcode</Filter>
     </ClInclude>
     <ClInclude Include="Client.h">
       <Filter>Header Files\Netcode</Filter>
     </ClInclude>
-    <ClInclude Include="json.hpp">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="Server.h">
+      <Filter>Header Files\Netcode</Filter>
+    </ClInclude>
+    <ClInclude Include="Netcode Resources.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -62,13 +62,10 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Server.cpp">
-      <Filter>Source Files\Netcode</Filter>
-    </ClCompile>
-    <ClCompile Include="Socket.cpp">
-      <Filter>Source Files\Netcode</Filter>
-    </ClCompile>
     <ClCompile Include="Client.cpp">
+      <Filter>Source Files\Netcode</Filter>
+    </ClCompile>
+    <ClCompile Include="Server.cpp">
       <Filter>Source Files\Netcode</Filter>
     </ClCompile>
   </ItemGroup>

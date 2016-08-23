@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include "Server.h"
+
 // CKalelServerDlg dialog
 class CKalelServerDlg : public CDHtmlDialog
 {
@@ -25,6 +27,8 @@ public:
 // Implementation
 protected:
 	HICON m_hIcon;
+
+	Server server;
 
 	// Generated message map functions
 	virtual BOOL OnInitDialog();
