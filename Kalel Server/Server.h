@@ -1,8 +1,5 @@
 #pragma once
 
-#include <thread>
-#include <vector>
-
 class Server
 {
 public:

@@ -11,3 +11,4 @@
 #define ERR_RECEIVE				"Receive failed"
 #define ERR_CLOSESOCKET			"close socket failed"
 #define ERR_ACCEPT				"Accept failed"
+#define ERR_CONNECT				"Unable to connect to server!"

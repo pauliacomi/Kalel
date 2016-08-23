@@ -10,7 +10,6 @@
 #define new DEBUG_NEW
 #endif
 
-
 // CKalelServerApp
 
 BEGIN_MESSAGE_MAP(CKalelServerApp, CWinApp)

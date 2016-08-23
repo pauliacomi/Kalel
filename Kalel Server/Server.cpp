@@ -19,6 +19,8 @@ typedef	SOCKET int;			/* To make sure the POSIX-int handle can be compared to th
 
 #include <string>
 #include <exception>
+#include <thread>
+#include <vector>
 
 #include "Server.h"
 #include "Netcode Resources.h"
@@ -203,32 +205,31 @@ void Server::Send(SOCKET sock, static char * sendbuf)
 void Server::Receive(SOCKET sock, char * recvbuf)
 {
 	// Receive until the peer shuts down the connection
-	int iResult;
-	int iSendResult;
+	int received;
+	int sent;
 	int length{ (int)strlen(recvbuf) };
 
 	do {
 
-		iResult = recv(sock, recvbuf, length, 0);
-		if (iResult > 0) {
-			printf("Bytes received: %d\n", iResult);
+		received = recv(sock, recvbuf, length, 0);
+		if (received > 0) {
 
 			// Echo the buffer back to the sender
-			iSendResult = send(sock, recvbuf, iResult, 0);
-			if (iSendResult == SOCKET_ERROR) {
+			sent = send(sock, recvbuf, received, 0);
+			if (sent == SOCKET_ERROR) {
 				stringex.set(ERR_SEND);
 				throw stringex;
 			}
-			printf("Bytes sent: %d\n", iSendResult);
+
 		}
-		else if (iResult == 0)
+		else if (received == 0)
 			printf("Connection closing...\n");
 		else {
 			stringex.set(ERR_RECEIVE);
 			throw stringex;
 		}
 
-	} while (iResult > 0);
+	} while (received > 0);
 }
 
 

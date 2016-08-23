@@ -17,10 +17,12 @@
 typedef	SOCKET int;			/* To make sure the POSIX-int handle can be compared to the WIN-uint handle  */
 #endif
 
-#include "Client.h"
 #include <string>
 #include <exception>
+#include <thread>
 
+#include "Client.h"
+#include "Netcode Resources.h"
 
 
 
@@ -30,6 +32,7 @@ Client::Client()
 	, peer{NULL}
 {
 #ifdef _WIN32
+
 	/* Initialise Winsock */
 	const int iReqWinsockVer = 2;					// Minimum winsock version asked
 	const int iReqWinsockRev = 2;					// Minimum winsock revison asked
@@ -37,14 +40,14 @@ Client::Client()
 	WSADATA wsaData;
 
 	if (WSAStartup(wVersion, &wsaData) != 0) {
-		stringex.set("WSAStartup failed");
+		stringex.set(ERR_WSASTARTUP);
 		throw stringex;
 	}
 	if (LOBYTE(wsaData.wVersion) < iReqWinsockVer) {
-		stringex.set("Version not supported");
+		stringex.set(ERR_VERSION);
 		throw stringex;
 	}
-
+	
 #endif
 }
 
@@ -77,10 +80,11 @@ void Client::Connect(PCSTR ip, PCSTR port)
 	hints.ai_flags = AI_PASSIVE;							// Caller intends to use the returned socket address structure in a call to the bind function
 
 
-	// Resolve the local address and port to be used by the client
-	if (getaddrinfo(ip, "http", &hints, &result) != 0) {
-		std::string a("Getaddrinfo failed");
-		throw a;
+	// Resolve the local address and port to be used by the server
+	struct addrinfo *result = NULL;							// Pointer to the result address
+	if (getaddrinfo(NULL, port, &hints, &result) != 0) {
+		stringex.set(ERR_GETADDRINFO);
+		throw stringex;
 	}
 	// Loop through all the results and bind to the first we can
 	for (struct addrinfo * i = result; i != NULL; i = i->ai_next)
@@ -88,24 +92,21 @@ void Client::Connect(PCSTR ip, PCSTR port)
 		// Create the socket
 		clientSocket = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
 		if (clientSocket == INVALID_SOCKET) {
-			std::string a("Socket failed");
-			throw a;
+			continue;
 		}
 
 		// Connect to server.
 		iResult = connect(clientSocket, result->ai_addr, (int)result->ai_addrlen);
 		if (iResult == SOCKET_ERROR) {
-			std::string a("Unable to connect to server!");
 			continue;
-			throw a;
 		}
 
 		break;	// if we got here we are connected
 	}
 
 	if (clientSocket == INVALID_SOCKET) {
-		std::string a("Unable to connect to server!");
-		throw a;
+		stringex.set(ERR_CONNECT);
+		throw stringex;
 	}
 
 	/*iResult = getpeername(clientSocket, peer, sizeof(struct sockaddr));
@@ -125,13 +126,13 @@ void Client::Send(static char * sendbuf)
 	int total{ 0 };											// how many bytes we've sent
 	int length{ (int)strlen(sendbuf) };						// how many bytes we have left to send
 
-	// Send an initial buffer
-	while (total < strlen(sendbuf))
+															// Send an initial buffer
+	while (total < (int)strlen(sendbuf))
 	{
 		bytesSent = send(clientSocket, sendbuf + total, length, 0);
 		if (bytesSent == SOCKET_ERROR) {
-			std::string a("Send failed");
-			throw a;
+			stringex.set(ERR_SEND);
+			throw stringex;
 		}
 		total += bytesSent;
 		length -= bytesSent;
@@ -146,12 +147,16 @@ void Client::Receive()
 	// Receive until the peer closes the connection
 	do {
 		iResult = recv(clientSocket, recvbuf, recvbuflen, 0);
-		if (iResult > 0)
-			printf("Bytes received: %d\n", iResult);
-		else if (iResult == 0)
-			printf("Connection closed\n");
-		else
-			printf("recv failed with error: %d\n", WSAGetLastError());
+		if (iResult > 0) {
+			// complete
+		}
+		else if (iResult == 0) {
+			//printf("Connection closed\n");
+		}
+		else {
+			stringex.set(ERR_RECEIVE);
+			throw stringex;
+		}
 
 	} while (iResult > 0);
 }
@@ -175,11 +180,11 @@ void Client::Close(SOCKET sock)
 	}
 #endif
 
-	//if (status == SOCKET_ERROR)
-	//{
-	//	std::string a("close socket failed");
-	//	throw a;
-	//}
+	if (status == SOCKET_ERROR)
+	{
+		stringex.set(ERR_CLOSESOCKET);
+		throw stringex;
+	}
 }
 
 class stringexception : public std::exception
