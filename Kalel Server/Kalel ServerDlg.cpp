@@ -15,8 +15,6 @@
 #define IP "localhost"
 #define PORT "27015"
 
-#include <cpprest\http_listener.h>
-using namespace web::http::experimental::listener;
 
 // CKalelServerDlg dialog
 
@@ -52,7 +50,7 @@ BOOL CKalelServerDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// Set small icon
 
 	// TODO: Add extra initialization here
-/*
+
 	try
 	{
 		server.Listen();
@@ -62,9 +60,7 @@ BOOL CKalelServerDlg::OnInitDialog()
 	{
 		CString error(e.what());
 		AfxMessageBox(error);
-	}*/
-
-	http_listener a;
+	}
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }

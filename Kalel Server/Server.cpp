@@ -1,57 +1,20 @@
-#ifdef _WIN32
-/* See http://stackoverflow.com/questions/12765743/getaddrinfo-on-win32 */
-#ifndef _WIN32_WINNT
-#define _WIN32_WINNT 0x0501  /* Windows XP. */
-#endif
+#include "Server.h"
+#include "http_request.h"
+#include "Netcode Resources.h"
+#include "URLHelper.h"
+#include "base64.h"
 
-#define _WINSOCK_DEPRECATED_NO_WARNINGS
-#include <winsock2.h>
-#include <Ws2tcpip.h>
-#else
-/* Assume that any non-Windows platform uses POSIX-style sockets instead. */
-#include <sys/socket.h>
-#include <arpa/inet.h>
-#include <netdb.h>  /* Needed for getaddrinfo() and freeaddrinfo() */
-#include <unistd.h> /* Needed for close() */
-#define	INVALID_SOCKET -1	/* To make sure the POSIX-int handle can be compared to the WIN-uint handle  */
-typedef	SOCKET int;			/* To make sure the POSIX-int handle can be compared to the WIN-uint handle  */
-#endif
-
-#include <string>
-#include <exception>
 #include <thread>
 #include <vector>
-
-#include "Server.h"
-#include "Netcode Resources.h"
+#include <sstream>
 
 
-#define BACKLOG		10      /* Passed to listen() */
+#define NO_OF_CONN		5      /* Passed to listen() */
 
 
 Server::Server()
-	:serverSocket{ INVALID_SOCKET }
-	, result{ NULL }
-	, accepting{ false }
+	: accepting{ false }
 {
-#ifdef _WIN32
-
-	/* Initialise Winsock */
-	const int iReqWinsockVer = 2;					// Minimum winsock version asked
-	const int iReqWinsockRev = 2;					// Minimum winsock revison asked
-	const WORD wVersion = MAKEWORD(iReqWinsockVer, iReqWinsockRev);
-	WSADATA wsaData;
-
-	if (WSAStartup(wVersion, &wsaData) != 0) {
-		stringex.set(ERR_WSASTARTUP);
-		throw stringex;
-	}
-	if (LOBYTE(wsaData.wVersion) < iReqWinsockVer) {
-		stringex.set(ERR_VERSION);
-		throw stringex;
-	}
-	
-#endif
 }
 
 
@@ -59,29 +22,18 @@ Server::~Server()
 {
 	accepting = false;
 
-	if (serverSocket != INVALID_SOCKET) {
-		Close(serverSocket);
-	}
-	if (result != NULL) {
-		freeaddrinfo(result);
-		result = NULL;
-	}
 	for (size_t i = 0; i < connectedSockets.size(); i++)
 	{
 		Close(*connectedSockets[i]);
 		delete connectedSockets[i];
 	}
 	connectedSockets.clear();
-
-#ifdef _WIN32
-	WSACleanup();
-#endif
 }
 
 
 void Server::Listen(PCSTR port)
 {
-	serverSocket = INVALID_SOCKET;
+	sock = INVALID_SOCKET;
 
 	// Create the address info struct
 	struct addrinfo hints;									// The requested address
@@ -105,19 +57,19 @@ void Server::Listen(PCSTR port)
 	for (i; i != NULL; i = i->ai_next)
 	{
 		// Create the socket
-		serverSocket = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
-		if (serverSocket == INVALID_SOCKET) {
+		sock = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
+		if (sock == INVALID_SOCKET) {
 			continue;
 		}
 
 		// Enable the socket to reuse the address, lose "Address already in use" error message
 		int reuseaddr = 1; /* True */
-		if (setsockopt(serverSocket, SOL_SOCKET, SO_REUSEADDR, (const char *)&reuseaddr, sizeof(int)) == SOCKET_ERROR) {
+		if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (const char *)&reuseaddr, sizeof(int)) == SOCKET_ERROR) {
 			continue;
 		}
 		
 		// Bind to the computer IP address - setup the TCP listening socket
-		if (bind(serverSocket, result->ai_addr, (int)result->ai_addrlen) == SOCKET_ERROR) {
+		if (bind(sock, result->ai_addr, (int)result->ai_addrlen) == SOCKET_ERROR) {
 			continue;
 		}
 
@@ -134,7 +86,7 @@ void Server::Listen(PCSTR port)
 	result = NULL;
 
 	// Listen to newly created socket
-	if (listen(serverSocket, BACKLOG) == SOCKET_ERROR) {
+	if (listen(sock, NO_OF_CONN) == SOCKET_ERROR) {
 		stringex.set(ERR_LISTENING);
 		throw stringex;
 	}
@@ -150,6 +102,8 @@ void Server::Accept()
 	}
 }
 
+
+
 void Server::AcceptLoop()
 {
 	while (accepting) {
@@ -159,119 +113,153 @@ void Server::AcceptLoop()
 		socklen_t size = sizeof theirAddr;					// Size of address struct
 		memset(&theirAddr, 0, size);						// Fill addrinfo with zeroes
 
-		clientSocket = accept(serverSocket, (struct sockaddr*)&theirAddr, &size);
+		clientSocket = accept(sock, (struct sockaddr*)&theirAddr, &size);
 		if (clientSocket == INVALID_SOCKET) {
 			stringex.set(ERR_ACCEPT);
 			throw stringex;
 		}
 		else {
-			if (theirAddr.ss_family == AF_INET)
-			{
-				printf("Got a connection from %s on port %d\n",
-					inet_ntoa(((struct sockaddr_in*)&theirAddr)->sin_addr), ntohs(((struct sockaddr_in*)&theirAddr)->sin_port));
-			}
-			std::thread(&Server::Process, this, serverSocket).detach();
+			//if (theirAddr.ss_family == AF_INET)
+			//{
+			//	 inet_ntoa(((struct sockaddr_in*)&theirAddr)->sin_addr), ntohs(((struct sockaddr_in*)&theirAddr)->sin_port);
+			//}
+
+			std::thread(&Server::Process, this, clientSocket).detach();
 		}
 	}
 }
 
-void Server::Process(SOCKET sock)
+
+
+unsigned Server::Process(SOCKET sock)
 {
-	char * receivbuf[512];
-	Receive(sock, *receivbuf);
+	std::string line = ReceiveLine(sock);
+
+	if (line.empty()) {
+		Close(sock);
+		return 1;
+	}
+
+	http_request req;
+	
+	//
+	//	Get the request
+	//
+
+	if (line.find("GET") == 0) {
+		req.method_ = "GET";
+	}
+	else if (line.find("POST") == 0) {
+		req.method_ = "POST";
+	}
+
+	if (line.find("PUT") == 0) {
+		req.method_ = "PUT";
+	}
+	else if (line.find("DELETE") == 0) {
+		req.method_ = "DELETE";
+	}
+
+	std::string path;
+	std::map<std::string, std::string> params;
+
+	size_t posStartPath = line.find_first_not_of(" ", 3);
+
+	URLHelper urlhelper;
+	urlhelper.SplitGetReq(line.substr(posStartPath), path, params);
+
+	req.status_ = "202 OK";
+	req.path_ = path;
+	req.params_ = params;
+
+	static const std::string authorization   = "Authorization: Basic ";
+	static const std::string accept          = "Accept: "             ;
+	static const std::string accept_language = "Accept-Language: "    ;
+	static const std::string accept_encoding = "Accept-Encoding: "    ;
+	static const std::string user_agent      = "User-Agent: "         ;
+
+	while (1) {
+		line = ReceiveLine(sock);
+
+		if (line.empty()) 
+			break;
+		
+		unsigned int pos_cr_lf = line.find_first_of("\x0a\x0d");
+		if (pos_cr_lf == 0) 
+			break;
+
+		line = line.substr(0, pos_cr_lf);
+
+		if (line.substr(0, authorization.size()) == authorization) {
+			req.authentication_given_ = true;
+			std::string encoded = line.substr(authorization.size());
+			std::string decoded = base64_decode(encoded);
+
+			unsigned int pos_colon = decoded.find(":");
+
+			req.username_ = decoded.substr(0, pos_colon);
+			req.password_ = decoded.substr(pos_colon + 1);
+		}
+		else if (line.substr(0, accept.size()) == accept) {
+			req.accept_ = line.substr(accept.size());
+		}
+		else if (line.substr(0, accept_language.size()) == accept_language) {
+			req.accept_language_ = line.substr(accept_language.size());
+		}
+		else if (line.substr(0, accept_encoding.size()) == accept_encoding) {
+			req.accept_encoding_ = line.substr(accept_encoding.size());
+		}
+		else if (line.substr(0, user_agent.size()) == user_agent) {
+			req.user_agent_ = line.substr(user_agent.size());
+		}
+	}
+
+	//
+	//	Construct the response
+	//
+
+	if (req.path_ == "/") {
+		req.answer_ = "<html><head><title>";
+		req.answer_ += "Top KEK";
+		req.answer_ += "</title></head><body bgcolor='#4444ff'>";
+		req.answer_ += "KEKKEK";
+		req.answer_ += "</body></html>";
+	}
+
+	std::stringstream str_str;
+	str_str << req.answer_.size();
+
+	time_t ltime;
+	time(&ltime);
+	tm gmt;
+	gmtime_s(&gmt, &ltime);
+
+	static std::string const serverName = "Some Server";				//should fill
+
+	char asctime_remove_nl[26];
+	asctime_s(asctime_remove_nl, 26, &gmt);
+	asctime_remove_nl[24] = 0;
+
+	Send(sock, "HTTP/1.1 ");
+
+	if (!req.auth_realm_.empty()) {
+		SendLine(sock, "401 Unauthorized");
+		Send(sock, "WWW-Authenticate: Basic Realm=\"");
+		Send(sock, req.auth_realm_);
+		SendLine(sock, "\"");
+	}
+	else {
+		SendLine(sock, req.status_);
+	}
+	SendLine(sock, std::string("Date: ") + asctime_remove_nl + " GMT");
+	SendLine(sock, std::string("Server: ") + serverName);
+	SendLine(sock, "Connection: close");
+	SendLine(sock, "Content-Type: text/html; charset=ISO-8859-1");
+	SendLine(sock, "Content-Length: " + str_str.str());
+	SendLine(sock, "");
+	SendLine(sock, req.answer_);
+
 	// Close connection socket
 	Close(sock);
+	return 0;
 }
-
-void Server::Send(SOCKET sock, static char * sendbuf)
-{
-	int bytesSent;											// Error result
-	int total{ 0 };											// how many bytes we've sent
-	int length{ (int)strlen(sendbuf) };							// how many bytes we have left to send
-
-															// Send an initial buffer
-	while (total < (int)strlen(sendbuf))
-	{
-		bytesSent = send(sock, sendbuf + total, length, 0);
-		if (bytesSent == SOCKET_ERROR) {
-			stringex.set(ERR_SEND);
-			throw stringex;
-		}
-		total += bytesSent;
-		length -= bytesSent;
-	}
-}
-
-void Server::Receive(SOCKET sock, char * recvbuf)
-{
-	// Receive until the peer shuts down the connection
-	int received;
-	int sent;
-	int length{ (int)strlen(recvbuf) };
-
-	do {
-
-		received = recv(sock, recvbuf, length, 0);
-		if (received > 0) {
-
-			// Echo the buffer back to the sender
-			sent = send(sock, recvbuf, received, 0);
-			if (sent == SOCKET_ERROR) {
-				stringex.set(ERR_SEND);
-				throw stringex;
-			}
-
-		}
-		else if (received == 0)
-			printf("Connection closing...\n");
-		else {
-			stringex.set(ERR_RECEIVE);
-			throw stringex;
-		}
-
-	} while (received > 0);
-}
-
-
-void Server::Close(SOCKET sock)
-{
-	int status = 0;
-
-#ifdef _WIN32
-	status = shutdown(sock, SD_SEND);
-	if (status == 0) {
-		status = closesocket(sock);
-		sock = INVALID_SOCKET;
-	}
-#else
-	status = shutdown(sock, SHUT_RDWR);
-	if (status == 0) {
-		status = close(sock);
-		sock = INVALID_SOCKET;
-	}
-#endif
-
-	if (status == SOCKET_ERROR)
-	{
-		stringex.set(ERR_CLOSESOCKET);
-		throw stringex;
-	}
-}
-
-
-class stringexception : public std::exception
-{
-protected:
-	std::string err;
-
-public:
-	void set(std::string err)
-	{
-		this->err = err;
-	}
-
-	virtual const char* what() const throw()
-	{
-		return err.c_str();
-	}
-} stringex;
