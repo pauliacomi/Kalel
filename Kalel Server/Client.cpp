@@ -3,19 +3,25 @@
 
 
 Client::Client()
-	: peer{NULL}
+	: peer{ nullptr }
+	, result{ nullptr }
 {
 }
 
 
 Client::~Client()
 {
+	// Client sockets close gracefully
+	CloseGracefully(sock);
+
+	// Free result structure in case we throw
+	if (result != nullptr){
+		freeaddrinfo(result);
+	}
 }
 
 void Client::Connect(PCSTR ip, PCSTR port)
 {
-	int iResult;											// Error result
-
 	// Create the address info struct
 	struct addrinfo hints;									// The requested address
 
@@ -27,23 +33,22 @@ void Client::Connect(PCSTR ip, PCSTR port)
 
 
 	// Resolve the local address and port to be used by the server
-	struct addrinfo *result = NULL;							// Pointer to the result address
 	if (getaddrinfo(NULL, port, &hints, &result) != 0) {
 		stringex.set(ERR_GETADDRINFO);
 		throw stringex;
 	}
+
 	// Loop through all the results and bind to the first we can
-	for (struct addrinfo * i = result; i != NULL; i = i->ai_next)
+	for (struct addrinfo * loopAddr = result; loopAddr != NULL; loopAddr = loopAddr->ai_next)
 	{
 		// Create the socket
-		sock = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
+		sock = socket(loopAddr->ai_family, loopAddr->ai_socktype, loopAddr->ai_protocol);
 		if (sock == INVALID_SOCKET) {
 			continue;
 		}
 
 		// Connect to server.
-		iResult = connect(sock, result->ai_addr, (int)result->ai_addrlen);
-		if (iResult == SOCKET_ERROR) {
+		if(connect(sock, loopAddr->ai_addr, (int)loopAddr->ai_addrlen) == SOCKET_ERROR){
 			continue;
 		}
 
@@ -63,5 +68,5 @@ void Client::Connect(PCSTR ip, PCSTR port)
 
 	// clears no longer needed address info
 	freeaddrinfo(result);
-	result = NULL;
+	result = nullptr;
 }

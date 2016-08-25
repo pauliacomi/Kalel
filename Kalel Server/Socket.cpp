@@ -30,27 +30,19 @@ void Socket::Start() {
 
 Socket::Socket()
 	: sock{ INVALID_SOCKET }
-	, result{ NULL }
 {
 	Start();
 }
 
 Socket::Socket(SOCKET sk)
 	: sock{ sk }
-	, result{ NULL }
 {
 	Start();
 }
 
 Socket::~Socket()
 {
-	if (sock != INVALID_SOCKET) {
-		Close(sock);
-	}
-	if (result != NULL) {
-		freeaddrinfo(result);
-		result = NULL;
-	}
+	Close(sock);
 
 #ifdef _WIN32
 	--nofSockets;
@@ -160,25 +152,44 @@ std::string Socket::ReceiveLine(SOCKET sock)
 
 void Socket::Close(SOCKET sock)
 {
-	int status = 0;
+	if (sock != INVALID_SOCKET) {
+		
+		int status = closesocket(sock);
+		sock = INVALID_SOCKET;
+
+		if (status == SOCKET_ERROR)
+		{
+			stringex.set(ERR_CLOSESOCKET);
+			throw stringex;
+		}
+
+	}
+}
+
+void Socket::CloseGracefully(SOCKET sock)
+{
+	if (sock != INVALID_SOCKET) {
+		int status = 0;
 
 #ifdef _WIN32
-	status = shutdown(sock, SD_SEND);
-	if (status == 0) {
-		status = closesocket(sock);
-		sock = INVALID_SOCKET;
-	}
+		status = shutdown(sock, SD_SEND);
+		if (status == 0) {
+			status = closesocket(sock);
+			sock = INVALID_SOCKET;
+		}
 #else
-	status = shutdown(sock, SHUT_RDWR);
-	if (status == 0) {
-		status = close(sock);
-		sock = INVALID_SOCKET;
-	}
+		status = shutdown(sock, SHUT_RDWR);
+		if (status == 0) {
+			status = close(sock);
+			sock = INVALID_SOCKET;
+		}
 #endif
 
-	if (status == SOCKET_ERROR)
-	{
-		stringex.set(ERR_CLOSESOCKET);
-		throw stringex;
+		if (status == SOCKET_ERROR)
+		{
+			stringex.set(ERR_CLOSESOCKET);
+			throw stringex;
+		}
+
 	}
 }

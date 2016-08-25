@@ -53,9 +53,10 @@ public:
 	std::string Socket::ReceiveLine(SOCKET sock);
 	void Close(SOCKET sock);
 
+	void CloseGracefully(SOCKET sock);
+
 protected:
 	SOCKET sock;										// Socket
-	struct addrinfo *result;							// Pointer to the result address
 	stringexception stringex;
 
 private:

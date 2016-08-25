@@ -54,7 +54,7 @@ BOOL CKalelServerDlg::OnInitDialog()
 	try
 	{
 		server.Listen();
-		server.Accept();
+		//server.Accept();
 	}
 	catch (const std::exception& e)
 	{

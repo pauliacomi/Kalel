@@ -11,6 +11,8 @@ public:
 	void Connect(PCSTR ip, PCSTR port = "http");
 
 protected:
+	struct addrinfo *result;							// Pointer to the result address
 	struct sockaddr *peer;								// Pointer to the server address
+
 };
 

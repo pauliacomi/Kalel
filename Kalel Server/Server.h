@@ -2,6 +2,8 @@
 #include "Socket.h"
 
 #include <vector>
+#include <atomic>
+#include <thread>
 
 class Server : Socket
 {
@@ -13,9 +15,12 @@ public:
 	void Listen(PCSTR port = "http");
 	void Accept();
 
-private:
+protected:
+	struct addrinfo *result;							// Pointer to the result address
 	std::vector<SOCKET*> connectedSockets;				// The list of connected sockets
-	bool accepting;										// Powers the main loop
+	std::atomic_bool accepting;							// Powers the main loop
 	void AcceptLoop();									// Function started by thread
 	unsigned Process(SOCKET sock);
+	std::thread acceptThread;
+	std::exception_ptr teptr;
 };

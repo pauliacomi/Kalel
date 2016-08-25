@@ -14,14 +14,27 @@
 
 Server::Server()
 	: accepting{ false }
+	, teptr{ nullptr }
+	, result{ nullptr }
 {
 }
 
 
 Server::~Server()
 {
+	// Terminate the accepting thread 
 	accepting = false;
+	if (acceptThread.joinable())
+	{
+		acceptThread.join();
+	}
 
+	// Free result structure in case we throw
+	if (result != nullptr) {
+		freeaddrinfo(result);
+	}
+
+	// Remove all connected sockets
 	for (size_t i = 0; i < connectedSockets.size(); i++)
 	{
 		Close(*connectedSockets[i]);
@@ -33,8 +46,6 @@ Server::~Server()
 
 void Server::Listen(PCSTR port)
 {
-	sock = INVALID_SOCKET;
-
 	// Create the address info struct
 	struct addrinfo hints;									// The requested address
 
@@ -46,18 +57,18 @@ void Server::Listen(PCSTR port)
 
 	
 	// Resolve the local address and port to be used by the server
-	struct addrinfo *result = NULL;							// Pointer to the result address
+	struct addrinfo * result = nullptr;						// Pointer to the result address
 	if (getaddrinfo(NULL, port, &hints, &result) != 0) {
 		stringex.set(ERR_GETADDRINFO);
 		throw stringex;
 	}
 
 	// Loop through all the results and bind to the first we can
-	struct addrinfo * i = result;
-	for (i; i != NULL; i = i->ai_next)
+	struct addrinfo * loopAddr = result;
+	for (loopAddr; loopAddr != NULL; loopAddr = loopAddr->ai_next)
 	{
 		// Create the socket
-		sock = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
+		sock = socket(loopAddr->ai_family, loopAddr->ai_socktype, loopAddr->ai_protocol);
 		if (sock == INVALID_SOCKET) {
 			continue;
 		}
@@ -69,21 +80,21 @@ void Server::Listen(PCSTR port)
 		}
 		
 		// Bind to the computer IP address - setup the TCP listening socket
-		if (bind(sock, result->ai_addr, (int)result->ai_addrlen) == SOCKET_ERROR) {
+		if (bind(sock, loopAddr->ai_addr, (int)loopAddr->ai_addrlen) == SOCKET_ERROR) {
 			continue;
 		}
 
 		break;	// if we got here we are connected
 	}
 
-	if (i == NULL){
+	if (loopAddr == NULL){
 		stringex.set(ERR_CREATEBIND);
 		throw stringex;
 	}
 
 	// clears no longer needed address info
 	freeaddrinfo(result);
-	result = NULL;
+	result = nullptr;
 
 	// Listen to newly created socket
 	if (listen(sock, NO_OF_CONN) == SOCKET_ERROR) {
@@ -98,7 +109,7 @@ void Server::Accept()
 	if (accepting == false)
 	{
 		accepting = true;
-		std::thread(&Server::AcceptLoop, this).detach();
+		acceptThread = std::thread(&Server::AcceptLoop, this);
 	}
 }
 
@@ -106,28 +117,70 @@ void Server::Accept()
 
 void Server::AcceptLoop()
 {
+	struct timeval tv;				// Time to run loop
+	tv.tv_sec = 1;					// 1 seconds
+	tv.tv_usec = 0;					// 0 microseconds
+
+	fd_set master;					// master file descriptor list
+	fd_set readfds;					// Set of listening sockets
+	FD_ZERO(&master);				// Zero them out
+	FD_ZERO(&readfds);				// Zero them out
+	FD_SET(sock, &master);			// Add only main socket
+
 	while (accepting) {
-		// Accept a client socket
-		SOCKET clientSocket;
-		struct sockaddr_storage theirAddr;					// The incoming address
-		socklen_t size = sizeof theirAddr;					// Size of address struct
-		memset(&theirAddr, 0, size);						// Fill addrinfo with zeroes
 
-		clientSocket = accept(sock, (struct sockaddr*)&theirAddr, &size);
-		if (clientSocket == INVALID_SOCKET) {
-			stringex.set(ERR_ACCEPT);
-			throw stringex;
+		readfds = master;
+		int selectResult = select(sock + 1, &readfds, NULL, NULL, &tv);
+
+		if ((selectResult < 0) && (errno != EINTR))	{
+			try
+			{
+				stringex.set(ERR_ACCEPT);
+				throw stringex;
+			}
+			catch (const std::exception&)
+			{
+				teptr = std::current_exception();
+			}
 		}
-		else {
-			//if (theirAddr.ss_family == AF_INET)
-			//{
-			//	 inet_ntoa(((struct sockaddr_in*)&theirAddr)->sin_addr), ntohs(((struct sockaddr_in*)&theirAddr)->sin_port);
-			//}
 
-			std::thread(&Server::Process, this, clientSocket).detach();
+
+		if (FD_ISSET(sock, &readfds))
+		{
+			// handle new connections
+
+			// Create a client socket
+			SOCKET clientSocket;
+			struct sockaddr_storage theirAddr;					// The incoming address
+			socklen_t size = sizeof theirAddr;					// Size of address struct
+			memset(&theirAddr, 0, size);						// Fill addrinfo with zeroes
+
+			clientSocket = accept(sock, (struct sockaddr*)&theirAddr, &size);
+
+			if (clientSocket == INVALID_SOCKET) {
+				try
+				{
+					stringex.set(ERR_ACCEPT);
+					throw stringex;
+				}
+				catch (const std::exception&)
+				{
+					teptr = std::current_exception();
+				}
+			}
+			else {
+				//if (theirAddr.ss_family == AF_INET)
+				//{
+				//	 inet_ntoa(((struct sockaddr_in*)&theirAddr)->sin_addr), ntohs(((struct sockaddr_in*)&theirAddr)->sin_port);
+				//}
+
+				std::thread(&Server::Process, this, clientSocket).detach();
+			}
+
 		}
 	}
 }
+
 
 
 
@@ -260,6 +313,6 @@ unsigned Server::Process(SOCKET sock)
 	SendLine(sock, req.answer_);
 
 	// Close connection socket
-	Close(sock);
+	CloseGracefully(sock);
 	return 0;
 }
