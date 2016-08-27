@@ -1,7 +1,8 @@
 #pragma once
-
 #include "afxwin.h"
 #include "ResourceTypeExperience.h"
+
+class MachineSettings;
 
 // Boîte de dialogue DialogTypeExperiment
 
@@ -15,8 +16,10 @@ public:
 
 // Données de boîte de dialogue
 	enum { IDD = IDD_TYPE_EXPERIENCE };
+	void PassSettings(const MachineSettings& machineSettings);
 
 protected:
+	MachineSettings * settings;
 	virtual void DoDataExchange(CDataExchange* pDX);    // Prise en charge de DDX/DDV
 
 	DECLARE_MESSAGE_MAP()

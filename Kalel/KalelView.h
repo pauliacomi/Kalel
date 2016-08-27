@@ -1,7 +1,3 @@
-
-// KalelView.h : interface of the CKalelView class
-//
-
 #pragma once
 
 #include "afxwin.h"
@@ -9,13 +5,13 @@
 #include "StringTable.h"				// All strings in the program
 
 #include "DefinePostMessages.h"			// Definition of messages received from the automation functionality
-#include "DefineStages.h"				// Stages/experiment type definitions
+#include "../Kalel Shared/Resources/DefineStages.h"					// Stages/experiment type definitions
 
-#include "Parametres.h"					// Functions for reading the parameters file
-#include "ThreadManager.h"				// The threading functionality
-#include "ExperimentData.h"				// Where data about the experimental parameters, results and current status is stored
-#include "ExperimentSettings.h"			// Where returned data from results is stored
-#include "ExperimentPropertySheet.h"	// Dialog box for setting experimental properties
+#include "../Kalel Shared/Com Classes/ExperimentData.h"				// Where data about the experimental parameters, results and current status is stored
+#include "../Kalel Shared/Com Classes/ExperimentSettings.h"			// Where returned data from results is stored
+#include "ExperimentPropertySheet.h"								// Dialog box for setting experimental properties
+#include "CommHandler.h"											// Responsible for all communication to/from client
+
 
 // Dialog Box includes
 #include "DialogMachineParameters.h"
@@ -24,18 +20,17 @@
 #include "KalelDoc.h"
 #include "Kalel.h"
 
-
 class CKalelView : public CFormView
 {
 
 public:
 	CKalelApp* pApp;				// pointer to the main app
 	CKalelDoc* m_mainDocument;		// pointer to the main document
-	ThreadManager* threadManager;
 
 	// Storage for all the data
 	ExperimentSettings * experimentSettings;
 	ExperimentData * experimentData;
+	CommHandler commHandler;
 
 	// Some storage variables for each MFC control
 	CEdit pEditMessages;

@@ -4,7 +4,7 @@
 
 #include "ConnectionMesure.h"
 #include "VerifInstrument.h"
-#include "DefineInstruments.h"
+#include "../Kalel Shared/Resources/DefineInstruments.h"
 
 // Boîte de dialogue ConnectionPort
 
@@ -18,8 +18,10 @@ public:
 
 // Données de boîte de dialogue
 	enum { IDD = IDD_CONNECTION_PORT };
+	void PassSettings(const MachineSettings& machineSettings);
 
 protected:
+	MachineSettings * settings;
 	virtual void DoDataExchange(CDataExchange* pDX);    // Prise en charge de DDX/DDV
 
 	DECLARE_MESSAGE_MAP()
@@ -114,14 +116,14 @@ public:
 	afx_msg void OnBnClickedCheckInstrument1KeithleyVoie2();
 	afx_msg void OnBnClickedCheckInstrument2KeithleyVoie2();
 	afx_msg void OnBnClickedCheckInstrument3KeithleyVoie2();
-	void EnregistrementConnection_port();
+	void EnregistrementConnection_port(MachineSettings & newSettings);
 	void InitConnection_port();
 
 
 	// Connection_port_fct
 
 	void InitDonneesInstrument(int TypeInstr,int* m_nIndex,int* m_nPortInstrument,BOOL* m_bInstrumentKeithleyVoie1,BOOL* m_bInstrumentKeithleyVoie2,CComboBox* m_CBInstrumentKeithleyVoie2,int* m_nIndexInstrumentKeithleyVoie2,int* m_nInstrumentMensor,int GetPort,int GetFonction);
-	void EnregistrementParametresInstrument(int num_instr,int m_nIndex,int COMInstrument,bool m_bInstrumentKeithleyVoie1, bool m_bInstrumentKeithleyVoie2,int m_nIndexInstrumentKeithleyVoie2,int m_nInstrumentMensor);
+	void EnregistrementParametresInstrument(int num_instr,int m_nIndex,int COMInstrument,bool m_bInstrumentKeithleyVoie1, bool m_bInstrumentKeithleyVoie2,int m_nIndexInstrumentKeithleyVoie2,int m_nInstrumentMensor, MachineSettings & newSettings);
 	void ShowItem(int m_nIndex,bool m_bInstrumentKeithleyVoie2,CComboBox* m_CBPortInstrument,CButton* m_CheckInstrumentKeithleyVoie1,CButton* m_CheckInstrumentKeithleyVoie2,CComboBox* m_CBInstrumentKeithleyVoie2,CComboBox* m_CBInstrumentMensor);
 
 
@@ -136,6 +138,6 @@ public:
 
 	void VerifUnInstrument(int num_instr,int m_nIndex,BOOL m_bKeithleyVoie1,BOOL m_bKeithleyVoie2,int m_nInstrumentKeithleyVoie2,int m_nMensor,int PortInstr);
 	void VerifMesure(ConnectionMesure* CM,int num_instr,int voie_mesure,CString* StrPbm,BOOL* bPbmMesure);
-	void EnregistrementVerifications();
+	void EnregistrementVerifications(MachineSettings& newSettings);
 
 };

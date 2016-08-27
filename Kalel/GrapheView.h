@@ -1,5 +1,5 @@
 #pragma once
-#include "ExperimentData.h"
+#include "../Kalel Shared/Com Classes/ExperimentData.h"				// Where data about the experimental parameters, results and current status is stored
 
 // Vue CGrapheView
 

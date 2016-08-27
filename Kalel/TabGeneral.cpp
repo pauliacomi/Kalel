@@ -10,7 +10,6 @@
 #include "DialogGas.h"						// Gas selection dialog
 
 #include "XSBrowseFolder.h"					// Browse for folder custom class
-#include "Parametres.h"						// For reading the parameters file
 #include "ParserXML.h"						// XML builder
 
 

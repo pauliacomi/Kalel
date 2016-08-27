@@ -2,12 +2,10 @@
 //
 
 #include "stdafx.h"
-#include "Kalel.h"
 #include "DialogMachineParameters.h"
 
-#include "Parametres.h"
-
-
+#include "MachineSettings.h"									// Accexsing the settings
+#include "../Kalel Shared/Resources/DefineStages.h"				// Experiment types
 
 // Boîte de dialogue ApparatusParameters
 
@@ -18,21 +16,30 @@ ApparatusParameters::ApparatusParameters(CWnd* pParent /*=NULL*/)
 	, Fichier_parametres(_T("./Parametres.ini"))
 	, m_StrNomCalo(_T(""))
 	, m_StrEnteteFichier(_T(""))
+{	
+}
 
+
+void ApparatusParameters::PassSettings(const MachineSettings & machineSettings)
 {
-	m_fSensibiliteCalo = GetSensibiliteCalo();
-	m_fSensibiliteCapteurBassePression = GetSensibiliteCapteurBassePression();
-	m_fSensibiliteCapteurHautePression = GetSensibiliteCapteurHautePression();
-	m_bSecurite = GetActivationSecurite();
-	
-	m_fPressionSecuriteBassePression = GetPressionSecuriteBassePression();
-	m_fPressionSecuriteHautePression = GetPressionSecuriteHautePression();
-	m_fPressionLimiteVide = GetPressionLimiteVide();
+	*settings = machineSettings;
 
-	m_bTuyere = GetPresenceTuyereSonique();
+	m_fSensibiliteCalo						= settings->SensibiliteCalo;
+	m_fSensibiliteCapteurBassePression		= settings->SensibiliteCapteurBassePression;
+	m_fSensibiliteCapteurHautePression		= settings->SensibiliteCapteurHautePression;
+	m_bSecurite								= settings->ActivationSecurite;
 
-	m_fVolumeRef = GetVolumeRef();
-	m_fVolumeP6 = GetVolumeP6();
+	m_fPressionSecuriteBassePression		= settings->PressionSecuriteBassePression;
+	m_fPressionSecuriteHautePression		= settings->PressionSecuriteHautePression;
+	m_fPressionLimiteVide					= settings->PressionLimiteVide;
+
+	m_bTuyere								= settings->PresenceTuyereSonique;
+
+	m_fVolumeRef							= settings->VolumeRef;
+	m_fVolumeP6								= settings->VolumeP6;
+
+	m_StrNomCalo.Format(_T("%s"), settings->CaloName.c_str());
+	m_StrEnteteFichier.Format(_T("%s"), settings->CaloEntete.c_str());
 }
 
 ApparatusParameters::~ApparatusParameters()
@@ -139,9 +146,6 @@ BOOL ApparatusParameters::OnInitDialog()
 	m_SpinVolumeP6.SetFormat("%1.2f");
 	m_SpinVolumeP6.UpdateBuddy();
 
-	m_StrNomCalo.Format(_T("%s"),GetNomCalo().c_str());
-	m_StrEnteteFichier.Format(_T("%s"),GetEnteteCalo().c_str());
-
 	UpdateData(FALSE);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
@@ -159,18 +163,20 @@ void ApparatusParameters::OnBnClickedOk()
 {
 	UpdateData(TRUE);
 
-	SetSensibiliteCalo(m_fSensibiliteCalo);
-	SetSensibiliteCapteurBassePression(m_fSensibiliteCapteurBassePression);
-	SetSensibiliteCapteurHautePression(m_fSensibiliteCapteurHautePression);
-	SetActivationSecurite(m_bSecurite);
-	SetPressionSecuriteBassePression(m_fPressionSecuriteBassePression);
-	SetPressionSecuriteHautePression(m_fPressionSecuriteHautePression);
-	SetPressionLimiteVide(m_fPressionLimiteVide);
-	SetPresenceTuyereSonique(m_bTuyere);
-	SetVolumeRef(m_fVolumeRef);
-	SetVolumeP6(m_fVolumeP6);
-	SetNomCalo(m_StrNomCalo.GetBuffer());		
-	SetEnteteCalo(m_StrEnteteFichier.GetBuffer());
+	MachineSettings newSettings;
+
+	newSettings.SensibiliteCalo						= m_fSensibiliteCalo;
+	newSettings.SensibiliteCapteurBassePression		= m_fSensibiliteCapteurBassePression;
+	newSettings.SensibiliteCapteurHautePression		= m_fSensibiliteCapteurHautePression;
+	newSettings.ActivationSecurite					= m_bSecurite;
+	newSettings.PressionSecuriteBassePression		= m_fPressionSecuriteBassePression;
+	newSettings.PressionSecuriteHautePression		= m_fPressionSecuriteHautePression;
+	newSettings.PressionLimiteVide					= m_fPressionLimiteVide;
+	newSettings.PresenceTuyereSonique				= m_bTuyere;
+	newSettings.VolumeRef							= m_fVolumeRef;
+	newSettings.VolumeP6							= m_fVolumeP6;
+	newSettings.CaloName							= m_StrNomCalo.GetBuffer();
+	newSettings.CaloEntete							= m_StrEnteteFichier.GetBuffer();
 
 	OnOK();
 }

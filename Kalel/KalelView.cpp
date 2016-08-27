@@ -121,9 +121,6 @@ CKalelView::CKalelView()
 
 CKalelView::~CKalelView()
 {
-	if (threadManager != nullptr) {
-		delete threadManager;
-	}
 	if (experimentSettings != nullptr) {
 		delete experimentSettings;
 	}
@@ -207,20 +204,15 @@ void CKalelView::OnInitialUpdate()
 	GetDlgItem(IDC_DESACTIVER_EV1)->EnableWindow(FALSE);
 	GetDlgItem(IDC_DESACTIVER_EV2)->EnableWindow(FALSE);
 	GetDlgItem(IDC_DESACTIVER_POMPE)->EnableWindow(FALSE);
-
-	// Check to see whether the parameters file has been created
-	VerifParametres();
 	
 	// Initial button set-up
 	UpdateButtons();
 
-	// Create the experiment parameter window
+	// Create the experiment storage class
 	int initialAdsorptions = 3;
 	int initialDesorptions = 1;
 	experimentSettings = new ExperimentSettings(initialAdsorptions, initialDesorptions);			// Create a new experiment storage
 	experimentSettings->GUIhandle = GetSafeHwnd();													// Save the window handle
-
-	threadManager = new ThreadManager(experimentSettings);											// the class dealing with managing threads
 
 	// Set the timer for the window update
 	SetTimer(1, 100, NULL);
@@ -335,7 +327,7 @@ LRESULT CKalelView::OnMsvAmpoule(WPARAM, LPARAM)
 			UpdateButtons();
 
 			// Raise the flag for data modified
-			threadManager->SetModifiedData();
+			commHandler.SetModifiedData();
 		}
 	}
 
@@ -363,7 +355,7 @@ LRESULT CKalelView::OnMsvBouteille(WPARAM, LPARAM)
 			UpdateButtons();
 
 			// Raise the flag for data modified
-			threadManager->SetModifiedData();
+			commHandler.SetModifiedData();
 		}
 	}
 
@@ -392,7 +384,7 @@ LRESULT CKalelView::OnChangementBouteille(WPARAM, LPARAM)
 			UpdateButtons();
 
 			// Raise the flag for data modified
-			threadManager->SetModifiedData();
+			commHandler.SetModifiedData();
 		}
 	}
 
@@ -452,20 +444,17 @@ LRESULT CKalelView::CancelBeforeStarting(WPARAM, LPARAM)
 
 LRESULT CKalelView::BackgroundThreadStart(WPARAM, LPARAM)
 {
-	return threadManager->StartThread();
+	return commHandler.StartClient();
 }
 
 
 LRESULT CKalelView::BackgroundThreadStop(WPARAM, LPARAM)
 {
-	return threadManager->ShutdownThread();
+	return commHandler.ShutdownClient();
 }
 
 
 LRESULT CKalelView::BackgroundThreadRestart(WPARAM, LPARAM)
 {
-	threadManager->ShutdownThread();
-	threadManager->StartThread();
-	
-	return 0;
+	return commHandler.RestartClient();
 }

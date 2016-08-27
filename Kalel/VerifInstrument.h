@@ -4,9 +4,6 @@
 #define VERIFINSTRUMENT_H
 
 
-#include "Keithley.h"
-#include "Mensor.h"
-
 class VerifInstrument
 {
 public:

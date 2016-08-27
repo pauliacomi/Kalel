@@ -2,6 +2,7 @@
 #include "SpinBtnCtrl.h"
 #include "ResourceParametresAppareil.h"
 
+class MachineSettings;
 
 // Dialogbox ApparatusParameters
 
@@ -15,8 +16,10 @@ public:
 
 // Données de boîte de dialogue
 	enum { IDD = IDD_PARAMETRES_APPAREIL };
+	void PassSettings(const MachineSettings& machineSettings);
 
 protected:
+	MachineSettings * settings;
 	virtual void DoDataExchange(CDataExchange* pDX);    // Prise en charge de DDX/DDV
 
 	DECLARE_MESSAGE_MAP()

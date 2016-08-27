@@ -6,15 +6,12 @@
 #include "Kalel Server.h"
 #include "Kalel ServerDlg.h"
 #include "afxdialogex.h"
-#include "Client.h"
-#include <thread>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
-#define IP "localhost"
-#define PORT "27015"
 
+#include "Automation\ThreadManager.h"
 
 // CKalelServerDlg dialog
 
@@ -50,17 +47,7 @@ BOOL CKalelServerDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// Set small icon
 
 	// TODO: Add extra initialization here
-
-	try
-	{
-		server.Listen();
-		//server.Accept();
-	}
-	catch (const std::exception& e)
-	{
-		CString error(e.what());
-		AfxMessageBox(error);
-	}
+	threadManager = std::unique_ptr<ThreadManager>(new ThreadManager());											// the class dealing with managing threads
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }

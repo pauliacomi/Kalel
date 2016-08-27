@@ -1,13 +1,10 @@
 // Dialogue_TypeExperience.cpp : implementation
 //
-
 #include "stdafx.h"
-#include "Kalel.h"
 #include "DialogTypeExperiment.h"
 
-
-#include "Parametres.h"			// Accexsing the parameters file 
-#include "DefineStages.h"		// Experiment types
+#include "MachineSettings.h"									// Accexsing the settings
+#include "../Kalel Shared/Resources/DefineStages.h"				// Experiment types
 
 // Dialog box DialogTypeExperiment
 
@@ -23,6 +20,11 @@ DialogTypeExperiment::DialogTypeExperiment(CWnd* pParent /*=NULL*/)
 
 DialogTypeExperiment::~DialogTypeExperiment()
 {
+}
+
+void DialogTypeExperiment::PassSettings(const MachineSettings & machineSettings)
+{
+	 * settings = machineSettings;
 }
 
 // Data exchange and message map
@@ -44,7 +46,7 @@ BOOL DialogTypeExperiment::OnInitDialog()
 	CDialog::OnInitDialog();
 	
 	// Disable the buttons if there is no mention of available instruments in the parameters file
-	if(!GetMesureCalo() && !GetMesureBassePression() && !GetMesureHautePression())
+	if(!settings->CaloToMeasure && !settings->LowPressureToMeasure && !settings->HighPressureToMeasure)
 	{
 		GetDlgItem(IDC_RADIO_TYPE_EXPERIENCE_AUTO)->EnableWindow(FALSE);
 		GetDlgItem(IDC_RADIO_TYPE_EXPERIENCE_MANUAL)->EnableWindow(FALSE);
@@ -57,7 +59,7 @@ BOOL DialogTypeExperiment::OnInitDialog()
 	GetDlgItem(IDOK)->EnableWindow(TRUE);
 
 	// Disable the button for automatic experiment if there is no mention of a high range pressure sensor in the parameters file
-	if(!GetMesureHautePression())
+	if(!settings->HighPressureToMeasure)
 	{
 		m_bExperienceAuto = FALSE;
 		UpdateData(FALSE);

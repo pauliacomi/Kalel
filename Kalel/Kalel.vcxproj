@@ -90,7 +90,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -195,60 +195,41 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Kalel Shared\Com Classes\ExperimentData.h" />
+    <ClInclude Include="..\Kalel Shared\Com Classes\ExperimentSettings.h" />
+    <ClInclude Include="..\Kalel Shared\Netcode\base64.h" />
+    <ClInclude Include="..\Kalel Shared\Netcode\Client.h" />
+    <ClInclude Include="..\Kalel Shared\Netcode\http_request.h" />
+    <ClInclude Include="..\Kalel Shared\Netcode\json.hpp" />
+    <ClInclude Include="..\Kalel Shared\Netcode\Netcode Resources.h" />
+    <ClInclude Include="..\Kalel Shared\Netcode\Server.h" />
+    <ClInclude Include="..\Kalel Shared\Netcode\Socket.h" />
+    <ClInclude Include="..\Kalel Shared\Netcode\stdHelpers.h" />
+    <ClInclude Include="..\Kalel Shared\Netcode\URLHelper.h" />
+    <ClInclude Include="CommHandler.h" />
     <ClInclude Include="CommonFunctions.h" />
     <ClInclude Include="DialogMachineParameters.h" />
-    <ClInclude Include="Automation.h" />
     <ClInclude Include="Chrono.h" />
     <ClInclude Include="Classes_experiences.h" />
     <ClInclude Include="ConnectionMesure.h" />
     <ClInclude Include="DialogConnectionPort.h" />
     <ClInclude Include="DefinePostMessages.h" />
-    <ClInclude Include="ExperimentData.h" />
     <ClInclude Include="ExperimentPropertySheet.h" />
-    <ClInclude Include="FluxConverter.h" />
-    <ClInclude Include="DefineStages.h" />
-    <ClInclude Include="DefineInstruments.h" />
-    <ClInclude Include="DefineAutomationSettings.h" />
     <ClInclude Include="DialogCell.h" />
     <ClInclude Include="DialogUser.h" />
     <ClInclude Include="DialogGas.h" />
     <ClInclude Include="DialogTypeExperiment.h" />
     <ClInclude Include="GrapheView.h" />
     <ClInclude Include="InfoEtape.h" />
-    <ClInclude Include="SerialInstruments.h" />
     <ClInclude Include="Kalel.h" />
     <ClInclude Include="KalelDoc.h" />
     <ClInclude Include="KalelView.h" />
-    <ClInclude Include="Keithley.h" />
-    <ClInclude Include="LiaisonRS232.h" />
-    <ClInclude Include="ListeEtape.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="ListOfInstrumentButtons.h" />
     <ClInclude Include="MainFrm.h" />
-    <ClInclude Include="Manip.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="Manip_Auto.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="Manip_AutoGaz.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="ManualActionParam.h" />
-    <ClInclude Include="Mensor.h" />
-    <ClInclude Include="ExperimentSettings.h" />
-    <ClInclude Include="MFCMessageHandler.h" />
-    <ClInclude Include="NIDAQmx.h" />
-    <ClInclude Include="NI_USB_6008.h" />
-    <ClInclude Include="NI_USB_9211A.h" />
-    <ClInclude Include="Parametres.h" />
     <ClInclude Include="ParserXML.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="MachineSettings.h" />
     <ClInclude Include="StringTable.h" />
     <ClInclude Include="ResourceDialogCell.h" />
     <ClInclude Include="ResourceConnectionPort.h" />
@@ -265,229 +246,45 @@
     <ClInclude Include="TabDoses.h" />
     <ClInclude Include="TabGeneral.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="Temperature.h" />
-    <ClInclude Include="ThreadManager.h" />
     <ClInclude Include="tinystr.h" />
     <ClInclude Include="tinyxml.h" />
-    <ClInclude Include="Vannes.h" />
     <ClInclude Include="VerifInstrument.h" />
     <ClInclude Include="XSBrowseFolder.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AutomationStageDesorption.cpp" />
-    <ClCompile Include="AutomationStageEquilibration.cpp" />
-    <ClCompile Include="AutomationStageVacuum.cpp" />
+    <ClCompile Include="..\Kalel Shared\Com Classes\ExperimentData.cpp" />
+    <ClCompile Include="..\Kalel Shared\Com Classes\ExperimentSettings.cpp" />
+    <ClCompile Include="..\Kalel Shared\Netcode\base64.cpp" />
+    <ClCompile Include="..\Kalel Shared\Netcode\Client.cpp" />
+    <ClCompile Include="..\Kalel Shared\Netcode\Server.cpp" />
+    <ClCompile Include="..\Kalel Shared\Netcode\Socket.cpp" />
+    <ClCompile Include="..\Kalel Shared\Netcode\stdHelpers.cpp" />
+    <ClCompile Include="..\Kalel Shared\Netcode\URLHelper.cpp" />
+    <ClCompile Include="CommHandler.cpp" />
     <ClCompile Include="CommonFunctions.cpp" />
     <ClCompile Include="DialogMachineParameters.cpp" />
-    <ClCompile Include="Automation.cpp" />
-    <ClCompile Include="AutomationFileWriting.cpp" />
-    <ClCompile Include="AutomationStageInitialChecks.cpp" />
-    <ClCompile Include="AutomationMeasurement.cpp" />
-    <ClCompile Include="AutomationSecurity.cpp" />
-    <ClCompile Include="AutomationShutdown.cpp" />
-    <ClCompile Include="AutomationStageAdsoprtion.cpp" />
-    <ClCompile Include="AutomationTimeKeeping.cpp" />
-    <ClCompile Include="AutomationVacuum.cpp" />
-    <ClCompile Include="AutomationValves.cpp" />
     <ClCompile Include="Chrono.cpp" />
     <ClCompile Include="Classes_experiences.cpp" />
     <ClCompile Include="ConnectionMesure.cpp" />
     <ClCompile Include="DialogConnectionPort.cpp" />
-    <ClCompile Include="ExperimentData.cpp" />
     <ClCompile Include="ExperimentPropertySheet.cpp" />
-    <ClCompile Include="FluxConverter.cpp" />
     <ClCompile Include="DialogCell.cpp" />
     <ClCompile Include="DialogUser.cpp" />
     <ClCompile Include="DialogGas.cpp" />
     <ClCompile Include="DialogTypeExperiment.cpp" />
     <ClCompile Include="GrapheView.cpp" />
     <ClCompile Include="InfoEtape.cpp" />
-    <ClCompile Include="Manip_Auto.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="Manip_Auto_Arret.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="Manip_Auto_Donnees.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="Manip_Auto_Fichier.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="Manip_Auto_LireAfficher.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="Manip_Auto_Probleme_Injection.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="Manip_Auto_Vannes.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="Manip_Auto_Verifications.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="SerialInstruments.cpp" />
     <ClCompile Include="Kalel.cpp" />
     <ClCompile Include="KalelDoc.cpp" />
     <ClCompile Include="KalelView.cpp" />
     <ClCompile Include="KalelViewDisplay.cpp" />
     <ClCompile Include="KalelViewButtons.cpp" />
     <ClCompile Include="KalelViewButtonsValves.cpp" />
-    <ClCompile Include="Keithley.cpp" />
-    <ClCompile Include="LiaisonRS232.cpp" />
     <ClCompile Include="ListOfInstrumentButtons.cpp" />
     <ClCompile Include="MainFrm.cpp" />
-    <ClCompile Include="Manip.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="Manip_AutoGaz.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="Manip_AutoGaz_Adsorption_Continue.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="Manip_AutoGaz_AEffectuer.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="Manip_AutoGaz_Desorption.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="Manip_AutoGaz_Donnees.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="Manip_AutoGaz_Execution.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="Manip_AutoGaz_Fichier.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="Manip_AutoGaz_Grandes_Doses.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="Manip_AutoGaz_LEA.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="Manip_AutoGaz_Ligne_Base_Equilibre.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="Manip_AutoGaz_Mesure.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="Manip_AutoGaz_MiseSousVide_Ampoule.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="Manip_AutoGaz_MiseSousVide_Bouteille.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="Manip_AutoGaz_MiseSousVide_ChangementBouteille.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="Manip_AutoGaz_Mise_Sous_Vide.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="Manip_AutoGaz_Moyennes_Doses.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="Manip_AutoGaz_Petites_Doses.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="Manip_AutoGaz_Proprietes_Experience.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="Manip_AutoGaz_Vannes.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="ManipData.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="ManipManualExecution.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="ManipFileWriting.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="ManipMeasurement.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="ManipSecurity.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="ManipTimeKeeping.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="ManipValves.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="ManualActionParam.cpp" />
-    <ClCompile Include="Mensor.cpp" />
-    <ClCompile Include="ExperimentSettings.cpp" />
-    <ClCompile Include="MFCMessageHandler.cpp" />
-    <ClCompile Include="NI_USB_6008.cpp" />
-    <ClCompile Include="NI_USB_9211A.cpp" />
-    <ClCompile Include="Parametres.cpp" />
     <ClCompile Include="ParserXML.cpp" />
+    <ClCompile Include="MachineSettings.cpp" />
     <ClCompile Include="SpinBtnCtrl.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -500,13 +297,10 @@
     <ClCompile Include="TabDivers.cpp" />
     <ClCompile Include="TabDoses.cpp" />
     <ClCompile Include="TabGeneral.cpp" />
-    <ClCompile Include="Temperature.cpp" />
-    <ClCompile Include="ThreadManager.cpp" />
     <ClCompile Include="tinystr.cpp" />
     <ClCompile Include="tinyxml.cpp" />
     <ClCompile Include="tinyxmlerror.cpp" />
     <ClCompile Include="tinyxmlparser.cpp" />
-    <ClCompile Include="Vannes.cpp" />
     <ClCompile Include="XSBrowseFolder.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -528,9 +322,6 @@
     <Image Include="res\Kalel.ico" />
     <Image Include="res\KalelDoc.ico" />
     <Image Include="res\Toolbar.bmp" />
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="NIDAQmx.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

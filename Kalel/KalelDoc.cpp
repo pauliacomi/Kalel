@@ -14,7 +14,7 @@
 
 #include <propkey.h>
 
-#include "ExperimentData.h"
+#include "../Kalel Shared/Com Classes/ExperimentData.h"				// Where data about the experimental parameters, results and current status is stored
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

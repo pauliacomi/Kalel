@@ -8,9 +8,7 @@
 #include "KalelDoc.h"
 #include "KalelView.h"
 
-#include "ThreadManager.h"
-
-#include "ManualActionParam.h"			// The class that has the parameters inside
+#include "ManualActionParam.h"			// The class that has the manual parameters stored
 #include "DefineInstruments.h"			// Definitions for instruments
 #include "ListOfInstrumentButtons.h"	// The class containing a list of the instruments' buttons ID's
 
@@ -32,11 +30,7 @@ void CKalelView::AskThreadForManualCommand(int instrumentType, int instrumentNum
 	pApp->menuIsAvailable = false;
 
 	// Create the storage object and then pass it to the threading function
-	if (threadManager->maParam) {
-		delete threadManager->maParam;
-	}
-	threadManager->maParam = new ManualActionParam(GetSafeHwnd(), instrumentType, instrumentNumber, shouldBeActivated);
-	threadManager->ManualAction();
+	commHandler.ManualCommand(GetSafeHwnd(), instrumentType, instrumentNumber, shouldBeActivated);
 }
 
 

@@ -1,15 +1,22 @@
-
-#include "stdafx.h"
-
-#include "KalelView.h"
+#include "../stdafx.h"
 #include "ThreadManager.h"
+
+#include "../../Kalel Shared/Com Classes/ExperimentSettings.h"
+#include "Class\Automation.h"										// Backend for all the automation
+
+#include "ManualActionParam.h"
+
+#include "../Parameters/Parametres.h"
+
+// Netcode
+#include "../../Kalel Shared/Netcode/Server.h"
+
+// STD
 #include <atomic>
-
-
 
 // --------- Initialisation and destruction -------
 
-ThreadManager::ThreadManager(ExperimentSettings * expD)
+ThreadManager::ThreadManager()
 	: m_threadMainControlLoop(NULL)
 	, m_threadManualAction (NULL)
 
@@ -18,8 +25,8 @@ ThreadManager::ThreadManager(ExperimentSettings * expD)
 
 	, automation(NULL)
 {
-	// Store the link to the experimental data
-	experimentSettings = expD;
+	// Check to see whether the parameters file has been created
+	VerifParametres();
 
 	// Start the thread
 	StartThread();

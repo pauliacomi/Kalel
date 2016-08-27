@@ -216,18 +216,18 @@ LRESULT CKalelView::MessageBoxConfirmation(WPARAM wParam, LPARAM lParam)
 		if (result == IDCANCEL)
 		{
 			if (AfxMessageBox(PROMPT_CANCELEXP, MB_YESNO | MB_ICONWARNING, 0) == IDYES) {
-				threadManager->ResetThread();
+				commHandler.ResetClient();
 				continuer = false;
 			}
 		}
 		else {
 			if (result == IDYES || result == IDOK) {
-				threadManager->ResumeThread();
+				commHandler.ResumeClient();
 				continuer = false;
 			}
 			if (result == IDNO) {
-				threadManager->SetUserContinue();
-				threadManager->ResumeThread();
+				commHandler.ResumeClient();
+				commHandler.SetUserContinue();
 				continuer = false;
 			}
 		}

@@ -13,14 +13,14 @@
 #include "DefineStages.h"					// All stage, experiment type definitions are here
 
 // Synchronization classes
-#include "MFCMessageHandler.h"				// Handles all the messages from this class to the UI. Great if we want to upgrade to somehting that's not MFC
-#include "ExperimentData.h"
-#include "ExperimentSettings.h"	
+#include "../MFCMessageHandler.h"									// Handles all the messages from this class to the client
+#include "../../../Kalel Shared/Com Classes/ExperimentData.h"
+#include "../../../Kalel Shared/Com Classes/ExperimentSettings.h"	
 
 // Measurement and manipulation classes
-#include "Vannes.h"					// Controlling valves
-#include "Temperature.h"			// Temperature recording
-#include "SerialInstruments.h"		// Pressure & Calorimeter recording
+#include "../../Backend/Wrapper Classes/Vannes.h"					// Controlling valves
+#include "../../Backend/Wrapper Classes/Temperature.h"				// Temperature recording
+#include "../../Backend/Wrapper Classes/SerialInstruments.h"		// Pressure & Calorimeter recording
 
 #include "Chrono.h"					// Time keeping
 

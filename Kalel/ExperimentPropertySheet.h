@@ -4,7 +4,7 @@
 
 // ExperimentPropertySheet
 
-// Property pages include
+// Forward declarations
 #include "TabGeneral.h"
 #include "TabDivers.h"
 #include "TabDoses.h"
@@ -12,8 +12,7 @@
 #include "TabContinuousAdsorption.h"
 
 // Experiment settings class
-#include "ExperimentSettings.h"
-
+#include "../Kalel Shared/Com Classes/ExperimentSettings.h"
 
 // Other includes
 #include <vector>		// Using a vector to keep the collection of tabs in
@@ -48,8 +47,8 @@ public:
 	// PropertyPages declared
 	TabGeneral m_general;
 	TabDivers m_divers;
-	vector<TabDoses*> adsorptionTabs;
-	vector<TabDesorption*> desorptionTabs;
+	std::vector<TabDoses*> adsorptionTabs;
+	std::vector<TabDesorption*> desorptionTabs;
 	TabContinuousAdsorption m_continuousAdsorption;
 
 protected:
@@ -67,7 +66,7 @@ protected:
 
 public:
 	int experimentType;
-	vector<bool> availableTabs;   /// it is here to prevent a tab being added twice, might be useleess but need to reprogram stuff
+	std::vector<bool> availableTabs;   /// it is here to prevent a tab being added twice, might be useleess but need to reprogram stuff
 
 // custom functions
 

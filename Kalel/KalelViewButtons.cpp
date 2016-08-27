@@ -8,10 +8,10 @@
 #include "KalelDoc.h"
 #include "KalelView.h"
 
-#include "ThreadManager.h"
-
 #include "DialogTypeExperiment.h"		// The dialog asking the user for the experiment type
 
+#include "TabDoses.h"					// For manipulating the settings object
+#include "TabDesorption.h"				// For manipulating the settings object
 
 // When clicking on the Launch button
 void CKalelView::OnBnClickedLancer()
@@ -44,7 +44,7 @@ void CKalelView::OnBnClickedLancer()
 			GetExperimentData(&dialogExperimentProperties, true);
 
 			// Raise the flag for data modified
-			threadManager->SetModifiedData();
+			commHandler.SetModifiedData();
 		}
 		else
 		{
@@ -65,7 +65,7 @@ void CKalelView::OnBnClickedArreter()
 		switch (result)
 		{
 		case IDYES:
-			threadManager->ResetThread();
+			commHandler.ResetClient();
 			break;
 		
 		case IDNO:
@@ -110,12 +110,12 @@ void CKalelView::OnBnClickedButtonParametresExperience()
 
 void CKalelView::OnBnClickedPause()
 {
-	threadManager->PauseThread();
+	commHandler.PauseClient();
 }
 
 void CKalelView::OnBnClickedReprise()
 {
-	threadManager->ResumeThread();
+	commHandler.ResumeClient();
 }
 
 void CKalelView::OnBnClickedProchaineCommande()
@@ -222,7 +222,7 @@ void CKalelView::GetExperimentData(ExperimentPropertySheet * pDialogExperimentPr
 		if (modified)
 		{
 			// Raise the flag for data modified
-			threadManager->SetModifiedData();
+			commHandler.SetModifiedData();
 
 			// Copy data across
 			experimentSettings->dataGeneral = pDialogExperimentProperties->m_general.allSettings;

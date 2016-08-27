@@ -2,18 +2,7 @@
 #ifndef PARAMETRES_H
 #define PARAMETRES_H
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <windows.h>
-#include <tchar.h>
-
-
-#include <iostream>
-#include <fstream>
 #include <string>
-//#include "NIDAQmxBase.h"
-
-
 
 #define Dev_USB_Temp 2
 #define Dev_USB_Vannes 1
@@ -21,10 +10,8 @@
 void VerifParametres();
 void Initialisation_parametres();
 
+// Get
 
-
-//float GetSensibiliteCalo();
-//long double GetSensibiliteCalo();
 long double GetSensibiliteCalo();
 float GetSensibiliteCapteurBassePression();
 float GetSensibiliteCapteurHautePression();
@@ -33,7 +20,6 @@ float GetPressionSecuriteBassePression();
 float GetPressionSecuriteHautePression();
 float GetPressionLimiteVide();
 bool GetPresenceTuyereSonique();
-int GetPourcentageAvertissement();
 float GetVolumeRef();
 float GetVolumeP6();
 
@@ -68,8 +54,7 @@ bool GetMesureCalo();
 bool GetMesureBassePression();
 bool GetMesureHautePression();
 
-
-
+// Set
 
 void SetSensibiliteCalo(float fSensCalo);
 void SetSensibiliteCapteurBassePression(float fSensBP);
@@ -79,7 +64,6 @@ void SetPressionSecuriteBassePression(float fSecuBP);
 void SetPressionSecuriteHautePression(float fSecuHP);
 void SetPressionLimiteVide(float fPressionVide);
 void SetPresenceTuyereSonique(bool bTuyere);
-void SetPourcentageAvertissement(int fAvertissement);
 void SetVolumeRef(float fVolumeRef);
 void SetVolumeP6(float fVolumeP6);
 
@@ -106,10 +90,10 @@ void SetPortMensor(int PortMensor);
 void SetPortVannes(int PortVannes);
 void SetPortTemperatures(int PortTemperatures);
 
-void SetNomCalo(std::string NomCalo);		
-void SetEnteteCalo(std::string EnteteCalo);
+void SetNomCalo(std::wstring NomCalo);		
+void SetEnteteCalo(std::wstring EnteteCalo);
 
-void SetCheminFichierGeneral(std::string CheminFichierGeneral);
+void SetCheminFichierGeneral(std::wstring CheminFichierGeneral);
 
 void SetMesureCalo(bool bMesure);
 void SetMesureBassePression(bool bMesure);

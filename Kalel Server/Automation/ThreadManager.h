@@ -2,18 +2,14 @@
 #ifndef THREADS_H
 #define THREADS_H
 
-#include "afxwin.h"
-#include <afxmt.h>
 
-#include "ExperimentSettings.h"
-#include "Automation.h"				// Backend for all the automation
-#include "ManualActionParam.h"
-
+class Automation;
+class ExperimentSettings;
 
 class ThreadManager
 {
 public:
-	ThreadManager(ExperimentSettings * expD);
+	ThreadManager();
 	~ThreadManager();
 
 	// Pointer to settings storage

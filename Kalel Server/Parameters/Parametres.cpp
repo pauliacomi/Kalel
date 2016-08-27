@@ -1,14 +1,16 @@
 
 // This file should be rewritten as a class in the future
 
-#include "stdafx.h"
 #include "Parametres.h"
+#include "../../Kalel Shared/Resources/DefineInstruments.h"
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <windows.h>
+#include <tchar.h>
 
-#include "DefineInstruments.h"
-
-
-using namespace std;
+#include <iostream>
+#include <fstream>
 
 #define nSizeInt 6
 #define nSizeFloat 20
@@ -20,7 +22,7 @@ using namespace std;
 
 void VerifParametres()
 {
-	ifstream file_stream(Fichier_parametres_char,ifstream::in);
+	std::ifstream file_stream(Fichier_parametres_char, std::ifstream::in);
 	bool ans = file_stream.is_open();
 	file_stream.close();
 
@@ -68,16 +70,15 @@ void Initialisation_parametres()
 	WritePrivateProfileString(_T("Connection"),_T("USB_Vannes"),_T("1"),Fichier_parametres);
 	WritePrivateProfileString(_T("Connection"),_T("USB_Temperature"),_T("2"),Fichier_parametres);
 
-	for(int i=1;i<=NB_OF_INSTRUMENTS;i++)
+	for (int i = 1; i <= NB_OF_INSTRUMENTS; i++)
 	{
-		CString strTitre,strType,strFonction;
-		strTitre.Format(_T("Instrument%d"),i);
-		strType.Format(_T("%d"),INSTRUMENT_UNDEF);
-		strFonction.Format(_T("%d"),FUNCTION_UNDEF);
+		std::wstring title = L"Instrument" + std::to_wstring(i);
+		std::wstring type = std::to_wstring(INSTRUMENT_UNDEF);
+		std::wstring function = std::to_wstring(FUNCTION_UNDEF);
 
-		WritePrivateProfileString(strTitre,_T("type"),strType,Fichier_parametres);
-		WritePrivateProfileString(strTitre,_T("COM"),_T("-1"),Fichier_parametres);
-		WritePrivateProfileString(strTitre,_T("fonction"),strFonction,Fichier_parametres);
+		WritePrivateProfileString(title.c_str(), _T("type"), type.c_str(), Fichier_parametres);
+		WritePrivateProfileString(title.c_str(), _T("COM"), _T("-1"), Fichier_parametres);
+		WritePrivateProfileString(title.c_str(), _T("fonction"), function.c_str(), Fichier_parametres);
 	}
 	
 	WritePrivateProfileString(_T("Calorimetre"),_T("Nom"),_T("Indéfini"),Fichier_parametres);
@@ -116,16 +117,13 @@ void Initialisation_parametres()
 */
 
 
-//float GetSensibiliteCalo()
-//long double GetSensibiliteCalo()
 long double GetSensibiliteCalo()
 {
 	TCHAR StrSensibiliteCalo[nSizeFloat];
-	GetPrivateProfileString(_T("Appareil"),_T("Sensibilite_calo"),
-							_T("0.05470197"),StrSensibiliteCalo,11,Fichier_parametres);
-	string ConvertSensibiliteCalo(StrSensibiliteCalo);
+	GetPrivateProfileString(_T("Appareil"), _T("Sensibilite_calo"),
+		_T("0.05470197"), StrSensibiliteCalo, 11, Fichier_parametres);
+	std::string ConvertSensibiliteCalo(StrSensibiliteCalo);
 	
-	//return atof(ConvertSensibiliteCalo.c_str());
 	return atof(ConvertSensibiliteCalo.c_str());
 }
 
@@ -135,7 +133,7 @@ float GetSensibiliteCapteurBassePression()
 	TCHAR StrSensibiliteCapteurBassePression[nSizeFloat];
 	GetPrivateProfileString(_T("Appareil"),_T("Sensibilite_capteur_basse_pression"),
 							_T("1"),StrSensibiliteCapteurBassePression,nSizeFloat,Fichier_parametres);
-	string ConvertSensibiliteBasse(StrSensibiliteCapteurBassePression);
+	std::string ConvertSensibiliteBasse(StrSensibiliteCapteurBassePression);
 	return atof(ConvertSensibiliteBasse.c_str());
 }
 
@@ -145,7 +143,7 @@ float GetSensibiliteCapteurHautePression()
 	TCHAR StrSensibiliteCapteurHautePression[nSizeFloat];
 	GetPrivateProfileString(_T("Appareil"),_T("Sensibilite_capteur_haute_pression"),
 							_T("7.6"),StrSensibiliteCapteurHautePression,nSizeFloat,Fichier_parametres);
-	string ConvertSensibiliteHaute(StrSensibiliteCapteurHautePression);
+	std::string ConvertSensibiliteHaute(StrSensibiliteCapteurHautePression);
 	return atof(ConvertSensibiliteHaute.c_str());
 }
 
@@ -154,7 +152,7 @@ bool GetActivationSecurite()
 	TCHAR StrActivationSecurite[nSizeString];
 	GetPrivateProfileString(_T("Appareil"),_T("Activation_Securite"),
 							_T("Vrai"),StrActivationSecurite,nSizeString,Fichier_parametres);
-	string ConvertActivationSecurite(StrActivationSecurite);
+	std::string ConvertActivationSecurite(StrActivationSecurite);
 	if (ConvertActivationSecurite == "Vrai")
 		return true;
 	return false;
@@ -165,7 +163,7 @@ float GetPressionSecuriteBassePression()
 	TCHAR StrPressionSecuriteBassePression[nSizeFloat];
 	GetPrivateProfileString(_T("Appareil"),_T("Pression_securite_capteur_basse_pression"),
 							_T("1.1"),StrPressionSecuriteBassePression,nSizeFloat,Fichier_parametres);
-	string ConvertPressionSecuriteBassePression(StrPressionSecuriteBassePression);
+	std::string ConvertPressionSecuriteBassePression(StrPressionSecuriteBassePression);
 	return atof(ConvertPressionSecuriteBassePression.c_str());
 }
 
@@ -175,7 +173,7 @@ float GetPressionSecuriteHautePression()
 	TCHAR StrPressionSecuriteHautePression[nSizeFloat];
 	GetPrivateProfileString(_T("Appareil"),_T("Pression_securite_capteur_haute_pression"),
 							_T("5.1"),StrPressionSecuriteHautePression,nSizeFloat,Fichier_parametres);
-	string ConvertPressionSecuriteHautePression(StrPressionSecuriteHautePression);
+	std::string ConvertPressionSecuriteHautePression(StrPressionSecuriteHautePression);
 	return atof(ConvertPressionSecuriteHautePression.c_str());
 }
 
@@ -185,7 +183,7 @@ float GetPressionLimiteVide()
 	TCHAR StrPressionLimiteVide[nSizeFloat];
 	GetPrivateProfileString(_T("Appareil"),_T("Pression_limite_vide"),
 							_T("0.02"),StrPressionLimiteVide,nSizeFloat,Fichier_parametres);
-	string ConvertPressionLimiteVide(StrPressionLimiteVide);
+	std::string ConvertPressionLimiteVide(StrPressionLimiteVide);
 	return atof(ConvertPressionLimiteVide.c_str());
 }
 
@@ -195,7 +193,7 @@ bool GetPresenceTuyereSonique()
 	TCHAR StrPresenceTuyereSonique[nSizeString];
 	GetPrivateProfileString(_T("Appareil"),_T("Presence_Tuyere_Sonique"),
 							_T("Vrai"),StrPresenceTuyereSonique,nSizeString,Fichier_parametres);
-	string ConvertPresenceTuyereSonique(StrPresenceTuyereSonique);
+	std::string ConvertPresenceTuyereSonique(StrPresenceTuyereSonique);
 	if (ConvertPresenceTuyereSonique == "Vrai")
 		return true;
 	return false;
@@ -207,7 +205,7 @@ float GetVolumeRef()
 	TCHAR StrVolumeRef[nSizeFloat];
 	GetPrivateProfileString(_T("Appareil"),_T("Volume_ref"),
 							_T("1"),StrVolumeRef,nSizeFloat,Fichier_parametres);
-	string ConvertVolumeRef(StrVolumeRef);
+	std::string ConvertVolumeRef(StrVolumeRef);
 	return atof(ConvertVolumeRef.c_str());
 }
 
@@ -217,7 +215,7 @@ float GetVolumeP6()
 	TCHAR StrVolumeP6[nSizeFloat];
 	GetPrivateProfileString(_T("Appareil"),_T("Volume_P6"),
 							_T("1"),StrVolumeP6,nSizeFloat,Fichier_parametres);
-	string ConvertVolumeP6(StrVolumeP6);
+	std::string ConvertVolumeP6(StrVolumeP6);
 	return atof(ConvertVolumeP6.c_str());
 }
 
@@ -231,12 +229,12 @@ int GetNumberInstruments()
 
 int GetTypeInstrument(int num)
 {
+	std::wstring title = L"Instrument" + std::to_wstring(num);
+	std::wstring type = std::to_wstring(INSTRUMENT_INEXIST);
+
 	TCHAR StrTypeInstrument[nSizeInt];
-	CString strTitre,strType;
-	strTitre.Format(_T("Instrument%d"),num);
-	strType.Format(_T("%d"),INSTRUMENT_INEXIST);
-	GetPrivateProfileString(strTitre,_T("Type"),
-							strType,StrTypeInstrument,nSizeInt,Fichier_parametres);
+
+	GetPrivateProfileString(title.c_str(), _T("Type"), type.c_str(), StrTypeInstrument, nSizeInt, Fichier_parametres);
 	return _ttoi(StrTypeInstrument);	
 }
 
@@ -253,11 +251,11 @@ int GetTypeInstrument3()
 
 int GetCOMInstrument(int num)
 {
+	std::wstring title = L"Instrument" + std::to_wstring(num);
+
 	TCHAR StrCOMInstrument[nSizeInt];
-	CString strTitre;
-	strTitre.Format(_T("Instrument%d"),num);
-	GetPrivateProfileString(strTitre,_T("COM"),
-							_T("-1"),StrCOMInstrument,nSizeInt,Fichier_parametres);
+
+	GetPrivateProfileString(title.c_str(), _T("COM"), _T("-1"), StrCOMInstrument, nSizeInt, Fichier_parametres);
 	return _ttoi(StrCOMInstrument);	
 }
 
@@ -274,12 +272,12 @@ int GetCOMInstrument3()
 
 int GetFonctionInstrument(int num)
 {
+	std::wstring title = L"Instrument" + std::to_wstring(num);
+	std::wstring function = std::to_wstring(FUNCTION_INEXIST);
+
 	TCHAR StrFonctionInstrument[nSizeInt];
-	CString strTitre,strFonction;
-	strTitre.Format(_T("Instrument%d"),num);
-	strFonction.Format(_T("%d"),FUNCTION_INEXIST);
-	GetPrivateProfileString(strTitre,_T("Fonction"),
-							strFonction,StrFonctionInstrument,nSizeInt,Fichier_parametres);
+
+	GetPrivateProfileString(title.c_str(), _T("Fonction"), function.c_str(), StrFonctionInstrument, nSizeInt, Fichier_parametres);
 	return _ttoi(StrFonctionInstrument);	
 }
 
@@ -330,32 +328,32 @@ int GetPortTemperatures()
 
 // Lecture des données du calo
 
-string GetNomCalo()
+std::string GetNomCalo()
 {
 	TCHAR StrNomCalo[nSizeString];
 	GetPrivateProfileString(__T("Calorimetre"),_T("Nom"),_T("Indéfini"),
 							StrNomCalo,nSizeString,Fichier_parametres);
-	string ConvertNomCalo(StrNomCalo);
+	std::string ConvertNomCalo(StrNomCalo);
 	return ConvertNomCalo;
 }
 
-string GetEnteteCalo()
+std::string GetEnteteCalo()
 {
 	TCHAR StrEnteteCalo[nSizeString];
 	GetPrivateProfileString(__T("Calorimetre"),_T("Entete"),_T("Calo"),
 							StrEnteteCalo,nSizeString,Fichier_parametres);
-	string ConvertEnteteCalo(StrEnteteCalo);
+	std::string ConvertEnteteCalo(StrEnteteCalo);
 	return ConvertEnteteCalo;
 }
 
 // Lecture des données de General
 
-string GetCheminFichierGeneral()
+std::string GetCheminFichierGeneral()
 {
 	TCHAR StrCheminFichierGeneral[nSizeFichier];
 	GetPrivateProfileString(__T("General"),_T("Chemin_Fichier"),_T("C:/"),
 							StrCheminFichierGeneral,nSizeString,Fichier_parametres);
-	string ConvertCheminFichierGeneral(StrCheminFichierGeneral);
+	std::string ConvertCheminFichierGeneral(StrCheminFichierGeneral);
 	return ConvertCheminFichierGeneral;
 }
 
@@ -366,7 +364,7 @@ bool GetMesureCalo()
 	TCHAR StrMesureCalo[nSizeString];
 	GetPrivateProfileString(_T("Mesure"),_T("Calo"),
 							_T("Faux"),StrMesureCalo,nSizeString,Fichier_parametres);
-	string ConvertMesureCalo(StrMesureCalo);
+	std::string ConvertMesureCalo(StrMesureCalo);
 	if (ConvertMesureCalo == "Vrai")
 		return true;
 	return false;
@@ -377,7 +375,7 @@ bool GetMesureBassePression()
 	TCHAR StrMesureBassePression[nSizeString];
 	GetPrivateProfileString(_T("Mesure"),_T("BP"),
 							_T("Faux"),StrMesureBassePression,nSizeString,Fichier_parametres);
-	string ConvertMesureBassePression(StrMesureBassePression);
+	std::string ConvertMesureBassePression(StrMesureBassePression);
 	if (ConvertMesureBassePression == "Vrai")
 		return true;
 	return false;
@@ -388,7 +386,7 @@ bool GetMesureHautePression()
 	TCHAR StrMesureHautePression[nSizeString];
 	GetPrivateProfileString(_T("Mesure"),_T("HP"),
 							_T("Faux"),StrMesureHautePression,nSizeString,Fichier_parametres);
-	string ConvertMesureHautePression(StrMesureHautePression);
+	std::string ConvertMesureHautePression(StrMesureHautePression);
 	if (ConvertMesureHautePression == "Vrai")
 		return true;
 	return false;
@@ -415,20 +413,12 @@ void SetSensibiliteCalo(float fSensCalo)
 
 void SetSensibiliteCapteurBassePression(float fSensBP)
 {
-	char charSensBP[nSizeFloat];
-	TCHAR TCHARSensBP[nSizeFloat];
-	sprintf_s(charSensBP,"%1.4f",fSensBP);
-	wsprintf(TCHARSensBP,_T(charSensBP));
-	WritePrivateProfileString(_T("Appareil"),_T("Sensibilite_capteur_basse_pression"),TCHARSensBP,Fichier_parametres);
+	WritePrivateProfileString(_T("Appareil"),_T("Sensibilite_capteur_basse_pression"), std::to_wstring(fSensBP).c_str(),Fichier_parametres);
 }
 
 void SetSensibiliteCapteurHautePression(float fSensHP)
 {
-	char charSensHP[nSizeFloat];
-	TCHAR TCHARSensHP[nSizeFloat];
-	sprintf_s(charSensHP,"%1.4f",fSensHP);
-	wsprintf(TCHARSensHP,_T(charSensHP));
-	WritePrivateProfileString(_T("Appareil"),_T("Sensibilite_capteur_haute_pression"),TCHARSensHP,Fichier_parametres);
+	WritePrivateProfileString(_T("Appareil"),_T("Sensibilite_capteur_haute_pression"), std::to_wstring(fSensHP).c_str(),Fichier_parametres);
 }
 
 
@@ -444,29 +434,17 @@ void SetActivationSecurite(bool bSecurite)
 
 void SetPressionSecuriteBassePression(float fSecuBP)
 {
-	char charSecuBP[nSizeFloat];
-	TCHAR TCHARSecuBP[nSizeFloat];
-	sprintf_s(charSecuBP,"%1.4f",fSecuBP);
-	wsprintf(TCHARSecuBP,_T(charSecuBP));
-	WritePrivateProfileString(_T("Appareil"),_T("Pression_securite_capteur_basse_pression"),TCHARSecuBP,Fichier_parametres);
+	WritePrivateProfileString(_T("Appareil"),_T("Pression_securite_capteur_basse_pression"), std::to_wstring(fSecuBP).c_str(),Fichier_parametres);
 }
 
 void SetPressionSecuriteHautePression(float fSecuHP)
 {
-	char charSecuHP[nSizeFloat];
-	TCHAR TCHARSecuHP[nSizeFloat];
-	sprintf_s(charSecuHP,"%1.4f",fSecuHP);
-	wsprintf(TCHARSecuHP,_T(charSecuHP));
-	WritePrivateProfileString(_T("Appareil"),_T("Pression_securite_capteur_haute_pression"),TCHARSecuHP,Fichier_parametres);
+	WritePrivateProfileString(_T("Appareil"),_T("Pression_securite_capteur_haute_pression"), std::to_wstring(fSecuHP).c_str(),Fichier_parametres);
 }
 
 void SetPressionLimiteVide(float fPressionVide)
 {
-	char charPressionVide[nSizeFloat];
-	TCHAR TCHARPressionVide[nSizeFloat];
-	sprintf_s(charPressionVide,"%1.6f",fPressionVide);
-	wsprintf(TCHARPressionVide,_T(charPressionVide));
-	WritePrivateProfileString(_T("Appareil"),_T("Pression_limite_vide"),TCHARPressionVide,Fichier_parametres);
+	WritePrivateProfileString(_T("Appareil"),_T("Pression_limite_vide"), std::to_wstring(fPressionVide).c_str(),Fichier_parametres);
 }
 
 
@@ -482,20 +460,12 @@ void SetPresenceTuyereSonique(bool bTuyere)
 
 void SetVolumeRef(float fVolumeRef)
 {
-	char charVolumeRef[nSizeFloat];
-	TCHAR TCHARVolumeRef[nSizeFloat];
-	sprintf_s(charVolumeRef,"%1.4f",fVolumeRef);
-	wsprintf(TCHARVolumeRef,_T(charVolumeRef));
-	WritePrivateProfileString(_T("Appareil"),_T("Volume_ref"),TCHARVolumeRef,Fichier_parametres);
+	WritePrivateProfileString(_T("Appareil"),_T("Volume_ref"), std::to_wstring(fVolumeRef).c_str(),Fichier_parametres);
 }
 
 void SetVolumeP6(float fVolumeP6)
 {
-	char charVolumeP6[nSizeFloat];
-	TCHAR TCHARVolumeP6[nSizeFloat];
-	sprintf_s(charVolumeP6,"%1.4f",fVolumeP6);
-	wsprintf(TCHARVolumeP6,_T(charVolumeP6));
-	WritePrivateProfileString(_T("Appareil"),_T("Volume_P6"),TCHARVolumeP6,Fichier_parametres);
+	WritePrivateProfileString(_T("Appareil"),_T("Volume_P6"), std::to_wstring(fVolumeP6).c_str(),Fichier_parametres);
 }
 
 
@@ -503,13 +473,9 @@ void SetVolumeP6(float fVolumeP6)
 
 void SetTypeInstrument(int num, int TypeInstrument)
 {
-	char charTypeInstrument[nSizeInt];
-	TCHAR TCHARTypeInstrument[nSizeInt];
-	sprintf_s(charTypeInstrument,"%d",TypeInstrument);
-	wsprintf(TCHARTypeInstrument,_T(charTypeInstrument));
-	CString strTitre;
-	strTitre.Format(_T("Instrument%d"),num);
-	WritePrivateProfileString(strTitre,_T("Type"),TCHARTypeInstrument,Fichier_parametres);
+	std::wstring title = L"Instrument" + std::to_wstring(num);
+	std::wstring value = std::to_wstring(TypeInstrument);
+	WritePrivateProfileString(title.c_str(), _T("Type"), value.c_str(), Fichier_parametres);
 }
 
 void SetTypeInstrument1(int TypeInstrument)
@@ -526,13 +492,9 @@ void SetTypeInstrument3(int TypeInstrument)
 
 void SetCOMInstrument(int num, int COMInstrument)
 {
-	char charCOMInstrument[nSizeInt];
-	TCHAR TCHARCOMInstrument[nSizeInt];
-	sprintf_s(charCOMInstrument,"%d",COMInstrument);
-	wsprintf(TCHARCOMInstrument,_T(charCOMInstrument));
-	CString strTitre;
-	strTitre.Format(_T("Instrument%d"),num);
-	WritePrivateProfileString(strTitre,_T("COM"),TCHARCOMInstrument,Fichier_parametres);
+	std::wstring title = L"Instrument" + std::to_wstring(num);
+	std::wstring value = std::to_wstring(COMInstrument);
+	WritePrivateProfileString(title.c_str(), _T("COM"), value.c_str(), Fichier_parametres);
 }
 
 void SetCOMInstrument1(int COMInstrument)
@@ -549,13 +511,9 @@ void SetCOMInstrument3(int COMInstrument)
 
 void SetFonctionInstrument(int num, int FonctionInstrument)
 {
-	char charFonctionInstrument[nSizeInt];
-	TCHAR TCHARFonctionInstrument[nSizeInt];
-	sprintf_s(charFonctionInstrument,"%d",FonctionInstrument);
-	wsprintf(TCHARFonctionInstrument,_T(charFonctionInstrument));
-	CString strTitre;
-	strTitre.Format(_T("Instrument%d"),num);
-	WritePrivateProfileString(strTitre,_T("Fonction"),TCHARFonctionInstrument,Fichier_parametres);
+	std::wstring title = L"Instrument" + std::to_wstring(num);
+	std::wstring value = std::to_wstring(FonctionInstrument);
+	WritePrivateProfileString(title.c_str(), _T("Fonction"), value.c_str(), Fichier_parametres);
 }
 
 void SetFonctionInstrument1(int FonctionInstrument)
@@ -578,65 +536,47 @@ void SetInstrument(int num,int TypeInstrument,int COMInstrument,int FonctionInst
 
 void SetPortKeithley(int PortKeithley)
 {
-	char charPortKeithley[nSizeInt];
-	TCHAR TCHARPortKeithley[nSizeInt];
-	sprintf_s(charPortKeithley,"%d",PortKeithley);
-	wsprintf(TCHARPortKeithley,_T(charPortKeithley));
-	WritePrivateProfileString(_T("Connection"),_T("RS232_Keithley"),TCHARPortKeithley,Fichier_parametres);
+	std::wstring value = std::to_wstring(PortKeithley);
+	WritePrivateProfileString(_T("Connection"), _T("RS232_Keithley"), value.c_str(), Fichier_parametres);
 }
 
 void SetPortMensor(int PortMensor)
 {
-	char charPortMensor[nSizeInt];
-	TCHAR TCHARPortMensor[nSizeInt];
-	sprintf_s(charPortMensor,"%d",PortMensor);
-	wsprintf(TCHARPortMensor,_T(charPortMensor));
-	WritePrivateProfileString(_T("Connection"),_T("RS232_Mensor"),TCHARPortMensor,Fichier_parametres);
+	std::wstring value = std::to_wstring(PortMensor);
+	WritePrivateProfileString(_T("Connection"), _T("RS232_Mensor"), value.c_str(), Fichier_parametres);
 }
 
 void SetPortVannes(int PortVannes)
 {
-	char charPortVannes[nSizeInt];
-	TCHAR TCHARPortVannes[nSizeInt];
-	sprintf_s(charPortVannes,"%d",PortVannes);
-	wsprintf(TCHARPortVannes,_T(charPortVannes));
-	WritePrivateProfileString(_T("Connection"),_T("USB_Vannes"),TCHARPortVannes,Fichier_parametres);
+	std::wstring value = std::to_wstring(PortVannes);
+	WritePrivateProfileString(_T("Connection"), _T("USB_Vannes"), value.c_str(), Fichier_parametres);
 }
 
 void SetPortTemperatures(int PortTemperatures)
 {
-	char charPortTemperatures[nSizeInt];
-	TCHAR TCHARPortTemperatures[nSizeInt];
-	sprintf_s(charPortTemperatures,"%d",PortTemperatures);
-	wsprintf(TCHARPortTemperatures,_T(charPortTemperatures));
-	WritePrivateProfileString(_T("Connection"),_T("USB_Temperature"),TCHARPortTemperatures,Fichier_parametres);
+	std::wstring value = std::to_wstring(PortTemperatures);
+	WritePrivateProfileString(_T("Connection"), _T("USB_Temperature"), value.c_str(), Fichier_parametres);
 }
 
 
 // Ecriture du calo
 
-void SetNomCalo(string NomCalo)
+void SetNomCalo(std::wstring NomCalo)
 {
-	TCHAR TCHARNomCalo[nSizeString];
-	wsprintf(TCHARNomCalo,_T(NomCalo.c_str()));
-	WritePrivateProfileString(_T("Calorimetre"),_T("Nom"),TCHARNomCalo,Fichier_parametres);
+	WritePrivateProfileString(_T("Calorimetre"), _T("Nom"), NomCalo.c_str(), Fichier_parametres);
 }
 		
-void SetEnteteCalo(string EnteteCalo)
+void SetEnteteCalo(std::wstring EnteteCalo)
 {
-	TCHAR TCHAREnteteCalo[nSizeString];
-	wsprintf(TCHAREnteteCalo,_T(EnteteCalo.c_str()));
-	WritePrivateProfileString(_T("Calorimetre"),_T("Entete"),TCHAREnteteCalo,Fichier_parametres);
+	WritePrivateProfileString(_T("Calorimetre"), _T("Entete"), EnteteCalo.c_str(), Fichier_parametres);
 }
 
 
 // Ecriture de General
 
-void SetCheminFichierGeneral(string CheminFichierGeneral)
+void SetCheminFichierGeneral(std::wstring CheminFichierGeneral)
 {
-	TCHAR TCHARCheminFichierGeneral[nSizeFichier];
-	wsprintf(TCHARCheminFichierGeneral,_T(CheminFichierGeneral.c_str()));
-	WritePrivateProfileString(_T("General"),_T("Chemin_Fichier"),TCHARCheminFichierGeneral,Fichier_parametres);
+	WritePrivateProfileString(_T("General"), _T("Chemin_Fichier"), CheminFichierGeneral.c_str(), Fichier_parametres);
 }
 
 // Ecriture de Mesure

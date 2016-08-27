@@ -4,8 +4,7 @@
 
 #pragma once
 
-#include "Server.h"
-#include "Client.h"
+#include <memory>
 
 // CKalelServerDlg dialog
 class CKalelServerDlg : public CDHtmlDialog
@@ -29,8 +28,7 @@ public:
 protected:
 	HICON m_hIcon;
 
-	Server server;
-	Client client;
+	std::unique_ptr<ThreadManager> threadManager;
 
 	// Generated message map functions
 	virtual BOOL OnInitDialog();

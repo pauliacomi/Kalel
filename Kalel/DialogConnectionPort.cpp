@@ -1,11 +1,11 @@
 // Connection_port.cpp : fichier d'implémentation
 //
-
 #include "stdafx.h"
-#include "Kalel.h"
 #include "DialogConnectionPort.h"
+#include "StringTable.h"
 
-#include "Parametres.h"
+#include "MachineSettings.h"									// Accexsing the settings
+#include "../Kalel Shared/Resources/DefineStages.h"				// Experiment types
 
 // Boîte de dialogue ConnectionPort
 
@@ -36,6 +36,11 @@ ConnectionPort::ConnectionPort(CWnd* pParent /*=NULL*/)
 	, m_nIndexPortVannes(0)
 	, m_nIndexPortTemperatures(0)
 {
+}
+
+void ConnectionPort::PassSettings(const MachineSettings & machineSettings)
+{
+	*settings = machineSettings;
 }
 
 ConnectionPort::~ConnectionPort()
@@ -129,8 +134,9 @@ void ConnectionPort::OnBnClickedOk()
 
 	if (!bPbm && !bWarning)
 	{
-		EnregistrementConnection_port();
-		EnregistrementVerifications();
+		MachineSettings newSettings;
+		EnregistrementConnection_port(newSettings);
+		EnregistrementVerifications(newSettings);
 		OnOK();
 		return;
 	}
@@ -162,8 +168,9 @@ void ConnectionPort::OnBnClickedOk()
 	
 	if(AfxMessageBox(StrMessageWarning,MB_YESNO|MB_ICONEXCLAMATION)==IDYES)
 	{
-		EnregistrementConnection_port();
-		EnregistrementVerifications();
+		MachineSettings newSettings;
+		EnregistrementConnection_port(newSettings);
+		EnregistrementVerifications(newSettings);
 		OnOK();
 	}
 }
@@ -253,7 +260,7 @@ void ConnectionPort::OnBnClickedCheckInstrument3KeithleyVoie2()
 ////////////////////////////////////////////////////////////
 
 
-void ConnectionPort::EnregistrementConnection_port()
+void ConnectionPort::EnregistrementConnection_port(MachineSettings& newSettings)
 {
 	// Save instrument 1
 	EnregistrementParametresInstrument(1,
@@ -262,7 +269,9 @@ void ConnectionPort::EnregistrementConnection_port()
 		m_bInstrument1KeithleyVoie1,
 		m_bInstrument1KeithleyVoie2,
 		m_nIndexInstrument1KeithleyVoie2,
-		m_nInstrument1Mensor);
+		m_nInstrument1Mensor,
+		newSettings
+	);
 
 	// Save instrument 2
 	EnregistrementParametresInstrument(2,
@@ -271,7 +280,9 @@ void ConnectionPort::EnregistrementConnection_port()
 		m_bInstrument2KeithleyVoie1,
 		m_bInstrument2KeithleyVoie2,
 		m_nIndexInstrument2KeithleyVoie2,
-		m_nInstrument2Mensor);
+		m_nInstrument2Mensor,
+		newSettings
+	);
 
 	// Save instrument 3
 	EnregistrementParametresInstrument(3,
@@ -280,13 +291,15 @@ void ConnectionPort::EnregistrementConnection_port()
 		m_bInstrument3KeithleyVoie1,
 		m_bInstrument3KeithleyVoie2,
 		m_nIndexInstrument3KeithleyVoie2,
-		m_nInstrument3Mensor);
+		m_nInstrument3Mensor,
+		newSettings
+	);
 
 	// Save valve port
-	SetPortVannes(m_nIndexPortVannes + 1);
+	newSettings.PortVannes = m_nIndexPortVannes + 1;
 
 	// Save temperature port
-	SetPortTemperatures(m_nIndexPortTemperatures + 1);
+	newSettings.PortTemperatures = m_nIndexPortTemperatures + 1;
 }
 
 
@@ -294,7 +307,7 @@ void ConnectionPort::InitConnection_port()
 {
 
 	// Initiate instrument 1
-	InitDonneesInstrument(GetTypeInstrument1(),
+	InitDonneesInstrument(settings->TypeInstrument1,
 		&m_nIndexTypeInstrument1,
 		&m_nPortInstrument1,
 		&m_bInstrument1KeithleyVoie1,
@@ -302,11 +315,11 @@ void ConnectionPort::InitConnection_port()
 		&m_CBInstrument1KeithleyVoie2,
 		&m_nIndexInstrument1KeithleyVoie2,
 		&m_nInstrument1Mensor,
-		GetCOMInstrument1() - 1,
-		GetFonctionInstrument1());
+		settings->COMInstrument1 - 1,
+		settings->FonctionInstrument1);
 	
 	// Initiate instrument 2
-	InitDonneesInstrument(GetTypeInstrument2(),
+	InitDonneesInstrument(settings->TypeInstrument2,
 		&m_nIndexTypeInstrument2,
 		&m_nPortInstrument2,
 		&m_bInstrument2KeithleyVoie1,
@@ -314,11 +327,11 @@ void ConnectionPort::InitConnection_port()
 		&m_CBInstrument2KeithleyVoie2,
 		&m_nIndexInstrument2KeithleyVoie2,
 		&m_nInstrument2Mensor,
-		GetCOMInstrument2() - 1,
-		GetFonctionInstrument2());
+		settings->COMInstrument2 - 1,
+		settings->FonctionInstrument2);
 
 	// Initiate instrument 3
-	InitDonneesInstrument(GetTypeInstrument3(),
+	InitDonneesInstrument(settings->TypeInstrument3,
 		&m_nIndexTypeInstrument3,
 		&m_nPortInstrument3,
 		&m_bInstrument3KeithleyVoie1,
@@ -326,14 +339,14 @@ void ConnectionPort::InitConnection_port()
 		&m_CBInstrument3KeithleyVoie2,
 		&m_nIndexInstrument3KeithleyVoie2,
 		&m_nInstrument3Mensor,
-		GetCOMInstrument3() - 1,
-		GetFonctionInstrument3());
+		settings->COMInstrument3 - 1,
+		settings->FonctionInstrument3);
 
 	// Get port valves
-	m_nIndexPortVannes = GetPortVannes() - 1;
+	m_nIndexPortVannes = settings->PortVannes - 1;
 
 	// Port temperatures
-	m_nIndexPortTemperatures = GetPortTemperatures() - 1;
+	m_nIndexPortTemperatures = settings->PortTemperatures - 1;
 
 	UpdateData(FALSE);
 
@@ -430,14 +443,21 @@ void ConnectionPort::InitDonneesInstrument(int TypeInstr, int* m_nIndex, int* m_
 }
 
 
-void ConnectionPort::EnregistrementParametresInstrument(int num_instr, int m_nIndex, int COMInstrument, bool m_bInstrumentKeithleyVoie1, bool m_bInstrumentKeithleyVoie2, int m_nIndexInstrumentKeithleyVoie2, int m_nInstrumentMensor)
+void ConnectionPort::EnregistrementParametresInstrument(int num_instr, 
+														int m_nIndex, 
+														int COMInstrument, 
+														bool m_bInstrumentKeithleyVoie1, 
+														bool m_bInstrumentKeithleyVoie2, 
+														int m_nIndexInstrumentKeithleyVoie2, 
+														int m_nInstrumentMensor,
+														MachineSettings & newSettings)
 {
 	int fonction = FUNCTION_NONE;
 	switch (m_nIndex)
 	{
 
 	case INDEX_AUCUN:
-		SetInstrument(num_instr, INSTRUMENT_NONE, -1, FUNCTION_NONE);
+		newSettings.SetInstrument(num_instr, INSTRUMENT_NONE, -1, FUNCTION_NONE);
 		break;
 
 	case INDEX_KEITHLEY:
@@ -462,7 +482,7 @@ void ConnectionPort::EnregistrementParametresInstrument(int num_instr, int m_nIn
 			// Problème
 			fonction = FUNCTION_NONE;
 		}
-		SetInstrument(num_instr, INSTRUMENT_KEITHLEY, COMInstrument, fonction);
+		newSettings.SetInstrument(num_instr, INSTRUMENT_KEITHLEY, COMInstrument, fonction);
 		break;
 
 	case INDEX_MENSOR:
@@ -470,7 +490,7 @@ void ConnectionPort::EnregistrementParametresInstrument(int num_instr, int m_nIn
 			fonction = INSTRUMENT_MENSOR_LP;
 		else //(m_nInstrument1Mensor == 1)
 			fonction = INSTRUMENT_MENSOR_HP;
-		SetInstrument(num_instr, INSTRUMENT_MENSOR, COMInstrument, fonction);
+		newSettings.SetInstrument(num_instr, INSTRUMENT_MENSOR, COMInstrument, fonction);
 	default:
 		break;
 	}
@@ -713,20 +733,20 @@ void ConnectionPort::VerifMesure(ConnectionMesure* CM, int num_instr, int voie_m
 	*StrPbm += temp;
 }
 
-void ConnectionPort::EnregistrementVerifications()
+void ConnectionPort::EnregistrementVerifications(MachineSettings& newSettings)
 {
 	if (CM_Calo.index == -1)
-		SetMesureCalo(FALSE);
+		newSettings.CaloToMeasure = false;
 	else
-		SetMesureCalo(TRUE);
+		newSettings.CaloToMeasure = true;
 
 	if (CM_BP.index == -1)
-		SetMesureBassePression(FALSE);
+		newSettings.LowPressureToMeasure = false;
 	else
-		SetMesureBassePression(TRUE);
+		newSettings.LowPressureToMeasure = true;
 
 	if (CM_HP.index == -1)
-		SetMesureHautePression(FALSE);
+		newSettings.HighPressureToMeasure = false;
 	else
-		SetMesureHautePression(TRUE);
+		newSettings.HighPressureToMeasure = false;
 }

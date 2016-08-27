@@ -5,7 +5,8 @@
 
 #pragma once
 
-#include "ExperimentData.h"
+class ExperimentData;
+class CArrayMeasurments;
 
 class CKalelDoc : public CDocument
 {
