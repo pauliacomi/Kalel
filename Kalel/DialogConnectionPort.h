@@ -8,6 +8,8 @@
 
 // Boîte de dialogue ConnectionPort
 
+class MachineSettings;
+
 class ConnectionPort : public CDialog
 {
 	DECLARE_DYNAMIC(ConnectionPort)

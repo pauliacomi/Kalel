@@ -7,6 +7,7 @@
 #include "Classes_experiences.h"					// Definitions for all classes used in this file
 #include <vector>									// Using the vector class
 
+class MachineSettings;
 
 class TabGeneral : public CMFCPropertyPage
 {
@@ -18,8 +19,10 @@ public:
 
 // Dialog Data
 	enum { IDD = IDD_GENERAL };
+	void PassSettings(const MachineSettings& machineSettings);
 
 protected:
+	MachineSettings * settings;
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 	virtual BOOL OnInitDialog();
 	virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);

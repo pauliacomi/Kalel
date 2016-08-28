@@ -126,9 +126,6 @@
     <ClInclude Include="Chrono.h">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="Classes_experiences.h">
-      <Filter>Header Files\Utils</Filter>
-    </ClInclude>
     <ClInclude Include="InfoEtape.h">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
@@ -222,9 +219,6 @@
     <ClInclude Include="DialogConnectionPort.h">
       <Filter>Header Files\GUI\Dialogs\Connection Port</Filter>
     </ClInclude>
-    <ClInclude Include="CommonFunctions.h">
-      <Filter>Header Files\Utils</Filter>
-    </ClInclude>
     <ClInclude Include="..\Kalel Shared\Netcode\base64.h">
       <Filter>Header Files\Netcode</Filter>
     </ClInclude>
@@ -264,6 +258,12 @@
     <ClInclude Include="MachineSettings.h">
       <Filter>Header Files\Com Classes</Filter>
     </ClInclude>
+    <ClInclude Include="..\Kalel Shared\Com Classes\CommonFunctions.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Kalel Shared\Com Classes\Classes_experiences.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainFrm.cpp">
@@ -291,9 +291,6 @@
       <Filter>Source Files\Utils\XML</Filter>
     </ClCompile>
     <ClCompile Include="Chrono.cpp">
-      <Filter>Source Files\Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="Classes_experiences.cpp">
       <Filter>Source Files\Utils</Filter>
     </ClCompile>
     <ClCompile Include="InfoEtape.cpp">
@@ -368,9 +365,6 @@
     <ClCompile Include="DialogConnectionPort.cpp">
       <Filter>Source Files\GUI\Dialogs\Connection Port</Filter>
     </ClCompile>
-    <ClCompile Include="CommonFunctions.cpp">
-      <Filter>Source Files\Utils</Filter>
-    </ClCompile>
     <ClCompile Include="..\Kalel Shared\Netcode\base64.cpp">
       <Filter>Source Files\Netcode</Filter>
     </ClCompile>
@@ -400,6 +394,12 @@
     </ClCompile>
     <ClCompile Include="MachineSettings.cpp">
       <Filter>Source Files\Com Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Kalel Shared\Com Classes\CommonFunctions.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Kalel Shared\Com Classes\Classes_experiences.cpp">
+      <Filter>Source Files\Utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

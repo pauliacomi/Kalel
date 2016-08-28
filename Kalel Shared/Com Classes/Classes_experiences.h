@@ -2,11 +2,7 @@
 #ifndef CLASSES_EXPERIENCES_H
 #define CLASSES_EXPERIENCES_H
 
-//#include "ParserXML.h"
-
 #include <string>
-
-using namespace std;
 
 class experimentateur
 {

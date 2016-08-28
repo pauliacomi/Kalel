@@ -3,7 +3,7 @@
 #include "stdafx.h"
 #include "DialogTypeExperiment.h"
 
-#include "MachineSettings.h"									// Accexsing the settings
+#include "MachineSettings.h"									// Accessing the settings
 #include "../Kalel Shared/Resources/DefineStages.h"				// Experiment types
 
 // Dialog box DialogTypeExperiment

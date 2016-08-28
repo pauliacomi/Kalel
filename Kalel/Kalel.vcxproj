@@ -195,6 +195,8 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Kalel Shared\Com Classes\Classes_experiences.h" />
+    <ClInclude Include="..\Kalel Shared\Com Classes\CommonFunctions.h" />
     <ClInclude Include="..\Kalel Shared\Com Classes\ExperimentData.h" />
     <ClInclude Include="..\Kalel Shared\Com Classes\ExperimentSettings.h" />
     <ClInclude Include="..\Kalel Shared\Netcode\base64.h" />
@@ -207,10 +209,8 @@
     <ClInclude Include="..\Kalel Shared\Netcode\stdHelpers.h" />
     <ClInclude Include="..\Kalel Shared\Netcode\URLHelper.h" />
     <ClInclude Include="CommHandler.h" />
-    <ClInclude Include="CommonFunctions.h" />
     <ClInclude Include="DialogMachineParameters.h" />
     <ClInclude Include="Chrono.h" />
-    <ClInclude Include="Classes_experiences.h" />
     <ClInclude Include="ConnectionMesure.h" />
     <ClInclude Include="DialogConnectionPort.h" />
     <ClInclude Include="DefinePostMessages.h" />
@@ -252,6 +252,8 @@
     <ClInclude Include="XSBrowseFolder.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Kalel Shared\Com Classes\Classes_experiences.cpp" />
+    <ClCompile Include="..\Kalel Shared\Com Classes\CommonFunctions.cpp" />
     <ClCompile Include="..\Kalel Shared\Com Classes\ExperimentData.cpp" />
     <ClCompile Include="..\Kalel Shared\Com Classes\ExperimentSettings.cpp" />
     <ClCompile Include="..\Kalel Shared\Netcode\base64.cpp" />
@@ -261,10 +263,8 @@
     <ClCompile Include="..\Kalel Shared\Netcode\stdHelpers.cpp" />
     <ClCompile Include="..\Kalel Shared\Netcode\URLHelper.cpp" />
     <ClCompile Include="CommHandler.cpp" />
-    <ClCompile Include="CommonFunctions.cpp" />
     <ClCompile Include="DialogMachineParameters.cpp" />
     <ClCompile Include="Chrono.cpp" />
-    <ClCompile Include="Classes_experiences.cpp" />
     <ClCompile Include="ConnectionMesure.cpp" />
     <ClCompile Include="DialogConnectionPort.cpp" />
     <ClCompile Include="ExperimentPropertySheet.cpp" />

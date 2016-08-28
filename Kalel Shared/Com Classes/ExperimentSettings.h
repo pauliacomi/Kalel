@@ -36,8 +36,8 @@ public:
 	// Settings storage
 	Donnees_General dataGeneral;
 	Donnees_Divers dataDivers;
-	vector<Donnees_Doses> dataAdsorption;
-	vector<Donnees_Desorption> dataDesorption;
+	std::vector<Donnees_Doses> dataAdsorption;
+	std::vector<Donnees_Desorption> dataDesorption;
 };
 
 #endif

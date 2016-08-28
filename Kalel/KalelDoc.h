@@ -5,8 +5,7 @@
 
 #pragma once
 
-class ExperimentData;
-class CArrayMeasurments;
+#include "../Kalel Shared/Com Classes/ExperimentData.h"				// Where data about the experimental parameters, results and current status is stored
 
 class CKalelDoc : public CDocument
 {

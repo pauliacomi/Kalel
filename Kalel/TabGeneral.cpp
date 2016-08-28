@@ -12,6 +12,7 @@
 #include "XSBrowseFolder.h"					// Browse for folder custom class
 #include "ParserXML.h"						// XML builder
 
+#include "MachineSettings.h"				// Accessing the settings
 
 // TabGeneral dialog
 
@@ -20,6 +21,11 @@ IMPLEMENT_DYNAMIC(TabGeneral, CMFCPropertyPage)
 TabGeneral::TabGeneral()
 	: CMFCPropertyPage(TabGeneral::IDD)
 {
+}
+
+void TabGeneral::PassSettings(const MachineSettings & machineSettings)
+{
+	*settings = machineSettings;
 }
 
 TabGeneral::~TabGeneral()
@@ -65,7 +71,7 @@ BOOL TabGeneral::OnInitDialog()
 	gasExp = allSettings.gaz;
 	userExp = allSettings.experimentateur;
 
-	StrCalo = _T(GetEnteteCalo().c_str());
+	StrCalo = settings->CaloEntete.c_str();
 	StrSurnom = _T(userExp.surnom.c_str());
 	StrEchantillon = m_SampleName;
 	StrGaz = _T(gasExp.symbole.c_str());
@@ -244,7 +250,7 @@ void TabGeneral::Reinitialisation(void)
 		}
 	}
 
-	StrCalo = _T(GetEnteteCalo().c_str());
+	StrCalo = settings->CaloEntete.c_str();
 	StrSurnom = _T(userExp.surnom.c_str());
 	StrEchantillon = m_SampleName;
 	StrGaz = _T(gasExp.symbole.c_str());
@@ -252,7 +258,8 @@ void TabGeneral::Reinitialisation(void)
 
 void TabGeneral::WriteData()
 {
-	SetCheminFichierGeneral(m_Path.GetBuffer());
+	MachineSettings newSettings;
+	newSettings.CheminFichierGeneral = m_Path.GetString();
 
 	allSettings.chemin = m_Path.GetBuffer();
 	allSettings.commentaires = m_Comments.GetBuffer();

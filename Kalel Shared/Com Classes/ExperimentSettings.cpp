@@ -1,9 +1,8 @@
-#include "StdAfx.h"
 #include "ExperimentSettings.h"
 
-#include "DefineStages.h"
+#include "../Resources/DefineStages.h"
 #include "CommonFunctions.h"
-#include "Parametres.h"
+#include "../Com Classes/
 #include "StringTable.h"
 
 ExperimentSettings::ExperimentSettings()
@@ -34,7 +33,7 @@ void ExperimentSettings::ResetData(int initialAdsorptions, int initialDesorption
 	
 	// Initialisation of settings
 	CommonFunctions cF;
-	CString temp;
+	std::string temp;
 
 	// General
 	dataGeneral.chemin = _T(GetCheminFichierGeneral().c_str());
@@ -45,7 +44,6 @@ void ExperimentSettings::ResetData(int initialAdsorptions, int initialDesorption
 
 	temp.Format(TEXT_NEWFILETEXT, cF.getDateUnderline());
 	dataGeneral.fichier = temp.GetBuffer();
-	dataGeneral.gaz.nom = "";
 	dataGeneral.gaz.symbole = "";
 	dataGeneral.gaz.masse_moleculaire = 0;
 	dataGeneral.gaz.pression_critique = 0;
