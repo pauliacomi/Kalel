@@ -2,17 +2,17 @@
 //
 
 #include "stdafx.h"
-#include "Kalel.h"
 #include "TabGeneral.h"
 #include "afxdialogex.h"
 
-#include "DialogUser.h"						// User selection dialog
-#include "DialogGas.h"						// Gas selection dialog
+#include "DialogUser.h"													// User selection dialog
+#include "DialogGas.h"													// Gas selection dialog
 
-#include "XSBrowseFolder.h"					// Browse for folder custom class
-#include "ParserXML.h"						// XML builder
+#include "XSBrowseFolder.h"												// Browse for folder custom class
+#include "ParserXML.h"													// XML builder
 
-#include "MachineSettings.h"				// Accessing the settings
+#include "../Kalel Shared/Com Classes/MachineSettings.h"				// Accessing the settings
+#include "../Kalel Shared/Resources/StringTable.h"						// Error message strings
 
 // TabGeneral dialog
 

@@ -171,9 +171,6 @@
     <ClInclude Include="DialogGas.h">
       <Filter>Header Files\GUI\Dialogs\Experimental Parameters\Stored Parameters</Filter>
     </ClInclude>
-    <ClInclude Include="StringTable.h">
-      <Filter>Header Files\Resources\Strings</Filter>
-    </ClInclude>
     <ClInclude Include="DialogUser.h">
       <Filter>Header Files\GUI\Dialogs\Experimental Parameters\Stored Parameters</Filter>
     </ClInclude>
@@ -263,6 +260,9 @@
     </ClInclude>
     <ClInclude Include="..\Kalel Shared\Com Classes\Classes_experiences.h">
       <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Kalel Shared\Resources\StringTable.h">
+      <Filter>Header Files\Resources\Strings</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -392,14 +392,14 @@
     <ClCompile Include="CommHandler.cpp">
       <Filter>Source Files\Com Classes</Filter>
     </ClCompile>
-    <ClCompile Include="MachineSettings.cpp">
-      <Filter>Source Files\Com Classes</Filter>
-    </ClCompile>
     <ClCompile Include="..\Kalel Shared\Com Classes\CommonFunctions.cpp">
       <Filter>Source Files\Utils</Filter>
     </ClCompile>
     <ClCompile Include="..\Kalel Shared\Com Classes\Classes_experiences.cpp">
       <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Kalel Shared\Com Classes\MachineSettings.cpp">
+      <Filter>Source Files\Com Classes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -415,9 +415,6 @@
     <ResourceCompile Include="TypeExperience.rc">
       <Filter>Resource Files\DialogBoxes</Filter>
     </ResourceCompile>
-    <ResourceCompile Include="StringTable.rc">
-      <Filter>Resource Files\Strings</Filter>
-    </ResourceCompile>
     <ResourceCompile Include="DialogUser.rc">
       <Filter>Resource Files\DialogBoxes</Filter>
     </ResourceCompile>
@@ -432,6 +429,9 @@
     </ResourceCompile>
     <ResourceCompile Include="DialogExperimentSettings.rc">
       <Filter>Resource Files\DialogBoxes</Filter>
+    </ResourceCompile>
+    <ResourceCompile Include="..\Kalel Shared\Resources\StringTable.rc">
+      <Filter>Resource Files\Strings</Filter>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>

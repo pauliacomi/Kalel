@@ -2,10 +2,10 @@
 #ifndef TABGENERAL_H
 #define TABGENERAL_H
 
-#include "ResourceDialogExperimentSettings.h"		// For resources
-#include "SpinBtnCtrl.h"							// For the Spin Button class
-#include "Classes_experiences.h"					// Definitions for all classes used in this file
-#include <vector>									// Using the vector class
+#include "ResourceDialogExperimentSettings.h"									// For resources
+#include "SpinBtnCtrl.h"														// For the Spin Button class
+#include "../Kalel Shared/Com Classes/Classes_experiences.h"					// Definitions for all classes used in this file
+#include <vector>																// Using the vector class
 
 class MachineSettings;
 
@@ -58,11 +58,11 @@ protected:
 	CString experimentDate;
 
 	// Definitions for gasses 
-	vector<gaz> gasArray;
+	std::vector<gaz> gasArray;
 	gaz gasExp;
 
 	// Definitions for users 
-	vector<experimentateur> userArray;
+	std::vector<experimentateur> userArray;
 	experimentateur userExp;
 
 	// All the settings are stored here

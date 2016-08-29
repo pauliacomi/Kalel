@@ -5,8 +5,9 @@
 #include "GrapheView.h"
 
 //
-#include "KalelDoc.h"			// For the document pointer
-#include "StringTable.h"		// For the strings 
+#include "KalelDoc.h"													// For the document pointer
+#include "../Kalel Shared/Resources/StringTable.h"						// Error message strings
+
 
 
 #define border 15

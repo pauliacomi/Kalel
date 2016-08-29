@@ -5,6 +5,7 @@
 #include "ConnectionMesure.h"
 #include "VerifInstrument.h"
 #include "../Kalel Shared/Resources/DefineInstruments.h"
+#include <vector>
 
 // Boîte de dialogue ConnectionPort
 
@@ -29,29 +30,13 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	// --- Variables ---
+	std::vector<int> m_nIndexTypeInstrument;
+	std::vector<int> m_nPortInstrument;
+	std::vector<int> m_nIndexInstrumentKeithleyVoie2;
+	std::vector<int> m_nInstrumentMensor;
+	std::vector<BOOL> m_bInstrumentKeithleyVoie1;
+	std::vector<BOOL> m_bInstrumentKeithleyVoie2;
 
-	int m_nIndexTypeInstrument1;
-	int m_nIndexTypeInstrument2;
-	int m_nIndexTypeInstrument3;
-
-	int m_nPortInstrument1;
-	int m_nPortInstrument2;
-	int m_nPortInstrument3;
-
-	BOOL m_bInstrument1KeithleyVoie1;			// Used to be BOOL
-	BOOL m_bInstrument1KeithleyVoie2;
-	BOOL m_bInstrument2KeithleyVoie1;
-	BOOL m_bInstrument2KeithleyVoie2;
-	BOOL m_bInstrument3KeithleyVoie1;
-	BOOL m_bInstrument3KeithleyVoie2;
-
-	int m_nIndexInstrument1KeithleyVoie2;
-	int m_nIndexInstrument2KeithleyVoie2;
-	int m_nIndexInstrument3KeithleyVoie2;
-
-	int m_nInstrument1Mensor;
-	int m_nInstrument2Mensor;
-	int m_nInstrument3Mensor;
 
 	int m_nIndexPortVannes;
 	int m_nIndexPortTemperatures;
@@ -76,29 +61,12 @@ public:
 
 
 	// --- Contrôles ---
-
-	CComboBox m_CBTypeInstrument1;
-	CComboBox m_CBTypeInstrument2;
-	CComboBox m_CBTypeInstrument3;
-
-	CComboBox m_CBPortInstrument1;
-	CComboBox m_CBPortInstrument2;
-	CComboBox m_CBPortInstrument3;
-
-	CButton m_CheckInstrument1KeithleyVoie1;
-	CButton m_CheckInstrument1KeithleyVoie2;
-	CButton m_CheckInstrument2KeithleyVoie1;
-	CButton m_CheckInstrument2KeithleyVoie2;
-	CButton m_CheckInstrument3KeithleyVoie1;
-	CButton m_CheckInstrument3KeithleyVoie2;
-
-	CComboBox m_CBInstrument1KeithleyVoie2;
-	CComboBox m_CBInstrument2KeithleyVoie2;
-	CComboBox m_CBInstrument3KeithleyVoie2;
-
-	CComboBox m_CBInstrument1Mensor;
-	CComboBox m_CBInstrument2Mensor;
-	CComboBox m_CBInstrument3Mensor;
+	std::vector<CComboBox> m_CBTypeInstrument;
+	std::vector<CComboBox> m_CBPortInstrument;
+	std::vector<CButton> m_CheckInstrumentKeithleyVoie1;
+	std::vector<CButton> m_CheckInstrumentKeithleyVoie2;
+	std::vector<CComboBox> m_CBInstrumentKeithleyVoie2;
+	std::vector<CComboBox> m_CBInstrumentMensor;
 
 	CComboBox m_CBPortVannes;
 	CComboBox m_CBPortTemperatures;

@@ -3,6 +3,7 @@
 #define EXPERIMENT_SETTINGS
 
 #include "Classes_experiences.h"
+#include "../Com Classes/MachineSettings.h"
 #include <vector>
 
 class ExperimentSettings
@@ -13,8 +14,8 @@ class ExperimentSettings
 	//
 
 public:
-	ExperimentSettings();
-	ExperimentSettings(int initialAdsorptions, int initialDesorptions);
+	ExperimentSettings(const MachineSettings & machineSettings);
+	ExperimentSettings(int initialAdsorptions, int initialDesorptions, const MachineSettings & machineSettings);
 	~ExperimentSettings(void);
 
 	void ResetData();
@@ -28,9 +29,12 @@ public:
 	// Variables
 	//
 
+
+protected:
+	MachineSettings * settings;
+
 public:
-	
-	HWND GUIhandle;						// Main GUI handle
+	//HWND GUIhandle;						// Main GUI handle
 	int experimentType;					// General parameters
 
 	// Settings storage

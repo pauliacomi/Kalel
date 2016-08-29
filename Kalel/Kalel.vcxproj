@@ -208,6 +208,7 @@
     <ClInclude Include="..\Kalel Shared\Netcode\Socket.h" />
     <ClInclude Include="..\Kalel Shared\Netcode\stdHelpers.h" />
     <ClInclude Include="..\Kalel Shared\Netcode\URLHelper.h" />
+    <ClInclude Include="..\Kalel Shared\Resources\StringTable.h" />
     <ClInclude Include="CommHandler.h" />
     <ClInclude Include="DialogMachineParameters.h" />
     <ClInclude Include="Chrono.h" />
@@ -230,7 +231,6 @@
     <ClInclude Include="ParserXML.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="MachineSettings.h" />
-    <ClInclude Include="StringTable.h" />
     <ClInclude Include="ResourceDialogCell.h" />
     <ClInclude Include="ResourceConnectionPort.h" />
     <ClInclude Include="ResourceDialogUser.h" />
@@ -256,6 +256,7 @@
     <ClCompile Include="..\Kalel Shared\Com Classes\CommonFunctions.cpp" />
     <ClCompile Include="..\Kalel Shared\Com Classes\ExperimentData.cpp" />
     <ClCompile Include="..\Kalel Shared\Com Classes\ExperimentSettings.cpp" />
+    <ClCompile Include="..\Kalel Shared\Com Classes\MachineSettings.cpp" />
     <ClCompile Include="..\Kalel Shared\Netcode\base64.cpp" />
     <ClCompile Include="..\Kalel Shared\Netcode\Client.cpp" />
     <ClCompile Include="..\Kalel Shared\Netcode\Server.cpp" />
@@ -284,7 +285,6 @@
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="ManualActionParam.cpp" />
     <ClCompile Include="ParserXML.cpp" />
-    <ClCompile Include="MachineSettings.cpp" />
     <ClCompile Include="SpinBtnCtrl.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -304,12 +304,12 @@
     <ClCompile Include="XSBrowseFolder.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ResourceCompile Include="..\Kalel Shared\Resources\StringTable.rc" />
     <ResourceCompile Include="DialogCell.rc" />
     <ResourceCompile Include="ConnectionPort.rc" />
     <ResourceCompile Include="DialogUser.rc" />
     <ResourceCompile Include="DialogGas.rc" />
     <ResourceCompile Include="Kalel.rc" />
-    <ResourceCompile Include="StringTable.rc" />
     <ResourceCompile Include="DialogExperimentSettings.rc" />
     <ResourceCompile Include="ParametresAppareil.rc" />
     <ResourceCompile Include="Steps.rc" />

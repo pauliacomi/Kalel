@@ -7,8 +7,8 @@
 	#error "include 'stdafx.h' before including this file for PCH"
 #endif
 
-#include "resource.h"				// main symbols
-#include "StringTable.h"			// For all the strings in the program
+#include "resource.h"													// main symbols
+#include "../Kalel Shared/Resources/StringTable.h"						// Error message strings
 
 // CKalelApp:
 // See Kalel.cpp for the implementation of this class

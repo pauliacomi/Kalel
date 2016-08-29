@@ -1,17 +1,18 @@
 #include "ExperimentSettings.h"
 
 #include "../Resources/DefineStages.h"
+#include "../Resources/StringTable.h"
 #include "CommonFunctions.h"
-#include "../Com Classes/
-#include "StringTable.h"
 
-ExperimentSettings::ExperimentSettings()
+ExperimentSettings::ExperimentSettings(const MachineSettings & machineSettings)
 {
-	ExperimentSettings(0, 0);
+	ExperimentSettings(0, 0, machineSettings);
 }
 
-ExperimentSettings::ExperimentSettings(int initialAdsorptions, int initialDesorptions)
+ExperimentSettings::ExperimentSettings(int initialAdsorptions, int initialDesorptions, const MachineSettings & machineSettings)
 {
+	*settings = machineSettings;
+
 	// Data initialisation
 	ResetData(initialAdsorptions, initialDesorptions);
 }
@@ -28,31 +29,26 @@ void ExperimentSettings::ResetData()
 
 void ExperimentSettings::ResetData(int initialAdsorptions, int initialDesorptions)
 {
-	GUIhandle = NULL;
+	//GUIhandle = NULL;
 	experimentType = EXPERIMENT_TYPE_UNDEF;
 	
 	// Initialisation of settings
 	CommonFunctions cF;
-	std::string temp;
 
 	// General
-	dataGeneral.chemin = _T(GetCheminFichierGeneral().c_str());
+	dataGeneral.chemin = settings->CheminFichierGeneral;
 	dataGeneral.commentaires = "";
-	dataGeneral.date_experience = cF.getDate().GetBuffer();
+	dataGeneral.date_experience = cF.getDate();
 	dataGeneral.experimentateur.nom = "";
 	dataGeneral.experimentateur.surnom = "";
-
-	temp.Format(TEXT_NEWFILETEXT, cF.getDateUnderline());
-	dataGeneral.fichier = temp.GetBuffer();
+	dataGeneral.fichier = std::to_string(TEXT_NEWFILETEXT) + cF.getDateUnderline();
 	dataGeneral.gaz.symbole = "";
 	dataGeneral.gaz.masse_moleculaire = 0;
 	dataGeneral.gaz.pression_critique = 0;
 	dataGeneral.gaz.temperature_critique = 0;
 	dataGeneral.gaz.temperature_ebullition = 0;
 	dataGeneral.masse_echantillon = 1.0f;
-
-	temp.Format(TEXT_SAMPLE);
-	dataGeneral.nom_echantillon = temp;
+	dataGeneral.nom_echantillon = TEXT_SAMPLE;
 	dataGeneral.temperature_experience = 30;
 
 	// Divers
@@ -93,7 +89,7 @@ void ExperimentSettings::ResetData(int initialAdsorptions, int initialDesorption
 ExperimentSettings & ExperimentSettings::operator=(const ExperimentSettings * p) {
 	if (this != p) {  // make sure not same object
 
-		GUIhandle = p->GUIhandle;
+		//GUIhandle = p->GUIhandle;
 		experimentType = p->experimentType;
 
 		dataGeneral = p->dataGeneral;

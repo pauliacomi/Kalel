@@ -3,9 +3,9 @@
 #define TABDESORPTION_H
 
 
-#include "ResourceDialogExperimentSettings.h"	// For resources
-#include "SpinBtnCtrl.h"			// For the Spin Button class
-#include "Classes_experiences.h"	// Definitions for all classes used in this file
+#include "ResourceDialogExperimentSettings.h"					// For resources
+#include "SpinBtnCtrl.h"										// For the Spin Button class
+#include "../Kalel Shared/Com Classes/Classes_experiences.h"	// Definitions for all classes used in this file
 
 
 class TabDesorption : public CMFCPropertyPage

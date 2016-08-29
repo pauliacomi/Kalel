@@ -2,7 +2,6 @@
 //
 
 #include "stdafx.h"
-#include "Kalel.h"
 #include "TabDivers.h"
 #include "afxdialogex.h"
 

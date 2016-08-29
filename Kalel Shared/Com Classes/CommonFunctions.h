@@ -1,11 +1,13 @@
 #pragma once
+#include <string>
+
 class CommonFunctions
 {
 public:
 	CommonFunctions();
 	~CommonFunctions();
 
-	CString getDate();
-	CString getDateUnderline();
+	std::string getDate();
+	std::string getDateUnderline();
 };
 

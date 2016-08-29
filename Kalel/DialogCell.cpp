@@ -2,11 +2,9 @@
 //
 
 #include "stdafx.h"
-#include "Kalel.h"
 #include "DialogCell.h"
 
-
-
+#include "../Kalel Shared/Resources/StringTable.h"						// Error message strings
 
 //////////////////////////////////////////////////////////////////////////////////////
 			//------------------------------------------------------
@@ -303,7 +301,7 @@ void CModifCellule::OnCbnSelchangeComboModifCellule()
 
 	int index = m_nIndexModifCellule;
 	// On affiche les nom et prenom de l'expérimentateur désigné
-	string numero_modif = list_modif_cellule[index].numero;
+	std::string numero_modif = list_modif_cellule[index].numero;
 	m_StrModifNumeroCellule.Format(_T("%s"),numero_modif.c_str());
 	m_fModifVolumeCellule = list_modif_cellule[index].volume_total;
 	m_fModifVolumeCalo = list_modif_cellule[index].volume_calo;

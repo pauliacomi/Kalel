@@ -1,7 +1,3 @@
-////////////////////////////////////////////////
-// Modifié le 7 septembre 2009
-////////////////////////////////////////////////
-
 #pragma once
 #ifndef PARSERXML_H
 #define PARSERXML_H
@@ -9,18 +5,11 @@
 #include "tinystr.h"
 #include "tinyxml.h"
 
-#include <stdio.h>
-#include <stdlib.h>
-
 #include <string>
 #include <vector>
 
-#include <iostream>
-#include <list>
+#include "../Kalel Shared/Com Classes/Classes_experiences.h"
 
-#include "Classes_experiences.h"
-
-using namespace std;
 
 // XML
 void Initialisation_XML();
@@ -31,7 +20,7 @@ TiXmlElement * NewElement(std::string nom_element, float float_element);
 TiXmlElement * NewElement(std::string nom_element, double double_element);
 
 // Experimentateur
-vector<experimentateur> GetExperimentateurs();
+std::vector<experimentateur> GetExperimentateurs();
 bool Rajout_Experimentateur(std::string nom,std::string surnom,int index=-1);
 bool Rajout_Experimentateur(experimentateur new_exp,int index=-1);
 bool Suppression_Experimentateur(int index);
@@ -39,7 +28,7 @@ bool Modif_Experimentateur(std::string nom, std::string surnom,int index);
 bool Modif_Experimentateur(experimentateur new_exp,int index);
 
 // Gaz
-vector<gaz> GetGazs();
+std::vector<gaz> GetGazs();
 bool Rajout_Gaz(std::string nom,std::string symbole,double masse,double temp_critique, 
 				double pres_critique, double temp_ebullition, int index=-1);
 bool Rajout_Gaz(gaz new_gaz,int index=-1);
@@ -49,7 +38,7 @@ bool Modif_Gaz(std::string nom,std::string symbole,double masse,double temp_crit
 bool Modif_Gaz(gaz new_gaz,int index);
 
 // Cellule
-vector<cellule> GetCellules();
+std::vector<cellule> GetCellules();
 bool Rajout_Cellule(std::string num, double total, double calo, int index=-1);
 bool Rajout_Cellule(cellule new_cellule,int index=-1);
 bool Suppression_Cellule(int index);

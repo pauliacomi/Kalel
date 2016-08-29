@@ -211,8 +211,7 @@ void CKalelView::OnInitialUpdate()
 	// Create the experiment storage class
 	int initialAdsorptions = 3;
 	int initialDesorptions = 1;
-	experimentSettings = new ExperimentSettings(initialAdsorptions, initialDesorptions);			// Create a new experiment storage
-	experimentSettings->GUIhandle = GetSafeHwnd();													// Save the window handle
+	experimentSettings = new ExperimentSettings(initialAdsorptions, initialDesorptions, machineSettings);		// Create a new experiment storage
 
 	// Set the timer for the window update
 	SetTimer(1, 100, NULL);

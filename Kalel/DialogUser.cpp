@@ -2,10 +2,9 @@
 //
 
 #include "stdafx.h"
-#include "Kalel.h"
 #include "DialogUser.h"
 
-
+#include "../Kalel Shared/Resources/StringTable.h"						// Error message strings
 
 
 //////////////////////////////////////////////////////////////////////////////////////
@@ -244,8 +243,8 @@ void CModifExperimentateur::OnCbnSelchangeComboModifExperimentateur()
 	UpdateData(TRUE);
 
 	int index = m_nIndexModifExperimentateur;
-	string nom_modif = list_modif_experimentateur[index].nom;
-	string surnom_modif = list_modif_experimentateur[index].surnom;
+	std::string nom_modif = list_modif_experimentateur[index].nom;
+	std::string surnom_modif = list_modif_experimentateur[index].surnom;
 	// On affiche les nom et prenom de l'expérimentateur désigné
 	m_strNomModifExperimentateur.Format(_T("%s"),nom_modif.c_str());
 	m_strSurnomModifExperimentateur.Format(_T("%s"),surnom_modif.c_str());
@@ -259,8 +258,8 @@ void CModifExperimentateur::OnBnClickedModifier()
 {
 	// On met à jour les variables
 	UpdateData(TRUE);
-	string nom_modif((LPCTSTR)m_strNomModifExperimentateur);
-	string surnom_modif ((LPCTSTR)m_strSurnomModifExperimentateur);
+	std::string nom_modif((LPCTSTR)m_strNomModifExperimentateur);
+	std::string surnom_modif ((LPCTSTR)m_strSurnomModifExperimentateur);
 
 	int index = m_nIndexModifExperimentateur;
 
@@ -414,8 +413,8 @@ void CSupprExperimentateur::OnBnClickedSupprimer()
 			// Si tout se passe bien, on le signale dans la boite de dialogue
 			// Et on réinitialise le ComboBox
 			int index = m_IndexSupprExperimentateur;
-			string nom_suppr = list_suppr_experimentateur[index].nom;
-			string surnom_suppr = list_suppr_experimentateur[index].surnom;
+			std::string nom_suppr = list_suppr_experimentateur[index].nom;
+			std::string surnom_suppr = list_suppr_experimentateur[index].surnom;
 			m_MessageSupprExperimentateur.Format(TEXT_USER_DELETED,	nom_suppr.c_str(),surnom_suppr.c_str());
 
 			ReinitialisationComboBox();

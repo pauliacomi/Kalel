@@ -6,7 +6,7 @@
 #include "ParserXML.h"
 #include "SpinBtnCtrl.h"
 #include "ResourceDialogCell.h"
-
+#include <vector>
 
 
 
@@ -92,7 +92,7 @@ public:
 	CEdit m_EditMessageModifCellule;
 	CString m_strMessageModifCellule;
 
-	vector<cellule> list_modif_cellule;
+	std::vector<cellule> list_modif_cellule;
 
 	virtual BOOL OnInitDialog();
 	virtual BOOL OnSetActive();
@@ -142,7 +142,7 @@ public:
 	CEdit m_EditMessageSupprCellule;
 	CString m_strMessageSupprCellule;
 
-	vector<cellule> list_suppr_cellule;
+	std::vector<cellule> list_suppr_cellule;
 
 	virtual BOOL OnSetActive();
 	afx_msg void OnCbnSelchangeComboSupprNumeroCellule();

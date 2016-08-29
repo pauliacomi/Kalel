@@ -1,4 +1,5 @@
 #pragma once
+
 #include "SpinBtnCtrl.h"
 #include "ResourceParametresAppareil.h"
 

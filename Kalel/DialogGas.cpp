@@ -2,10 +2,9 @@
 //
 
 #include "stdafx.h"
-#include "Kalel.h"
 #include "DialogGas.h"
 
-
+#include "../Kalel Shared/Resources/StringTable.h"						// Error message strings
 
 //////////////////////////////////////////////////////////////////////////////////////
 			//------------------------------------------------------
@@ -371,8 +370,8 @@ void CModifGaz::OnCbnSelchangeComboModifGaz()
 	// On récupère les données des contrôles pour mettre à jour les variables
 	UpdateData(TRUE);
 	int index = m_nIndexModifGaz;
-	string nom_modif = list_modif_gaz[index].nom;
-	string symbole_modif = list_modif_gaz[index].symbole;
+	std::string nom_modif = list_modif_gaz[index].nom;
+	std::string symbole_modif = list_modif_gaz[index].symbole;
 
 	// On affiche les données du gaz désigné
 	m_strNomModifGaz.Format(_T("%s"),nom_modif.c_str());
@@ -392,8 +391,8 @@ void CModifGaz::OnBnClickedModifier()
 {
 	// On met à jour les variables
 	UpdateData(TRUE);
-	string nom_modif((LPCTSTR)m_strNomModifGaz);
-	string symbole_modif ((LPCTSTR)m_strSymboleModifGaz);
+	std::string nom_modif((LPCTSTR)m_strNomModifGaz);
+	std::string symbole_modif ((LPCTSTR)m_strSymboleModifGaz);
 	int index = m_nIndexModifGaz;
 
 	CString message;
@@ -582,8 +581,8 @@ void CSupprGaz::OnBnClickedSupprimer()
 		if(Suppression_Gaz(m_nIndexSupprGaz))
 		{	// Si tout se passe bien, on le signale dans la boite de dialogue
 			// Et on réinitialise le ComboBox
-			string nom_suppr = list_suppr_gaz[index].nom;
-			string symbole_suppr = list_suppr_gaz[index].symbole;
+			std::string nom_suppr = list_suppr_gaz[index].nom;
+			std::string symbole_suppr = list_suppr_gaz[index].symbole;
 			m_strMessageSupprGaz.Format(TEXT_GAS_DELETED, nom_suppr.c_str(), symbole_suppr.c_str());
 
 			ReinitialisationComboBox();

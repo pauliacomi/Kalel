@@ -2,12 +2,11 @@
 //
 
 #include "stdafx.h"
-#include "Kalel.h"
 #include "ExperimentPropertySheet.h"
 
-
-#include "../Kalel Shared/Resources/DefineStages.h"			// For the types of experiments used
 #include "DefinePostMessages.h"								// For custom message definitions
+#include "../Kalel Shared/Resources/DefineStages.h"			// For the types of experiments used
+#include "..//Kalel Shared/Resources/StringTable.h"			// Error message strings
 
 
 // Property pages include

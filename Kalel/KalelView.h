@@ -2,13 +2,13 @@
 
 #include "afxwin.h"
 
-#include "StringTable.h"				// All strings in the program
-
-#include "DefinePostMessages.h"			// Definition of messages received from the automation functionality
+#include "DefinePostMessages.h"										// Definition of messages received from the automation functionality
 #include "../Kalel Shared/Resources/DefineStages.h"					// Stages/experiment type definitions
+#include "../Kalel Shared/Resources/StringTable.h"					// Error message strings
 
 #include "../Kalel Shared/Com Classes/ExperimentData.h"				// Where data about the experimental parameters, results and current status is stored
 #include "../Kalel Shared/Com Classes/ExperimentSettings.h"			// Where returned data from results is stored
+#include "../Kalel Shared/Com Classes/MachineSettings.h"			// Where the settings for the connected machine are stored
 #include "ExperimentPropertySheet.h"								// Dialog box for setting experimental properties
 #include "CommHandler.h"											// Responsible for all communication to/from client
 
@@ -29,6 +29,7 @@ public:
 
 	// Storage for all the data
 	ExperimentSettings * experimentSettings;
+	MachineSettings machineSettings;
 	ExperimentData * experimentData;
 	CommHandler commHandler;
 

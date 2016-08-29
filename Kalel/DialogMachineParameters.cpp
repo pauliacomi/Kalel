@@ -4,7 +4,7 @@
 #include "stdafx.h"
 #include "DialogMachineParameters.h"
 
-#include "MachineSettings.h"									// Accexsing the settings
+#include "../Kalel Shared/Com Classes/MachineSettings.h"		// Accexsing the settings
 #include "../Kalel Shared/Resources/DefineStages.h"				// Experiment types
 
 // Boîte de dialogue ApparatusParameters
@@ -177,6 +177,20 @@ void ApparatusParameters::OnBnClickedOk()
 	newSettings.VolumeP6							= m_fVolumeP6;
 	newSettings.CaloName							= m_StrNomCalo.GetBuffer();
 	newSettings.CaloEntete							= m_StrEnteteFichier.GetBuffer();
+
+	std::string temp_s;
+	std::wstring temp_ws;
+	char * temp_char;
+	CString temp_cs;
+
+	temp_s = temp_cs;
+	temp_s.assign(temp_cs);
+	temp_s.assign(temp_char);
+
+	temp_ws.assign(temp_cs);
+	temp_ws.assign(temp_char);
+
+	temp_ws.assign(temp_s);
 
 	OnOK();
 }

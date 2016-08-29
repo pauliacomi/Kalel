@@ -1,13 +1,10 @@
-////////////////////////////////////////////////
-// Modifié le 7 septembre 2009
-////////////////////////////////////////////////
-
-
-#include "StdAfx.h"
 #include "ParserXML.h"
-
-#include <string.h>
-
+//
+//#include <stdio.h>
+//#include <stdlib.h>
+//
+//#include <iostream>
+//#include <list>
 #include <sstream>
 
 const char* fichierXML = "Donnees.xml";
@@ -70,11 +67,11 @@ bool ConfigsExists() //Regarde si le fichier XML existe ou pas
 //     résultat : <nom_element>text_element</nom_element>
 //
 // Pour les autres fonctions qui utilisent des nombres,
-// on converti ces derniers en 'string' et on utilise la fonction
-// TiXmlElement * NewElement(string nom_element, string text_element)
+// on converti ces derniers en 'std::string' et on utilise la fonction
+// TiXmlElement * NewElement(std::string nom_element, std::string text_element)
 
 
-TiXmlElement * NewElement(string nom_element, string text_element)
+TiXmlElement * NewElement(std::string nom_element, std::string text_element)
 {
 	TiXmlElement * elem = new TiXmlElement(nom_element.c_str());
 	TiXmlText * text = new TiXmlText(text_element.c_str());
@@ -82,25 +79,25 @@ TiXmlElement * NewElement(string nom_element, string text_element)
 	return elem;
 }
 
-TiXmlElement * NewElement(string nom_element, int int_element)
+TiXmlElement * NewElement(std::string nom_element, int int_element)
 {
-	ostringstream text_element;
+	std::ostringstream text_element;
 	text_element << int_element;
 
 	return NewElement(nom_element,text_element.str());
 }
 
-TiXmlElement * NewElement(string nom_element, float float_element)
+TiXmlElement * NewElement(std::string nom_element, float float_element)
 {
-	ostringstream text_element;
+	std::ostringstream text_element;
 	text_element << float_element;
 
 	return NewElement(nom_element,text_element.str());
 }
 
-TiXmlElement * NewElement(string nom_element, double double_element)
+TiXmlElement * NewElement(std::string nom_element, double double_element)
 {
-	ostringstream text_element;
+	std::ostringstream text_element;
 	text_element << double_element;
 
 	return NewElement(nom_element,text_element.str());
@@ -113,9 +110,9 @@ TiXmlElement * NewElement(string nom_element, double double_element)
 
 
 // retourne la liste des experimentateurs
-vector<experimentateur> GetExperimentateurs()
+std::vector<experimentateur> GetExperimentateurs()
 {
-	vector<experimentateur> t_experimentateur;
+	std::vector<experimentateur> t_experimentateur;
 	TiXmlDocument doc(fichierXML);
 	if(!doc.LoadFile()){
 		return t_experimentateur; // Si le fichier XML ne s'ouvre pas, on renvoie
@@ -139,7 +136,7 @@ vector<experimentateur> GetExperimentateurs()
 		exp.nom = root->FirstChildElement("nom")->GetText();
 		exp.surnom = root->FirstChildElement("surnom")->GetText();
 		
-		// On rajoute la variable "exp" à la fin du 'vector'
+		// On rajoute la variable "exp" à la fin du 'std::vector'
 		t_experimentateur.push_back(exp);
 
 		// On passe au noeud suivant. Si ce noeud existe, on continue, 
@@ -147,16 +144,16 @@ vector<experimentateur> GetExperimentateurs()
 		root = root->NextSibling();
 	}
 
-	return t_experimentateur; // On retourne le 'vector' des experimentateurs
+	return t_experimentateur; // On retourne le 'std::vector' des experimentateurs
 }
 
 
 
-bool Rajout_Experimentateur(string nom,string surnom,int index)
+bool Rajout_Experimentateur(std::string nom,std::string surnom,int index)
 {
 	TiXmlDocument doc(fichierXML);
 	if(!doc.LoadFile()){
-		return FALSE;
+		return false;
 	}
 
 	TiXmlHandle hdl(&doc);
@@ -186,7 +183,7 @@ bool Rajout_Experimentateur(string nom,string surnom,int index)
 	else
 		elem->InsertBeforeChild(elem_parcours,nouvel_experimentateur);
 
-	return doc.SaveFile(fichierXML); // retourne TRUE si tout a été bien enregistré
+	return doc.SaveFile(fichierXML); // retourne true si tout a été bien enregistré
 }
 
 
@@ -197,12 +194,12 @@ bool Rajout_Experimentateur(experimentateur new_exp,int index)
 }
 
 
-//index : position dans le vector<experimentateur utilisé
+//index : position dans le std::vector<experimentateur utilisé
 bool Suppression_Experimentateur(int index)
 {
 	TiXmlDocument doc(fichierXML);
 	if(!doc.LoadFile()){
-		return FALSE;
+		return false;
 	}
 
 	TiXmlHandle hdl(&doc);
@@ -217,12 +214,12 @@ bool Suppression_Experimentateur(int index)
 		elem=elem->NextSiblingElement();
 	// une fois l'élément trouvé, 'f' va l'éliminer
 	f->RemoveChild(elem);
-	return doc.SaveFile(fichierXML); // retourne TRUE si tout a été enregistré
+	return doc.SaveFile(fichierXML); // retourne true si tout a été enregistré
 }
 
 
 // Pour modifier un élément, on supprime l'ancien pour rajouter le nouveau.
-bool Modif_Experimentateur(string nom, string surnom,int index)
+bool Modif_Experimentateur(std::string nom, std::string surnom,int index)
 {
 	Suppression_Experimentateur(index);
 	return Rajout_Experimentateur(nom,surnom,index);
@@ -243,9 +240,9 @@ bool Modif_Experimentateur(experimentateur new_exp,int index)
 
 // Analogues aux fonctions Experimentateur
 
-vector<gaz> GetGazs()
+std::vector<gaz> GetGazs()
 {
-	vector<gaz> t_gaz;
+	std::vector<gaz> t_gaz;
 	TiXmlDocument doc(fichierXML);
 	if(!doc.LoadFile()){
 		return t_gaz;
@@ -277,12 +274,12 @@ vector<gaz> GetGazs()
 
 
 
-bool Rajout_Gaz(string nom,string symbole,double masse,double temp_critique, 
+bool Rajout_Gaz(std::string nom,std::string symbole,double masse,double temp_critique, 
 				double pres_critique, double temp_ebullition, int index)
 {
 	TiXmlDocument doc(fichierXML);
 	if(!doc.LoadFile()){
-		return FALSE;
+		return false;
 	}
 
 	TiXmlHandle hdl(&doc);
@@ -332,7 +329,7 @@ bool Suppression_Gaz(int index)
 {
 	TiXmlDocument doc(fichierXML);
 	if(!doc.LoadFile()){
-		return FALSE;
+		return false;
 	}
 
 	TiXmlHandle hdl(&doc);
@@ -348,7 +345,7 @@ bool Suppression_Gaz(int index)
 
 
 
-bool Modif_Gaz(string nom,string symbole,double masse,double temp_critique, 
+bool Modif_Gaz(std::string nom,std::string symbole,double masse,double temp_critique, 
 				double pres_critique, double temp_ebullition, int index)
 {
 	Suppression_Gaz(index);
@@ -368,9 +365,9 @@ bool Modif_Gaz(gaz new_gaz,int index)
 // Fonctions Cellule
 
 
-vector<cellule> GetCellules()
+std::vector<cellule> GetCellules()
 {
-	vector<cellule> t_cellule;
+	std::vector<cellule> t_cellule;
 	TiXmlDocument doc(fichierXML);
 	if(!doc.LoadFile()){
 		return t_cellule;
@@ -400,11 +397,11 @@ vector<cellule> GetCellules()
 
 
 
-bool Rajout_Cellule(string num, double total, double calo, int index)
+bool Rajout_Cellule(std::string num, double total, double calo, int index)
 {
 	TiXmlDocument doc(fichierXML);
 	if(!doc.LoadFile()){
-		return FALSE;
+		return false;
 	}
 
 	TiXmlHandle hdl(&doc);
@@ -442,12 +439,12 @@ bool Rajout_Cellule(cellule new_cellule,int index)
 }
 
 
-//index : position dans le vector<experimentateur utilisé
+//index : position dans le std::vector<experimentateur utilisé
 bool Suppression_Cellule(int index)
 {
 	TiXmlDocument doc(fichierXML);
 	if(!doc.LoadFile()){
-		return FALSE;
+		return false;
 	}
 
 	TiXmlHandle hdl(&doc);
@@ -461,7 +458,7 @@ bool Suppression_Cellule(int index)
 	return doc.SaveFile(fichierXML);
 }
 
-bool Modif_Cellule(string num, double total, double calo, int index)
+bool Modif_Cellule(std::string num, double total, double calo, int index)
 {
 	Suppression_Cellule(index);
 	return Rajout_Cellule(num,total,calo,index);
@@ -479,7 +476,7 @@ bool Modif_Cellule(cellule new_cellule,int index)
 //
 // Fonction doublon
 
-bool Doublon(TiXmlHandle handle_root, string valeur, string type)
+bool Doublon(TiXmlHandle handle_root, std::string valeur, std::string type)
 {
 	/*
 	while (elem_parcours)
@@ -501,18 +498,18 @@ bool Doublon(TiXmlHandle handle_root, string valeur, string type)
 		const char* bidon2=valeur.c_str();
 		//if (valeur.c_str() == bidon)
 		if(bidon2 == bidon)
-			return TRUE;
+			return true;
 		*/
 		
 		char * bidon3 = _strdup(root->FirstChildElement(type.c_str())->GetText());
 		char * bidon4 = _strdup(valeur.c_str());
 
-		string temp_nom(_strdup(root->FirstChildElement(type.c_str())->GetText()));
+		std::string temp_nom(_strdup(root->FirstChildElement(type.c_str())->GetText()));
 
 		//if (strdup(valeur.c_str()) == strdup(root->FirstChildElement(type.c_str())->GetText()))
 		if (valeur == temp_nom)
 		{
-			return TRUE;
+			return true;
 		}
 		
 
@@ -521,15 +518,15 @@ bool Doublon(TiXmlHandle handle_root, string valeur, string type)
 		root = root->NextSibling();
 	}
 
-	return FALSE;
+	return false;
 }
 
 /*
-bool DoublonNomExperimentateur(string valeur)
+bool DoublonNomExperimentateur(std::string valeur)
 {
 	TiXmlDocument doc(fichierXML);
 	if(!doc.LoadFile()){
-		return FALSE;
+		return false;
 	}
 
 	TiXmlHandle hdl(&doc);
@@ -540,22 +537,22 @@ bool DoublonNomExperimentateur(string valeur)
 }
 */
 
-bool DoublonNomExperimentateur(string valeur)
+bool DoublonNomExperimentateur(std::string valeur)
 {
 	return DoublonExperimentateur(valeur, "nom");
 }
 
-bool DoublonSurnomExperimentateur(string valeur)
+bool DoublonSurnomExperimentateur(std::string valeur)
 {
 	return DoublonExperimentateur(valeur, "surnom");
 }
 
 
-bool DoublonExperimentateur(string valeur, string type)
+bool DoublonExperimentateur(std::string valeur, std::string type)
 {
 	TiXmlDocument doc(fichierXML);
 	if(!doc.LoadFile()){
-		return FALSE;
+		return false;
 	}
 
 	TiXmlHandle hdl(&doc);
@@ -568,22 +565,22 @@ bool DoublonExperimentateur(string valeur, string type)
 
 
 
-bool DoublonNomGaz(string valeur)
+bool DoublonNomGaz(std::string valeur)
 {
 	return DoublonGaz(valeur, "nom");
 }
 
-bool DoublonSymboleGaz(string valeur)
+bool DoublonSymboleGaz(std::string valeur)
 {
 	return DoublonGaz(valeur, "symbole");
 }
 
 
-bool DoublonGaz(string valeur, string type)
+bool DoublonGaz(std::string valeur, std::string type)
 {
 	TiXmlDocument doc(fichierXML);
 	if(!doc.LoadFile()){
-		return FALSE;
+		return false;
 	}
 
 	TiXmlHandle hdl(&doc);
@@ -595,11 +592,11 @@ bool DoublonGaz(string valeur, string type)
 
 
 
-bool DoublonNumeroCellule(string num)
+bool DoublonNumeroCellule(std::string num)
 {
 	TiXmlDocument doc(fichierXML);
 	if(!doc.LoadFile()){
-		return FALSE;
+		return false;
 	}
 
 	TiXmlHandle hdl(&doc);
@@ -608,11 +605,11 @@ bool DoublonNumeroCellule(string num)
 
 	/*
 	// créer un flux de sortie
-    ostringstream oss;
+    std::ostringstream oss;
     // écrire un nombre dans le flux
     oss << num;
     // récupérer une chaîne de caractères
-    string valeur = oss.str();
+    std::string valeur = oss.str();
 	*/
 
 	//return Doublon(handle_root, valeur, "numero");

@@ -1,6 +1,5 @@
-#include "stdafx.h"
 #include "CommonFunctions.h"
-
+#include <ctime>
 
 CommonFunctions::CommonFunctions()
 {
@@ -11,7 +10,7 @@ CommonFunctions::~CommonFunctions()
 {
 }
 
-CString CommonFunctions::getDate()
+std::string CommonFunctions::getDate()
 {
 	time_t timestamp;
 	struct tm t;
@@ -23,10 +22,11 @@ CString CommonFunctions::getDate()
 	sprintf_s(date_char, "%02d/%02d/%d %02dh%02d", t.tm_mon + 1, t.tm_mday,
 		1900 + t.tm_year, t.tm_hour, t.tm_min);
 
-	return date_char;
+	std::string ret = date_char;
+	return ret;
 }
 
-CString CommonFunctions::getDateUnderline()
+std::string CommonFunctions::getDateUnderline()
 {
 	time_t timestamp;
 	struct tm t;
@@ -38,5 +38,6 @@ CString CommonFunctions::getDateUnderline()
 	sprintf_s(date_char, "%d_%02d_%02d_%02dh%02d",
 		1900 + t.tm_year, t.tm_mon + 1, t.tm_mday, t.tm_hour, t.tm_min);
 
-	return date_char;
+	std::string ret = date_char;
+	return ret;
 }

@@ -2,7 +2,6 @@
 //
 
 #include "stdafx.h"
-#include "Kalel.h"
 #include "TabContinuousAdsorption.h"
 
 // TabContinuousAdsorption

@@ -2,7 +2,6 @@
 //
 
 #include "stdafx.h"
-#include "Kalel.h"
 #include "TabDesorption.h"
 
 #include "DefinePostMessages.h"		// For custom message definitions
