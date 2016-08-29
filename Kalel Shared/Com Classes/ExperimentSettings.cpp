@@ -60,7 +60,7 @@ void ExperimentSettings::ResetData(int initialAdsorptions, int initialDesorption
 	dataDivers.temps_vide = 90;
 
 	// Adsorption
-	for (size_t i = 0; i < initialAdsorptions; i++)
+	for (int i = 0; i < initialAdsorptions; i++)
 	{
 		Donnees_Doses adsorptionStep;
 
@@ -73,7 +73,7 @@ void ExperimentSettings::ResetData(int initialAdsorptions, int initialDesorption
 	}
 
 	// Desorption
-	for (size_t i = 0; i < initialDesorptions; i++)
+	for (int i = 0; i < initialDesorptions; i++)
 	{
 		Donnees_Desorption desorptionStep;
 

@@ -30,7 +30,7 @@ void CKalelView::AskThreadForManualCommand(int instrumentType, int instrumentNum
 	pApp->menuIsAvailable = false;
 
 	// Create the storage object and then pass it to the threading function
-	commHandler.ManualCommand(GetSafeHwnd(), instrumentType, instrumentNumber, shouldBeActivated);
+	commHandler.ManualCommand(instrumentType, instrumentNumber, shouldBeActivated);
 }
 
 

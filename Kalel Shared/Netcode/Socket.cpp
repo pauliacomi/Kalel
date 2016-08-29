@@ -53,7 +53,7 @@ Socket::~Socket()
 
 
 
-void Socket::Send(SOCKET sock, const std::string& sendbuf)
+void Socket::Send(SOCKET l_sock, const std::string& sendbuf)
 {
 	int bytesSent;											// Error result
 	int total{ 0 };											// how many bytes we've sent
@@ -62,7 +62,7 @@ void Socket::Send(SOCKET sock, const std::string& sendbuf)
 															// Send an initial buffer
 	while (total < (int)sendbuf.length())
 	{
-		bytesSent = send(sock, sendbuf.c_str() + total, length, 0);
+		bytesSent = send(l_sock, sendbuf.c_str() + total, length, 0);
 		if (bytesSent == SOCKET_ERROR) {
 			stringex.set(ERR_SEND);
 			throw stringex;
@@ -72,14 +72,14 @@ void Socket::Send(SOCKET sock, const std::string& sendbuf)
 	}
 }
 
-void Socket::SendLine(SOCKET sock, const std::string& sendbuf)
+void Socket::SendLine(SOCKET l_sock, const std::string& sendbuf)
 {
 	std::string local = sendbuf;
 	local += '\n';
-	Send(sock, local);
+	Send(l_sock, local);
 }
 
-std::string Socket::Receive(SOCKET sock)
+std::string Socket::Receive(SOCKET l_sock)
 {
 	std::string ret;
 	char buf[1024];
@@ -88,14 +88,14 @@ std::string Socket::Receive(SOCKET sock)
 	while(true){
 		u_long arg = 0;
 
-		if (ioctlsocket(sock, FIONREAD, &arg) != 0)
+		if (ioctlsocket(l_sock, FIONREAD, &arg) != 0)
 			break;
 		if (arg == 0)
 			break;
 		if (arg > 1024)
 			arg = 1024;
 
-		received = recv(sock, buf, arg, 0);
+		received = recv(l_sock, buf, arg, 0);
 
 		switch (received) {
 		case 0: // not connected anymore;
@@ -119,7 +119,7 @@ std::string Socket::Receive(SOCKET sock)
 	return ret;
 }
 
-std::string Socket::ReceiveLine(SOCKET sock)
+std::string Socket::ReceiveLine(SOCKET l_sock)
 {
 	std::string ret;
 	int received;
@@ -127,7 +127,7 @@ std::string Socket::ReceiveLine(SOCKET sock)
 	while (true) {
 		char r;
 
-		received = recv(sock, &r, 1, 0);
+		received = recv(l_sock, &r, 1, 0);
 
 		switch (received) {
 		case 0: // not connected anymore;
@@ -150,12 +150,12 @@ std::string Socket::ReceiveLine(SOCKET sock)
 	}
 }
 
-void Socket::Close(SOCKET sock)
+void Socket::Close(SOCKET l_sock)
 {
-	if (sock != INVALID_SOCKET) {
+	if (l_sock != INVALID_SOCKET) {
 		
-		int status = closesocket(sock);
-		sock = INVALID_SOCKET;
+		int status = closesocket(l_sock);
+		l_sock = INVALID_SOCKET;
 
 		if (status == SOCKET_ERROR)
 		{
@@ -166,22 +166,22 @@ void Socket::Close(SOCKET sock)
 	}
 }
 
-void Socket::CloseGracefully(SOCKET sock)
+void Socket::CloseGracefully(SOCKET l_sock)
 {
-	if (sock != INVALID_SOCKET) {
+	if (l_sock != INVALID_SOCKET) {
 		int status = 0;
 
 #ifdef _WIN32
-		status = shutdown(sock, SD_SEND);
+		status = shutdown(l_sock, SD_SEND);
 		if (status == 0) {
-			status = closesocket(sock);
-			sock = INVALID_SOCKET;
+			status = closesocket(l_sock);
+			l_sock = INVALID_SOCKET;
 		}
 #else
-		status = shutdown(sock, SHUT_RDWR);
+		status = shutdown(l_sock, SHUT_RDWR);
 		if (status == 0) {
-			status = close(sock);
-			sock = INVALID_SOCKET;
+			status = close(l_sock);
+			l_sock = INVALID_SOCKET;
 		}
 #endif
 

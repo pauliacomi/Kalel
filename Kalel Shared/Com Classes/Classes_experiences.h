@@ -34,7 +34,7 @@ class cellule
 public :
 	std::wstring numero;
 	double volume_total;
-	float volume_calo;
+	double volume_calo;
 
 	cellule operator=(const cellule &cell);
 	bool operator!=(const cellule &cell);

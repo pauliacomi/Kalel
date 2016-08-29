@@ -28,7 +28,7 @@ protected:
 	std::string err;
 
 public:
-	void set(std::string err)
+	void set(std::string l_err)
 	{
 		this->err = err;
 	}

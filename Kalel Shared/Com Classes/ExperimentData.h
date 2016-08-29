@@ -63,6 +63,5 @@ public:
 };
 
 typedef std::vector<ExperimentData*> CArrayMeasurments;
-//typedef std::vector<ExperimentData, ExperimentData> CArrayMeasurments;
 
 #endif

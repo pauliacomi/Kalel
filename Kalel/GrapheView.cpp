@@ -97,9 +97,9 @@ void CGrapheView::OnDraw(CDC* pDC)
 			maxCalo = max(maxCalo, experimentData->resultCalorimeter);
 			minCalo = min(minCalo, experimentData->resultCalorimeter);
 
-			int displayedSeconds = RECENT_HOURS * 3600;
+			double displayedSeconds = RECENT_HOURS * 3600;
 			timeMinimum = experimentData->experimentTime - displayedSeconds;
-			float partialCoefficient = (experimentData->experimentTime / experimentData->experimentGraphPoints);
+			double partialCoefficient = (experimentData->experimentTime / experimentData->experimentGraphPoints);
 			measurementMinimum  = (int)(experimentData->experimentGraphPoints - displayedSeconds / partialCoefficient);
 			if (measurementMinimum < 0)
 				measurementMinimum = 0;
@@ -323,7 +323,7 @@ void CGrapheView::TraceScale(CRect graphe,CRect axe_graphe,int max_pression,int 
 
 	// ------ Echelle Calo -----------------------------------------
 	int nb_intervalles_calo = 1;//5;
-	double ecart_calo = max_calo-min_calo;
+	//double ecart_calo = max_calo-min_calo;
 		
 	for(int i=0;i<=nb_intervalles_calo;i++)
 	{
@@ -844,7 +844,7 @@ void CGrapheView::TraceGraph(CRect graphe,int max_pression,int min_pression,doub
 	CPen newPen1(PS_SOLID,1,RGB(255,0,0));
 	CPen * pOldPen1 = pDC->SelectObject(&newPen1);
 
-	for(int i = firstMeasurement;i <= measurementArray->size() - 1;i++)
+	for(size_t i = firstMeasurement;i <= measurementArray->size() - 1;i++)
 	{
 		POINT PCalo;
 		PCalo.x = graphe.left + rapport_temps * ((*measurementArray)[i]->experimentTime - min_temps);
@@ -862,7 +862,7 @@ void CGrapheView::TraceGraph(CRect graphe,int max_pression,int min_pression,doub
 	CPen newPen2(PS_SOLID, 1, RGB(0, 185, 0));
 	CPen * pOldPen2 = pDC->SelectObject(&newPen2);
 
-	for(int i = firstMeasurement;i<= measurementArray->size() - 1;i++)
+	for(size_t i = firstMeasurement;i<= measurementArray->size() - 1;i++)
 	{
 		POINT PBasse_pression;
 		PBasse_pression.x = graphe.left + rapport_temps * ((*measurementArray)[i]->experimentTime - min_temps);
@@ -879,7 +879,7 @@ void CGrapheView::TraceGraph(CRect graphe,int max_pression,int min_pression,doub
 	CPen newPen3(PS_SOLID,1,RGB(0,0,255));
 	CPen * pOldPen3=pDC->SelectObject(&newPen3);
 	
-	for(int i= firstMeasurement;i<= measurementArray->size() - 1;i++)
+	for(size_t i= firstMeasurement;i<= measurementArray->size() - 1;i++)
 	{
 		POINT PHaute_pression;
 		PHaute_pression.x = graphe.left + rapport_temps * ((*measurementArray)[i]->experimentTime - min_temps);

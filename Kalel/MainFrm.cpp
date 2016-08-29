@@ -102,7 +102,7 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 	return CFrameWnd::PreCreateWindow(cs);
 }
 
-void CMainFrame::OnUpdateFrameTitle(BOOL bAddToTitle)
+void CMainFrame::OnUpdateFrameTitle(BOOL /*bAddToTitle*/)
 {
 	SetWindowText(_T("Kalel"));
 }
@@ -130,7 +130,7 @@ void CMainFrame::OnSysCommand(UINT nID, LPARAM lParam)
 	if (nID == SC_CLOSE)
 	{
 		CKalelApp* pApp = static_cast<CKalelApp *>(AfxGetApp());
-		CKalelView* pView = CKalelView::GetView();
+		// CKalelView* pView = CKalelView::GetView();
 
 		if (pApp->experimentRunning)
 		{

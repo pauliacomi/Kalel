@@ -11,11 +11,10 @@ class ManualActionParam
 public:
 	ManualActionParam();
 	ManualActionParam(ManualActionParam * mParam);
-	ManualActionParam(HWND wHnd, int instrType, int instrNumber, bool instrIsActivated);
+	ManualActionParam(int instrType, int instrNumber, bool instrIsActivated);
 	~ManualActionParam();
 
 public:
-	HWND windowHandle;
 	int instrumentType;
 	int instrumentNumber;
 	bool shouldBeActivated;

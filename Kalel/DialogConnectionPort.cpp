@@ -353,7 +353,7 @@ void ConnectionPort::InitConnection_port()
 
 
 
-void ConnectionPort::InitDonneesInstrument(int TypeInstr, int* m_nIndex, int* m_nPortInstrument, BOOL* m_bInstrumentKeithleyVoie1, BOOL* m_bInstrumentKeithleyVoie2, CComboBox* m_CBInstrumentKeithleyVoie2, int* m_nIndexInstrumentKeithleyVoie2, int* m_nInstrumentMensor, int GetPort, int GetFonction)
+void ConnectionPort::InitDonneesInstrument(int TypeInstr, int* m_nIndex, int* portInstrument, BOOL* instrumentKeithleyVoie1, BOOL* instrumentKeithleyVoie2, CComboBox* CBInstrumentKeithleyVoie2, int* indexInstrumentKeithleyVoie2, int* instrumentMensor, int GetPort, int GetFonction)
 {
 	switch (TypeInstr)
 	{
@@ -365,37 +365,37 @@ void ConnectionPort::InitDonneesInstrument(int TypeInstr, int* m_nIndex, int* m_
 
 	case INSTRUMENT_KEITHLEY:
 		*m_nIndex = INDEX_KEITHLEY;
-		*m_nPortInstrument = GetPort;
+		*portInstrument = GetPort;
 		switch (GetFonction)
 		{
 		case CALO_V1_BP_V2_KEITHLEY:
-			*m_bInstrumentKeithleyVoie1 = TRUE;
-			*m_bInstrumentKeithleyVoie2 = TRUE;
-			m_CBInstrumentKeithleyVoie2->EnableWindow(TRUE);
-			*m_nIndexInstrumentKeithleyVoie2 = READ_LP;
+			*instrumentKeithleyVoie1 = TRUE;
+			*instrumentKeithleyVoie2 = TRUE;
+			CBInstrumentKeithleyVoie2->EnableWindow(TRUE);
+			*indexInstrumentKeithleyVoie2 = READ_LP;
 			break;
 		case CALO_V1_HP_V2_KEITHLEY:
-			*m_bInstrumentKeithleyVoie1 = TRUE;
-			*m_bInstrumentKeithleyVoie2 = TRUE;
-			m_CBInstrumentKeithleyVoie2->EnableWindow(TRUE);
-			*m_nIndexInstrumentKeithleyVoie2 = READ_HP;
+			*instrumentKeithleyVoie1 = TRUE;
+			*instrumentKeithleyVoie2 = TRUE;
+			CBInstrumentKeithleyVoie2->EnableWindow(TRUE);
+			*indexInstrumentKeithleyVoie2 = READ_HP;
 			break;
 		case CALO_V1_KEITHLEY:
-			*m_bInstrumentKeithleyVoie1 = TRUE;
-			*m_bInstrumentKeithleyVoie2 = FALSE;
-			m_CBInstrumentKeithleyVoie2->EnableWindow(FALSE);
+			*instrumentKeithleyVoie1 = TRUE;
+			*instrumentKeithleyVoie2 = FALSE;
+			CBInstrumentKeithleyVoie2->EnableWindow(FALSE);
 			break;
 		case INSTRUMENT_KEYTHLEY_LP_V2:
-			*m_bInstrumentKeithleyVoie1 = FALSE;
-			*m_bInstrumentKeithleyVoie2 = TRUE;
-			m_CBInstrumentKeithleyVoie2->EnableWindow(TRUE);
-			*m_nIndexInstrumentKeithleyVoie2 = READ_LP;
+			*instrumentKeithleyVoie1 = FALSE;
+			*instrumentKeithleyVoie2 = TRUE;
+			CBInstrumentKeithleyVoie2->EnableWindow(TRUE);
+			*indexInstrumentKeithleyVoie2 = READ_LP;
 			break;
 		case INSTRUMENT_KEYTHLEY_HP_V2:
-			*m_bInstrumentKeithleyVoie1 = FALSE;
-			*m_bInstrumentKeithleyVoie2 = TRUE;
-			m_CBInstrumentKeithleyVoie2->EnableWindow(TRUE);
-			*m_nIndexInstrumentKeithleyVoie2 = READ_HP;
+			*instrumentKeithleyVoie1 = FALSE;
+			*instrumentKeithleyVoie2 = TRUE;
+			CBInstrumentKeithleyVoie2->EnableWindow(TRUE);
+			*indexInstrumentKeithleyVoie2 = READ_HP;
 			break;
 		default:
 			break;
@@ -404,11 +404,11 @@ void ConnectionPort::InitDonneesInstrument(int TypeInstr, int* m_nIndex, int* m_
 
 	case INSTRUMENT_MENSOR:
 		*m_nIndex = INDEX_MENSOR;
-		*m_nPortInstrument = GetPort;
+		*portInstrument = GetPort;
 		if (GetFonction == INSTRUMENT_MENSOR_LP)
-			*m_nInstrumentMensor = READ_LP;
+			*instrumentMensor = READ_LP;
 		else if (GetFonction == INSTRUMENT_MENSOR_HP)
-			*m_nInstrumentMensor = READ_HP;
+			*instrumentMensor = READ_HP;
 		break;
 	default:
 		break;
@@ -419,10 +419,10 @@ void ConnectionPort::InitDonneesInstrument(int TypeInstr, int* m_nIndex, int* m_
 void ConnectionPort::EnregistrementParametresInstrument(int num_instr, 
 														int m_nIndex, 
 														int COMInstrument, 
-														bool m_bInstrumentKeithleyVoie1, 
-														bool m_bInstrumentKeithleyVoie2, 
-														int m_nIndexInstrumentKeithleyVoie2, 
-														int m_nInstrumentMensor,
+														bool instrumentKeithleyVoie1, 
+														bool instrumentKeithleyVoie2, 
+														int indexInstrumentKeithleyVoie2, 
+														int instrumentMensor,
 														MachineSettings & newSettings)
 {
 	int fonction = FUNCTION_NONE;
@@ -434,20 +434,20 @@ void ConnectionPort::EnregistrementParametresInstrument(int num_instr,
 		break;
 
 	case INDEX_KEITHLEY:
-		if (m_bInstrumentKeithleyVoie1 && m_bInstrumentKeithleyVoie2)
+		if (instrumentKeithleyVoie1 && instrumentKeithleyVoie2)
 		{
-			if (m_nIndexInstrumentKeithleyVoie2 == READ_LP)
+			if (indexInstrumentKeithleyVoie2 == READ_LP)
 				fonction = CALO_V1_BP_V2_KEITHLEY;
-			else if (m_nIndexInstrumentKeithleyVoie2 == READ_HP)
+			else if (indexInstrumentKeithleyVoie2 == READ_HP)
 				fonction = CALO_V1_HP_V2_KEITHLEY;
 		}
-		else if (m_bInstrumentKeithleyVoie1)
+		else if (instrumentKeithleyVoie1)
 			fonction = CALO_V1_KEITHLEY;
-		else if (m_bInstrumentKeithleyVoie2)
+		else if (instrumentKeithleyVoie2)
 		{
-			if (m_nIndexInstrumentKeithleyVoie2 == READ_LP)
+			if (indexInstrumentKeithleyVoie2 == READ_LP)
 				fonction = INSTRUMENT_KEYTHLEY_LP_V2;
-			else if (m_nIndexInstrumentKeithleyVoie2 == READ_HP)
+			else if (indexInstrumentKeithleyVoie2 == READ_HP)
 				fonction = INSTRUMENT_KEYTHLEY_HP_V2;
 		}
 		else
@@ -459,7 +459,7 @@ void ConnectionPort::EnregistrementParametresInstrument(int num_instr,
 		break;
 
 	case INDEX_MENSOR:
-		if (m_nInstrumentMensor == 0)
+		if (instrumentMensor == 0)
 			fonction = INSTRUMENT_MENSOR_LP;
 		else //(m_nInstrument1Mensor == 1)
 			fonction = INSTRUMENT_MENSOR_HP;
@@ -470,35 +470,35 @@ void ConnectionPort::EnregistrementParametresInstrument(int num_instr,
 }
 
 
-void ConnectionPort::ShowItem(int m_nIndex, bool m_bInstrumentKeithleyVoie2, CComboBox* m_CBPortInstrument, CButton* m_CheckInstrumentKeithleyVoie1, CButton* m_CheckInstrumentKeithleyVoie2, CComboBox* m_CBInstrumentKeithleyVoie2, CComboBox* m_CBInstrumentMensor)
+void ConnectionPort::ShowItem(int m_nIndex, bool instrumentKeithleyVoie2, CComboBox* CBPortInstrument, CButton* checkInstrumentKeithleyVoie1, CButton* checkInstrumentKeithleyVoie2, CComboBox* CBInstrumentKeithleyVoie2, CComboBox* CBInstrumentMensor)
 {
 	switch (m_nIndex)
 	{
 	case INDEX_AUCUN:
 	case INSTRUMENT_UNDEF:
 	case INSTRUMENT_INEXIST:
-		m_CBPortInstrument->ShowWindow(SW_HIDE);
-		m_CheckInstrumentKeithleyVoie1->ShowWindow(SW_HIDE);
-		m_CheckInstrumentKeithleyVoie2->ShowWindow(SW_HIDE);
-		m_CBInstrumentKeithleyVoie2->ShowWindow(SW_HIDE);
-		m_CBInstrumentKeithleyVoie2->EnableWindow(m_bInstrumentKeithleyVoie2);
-		m_CBInstrumentMensor->ShowWindow(SW_HIDE);
+		CBPortInstrument->ShowWindow(SW_HIDE);
+		checkInstrumentKeithleyVoie1->ShowWindow(SW_HIDE);
+		checkInstrumentKeithleyVoie2->ShowWindow(SW_HIDE);
+		CBInstrumentKeithleyVoie2->ShowWindow(SW_HIDE);
+		CBInstrumentKeithleyVoie2->EnableWindow(instrumentKeithleyVoie2);
+		CBInstrumentMensor->ShowWindow(SW_HIDE);
 		break;
 	case INDEX_KEITHLEY:
-		m_CBPortInstrument->ShowWindow(SW_SHOW);
-		m_CheckInstrumentKeithleyVoie1->ShowWindow(SW_SHOW);
-		m_CheckInstrumentKeithleyVoie2->ShowWindow(SW_SHOW);
-		m_CBInstrumentKeithleyVoie2->ShowWindow(SW_SHOW);
-		m_CBInstrumentKeithleyVoie2->EnableWindow(m_bInstrumentKeithleyVoie2);
-		m_CBInstrumentMensor->ShowWindow(SW_HIDE);
+		CBPortInstrument->ShowWindow(SW_SHOW);
+		checkInstrumentKeithleyVoie1->ShowWindow(SW_SHOW);
+		checkInstrumentKeithleyVoie2->ShowWindow(SW_SHOW);
+		CBInstrumentKeithleyVoie2->ShowWindow(SW_SHOW);
+		CBInstrumentKeithleyVoie2->EnableWindow(instrumentKeithleyVoie2);
+		CBInstrumentMensor->ShowWindow(SW_HIDE);
 		break;
 	case INDEX_MENSOR:
-		m_CBPortInstrument->ShowWindow(SW_SHOW);
-		m_CheckInstrumentKeithleyVoie1->ShowWindow(SW_HIDE);
-		m_CheckInstrumentKeithleyVoie2->ShowWindow(SW_HIDE);
-		m_CBInstrumentKeithleyVoie2->ShowWindow(SW_HIDE);
-		m_CBInstrumentKeithleyVoie2->EnableWindow(m_bInstrumentKeithleyVoie2);
-		m_CBInstrumentMensor->ShowWindow(SW_SHOW);
+		CBPortInstrument->ShowWindow(SW_SHOW);
+		checkInstrumentKeithleyVoie1->ShowWindow(SW_HIDE);
+		checkInstrumentKeithleyVoie2->ShowWindow(SW_HIDE);
+		CBInstrumentKeithleyVoie2->ShowWindow(SW_HIDE);
+		CBInstrumentKeithleyVoie2->EnableWindow(instrumentKeithleyVoie2);
+		CBInstrumentMensor->ShowWindow(SW_SHOW);
 		break;
 	default:
 		break;

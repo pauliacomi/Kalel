@@ -160,11 +160,11 @@ public:
 
 	CString m_strNomSuppGaz;
 	CString m_strSymboleSuppGaz;
-	float m_fMasseMoleculaireSuppGaz;
-	float m_fTemperatureCritiqueSuppGaz;
-	float m_fPressionCritiqueSuppGaz;
-	float m_fTemperatureEbullitionSuppGaz;
-	float m_fOmegaSuppGaz;
+	double m_fMasseMoleculaireSuppGaz;
+	double m_fTemperatureCritiqueSuppGaz;
+	double m_fPressionCritiqueSuppGaz;
+	double m_fTemperatureEbullitionSuppGaz;
+	double m_fOmegaSuppGaz;
 
 
 	CEdit m_EditNomSuppGaz;

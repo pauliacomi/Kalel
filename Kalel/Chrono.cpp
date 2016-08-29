@@ -81,22 +81,22 @@ int CChrono::TempsActuelMinute(LARGE_INTEGER endEtranger)
 	return (int)(TempsActuel(endEtranger)/60.0);
 }
 
-float CChrono::fTempsActuelMinute()
+double CChrono::fTempsActuelMinute()
 {
 	return TempsActuel()/60.0;
 }
 
-float CChrono::fTempsActuelMinute(LARGE_INTEGER endEtranger)
+double CChrono::fTempsActuelMinute(LARGE_INTEGER endEtranger)
 {
 	return TempsActuel(endEtranger)/60.0;
 }
 
-float CChrono::TempsActuelMillis()
+double CChrono::TempsActuelMillis()
 {
 	return TempsActuel()*1000.0;
 }
 
-float CChrono::TempsActuelMillis(LARGE_INTEGER endEtranger)
+double CChrono::TempsActuelMillis(LARGE_INTEGER endEtranger)
 {
 	return TempsActuel(endEtranger)*1000.0;
 }

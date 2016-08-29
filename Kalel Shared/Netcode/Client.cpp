@@ -33,7 +33,7 @@ void Client::Connect(PCSTR ip, PCSTR port)
 
 
 	// Resolve the local address and port to be used by the server
-	if (getaddrinfo(NULL, port, &hints, &result) != 0) {
+	if (getaddrinfo(ip, port, &hints, &result) != 0) {
 		stringex.set(ERR_GETADDRINFO);
 		throw stringex;
 	}

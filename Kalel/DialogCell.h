@@ -87,7 +87,7 @@ public:
 	//CSpinBtnCtrl m_SpinModifNumeroCellule;
 	double m_fModifVolumeCellule;
 	CSpinBtnCtrl m_SpinModifVolumeCellule;
-	float m_fModifVolumeCalo;
+	double m_fModifVolumeCalo;
 	CSpinBtnCtrl m_SpinModifVolumeCalo;
 	CEdit m_EditMessageModifCellule;
 	CString m_strMessageModifCellule;
@@ -137,7 +137,7 @@ public:
 	int m_nIndexSupprNumeroCellule;
 	double m_fSupprVolumeCellule;
 	CEdit m_EditSupprVolumeCellule;
-	float m_fSupprVolumeCalo;
+	double m_fSupprVolumeCalo;
 	CEdit m_EditSupprVolumeCalo;
 	CEdit m_EditMessageSupprCellule;
 	CString m_strMessageSupprCellule;

@@ -57,7 +57,6 @@ void Server::Listen(PCSTR port)
 
 	
 	// Resolve the local address and port to be used by the server
-	struct addrinfo * result = nullptr;						// Pointer to the result address
 	if (getaddrinfo(NULL, port, &hints, &result) != 0) {
 		stringex.set(ERR_GETADDRINFO);
 		throw stringex;
@@ -184,12 +183,12 @@ void Server::AcceptLoop()
 
 
 
-unsigned Server::Process(SOCKET sock)
+unsigned Server::Process(SOCKET l_sock)
 {
-	std::string line = ReceiveLine(sock);
+	std::string line = ReceiveLine(l_sock);
 
 	if (line.empty()) {
-		Close(sock);
+		Close(l_sock);
 		return 1;
 	}
 
@@ -232,7 +231,7 @@ unsigned Server::Process(SOCKET sock)
 	static const std::string user_agent      = "User-Agent: "         ;
 
 	while (1) {
-		line = ReceiveLine(sock);
+		line = ReceiveLine(l_sock);
 
 		if (line.empty()) 
 			break;
@@ -293,26 +292,26 @@ unsigned Server::Process(SOCKET sock)
 	asctime_s(asctime_remove_nl, 26, &gmt);
 	asctime_remove_nl[24] = 0;
 
-	Send(sock, "HTTP/1.1 ");
+	Send(l_sock, "HTTP/1.1 ");
 
 	if (!req.auth_realm_.empty()) {
-		SendLine(sock, "401 Unauthorized");
-		Send(sock, "WWW-Authenticate: Basic Realm=\"");
-		Send(sock, req.auth_realm_);
-		SendLine(sock, "\"");
+		SendLine(l_sock, "401 Unauthorized");
+		Send(l_sock, "WWW-Authenticate: Basic Realm=\"");
+		Send(l_sock, req.auth_realm_);
+		SendLine(l_sock, "\"");
 	}
 	else {
-		SendLine(sock, req.status_);
+		SendLine(l_sock, req.status_);
 	}
-	SendLine(sock, std::string("Date: ") + asctime_remove_nl + " GMT");
-	SendLine(sock, std::string("Server: ") + serverName);
-	SendLine(sock, "Connection: close");
-	SendLine(sock, "Content-Type: text/html; charset=ISO-8859-1");
-	SendLine(sock, "Content-Length: " + str_str.str());
-	SendLine(sock, "");
-	SendLine(sock, req.answer_);
+	SendLine(l_sock, std::string("Date: ") + asctime_remove_nl + " GMT");
+	SendLine(l_sock, std::string("Server: ") + serverName);
+	SendLine(l_sock, "Connection: close");
+	SendLine(l_sock, "Content-Type: text/html; charset=ISO-8859-1");
+	SendLine(l_sock, "Content-Length: " + str_str.str());
+	SendLine(l_sock, "");
+	SendLine(l_sock, req.answer_);
 
 	// Close connection socket
-	CloseGracefully(sock);
+	CloseGracefully(l_sock);
 	return 0;
 }

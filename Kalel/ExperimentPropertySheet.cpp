@@ -6,7 +6,7 @@
 
 #include "DefinePostMessages.h"								// For custom message definitions
 #include "../Kalel Shared/Resources/DefineStages.h"			// For the types of experiments used
-#include "..//Kalel Shared/Resources/StringTable.h"			// Error message strings
+#include "../Kalel Shared/Resources/StringTable.h"			// Error message strings
 
 
 // Property pages include
@@ -204,17 +204,17 @@ void ExperimentPropertySheet::SetProprietiesModif(int stage, int substage)
 	case STAGE_CONTINUOUS_ADSORPTION:
 		break;
 	case STAGE_ADSORPTION:
-		for (size_t i = 0; i < experimentSubStage; i++)
+		for (int i = 0; i < experimentSubStage; i++)
 		{
 			adsorptionTabs[i]->checkDoses = true;
 		}
 		break;
 	case STAGE_DESORPTION:
-		for (size_t i = 0; i < numberOfAdsorptions; i++)
+		for (int i = 0; i < numberOfAdsorptions; i++)
 		{
 			adsorptionTabs[i]->checkDoses = true;
 		}
-		for (size_t i = 0; i < experimentSubStage; i++)
+		for (int i = 0; i < experimentSubStage; i++)
 		{
 			desorptionTabs[i]->checkDesorption = true;
 		}
@@ -343,7 +343,7 @@ void ExperimentPropertySheet::OnButtonAddAdsorption()
 			adsorptionTabs.insert(pos2, tempTab);
 
 			// Rename all remaining pages
-			for (size_t i = 0; i < numberOfAdsorptions; i++)
+			for (int i = 0; i < numberOfAdsorptions; i++)
 			{
 				adsorptionTabs[i]->Rename(i + 1);
 			}
@@ -397,7 +397,7 @@ void ExperimentPropertySheet::OnButtonAddDesorption(void)
 
 
 			// Rename all remaining pages
-			for (size_t i = 0; i < numberOfDesorptions; i++)
+			for (int i = 0; i < numberOfDesorptions; i++)
 			{
 				desorptionTabs[i]->Rename(i + 1);
 			}
@@ -443,7 +443,7 @@ LRESULT ExperimentPropertySheet::OnButtonRemoveAdsorption(WPARAM, LPARAM lParam)
 		numberOfAdsorptions--;														// Decrement the number of adsorption 
 
 																					// Rename all remaining pages
-		for (size_t i = 0; i < numberOfAdsorptions; i++)
+		for (int i = 0; i < numberOfAdsorptions; i++)
 		{
 			adsorptionTabs[i]->Rename(i + 1);
 		}
@@ -486,7 +486,7 @@ LRESULT ExperimentPropertySheet::OnButtonRemoveDesorption(WPARAM, LPARAM lParam)
 		numberOfDesorptions--;														// Decrement the number of adsorption 
 
 		// Rename all remaining pages
-		for (size_t i = 0; i < numberOfDesorptions; i++)
+		for (int i = 0; i < numberOfDesorptions; i++)
 		{
 			desorptionTabs[i]->Rename(i + 1);
 		}

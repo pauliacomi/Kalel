@@ -507,8 +507,8 @@ bool Doublon(TiXmlHandle handle_root, std::wstring valeur, std::wstring type)
 			return true;
 		*/
 		
-		char * bidon3 = _strdup(root->FirstChildElement(ws2s(type).c_str())->GetText());
-		char * bidon4 = _strdup(ws2s(valeur).c_str());
+		//char * bidon3 = _strdup(root->FirstChildElement(ws2s(type).c_str())->GetText());
+		//char * bidon4 = _strdup(ws2s(valeur).c_str());
 
 		std::wstring temp_nom(s2ws(_strdup(root->FirstChildElement(ws2s(type).c_str())->GetText())));
 

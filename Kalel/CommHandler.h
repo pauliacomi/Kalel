@@ -5,14 +5,14 @@ public:
 	CommHandler();
 	~CommHandler();
 
-	void ManualCommand(HWND hwid, int instrumentType, int instrumentNumber, bool shouldBeActivated);
+	void ManualCommand(int instrumentType, int instrumentNumber, bool shouldBeActivated);
 	
-	LRESULT StartClient();
-	LRESULT ShutdownClient();
-	LRESULT RestartClient();
-	LRESULT ResetClient();
-	LRESULT PauseClient();
-	LRESULT ResumeClient();
+	int StartClient();
+	int ShutdownClient();
+	int RestartClient();
+	int ResetClient();
+	int PauseClient();
+	int ResumeClient();
 
 	void SetUserContinue();
 	void SetModifiedData();

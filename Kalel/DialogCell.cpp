@@ -465,7 +465,6 @@ void CSupprCellule::OnCbnSelchangeComboSupprNumeroCellule()
 void CSupprCellule::OnBnClickedSupprimer()
 {
 	int index = m_nIndexSupprNumeroCellule;
-	int Cellule_A_Supprime = index + 1;
 
 	if (index != -1)
 	{

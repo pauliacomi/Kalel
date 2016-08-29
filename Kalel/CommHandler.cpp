@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "CommHandler.h"
 #include "ManualActionParam.h"
 
@@ -11,39 +10,39 @@ CommHandler::~CommHandler()
 {
 }
 
-void CommHandler::ManualCommand(HWND hwid, int instrumentType, int instrumentNumber, bool shouldBeActivated)
+void CommHandler::ManualCommand(int instrumentType, int instrumentNumber, bool shouldBeActivated)
 {
-	ManualActionParam request(HWND hwid, int instrumentType, int instrumentNumber, bool shouldBeActivated);
+	ManualActionParam request(instrumentType, instrumentNumber, shouldBeActivated);
 }
 
-LRESULT CommHandler::StartClient()
+int CommHandler::StartClient()
 {
-	return LRESULT();
+	return 0;
 }
 
-LRESULT CommHandler::ShutdownClient()
+int CommHandler::ShutdownClient()
 {
-	return LRESULT();
+	return 0;
 }
 
-LRESULT CommHandler::RestartClient()
+int CommHandler::RestartClient()
 {
-	return LRESULT();
+	return 0;
 }
 
-LRESULT CommHandler::ResetClient()
+int CommHandler::ResetClient()
 {
-	return LRESULT();
+	return 0;
 }
 
-LRESULT CommHandler::PauseClient()
+int CommHandler::PauseClient()
 {
-	return LRESULT();
+	return 0;
 }
 
-LRESULT CommHandler::ResumeClient()
+int CommHandler::ResumeClient()
 {
-	return LRESULT();
+	return 0;
 }
 
 void CommHandler::SetUserContinue()

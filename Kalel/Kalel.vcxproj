@@ -202,6 +202,7 @@
     <ClInclude Include="..\Kalel Shared\Com Classes\CommonFunctions.h" />
     <ClInclude Include="..\Kalel Shared\Com Classes\ExperimentData.h" />
     <ClInclude Include="..\Kalel Shared\Com Classes\ExperimentSettings.h" />
+    <ClInclude Include="..\Kalel Shared\Com Classes\MachineSettings.h" />
     <ClInclude Include="..\Kalel Shared\Netcode\base64.h" />
     <ClInclude Include="..\Kalel Shared\Netcode\Client.h" />
     <ClInclude Include="..\Kalel Shared\Netcode\http_request.h" />
@@ -211,6 +212,9 @@
     <ClInclude Include="..\Kalel Shared\Netcode\Socket.h" />
     <ClInclude Include="..\Kalel Shared\Netcode\stdHelpers.h" />
     <ClInclude Include="..\Kalel Shared\Netcode\URLHelper.h" />
+    <ClInclude Include="..\Kalel Shared\Resources\DefineAutomationSettings.h" />
+    <ClInclude Include="..\Kalel Shared\Resources\DefineInstruments.h" />
+    <ClInclude Include="..\Kalel Shared\Resources\DefineStages.h" />
     <ClInclude Include="..\Kalel Shared\Resources\StringTable.h" />
     <ClInclude Include="CommHandler.h" />
     <ClInclude Include="DialogMachineParameters.h" />
@@ -233,7 +237,6 @@
     <ClInclude Include="ManualActionParam.h" />
     <ClInclude Include="ParserXML.h" />
     <ClInclude Include="Resource.h" />
-    <ClInclude Include="MachineSettings.h" />
     <ClInclude Include="ResourceDialogCell.h" />
     <ClInclude Include="ResourceConnectionPort.h" />
     <ClInclude Include="ResourceDialogUser.h" />

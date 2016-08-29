@@ -12,7 +12,7 @@ public:
 private:
 	LARGE_INTEGER start, end, freq;
 	LARGE_INTEGER pause, reprise;
-	float temps;
+	double temps;
 	bool started;
 	bool paused;
 	
@@ -22,10 +22,10 @@ public:
 	double TempsActuel(LARGE_INTEGER endEtranger);
 	int TempsActuelMinute();
 	int TempsActuelMinute(LARGE_INTEGER endEtranger);
-	float fTempsActuelMinute();
-	float fTempsActuelMinute(LARGE_INTEGER endEtranger);
-	float TempsActuelMillis();
-	float TempsActuelMillis(LARGE_INTEGER endEtranger);
+	double fTempsActuelMinute();
+	double fTempsActuelMinute(LARGE_INTEGER endEtranger);
+	double TempsActuelMillis();
+	double TempsActuelMillis(LARGE_INTEGER endEtranger);
 	CString StrTempsActuel();
 	void ArretTemps();
 	void RepriseTemps();
