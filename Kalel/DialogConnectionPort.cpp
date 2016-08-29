@@ -28,15 +28,31 @@ ConnectionPort::ConnectionPort(CWnd* pParent /*=NULL*/)
 		m_nInstrumentMensor.push_back(0);
 		m_bInstrumentKeithleyVoie1.push_back(FALSE);
 		m_bInstrumentKeithleyVoie2.push_back(FALSE);
-
-		// Control Vectors
-		m_CBTypeInstrument.emplace_back();
-		m_CBPortInstrument.emplace_back();
-		m_CheckInstrumentKeithleyVoie1.emplace_back();
-		m_CheckInstrumentKeithleyVoie2.emplace_back();
-		m_CBInstrumentKeithleyVoie2.emplace_back();
-		m_CBInstrumentMensor.emplace_back();
 	}
+
+	m_CBTypeInstrument.push_back(&m_CBTypeInstrument1);
+	m_CBTypeInstrument.push_back(&m_CBTypeInstrument2);
+	m_CBTypeInstrument.push_back(&m_CBTypeInstrument3);
+								 
+	m_CBPortInstrument.push_back(&m_CBPortInstrument1);
+	m_CBPortInstrument.push_back(&m_CBPortInstrument2);
+	m_CBPortInstrument.push_back(&m_CBPortInstrument3);
+
+	m_CBInstrumentKeithleyVoie2.push_back(&m_CBInstrument1KeithleyVoie2);
+	m_CBInstrumentKeithleyVoie2.push_back(&m_CBInstrument2KeithleyVoie2);
+	m_CBInstrumentKeithleyVoie2.push_back(&m_CBInstrument3KeithleyVoie2);
+
+	m_CBInstrumentMensor.push_back(&m_CBInstrumentMensor1);
+	m_CBInstrumentMensor.push_back(&m_CBInstrumentMensor2);
+	m_CBInstrumentMensor.push_back(&m_CBInstrumentMensor3);
+
+	m_CheckInstrumentKeithleyVoie1.push_back(&m_CheckInstrument1KeithleyVoie1);
+	m_CheckInstrumentKeithleyVoie1.push_back(&m_CheckInstrument2KeithleyVoie1);
+	m_CheckInstrumentKeithleyVoie1.push_back(&m_CheckInstrument3KeithleyVoie1);
+
+	m_CheckInstrumentKeithleyVoie2.push_back(&m_CheckInstrument1KeithleyVoie2);
+	m_CheckInstrumentKeithleyVoie2.push_back(&m_CheckInstrument2KeithleyVoie2);
+	m_CheckInstrumentKeithleyVoie2.push_back(&m_CheckInstrument3KeithleyVoie2);
 }
 
 void ConnectionPort::PassSettings(const MachineSettings & machineSettings)
@@ -51,42 +67,54 @@ ConnectionPort::~ConnectionPort()
 void ConnectionPort::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_COMBO_TYPE_INSTRUMENT1, m_CBTypeInstrument[0]);
-	DDX_Control(pDX, IDC_COMBO_TYPE_INSTRUMENT2, m_CBTypeInstrument[1]);
-	DDX_Control(pDX, IDC_COMBO_TYPE_INSTRUMENT3, m_CBTypeInstrument[2]);
+	DDX_Control(pDX, IDC_COMBO_TYPE_INSTRUMENT1, m_CBTypeInstrument1);
+	DDX_Control(pDX, IDC_COMBO_TYPE_INSTRUMENT2, m_CBTypeInstrument2);
+	DDX_Control(pDX, IDC_COMBO_TYPE_INSTRUMENT3, m_CBTypeInstrument3);
+	
 	DDX_CBIndex(pDX, IDC_COMBO_TYPE_INSTRUMENT1, m_nIndexTypeInstrument[0]);
 	DDX_CBIndex(pDX, IDC_COMBO_TYPE_INSTRUMENT2, m_nIndexTypeInstrument[1]);
 	DDX_CBIndex(pDX, IDC_COMBO_TYPE_INSTRUMENT3, m_nIndexTypeInstrument[2]);
-	DDX_Control(pDX, IDC_PORT_INSTRUMENT1, m_CBPortInstrument[0]);
-	DDX_Control(pDX, IDC_PORT_INSTRUMENT2, m_CBPortInstrument[1]);
-	DDX_Control(pDX, IDC_PORT_INSTRUMENT3, m_CBPortInstrument[2]);
+	
+	DDX_Control(pDX, IDC_PORT_INSTRUMENT1, m_CBPortInstrument1);
+	DDX_Control(pDX, IDC_PORT_INSTRUMENT2, m_CBPortInstrument2);
+	DDX_Control(pDX, IDC_PORT_INSTRUMENT3, m_CBPortInstrument3);
+	
 	DDX_CBIndex(pDX, IDC_PORT_INSTRUMENT1, m_nPortInstrument[0]);
 	DDX_CBIndex(pDX, IDC_PORT_INSTRUMENT2, m_nPortInstrument[1]);
 	DDX_CBIndex(pDX, IDC_PORT_INSTRUMENT3, m_nPortInstrument[2]);
-	DDX_Control(pDX, IDC_CHECK_INSTRUMENT1_KEITHLEY_VOIE1, m_CheckInstrumentKeithleyVoie1[0]);
-	DDX_Control(pDX, IDC_CHECK_INSTRUMENT2_KEITHLEY_VOIE1, m_CheckInstrumentKeithleyVoie1[1]);
-	DDX_Control(pDX, IDC_CHECK_INSTRUMENT3_KEITHLEY_VOIE1, m_CheckInstrumentKeithleyVoie1[2]);
-	DDX_Control(pDX, IDC_CHECK_INSTRUMENT1_KEITHLEY_VOIE2, m_CheckInstrumentKeithleyVoie2[0]);
-	DDX_Control(pDX, IDC_CHECK_INSTRUMENT2_KEITHLEY_VOIE2, m_CheckInstrumentKeithleyVoie2[1]);
-	DDX_Control(pDX, IDC_CHECK_INSTRUMENT3_KEITHLEY_VOIE2, m_CheckInstrumentKeithleyVoie2[2]);
+	
+	DDX_Control(pDX, IDC_CHECK_INSTRUMENT1_KEITHLEY_VOIE1, m_CheckInstrument1KeithleyVoie1);
+	DDX_Control(pDX, IDC_CHECK_INSTRUMENT2_KEITHLEY_VOIE1, m_CheckInstrument2KeithleyVoie1);
+	DDX_Control(pDX, IDC_CHECK_INSTRUMENT3_KEITHLEY_VOIE1, m_CheckInstrument3KeithleyVoie1);
+	
+	DDX_Control(pDX, IDC_CHECK_INSTRUMENT1_KEITHLEY_VOIE2, m_CheckInstrument1KeithleyVoie2);
+	DDX_Control(pDX, IDC_CHECK_INSTRUMENT2_KEITHLEY_VOIE2, m_CheckInstrument2KeithleyVoie2);
+	DDX_Control(pDX, IDC_CHECK_INSTRUMENT3_KEITHLEY_VOIE2, m_CheckInstrument3KeithleyVoie2);
+	
 	DDX_Check(pDX, IDC_CHECK_INSTRUMENT1_KEITHLEY_VOIE1, m_bInstrumentKeithleyVoie1[0]);
 	DDX_Check(pDX, IDC_CHECK_INSTRUMENT2_KEITHLEY_VOIE1, m_bInstrumentKeithleyVoie1[1]);
 	DDX_Check(pDX, IDC_CHECK_INSTRUMENT3_KEITHLEY_VOIE1, m_bInstrumentKeithleyVoie1[2]);
+	
 	DDX_Check(pDX, IDC_CHECK_INSTRUMENT1_KEITHLEY_VOIE2, m_bInstrumentKeithleyVoie2[0]);
 	DDX_Check(pDX, IDC_CHECK_INSTRUMENT2_KEITHLEY_VOIE2, m_bInstrumentKeithleyVoie2[1]);
 	DDX_Check(pDX, IDC_CHECK_INSTRUMENT3_KEITHLEY_VOIE2, m_bInstrumentKeithleyVoie2[2]);
-	DDX_Control(pDX, IDC_COMBO_INSTRUMENT1_KEITHLEY_VOIE2, m_CBInstrumentKeithleyVoie2[0]);
-	DDX_Control(pDX, IDC_COMBO_INSTRUMENT2_KEITHLEY_VOIE2, m_CBInstrumentKeithleyVoie2[1]);
-	DDX_Control(pDX, IDC_COMBO_INSTRUMENT3_KEITHLEY_VOIE2, m_CBInstrumentKeithleyVoie2[2]);
+	
+	DDX_Control(pDX, IDC_COMBO_INSTRUMENT1_KEITHLEY_VOIE2, m_CBInstrument1KeithleyVoie2);
+	DDX_Control(pDX, IDC_COMBO_INSTRUMENT2_KEITHLEY_VOIE2, m_CBInstrument2KeithleyVoie2);
+	DDX_Control(pDX, IDC_COMBO_INSTRUMENT3_KEITHLEY_VOIE2, m_CBInstrument3KeithleyVoie2);
+	
 	DDX_CBIndex(pDX, IDC_COMBO_INSTRUMENT1_KEITHLEY_VOIE2, m_nIndexInstrumentKeithleyVoie2[0]);
 	DDX_CBIndex(pDX, IDC_COMBO_INSTRUMENT2_KEITHLEY_VOIE2, m_nIndexInstrumentKeithleyVoie2[1]);
 	DDX_CBIndex(pDX, IDC_COMBO_INSTRUMENT3_KEITHLEY_VOIE2, m_nIndexInstrumentKeithleyVoie2[2]);
-	DDX_Control(pDX, IDC_COMBO_INSTRUMENT1_MENSOR, m_CBInstrumentMensor[0]);
-	DDX_Control(pDX, IDC_COMBO_INSTRUMENT2_MENSOR, m_CBInstrumentMensor[1]);
-	DDX_Control(pDX, IDC_COMBO_INSTRUMENT3_MENSOR, m_CBInstrumentMensor[2]);
+
+	DDX_Control(pDX, IDC_COMBO_INSTRUMENT1_MENSOR, m_CBInstrumentMensor1);
+	DDX_Control(pDX, IDC_COMBO_INSTRUMENT2_MENSOR, m_CBInstrumentMensor2);
+	DDX_Control(pDX, IDC_COMBO_INSTRUMENT3_MENSOR, m_CBInstrumentMensor3);
+
 	DDX_CBIndex(pDX, IDC_COMBO_INSTRUMENT1_MENSOR, m_nInstrumentMensor[0]);
 	DDX_CBIndex(pDX, IDC_COMBO_INSTRUMENT2_MENSOR, m_nInstrumentMensor[1]);
 	DDX_CBIndex(pDX, IDC_COMBO_INSTRUMENT3_MENSOR, m_nInstrumentMensor[2]);
+
 	DDX_Control(pDX, IDC_PORT_VANNES, m_CBPortVannes);
 	DDX_CBIndex(pDX, IDC_PORT_VANNES, m_nIndexPortVannes);
 	DDX_Control(pDX, IDC_PORT_TEMPERATURES, m_CBPortTemperatures);
@@ -190,11 +218,11 @@ void ConnectionPort::OnCbnSelchangeComboTypeInstrument1()
 	// Show instrument 1
 	ShowItem(m_nIndexTypeInstrument[0],
 		m_bInstrumentKeithleyVoie2[0],
-		&m_CBPortInstrument[0],
-		&m_CheckInstrumentKeithleyVoie1[0],
-		&m_CheckInstrumentKeithleyVoie2[0],
-		&m_CBInstrumentKeithleyVoie2[0],
-		&m_CBInstrumentMensor[0]);
+		m_CBPortInstrument[0],
+		m_CheckInstrumentKeithleyVoie1[0],
+		m_CheckInstrumentKeithleyVoie2[0],
+		m_CBInstrumentKeithleyVoie2[0],
+		m_CBInstrumentMensor[0]);
 
 	UpdateData(FALSE);
 }
@@ -206,11 +234,11 @@ void ConnectionPort::OnCbnSelchangeComboTypeInstrument2()
 	// Show instrument 2
 	ShowItem(m_nIndexTypeInstrument[1],
 		m_bInstrumentKeithleyVoie2[1],
-		&m_CBPortInstrument[1],
-		&m_CheckInstrumentKeithleyVoie1[1],
-		&m_CheckInstrumentKeithleyVoie2[1],
-		&m_CBInstrumentKeithleyVoie2[1],
-		&m_CBInstrumentMensor[1]);
+		m_CBPortInstrument[1],
+		m_CheckInstrumentKeithleyVoie1[1],
+		m_CheckInstrumentKeithleyVoie2[1],
+		m_CBInstrumentKeithleyVoie2[1],
+		m_CBInstrumentMensor[1]);
 
 	UpdateData(FALSE);
 }
@@ -222,11 +250,11 @@ void ConnectionPort::OnCbnSelchangeComboTypeInstrument3()
 	// Show instrument 3
 	ShowItem(m_nIndexTypeInstrument[2],
 		m_bInstrumentKeithleyVoie2[2],
-		&m_CBPortInstrument[2],
-		&m_CheckInstrumentKeithleyVoie1[2],
-		&m_CheckInstrumentKeithleyVoie2[2],
-		&m_CBInstrumentKeithleyVoie2[2],
-		&m_CBInstrumentMensor[2]);
+		m_CBPortInstrument[2],
+		m_CheckInstrumentKeithleyVoie1[2],
+		m_CheckInstrumentKeithleyVoie2[2],
+		m_CBInstrumentKeithleyVoie2[2],
+		m_CBInstrumentMensor[2]);
 
 	UpdateData(FALSE);
 }
@@ -234,21 +262,21 @@ void ConnectionPort::OnCbnSelchangeComboTypeInstrument3()
 void ConnectionPort::OnBnClickedCheckInstrument1KeithleyVoie2()
 {
 	UpdateData(TRUE);
-	m_CBInstrumentKeithleyVoie2[0].EnableWindow (m_bInstrumentKeithleyVoie2[0]);
+	m_CBInstrument1KeithleyVoie2.EnableWindow (m_bInstrumentKeithleyVoie2[0]);
 	UpdateData(FALSE);
 }
 
 void ConnectionPort::OnBnClickedCheckInstrument2KeithleyVoie2()
 {
 	UpdateData(TRUE);
-	m_CBInstrumentKeithleyVoie2[1].EnableWindow (m_bInstrumentKeithleyVoie2[1]);
+	m_CBInstrument2KeithleyVoie2.EnableWindow (m_bInstrumentKeithleyVoie2[1]);
 	UpdateData(FALSE);
 }
 
 void ConnectionPort::OnBnClickedCheckInstrument3KeithleyVoie2()
 {
 	UpdateData(TRUE);
-	m_CBInstrumentKeithleyVoie2[2].EnableWindow (m_bInstrumentKeithleyVoie2[2]);
+	m_CBInstrument3KeithleyVoie2.EnableWindow (m_bInstrumentKeithleyVoie2[2]);
 	UpdateData(FALSE);
 }
 
@@ -295,7 +323,7 @@ void ConnectionPort::InitConnection_port()
 			&m_nPortInstrument[instrument],
 			&m_bInstrumentKeithleyVoie1[instrument],
 			&m_bInstrumentKeithleyVoie2[instrument],
-			&m_CBInstrumentKeithleyVoie2[instrument],
+			m_CBInstrumentKeithleyVoie2[instrument],
 			&m_nIndexInstrumentKeithleyVoie2[instrument],
 			&m_nInstrumentMensor[instrument],
 			settings->COMInstrument(instrument) - 1,
@@ -315,11 +343,11 @@ void ConnectionPort::InitConnection_port()
 	{
 		ShowItem(m_nIndexTypeInstrument[instrument],
 			m_bInstrumentKeithleyVoie2[instrument],
-			&m_CBPortInstrument[instrument],
-			&m_CheckInstrumentKeithleyVoie1[instrument],
-			&m_CheckInstrumentKeithleyVoie2[instrument],
-			&m_CBInstrumentKeithleyVoie2[instrument],
-			&m_CBInstrumentMensor[instrument]);
+			m_CBPortInstrument[instrument],
+			m_CheckInstrumentKeithleyVoie1[instrument],
+			m_CheckInstrumentKeithleyVoie2[instrument],
+			m_CBInstrumentKeithleyVoie2[instrument],
+			m_CBInstrumentMensor[instrument]);
 	}
 }
 

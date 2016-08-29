@@ -414,7 +414,7 @@ void TabGeneral::OnBnClickedChangeFolder()
 	DialogBoxBrowse.SetTitle(title.GetBuffer(title.GetLength()));
 
 	// Buffer for the returned path
-	char path[MAX_PATH];
+	wchar_t path[MAX_PATH];
 
 	// Display the dalog and check the return code
 	CString message;

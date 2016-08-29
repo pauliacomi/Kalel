@@ -61,12 +61,37 @@ public:
 
 
 	// --- Contrôles ---
-	std::vector<CComboBox> m_CBTypeInstrument;
-	std::vector<CComboBox> m_CBPortInstrument;
-	std::vector<CButton> m_CheckInstrumentKeithleyVoie1;
-	std::vector<CButton> m_CheckInstrumentKeithleyVoie2;
-	std::vector<CComboBox> m_CBInstrumentKeithleyVoie2;
-	std::vector<CComboBox> m_CBInstrumentMensor;
+	std::vector<CComboBox*> m_CBTypeInstrument;
+	std::vector<CComboBox*> m_CBPortInstrument;
+	std::vector<CButton*> m_CheckInstrumentKeithleyVoie1;
+	std::vector<CButton*> m_CheckInstrumentKeithleyVoie2;
+	std::vector<CComboBox*> m_CBInstrumentKeithleyVoie2;
+	std::vector<CComboBox*> m_CBInstrumentMensor;
+
+	CComboBox m_CBTypeInstrument1;
+	CComboBox m_CBTypeInstrument2;
+	CComboBox m_CBTypeInstrument3;
+
+	CComboBox m_CBPortInstrument1;
+	CComboBox m_CBPortInstrument2;
+	CComboBox m_CBPortInstrument3;
+
+	CButton m_CheckInstrument1KeithleyVoie1;
+	CButton m_CheckInstrument2KeithleyVoie1;
+	CButton m_CheckInstrument3KeithleyVoie1;
+
+	CButton m_CheckInstrument1KeithleyVoie2;
+	CButton m_CheckInstrument2KeithleyVoie2;
+	CButton m_CheckInstrument3KeithleyVoie2;
+
+	CComboBox m_CBInstrument1KeithleyVoie2;
+	CComboBox m_CBInstrument2KeithleyVoie2;
+	CComboBox m_CBInstrument3KeithleyVoie2;
+
+	CComboBox m_CBInstrumentMensor1;
+	CComboBox m_CBInstrumentMensor2;
+	CComboBox m_CBInstrumentMensor3;
+
 
 	CComboBox m_CBPortVannes;
 	CComboBox m_CBPortTemperatures;

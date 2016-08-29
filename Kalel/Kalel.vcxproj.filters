@@ -403,9 +403,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="Steps.rc">
-      <Filter>Resource Files\Strings</Filter>
-    </ResourceCompile>
     <ResourceCompile Include="ConnectionPort.rc">
       <Filter>Resource Files\DialogBoxes</Filter>
     </ResourceCompile>
@@ -431,6 +428,9 @@
       <Filter>Resource Files\DialogBoxes</Filter>
     </ResourceCompile>
     <ResourceCompile Include="..\Kalel Shared\Resources\StringTable.rc">
+      <Filter>Resource Files\Strings</Filter>
+    </ResourceCompile>
+    <ResourceCompile Include="..\Kalel Shared\Resources\Steps.rc">
       <Filter>Resource Files\Strings</Filter>
     </ResourceCompile>
   </ItemGroup>

@@ -76,17 +76,20 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <CodeAnalysisRuleSet>C:\Program Files (x86)\Microsoft Visual Studio 14.0\Team Tools\Static Analysis Tools\Rule Sets\NativeRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>NativeRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <RunCodeAnalysis>false</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <CodeAnalysisRuleSet>NativeRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <CodeAnalysisRuleSet>NativeRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <CodeAnalysisRuleSet>NativeRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -304,6 +307,7 @@
     <ClCompile Include="XSBrowseFolder.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ResourceCompile Include="..\Kalel Shared\Resources\Steps.rc" />
     <ResourceCompile Include="..\Kalel Shared\Resources\StringTable.rc" />
     <ResourceCompile Include="DialogCell.rc" />
     <ResourceCompile Include="ConnectionPort.rc" />
@@ -312,7 +316,6 @@
     <ResourceCompile Include="Kalel.rc" />
     <ResourceCompile Include="DialogExperimentSettings.rc" />
     <ResourceCompile Include="ParametresAppareil.rc" />
-    <ResourceCompile Include="Steps.rc" />
     <ResourceCompile Include="TypeExperience.rc" />
   </ItemGroup>
   <ItemGroup>
