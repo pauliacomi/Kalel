@@ -30,12 +30,12 @@ ConnectionPort::ConnectionPort(CWnd* pParent /*=NULL*/)
 		m_bInstrumentKeithleyVoie2.push_back(FALSE);
 
 		// Control Vectors
-		m_CBTypeInstrument.push_back(CComboBox a);
-		m_CBPortInstrument.push_back(CComboBox a);
-		m_CheckInstrumentKeithleyVoie1.push_back(CButton a);
-		m_CheckInstrumentKeithleyVoie2.push_back(CButton a);
-		m_CBInstrumentKeithleyVoie2.push_back(CComboBox a);
-		m_CBInstrumentMensor.push_back(CComboBox a);
+		m_CBTypeInstrument.emplace_back();
+		m_CBPortInstrument.emplace_back();
+		m_CheckInstrumentKeithleyVoie1.emplace_back();
+		m_CheckInstrumentKeithleyVoie2.emplace_back();
+		m_CBInstrumentKeithleyVoie2.emplace_back();
+		m_CBInstrumentMensor.emplace_back();
 	}
 }
 

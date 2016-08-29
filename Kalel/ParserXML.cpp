@@ -1,5 +1,6 @@
 #include "ParserXML.h"
-//
+#include "stdafx.h"		// for the _T("") macro
+
 //#include <stdio.h>
 //#include <stdlib.h>
 //
@@ -37,20 +38,20 @@ void Initialisation_XML()
 	doc.SaveFile(fichierXML);
 
 	//Rajout des gaz
-	//Rajout_Gaz(nom,symbole,masse,temp_critique,pres_critique,temp_ebullition);
-	Rajout_Gaz("Azote","N2",28.0134,126.20,33.999,77.35);
-	Rajout_Gaz("Helium","He",4.0026,5.20,2.275,4.22);
-	Rajout_Gaz("Dioxyde de carbone","CO2",44.0099,304.00,73.825,194.50);
-	Rajout_Gaz("Méthane","CH4",16.0430,190.30,45.960,111.40);
-	Rajout_Gaz("Monoxyde de carbone","CO",28.0100,132.91,34.987,81.62);
-	Rajout_Gaz("Oxygène","O2",31.9900,154.58,50.430,90.18);
-	Rajout_Gaz("Propyne","C3H4",40.0650,402.39,56.280,249.94);
-	Rajout_Gaz("Ethane","C2H6",31.9900,154.58,50.430,90.18);
-	Rajout_Gaz("Propane","C3H8",44.0960,369.82,42.500,231.11);
-	Rajout_Gaz("Argon","Ar",39.9480,150.86,48.980,87.29);
-	Rajout_Gaz("Hydrogène","H2",2.0160,33.24,12.980,20.38);
-	Rajout_Gaz("Butane","C4H10",58.1230,425.18,37.960,272.65);
-	Rajout_Gaz("Propylène","C3H6",42.0800,364.75,46.100,225.43);
+	//Rajout_Gaz(nom,						symbole,	masse,		temp_critique,	pres_critique,	temp_ebullition);
+	Rajout_Gaz(_T("Azote"),					_T("N2"),	28.0134,	126.20,			33.999,			77.35);
+	Rajout_Gaz(_T("Helium"),				_T("He"),	4.00260,	5.20,			2.2750,			4.22);
+	Rajout_Gaz(_T("Dioxyde de carbone"),	_T("CO2"),	44.0099,	304.00,			73.825,			194.50);
+	Rajout_Gaz(_T("Méthane"),				_T("CH4"),	16.0430,	190.30,			45.960,			111.40);
+	Rajout_Gaz(_T("Monoxyde de carbone"),	_T("CO"),	28.0100,	132.91,			34.987,			81.62);
+	Rajout_Gaz(_T("Oxygène"),				_T("O2"),	31.9900,	154.58,			50.430,			90.18);
+	Rajout_Gaz(_T("Propyne"),				_T("C3H4"),	40.0650,	402.39,			56.280,			249.94);
+	Rajout_Gaz(_T("Ethane"),				_T("C2H6"),	31.9900,	154.58,			50.430,			90.18);
+	Rajout_Gaz(_T("Propane"),				_T("C3H8"),	44.0960,	369.82,			42.500,			231.11);
+	Rajout_Gaz(_T("Argon"),					_T("Ar"),	39.9480,	150.86,			48.980,			87.29);
+	Rajout_Gaz(_T("Hydrogène"),				_T("H2"),	2.01600,	33.24,			12.980,			20.38);
+	Rajout_Gaz(_T("Butane"),				_T("C4H10"),58.1230,	425.18,			37.960,			272.65);
+	Rajout_Gaz(_T("Propylène"),				_T("C3H6"),	42.0800,	364.75,			46.100,			225.43);
 }
 
 
@@ -67,11 +68,11 @@ bool ConfigsExists() //Regarde si le fichier XML existe ou pas
 //     résultat : <nom_element>text_element</nom_element>
 //
 // Pour les autres fonctions qui utilisent des nombres,
-// on converti ces derniers en 'std::string' et on utilise la fonction
-// TiXmlElement * NewElement(std::string nom_element, std::string text_element)
+// on converti ces derniers en 'std::wstring' et on utilise la fonction
+// TiXmlElement * NewElement(std::wstring nom_element, std::wstring text_element)
 
 
-TiXmlElement * NewElement(std::string nom_element, std::string text_element)
+TiXmlElement * NewElement(std::wstring nom_element, std::wstring text_element)
 {
 	TiXmlElement * elem = new TiXmlElement(nom_element.c_str());
 	TiXmlText * text = new TiXmlText(text_element.c_str());
@@ -79,25 +80,25 @@ TiXmlElement * NewElement(std::string nom_element, std::string text_element)
 	return elem;
 }
 
-TiXmlElement * NewElement(std::string nom_element, int int_element)
+TiXmlElement * NewElement(std::wstring nom_element, int int_element)
 {
-	std::ostringstream text_element;
+	std::wostringstream text_element;
 	text_element << int_element;
 
 	return NewElement(nom_element,text_element.str());
 }
 
-TiXmlElement * NewElement(std::string nom_element, float float_element)
+TiXmlElement * NewElement(std::wstring nom_element, float float_element)
 {
-	std::ostringstream text_element;
+	std::wostringstream text_element;
 	text_element << float_element;
 
 	return NewElement(nom_element,text_element.str());
 }
 
-TiXmlElement * NewElement(std::string nom_element, double double_element)
+TiXmlElement * NewElement(std::wstring nom_element, double double_element)
 {
-	std::ostringstream text_element;
+	std::wostringstream text_element;
 	text_element << double_element;
 
 	return NewElement(nom_element,text_element.str());
@@ -149,7 +150,7 @@ std::vector<experimentateur> GetExperimentateurs()
 
 
 
-bool Rajout_Experimentateur(std::string nom,std::string surnom,int index)
+bool Rajout_Experimentateur(std::wstring nom,std::wstring surnom,int index)
 {
 	TiXmlDocument doc(fichierXML);
 	if(!doc.LoadFile()){
@@ -162,8 +163,8 @@ bool Rajout_Experimentateur(std::string nom,std::string surnom,int index)
 
 	// On crée un nouvel element 'experimentateur' à partir des paramètres
 	TiXmlElement nouvel_experimentateur("experimentateur");
-	TiXmlElement * element_nom = NewElement("nom", nom);
-	TiXmlElement * element_surnom = NewElement("surnom",surnom);
+	TiXmlElement * element_nom = NewElement(_T("nom"), nom);
+	TiXmlElement * element_surnom = NewElement(_T("surnom"),surnom);
 	nouvel_experimentateur.LinkEndChild(element_nom);
 	nouvel_experimentateur.LinkEndChild(element_surnom);
 
@@ -219,7 +220,7 @@ bool Suppression_Experimentateur(int index)
 
 
 // Pour modifier un élément, on supprime l'ancien pour rajouter le nouveau.
-bool Modif_Experimentateur(std::string nom, std::string surnom,int index)
+bool Modif_Experimentateur(std::wstring nom, std::wstring surnom,int index)
 {
 	Suppression_Experimentateur(index);
 	return Rajout_Experimentateur(nom,surnom,index);
@@ -274,7 +275,7 @@ std::vector<gaz> GetGazs()
 
 
 
-bool Rajout_Gaz(std::string nom,std::string symbole,double masse,double temp_critique, 
+bool Rajout_Gaz(std::wstring nom,std::wstring symbole,double masse,double temp_critique, 
 				double pres_critique, double temp_ebullition, int index)
 {
 	TiXmlDocument doc(fichierXML);
@@ -287,13 +288,13 @@ bool Rajout_Gaz(std::string nom,std::string symbole,double masse,double temp_cri
 
 	TiXmlElement nouveau_gaz("gaz");
 
-	TiXmlElement * element_nom = NewElement("nom",nom);
-	TiXmlElement * element_symbole = NewElement("symbole",symbole);
-	TiXmlElement * element_masse = NewElement("masse_moleculaire",masse);
-	TiXmlElement * element_temp_critique = NewElement("temperature_critique",temp_critique);
-	TiXmlElement * element_pres_critique = NewElement("pression_critique",pres_critique);
-	TiXmlElement * element_temp_ebullition = NewElement("temperature_ebullition",temp_ebullition);
-	TiXmlElement * element_omega = NewElement("omega",temp_ebullition/temp_critique);
+	TiXmlElement * element_nom = NewElement(_T("nom"),nom);
+	TiXmlElement * element_symbole = NewElement(_T("symbole"),symbole);
+	TiXmlElement * element_masse = NewElement(_T("masse_moleculaire"),masse);
+	TiXmlElement * element_temp_critique = NewElement(_T("temperature_critique"),temp_critique);
+	TiXmlElement * element_pres_critique = NewElement(_T("pression_critique"),pres_critique);
+	TiXmlElement * element_temp_ebullition = NewElement(_T("temperature_ebullition"),temp_ebullition);
+	TiXmlElement * element_omega = NewElement(_T("omega"),temp_ebullition/temp_critique);
 
 	nouveau_gaz.LinkEndChild(element_nom);
 	nouveau_gaz.LinkEndChild(element_symbole);
@@ -345,7 +346,7 @@ bool Suppression_Gaz(int index)
 
 
 
-bool Modif_Gaz(std::string nom,std::string symbole,double masse,double temp_critique, 
+bool Modif_Gaz(std::wstring nom,std::wstring symbole,double masse,double temp_critique, 
 				double pres_critique, double temp_ebullition, int index)
 {
 	Suppression_Gaz(index);
@@ -397,7 +398,7 @@ std::vector<cellule> GetCellules()
 
 
 
-bool Rajout_Cellule(std::string num, double total, double calo, int index)
+bool Rajout_Cellule(std::wstring num, double total, double calo, int index)
 {
 	TiXmlDocument doc(fichierXML);
 	if(!doc.LoadFile()){
@@ -410,9 +411,9 @@ bool Rajout_Cellule(std::string num, double total, double calo, int index)
 
 	TiXmlElement nouvel_cellule("cellule");
 
-	TiXmlElement * element_numero = NewElement("numero", num);
-	TiXmlElement * element_total = NewElement("volume_total",total);
-	TiXmlElement * element_calo = NewElement("volume_calo",calo);
+	TiXmlElement * element_numero = NewElement(_T("numero"), num);
+	TiXmlElement * element_total = NewElement(_T("volume_total"),total);
+	TiXmlElement * element_calo = NewElement(_T("volume_calo"),calo);
 
 	nouvel_cellule.LinkEndChild(element_numero);
 	nouvel_cellule.LinkEndChild(element_total);
@@ -458,7 +459,7 @@ bool Suppression_Cellule(int index)
 	return doc.SaveFile(fichierXML);
 }
 
-bool Modif_Cellule(std::string num, double total, double calo, int index)
+bool Modif_Cellule(std::wstring num, double total, double calo, int index)
 {
 	Suppression_Cellule(index);
 	return Rajout_Cellule(num,total,calo,index);
@@ -476,7 +477,7 @@ bool Modif_Cellule(cellule new_cellule,int index)
 //
 // Fonction doublon
 
-bool Doublon(TiXmlHandle handle_root, std::string valeur, std::string type)
+bool Doublon(TiXmlHandle handle_root, std::wstring valeur, std::wstring type)
 {
 	/*
 	while (elem_parcours)
@@ -504,7 +505,7 @@ bool Doublon(TiXmlHandle handle_root, std::string valeur, std::string type)
 		char * bidon3 = _strdup(root->FirstChildElement(type.c_str())->GetText());
 		char * bidon4 = _strdup(valeur.c_str());
 
-		std::string temp_nom(_strdup(root->FirstChildElement(type.c_str())->GetText()));
+		std::wstring temp_nom(_strdup(root->FirstChildElement(type.c_str())->GetText()));
 
 		//if (strdup(valeur.c_str()) == strdup(root->FirstChildElement(type.c_str())->GetText()))
 		if (valeur == temp_nom)
@@ -522,7 +523,7 @@ bool Doublon(TiXmlHandle handle_root, std::string valeur, std::string type)
 }
 
 /*
-bool DoublonNomExperimentateur(std::string valeur)
+bool DoublonNomExperimentateur(std::wstring valeur)
 {
 	TiXmlDocument doc(fichierXML);
 	if(!doc.LoadFile()){
@@ -537,18 +538,18 @@ bool DoublonNomExperimentateur(std::string valeur)
 }
 */
 
-bool DoublonNomExperimentateur(std::string valeur)
+bool DoublonNomExperimentateur(std::wstring valeur)
 {
-	return DoublonExperimentateur(valeur, "nom");
+	return DoublonExperimentateur(valeur, _T("nom"));
 }
 
-bool DoublonSurnomExperimentateur(std::string valeur)
+bool DoublonSurnomExperimentateur(std::wstring valeur)
 {
-	return DoublonExperimentateur(valeur, "surnom");
+	return DoublonExperimentateur(valeur, _T("surnom"));
 }
 
 
-bool DoublonExperimentateur(std::string valeur, std::string type)
+bool DoublonExperimentateur(std::wstring valeur, std::wstring type)
 {
 	TiXmlDocument doc(fichierXML);
 	if(!doc.LoadFile()){
@@ -565,18 +566,18 @@ bool DoublonExperimentateur(std::string valeur, std::string type)
 
 
 
-bool DoublonNomGaz(std::string valeur)
+bool DoublonNomGaz(std::wstring valeur)
 {
-	return DoublonGaz(valeur, "nom");
+	return DoublonGaz(valeur, _T("nom"));
 }
 
-bool DoublonSymboleGaz(std::string valeur)
+bool DoublonSymboleGaz(std::wstring valeur)
 {
-	return DoublonGaz(valeur, "symbole");
+	return DoublonGaz(valeur, _T("symbole"));
 }
 
 
-bool DoublonGaz(std::string valeur, std::string type)
+bool DoublonGaz(std::wstring valeur, std::wstring type)
 {
 	TiXmlDocument doc(fichierXML);
 	if(!doc.LoadFile()){
@@ -592,7 +593,7 @@ bool DoublonGaz(std::string valeur, std::string type)
 
 
 
-bool DoublonNumeroCellule(std::string num)
+bool DoublonNumeroCellule(std::wstring num)
 {
 	TiXmlDocument doc(fichierXML);
 	if(!doc.LoadFile()){
@@ -609,9 +610,9 @@ bool DoublonNumeroCellule(std::string num)
     // écrire un nombre dans le flux
     oss << num;
     // récupérer une chaîne de caractères
-    std::string valeur = oss.str();
+    std::wstring valeur = oss.str();
 	*/
 
 	//return Doublon(handle_root, valeur, "numero");
-	return Doublon(handle_root, num, "numero");
+	return Doublon(handle_root, num, _T("numero"));
 }

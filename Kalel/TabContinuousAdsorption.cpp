@@ -49,31 +49,31 @@ BOOL TabContinuousAdsorption::OnInitDialog()
 	m_SpinTempsEtalonnageDebit.SetRange(0, 100000);
 	m_SpinTempsEtalonnageDebit.SetPos(45);
 	m_SpinTempsEtalonnageDebit.SetInc(-1);
-	m_SpinTempsEtalonnageDebit.SetFormat("%1.f");
+	m_SpinTempsEtalonnageDebit.SetFormat(_T("%1.f"));
 	m_SpinTempsEtalonnageDebit.UpdateBuddy();
 
 	m_SpinTempsEtalonnageVolumeInter.SetRange(0, 1000000);
 	m_SpinTempsEtalonnageVolumeInter.SetPos(45);
 	m_SpinTempsEtalonnageVolumeInter.SetInc(-1);
-	m_SpinTempsEtalonnageVolumeInter.SetFormat("%1.f");
+	m_SpinTempsEtalonnageVolumeInter.SetFormat(_T("%1.f"));
 	m_SpinTempsEtalonnageVolumeInter.UpdateBuddy();
 
 	m_SpinTempsEquilibreContinue.SetRange(0, 1000000);
 	m_SpinTempsEquilibreContinue.SetPos(15);
 	m_SpinTempsEquilibreContinue.SetInc(-1);
-	m_SpinTempsEquilibreContinue.SetFormat("%1.f");
+	m_SpinTempsEquilibreContinue.SetFormat(_T("%1.f"));
 	m_SpinTempsEquilibreContinue.UpdateBuddy();
 
 	m_SpinTempsFinalEquilibre.SetRange(0, 1000000);
 	m_SpinTempsFinalEquilibre.SetPos(10);
 	m_SpinTempsFinalEquilibre.SetInc(-1);
-	m_SpinTempsFinalEquilibre.SetFormat("%1.f");
+	m_SpinTempsFinalEquilibre.SetFormat(_T("%1.f"));
 	m_SpinTempsFinalEquilibre.UpdateBuddy();
 
 	m_SpinPressionFinaleAdsorptionContinue.SetRange(0.0, 1000000);
 	m_SpinPressionFinaleAdsorptionContinue.SetPos(0.5);
 	m_SpinPressionFinaleAdsorptionContinue.SetInc(-0.001);
-	m_SpinPressionFinaleAdsorptionContinue.SetFormat("%1.3f");
+	m_SpinPressionFinaleAdsorptionContinue.SetFormat(_T("%1.3f"));
 	m_SpinPressionFinaleAdsorptionContinue.UpdateBuddy();
 
 	EnableAdsorptionContinue();

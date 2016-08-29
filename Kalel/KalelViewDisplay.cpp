@@ -112,18 +112,18 @@ LRESULT CKalelView::AffichageEtape()
 	if (experimentData->verificationStep != STEP_VERIFICATIONS_UNDEF && experimentData->verificationStep != STEP_VERIFICATIONS_COMPLETE)
 	{
 		temp.Format(experimentData->verificationStep);
-		m_StrEtape += ",   Substage: " + temp;
+		m_StrEtape += _T(",   Substage: ") + temp;
 	}
 
 	if (experimentData->experimentWaiting == true)
 	{
 		if (experimentData->timeToEquilibrate / 60 > 1)
 		{
-			temp.Format(" *** Waiting: %.0f min %.0f s /  %.0f min %.0f s", floorf(experimentData->timeToEquilibrateCurrent / 60.0f), fmodf(experimentData->timeToEquilibrateCurrent, 60.0f), floorf(experimentData->timeToEquilibrate / 60.0f), fmodf(experimentData->timeToEquilibrate, 60.0f));
+			temp.Format(_T(" *** Waiting: %.0f min %.0f s /  %.0f min %.0f s"), floorf(experimentData->timeToEquilibrateCurrent / 60.0f), fmodf(experimentData->timeToEquilibrateCurrent, 60.0f), floorf(experimentData->timeToEquilibrate / 60.0f), fmodf(experimentData->timeToEquilibrate, 60.0f));
 		}
 		else
 		{
-			temp.Format(" *** Waiting: %.0f s /  %.0f s", experimentData->timeToEquilibrateCurrent, experimentData->timeToEquilibrate);
+			temp.Format(_T(" *** Waiting: %.0f s /  %.0f s"), experimentData->timeToEquilibrateCurrent, experimentData->timeToEquilibrate);
 		}
 		m_StrEtape += temp;
 	}

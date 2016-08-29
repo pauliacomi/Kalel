@@ -58,22 +58,22 @@ BOOL TabDoses::OnInitDialog()
 
 	m_SpinDeltaPressureDoses.SetRange(0, 1000000);
 	m_SpinDeltaPressureDoses.SetInc(-0.001);
-	m_SpinDeltaPressureDoses.SetFormat("%1.3f");
+	m_SpinDeltaPressureDoses.SetFormat(_T("%1.3f"));
 	m_SpinDeltaPressureDoses.UpdateBuddy();
 
 	m_SpinTimeVolumeDoses.SetRange(0, 100000000);
 	m_SpinTimeVolumeDoses.SetInc(-1);
-	m_SpinTimeVolumeDoses.SetFormat("%1.f");
+	m_SpinTimeVolumeDoses.SetFormat(_T("%1.f"));
 	m_SpinTimeVolumeDoses.UpdateBuddy();
 
 	m_SpinTimeAdsorptionDoses.SetRange(0, 10000000);
 	m_SpinTimeAdsorptionDoses.SetInc(-1);
-	m_SpinTimeAdsorptionDoses.SetFormat("%1.f");
+	m_SpinTimeAdsorptionDoses.SetFormat(_T("%1.f"));
 	m_SpinTimeAdsorptionDoses.UpdateBuddy();
 
 	m_SpinFinalPressureDoses.SetRange(0, 100000000);
 	m_SpinFinalPressureDoses.SetInc(-0.001);
-	m_SpinFinalPressureDoses.SetFormat("%1.3f");
+	m_SpinFinalPressureDoses.SetFormat(_T("%1.3f"));
 	m_SpinFinalPressureDoses.UpdateBuddy();
 
 	ToggleGreyOut();

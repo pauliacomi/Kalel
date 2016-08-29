@@ -7,7 +7,7 @@ public:
 	CommonFunctions();
 	~CommonFunctions();
 
-	std::string getDate();
-	std::string getDateUnderline();
+	std::wstring getDate();
+	std::wstring getDateUnderline();
 };
 

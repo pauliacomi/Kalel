@@ -1,5 +1,6 @@
 #include "CommonFunctions.h"
 #include <ctime>
+#include <sstream>
 
 CommonFunctions::CommonFunctions()
 {
@@ -10,7 +11,7 @@ CommonFunctions::~CommonFunctions()
 {
 }
 
-std::string CommonFunctions::getDate()
+std::wstring CommonFunctions::getDate()
 {
 	time_t timestamp;
 	struct tm t;
@@ -18,15 +19,18 @@ std::string CommonFunctions::getDate()
 	timestamp = time(NULL);
 	localtime_s(&t, &timestamp);
 
-	char date_char[255];
-	sprintf_s(date_char, "%02d/%02d/%d %02dh%02d", t.tm_mon + 1, t.tm_mday,
-		1900 + t.tm_year, t.tm_hour, t.tm_min);
+	std::wostringstream stringStream;
 
-	std::string ret = date_char;
-	return ret;
+	stringStream	<< t.tm_mday			<< "/"
+					<< t.tm_mon + 1			<< "/" 
+					<< 1900 + t.tm_year		<< " "
+					<< t.tm_hour			<< "h"
+					<< t.tm_min				<< "min";
+
+	return stringStream.str();
 }
 
-std::string CommonFunctions::getDateUnderline()
+std::wstring CommonFunctions::getDateUnderline()
 {
 	time_t timestamp;
 	struct tm t;
@@ -34,10 +38,13 @@ std::string CommonFunctions::getDateUnderline()
 	timestamp = time(NULL);
 	localtime_s(&t, &timestamp);
 
-	char date_char[255];
-	sprintf_s(date_char, "%d_%02d_%02d_%02dh%02d",
-		1900 + t.tm_year, t.tm_mon + 1, t.tm_mday, t.tm_hour, t.tm_min);
+	std::wostringstream stringStream;
 
-	std::string ret = date_char;
-	return ret;
+	stringStream	<< 1900 + t.tm_year		<< "_"
+					<< t.tm_mon + 1			<< "_" 
+					<< t.tm_mday			<< "_"
+					<< t.tm_hour			<< "h_"
+					<< t.tm_min				<< "min";
+
+	return stringStream.str();
 }

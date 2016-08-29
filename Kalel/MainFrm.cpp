@@ -104,7 +104,7 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 
 void CMainFrame::OnUpdateFrameTitle(BOOL bAddToTitle)
 {
-	SetWindowText("Kalel");
+	SetWindowText(_T("Kalel"));
 }
 
 // CMainFrame diagnostics

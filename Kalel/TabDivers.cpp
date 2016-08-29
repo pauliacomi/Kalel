@@ -93,12 +93,12 @@ BOOL TabDivers::OnInitDialog()
 
 	m_SpinTempsLigneBase.SetRange(0, 1000000);
 	m_SpinTempsLigneBase.SetInc(-1);
-	m_SpinTempsLigneBase.SetFormat("%1.f");
+	m_SpinTempsLigneBase.SetFormat(_T("%1.f"));
 	m_SpinTempsLigneBase.UpdateBuddy();
 
 	m_SpinTempsVide.SetRange(0, 10000000);
 	m_SpinTempsVide.SetInc(-1);
-	m_SpinTempsVide.SetFormat("%1.f");
+	m_SpinTempsVide.SetFormat(_T("%1.f"));
 	m_SpinTempsVide.UpdateBuddy();
 
 
@@ -213,7 +213,7 @@ void TabDivers::OnBnClickedCheckMiseSousVide()
 
 void TabDivers::OnBnClickedButtonCellule()
 {
-	CDialogueCellule cellDialog("");
+	CDialogueCellule cellDialog(_T(""));
 	cellDialog.DoModal();
 
 	m_CBCellule.ResetContent();

@@ -105,10 +105,10 @@ void CSpinBtnCtrl::OnDeltapos(NMHDR* pNMHDR, LRESULT* pResult)
 
     if (pWnd != NULL)
 	{   
-		char cValue[20];
+		wchar_t cValue[20];
         ::GetWindowText(pWnd, cValue, 20);
        
-		m_pos = atof(cValue);
+		m_pos = _wtof(cValue);
    
         if (pNMUpDown->iDelta > 0)
 			m_pos += m_inc;

@@ -35,15 +35,15 @@ public:
 	// Returns the current style
 	DWORD GetStyle(void);
 	// Displays the dialog
-	CXSBrowseFolder::retCode Show(HWND parent, LPSTR pathBuffer);
+	CXSBrowseFolder::retCode Show(HWND parent, LPWSTR pathBuffer);
 	// Set the title of the dialog
-	void SetTitle(LPSTR title);
+	void SetTitle(LPWSTR title);
 protected:
 	// Buffer to receieve the display name of the selected object
-	char m_displayName[MAX_PATH];
+	wchar_t m_displayName[MAX_PATH];
 	// Root item to start browsing at
 	LPITEMIDLIST m_root;
 	// Text to display above the tree view control
-	char m_title[MAX_PATH];
+	wchar_t m_title[MAX_PATH];
 		
 };

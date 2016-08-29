@@ -61,20 +61,20 @@ BOOL TabGeneral::OnInitDialog()
 	}
 
 	// Get settings from storage
-	m_Path = _T(allSettings.chemin.c_str());
-	m_Comments = _T(allSettings.commentaires.c_str());
+	m_Path = allSettings.chemin.c_str();
+	m_Comments = allSettings.commentaires.c_str();
 	experimentDate = allSettings.date_experience.c_str();
-	m_FileName = _T(allSettings.fichier.c_str());
+	m_FileName = allSettings.fichier.c_str();
 	m_SampleMass = allSettings.masse_echantillon;
-	m_SampleName = _T(allSettings.nom_echantillon.c_str());
+	m_SampleName = allSettings.nom_echantillon.c_str();
 	m_ExperimentTemperature = allSettings.temperature_experience;
 	gasExp = allSettings.gaz;
 	userExp = allSettings.experimentateur;
 
 	StrCalo = settings->CaloEntete.c_str();
-	StrSurnom = _T(userExp.surnom.c_str());
+	StrSurnom = userExp.surnom.c_str();
 	StrEchantillon = m_SampleName;
-	StrGaz = _T(gasExp.symbole.c_str());
+	StrGaz = gasExp.symbole.c_str();
 
 	// Get array and find if there'a an already existing index
 	gasArray = GetGazs();
@@ -133,12 +133,12 @@ BOOL TabGeneral::OnInitDialog()
 
 	m_SpinSampleMass.SetRange(0, 1000000);
 	m_SpinSampleMass.SetInc(-0.0001);
-	m_SpinSampleMass.SetFormat("%1.4f");
+	m_SpinSampleMass.SetFormat(_T("%1.4f"));
 	m_SpinSampleMass.UpdateBuddy();
 
 	m_SpinTemperatureExperiment.SetRange(0, 300);
 	m_SpinTemperatureExperiment.SetInc(-1);
-	m_SpinTemperatureExperiment.SetFormat("%1.f");
+	m_SpinTemperatureExperiment.SetFormat(_T("%1.f"));
 	m_SpinTemperatureExperiment.UpdateBuddy();
 
 	ToggleGreyOut();
@@ -218,12 +218,12 @@ void TabGeneral::UpdateDate(void)
 void TabGeneral::Reinitialisation(void)
 {
 	// Get settings from storage
-	m_Path = _T(allSettings.chemin.c_str());
-	m_Comments = _T(allSettings.commentaires.c_str());
+	m_Path = allSettings.chemin.c_str();
+	m_Comments = allSettings.commentaires.c_str();
 	experimentDate = allSettings.date_experience.c_str();
-	m_FileName = _T(allSettings.fichier.c_str());
+	m_FileName = allSettings.fichier.c_str();
 	m_SampleMass = allSettings.masse_echantillon;
-	m_SampleName = _T(allSettings.nom_echantillon.c_str());
+	m_SampleName = allSettings.nom_echantillon.c_str();
 	m_ExperimentTemperature = allSettings.temperature_experience;
 
 	gasExp = allSettings.gaz;
@@ -251,9 +251,9 @@ void TabGeneral::Reinitialisation(void)
 	}
 
 	StrCalo = settings->CaloEntete.c_str();
-	StrSurnom = _T(userExp.surnom.c_str());
+	StrSurnom = userExp.surnom.c_str();
 	StrEchantillon = m_SampleName;
-	StrGaz = _T(gasExp.symbole.c_str());
+	StrGaz = gasExp.symbole.c_str();
 }
 
 void TabGeneral::WriteData()
@@ -364,7 +364,7 @@ void TabGeneral::OnEnChangeNomEchantillon()
 
 void TabGeneral::OnBnClickedUserMenu()
 {
-	CDialogueExperimentateur m_DialogueExperimentateur("");
+	CDialogueExperimentateur m_DialogueExperimentateur(_T(""));
 	m_DialogueExperimentateur.DoModal();
 
 	// Reset the array
@@ -383,7 +383,7 @@ void TabGeneral::OnBnClickedUserMenu()
 
 void TabGeneral::OnBnClickedGasMenu()
 {
-	CDialogueGaz m_DialogGas("");
+	CDialogueGaz m_DialogGas(_T(""));
 	m_DialogGas.DoModal();
 
 	// Reset the array
@@ -422,7 +422,7 @@ void TabGeneral::OnBnClickedChangeFolder()
 
 		// Success
 	case CXSBrowseFolder::RET_OK:
-		m_Path = _T(path);
+		m_Path = path;
 		UpdateData(FALSE);
 		break;
 

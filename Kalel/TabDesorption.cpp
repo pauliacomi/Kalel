@@ -52,22 +52,22 @@ BOOL TabDesorption::OnInitDialog()
 
 	m_SpinDeltaPressionDesorption.SetRange(0, 10000000);
 	m_SpinDeltaPressionDesorption.SetInc(-0.001);
-	m_SpinDeltaPressionDesorption.SetFormat("%1.3f");
+	m_SpinDeltaPressionDesorption.SetFormat(_T("%1.3f"));
 	m_SpinDeltaPressionDesorption.UpdateBuddy();
 
 	m_SpinTempsVolumeDesorption.SetRange(0, 100000000);
 	m_SpinTempsVolumeDesorption.SetInc(-1);
-	m_SpinTempsVolumeDesorption.SetFormat("%1.f");
+	m_SpinTempsVolumeDesorption.SetFormat(_T("%1.f"));
 	m_SpinTempsVolumeDesorption.UpdateBuddy();
 
 	m_SpinTempsDesorption.SetRange(0, 1000000000);
 	m_SpinTempsDesorption.SetInc(-1);
-	m_SpinTempsDesorption.SetFormat("%1.f");
+	m_SpinTempsDesorption.SetFormat(_T("%1.f"));
 	m_SpinTempsDesorption.UpdateBuddy();
 
 	m_SpinPressionFinaleDesorption.SetRange(0.0, 100000);
 	m_SpinPressionFinaleDesorption.SetInc(-0.001);
-	m_SpinPressionFinaleDesorption.SetFormat("%1.3f");
+	m_SpinPressionFinaleDesorption.SetFormat(_T("%1.3f"));
 	m_SpinPressionFinaleDesorption.UpdateBuddy();
 
 	ToggleGreyOut();

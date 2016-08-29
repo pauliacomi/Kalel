@@ -101,49 +101,49 @@ BOOL ApparatusParameters::OnInitDialog()
 	m_SpinSensibiliteCalo.SetRange(0,100000);
 	m_SpinSensibiliteCalo.SetPos(m_fSensibiliteCalo);
 	m_SpinSensibiliteCalo.SetInc(-0.00000001);
-	m_SpinSensibiliteCalo.SetFormat("%.8f");
+	m_SpinSensibiliteCalo.SetFormat(_T("%.8f"));
 	m_SpinSensibiliteCalo.UpdateBuddy();
 
 	m_SpinSensibiliteCapteurBassePression.SetRange(0,100000);
 	m_SpinSensibiliteCapteurBassePression.SetPos(m_fSensibiliteCapteurBassePression);
 	m_SpinSensibiliteCapteurBassePression.SetInc(-0.01);
-	m_SpinSensibiliteCapteurBassePression.SetFormat("%1.2f");
+	m_SpinSensibiliteCapteurBassePression.SetFormat(_T("%1.2f"));
 	m_SpinSensibiliteCapteurBassePression.UpdateBuddy();
 
 	m_SpinSensibiliteCapteurHautePression.SetRange(0,1000000);
 	m_SpinSensibiliteCapteurHautePression.SetPos(m_fSensibiliteCapteurHautePression);
 	m_SpinSensibiliteCapteurHautePression.SetInc(-0.01);
-	m_SpinSensibiliteCapteurHautePression.SetFormat("%1.2f");
+	m_SpinSensibiliteCapteurHautePression.SetFormat(_T("%1.2f"));
 	m_SpinSensibiliteCapteurHautePression.UpdateBuddy();
 
 	m_SpinPressionSecuriteBassePression.SetRange(0,100000);
 	m_SpinPressionSecuriteBassePression.SetPos(m_fPressionSecuriteBassePression);
 	m_SpinPressionSecuriteBassePression.SetInc(-0.0001);
-	m_SpinPressionSecuriteBassePression.SetFormat("%1.4f");
+	m_SpinPressionSecuriteBassePression.SetFormat(_T("%1.4f"));
 	m_SpinPressionSecuriteBassePression.UpdateBuddy();
 
 	m_SpinPressionSecuriteHautePression.SetRange(0,1000000);
 	m_SpinPressionSecuriteHautePression.SetPos(m_fPressionSecuriteHautePression);
 	m_SpinPressionSecuriteHautePression.SetInc(-0.0001);
-	m_SpinPressionSecuriteHautePression.SetFormat("%1.4f");
+	m_SpinPressionSecuriteHautePression.SetFormat(_T("%1.4f"));
 	m_SpinPressionSecuriteHautePression.UpdateBuddy();
 
 	m_SpinPressionLimiteVide.SetRange(0,100000);
 	m_SpinPressionLimiteVide.SetPos(m_fPressionLimiteVide);
 	m_SpinPressionLimiteVide.SetInc(-0.001);
-	m_SpinPressionLimiteVide.SetFormat("%.6f");
+	m_SpinPressionLimiteVide.SetFormat(_T("%.6f"));
 	m_SpinPressionLimiteVide.UpdateBuddy();
 
 	m_SpinVolumeRef.SetRange(0,10000000);
 	m_SpinVolumeRef.SetPos(m_fVolumeRef);
 	m_SpinVolumeRef.SetInc(-0.01);
-	m_SpinVolumeRef.SetFormat("%1.2f");
+	m_SpinVolumeRef.SetFormat(_T("%1.2f"));
 	m_SpinVolumeRef.UpdateBuddy();
 
 	m_SpinVolumeP6.SetRange(0,100000000);
 	m_SpinVolumeP6.SetPos(m_fVolumeP6);
 	m_SpinVolumeP6.SetInc(-0.01);
-	m_SpinVolumeP6.SetFormat("%1.2f");
+	m_SpinVolumeP6.SetFormat(_T("%1.2f"));
 	m_SpinVolumeP6.UpdateBuddy();
 
 	UpdateData(FALSE);
@@ -177,7 +177,7 @@ void ApparatusParameters::OnBnClickedOk()
 	newSettings.VolumeP6							= m_fVolumeP6;
 	newSettings.CaloName							= m_StrNomCalo.GetBuffer();
 	newSettings.CaloEntete							= m_StrEnteteFichier.GetBuffer();
-
+/*
 	std::string temp_s;
 	std::wstring temp_ws;
 	char * temp_char;
@@ -191,7 +191,7 @@ void ApparatusParameters::OnBnClickedOk()
 	temp_ws.assign(temp_char);
 
 	temp_ws.assign(temp_s);
-
+*/
 	OnOK();
 }
 

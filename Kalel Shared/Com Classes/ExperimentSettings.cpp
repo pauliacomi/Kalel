@@ -37,12 +37,12 @@ void ExperimentSettings::ResetData(int initialAdsorptions, int initialDesorption
 
 	// General
 	dataGeneral.chemin = settings->CheminFichierGeneral;
-	dataGeneral.commentaires = "";
+	dataGeneral.commentaires = L"";
 	dataGeneral.date_experience = cF.getDate();
-	dataGeneral.experimentateur.nom = "";
-	dataGeneral.experimentateur.surnom = "";
-	dataGeneral.fichier = std::to_string(TEXT_NEWFILETEXT) + cF.getDateUnderline();
-	dataGeneral.gaz.symbole = "";
+	dataGeneral.experimentateur.nom = L"";
+	dataGeneral.experimentateur.surnom = L"";
+	dataGeneral.fichier = std::to_wstring(TEXT_NEWFILETEXT) + cF.getDateUnderline();
+	dataGeneral.gaz.symbole = L"";
 	dataGeneral.gaz.masse_moleculaire = 0;
 	dataGeneral.gaz.pression_critique = 0;
 	dataGeneral.gaz.temperature_critique = 0;
@@ -52,7 +52,7 @@ void ExperimentSettings::ResetData(int initialAdsorptions, int initialDesorption
 	dataGeneral.temperature_experience = 30;
 
 	// Divers
-	dataDivers.cellule.numero = "";
+	dataDivers.cellule.numero = L"";
 	dataDivers.cellule.volume_calo = 0;
 	dataDivers.cellule.volume_total = 0;
 	dataDivers.mise_sous_vide_fin_experience = false;

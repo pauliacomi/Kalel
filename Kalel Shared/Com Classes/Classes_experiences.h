@@ -7,8 +7,8 @@
 class experimentateur
 {
 	public :
-		std::string nom;
-		std::string surnom;
+		std::wstring nom;
+		std::wstring surnom;
 
 		experimentateur operator=(const experimentateur &exp);
 		bool operator!=(const experimentateur &exp);
@@ -17,8 +17,8 @@ class experimentateur
 class gaz
 {
 public :
-	std::string nom;
-	std::string symbole;
+	std::wstring nom;
+	std::wstring symbole;
 	double masse_moleculaire;
 	double temperature_critique;
 	double pression_critique;
@@ -32,7 +32,7 @@ public :
 class cellule
 {
 public :
-	std::string numero;
+	std::wstring numero;
 	double volume_total;
 	float volume_calo;
 
@@ -45,13 +45,13 @@ class Donnees_General
 public:
 	experimentateur experimentateur;
 	gaz gaz;
-	std::string nom_echantillon;
+	std::wstring nom_echantillon;
 	float masse_echantillon;
-	std::string commentaires;
-	std::string chemin;
-	std::string fichier;
+	std::wstring commentaires;
+	std::wstring chemin;
+	std::wstring fichier;
 	float temperature_experience;
-	std::string date_experience;
+	std::wstring date_experience;
 
 	Donnees_General operator=(const Donnees_General &general);
 	bool operator!=(const Donnees_General &general);
