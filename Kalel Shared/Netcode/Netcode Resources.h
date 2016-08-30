@@ -1,6 +1,6 @@
-//{{NO_DEPENDENCIES}}
-//
-
+#ifndef NETCODERES_H
+#define NETCODERES_H
+#pragma once
 
 #define ERR_WSASTARTUP			"WSAStartup failed"
 #define ERR_VERSION				"Version not supported"
@@ -12,3 +12,5 @@
 #define ERR_CLOSESOCKET			"close socket failed"
 #define ERR_ACCEPT				"Accept failed"
 #define ERR_CONNECT				"Unable to connect to server!"
+
+#endif

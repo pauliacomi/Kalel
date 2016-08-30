@@ -4,8 +4,8 @@
 #include "stdafx.h"
 #include "DialogMachineParameters.h"
 
-#include "../Kalel Shared/Com Classes/MachineSettings.h"		// Accexsing the settings
-#include "../Kalel Shared/Resources/DefineStages.h"				// Experiment types
+#include "Com Classes/MachineSettings.h"		// AcceSsing the settings
+#include "Resources/DefineStages.h"				// Experiment types
 
 // Boîte de dialogue ApparatusParameters
 

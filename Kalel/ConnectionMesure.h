@@ -1,7 +1,6 @@
-#pragma once
-
 #ifndef CONNECTIONMESURE_H
 #define CONNECTIONMESURE_H
+#pragma once
 
 
 class ConnectionMesure

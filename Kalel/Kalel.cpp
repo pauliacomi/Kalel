@@ -5,12 +5,14 @@
 #include "stdafx.h"
 #include "afxwinappex.h"
 #include "afxdialogex.h"
+
 #include "MainFrm.h"
 #include "Kalel.h"
 
 #include "KalelDoc.h"
 #include "KalelView.h"
 
+#include "DefinePostMessages.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

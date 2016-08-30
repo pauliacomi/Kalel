@@ -1,3 +1,7 @@
+
+// KalelView_Boutons.cpp : all the code for the valve buttons in the view
+//
+
 #include "stdafx.h"
 #include "Kalel.h"
 

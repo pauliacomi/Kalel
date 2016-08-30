@@ -1,10 +1,12 @@
-#pragma once
 #ifndef DIALOGUE_EXPERIMENTATEUR_H
 #define DIALOGUE_EXPERIMENTATEUR_H
+#pragma once
 
 #include "afxwin.h"
-#include "ParserXML.h"
 #include "ResourceDialogUser.h"
+
+#include "Com Classes\ExperimentHelperClasses.h"
+
 #include <vector>
 
 

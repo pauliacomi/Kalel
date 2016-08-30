@@ -8,7 +8,7 @@
 #endif
 
 #include "resource.h"													// main symbols
-#include "../Kalel Shared/Resources/StringTable.h"						// Error message strings
+#include "Resources/StringTable.h"										// Error message strings
 
 // CKalelApp:
 // See Kalel.cpp for the implementation of this class

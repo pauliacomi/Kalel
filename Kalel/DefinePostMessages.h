@@ -1,6 +1,6 @@
-#pragma once
 #ifndef DEFINEPOSTMESSAGES_H
 #define DEFINEPOSTMESSAGES_H
+#pragma once
 
 // Define windows message for threads
 /***************************************************************

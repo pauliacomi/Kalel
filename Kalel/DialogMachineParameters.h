@@ -1,7 +1,11 @@
+#ifndef DIALOGMACHINEPARAMETERS_H
+#define DIALOGMACHINEPARAMETERS_H
 #pragma once
 
-#include "SpinBtnCtrl.h"
+#include "afxwin.h"
 #include "ResourceParametresAppareil.h"
+
+#include "SpinBtnCtrl.h"
 
 class MachineSettings;
 
@@ -65,3 +69,5 @@ public:
 	BOOL m_bSecurite;
 	BOOL m_bTuyere;
 };
+
+#endif

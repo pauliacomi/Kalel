@@ -1,5 +1,7 @@
+#include "stdafx.h"
 #include "CommHandler.h"
-#include "ManualActionParam.h"
+
+#include "Com Classes\ManualActionParam.h"
 
 CommHandler::CommHandler()
 {

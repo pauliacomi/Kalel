@@ -1,8 +1,8 @@
 // This is a small class which is used to return all the UI data regarding buttons
 
-#pragma once
 #ifndef LISTOFINTRUMENTBUTTONS_H
 #define LISTOFINTRUMENTBUTTONS_H
+#pragma once
 
 class ListOfInstrumentButtons
 {

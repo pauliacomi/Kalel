@@ -1,6 +1,6 @@
-#pragma once
 #ifndef DEFINE_AUTOMATION_SETTINGS_H
 #define DEFINE_AUTOMATION_SETTINGS_H
+#pragma once
 
 // Time values
 #define T_BETWEEN_RECORD				4		//seconds

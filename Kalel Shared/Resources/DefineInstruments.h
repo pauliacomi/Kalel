@@ -1,6 +1,6 @@
-#pragma once
 #ifndef DEFINE_INSTRUMENT_H
 #define DEFINE_INSTRUMENT_H
+#pragma once
 
 // type of instrument
 #define INSTRUMENT_KEITHLEY		10

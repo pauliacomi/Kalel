@@ -1,4 +1,7 @@
+#ifndef COMMONFUNCTIONS_H
+#define COMMONFUNCTIONS_H
 #pragma once
+
 #include <string>
 
 class CommonFunctions
@@ -11,3 +14,4 @@ public:
 	std::wstring getDateUnderline();
 };
 
+#endif

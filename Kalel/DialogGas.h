@@ -1,11 +1,13 @@
-#pragma once
 #ifndef DIALOGUE_GAZ_H
 #define DIALOGUE_GAZ_H
+#pragma once
 
 #include "afxwin.h"
-#include "ParserXML.h"
-#include "SpinBtnCtrl.h"
 #include "ResourceDialogGas.h"
+
+#include "Com Classes\ExperimentHelperClasses.h"
+#include "SpinBtnCtrl.h"
+
 #include <vector>
 
 

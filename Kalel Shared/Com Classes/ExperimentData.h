@@ -1,6 +1,6 @@
-#pragma once
 #ifndef EXPERIMENT_DATA
 #define EXPERIMENT_DATA
+#pragma once
 
 #include <vector>
 #include <ctime>

@@ -1,4 +1,7 @@
+#ifndef COMMHANDLER_H
+#define COMMHANDLER_H
 #pragma once
+
 class CommHandler
 {
 public:
@@ -18,3 +21,4 @@ public:
 	void SetModifiedData();
 };
 
+#endif

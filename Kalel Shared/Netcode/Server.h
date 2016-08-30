@@ -1,4 +1,7 @@
+#ifndef SERVER_H
+#define SERVER_H
 #pragma once
+
 #include "Socket.h"
 
 #include <vector>
@@ -24,3 +27,5 @@ protected:
 	std::thread acceptThread;
 	std::exception_ptr teptr;
 };
+
+#endif

@@ -2,14 +2,12 @@
 
 #include "afxwin.h"
 
-#include "DefinePostMessages.h"										// Definition of messages received from the automation functionality
-#include "../Kalel Shared/Resources/DefineStages.h"					// Stages/experiment type definitions
-#include "../Kalel Shared/Resources/StringTable.h"					// Error message strings
+#include "Resources/DefineStages.h"									// Stages/experiment type definitions
+#include "Resources/StringTable.h"									// Error message strings
 
-#include "../Kalel Shared/Com Classes/ExperimentData.h"				// Where data about the experimental parameters, results and current status is stored
-#include "../Kalel Shared/Com Classes/ExperimentSettings.h"			// Where returned data from results is stored
-#include "../Kalel Shared/Com Classes/MachineSettings.h"			// Where the settings for the connected machine are stored
-#include "ExperimentPropertySheet.h"								// Dialog box for setting experimental properties
+#include "Com Classes/ExperimentData.h"								// Where data about the experimental parameters, results and current status is stored
+#include "Com Classes/ExperimentSettings.h"							// Where returned data from results is stored
+#include "Com Classes/MachineSettings.h"							// Where the settings for the connected machine are stored
 #include "CommHandler.h"											// Responsible for all communication to/from client
 
 
@@ -20,6 +18,9 @@
 #include "KalelDoc.h"
 #include "Kalel.h"
 
+// Forward declarations
+class ExperimentPropertySheet;
+
 class CKalelView : public CFormView
 {
 
@@ -29,8 +30,8 @@ public:
 
 	// Storage for all the data
 	ExperimentSettings * experimentSettings;
-	MachineSettings machineSettings;
 	ExperimentData * experimentData;
+	MachineSettings machineSettings;
 	CommHandler commHandler;
 
 	// Some storage variables for each MFC control

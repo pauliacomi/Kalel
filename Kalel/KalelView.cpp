@@ -12,8 +12,8 @@
 #include "KalelDoc.h"
 #include "KalelView.h"
 
-#include "DefinePostMessages.h"				// Message definitions
-#include "ExperimentPropertySheet.h"		// The dialog asking the user to input the experiment parameters
+#include "DefinePostMessages.h"										// Definition of messages received from the automation functionality
+#include "ExperimentPropertySheet.h"								// The dialog asking the user to input the experiment parameters
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

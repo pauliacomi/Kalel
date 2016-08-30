@@ -1,3 +1,5 @@
+#ifndef DIALOGTYPEEXPERIMENT_H
+#define DIALOGTYPEEXPERIMENT_H
 #pragma once
 
 #include "afxwin.h"
@@ -33,3 +35,5 @@ protected:
 public:
 	virtual BOOL OnInitDialog();
 };
+
+#endif

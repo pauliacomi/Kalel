@@ -4,7 +4,8 @@
 #include "stdafx.h"
 #include "DialogGas.h"
 
-#include "../Kalel Shared/Resources/StringTable.h"						// Error message strings
+#include "ParserXML.h"
+#include "Resources/StringTable.h"						// Error message strings
 
 //////////////////////////////////////////////////////////////////////////////////////
 			//------------------------------------------------------

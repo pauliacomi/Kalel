@@ -1,6 +1,6 @@
-#pragma once
 #ifndef CLASSES_EXPERIENCES_H
 #define CLASSES_EXPERIENCES_H
+#pragma once
 
 #include <string>
 

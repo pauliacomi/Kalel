@@ -101,10 +101,13 @@
       <EnablePREfast>false</EnablePREfast>
       <ShowIncludes>false</ShowIncludes>
       <MinimalRebuild>true</MinimalRebuild>
+      <AdditionalIncludeDirectories>C:\Users\pauli_000\Documents\Visual Studio 2015\Projects\Kalel\Kalel Shared;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalOptions>
+      </AdditionalOptions>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -198,11 +201,13 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Kalel Shared\Com Classes\Classes_experiences.h" />
+    <ClInclude Include="..\Kalel Shared\Com Classes\ExperimentHelperClasses.h" />
     <ClInclude Include="..\Kalel Shared\Com Classes\CommonFunctions.h" />
     <ClInclude Include="..\Kalel Shared\Com Classes\ExperimentData.h" />
     <ClInclude Include="..\Kalel Shared\Com Classes\ExperimentSettings.h" />
     <ClInclude Include="..\Kalel Shared\Com Classes\MachineSettings.h" />
+    <ClInclude Include="..\Kalel Shared\Com Classes\ManualActionParam.h" />
+    <ClInclude Include="..\Kalel Shared\Forcelib.h" />
     <ClInclude Include="..\Kalel Shared\Netcode\base64.h" />
     <ClInclude Include="..\Kalel Shared\Netcode\Client.h" />
     <ClInclude Include="..\Kalel Shared\Netcode\http_request.h" />
@@ -234,7 +239,6 @@
     <ClInclude Include="KalelView.h" />
     <ClInclude Include="ListOfInstrumentButtons.h" />
     <ClInclude Include="MainFrm.h" />
-    <ClInclude Include="ManualActionParam.h" />
     <ClInclude Include="ParserXML.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="ResourceDialogCell.h" />
@@ -258,11 +262,12 @@
     <ClInclude Include="XSBrowseFolder.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Kalel Shared\Com Classes\Classes_experiences.cpp" />
+    <ClCompile Include="..\Kalel Shared\Com Classes\ExperimentHelperClasses.cpp" />
     <ClCompile Include="..\Kalel Shared\Com Classes\CommonFunctions.cpp" />
     <ClCompile Include="..\Kalel Shared\Com Classes\ExperimentData.cpp" />
     <ClCompile Include="..\Kalel Shared\Com Classes\ExperimentSettings.cpp" />
     <ClCompile Include="..\Kalel Shared\Com Classes\MachineSettings.cpp" />
+    <ClCompile Include="..\Kalel Shared\Com Classes\ManualActionParam.cpp" />
     <ClCompile Include="..\Kalel Shared\Netcode\base64.cpp" />
     <ClCompile Include="..\Kalel Shared\Netcode\Client.cpp" />
     <ClCompile Include="..\Kalel Shared\Netcode\Server.cpp" />
@@ -289,7 +294,6 @@
     <ClCompile Include="KalelViewButtonsValves.cpp" />
     <ClCompile Include="ListOfInstrumentButtons.cpp" />
     <ClCompile Include="MainFrm.cpp" />
-    <ClCompile Include="ManualActionParam.cpp" />
     <ClCompile Include="ParserXML.cpp" />
     <ClCompile Include="SpinBtnCtrl.cpp" />
     <ClCompile Include="stdafx.cpp">

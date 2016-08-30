@@ -8,8 +8,9 @@
 #include "KalelDoc.h"
 #include "KalelView.h"
 
-#include "ManualActionParam.h"										// The class that has the manual parameters stored
-#include "../Kalel Shared/Resources/DefineInstruments.h"			// Definitions for instruments
+#include "Com Classes\MachineSettings.h"							// The class that has the manual parameters stored
+#include "Com Classes\ManualActionParam.h"
+#include "Resources\DefineInstruments.h"							// Definitions for instruments
 #include "ListOfInstrumentButtons.h"								// The class containing a list of the instruments' buttons ID's
 
 

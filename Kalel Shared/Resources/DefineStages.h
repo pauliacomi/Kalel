@@ -1,7 +1,6 @@
-#pragma once
-
 #ifndef DEFINE_STAGES_H
 #define DEFINE_STAGES_H
+#pragma once
 
 // Used by Steps.rc
 

@@ -1,3 +1,5 @@
+#ifndef MACHINESETTINGS_H
+#define MACHINESETTINGS_H
 #pragma once
 
 #include <string>
@@ -50,3 +52,4 @@ public:
 	void SetFunctionInstrument(int num, int FonctionInstrument);
 };
 
+#endif

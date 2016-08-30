@@ -1,10 +1,14 @@
+#ifndef CONNECTIONPORT_H
+#define CONNECTIONPORT_H
 #pragma once
+
 #include "afxwin.h"
 #include "ResourceConnectionPort.h"
 
 #include "ConnectionMesure.h"
 #include "VerifInstrument.h"
-#include "../Kalel Shared/Resources/DefineInstruments.h"
+#include "Resources/DefineInstruments.h"
+
 #include <vector>
 
 // Boîte de dialogue ConnectionPort
@@ -136,3 +140,5 @@ public:
 	void EnregistrementVerifications(MachineSettings& newSettings);
 
 };
+
+#endif

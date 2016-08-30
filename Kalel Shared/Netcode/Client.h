@@ -1,4 +1,7 @@
+#ifndef CLIENT_H
+#define CLIENT_H
 #pragma once
+
 #include "Socket.h"
 
 class Client : Socket
@@ -16,3 +19,4 @@ protected:
 
 };
 
+#endif

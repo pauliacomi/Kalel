@@ -1,9 +1,10 @@
-#pragma once
 #ifndef EXPERIMENT_SETTINGS
 #define EXPERIMENT_SETTINGS
+#pragma once
 
-#include "Classes_experiences.h"
-#include "../Com Classes/MachineSettings.h"
+#include "ExperimentHelperClasses.h"
+#include "MachineSettings.h"
+
 #include <vector>
 
 class ExperimentSettings

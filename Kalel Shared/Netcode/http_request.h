@@ -1,6 +1,7 @@
+#ifndef HTTPREQUEST_H
+#define HTTPREQUEST_H
 #pragma once
 
-#include "Socket.h"
 #include <string>
 #include <map>
 
@@ -35,3 +36,5 @@ struct http_request {
 	std::string username_;
 	std::string password_;
 };
+
+#endif

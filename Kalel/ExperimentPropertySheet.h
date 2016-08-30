@@ -1,6 +1,6 @@
-#pragma once
 #ifndef EXPERIMENTPROPERTYSHEET_H
 #define EXPERIMENTPROPERTYSHEET_H
+#pragma once
 
 // ExperimentPropertySheet
 
@@ -11,8 +11,8 @@
 #include "TabDesorption.h"
 #include "TabContinuousAdsorption.h"
 
-// Experiment settings class
-#include "../Kalel Shared/Com Classes/ExperimentSettings.h"
+// Forward declaration
+class ExperimentSettings;
 
 // Other includes
 #include <vector>		// Using a vector to keep the collection of tabs in

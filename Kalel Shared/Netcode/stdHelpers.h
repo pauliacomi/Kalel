@@ -1,3 +1,5 @@
+#ifndef STDHELPERS_H
+#define STDHELPERS_H
 #pragma once
 
 #include <string>
@@ -30,3 +32,4 @@ std::string StringFrom(T const& t) {
 	return ret;
 }
 
+#endif

@@ -1,11 +1,13 @@
-#pragma once
 #ifndef DIALOGUE_CELLULE_H
 #define DIALOGUE_CELLULE_H
+#pragma once
 
 #include "afxwin.h"
-#include "ParserXML.h"
-#include "SpinBtnCtrl.h"
 #include "ResourceDialogCell.h"
+
+#include "Com Classes\ExperimentHelperClasses.h"
+#include "SpinBtnCtrl.h"
+
 #include <vector>
 
 

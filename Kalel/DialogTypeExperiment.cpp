@@ -1,10 +1,11 @@
 // Dialogue_TypeExperience.cpp : implementation
 //
+
 #include "stdafx.h"
 #include "DialogTypeExperiment.h"
 
-#include "../Kalel Shared/Com Classes/MachineSettings.h"		// Accessing the settings
-#include "../Kalel Shared/Resources/DefineStages.h"				// Experiment types
+#include "Com Classes/MachineSettings.h"		// Accessing the settings
+#include "Resources/DefineStages.h"				// Experiment types
 
 // Dialog box DialogTypeExperiment
 

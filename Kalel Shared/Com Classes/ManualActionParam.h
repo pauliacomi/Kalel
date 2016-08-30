@@ -1,10 +1,9 @@
 // This is a small class which is used to hold the objects/variables which will be passed 
 // from the UI to the threading functionality when a manual command is given to the system
 
-#pragma once
 #ifndef MANUALACTIONPARAM_H
 #define MANUALACTIONPARAM_H
-
+#pragma once
 
 class ManualActionParam
 {

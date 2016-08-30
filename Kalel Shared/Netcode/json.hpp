@@ -28,6 +28,7 @@ SOFTWARE.
 
 #ifndef NLOHMANN_JSON_HPP
 #define NLOHMANN_JSON_HPP
+#pragma once
 
 #include <algorithm>
 #include <array>

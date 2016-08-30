@@ -1,7 +1,6 @@
-#pragma once
 #ifndef CHRONO_H
 #define CHRONO_H
-
+#pragma once
 
 class CChrono
 {

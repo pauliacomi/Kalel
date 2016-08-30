@@ -1,3 +1,5 @@
+#ifndef SOCKET_H
+#define SOCKET_H
 #pragma once
 
 #ifdef _WIN32
@@ -64,4 +66,4 @@ private:
 	static int  nofSockets;
 };
 
-
+#endif

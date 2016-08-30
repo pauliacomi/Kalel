@@ -9,6 +9,7 @@
 #include "KalelView.h"
 
 #include "DialogTypeExperiment.h"		// The dialog asking the user for the experiment type
+#include "ExperimentPropertySheet.h"
 
 #include "TabDoses.h"					// For manipulating the settings object
 #include "TabDesorption.h"				// For manipulating the settings object

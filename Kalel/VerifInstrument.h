@@ -1,7 +1,6 @@
-#pragma once
-
 #ifndef VERIFINSTRUMENT_H
 #define VERIFINSTRUMENT_H
+#pragma once
 
 
 class VerifInstrument

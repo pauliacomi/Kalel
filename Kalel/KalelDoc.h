@@ -1,11 +1,9 @@
 
 // KalelDoc.h : interface of the CKalelDoc class
 //
-
-
 #pragma once
 
-#include "../Kalel Shared/Com Classes/ExperimentData.h"				// Where data about the experimental parameters, results and current status is stored
+#include "Com Classes/ExperimentData.h"				// Where data about the experimental parameters, results and current status is stored. REQUIRED FOR CARRAYMEASUREMENTS
 
 class CKalelDoc : public CDocument
 {

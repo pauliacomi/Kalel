@@ -3,10 +3,10 @@
 #include "stdafx.h"
 #include "DialogConnectionPort.h"
 
+#include "Com Classes/MachineSettings.h"		// Accessing the settings
 
-#include "../Kalel Shared/Resources/StringTable.h"				// Error message strings
-#include "../Kalel Shared/Com Classes/MachineSettings.h"		// Accessing the settings
-#include "../Kalel Shared/Resources/DefineStages.h"				// Experiment types
+#include "Resources/StringTable.h"				// Error message strings
+#include "Resources/DefineStages.h"				// Experiment types
 
 // Boîte de dialogue ConnectionPort
 

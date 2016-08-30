@@ -8,6 +8,7 @@
 #include "Kalel.h"
 #include "KalelDoc.h"
 #include "KalelView.h"
+
 #include "GrapheView.h"
 
 #ifdef _DEBUG

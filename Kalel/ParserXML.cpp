@@ -1,11 +1,9 @@
-#include "ParserXML.h"
 #include "stdafx.h"		// for the _T("") macro
+#include "ParserXML.h"
 
-//#include <stdio.h>
-//#include <stdlib.h>
-//
-//#include <iostream>
-//#include <list>
+#include "tinystr.h"
+#include "tinyxml.h"
+
 #include <sstream>
 #include <locale>			// wstring/string conversions
 #include <codecvt>			// wstring/string conversions
@@ -482,7 +480,7 @@ bool Modif_Cellule(cellule new_cellule,int index)
 //
 // Fonction doublon
 
-bool Doublon(TiXmlHandle handle_root, std::wstring valeur, std::wstring type)
+bool Doublon(TiXmlHandle& handle_root, std::wstring valeur, std::wstring type)
 {
 	/*
 	while (elem_parcours)

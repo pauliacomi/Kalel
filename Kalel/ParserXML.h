@@ -1,15 +1,15 @@
-#pragma once
 #ifndef PARSERXML_H
 #define PARSERXML_H
+#pragma once
 
-#include "tinystr.h"
-#include "tinyxml.h"
+#include "Com Classes/ExperimentHelperClasses.h"
 
 #include <string>
 #include <vector>
 
-#include "../Kalel Shared/Com Classes/Classes_experiences.h"
-
+// Forward declarations
+class TiXmlElement;
+class TiXmlHandle;
 
 // XML
 void Initialisation_XML();
@@ -46,7 +46,7 @@ bool Modif_Cellule(std::wstring num, double total, double calo, int index);
 bool Modif_Cellule(cellule new_cellule,int index);
 
 // Doublon
-bool Doublon(TiXmlHandle handle_root, std::wstring valeur, std::wstring type);
+bool Doublon(TiXmlHandle& handle_root, std::wstring valeur, std::wstring type);
 bool DoublonNomExperimentateur(std::wstring valeur);
 bool DoublonSurnomExperimentateur(std::wstring valeur);
 bool DoublonExperimentateur(std::wstring valeur, std::wstring type);

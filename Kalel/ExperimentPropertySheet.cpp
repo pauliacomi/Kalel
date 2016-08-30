@@ -5,19 +5,11 @@
 #include "ExperimentPropertySheet.h"
 
 #include "DefinePostMessages.h"								// For custom message definitions
-#include "../Kalel Shared/Resources/DefineStages.h"			// For the types of experiments used
-#include "../Kalel Shared/Resources/StringTable.h"			// Error message strings
-
-
-// Property pages include
-#include "TabGeneral.h"
-#include "TabDivers.h"
-#include "TabDoses.h"
-#include "TabDesorption.h"
-#include "TabContinuousAdsorption.h"
+#include "Resources/DefineStages.h"							// For the types of experiments used
+#include "Resources/StringTable.h"							// Error message strings
 
 // Experiment settings class
-#include "../Kalel Shared/Com Classes/ExperimentSettings.h"
+#include "Com Classes/ExperimentSettings.h"
 
 
 IMPLEMENT_DYNAMIC(ExperimentPropertySheet, CMFCPropertySheet)
