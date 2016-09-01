@@ -12,6 +12,11 @@
 #include "KalelDoc.h"
 #include "KalelView.h"
 
+// Dialog Box includes
+#include "DialogMachineParameters.h"
+#include "DialogConnectionPort.h"
+#include "DialogConnectServer.h"
+
 #include "DefinePostMessages.h"										// Definition of messages received from the automation functionality
 #include "ExperimentPropertySheet.h"								// The dialog asking the user to input the experiment parameters
 
@@ -40,6 +45,7 @@ BEGIN_MESSAGE_MAP(CKalelView, CFormView)
 	ON_MESSAGE(UWM_FUNC_VACUUM_SAMPLE, &CKalelView::OnMsvAmpoule)
 	ON_MESSAGE(UWM_FUNC_VACUUM_BOTTLE, &CKalelView::OnMsvBouteille)
 	ON_MESSAGE(UWM_FUNC_CHANGE_BOTTLE, &CKalelView::OnChangementBouteille)
+	ON_MESSAGE(UWM_DISP_CONNECTS_DIALOG, &CKalelView::DisplayConnectDialog)
 	ON_MESSAGE(UWM_DISP_PORT_DIALOG, &CKalelView::DisplayPortDialog)
 	ON_MESSAGE(UWM_DISP_DEVSETTINGS_DIALOG, &CKalelView::DisplayApparatusSettingsDialog)
 	
@@ -209,9 +215,9 @@ void CKalelView::OnInitialUpdate()
 	UpdateButtons();
 
 	// Create the experiment storage class
-	int initialAdsorptions = 3;
-	int initialDesorptions = 1;
-	experimentSettings = new ExperimentSettings(initialAdsorptions, initialDesorptions, machineSettings);		// Create a new experiment storage
+	//int initialAdsorptions = 3;
+	//int initialDesorptions = 1;
+	//experimentSettings = new ExperimentSettings(initialAdsorptions, initialDesorptions, machineSettings);		// Create a new experiment storage
 
 	// Set the timer for the window update
 	SetTimer(1, 100, NULL);
@@ -385,6 +391,17 @@ LRESULT CKalelView::OnChangementBouteille(WPARAM, LPARAM)
 			// Raise the flag for data modified
 			commHandler.SetModifiedData();
 		}
+	}
+
+	return 0;
+}
+
+LRESULT CKalelView::DisplayConnectDialog(WPARAM, LPARAM)
+{
+	DialogConnectServer connectServer;
+	if (connectServer.DoModal() == IDOK)
+	{
+		AfxMessageBox(connectServer.GetAddress().c_str(), MB_OK);
 	}
 
 	return 0;

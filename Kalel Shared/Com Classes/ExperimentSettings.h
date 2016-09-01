@@ -3,7 +3,6 @@
 #pragma once
 
 #include "ExperimentHelperClasses.h"
-#include "MachineSettings.h"
 
 #include <vector>
 
@@ -15,8 +14,8 @@ class ExperimentSettings
 	//
 
 public:
-	ExperimentSettings(const MachineSettings & machineSettings);
-	ExperimentSettings(int initialAdsorptions, int initialDesorptions, const MachineSettings & machineSettings);
+	ExperimentSettings();
+	ExperimentSettings(int initialAdsorptions, int initialDesorptions);
 	~ExperimentSettings(void);
 
 	void ResetData();
@@ -30,9 +29,6 @@ public:
 	// Variables
 	//
 
-
-protected:
-	MachineSettings * settings;
 
 public:
 	//HWND GUIhandle;						// Main GUI handle

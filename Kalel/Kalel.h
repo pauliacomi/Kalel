@@ -29,7 +29,8 @@ public:
 	virtual int ExitInstance();
 
 // Implementation
-	afx_msg void OnAppAbout();
+	void OnAppAbout();
+	void DisplayServerConnect();
 	void DisplayPortDialog();
 	void DisplayApparatusSettingsDialog();
 	void OnMsvAmpoule();
@@ -43,6 +44,7 @@ public:
 	void OnBackgroundthreadRestart();
 
 	// update commands
+	void OnUpdateServerConnect(CCmdUI * pCmdUI);
 	void OnUpdateDonneesExperience(CCmdUI *pCmdUI);
 	void OnUpdateMsvAmpoule(CCmdUI *pCmdUI);
 	void OnUpdateMsvBouteille(CCmdUI *pCmdUI);

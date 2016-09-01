@@ -5,15 +5,13 @@
 #include "Resources/DefineStages.h"
 #include "Resources/StringTable.h"
 
-ExperimentSettings::ExperimentSettings(const MachineSettings & machineSettings)
+ExperimentSettings::ExperimentSettings()
 {
-	ExperimentSettings(0, 0, machineSettings);
+	ExperimentSettings(0, 0);
 }
 
-ExperimentSettings::ExperimentSettings(int initialAdsorptions, int initialDesorptions, const MachineSettings & machineSettings)
+ExperimentSettings::ExperimentSettings(int initialAdsorptions, int initialDesorptions)
 {
-	*settings = machineSettings;
-
 	// Data initialisation
 	ResetData(initialAdsorptions, initialDesorptions);
 }
@@ -37,7 +35,7 @@ void ExperimentSettings::ResetData(int initialAdsorptions, int initialDesorption
 	CommonFunctions cF;
 
 	// General
-	dataGeneral.chemin = settings->CheminFichierGeneral;
+	dataGeneral.chemin = L"";
 	dataGeneral.commentaires = L"";
 	dataGeneral.date_experience = cF.getDate();
 	dataGeneral.experimentateur.nom = L"";

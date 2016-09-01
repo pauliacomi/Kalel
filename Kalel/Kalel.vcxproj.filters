@@ -285,6 +285,9 @@
     <ClInclude Include="..\Kalel Shared\Forcelib.h">
       <Filter>Header Files\Commmon</Filter>
     </ClInclude>
+    <ClInclude Include="DialogConnectServer.h">
+      <Filter>Header Files\GUI\Dialogs</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainFrm.cpp">
@@ -421,6 +424,9 @@
     </ClCompile>
     <ClCompile Include="CommHandler.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DialogConnectServer.cpp">
+      <Filter>Source Files\GUI\Dialogs</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

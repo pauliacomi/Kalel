@@ -9,12 +9,18 @@
 #define IDD_DIALOGBAR                   104
 #define IDR_MAINFRAME                   128
 #define IDR_KalelTYPE                   130
+#define IDD_SERVERCONNECT               312
 #define IDC_OUVRIR1                     1000
+#define IDC_IPADDRESS1                  1000
 #define IDC_FERMER1                     1001
 #define IDC_OUVRIR2                     1002
+#define IDC_RADIO_WEBADR                1002
 #define IDC_FERMER2                     1003
+#define IDC_RADIO_IP                    1003
 #define IDC_OUVRIR3                     1004
+#define IDC_EDIT1                       1004
 #define IDC_FERMER3                     1005
+#define IDC_BUTTON1                     1005
 #define IDC_OUVRIR4                     1006
 #define IDC_FERMER4                     1007
 #define IDC_OUVRIR5                     1008
@@ -67,6 +73,7 @@
 #define IDC_TEMOIN_POMPE                1058
 #define IDC_RADIO_ETALONNAGE_EXPERIENCE 1100
 #define IDC_RADIO2                      1101
+#define IDC_RADIO_LOCAL                 1101
 #define IDC_MODIFIER                    1105
 #define IDC_SUPPRIMER                   1110
 #define IDC_PAUSE                       1142
@@ -90,14 +97,16 @@
 #define ID_BACKGROUNDTHREAD_START       32789
 #define ID_BACKGROUNDTHREAD_STOP        32790
 #define ID_BACKGROUNDTHREAD_RESTART     32791
+#define ID_PARAM32792                   32792
+#define ID_PARAMATRES_SERVERCONNECT     32793
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        312
-#define _APS_NEXT_COMMAND_VALUE         32792
-#define _APS_NEXT_CONTROL_VALUE         1000
+#define _APS_NEXT_RESOURCE_VALUE        314
+#define _APS_NEXT_COMMAND_VALUE         32794
+#define _APS_NEXT_CONTROL_VALUE         1006
 #define _APS_NEXT_SYMED_VALUE           312
 #endif
 #endif

@@ -222,6 +222,7 @@
     <ClInclude Include="..\Kalel Shared\Resources\DefineStages.h" />
     <ClInclude Include="..\Kalel Shared\Resources\StringTable.h" />
     <ClInclude Include="CommHandler.h" />
+    <ClInclude Include="DialogConnectServer.h" />
     <ClInclude Include="DialogMachineParameters.h" />
     <ClInclude Include="Chrono.h" />
     <ClInclude Include="ConnectionMesure.h" />
@@ -275,6 +276,7 @@
     <ClCompile Include="..\Kalel Shared\Netcode\stdHelpers.cpp" />
     <ClCompile Include="..\Kalel Shared\Netcode\URLHelper.cpp" />
     <ClCompile Include="CommHandler.cpp" />
+    <ClCompile Include="DialogConnectServer.cpp" />
     <ClCompile Include="DialogMachineParameters.cpp" />
     <ClCompile Include="Chrono.cpp" />
     <ClCompile Include="ConnectionMesure.cpp" />

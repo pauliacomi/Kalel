@@ -10,11 +10,6 @@
 #include "Com Classes/MachineSettings.h"							// Where the settings for the connected machine are stored
 #include "CommHandler.h"											// Responsible for all communication to/from client
 
-
-// Dialog Box includes
-#include "DialogMachineParameters.h"
-#include "DialogConnectionPort.h"
-
 #include "KalelDoc.h"
 #include "Kalel.h"
 
@@ -111,6 +106,7 @@ protected:
 	LRESULT OnMsvAmpoule(WPARAM wParam, LPARAM lParam);
 	LRESULT OnMsvBouteille(WPARAM wParam, LPARAM lParam);
 	LRESULT OnChangementBouteille(WPARAM wParam, LPARAM lParam);
+	LRESULT DisplayConnectDialog(WPARAM, LPARAM);
 	LRESULT DisplayPortDialog(WPARAM wParam, LPARAM lParam);
 	LRESULT DisplayApparatusSettingsDialog(WPARAM wParam, LPARAM lParam);
 
