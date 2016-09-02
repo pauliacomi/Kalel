@@ -2,11 +2,18 @@
 #define COMMHANDLER_H
 #pragma once
 
+#include "Netcode\Client.h"
+#include "unicodeConv.h"
+
+#include <string>
+
 class CommHandler
 {
 public:
 	CommHandler();
 	~CommHandler();
+
+	void Connect(std::wstring address);
 
 	void ManualCommand(int instrumentType, int instrumentNumber, bool shouldBeActivated);
 	
@@ -19,6 +26,10 @@ public:
 
 	void SetUserContinue();
 	void SetModifiedData();
+
+private:
+	Client client;
+	UnicodeConv unicodeConverter;
 };
 
 #endif

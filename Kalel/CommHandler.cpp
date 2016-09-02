@@ -12,6 +12,11 @@ CommHandler::~CommHandler()
 {
 }
 
+void CommHandler::Connect(std::wstring address)
+{
+	client.Connect(unicodeConverter.ws2s(address.c_str()));
+}
+
 void CommHandler::ManualCommand(int instrumentType, int instrumentNumber, bool shouldBeActivated)
 {
 	ManualActionParam request(instrumentType, instrumentNumber, shouldBeActivated);

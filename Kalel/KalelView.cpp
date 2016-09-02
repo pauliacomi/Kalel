@@ -12,6 +12,7 @@
 #include "KalelDoc.h"
 #include "KalelView.h"
 
+
 // Dialog Box includes
 #include "DialogMachineParameters.h"
 #include "DialogConnectionPort.h"
@@ -19,6 +20,7 @@
 
 #include "DefinePostMessages.h"										// Definition of messages received from the automation functionality
 #include "ExperimentPropertySheet.h"								// The dialog asking the user to input the experiment parameters
+#include "Parametres.h"												// Parameters file read/write
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -401,7 +403,13 @@ LRESULT CKalelView::DisplayConnectDialog(WPARAM, LPARAM)
 	DialogConnectServer connectServer;
 	if (connectServer.DoModal() == IDOK)
 	{
-		AfxMessageBox(connectServer.GetAddress().c_str(), MB_OK);
+		std::wstring address{ connectServer.GetAddress() };
+		
+		// First set the address
+		SetServerAddress(address);
+
+		// Then connect to the server
+		commHandler.Connect(address);
 	}
 
 	return 0;

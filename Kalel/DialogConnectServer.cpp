@@ -59,6 +59,8 @@ void DialogConnectServer::OnIdcancel()
 
 void DialogConnectServer::OnClickedConnect()
 {
+	UpdateData(TRUE);
+
 	switch (radioChoice)
 	{
 	case -1:
@@ -89,6 +91,7 @@ void DialogConnectServer::OnClickedConnect()
 std::wstring DialogConnectServer::GetAddress()
 {
 	std::wstring address;
+	CString url;		// ugly, i know
 
 	switch (radioChoice)
 	{
@@ -99,7 +102,16 @@ std::wstring DialogConnectServer::GetAddress()
 		address = webAddress.GetBuffer();
 		break;
 	case 2:
-		address = ipAddress;
+
+		unsigned char a, b, c, d;
+		d = ipAddress & 0xFF;
+		c = (ipAddress >> 8) & 0xFF;
+		b = (ipAddress >> 16) & 0xFF;
+		a = (ipAddress >> 24) & 0xFF;
+
+		url.Format(_T("%u.%u.%u.%u"), a, b, c, d);
+
+		address = url.GetBuffer();
 		break;
 	default:
 		break;

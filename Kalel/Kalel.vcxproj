@@ -240,6 +240,7 @@
     <ClInclude Include="KalelView.h" />
     <ClInclude Include="ListOfInstrumentButtons.h" />
     <ClInclude Include="MainFrm.h" />
+    <ClInclude Include="Parametres.h" />
     <ClInclude Include="ParserXML.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="ResourceDialogCell.h" />
@@ -259,6 +260,7 @@
     <ClInclude Include="targetver.h" />
     <ClInclude Include="tinystr.h" />
     <ClInclude Include="tinyxml.h" />
+    <ClInclude Include="unicodeConv.h" />
     <ClInclude Include="VerifInstrument.h" />
     <ClInclude Include="XSBrowseFolder.h" />
   </ItemGroup>
@@ -296,6 +298,7 @@
     <ClCompile Include="KalelViewButtonsValves.cpp" />
     <ClCompile Include="ListOfInstrumentButtons.cpp" />
     <ClCompile Include="MainFrm.cpp" />
+    <ClCompile Include="Parametres.cpp" />
     <ClCompile Include="ParserXML.cpp" />
     <ClCompile Include="SpinBtnCtrl.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -313,6 +316,7 @@
     <ClCompile Include="tinyxml.cpp" />
     <ClCompile Include="tinyxmlerror.cpp" />
     <ClCompile Include="tinyxmlparser.cpp" />
+    <ClCompile Include="unicodeConv.cpp" />
     <ClCompile Include="XSBrowseFolder.cpp" />
   </ItemGroup>
   <ItemGroup>

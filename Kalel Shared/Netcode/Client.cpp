@@ -22,7 +22,7 @@ Client::~Client()
 	}
 }
 
-void Client::Connect(PCSTR ip, PCSTR port)
+void Client::Connect(std::string ip, std::string port)
 {
 	// Create the address info struct
 	struct addrinfo hints;									// The requested address
@@ -35,7 +35,7 @@ void Client::Connect(PCSTR ip, PCSTR port)
 
 
 	// Resolve the local address and port to be used by the server
-	if (getaddrinfo(ip, port, &hints, &result) != 0) {
+	if (getaddrinfo(ip.c_str(), port.c_str(), &hints, &result) != 0) {
 		stringex.set(ERR_GETADDRINFO);
 		throw stringex;
 	}

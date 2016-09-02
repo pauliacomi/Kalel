@@ -57,7 +57,4 @@ bool DoublonGaz(std::wstring valeur, std::wstring type);
 
 bool DoublonNumeroCellule(std::wstring num);
 
-std::wstring s2ws(const std::string& str);
-std::string ws2s(const std::wstring& wstr);
-
 #endif

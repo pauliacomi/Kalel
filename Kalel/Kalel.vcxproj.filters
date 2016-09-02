@@ -103,6 +103,12 @@
     <Filter Include="Resource Files\Common\Strings">
       <UniqueIdentifier>{a8ea875c-77f0-4b5b-b25f-67dbeb5ad1f1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Parameters">
+      <UniqueIdentifier>{43e0358b-94cb-449b-b049-42807119eeac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Parameters">
+      <UniqueIdentifier>{ba35b971-af41-4399-bb4f-1cb6c646db06}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -288,6 +294,12 @@
     <ClInclude Include="DialogConnectServer.h">
       <Filter>Header Files\GUI\Dialogs</Filter>
     </ClInclude>
+    <ClInclude Include="Parametres.h">
+      <Filter>Header Files\Parameters</Filter>
+    </ClInclude>
+    <ClInclude Include="unicodeConv.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainFrm.cpp">
@@ -427,6 +439,12 @@
     </ClCompile>
     <ClCompile Include="DialogConnectServer.cpp">
       <Filter>Source Files\GUI\Dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="Parametres.cpp">
+      <Filter>Source Files\Parameters</Filter>
+    </ClCompile>
+    <ClCompile Include="unicodeConv.cpp">
+      <Filter>Source Files\Utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
