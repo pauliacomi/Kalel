@@ -33,7 +33,7 @@ public:
 
 protected:  // control bar embedded members
 	CToolBar        m_wndToolBar;
-	CStatusBar      m_wndStatusBar;
+	CStatusBar		m_wndStatusBar;
 	CSplitterWnd	m_wndSplitter;
 
 // Generated message map functions

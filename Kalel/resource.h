@@ -10,6 +10,7 @@
 #define IDR_MAINFRAME                   128
 #define IDR_KalelTYPE                   130
 #define IDD_SERVERCONNECT               312
+#define IDR_CONNECTED_PANE              315
 #define IDC_OUVRIR1                     1000
 #define IDC_IPADDRESS1                  1000
 #define IDC_FERMER1                     1001
@@ -107,6 +108,6 @@
 #define _APS_NEXT_RESOURCE_VALUE        314
 #define _APS_NEXT_COMMAND_VALUE         32794
 #define _APS_NEXT_CONTROL_VALUE         1006
-#define _APS_NEXT_SYMED_VALUE           312
+#define _APS_NEXT_SYMED_VALUE           313
 #endif
 #endif

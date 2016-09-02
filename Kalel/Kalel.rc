@@ -409,23 +409,16 @@ BEGIN
     AFX_IDS_SCNEXTWINDOW    "Switch to the next document window"
     AFX_IDS_SCPREVWINDOW    "Switch to the previous document window"
     AFX_IDS_SCCLOSE         "Close the active window and prompts to save the documents"
-END
-
-STRINGTABLE
-BEGIN
-    AFX_IDS_SCRESTORE       "Restore the window to normal size"
-    AFX_IDS_SCTASKLIST      "Activate Task List"
+	AFX_IDS_SCRESTORE       "Restore the window to normal size"
+	AFX_IDS_SCTASKLIST      "Activate Task List"
 END
 
 STRINGTABLE
 BEGIN
     ID_PARAMETRES_APPAREIL  "Apparatus Parameters"
-END
-
-STRINGTABLE
-BEGIN
     ID_PARAMATRES_APPAREIL  "Modify The Apparatus Parameters"
     ID_CONNECTION_PORTS     "Modify the connection of the USB et RS232 Ports"
+    IDR_CONNECTED_PANE      "	Not Connected"
 END
 
 #endif    // English (United States) resources

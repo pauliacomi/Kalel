@@ -11,6 +11,8 @@
 
 #include "GrapheView.h"
 
+#include "resource.h"
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -27,9 +29,10 @@ END_MESSAGE_MAP()
 static UINT indicators[] =
 {
 	ID_SEPARATOR,           // status line indicator
+	IDR_CONNECTED_PANE,
 	ID_INDICATOR_CAPS,
 	ID_INDICATOR_NUM,
-	ID_INDICATOR_SCRL,
+	ID_INDICATOR_SCRL
 };
 
 // CMainFrame construction/destruction
@@ -41,6 +44,8 @@ CMainFrame::CMainFrame()
 CMainFrame::~CMainFrame()
 {
 }
+
+
 
 int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
@@ -143,4 +148,6 @@ void CMainFrame::OnSysCommand(UINT nID, LPARAM lParam)
 	}
 
 	CFrameWnd::OnSysCommand(nID, lParam);
+
+	m_wndStatusBar.SetPaneText(	m_wndStatusBar.CommandToIndex(IDR_CONNECTED_PANE), _T("XCOMASO"));
 }
