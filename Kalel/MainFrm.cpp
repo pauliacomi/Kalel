@@ -24,6 +24,7 @@ IMPLEMENT_DYNCREATE(CMainFrame, CFrameWnd)
 BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_WM_CREATE()
 	ON_WM_SYSCOMMAND()
+	ON_UPDATE_COMMAND_UI(IDR_CONNECTED_PANE, &CMainFrame::OnUpdateStatusText)
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -38,6 +39,7 @@ static UINT indicators[] =
 // CMainFrame construction/destruction
 
 CMainFrame::CMainFrame()
+	:connected{false}
 {
 }
 
@@ -148,6 +150,17 @@ void CMainFrame::OnSysCommand(UINT nID, LPARAM lParam)
 	}
 
 	CFrameWnd::OnSysCommand(nID, lParam);
+}
 
-	m_wndStatusBar.SetPaneText(	m_wndStatusBar.CommandToIndex(IDR_CONNECTED_PANE), _T("XCOMASO"));
+void CMainFrame::OnUpdateStatusText(CCmdUI *pCmdUI)
+{
+	pCmdUI->Enable();
+	if (connected)
+	{
+		pCmdUI->SetText(_T("Connected"));
+	}
+	else
+	{
+		pCmdUI->SetText(_T("Not Connected!"));
+	}
 }

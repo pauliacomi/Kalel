@@ -31,6 +31,8 @@ public:
 	virtual void Dump(CDumpContext& dc) const;
 #endif
 
+	bool connected;
+
 protected:  // control bar embedded members
 	CToolBar        m_wndToolBar;
 	CStatusBar		m_wndStatusBar;
@@ -40,6 +42,7 @@ protected:  // control bar embedded members
 protected:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
+	void OnUpdateStatusText(CCmdUI * pCmdUI);
 	DECLARE_MESSAGE_MAP()
 public:
 };
