@@ -20,9 +20,9 @@ ApparatusParameters::ApparatusParameters(CWnd* pParent /*=NULL*/)
 }
 
 
-void ApparatusParameters::PassSettings(const MachineSettings & machineSettings)
+void ApparatusParameters::PassSettings(MachineSettings* machineSettings)
 {
-	*settings = machineSettings;
+	settings = machineSettings;
 
 	m_fSensibiliteCalo						= settings->SensibiliteCalo;
 	m_fSensibiliteCapteurBassePression		= settings->SensibiliteCapteurBassePression;

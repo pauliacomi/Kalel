@@ -224,7 +224,6 @@
     <ClInclude Include="CommHandler.h" />
     <ClInclude Include="DialogConnectServer.h" />
     <ClInclude Include="DialogMachineParameters.h" />
-    <ClInclude Include="Chrono.h" />
     <ClInclude Include="ConnectionMesure.h" />
     <ClInclude Include="DialogConnectionPort.h" />
     <ClInclude Include="DefinePostMessages.h" />
@@ -234,7 +233,6 @@
     <ClInclude Include="DialogGas.h" />
     <ClInclude Include="DialogTypeExperiment.h" />
     <ClInclude Include="GrapheView.h" />
-    <ClInclude Include="InfoEtape.h" />
     <ClInclude Include="Kalel.h" />
     <ClInclude Include="KalelDoc.h" />
     <ClInclude Include="KalelView.h" />
@@ -280,7 +278,6 @@
     <ClCompile Include="CommHandler.cpp" />
     <ClCompile Include="DialogConnectServer.cpp" />
     <ClCompile Include="DialogMachineParameters.cpp" />
-    <ClCompile Include="Chrono.cpp" />
     <ClCompile Include="ConnectionMesure.cpp" />
     <ClCompile Include="DialogConnectionPort.cpp" />
     <ClCompile Include="ExperimentPropertySheet.cpp" />
@@ -289,7 +286,6 @@
     <ClCompile Include="DialogGas.cpp" />
     <ClCompile Include="DialogTypeExperiment.cpp" />
     <ClCompile Include="GrapheView.cpp" />
-    <ClCompile Include="InfoEtape.cpp" />
     <ClCompile Include="Kalel.cpp" />
     <ClCompile Include="KalelDoc.cpp" />
     <ClCompile Include="KalelView.cpp" />

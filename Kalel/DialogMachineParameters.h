@@ -21,7 +21,7 @@ public:
 
 // Données de boîte de dialogue
 	enum { IDD = IDD_PARAMETRES_APPAREIL };
-	void PassSettings(const MachineSettings& machineSettings);
+	void PassSettings(MachineSettings* machineSettings);
 
 protected:
 	MachineSettings * settings;

@@ -406,7 +406,8 @@ LRESULT CKalelView::DisplayConnectDialog(WPARAM, LPARAM)
 		std::wstring address{ connectServer.GetAddress() };
 		
 		// First set the address
-		SetServerAddress(address);
+		Parameters param;
+		param.SetServerAddress(address);
 
 		// Then connect to the server
 		commHandler.Connect(address);
@@ -417,16 +418,34 @@ LRESULT CKalelView::DisplayConnectDialog(WPARAM, LPARAM)
 
 LRESULT CKalelView::DisplayPortDialog(WPARAM, LPARAM)
 {
-	ApparatusParameters apparatusParameters;
-	apparatusParameters.DoModal();
+	if (machineSettings.synced)
+	{
+		ApparatusParameters apparatusParameters;
+		apparatusParameters.PassSettings(&machineSettings);
+		apparatusParameters.DoModal();
+	}
+	else
+	{
+		//AfxMessageBox(,MB_OK);
+		ASSERT(0);
+	}
 
 	return 0;
 }
 
 LRESULT CKalelView::DisplayApparatusSettingsDialog(WPARAM, LPARAM)
 {
-	ConnectionPort m_connection_ports;
-	m_connection_ports.DoModal();
+	if (machineSettings.synced)
+	{
+		ConnectionPort m_connection_ports;
+		m_connection_ports.PassSettings(&machineSettings);
+		m_connection_ports.DoModal();
+	}
+	else
+	{
+		//AfxMessageBox(,MB_OK);
+		ASSERT(0);
+	}
 
 	return 0;
 }

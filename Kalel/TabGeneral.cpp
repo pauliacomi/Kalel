@@ -23,9 +23,9 @@ TabGeneral::TabGeneral()
 {
 }
 
-void TabGeneral::PassSettings(const MachineSettings & machineSettings)
+void TabGeneral::PassSettings(const MachineSettings * machineSettings)
 {
-	*settings = machineSettings;
+	settings = machineSettings;
 }
 
 TabGeneral::~TabGeneral()

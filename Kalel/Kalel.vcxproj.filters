@@ -103,11 +103,17 @@
     <Filter Include="Resource Files\Common\Strings">
       <UniqueIdentifier>{a8ea875c-77f0-4b5b-b25f-67dbeb5ad1f1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Parameters">
+    <Filter Include="Source Files\Parameters File">
+      <UniqueIdentifier>{ba35b971-af41-4399-bb4f-1cb6c646db06}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Parameters File">
       <UniqueIdentifier>{43e0358b-94cb-449b-b049-42807119eeac}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Parameters">
-      <UniqueIdentifier>{ba35b971-af41-4399-bb4f-1cb6c646db06}</UniqueIdentifier>
+    <Filter Include="Header Files\GUI\Dialogs\Machine Parameters">
+      <UniqueIdentifier>{bb454a28-b9c7-450f-83be-d9f90b457b76}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GUI\Dialogs\Type Experiment">
+      <UniqueIdentifier>{5c3056c0-ad1c-406a-a4f0-80b00336239b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -137,12 +143,6 @@
     </ClInclude>
     <ClInclude Include="tinyxml.h">
       <Filter>Header Files\Utils\XML</Filter>
-    </ClInclude>
-    <ClInclude Include="Chrono.h">
-      <Filter>Header Files\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="InfoEtape.h">
-      <Filter>Header Files\Utils</Filter>
     </ClInclude>
     <ClInclude Include="SpinBtnCtrl.h">
       <Filter>Header Files\Utils\MFC Utils</Filter>
@@ -215,12 +215,6 @@
     </ClInclude>
     <ClInclude Include="ResourceDialogExperimentSettings.h">
       <Filter>Header Files\Resources\DialogBoxes</Filter>
-    </ClInclude>
-    <ClInclude Include="DialogTypeExperiment.h">
-      <Filter>Header Files\GUI\Dialogs</Filter>
-    </ClInclude>
-    <ClInclude Include="DialogMachineParameters.h">
-      <Filter>Header Files\GUI\Dialogs</Filter>
     </ClInclude>
     <ClInclude Include="DialogConnectionPort.h">
       <Filter>Header Files\GUI\Dialogs\Connection Port</Filter>
@@ -295,10 +289,16 @@
       <Filter>Header Files\GUI\Dialogs</Filter>
     </ClInclude>
     <ClInclude Include="Parametres.h">
-      <Filter>Header Files\Parameters</Filter>
+      <Filter>Header Files\Parameters File</Filter>
     </ClInclude>
     <ClInclude Include="unicodeConv.h">
       <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="DialogMachineParameters.h">
+      <Filter>Header Files\GUI\Dialogs\Machine Parameters</Filter>
+    </ClInclude>
+    <ClInclude Include="DialogTypeExperiment.h">
+      <Filter>Header Files\GUI\Dialogs\Type Experiment</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -325,12 +325,6 @@
     </ClCompile>
     <ClCompile Include="tinyxmlparser.cpp">
       <Filter>Source Files\Utils\XML</Filter>
-    </ClCompile>
-    <ClCompile Include="Chrono.cpp">
-      <Filter>Source Files\Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="InfoEtape.cpp">
-      <Filter>Source Files\Utils</Filter>
     </ClCompile>
     <ClCompile Include="SpinBtnCtrl.cpp">
       <Filter>Source Files\Utils\MFC Utils</Filter>
@@ -441,7 +435,7 @@
       <Filter>Source Files\GUI\Dialogs</Filter>
     </ClCompile>
     <ClCompile Include="Parametres.cpp">
-      <Filter>Source Files\Parameters</Filter>
+      <Filter>Source Files\Parameters File</Filter>
     </ClCompile>
     <ClCompile Include="unicodeConv.cpp">
       <Filter>Source Files\Utils</Filter>

@@ -4,20 +4,29 @@
 
 #include <string>
 
-#define Dev_USB_Temp 2
-#define Dev_USB_Vannes 1
+class Parameters {
 
-void VerifParametres();
-void Initialisation();
+	//constructor
+public:
+	Parameters();
+	~Parameters();
 
-// Get
+	void VerifParametres();
+	void Initialisation();
 
-std::wstring GetServerAddress();
-std::wstring GetServerPort();
+	// Get
 
-// Set
+	std::wstring GetServerAddress();
+	std::wstring GetServerPort();
 
-void SetServerAddress(std::wstring address);
-void SetServerPort(std::wstring port);
+	// Set
+
+	void SetServerAddress(std::wstring address);
+	void SetServerPort(std::wstring port);
+
+protected:
+	const wchar_t * fileLocation;
+};
+
 
 #endif

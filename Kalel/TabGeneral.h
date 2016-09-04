@@ -19,10 +19,10 @@ public:
 
 // Dialog Data
 	enum { IDD = IDD_GENERAL };
-	void PassSettings(const MachineSettings& machineSettings);
+	void PassSettings(const MachineSettings* machineSettings);
 
 protected:
-	MachineSettings * settings;
+	const MachineSettings * settings;
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 	virtual BOOL OnInitDialog();
 	virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);

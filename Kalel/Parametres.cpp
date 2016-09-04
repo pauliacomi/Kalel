@@ -1,27 +1,25 @@
-
-// This file should be rewritten as a class in the future
-
+#include "stdafx.h"
 #include "Parametres.h"
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <windows.h>
-#include <tchar.h>
 
 #include <iostream>
 #include <fstream>
 
-#define nSizeInt 6
-#define nSizeFloat 20
-#define nSizeString 100
-#define nSizeFichier 255
-#define Fichier_parametres_char "./ParametresClient.ini"
-#define Fichier_parametres _T(Fichier_parametres_char)
+
+const int nSizeString{ 100 };
 
 
-void VerifParametres()
+Parameters::Parameters()
+	: fileLocation { L"./ParametresClient.ini" }
 {
-	std::ifstream file_stream(Fichier_parametres_char, std::ifstream::in);
+}
+
+Parameters::~Parameters()
+{
+}
+
+void Parameters::VerifParametres()
+{
+	std::ifstream file_stream(fileLocation, std::ifstream::in);
 	bool ans = file_stream.is_open();
 	file_stream.close();
 
@@ -36,7 +34,7 @@ void VerifParametres()
 
 
 
-void Initialisation()
+void Parameters::Initialisation()
 {
 	/*
 		BOOL WritePrivateProfileString(
@@ -54,8 +52,8 @@ void Initialisation()
 	*/
 
 
-	WritePrivateProfileString(_T("server"),_T("address"),_T(""),Fichier_parametres);
-	WritePrivateProfileString(_T("server"), _T("port"), _T(""), Fichier_parametres);
+	WritePrivateProfileString(_T("server"),_T("address"),_T(""), fileLocation);
+	WritePrivateProfileString(_T("server"), _T("port"), _T(""), fileLocation);
 }
 
 
@@ -83,31 +81,29 @@ void Initialisation()
 	lpFileName [in] : le nom du fichier d'initialisation
 */
 
-std::wstring GetServerAddress()
+std::wstring Parameters::GetServerAddress()
 {
 	TCHAR ch[nSizeString];
-	GetPrivateProfileString(__T("server"), _T("address"), _T(""),
-		ch, nSizeString, Fichier_parametres);
+	GetPrivateProfileString(__T("server"), _T("address"), _T(""), ch, nSizeString, fileLocation);
 	std::wstring convertStr(ch);
 	return convertStr;
 }
 
 
-std::wstring GetServerPort()
+std::wstring Parameters::GetServerPort()
 {
 	TCHAR ch[nSizeString];
-	GetPrivateProfileString(__T("server"), _T("port"), _T(""),
-		ch, nSizeString, Fichier_parametres);
+	GetPrivateProfileString(__T("server"), _T("port"), _T(""), ch, nSizeString, fileLocation);
 	std::wstring convertStr(ch);
 	return convertStr;
 }
 
-void SetServerAddress(std::wstring address)
+void Parameters::SetServerAddress(std::wstring address)
 {
-	WritePrivateProfileString(_T("server"), _T("address"), address.c_str(), Fichier_parametres);
+	WritePrivateProfileString(_T("server"), _T("address"), address.c_str(), fileLocation);
 }
 
-void SetServerPort(std::wstring port)
+void Parameters::SetServerPort(std::wstring port)
 {
-	WritePrivateProfileString(_T("server"), _T("address"), port.c_str(), Fichier_parametres);
+	WritePrivateProfileString(_T("server"), _T("address"), port.c_str(), fileLocation);
 }

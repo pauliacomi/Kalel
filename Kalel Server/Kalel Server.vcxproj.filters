@@ -25,9 +25,6 @@
     <Filter Include="Header Files\Backend">
       <UniqueIdentifier>{c3418395-1816-4d65-81f5-dc29466e0f01}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Manip Old">
-      <UniqueIdentifier>{fc6dd5e4-cc46-4cad-a9da-75dd0e56063a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Backend\USB">
       <UniqueIdentifier>{564f0c66-fe29-41ce-945a-4e1b9db23913}</UniqueIdentifier>
     </Filter>
@@ -45,9 +42,6 @@
     </Filter>
     <Filter Include="Source Files\Backend">
       <UniqueIdentifier>{848dd1f2-625c-49ca-98ee-d31905498b4e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Old">
-      <UniqueIdentifier>{75357d3e-1be3-42b0-83c0-213371a6ba42}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Parameters">
       <UniqueIdentifier>{29b66c5d-8311-48a6-8917-2772ad88b06a}</UniqueIdentifier>
@@ -72,6 +66,18 @@
     </Filter>
     <Filter Include="Header Files\Resources">
       <UniqueIdentifier>{a60c6704-24c3-488c-b5d6-4861523dd447}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Automation\Utils">
+      <UniqueIdentifier>{2f93dc81-58ca-435c-ab56-c644beee219b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Automation\Old">
+      <UniqueIdentifier>{75357d3e-1be3-42b0-83c0-213371a6ba42}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Automation\Manip Old">
+      <UniqueIdentifier>{fc6dd5e4-cc46-4cad-a9da-75dd0e56063a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Automation\Utils">
+      <UniqueIdentifier>{9edbb7ce-c543-4c3a-bb25-df258b70a828}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -127,13 +133,13 @@
       <Filter>Header Files\Backend\Wrapper Classes</Filter>
     </ClInclude>
     <ClInclude Include="Automation\Old\Manip.h">
-      <Filter>Header Files\Manip Old</Filter>
+      <Filter>Header Files\Automation\Manip Old</Filter>
     </ClInclude>
     <ClInclude Include="Automation\Old\Manip_Auto.h">
-      <Filter>Header Files\Manip Old</Filter>
+      <Filter>Header Files\Automation\Manip Old</Filter>
     </ClInclude>
     <ClInclude Include="Automation\Old\Manip_AutoGaz.h">
-      <Filter>Header Files\Manip Old</Filter>
+      <Filter>Header Files\Automation\Manip Old</Filter>
     </ClInclude>
     <ClInclude Include="Automation\ThreadManager.h">
       <Filter>Header Files\Automation</Filter>
@@ -189,6 +195,12 @@
     <ClInclude Include="..\Kalel Shared\Resources\DefineStages.h">
       <Filter>Header Files\Resources</Filter>
     </ClInclude>
+    <ClInclude Include="Automation\Utils\Chrono.h">
+      <Filter>Header Files\Automation\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Automation\Utils\InfoEtape.h">
+      <Filter>Header Files\Automation\Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Kalel Server.cpp">
@@ -204,109 +216,109 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Automation\Old\Manip.cpp">
-      <Filter>Source Files\Old</Filter>
+      <Filter>Source Files\Automation\Old</Filter>
     </ClCompile>
     <ClCompile Include="Automation\Old\Manip_Auto.cpp">
-      <Filter>Source Files\Old</Filter>
+      <Filter>Source Files\Automation\Old</Filter>
     </ClCompile>
     <ClCompile Include="Automation\Old\Manip_Auto_Arret.cpp">
-      <Filter>Source Files\Old</Filter>
+      <Filter>Source Files\Automation\Old</Filter>
     </ClCompile>
     <ClCompile Include="Automation\Old\Manip_Auto_Donnees.cpp">
-      <Filter>Source Files\Old</Filter>
+      <Filter>Source Files\Automation\Old</Filter>
     </ClCompile>
     <ClCompile Include="Automation\Old\Manip_Auto_Fichier.cpp">
-      <Filter>Source Files\Old</Filter>
+      <Filter>Source Files\Automation\Old</Filter>
     </ClCompile>
     <ClCompile Include="Automation\Old\Manip_Auto_LireAfficher.cpp">
-      <Filter>Source Files\Old</Filter>
+      <Filter>Source Files\Automation\Old</Filter>
     </ClCompile>
     <ClCompile Include="Automation\Old\Manip_Auto_Probleme_Injection.cpp">
-      <Filter>Source Files\Old</Filter>
+      <Filter>Source Files\Automation\Old</Filter>
     </ClCompile>
     <ClCompile Include="Automation\Old\Manip_Auto_Vannes.cpp">
-      <Filter>Source Files\Old</Filter>
+      <Filter>Source Files\Automation\Old</Filter>
     </ClCompile>
     <ClCompile Include="Automation\Old\Manip_Auto_Verifications.cpp">
-      <Filter>Source Files\Old</Filter>
+      <Filter>Source Files\Automation\Old</Filter>
     </ClCompile>
     <ClCompile Include="Automation\Old\Manip_AutoGaz.cpp">
-      <Filter>Source Files\Old</Filter>
+      <Filter>Source Files\Automation\Old</Filter>
     </ClCompile>
     <ClCompile Include="Automation\Old\Manip_AutoGaz_Adsorption_Continue.cpp">
-      <Filter>Source Files\Old</Filter>
+      <Filter>Source Files\Automation\Old</Filter>
     </ClCompile>
     <ClCompile Include="Automation\Old\Manip_AutoGaz_AEffectuer.cpp">
-      <Filter>Source Files\Old</Filter>
+      <Filter>Source Files\Automation\Old</Filter>
     </ClCompile>
     <ClCompile Include="Automation\Old\Manip_AutoGaz_Desorption.cpp">
-      <Filter>Source Files\Old</Filter>
+      <Filter>Source Files\Automation\Old</Filter>
     </ClCompile>
     <ClCompile Include="Automation\Old\Manip_AutoGaz_Donnees.cpp">
-      <Filter>Source Files\Old</Filter>
+      <Filter>Source Files\Automation\Old</Filter>
     </ClCompile>
     <ClCompile Include="Automation\Old\Manip_AutoGaz_Execution.cpp">
-      <Filter>Source Files\Old</Filter>
+      <Filter>Source Files\Automation\Old</Filter>
     </ClCompile>
     <ClCompile Include="Automation\Old\Manip_AutoGaz_Fichier.cpp">
-      <Filter>Source Files\Old</Filter>
+      <Filter>Source Files\Automation\Old</Filter>
     </ClCompile>
     <ClCompile Include="Automation\Old\Manip_AutoGaz_Grandes_Doses.cpp">
-      <Filter>Source Files\Old</Filter>
+      <Filter>Source Files\Automation\Old</Filter>
     </ClCompile>
     <ClCompile Include="Automation\Old\Manip_AutoGaz_LEA.cpp">
-      <Filter>Source Files\Old</Filter>
+      <Filter>Source Files\Automation\Old</Filter>
     </ClCompile>
     <ClCompile Include="Automation\Old\Manip_AutoGaz_Ligne_Base_Equilibre.cpp">
-      <Filter>Source Files\Old</Filter>
+      <Filter>Source Files\Automation\Old</Filter>
     </ClCompile>
     <ClCompile Include="Automation\Old\Manip_AutoGaz_Mesure.cpp">
-      <Filter>Source Files\Old</Filter>
+      <Filter>Source Files\Automation\Old</Filter>
     </ClCompile>
     <ClCompile Include="Automation\Old\Manip_AutoGaz_Mise_Sous_Vide.cpp">
-      <Filter>Source Files\Old</Filter>
+      <Filter>Source Files\Automation\Old</Filter>
     </ClCompile>
     <ClCompile Include="Automation\Old\Manip_AutoGaz_MiseSousVide_Ampoule.cpp">
-      <Filter>Source Files\Old</Filter>
+      <Filter>Source Files\Automation\Old</Filter>
     </ClCompile>
     <ClCompile Include="Automation\Old\Manip_AutoGaz_MiseSousVide_Bouteille.cpp">
-      <Filter>Source Files\Old</Filter>
+      <Filter>Source Files\Automation\Old</Filter>
     </ClCompile>
     <ClCompile Include="Automation\Old\Manip_AutoGaz_MiseSousVide_ChangementBouteille.cpp">
-      <Filter>Source Files\Old</Filter>
+      <Filter>Source Files\Automation\Old</Filter>
     </ClCompile>
     <ClCompile Include="Automation\Old\Manip_AutoGaz_Moyennes_Doses.cpp">
-      <Filter>Source Files\Old</Filter>
+      <Filter>Source Files\Automation\Old</Filter>
     </ClCompile>
     <ClCompile Include="Automation\Old\Manip_AutoGaz_Petites_Doses.cpp">
-      <Filter>Source Files\Old</Filter>
+      <Filter>Source Files\Automation\Old</Filter>
     </ClCompile>
     <ClCompile Include="Automation\Old\Manip_AutoGaz_Proprietes_Experience.cpp">
-      <Filter>Source Files\Old</Filter>
+      <Filter>Source Files\Automation\Old</Filter>
     </ClCompile>
     <ClCompile Include="Automation\Old\Manip_AutoGaz_Vannes.cpp">
-      <Filter>Source Files\Old</Filter>
+      <Filter>Source Files\Automation\Old</Filter>
     </ClCompile>
     <ClCompile Include="Automation\Old\ManipData.cpp">
-      <Filter>Source Files\Old</Filter>
+      <Filter>Source Files\Automation\Old</Filter>
     </ClCompile>
     <ClCompile Include="Automation\Old\ManipFileWriting.cpp">
-      <Filter>Source Files\Old</Filter>
+      <Filter>Source Files\Automation\Old</Filter>
     </ClCompile>
     <ClCompile Include="Automation\Old\ManipManualExecution.cpp">
-      <Filter>Source Files\Old</Filter>
+      <Filter>Source Files\Automation\Old</Filter>
     </ClCompile>
     <ClCompile Include="Automation\Old\ManipMeasurement.cpp">
-      <Filter>Source Files\Old</Filter>
+      <Filter>Source Files\Automation\Old</Filter>
     </ClCompile>
     <ClCompile Include="Automation\Old\ManipSecurity.cpp">
-      <Filter>Source Files\Old</Filter>
+      <Filter>Source Files\Automation\Old</Filter>
     </ClCompile>
     <ClCompile Include="Automation\Old\ManipTimeKeeping.cpp">
-      <Filter>Source Files\Old</Filter>
+      <Filter>Source Files\Automation\Old</Filter>
     </ClCompile>
     <ClCompile Include="Automation\Old\ManipValves.cpp">
-      <Filter>Source Files\Old</Filter>
+      <Filter>Source Files\Automation\Old</Filter>
     </ClCompile>
     <ClCompile Include="Automation\ThreadManager.cpp">
       <Filter>Source Files\Automation</Filter>
@@ -406,6 +418,12 @@
     </ClCompile>
     <ClCompile Include="Automation\MFCMessageHandler.cpp">
       <Filter>Source Files\Com Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="Automation\Utils\Chrono.cpp">
+      <Filter>Source Files\Automation\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Automation\Utils\InfoEtape.cpp">
+      <Filter>Source Files\Automation\Utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

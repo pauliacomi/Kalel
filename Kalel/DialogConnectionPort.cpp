@@ -14,9 +14,10 @@ IMPLEMENT_DYNAMIC(ConnectionPort, CDialog)
 
 ConnectionPort::ConnectionPort(CWnd* pParent /*=NULL*/)
 	: CDialog(ConnectionPort::IDD, pParent)
-
-	, m_nIndexPortVannes(0)
-	, m_nIndexPortTemperatures(0)
+	
+	, settings{ nullptr }
+	, m_nIndexPortVannes{ 0 }
+	, m_nIndexPortTemperatures{ 0 }
 {
 	// CURRENTLY ONLY DESIGNED FOR A MAXIMUM OF 3 INSTURMENTS
 	for (size_t i = 0; i < NB_OF_INSTRUMENTS; i++)
@@ -55,9 +56,9 @@ ConnectionPort::ConnectionPort(CWnd* pParent /*=NULL*/)
 	m_CheckInstrumentKeithleyVoie2.push_back(&m_CheckInstrument3KeithleyVoie2);
 }
 
-void ConnectionPort::PassSettings(const MachineSettings & machineSettings)
+void ConnectionPort::PassSettings(MachineSettings * machineSettings)
 {
-	*settings = machineSettings;
+	settings = machineSettings;
 }
 
 ConnectionPort::~ConnectionPort()
