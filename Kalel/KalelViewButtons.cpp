@@ -17,44 +17,51 @@
 // When clicking on the Launch button
 void CKalelView::OnBnClickedLancer()
 {
-	// Create the experiment type window
-	DialogTypeExperiment dialogExperimentType;
-
-	if (dialogExperimentType.DoModal() == IDOK)
+	if (machineSettings.synced)
 	{
-		// Save user choice
-		experimentSettings->experimentType = dialogExperimentType.TypeExperience;
+		// Create the experiment type window
+		DialogTypeExperiment dialogExperimentType;
 
-		// Create dialog
-		ExperimentPropertySheet dialogExperimentProperties(_T(""));
-		dialogExperimentProperties.Initiate(experimentSettings);
-
-		if (dialogExperimentProperties.DoModal() == IDOK)
+		if (dialogExperimentType.DoModal() == IDOK)
 		{
-			// the start button is blocked
-			GetDlgItem(IDC_LANCER)->EnableWindow(FALSE);
-			// the stop button is activated
-			GetDlgItem(IDC_ARRETER)->EnableWindow(TRUE);
+			// Save user choice
+			experimentSettings->experimentType = dialogExperimentType.TypeExperience;
 
-			// Block menu and set running flag
-			pApp->experimentRunning = true;
-			pApp->menuIsAvailable = false;
-			UpdateButtons();
-			
-			// Get the data from the dialog
-			GetExperimentData(&dialogExperimentProperties, true);
+			// Create dialog
+			ExperimentPropertySheet dialogExperimentProperties(_T(""));
+			dialogExperimentProperties.Initiate(experimentSettings);
 
-			// Raise the flag for data modified
-			commHandler.SetModifiedData();
+			if (dialogExperimentProperties.DoModal() == IDOK)
+			{
+				// the start button is blocked
+				GetDlgItem(IDC_LANCER)->EnableWindow(FALSE);
+				// the stop button is activated
+				GetDlgItem(IDC_ARRETER)->EnableWindow(TRUE);
+
+				// Block menu and set running flag
+				pApp->experimentRunning = true;
+				pApp->menuIsAvailable = false;
+				UpdateButtons();
+
+				// Get the data from the dialog
+				GetExperimentData(&dialogExperimentProperties, true);
+
+				// Raise the flag for data modified
+				commHandler.SetModifiedData();
+			}
+			else
+			{
+				// Save the data from the dialog
+				GetExperimentData(&dialogExperimentProperties, true);
+
+				// Roll back by calling stop function
+				CancelBeforeStarting(NULL, NULL);
+			}
 		}
-		else
-		{
-			// Save the data from the dialog
-			GetExperimentData(&dialogExperimentProperties, true);
-
-			// Roll back by calling stop function
-			CancelBeforeStarting(NULL,NULL);
-		}
+	}
+	else
+	{
+		AfxMessageBox(ERROR_CONNECTION_STATUS, MB_OK);
 	}
 }
 

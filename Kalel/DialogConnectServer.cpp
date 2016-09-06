@@ -64,21 +64,21 @@ void DialogConnectServer::OnClickedConnect()
 	switch (radioChoice)
 	{
 	case -1:
-		AfxMessageBox(ERROR_CONNECTION, MB_OK);
+		AfxMessageBox(ERROR_CONNECTION_INPUT, MB_OK);
 		break;
 	case 0:
 		OnOK();
 		break;
 	case 1:
 		if (webAddress == _T("")){
-			AfxMessageBox(ERROR_CONNECTION, MB_OK);
+			AfxMessageBox(ERROR_CONNECTION_INPUT, MB_OK);
 			break;
 		}
 		OnOK();
 		break;
 	case 2:
 		if (ipAddress == NULL) {
-			AfxMessageBox(ERROR_CONNECTION, MB_OK);
+			AfxMessageBox(ERROR_CONNECTION_INPUT, MB_OK);
 			break;
 		}
 		OnOK();

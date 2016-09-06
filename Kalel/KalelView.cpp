@@ -122,7 +122,9 @@ CKalelView::CKalelView()
 	, m_StrTemoinEV1(_T(""))
 	, m_StrTemoinEV2(_T(""))
 	, m_StrTemoinPompe(_T(""))
-	, experimentData(nullptr)
+
+	, experimentSettings{ nullptr }
+	, experimentData{ nullptr }
 {
 }
 
@@ -426,8 +428,7 @@ LRESULT CKalelView::DisplayPortDialog(WPARAM, LPARAM)
 	}
 	else
 	{
-		//AfxMessageBox(,MB_OK);
-		ASSERT(0);
+		AfxMessageBox(ERROR_CONNECTION_STATUS, MB_OK);
 	}
 
 	return 0;
@@ -443,8 +444,7 @@ LRESULT CKalelView::DisplayApparatusSettingsDialog(WPARAM, LPARAM)
 	}
 	else
 	{
-		//AfxMessageBox(,MB_OK);
-		ASSERT(0);
+		AfxMessageBox(ERROR_CONNECTION_STATUS, MB_OK);
 	}
 
 	return 0;
