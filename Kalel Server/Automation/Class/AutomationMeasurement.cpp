@@ -13,9 +13,7 @@
 *
 ***********************************************/
 
-#include "StdAfx.h"
 #include "Automation.h"
-
 
 void Automation::ThreadMeasurement()
 {

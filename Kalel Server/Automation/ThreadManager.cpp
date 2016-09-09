@@ -2,9 +2,9 @@
 #include "ThreadManager.h"
 
 #include "../../Kalel Shared/Com Classes/ExperimentSettings.h"
+#include "../../Kalel Shared/Com Classes/ManualActionParam.h"
+#include "../../Kalel Shared/Resources/DefineInstruments.h"
 #include "Class\Automation.h"										// Backend for all the automation
-
-#include "ManualActionParam.h"
 
 #include "../Parameters/Parametres.h"
 
@@ -302,5 +302,5 @@ void ThreadManager::ThreadManualAction()
 	}
 
 	// Ask for the app to show the change, pass the locally created object which must be deleted there
-	::PostMessage(localMP->windowHandle, WM_UPDATEBUTTONS, (WPARAM)localMP, actionSuccessful);
+	// ::PostMessage(localMP->windowHandle, WM_UPDATEBUTTONS, (WPARAM)localMP, actionSuccessful);
 }

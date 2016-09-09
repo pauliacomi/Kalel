@@ -33,6 +33,7 @@ class ExperimentPropertySheet : public CMFCPropertySheet
 public:
 	ExperimentPropertySheet(UINT nIDCaption, CWnd* pParentWnd = NULL, UINT iSelectPage = 0);
 	ExperimentPropertySheet(LPCTSTR pszCaption, CWnd* pParentWnd = NULL, UINT iSelectPage = 0);
+	ExperimentPropertySheet(LPCTSTR pszCaption, MachineSettings * machineSettings, CWnd* pParentWnd = NULL, UINT iSelectPage = 0);
 	virtual ~ExperimentPropertySheet();
 
 	void Initiate(ExperimentSettings * experimentSettings);
@@ -40,7 +41,6 @@ public:
 
 protected:
 	DECLARE_MESSAGE_MAP()
-
 
 // variables
 public:

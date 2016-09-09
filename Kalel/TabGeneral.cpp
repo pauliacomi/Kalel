@@ -11,8 +11,8 @@
 #include "XSBrowseFolder.h"												// Browse for folder custom class
 #include "ParserXML.h"													// XML builder
 
-#include "../Kalel Shared/Com Classes/MachineSettings.h"				// Accessing the settings
-#include "../Kalel Shared/Resources/StringTable.h"						// Error message strings
+#include "Com Classes/MachineSettings.h"								// Accessing the settings
+#include "Resources/StringTable.h"										// Error message strings
 
 // TabGeneral dialog
 
@@ -20,6 +20,7 @@ IMPLEMENT_DYNAMIC(TabGeneral, CMFCPropertyPage)
 
 TabGeneral::TabGeneral()
 	: CMFCPropertyPage(TabGeneral::IDD)
+	, settings{ nullptr }
 {
 }
 

@@ -79,6 +79,9 @@
     <Filter Include="Header Files\Automation\Utils">
       <UniqueIdentifier>{9edbb7ce-c543-4c3a-bb25-df258b70a828}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Measurement">
+      <UniqueIdentifier>{0ae70c48-f658-45fc-a459-61d7f9e5c5a1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -210,9 +213,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Automation\Old\MainFrm.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Automation\Old\Manip.cpp">

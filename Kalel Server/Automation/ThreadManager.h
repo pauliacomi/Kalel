@@ -1,7 +1,8 @@
-#pragma once
 #ifndef THREADS_H
 #define THREADS_H
+#pragma once
 
+#include <thread>
 
 class Automation;
 class ExperimentSettings;
@@ -17,6 +18,7 @@ public:
 	ExperimentSettings * experimentSettings;				// Storage for automatic parameters
 
 	CWinThread * m_threadMainControlLoop;					// Reference for main thread
+	std::thread * m_threadMeasurement;						// Reference for main thread
 	CWinThread * m_threadManualAction;						// Reference for manual thread
 
 private:

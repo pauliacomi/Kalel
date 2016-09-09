@@ -252,7 +252,6 @@
     <ClCompile Include="Automation\Class\AutomationVacuum.cpp" />
     <ClCompile Include="Automation\Class\AutomationValves.cpp" />
     <ClCompile Include="Automation\MFCMessageHandler.cpp" />
-    <ClCompile Include="Automation\Old\MainFrm.cpp" />
     <ClCompile Include="Automation\Old\Manip.cpp" />
     <ClCompile Include="Automation\Old\ManipData.cpp" />
     <ClCompile Include="Automation\Old\ManipFileWriting.cpp" />

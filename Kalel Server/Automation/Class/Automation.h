@@ -2,31 +2,35 @@
 
 #define finl "\r\n"
 
+#include "../../stdafx.h"
+
 // REQUIRED INCLUDES
 
-#include "Classes_experiences.h"			// Resource where templates for all the data are stored, might be worth replacing with a single data type/class 
-#include "StringTable.h"					// Definitions for the text in the messages
+#include "../../../Kalel Shared/Com Classes/ExperimentHelperClasses.h"		// Resource where templates for all the data are stored
 
 // Defines
-#include "DefineAutomationSettings.h"		// All settings for automation are stored here
-#include "DefineInstruments.h"				// All instruments definitions are here
-#include "DefineStages.h"					// All stage, experiment type definitions are here
+#include "../../../Kalel Shared/Resources/StringTable.h"					// Definitions for the text in the messages
+#include "../../../Kalel Shared/Resources/DefineAutomationSettings.h"		// All settings for automation are stored here
+#include "../../../Kalel Shared/Resources/DefineInstruments.h"				// All instruments definitions are here
+#include "../../../Kalel Shared/Resources/DefineStages.h"					// All stage, experiment type definitions are here
 
 // Synchronization classes
-#include "../MFCMessageHandler.h"									// Handles all the messages from this class to the client
+#include "../MFCMessageHandler.h"											// Handles all the messages from this class to the client
 #include "../../../Kalel Shared/Com Classes/ExperimentData.h"
 #include "../../../Kalel Shared/Com Classes/ExperimentSettings.h"	
 
 // Measurement and manipulation classes
-#include "../../Backend/Wrapper Classes/Vannes.h"					// Controlling valves
-#include "../../Backend/Wrapper Classes/Temperature.h"				// Temperature recording
-#include "../../Backend/Wrapper Classes/SerialInstruments.h"		// Pressure & Calorimeter recording
+#include "../../Backend/Wrapper Classes/Vannes.h"							// Controlling valves
+#include "../../Backend/Wrapper Classes/Temperature.h"						// Temperature recording
+#include "../../Backend/Wrapper Classes/SerialInstruments.h"				// Pressure & Calorimeter recording
 
-#include "Chrono.h"					// Time keeping
+#include "../Utils/Chrono.h"												// Time keeping
 
 // std::functionality
 #include <sstream>
 #include <atomic>
+#include <thread>
+#include <fstream>
 
 class Automation
 {
@@ -63,7 +67,7 @@ protected:
 	// Objects 
 	//------------------------------------------------------------
 	
-	ofstream fileStream;								// The file stream is stored in this variable
+	std::ofstream fileStream;							// The file stream is stored in this variable
 
 	MFCMessageHandler messageHandler;					// This class will send all the messages to the GUI using MFC's message pump
 

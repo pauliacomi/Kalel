@@ -19,7 +19,6 @@
 #include "DialogConnectServer.h"
 
 #include "DefinePostMessages.h"										// Definition of messages received from the automation functionality
-#include "ExperimentPropertySheet.h"								// The dialog asking the user to input the experiment parameters
 #include "Parametres.h"												// Parameters file read/write
 
 #ifdef _DEBUG

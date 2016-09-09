@@ -9,7 +9,7 @@
 #include "KalelView.h"
 
 #include "DialogTypeExperiment.h"		// The dialog asking the user for the experiment type
-#include "ExperimentPropertySheet.h"
+#include "ExperimentPropertySheet.h"	// The dialog asking the user to input the experiment parameters
 
 #include "TabDoses.h"					// For manipulating the settings object
 #include "TabDesorption.h"				// For manipulating the settings object
@@ -28,7 +28,7 @@ void CKalelView::OnBnClickedLancer()
 			experimentSettings->experimentType = dialogExperimentType.TypeExperience;
 
 			// Create dialog
-			ExperimentPropertySheet dialogExperimentProperties(_T(""));
+			ExperimentPropertySheet dialogExperimentProperties(_T(""), &machineSettings);
 			dialogExperimentProperties.Initiate(experimentSettings);
 
 			if (dialogExperimentProperties.DoModal() == IDOK)
@@ -93,7 +93,7 @@ void CKalelView::OnBnClickedButtonParametresExperience()
 	if (pApp->experimentRunning) {
 
 		// Create dialog
-		ExperimentPropertySheet dialogExperimentProperties(_T(""));
+		ExperimentPropertySheet dialogExperimentProperties(_T(""), &machineSettings);
 		dialogExperimentProperties.Initiate(experimentSettings);
 
 		int counter = 0;

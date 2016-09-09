@@ -28,6 +28,12 @@ ExperimentPropertySheet::ExperimentPropertySheet(LPCTSTR pszCaption, CWnd* pPare
 	SetLook(CMFCPropertySheet::PropSheetLook_List, 150);
 }
 
+ExperimentPropertySheet::ExperimentPropertySheet(LPCTSTR pszCaption, MachineSettings * machineSettings, CWnd* pParentWnd, UINT iSelectPage)
+	:ExperimentPropertySheet(pszCaption, pParentWnd, iSelectPage)
+{
+	m_general.PassSettings(machineSettings);
+}
+
 ExperimentPropertySheet::~ExperimentPropertySheet()
 {
 	// Must delete all created tabs
