@@ -4,7 +4,7 @@
 #include "../../Kalel Shared/Com Classes/ExperimentSettings.h"
 #include "../../Kalel Shared/Com Classes/ManualActionParam.h"
 #include "../../Kalel Shared/Resources/DefineInstruments.h"
-#include "Class\Automation.h"										// Backend for all the automation
+#include "Class/Automation.h"										// Backend for all the automation
 
 #include "../Parameters/Parametres.h"
 

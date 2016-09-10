@@ -2,14 +2,16 @@
 #define INFOETAPE_H
 #pragma once
 
+#include <string>
+
 class InfoEtape
 {
 public :
 	int Index;
-	CString Nom;
+	std::string Nom;
 	int FctArret;
 
-	InfoEtape(int Index, CString Nom, int FctArret);
+	InfoEtape(int Index, std::string Nom, int FctArret);
 
 };
 

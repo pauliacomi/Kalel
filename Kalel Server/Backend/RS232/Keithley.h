@@ -1,11 +1,11 @@
-#pragma once
-
 #ifndef _KEITHLEY__H_
 #define _KEITHLEY__H_
+#pragma once
+
 #include "LiaisonRS232.h"
+
 #include <string>
 #include <windows.h>
-
 
 
 class Keithley :

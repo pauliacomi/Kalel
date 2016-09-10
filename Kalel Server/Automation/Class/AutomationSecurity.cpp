@@ -1,6 +1,5 @@
 // This function contains checks for high pressure and other security related checks
 
-#include "StdAfx.h"
 #include "Automation.h"
 
 

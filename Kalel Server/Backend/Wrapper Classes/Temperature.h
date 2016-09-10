@@ -7,8 +7,8 @@
 #include <stdio.h>
 #include <tchar.h>
 
-#include "NI_USB_9211A.h"
-#include "Parametres.h"
+#include "../USB/NI_USB_9211A.h"
+#include "../../Parameters/Parametres.h"
 
 
 class CTemperature :

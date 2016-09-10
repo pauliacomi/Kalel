@@ -1,6 +1,6 @@
-#pragma once
 #ifndef NI_USB_9211A_H
 #define NI_USB_9211A_H
+#pragma once
 
 #include "NIDAQmx.h"
 #include <math.h>

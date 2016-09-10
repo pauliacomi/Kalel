@@ -1,7 +1,5 @@
 #include "Automation.h"
 
-
-
 Automation::Automation(ExperimentSettings* exps)
 	: running(true)
 {
@@ -37,9 +35,6 @@ Automation::Automation(ExperimentSettings* exps)
 	// Initialise local settings copy
 	experimentLocalSettings = GetSettings();
 
-	// Initialise message handler
-	messageHandler.SetHandle(experimentLocalSettings.GUIhandle);
-
 	// Initialisation of the critical section
 	InitializeCriticalSection(&criticalSection);
 
@@ -51,9 +46,7 @@ Automation::Automation(ExperimentSettings* exps)
 	g_pSerialInstruments = new SerialInstruments();
 	if (!g_pSerialInstruments->Init(&errorInit))
 	{
-		CString errorString;
-		errorString.Format("%s", errorInit.c_str());
-		messageHandler.DisplayMessageBox(MESSAGE_INSTRUMENT_INIT_FAIL, MB_ICONERROR | MB_OK, false, errorString);
+		messageHandler.DisplayMessageBox(MESSAGE_INSTRUMENT_INIT_FAIL, MB_ICONERROR | MB_OK, false, errorInit);
 	}
 
 	// Initialise security

@@ -1,6 +1,6 @@
-#pragma once
 #ifndef NI_USB_6008_H_
 #define NI_USB_6008_H_
+#pragma once
 
 #include "NIDAQmx.h"
 #include <math.h>

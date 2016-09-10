@@ -1,12 +1,10 @@
-#include "StdAfx.h"
-#include <iostream>
 #include "Keithley.h"
+
 //Rajout 
+#include <iostream>
 #include <sstream>
 #include <math.h>
 
-
-using namespace std;
 
 
 Keithley::Keithley(void) : LiaisonRS232()
@@ -38,12 +36,12 @@ bool Keithley::OpenCOM(int nId)
 
 	if (connectionOpen)
 	{
-		errorKeep = "Keithley open: COM" + to_string(nId);
+		errorKeep = "Keithley open: COM" + std::to_string(nId);
 		return true;
 	}
 	else
 	{
-		errorKeep += "\nKeithley opening failed: COM" + to_string(nId);
+		errorKeep += "\nKeithley opening failed: COM" + std::to_string(nId);
 		return false;
 	}
 }
@@ -190,11 +188,11 @@ bool Keithley::ReadChannel(int chanNo, double* result)
 	
 	// On ne va garder de 'buffer' que les 15 premiers caracteres. On elimine le retour a la ligne
 	// On mettra cette chaine de caractere dans 'resultat'.
-	string temp = buffer;
+	std::string temp = buffer;
 	temp = temp.substr(0,15);
 	*result = atof(temp.c_str());
 
-	errorKeep = "Channel " + to_string(chanNo) + " read";
+	errorKeep = "Channel " + std::to_string(chanNo) + " read";
 	return true;
 }
 

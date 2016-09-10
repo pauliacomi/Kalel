@@ -1,6 +1,6 @@
-#include "Forcelib.h"
+#include "../Forcelib.h"
 #include "ExperimentData.h"
-#include "Resources/DefineStages.h"	// For the names of the stages/experiment types
+#include "../Resources/DefineStages.h"	// For the names of the stages/experiment types
 
 ExperimentData::ExperimentData()
 {

@@ -1,9 +1,9 @@
-#include "Forcelib.h"
+#include "../Forcelib.h"
 #include "ExperimentSettings.h"
 
 #include "CommonFunctions.h"
-#include "Resources/DefineStages.h"
-#include "Resources/StringTable.h"
+#include "../Resources/DefineStages.h"
+#include "../Resources/StringTable.h"
 
 ExperimentSettings::ExperimentSettings()
 {

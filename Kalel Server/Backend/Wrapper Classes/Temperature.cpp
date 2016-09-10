@@ -1,6 +1,4 @@
-#include "StdAfx.h"
 #include "Temperature.h"
-
 
 
 // Constructors & Destructor

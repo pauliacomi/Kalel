@@ -1,5 +1,3 @@
-
-#include "StdAfx.h"
 #include "NI_USB_6008.h"
 
 #define DAQmxErrChk(functionCall) { if( DAQmxFailed(error=(functionCall)) ) { goto Error; } }

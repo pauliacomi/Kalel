@@ -1,6 +1,5 @@
-#include "StdAfx.h"
+#include "../../stdafx.h"
 #include "Automation.h"
-
 
 
 
@@ -10,9 +9,9 @@
 ***********************************************************************/
 void Automation::EnteteCreate()
 {
-	ofstream file;
+	std::ofstream file;
 
-	file.open(Automation::BuildFileName("txt", true).c_str(), ios_base::out);
+	file.open(Automation::BuildFileName("txt", true).c_str(), std::ios_base::out);
 	file.clear();
 	file << EnteteBase(false);
 	file << EnteteGeneral(false);
@@ -34,9 +33,9 @@ void Automation::EnteteCreate()
 ***********************************************************************/
 void Automation::EnteteCSVCreate()
 {
-	ofstream file;
+	std::ofstream file;
 
-	file.open(Automation::BuildFileName("csv", true).c_str(), ios_base::out);
+	file.open(Automation::BuildFileName("csv", true).c_str(), std::ios_base::out);
 	file.clear();
 	file << EnteteBase(true);
 	file << EnteteGeneral(true);
@@ -51,14 +50,14 @@ void Automation::EnteteCSVCreate()
 
 
 /**********************************************************************
-* Opens the measurement file for the first time and stores its link in the fileStream ofstream
+* Opens the measurement file for the first time and stores its link in the fileStream std::ofstream
 * Also writes columns in the CSV
 * Inputs: none
 ***********************************************************************/
 void Automation::FileMeasurementOpen()
 {
 	// Create the file
-	fileStream.open(BuildFileName("csv", false).c_str(), ios_base::out /*| ios::trunc*/);
+	fileStream.open(BuildFileName("csv", false).c_str(), std::ios_base::out /*| ios::trunc*/);
 
 	// Clear the file stream, pas le .csv, et on peut réitérer l'écriture en enlevant le caractère "fin de fichier"
 	fileStream.clear();
@@ -73,7 +72,7 @@ void Automation::FileMeasurementOpen()
 	fileStream << "T°C Cage;";													  // Temperature enclosure
 	fileStream << "T°C pièce;";													  // Temperature room
 	fileStream << "Vanne 6";													  // Valve open
-	fileStream << endl;															  // Next line
+	fileStream << std::endl;															  // Next line
 }
 
 
@@ -109,7 +108,7 @@ void Automation::FileMeasurementRecord()
 		fileStream << experimentLocalData.temperatureCage << ";";				   // Temperature enclosure
 		fileStream << experimentLocalData.temperatureRoom << ";";				   // Temperature room
 		fileStream << EstOuvert_Vanne(6) << ";";								   // Valve open
-		fileStream << endl;														   // Next line
+		fileStream << std::endl;														   // Next line
 	}
 }
 
@@ -120,15 +119,15 @@ void Automation::FileMeasurementRecord()
 * Inputs:
 *        bool csv: Ask for a comma separated value format if true
 ***********************************************************************/
-string Automation::EnteteBase(bool csv)
+std::string Automation::EnteteBase(bool csv)
 {
-	string divider;
+	std::string divider;
 	if (csv)
 		divider = ";";
 	else
 		divider = " : ";
 
-	ostringstream text("", ios_base::app);
+	std::ostringstream text("", std::ios_base::app);
 
 	text << "Experiment type" << divider;
 	text << experimentLocalSettings.experimentType;
@@ -144,24 +143,24 @@ string Automation::EnteteBase(bool csv)
 * Inputs:
 *        bool csv: Ask for a comma separated value format if true
 ***********************************************************************/
-string Automation::EnteteGeneral(bool csv)
+std::string Automation::EnteteGeneral(bool csv)
 {
-	string divider;
+	std::wstring divider;
 	if (csv)
 		divider = ";";
 	else
 		divider = " : ";
 
-	ostringstream text("", ios_base::app);
+	std::wostringstream text(L"", std::ios_base::app);
 
-	text << "Experimentateur"				<< divider		<< experimentLocalSettings.dataGeneral.experimentateur.nom								<< finl;
-	text << "Date"							<< divider		<< experimentLocalSettings.dataGeneral.date_experience									<< finl;
-	text << "Gaz"							<< divider		<< experimentLocalSettings.dataGeneral.gaz.symbole										<< finl;
-	text << "Echantillon"					<< divider		<< experimentLocalSettings.dataGeneral.nom_echantillon									<< finl;
-	text << "Masse"							<< divider		<< experimentLocalSettings.dataGeneral.masse_echantillon		<< divider << "g"		<< finl;
-	text << "Température de l'expérience"	<< divider		<< experimentLocalSettings.dataGeneral.temperature_experience	<< divider << "°C"		<< finl;
-	text << "Commentaires"					<< divider		<< experimentLocalSettings.dataGeneral.commentaires										<< finl;
-	text << "Calorimètre"					<< divider		<< GetNomCalo()																			<< finl;
+	text << L"Experimentateur"				<< divider		<< experimentLocalSettings.dataGeneral.experimentateur.nom								<< finl;
+	text << L"Date"							<< divider		<< experimentLocalSettings.dataGeneral.date_experience									<< finl;
+	text << L"Gaz"							<< divider		<< experimentLocalSettings.dataGeneral.gaz.symbole										<< finl;
+	text << L"Echantillon"					<< divider		<< experimentLocalSettings.dataGeneral.nom_echantillon									<< finl;
+	text << L"Masse"						<< divider		<< experimentLocalSettings.dataGeneral.masse_echantillon		<< divider << "g"		<< finl;
+	text << L"Température de l'expérience"	<< divider		<< experimentLocalSettings.dataGeneral.temperature_experience	<< divider << "°C"		<< finl;
+	text << L"Commentaires"					<< divider		<< experimentLocalSettings.dataGeneral.commentaires										<< finl;
+	text << L"Calorimètre"					<< divider		<< GetNomCalo()																			<< finl;
 	text																																			<< finl;
 
 	return text.str();
@@ -174,15 +173,15 @@ string Automation::EnteteGeneral(bool csv)
 * Inputs:
 *        bool csv: Ask for a comma separated value format if true
 ***********************************************************************/
-string Automation::EnteteDivers(bool csv)
+std::string Automation::EnteteDivers(bool csv)
 {
-	string divider;
+	std::string divider;
 	if (csv)
 		divider = ";";
 	else
 		divider = " : ";
 
-	ostringstream text("", ios_base::app);
+	std::ostringstream text("", std::ios_base::app);
 
 	text << "Numéro de Cellule"				<< divider		<< experimentLocalSettings.dataDivers.cellule.numero									<< finl;
 	text << "Volume du calo"				<< divider		<< experimentLocalSettings.dataDivers.cellule.volume_calo		<< divider << "cm3"		<< finl;
@@ -202,15 +201,15 @@ string Automation::EnteteDivers(bool csv)
 * Inputs:
 *        bool csv: Ask for a comma separated value format if true
 ***********************************************************************/
-string Automation::EnteteAdsorption(bool csv)
+std::string Automation::EnteteAdsorption(bool csv)
 {
-	string divider;
+	std::string divider;
 	if (csv)
 		divider = ";";
 	else
 		divider = " : ";
 
-	ostringstream text("", ios_base::app);
+	std::ostringstream text("", std::ios_base::app);
 
 	for (size_t i = 0; i < experimentLocalSettings.dataAdsorption.size(); i++)
 	{	
@@ -233,15 +232,15 @@ string Automation::EnteteAdsorption(bool csv)
 * Inputs:
 *        bool csv: Ask for a comma separated value format if true
 ***********************************************************************/
-string Automation::EnteteDesorption(bool csv)
+std::string Automation::EnteteDesorption(bool csv)
 {
-	string divider;
+	std::string divider;
 	if (csv)
 		divider = ";";
 	else
 		divider = " : ";
 
-	ostringstream text("", ios_base::app);
+	std::ostringstream text("", std::ios_base::app);
 
 	for (size_t i = 0; i < experimentLocalSettings.dataDesorption.size(); i++)
 	{	
@@ -267,14 +266,14 @@ string Automation::EnteteDesorption(bool csv)
 void Automation::RecordDataChange(const ExperimentSettings& newSettings, bool csv)
 {
 	// Check if csv file is requested
-	string divider;
+	std::string divider;
 	if (csv)
 		divider = ";";
 	else
 		divider = " : ";
 
-	// Create string stream
-	ostringstream text("", ios_base::app);
+	// Create std::string stream
+	std::ostringstream text("", std::ios_base::app);
 
 	// Check for changes in adsorption
 	for (size_t i = 0; i < experimentLocalSettings.dataAdsorption.size(); i++)
@@ -282,7 +281,7 @@ void Automation::RecordDataChange(const ExperimentSettings& newSettings, bool cs
 		if (experimentLocalSettings.dataAdsorption[i] != newSettings.dataAdsorption[i] )
 		{
 
-			text << endl << "-----------------------------------------------------" << finl;
+			text << std::endl << "-----------------------------------------------------" << finl;
 			text << "Settings changed"												<< finl;
 			text << "Step" << divider << experimentLocalData.adsorptionCounter		<< finl;
 			text << "Dose" << divider << experimentLocalData.experimentDose			<< finl;
@@ -314,7 +313,7 @@ void Automation::RecordDataChange(const ExperimentSettings& newSettings, bool cs
 	{
 		if (experimentLocalSettings.dataDesorption[i] != newSettings.dataDesorption[i])
 		{
-			text << endl << "-----------------------------------------------------" << finl;
+			text << std::endl << "-----------------------------------------------------" << finl;
 			text << "Settings changed"												<< finl;
 			text << "Step" << divider << experimentLocalData.adsorptionCounter		<< finl;
 			text << "Dose" << divider << experimentLocalData.experimentDose			<< finl;
@@ -345,16 +344,16 @@ void Automation::RecordDataChange(const ExperimentSettings& newSettings, bool cs
 	}
 
 	// Get title
-	string title;
+	std::string title;
 	if (csv)
 		title = BuildFileName("csv", true).c_str();
 	else
 		title = BuildFileName("txt", true).c_str();
 
 	// Write to file
-	ofstream file;
-	file.open(title, ios::out | ios::app);
-	file << text.str() << endl;
+	std::ofstream file;
+	file.open(title, std::ios::out | std::ios::app);
+	file << text.str() << std::endl;
 	file.close();
 
 }
@@ -364,8 +363,8 @@ void Automation::RecordDataChange(const ExperimentSettings& newSettings, bool cs
 /**********************************************************************
 * Returns the full path and title of the file to be written
 * Inputs:
-*        string extension: Extension you want the file to have
-*        bool entete: specify true to get the entete string or false for the regular file
+*        std::string extension: Extension you want the file to have
+*        bool entete: specify true to get the entete std::string or false for the regular file
 ***********************************************************************/
 std::string Automation::BuildFileName(std::string extension, bool entete)
 {
@@ -414,16 +413,16 @@ std::string Automation::BuildFileName(std::string extension, bool entete)
 		sprintf_s(fileNameBuffer, "%s/%s.%s", fileNameBuffer, experimentLocalSettings.dataGeneral.fichier.c_str(), extension.c_str());
 	}
 
-	// Now return generated string
-	string nom_fichier = fileNameBuffer;
+	// Now return generated std::string
+	std::string nom_fichier = fileNameBuffer;
 	return nom_fichier;
 }
 
 
 
-//string CManip_AutoGaz::EnteteAdsorptionContinue()
+//std::string CManip_AutoGaz::EnteteAdsorptionContinue()
 //{
-//	ostringstream chaine_char("", ios_base::app);
+//	std::ostringstream chaine_char("", std::ios_base::app);
 //
 //	chaine_char << finl << "-----------------------------------------------------" << finl;
 //	chaine_char << "Application de l'adsorption continue" << finl;
@@ -436,17 +435,17 @@ std::string Automation::BuildFileName(std::string extension, bool entete)
 //	return chaine_char.str();
 //}
 //
-//string CManip_AutoGaz::EnteteAdsorptionContinueCSV()
+//std::string CManip_AutoGaz::EnteteAdsorptionContinueCSV()
 //{
-//	ostringstream chaine_char("", ios_base::app);
+//	std::ostringstream chaine_char("", std::ios_base::app);
 //
-//	chaine_char << endl << "-----------------------------------------------------" << endl;
-//	chaine_char << "Application de l'adsorption continue" << endl;
-//	chaine_char << "Temps d'étalonnage débit;" << adsorption_continue.temps_etalonnage_debit << ";min" << endl;
-//	chaine_char << "Temps d'étalonnage du volume intermédiaire;" << adsorption_continue.temps_etalonnage_volume_inter << ";min" << endl;
-//	chaine_char << "Temps d'équilibre continue;" << adsorption_continue.temps_equilibre_continue << ";min" << endl;
-//	chaine_char << "Temps final d'équilibre;" << adsorption_continue.temps_equilibre_continue << ";min" << endl;
-//	chaine_char << "Pression finale;" << adsorption_continue.pression_finale_adsorption_continue << ";bar" << endl;
+//	chaine_char << std::endl << "-----------------------------------------------------" << std::endl;
+//	chaine_char << "Application de l'adsorption continue" << std::endl;
+//	chaine_char << "Temps d'étalonnage débit;" << adsorption_continue.temps_etalonnage_debit << ";min" << std::endl;
+//	chaine_char << "Temps d'étalonnage du volume intermédiaire;" << adsorption_continue.temps_etalonnage_volume_inter << ";min" << std::endl;
+//	chaine_char << "Temps d'équilibre continue;" << adsorption_continue.temps_equilibre_continue << ";min" << std::endl;
+//	chaine_char << "Temps final d'équilibre;" << adsorption_continue.temps_equilibre_continue << ";min" << std::endl;
+//	chaine_char << "Pression finale;" << adsorption_continue.pression_finale_adsorption_continue << ";bar" << std::endl;
 //
 //	return chaine_char.str();
 //}

@@ -1,12 +1,11 @@
-#include "StdAfx.h"
-#include <iostream>
 #include "Mensor.h"
+
+#include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sstream>
 #include <windows.h>
 
-using namespace std;
 
 //=====================================================================
 //                    Serial Port Configuration
@@ -42,12 +41,12 @@ bool Mensor::OpenCOM(int nId)
 	
 	if (connectionOpen)
 	{
-		errorKeep = "Mensor open: COM" + to_string(nId);
+		errorKeep = "Mensor open: COM" + std::to_string(nId);
 		return true;
 	}
 	else
 	{
-		errorKeep += "\nMensor opening failed: COM" + to_string(nId);
+		errorKeep += "\nMensor opening failed: COM" + std::to_string(nId);
 		return false;
 	}
 }
@@ -108,7 +107,7 @@ bool Mensor::ReadMensor(double* pression)
 	if (!success)
 		return false;
 
-	string resultat = buffer;
+	std::string resultat = buffer;
 	resultat = resultat.substr(4,nbOctetsLus-6);
 	*pression = atof(resultat.c_str()); //conversion du string en float
 	errorKeep = "Mensor read";

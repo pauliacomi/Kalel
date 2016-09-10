@@ -1,5 +1,5 @@
-#include "StdAfx.h"
 #include "Vannes.h"
+#include <Windows.h>
 
 #define nb_essais 3
 #define temps_ms 100

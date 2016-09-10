@@ -1,7 +1,10 @@
-#include "stdafx.h"
 #include "SerialInstruments.h"
-#include "Parametres.h"
-#include "DefineInstruments.h"
+
+#include "../RS232/Keithley.h"
+#include "../RS232/Mensor.h"
+
+#include "../../Parameters/Parametres.h"
+#include "../../../Kalel Shared/Resources/DefineInstruments.h"
 
 
 SerialInstruments::SerialInstruments()
@@ -85,7 +88,7 @@ SerialInstruments::SerialInstruments()
 				break;
 
 			default:
-				ASSERT(0); // Should never be reached
+				throw; // Should never be reached
 				break;
 			}
 			break;
@@ -113,7 +116,7 @@ SerialInstruments::SerialInstruments()
 			break;
 		default:
 			// Should never be reached
-			ASSERT(0);
+			throw;
 			break;
 		}
 	}

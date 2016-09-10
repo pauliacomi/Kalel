@@ -1,8 +1,3 @@
-
-// This file contains Automation functions that are used to make the system wait
-
-
-#include "StdAfx.h"
 #include "Automation.h"
 
 

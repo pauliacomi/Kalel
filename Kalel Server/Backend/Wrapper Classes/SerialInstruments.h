@@ -1,8 +1,9 @@
 #pragma once
 
-#include "Keithley.h"
-#include "Mensor.h"
-#include "FluxConverter.h"
+#include "../../Parameters/FluxConverter.h"
+
+class Keithley;
+class Mensor;
 
 class SerialInstruments
 {

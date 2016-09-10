@@ -1,13 +1,12 @@
-#pragma once
 #ifndef _VANNE_H_
 #define _VANNE_H_
+#pragma once
 
 
-#define WIN32_LEAN_AND_MEAN		// Exclude rarely-used stuff from Windows headers, useless, because automatically defined in MFC
 #include <stdio.h>
 #include <tchar.h>
 
-#include "NI_USB_6008.h"
+#include "../USB/NI_USB_6008.h"
 #include "Parametres.h"
 
 

@@ -11,6 +11,7 @@
 
 // Required to pass the experimental data to the main GUI
 #include "ExperimentData.h"		
+#include <string>
 
 class MFCMessageHandler
 {
@@ -34,11 +35,11 @@ public:
 	bool ExchangeData(ExperimentData pParam);
 	bool DisplayMessage(int pParam, int pInt1 = default_val, int pInt2 = default_val, double pDouble = default_val);								// Simple display message which takes an int
 
-	bool DisplayMessage(int pParam, CString m);
+	bool DisplayMessage(int pParam, std::string m);
 
 	// Messageboxes
 	bool DisplayMessageBox(int message, UINT nType, bool blocksProgram, double pDouble1 = default_val, double pDouble2 = default_val);
-	bool DisplayMessageBox(int pParam, UINT nType, bool blocksProgram, CString pString);
+	bool DisplayMessageBox(int pParam, UINT nType, bool blocksProgram, std::string pString);
 };
 
 

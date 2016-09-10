@@ -1,12 +1,10 @@
-#include "StdAfx.h"
+#include "LiaisonRS232.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <conio.h>
 #include <iostream>
 #include <string.h>
-#include "LiaisonRS232.h"
-
-using namespace std;
 
 #define RX_SIZE         4096    /* taille tampon d'entrée  */
 #define TX_SIZE         4096    /* taille tampon de sortie */
@@ -63,12 +61,11 @@ LiaisonRS232::~LiaisonRS232()
 bool LiaisonRS232::OpenCOM(int pnId)
 {
 	// Construct port specifier
-	CString szCOM;
-    szCOM.Format("\\\\.\\COM%d", pnId);
+	std::wstring szCOM = L"\\\\.\\COM%d" + std::to_wstring(pnId);
 	
 	// Open COM port
     g_hCOM = CreateFile(
-		szCOM,													// Port specifier 
+		szCOM.c_str(),											// Port specifier 
 		GENERIC_READ|GENERIC_WRITE,								// Access mode
 		0,														// Sharing: 0 as COM ports cannot be shared
 		NULL,													// Security: None
@@ -80,7 +77,7 @@ bool LiaisonRS232::OpenCOM(int pnId)
 	// Error check
     if(g_hCOM == INVALID_HANDLE_VALUE)
     {
-        errorKeep = "Error opening port COM" + to_string(pnId);
+        errorKeep = "Error opening port COM" + std::to_string(pnId);
 		g_hCOM = NULL;
         return false;
     }
@@ -88,7 +85,7 @@ bool LiaisonRS232::OpenCOM(int pnId)
     // Configure port
     if(!SetCommTimeouts(g_hCOM, &g_cto) || !SetCommState(g_hCOM, &g_dcb))
     {
-		errorKeep = "Error configuring port COM" + to_string(pnId);
+		errorKeep = "Error configuring port COM" + std::to_string(pnId);
         CloseHandle(g_hCOM);
         return false;
     }

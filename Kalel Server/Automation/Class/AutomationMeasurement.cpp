@@ -1,19 +1,5 @@
-/**********************************************
-*
-*
-*
-*
-*
-*
-*	Calls to underlying functionality may use the same USB or serial port. 
-*	Because of this, any "Read" call must be contained into a syncronisation primitive (here a CriticalSection)
-*
-*
-*
-*
-***********************************************/
-
 #include "Automation.h"
+
 
 void Automation::ThreadMeasurement()
 {
@@ -109,7 +95,7 @@ void Automation::ReadCalorimeter()
 		g_pSerialInstruments->GetErrorCalrimeter(&error);
 
 	if (success == false) {
-		messageHandler.DisplayMessage(GENERIC_STRING, error.c_str());
+		messageHandler.DisplayMessage(GENERIC_STRING, error);
 	}
 
 	// Write it in the shared object
@@ -131,7 +117,7 @@ void Automation::ReadLowPressure()
 		g_pSerialInstruments->GetErrorLowRange(&error);
 
 	if (success == false) {
-		messageHandler.DisplayMessage(GENERIC_STRING, error.c_str());
+		messageHandler.DisplayMessage(GENERIC_STRING, error);
 	}
 	
 	// Write it in the shared object
@@ -153,7 +139,7 @@ void Automation::ReadHighPressure()
 		g_pSerialInstruments->GetErrorHighRange(&error);
 
 	if (success == false) {
-		messageHandler.DisplayMessage(GENERIC_STRING, error.c_str());
+		messageHandler.DisplayMessage(GENERIC_STRING, error);
 	}
 
 	// Write it in the shared object
@@ -174,7 +160,7 @@ void Automation::ReadTemperatures()
 		g_pTemperature->GetError(&error);
 
 	if (success == false) {
-		messageHandler.DisplayMessage(GENERIC_STRING, error.c_str());
+		messageHandler.DisplayMessage(GENERIC_STRING, error);
 	}
 
 	// Write it in the shared object

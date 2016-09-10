@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "../stdafx.h"
 #include "MFCMessageHandler.h"
 
 // Message definitions
@@ -81,7 +81,7 @@ bool MFCMessageHandler::DisplayMessage(int pParam, int pInt1, int pInt2, double 
 	return true;
 }
 
-bool MFCMessageHandler::DisplayMessage(int pParam, CString m)
+bool MFCMessageHandler::DisplayMessage(int pParam, std::string m)
 {
 	// Create a new pointer 
 	CString * message = new CString;

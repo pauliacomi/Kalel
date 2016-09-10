@@ -252,41 +252,111 @@
     <ClCompile Include="Automation\Class\AutomationVacuum.cpp" />
     <ClCompile Include="Automation\Class\AutomationValves.cpp" />
     <ClCompile Include="Automation\MFCMessageHandler.cpp" />
-    <ClCompile Include="Automation\Old\Manip.cpp" />
-    <ClCompile Include="Automation\Old\ManipData.cpp" />
-    <ClCompile Include="Automation\Old\ManipFileWriting.cpp" />
-    <ClCompile Include="Automation\Old\ManipManualExecution.cpp" />
-    <ClCompile Include="Automation\Old\ManipMeasurement.cpp" />
-    <ClCompile Include="Automation\Old\ManipSecurity.cpp" />
-    <ClCompile Include="Automation\Old\ManipTimeKeeping.cpp" />
-    <ClCompile Include="Automation\Old\ManipValves.cpp" />
-    <ClCompile Include="Automation\Old\Manip_Auto.cpp" />
-    <ClCompile Include="Automation\Old\Manip_AutoGaz.cpp" />
-    <ClCompile Include="Automation\Old\Manip_AutoGaz_Adsorption_Continue.cpp" />
-    <ClCompile Include="Automation\Old\Manip_AutoGaz_AEffectuer.cpp" />
-    <ClCompile Include="Automation\Old\Manip_AutoGaz_Desorption.cpp" />
-    <ClCompile Include="Automation\Old\Manip_AutoGaz_Donnees.cpp" />
-    <ClCompile Include="Automation\Old\Manip_AutoGaz_Execution.cpp" />
-    <ClCompile Include="Automation\Old\Manip_AutoGaz_Fichier.cpp" />
-    <ClCompile Include="Automation\Old\Manip_AutoGaz_Grandes_Doses.cpp" />
-    <ClCompile Include="Automation\Old\Manip_AutoGaz_LEA.cpp" />
-    <ClCompile Include="Automation\Old\Manip_AutoGaz_Ligne_Base_Equilibre.cpp" />
-    <ClCompile Include="Automation\Old\Manip_AutoGaz_Mesure.cpp" />
-    <ClCompile Include="Automation\Old\Manip_AutoGaz_MiseSousVide_Ampoule.cpp" />
-    <ClCompile Include="Automation\Old\Manip_AutoGaz_MiseSousVide_Bouteille.cpp" />
-    <ClCompile Include="Automation\Old\Manip_AutoGaz_MiseSousVide_ChangementBouteille.cpp" />
-    <ClCompile Include="Automation\Old\Manip_AutoGaz_Mise_Sous_Vide.cpp" />
-    <ClCompile Include="Automation\Old\Manip_AutoGaz_Moyennes_Doses.cpp" />
-    <ClCompile Include="Automation\Old\Manip_AutoGaz_Petites_Doses.cpp" />
-    <ClCompile Include="Automation\Old\Manip_AutoGaz_Proprietes_Experience.cpp" />
-    <ClCompile Include="Automation\Old\Manip_AutoGaz_Vannes.cpp" />
-    <ClCompile Include="Automation\Old\Manip_Auto_Arret.cpp" />
-    <ClCompile Include="Automation\Old\Manip_Auto_Donnees.cpp" />
-    <ClCompile Include="Automation\Old\Manip_Auto_Fichier.cpp" />
-    <ClCompile Include="Automation\Old\Manip_Auto_LireAfficher.cpp" />
-    <ClCompile Include="Automation\Old\Manip_Auto_Probleme_Injection.cpp" />
-    <ClCompile Include="Automation\Old\Manip_Auto_Vannes.cpp" />
-    <ClCompile Include="Automation\Old\Manip_Auto_Verifications.cpp" />
+    <ClCompile Include="Automation\Old\Manip.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\ManipData.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\ManipFileWriting.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\ManipManualExecution.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\ManipMeasurement.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\ManipSecurity.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\ManipTimeKeeping.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\ManipValves.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\Manip_Auto.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\Manip_AutoGaz.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\Manip_AutoGaz_Adsorption_Continue.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\Manip_AutoGaz_AEffectuer.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\Manip_AutoGaz_Desorption.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\Manip_AutoGaz_Donnees.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\Manip_AutoGaz_Execution.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\Manip_AutoGaz_Fichier.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\Manip_AutoGaz_Grandes_Doses.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\Manip_AutoGaz_LEA.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\Manip_AutoGaz_Ligne_Base_Equilibre.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\Manip_AutoGaz_Mesure.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\Manip_AutoGaz_MiseSousVide_Ampoule.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\Manip_AutoGaz_MiseSousVide_Bouteille.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\Manip_AutoGaz_MiseSousVide_ChangementBouteille.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\Manip_AutoGaz_Mise_Sous_Vide.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\Manip_AutoGaz_Moyennes_Doses.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\Manip_AutoGaz_Petites_Doses.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\Manip_AutoGaz_Proprietes_Experience.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\Manip_AutoGaz_Vannes.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\Manip_Auto_Arret.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\Manip_Auto_Donnees.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\Manip_Auto_Fichier.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\Manip_Auto_LireAfficher.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\Manip_Auto_Probleme_Injection.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\Manip_Auto_Vannes.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\Manip_Auto_Verifications.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Automation\ThreadManager.cpp" />
     <ClCompile Include="Automation\Utils\Chrono.cpp" />
     <ClCompile Include="Automation\Utils\InfoEtape.cpp" />
