@@ -223,6 +223,7 @@
     <ClInclude Include="Backend\Wrapper Classes\Vannes.h" />
     <ClInclude Include="Kalel Server.h" />
     <ClInclude Include="Kalel ServerDlg.h" />
+    <ClInclude Include="Kalel.h" />
     <ClInclude Include="Parameters\FluxConverter.h" />
     <ClInclude Include="Parameters\Parametres.h" />
     <ClInclude Include="Resource.h" />
@@ -370,6 +371,7 @@
     <ClCompile Include="Backend\Wrapper Classes\Vannes.cpp" />
     <ClCompile Include="Kalel Server.cpp" />
     <ClCompile Include="Kalel ServerDlg.cpp" />
+    <ClCompile Include="Kalel.cpp" />
     <ClCompile Include="Parameters\FluxConverter.cpp" />
     <ClCompile Include="Parameters\Parametres.cpp" />
     <ClCompile Include="stdafx.cpp">

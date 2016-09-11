@@ -204,6 +204,9 @@
     <ClInclude Include="Automation\Utils\InfoEtape.h">
       <Filter>Header Files\Automation\Utils</Filter>
     </ClInclude>
+    <ClInclude Include="Kalel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Kalel Server.cpp">
@@ -424,6 +427,9 @@
     </ClCompile>
     <ClCompile Include="Automation\Utils\InfoEtape.cpp">
       <Filter>Source Files\Automation\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Kalel.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -1,7 +1,7 @@
-#pragma once
-
 #ifndef FLUXCONVERTER_H
 #define FLUXCONVERTER_H
+#pragma once
+
 
 class FluxConverter {
 

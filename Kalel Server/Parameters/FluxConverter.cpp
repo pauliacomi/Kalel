@@ -1,6 +1,5 @@
-#include "StdAfx.h"
 #include "FluxConverter.h"
-#include "DefineAutomationSettings.h"
+#include "../../Kalel Shared/Resources/DefineAutomationSettings.h"
 #include "Parametres.h"
 
 FluxConverter::FluxConverter()
