@@ -2,6 +2,8 @@
 
 #include "../../Parameters/FluxConverter.h"
 
+#include <string>
+
 class Keithley;
 class Mensor;
 

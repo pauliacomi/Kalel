@@ -13,12 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Source Files\Netcode">
-      <UniqueIdentifier>{99fb7fb4-345d-48da-abd7-19163eb011a6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Netcode">
-      <UniqueIdentifier>{cb10ea5e-f237-4d56-a833-17c3b942534f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Automation">
       <UniqueIdentifier>{2a9f056c-9212-46f6-8f81-3745fb115416}</UniqueIdentifier>
     </Filter>
@@ -58,15 +52,6 @@
     <Filter Include="Source Files\Automation\Class">
       <UniqueIdentifier>{b4376b8b-4c5a-4536-bf49-7e7d47bf1cd9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Com Classes">
-      <UniqueIdentifier>{b6fc9662-0488-4362-b845-ec1c2e82d870}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Com Classes">
-      <UniqueIdentifier>{328ffef3-db41-4e51-8add-10b309b7cc28}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Resources">
-      <UniqueIdentifier>{a60c6704-24c3-488c-b5d6-4861523dd447}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Automation\Utils">
       <UniqueIdentifier>{2f93dc81-58ca-435c-ab56-c644beee219b}</UniqueIdentifier>
     </Filter>
@@ -81,6 +66,27 @@
     </Filter>
     <Filter Include="Source Files\Measurement">
       <UniqueIdentifier>{0ae70c48-f658-45fc-a459-61d7f9e5c5a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Common">
+      <UniqueIdentifier>{3f1b5b90-a803-40ba-9e9b-28a86c4ff657}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Common\Netcode">
+      <UniqueIdentifier>{cb10ea5e-f237-4d56-a833-17c3b942534f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Common\Resources">
+      <UniqueIdentifier>{65b339ad-7520-4c02-b05d-8765fe3e14c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Common\Com Classes">
+      <UniqueIdentifier>{328ffef3-db41-4e51-8add-10b309b7cc28}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Common">
+      <UniqueIdentifier>{7497e4d7-6552-4f68-97f6-ebcf81a18732}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Common\Com Classes">
+      <UniqueIdentifier>{b6fc9662-0488-4362-b845-ec1c2e82d870}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Common\Netcode">
+      <UniqueIdentifier>{99fb7fb4-345d-48da-abd7-19163eb011a6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -148,31 +154,31 @@
       <Filter>Header Files\Automation</Filter>
     </ClInclude>
     <ClInclude Include="..\Kalel Shared\Netcode\base64.h">
-      <Filter>Header Files\Netcode</Filter>
+      <Filter>Header Files\Common\Netcode</Filter>
     </ClInclude>
     <ClInclude Include="..\Kalel Shared\Netcode\Client.h">
-      <Filter>Header Files\Netcode</Filter>
+      <Filter>Header Files\Common\Netcode</Filter>
     </ClInclude>
     <ClInclude Include="..\Kalel Shared\Netcode\http_request.h">
-      <Filter>Header Files\Netcode</Filter>
+      <Filter>Header Files\Common\Netcode</Filter>
     </ClInclude>
     <ClInclude Include="..\Kalel Shared\Netcode\json.hpp">
-      <Filter>Header Files\Netcode</Filter>
+      <Filter>Header Files\Common\Netcode</Filter>
     </ClInclude>
     <ClInclude Include="..\Kalel Shared\Netcode\Netcode Resources.h">
-      <Filter>Header Files\Netcode</Filter>
+      <Filter>Header Files\Common\Netcode</Filter>
     </ClInclude>
     <ClInclude Include="..\Kalel Shared\Netcode\Server.h">
-      <Filter>Header Files\Netcode</Filter>
+      <Filter>Header Files\Common\Netcode</Filter>
     </ClInclude>
     <ClInclude Include="..\Kalel Shared\Netcode\Socket.h">
-      <Filter>Header Files\Netcode</Filter>
+      <Filter>Header Files\Common\Netcode</Filter>
     </ClInclude>
     <ClInclude Include="..\Kalel Shared\Netcode\stdHelpers.h">
-      <Filter>Header Files\Netcode</Filter>
+      <Filter>Header Files\Common\Netcode</Filter>
     </ClInclude>
     <ClInclude Include="..\Kalel Shared\Netcode\URLHelper.h">
-      <Filter>Header Files\Netcode</Filter>
+      <Filter>Header Files\Common\Netcode</Filter>
     </ClInclude>
     <ClInclude Include="Parameters\FluxConverter.h">
       <Filter>Header Files\Parameters</Filter>
@@ -181,22 +187,13 @@
       <Filter>Header Files\Parameters</Filter>
     </ClInclude>
     <ClInclude Include="..\Kalel Shared\Com Classes\ExperimentData.h">
-      <Filter>Header Files\Com Classes</Filter>
+      <Filter>Header Files\Common\Com Classes</Filter>
     </ClInclude>
     <ClInclude Include="..\Kalel Shared\Com Classes\ExperimentSettings.h">
-      <Filter>Header Files\Com Classes</Filter>
+      <Filter>Header Files\Common\Com Classes</Filter>
     </ClInclude>
     <ClInclude Include="Automation\MFCMessageHandler.h">
-      <Filter>Header Files\Com Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Kalel Shared\Resources\DefineAutomationSettings.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Kalel Shared\Resources\DefineInstruments.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Kalel Shared\Resources\DefineStages.h">
-      <Filter>Header Files\Resources</Filter>
+      <Filter>Header Files\Common\Com Classes</Filter>
     </ClInclude>
     <ClInclude Include="Automation\Utils\Chrono.h">
       <Filter>Header Files\Automation\Utils</Filter>
@@ -206,6 +203,30 @@
     </ClInclude>
     <ClInclude Include="Kalel.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Kalel Shared\Resources\DefineAutomationSettings.h">
+      <Filter>Header Files\Common\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Kalel Shared\Resources\DefineInstruments.h">
+      <Filter>Header Files\Common\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Kalel Shared\Resources\DefineStages.h">
+      <Filter>Header Files\Common\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Kalel Shared\Resources\StringTable.h">
+      <Filter>Header Files\Common\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Kalel Shared\Com Classes\CommonFunctions.h">
+      <Filter>Header Files\Common\Com Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Kalel Shared\Com Classes\ExperimentHelperClasses.h">
+      <Filter>Header Files\Common\Com Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Kalel Shared\Com Classes\MachineSettings.h">
+      <Filter>Header Files\Common\Com Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Kalel Shared\Com Classes\ManualActionParam.h">
+      <Filter>Header Files\Common\Com Classes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -396,31 +417,31 @@
       <Filter>Source Files\Automation\Class</Filter>
     </ClCompile>
     <ClCompile Include="..\Kalel Shared\Netcode\base64.cpp">
-      <Filter>Source Files\Netcode</Filter>
+      <Filter>Source Files\Common\Netcode</Filter>
     </ClCompile>
     <ClCompile Include="..\Kalel Shared\Netcode\Client.cpp">
-      <Filter>Source Files\Netcode</Filter>
+      <Filter>Source Files\Common\Netcode</Filter>
     </ClCompile>
     <ClCompile Include="..\Kalel Shared\Netcode\Server.cpp">
-      <Filter>Source Files\Netcode</Filter>
+      <Filter>Source Files\Common\Netcode</Filter>
     </ClCompile>
     <ClCompile Include="..\Kalel Shared\Netcode\Socket.cpp">
-      <Filter>Source Files\Netcode</Filter>
+      <Filter>Source Files\Common\Netcode</Filter>
     </ClCompile>
     <ClCompile Include="..\Kalel Shared\Netcode\stdHelpers.cpp">
-      <Filter>Source Files\Netcode</Filter>
+      <Filter>Source Files\Common\Netcode</Filter>
     </ClCompile>
     <ClCompile Include="..\Kalel Shared\Netcode\URLHelper.cpp">
-      <Filter>Source Files\Netcode</Filter>
+      <Filter>Source Files\Common\Netcode</Filter>
     </ClCompile>
     <ClCompile Include="..\Kalel Shared\Com Classes\ExperimentData.cpp">
-      <Filter>Source Files\Com Classes</Filter>
+      <Filter>Source Files\Common\Com Classes</Filter>
     </ClCompile>
     <ClCompile Include="..\Kalel Shared\Com Classes\ExperimentSettings.cpp">
-      <Filter>Source Files\Com Classes</Filter>
+      <Filter>Source Files\Common\Com Classes</Filter>
     </ClCompile>
     <ClCompile Include="Automation\MFCMessageHandler.cpp">
-      <Filter>Source Files\Com Classes</Filter>
+      <Filter>Source Files\Common\Com Classes</Filter>
     </ClCompile>
     <ClCompile Include="Automation\Utils\Chrono.cpp">
       <Filter>Source Files\Automation\Utils</Filter>
@@ -430,6 +451,18 @@
     </ClCompile>
     <ClCompile Include="Kalel.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Kalel Shared\Com Classes\MachineSettings.cpp">
+      <Filter>Source Files\Common\Com Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Kalel Shared\Com Classes\ManualActionParam.cpp">
+      <Filter>Source Files\Common\Com Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Kalel Shared\Com Classes\ExperimentHelperClasses.cpp">
+      <Filter>Source Files\Common\Com Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Kalel Shared\Com Classes\CommonFunctions.cpp">
+      <Filter>Source Files\Common\Com Classes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -447,5 +480,10 @@
     <Image Include="res\Kalel Server.ico">
       <Filter>Resource Files</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="Backend\USB\NIDAQmx.lib">
+      <Filter>Header Files\Backend\USB</Filter>
+    </Library>
   </ItemGroup>
 </Project>

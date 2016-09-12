@@ -1,9 +1,9 @@
 
 // Kalel ServerDlg.h : header file
 //
-
 #pragma once
 
+#include "Automation/ThreadManager.h"
 #include <memory>
 
 // CKalelServerDlg dialog

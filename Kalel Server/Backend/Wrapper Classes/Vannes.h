@@ -7,7 +7,7 @@
 #include <tchar.h>
 
 #include "../USB/NI_USB_6008.h"
-#include "Parametres.h"
+#include "../../Parameters/Parametres.h"
 
 
 class CVannes :

@@ -189,8 +189,12 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Kalel Shared\Com Classes\CommonFunctions.h" />
     <ClInclude Include="..\Kalel Shared\Com Classes\ExperimentData.h" />
+    <ClInclude Include="..\Kalel Shared\Com Classes\ExperimentHelperClasses.h" />
     <ClInclude Include="..\Kalel Shared\Com Classes\ExperimentSettings.h" />
+    <ClInclude Include="..\Kalel Shared\Com Classes\MachineSettings.h" />
+    <ClInclude Include="..\Kalel Shared\Com Classes\ManualActionParam.h" />
     <ClInclude Include="..\Kalel Shared\Netcode\base64.h" />
     <ClInclude Include="..\Kalel Shared\Netcode\Client.h" />
     <ClInclude Include="..\Kalel Shared\Netcode\http_request.h" />
@@ -203,6 +207,7 @@
     <ClInclude Include="..\Kalel Shared\Resources\DefineAutomationSettings.h" />
     <ClInclude Include="..\Kalel Shared\Resources\DefineInstruments.h" />
     <ClInclude Include="..\Kalel Shared\Resources\DefineStages.h" />
+    <ClInclude Include="..\Kalel Shared\Resources\StringTable.h" />
     <ClInclude Include="Automation\Class\Automation.h" />
     <ClInclude Include="Automation\MFCMessageHandler.h" />
     <ClInclude Include="Automation\Old\MainFrm.h" />
@@ -237,8 +242,12 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Kalel Shared\Com Classes\CommonFunctions.cpp" />
     <ClCompile Include="..\Kalel Shared\Com Classes\ExperimentData.cpp" />
+    <ClCompile Include="..\Kalel Shared\Com Classes\ExperimentHelperClasses.cpp" />
     <ClCompile Include="..\Kalel Shared\Com Classes\ExperimentSettings.cpp" />
+    <ClCompile Include="..\Kalel Shared\Com Classes\MachineSettings.cpp" />
+    <ClCompile Include="..\Kalel Shared\Com Classes\ManualActionParam.cpp" />
     <ClCompile Include="..\Kalel Shared\Netcode\base64.cpp" />
     <ClCompile Include="..\Kalel Shared\Netcode\Client.cpp" />
     <ClCompile Include="..\Kalel Shared\Netcode\Server.cpp" />
@@ -398,6 +407,9 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\Kalel Server.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="Backend\USB\NIDAQmx.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

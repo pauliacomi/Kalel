@@ -47,7 +47,7 @@ BOOL CKalelServerDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// Set small icon
 
 	// TODO: Add extra initialization here
-	threadManager = std::unique_ptr<ThreadManager>(new ThreadManager());											// the class dealing with managing threads
+	//threadManager = std::unique_ptr<ThreadManager>(new ThreadManager());											// the class dealing with managing threads
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }

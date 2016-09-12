@@ -1,4 +1,4 @@
-#include "Forcelib.h"
+#include "../Forcelib.h"
 #include "ExperimentHelperClasses.h"
 
 experimentateur experimentateur::operator=(const experimentateur &exp)

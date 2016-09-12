@@ -10,7 +10,7 @@
 						// Make sure that it is set to a value that the actual parameters can never take
 
 // Required to pass the experimental data to the main GUI
-#include "ExperimentData.h"		
+#include "../../Kalel Shared/Com Classes/ExperimentData.h"		
 #include <string>
 
 class MFCMessageHandler

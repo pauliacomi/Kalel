@@ -2,8 +2,8 @@
 #include "MFCMessageHandler.h"
 
 // Message definitions
-#include "DefinePostMessages.h"
-#include "StringTable.h"
+#include "../../Kalel/DefinePostMessages.h"
+#include "../../Kalel Shared/Resources/StringTable.h"
 
 
 MFCMessageHandler::MFCMessageHandler()
@@ -137,7 +137,7 @@ bool MFCMessageHandler::DisplayMessageBox(int pParam, UINT nType, bool blocksPro
 	return true;
 }
 
-bool MFCMessageHandler::DisplayMessageBox(int pParam, UINT nType, bool blocksProgram, CString pString)
+bool MFCMessageHandler::DisplayMessageBox(int pParam, UINT nType, bool blocksProgram, std::string pString)
 {
 	// Create a new pointer 
 	UINT * type = new UINT(nType);
