@@ -6,6 +6,7 @@
 
 class Automation;
 class ExperimentSettings;
+class ManualActionParam;
 
 class ThreadManager
 {

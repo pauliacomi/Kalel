@@ -122,9 +122,9 @@ long double GetSensibiliteCalo()
 	TCHAR StrSensibiliteCalo[nSizeFloat];
 	GetPrivateProfileString(_T("Appareil"), _T("Sensibilite_calo"),
 		_T("0.05470197"), StrSensibiliteCalo, 11, Fichier_parametres);
-	std::string ConvertSensibiliteCalo(StrSensibiliteCalo);
+	std::wstring ConvertSensibiliteCalo(StrSensibiliteCalo);
 	
-	return atof(ConvertSensibiliteCalo.c_str());
+	return _wtof(ConvertSensibiliteCalo.c_str());
 }
 
 
@@ -133,8 +133,8 @@ float GetSensibiliteCapteurBassePression()
 	TCHAR StrSensibiliteCapteurBassePression[nSizeFloat];
 	GetPrivateProfileString(_T("Appareil"),_T("Sensibilite_capteur_basse_pression"),
 							_T("1"),StrSensibiliteCapteurBassePression,nSizeFloat,Fichier_parametres);
-	std::string ConvertSensibiliteBasse(StrSensibiliteCapteurBassePression);
-	return atof(ConvertSensibiliteBasse.c_str());
+	std::wstring ConvertSensibiliteBasse(StrSensibiliteCapteurBassePression);
+	return _wtof(ConvertSensibiliteBasse.c_str());
 }
 
 
@@ -143,8 +143,8 @@ float GetSensibiliteCapteurHautePression()
 	TCHAR StrSensibiliteCapteurHautePression[nSizeFloat];
 	GetPrivateProfileString(_T("Appareil"),_T("Sensibilite_capteur_haute_pression"),
 							_T("7.6"),StrSensibiliteCapteurHautePression,nSizeFloat,Fichier_parametres);
-	std::string ConvertSensibiliteHaute(StrSensibiliteCapteurHautePression);
-	return atof(ConvertSensibiliteHaute.c_str());
+	std::wstring ConvertSensibiliteHaute(StrSensibiliteCapteurHautePression);
+	return _wtof(ConvertSensibiliteHaute.c_str());
 }
 
 bool GetActivationSecurite()
@@ -152,8 +152,8 @@ bool GetActivationSecurite()
 	TCHAR StrActivationSecurite[nSizeString];
 	GetPrivateProfileString(_T("Appareil"),_T("Activation_Securite"),
 							_T("Vrai"),StrActivationSecurite,nSizeString,Fichier_parametres);
-	std::string ConvertActivationSecurite(StrActivationSecurite);
-	if (ConvertActivationSecurite == "Vrai")
+	std::wstring ConvertActivationSecurite(StrActivationSecurite);
+	if (ConvertActivationSecurite == L"Vrai")
 		return true;
 	return false;
 }
@@ -163,8 +163,8 @@ float GetPressionSecuriteBassePression()
 	TCHAR StrPressionSecuriteBassePression[nSizeFloat];
 	GetPrivateProfileString(_T("Appareil"),_T("Pression_securite_capteur_basse_pression"),
 							_T("1.1"),StrPressionSecuriteBassePression,nSizeFloat,Fichier_parametres);
-	std::string ConvertPressionSecuriteBassePression(StrPressionSecuriteBassePression);
-	return atof(ConvertPressionSecuriteBassePression.c_str());
+	std::wstring ConvertPressionSecuriteBassePression(StrPressionSecuriteBassePression);
+	return _wtof(ConvertPressionSecuriteBassePression.c_str());
 }
 
 
@@ -173,8 +173,8 @@ float GetPressionSecuriteHautePression()
 	TCHAR StrPressionSecuriteHautePression[nSizeFloat];
 	GetPrivateProfileString(_T("Appareil"),_T("Pression_securite_capteur_haute_pression"),
 							_T("5.1"),StrPressionSecuriteHautePression,nSizeFloat,Fichier_parametres);
-	std::string ConvertPressionSecuriteHautePression(StrPressionSecuriteHautePression);
-	return atof(ConvertPressionSecuriteHautePression.c_str());
+	std::wstring ConvertPressionSecuriteHautePression(StrPressionSecuriteHautePression);
+	return _wtof(ConvertPressionSecuriteHautePression.c_str());
 }
 
 
@@ -183,8 +183,8 @@ float GetPressionLimiteVide()
 	TCHAR StrPressionLimiteVide[nSizeFloat];
 	GetPrivateProfileString(_T("Appareil"),_T("Pression_limite_vide"),
 							_T("0.02"),StrPressionLimiteVide,nSizeFloat,Fichier_parametres);
-	std::string ConvertPressionLimiteVide(StrPressionLimiteVide);
-	return atof(ConvertPressionLimiteVide.c_str());
+	std::wstring ConvertPressionLimiteVide(StrPressionLimiteVide);
+	return _wtof(ConvertPressionLimiteVide.c_str());
 }
 
 
@@ -193,8 +193,8 @@ bool GetPresenceTuyereSonique()
 	TCHAR StrPresenceTuyereSonique[nSizeString];
 	GetPrivateProfileString(_T("Appareil"),_T("Presence_Tuyere_Sonique"),
 							_T("Vrai"),StrPresenceTuyereSonique,nSizeString,Fichier_parametres);
-	std::string ConvertPresenceTuyereSonique(StrPresenceTuyereSonique);
-	if (ConvertPresenceTuyereSonique == "Vrai")
+	std::wstring ConvertPresenceTuyereSonique(StrPresenceTuyereSonique);
+	if (ConvertPresenceTuyereSonique == L"Vrai")
 		return true;
 	return false;
 }
@@ -205,8 +205,8 @@ float GetVolumeRef()
 	TCHAR StrVolumeRef[nSizeFloat];
 	GetPrivateProfileString(_T("Appareil"),_T("Volume_ref"),
 							_T("1"),StrVolumeRef,nSizeFloat,Fichier_parametres);
-	std::string ConvertVolumeRef(StrVolumeRef);
-	return atof(ConvertVolumeRef.c_str());
+	std::wstring ConvertVolumeRef(StrVolumeRef);
+	return _wtof(ConvertVolumeRef.c_str());
 }
 
 
@@ -215,8 +215,8 @@ float GetVolumeP6()
 	TCHAR StrVolumeP6[nSizeFloat];
 	GetPrivateProfileString(_T("Appareil"),_T("Volume_P6"),
 							_T("1"),StrVolumeP6,nSizeFloat,Fichier_parametres);
-	std::string ConvertVolumeP6(StrVolumeP6);
-	return atof(ConvertVolumeP6.c_str());
+	std::wstring ConvertVolumeP6(StrVolumeP6);
+	return _wtof(ConvertVolumeP6.c_str());
 }
 
 int GetNumberInstruments()
@@ -328,32 +328,32 @@ int GetPortTemperatures()
 
 // Lecture des données du calo
 
-std::string GetNomCalo()
+std::wstring GetNomCalo()
 {
 	TCHAR StrNomCalo[nSizeString];
 	GetPrivateProfileString(__T("Calorimetre"),_T("Nom"),_T("Indéfini"),
 							StrNomCalo,nSizeString,Fichier_parametres);
-	std::string ConvertNomCalo(StrNomCalo);
+	std::wstring ConvertNomCalo(StrNomCalo);
 	return ConvertNomCalo;
 }
 
-std::string GetEnteteCalo()
+std::wstring GetEnteteCalo()
 {
 	TCHAR StrEnteteCalo[nSizeString];
 	GetPrivateProfileString(__T("Calorimetre"),_T("Entete"),_T("Calo"),
 							StrEnteteCalo,nSizeString,Fichier_parametres);
-	std::string ConvertEnteteCalo(StrEnteteCalo);
+	std::wstring ConvertEnteteCalo(StrEnteteCalo);
 	return ConvertEnteteCalo;
 }
 
 // Lecture des données de General
 
-std::string GetCheminFichierGeneral()
+std::wstring GetCheminFichierGeneral()
 {
 	TCHAR StrCheminFichierGeneral[nSizeFichier];
 	GetPrivateProfileString(__T("General"),_T("Chemin_Fichier"),_T("C:/"),
 							StrCheminFichierGeneral,nSizeString,Fichier_parametres);
-	std::string ConvertCheminFichierGeneral(StrCheminFichierGeneral);
+	std::wstring ConvertCheminFichierGeneral(StrCheminFichierGeneral);
 	return ConvertCheminFichierGeneral;
 }
 
@@ -364,8 +364,8 @@ bool GetMesureCalo()
 	TCHAR StrMesureCalo[nSizeString];
 	GetPrivateProfileString(_T("Mesure"),_T("Calo"),
 							_T("Faux"),StrMesureCalo,nSizeString,Fichier_parametres);
-	std::string ConvertMesureCalo(StrMesureCalo);
-	if (ConvertMesureCalo == "Vrai")
+	std::wstring ConvertMesureCalo(StrMesureCalo);
+	if (ConvertMesureCalo == L"Vrai")
 		return true;
 	return false;
 }
@@ -375,8 +375,8 @@ bool GetMesureBassePression()
 	TCHAR StrMesureBassePression[nSizeString];
 	GetPrivateProfileString(_T("Mesure"),_T("BP"),
 							_T("Faux"),StrMesureBassePression,nSizeString,Fichier_parametres);
-	std::string ConvertMesureBassePression(StrMesureBassePression);
-	if (ConvertMesureBassePression == "Vrai")
+	std::wstring ConvertMesureBassePression(StrMesureBassePression);
+	if (ConvertMesureBassePression == L"Vrai")
 		return true;
 	return false;
 }
@@ -386,8 +386,8 @@ bool GetMesureHautePression()
 	TCHAR StrMesureHautePression[nSizeString];
 	GetPrivateProfileString(_T("Mesure"),_T("HP"),
 							_T("Faux"),StrMesureHautePression,nSizeString,Fichier_parametres);
-	std::string ConvertMesureHautePression(StrMesureHautePression);
-	if (ConvertMesureHautePression == "Vrai")
+	std::wstring ConvertMesureHautePression(StrMesureHautePression);
+	if (ConvertMesureHautePression == L"Vrai")
 		return true;
 	return false;
 }
@@ -404,11 +404,11 @@ bool GetMesureHautePression()
 
 void SetSensibiliteCalo(float fSensCalo)
 {
-	char charSensCalo[nSizeFloat];
+	wchar_t charSensCalo[nSizeFloat];
 	TCHAR TCHARSensCalo[nSizeFloat];
-	sprintf_s(charSensCalo,"%1.8f",fSensCalo);
-	wsprintf(TCHARSensCalo,_T(charSensCalo));
-	WritePrivateProfileString(_T("Appareil"),_T("Sensibilite_calo"),TCHARSensCalo,Fichier_parametres);
+	wprintf_s(charSensCalo,"%1.8f",fSensCalo);
+	wsprintf(TCHARSensCalo, charSensCalo);
+	WritePrivateProfileString(_T("Appareil"), _T("Sensibilite_calo"), TCHARSensCalo, Fichier_parametres);
 }
 
 void SetSensibiliteCapteurBassePression(float fSensBP)

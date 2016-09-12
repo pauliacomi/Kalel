@@ -216,35 +216,35 @@ protected:
 	* Inputs:
 	*        bool csv: Ask for a comma separated value format if true
 	***********************************************************************/
-	std::string EnteteBase(bool csv);
+	std::wstring EnteteBase(bool csv);
 
 	/**********************************************************************
 	* Writes the settings from the general tab
 	* Inputs:
 	*        bool csv: Ask for a comma separated value format if true
 	***********************************************************************/
-	std::string EnteteGeneral(bool csv);
+	std::wstring EnteteGeneral(bool csv);
 
 	/**********************************************************************
 	* Writes the settings from the diverse tab
 	* Inputs:
 	*        bool csv: Ask for a comma separated value format if true
 	***********************************************************************/
-	std::string EnteteDivers(bool csv);
+	std::wstring EnteteDivers(bool csv);
 	
 	/**********************************************************************
 	* Writes the adsorption steps
 	* Inputs:
 	*        bool csv: Ask for a comma separated value format if true
 	***********************************************************************/
-	std::string EnteteAdsorption(bool csv);
+	std::wstring EnteteAdsorption(bool csv);
 
 	/**********************************************************************
 	* Writes the desorption steps
 	* Inputs:
 	*        bool csv: Ask for a comma separated value format if true
 	***********************************************************************/
-	std::string EnteteDesorption(bool csv);
+	std::wstring EnteteDesorption(bool csv);
 
 
 	/**********************************************************************
@@ -262,7 +262,7 @@ protected:
 	*        string extension: Extension you want the file to have
 	*        bool entete: specify true to get the entete string or false for the regular file
 	***********************************************************************/
-	std::string BuildFileName(std::string extension, bool entete);
+	std::wstring BuildFileName(std::wstring extension, bool entete);
 
 /**********************************************************************************************************************************
 // Measurements functions and threads

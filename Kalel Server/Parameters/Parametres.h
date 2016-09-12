@@ -45,10 +45,10 @@ int GetPortMensor();
 int GetPortVannes();
 int GetPortTemperatures();
 
-std::string GetNomCalo();
-std::string GetEnteteCalo();
+std::wstring GetNomCalo();
+std::wstring GetEnteteCalo();
 
-std::string GetCheminFichierGeneral();
+std::wstring GetCheminFichierGeneral();
 
 bool GetMesureCalo();
 bool GetMesureBassePression();

@@ -206,9 +206,15 @@
     <ClInclude Include="Automation\Class\Automation.h" />
     <ClInclude Include="Automation\MFCMessageHandler.h" />
     <ClInclude Include="Automation\Old\MainFrm.h" />
-    <ClInclude Include="Automation\Old\Manip.h" />
-    <ClInclude Include="Automation\Old\Manip_Auto.h" />
-    <ClInclude Include="Automation\Old\Manip_AutoGaz.h" />
+    <ClInclude Include="Automation\Old\Manip.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Automation\Old\Manip_Auto.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Automation\Old\Manip_AutoGaz.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="Automation\ThreadManager.h" />
     <ClInclude Include="Automation\Utils\Chrono.h" />
     <ClInclude Include="Automation\Utils\InfoEtape.h" />

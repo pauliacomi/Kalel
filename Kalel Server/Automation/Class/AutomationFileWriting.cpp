@@ -9,9 +9,9 @@
 ***********************************************************************/
 void Automation::EnteteCreate()
 {
-	std::ofstream file;
+	std::wofstream file;
 
-	file.open(Automation::BuildFileName("txt", true).c_str(), std::ios_base::out);
+	file.open(Automation::BuildFileName(L"txt", true).c_str(), std::ios_base::out);
 	file.clear();
 	file << EnteteBase(false);
 	file << EnteteGeneral(false);
@@ -33,9 +33,9 @@ void Automation::EnteteCreate()
 ***********************************************************************/
 void Automation::EnteteCSVCreate()
 {
-	std::ofstream file;
+	std::wofstream file;
 
-	file.open(Automation::BuildFileName("csv", true).c_str(), std::ios_base::out);
+	file.open(Automation::BuildFileName(L"csv", true).c_str(), std::ios_base::out);
 	file.clear();
 	file << EnteteBase(true);
 	file << EnteteGeneral(true);
@@ -57,7 +57,7 @@ void Automation::EnteteCSVCreate()
 void Automation::FileMeasurementOpen()
 {
 	// Create the file
-	fileStream.open(BuildFileName("csv", false).c_str(), std::ios_base::out /*| ios::trunc*/);
+	fileStream.open(BuildFileName(L"csv", false).c_str(), std::ios_base::out /*| ios::trunc*/);
 
 	// Clear the file stream, pas le .csv, et on peut réitérer l'écriture en enlevant le caractère "fin de fichier"
 	fileStream.clear();
@@ -119,15 +119,15 @@ void Automation::FileMeasurementRecord()
 * Inputs:
 *        bool csv: Ask for a comma separated value format if true
 ***********************************************************************/
-std::string Automation::EnteteBase(bool csv)
+std::wstring Automation::EnteteBase(bool csv)
 {
-	std::string divider;
+	std::wstring divider;
 	if (csv)
-		divider = ";";
+		divider = L";";
 	else
-		divider = " : ";
+		divider = L" : ";
 
-	std::ostringstream text("", std::ios_base::app);
+	std::wostringstream text(L"", std::ios_base::app);
 
 	text << "Experiment type" << divider;
 	text << experimentLocalSettings.experimentType;
@@ -143,13 +143,13 @@ std::string Automation::EnteteBase(bool csv)
 * Inputs:
 *        bool csv: Ask for a comma separated value format if true
 ***********************************************************************/
-std::string Automation::EnteteGeneral(bool csv)
+std::wstring Automation::EnteteGeneral(bool csv)
 {
 	std::wstring divider;
 	if (csv)
-		divider = ";";
+		divider = L";";
 	else
-		divider = " : ";
+		divider = L" : ";
 
 	std::wostringstream text(L"", std::ios_base::app);
 
@@ -157,8 +157,8 @@ std::string Automation::EnteteGeneral(bool csv)
 	text << L"Date"							<< divider		<< experimentLocalSettings.dataGeneral.date_experience									<< finl;
 	text << L"Gaz"							<< divider		<< experimentLocalSettings.dataGeneral.gaz.symbole										<< finl;
 	text << L"Echantillon"					<< divider		<< experimentLocalSettings.dataGeneral.nom_echantillon									<< finl;
-	text << L"Masse"						<< divider		<< experimentLocalSettings.dataGeneral.masse_echantillon		<< divider << "g"		<< finl;
-	text << L"Température de l'expérience"	<< divider		<< experimentLocalSettings.dataGeneral.temperature_experience	<< divider << "°C"		<< finl;
+	text << L"Masse"						<< divider		<< experimentLocalSettings.dataGeneral.masse_echantillon		<< divider << L"g"		<< finl;
+	text << L"Température de l'expérience"	<< divider		<< experimentLocalSettings.dataGeneral.temperature_experience	<< divider << L"°C"		<< finl;
 	text << L"Commentaires"					<< divider		<< experimentLocalSettings.dataGeneral.commentaires										<< finl;
 	text << L"Calorimètre"					<< divider		<< GetNomCalo()																			<< finl;
 	text																																			<< finl;
@@ -173,22 +173,22 @@ std::string Automation::EnteteGeneral(bool csv)
 * Inputs:
 *        bool csv: Ask for a comma separated value format if true
 ***********************************************************************/
-std::string Automation::EnteteDivers(bool csv)
+std::wstring Automation::EnteteDivers(bool csv)
 {
-	std::string divider;
+	std::wstring divider;
 	if (csv)
-		divider = ";";
+		divider = L";";
 	else
-		divider = " : ";
+		divider = L" : ";
 
-	std::ostringstream text("", std::ios_base::app);
+	std::wostringstream text(L"", std::ios_base::app);
 
-	text << "Numéro de Cellule"				<< divider		<< experimentLocalSettings.dataDivers.cellule.numero									<< finl;
-	text << "Volume du calo"				<< divider		<< experimentLocalSettings.dataDivers.cellule.volume_calo		<< divider << "cm3"		<< finl;
-	text << "Volume total"					<< divider		<< experimentLocalSettings.dataDivers.cellule.volume_total		<< divider << "cm3"		<< finl;
-	text << "Baseline time"					<< divider		<< experimentLocalSettings.dataDivers.temps_ligne_base			<< divider << "min"		<< finl;
-	text << "Experiment end vacuum"			<< divider		<< experimentLocalSettings.dataDivers.mise_sous_vide_fin_experience						<< finl;
-	text << "Vacuum time"					<< divider		<< experimentLocalSettings.dataDivers.temps_vide				<< divider << "min"		<< finl;
+	text << L"Numéro de Cellule"			<< divider		<< experimentLocalSettings.dataDivers.cellule.numero									<< finl;
+	text << L"Volume du calo"				<< divider		<< experimentLocalSettings.dataDivers.cellule.volume_calo		<< divider << "cm3"		<< finl;
+	text << L"Volume total"					<< divider		<< experimentLocalSettings.dataDivers.cellule.volume_total		<< divider << "cm3"		<< finl;
+	text << L"Baseline time"				<< divider		<< experimentLocalSettings.dataDivers.temps_ligne_base			<< divider << "min"		<< finl;
+	text << L"Experiment end vacuum"		<< divider		<< experimentLocalSettings.dataDivers.mise_sous_vide_fin_experience						<< finl;
+	text << L"Vacuum time"					<< divider		<< experimentLocalSettings.dataDivers.temps_vide				<< divider << "min"		<< finl;
 	text																																			<< finl;							
 
 	return text.str();
@@ -201,24 +201,24 @@ std::string Automation::EnteteDivers(bool csv)
 * Inputs:
 *        bool csv: Ask for a comma separated value format if true
 ***********************************************************************/
-std::string Automation::EnteteAdsorption(bool csv)
+std::wstring Automation::EnteteAdsorption(bool csv)
 {
-	std::string divider;
+	std::wstring divider;
 	if (csv)
-		divider = ";";
+		divider = L";";
 	else
-		divider = " : ";
+		divider = L" : ";
 
-	std::ostringstream text("", std::ios_base::app);
+	std::wostringstream text(L"", std::ios_base::app);
 
 	for (size_t i = 0; i < experimentLocalSettings.dataAdsorption.size(); i++)
 	{	
-		text << "-----------------------------------------------------"																								<< finl;
-		text << "Adsorption stage number"							<< divider	<< i + 1	 																		<< finl;
-		text << "Delta pression"									<< divider	<< experimentLocalSettings.dataAdsorption[i].delta_pression		<< divider << "bar" << finl;
-		text << "Temps de l'expérience dans le volume référenciel"	<< divider	<< experimentLocalSettings.dataAdsorption[i].temps_volume		<< divider << "min" << finl;
-		text << "Temps de l'expérience dans l'adsorption "			<< divider	<< experimentLocalSettings.dataAdsorption[i].temps_adsorption	<< divider << "min" << finl;
-		text << "Pression finale"									<< divider	<< experimentLocalSettings.dataAdsorption[i].pression_finale	<< divider << "bar" << finl;
+		text <<L"-----------------------------------------------------"																								<< finl;
+		text <<L"Adsorption stage number"							<< divider	<< i + 1	 																		<< finl;
+		text <<L"Delta pression"									<< divider	<< experimentLocalSettings.dataAdsorption[i].delta_pression		<< divider << "bar" << finl;
+		text <<L"Temps de l'expérience dans le volume référenciel"	<< divider	<< experimentLocalSettings.dataAdsorption[i].temps_volume		<< divider << "min" << finl;
+		text <<L"Temps de l'expérience dans l'adsorption "			<< divider	<< experimentLocalSettings.dataAdsorption[i].temps_adsorption	<< divider << "min" << finl;
+		text <<L"Pression finale"									<< divider	<< experimentLocalSettings.dataAdsorption[i].pression_finale	<< divider << "bar" << finl;
 		text																																						<< finl;	
 	}
 
@@ -232,24 +232,24 @@ std::string Automation::EnteteAdsorption(bool csv)
 * Inputs:
 *        bool csv: Ask for a comma separated value format if true
 ***********************************************************************/
-std::string Automation::EnteteDesorption(bool csv)
+std::wstring Automation::EnteteDesorption(bool csv)
 {
-	std::string divider;
+	std::wstring divider;
 	if (csv)
-		divider = ";";
+		divider = L";";
 	else
-		divider = " : ";
+		divider = L" : ";
 
-	std::ostringstream text("", std::ios_base::app);
+	std::wostringstream text(L"", std::ios_base::app);
 
 	for (size_t i = 0; i < experimentLocalSettings.dataDesorption.size(); i++)
 	{	
-		text << "-----------------------------------------------------"																								<< finl;
-		text << "Desorption stage number"							<< divider	<< i + 1																			<< finl;
-		text << "Delta pression"									<< divider	<< experimentLocalSettings.dataDesorption[i].delta_pression		<< divider << "bar" << finl;
-		text << "Temps de l'expérience dans le volume référenciel"	<< divider	<< experimentLocalSettings.dataDesorption[i].temps_volume		<< divider << "min" << finl;
-		text << "Temps de l'expérience dans l'adsorption "			<< divider	<< experimentLocalSettings.dataDesorption[i].temps_desorption	<< divider << "min" << finl;
-		text << "Pression finale"									<< divider	<< experimentLocalSettings.dataDesorption[i].pression_finale	<< divider << "bar" << finl;
+		text <<L"-----------------------------------------------------"																								<< finl;
+		text <<L"Desorption stage number"							<< divider	<< i + 1																			<< finl;
+		text <<L"Delta pression"									<< divider	<< experimentLocalSettings.dataDesorption[i].delta_pression		<< divider << "bar" << finl;
+		text <<L"Temps de l'expérience dans le volume référenciel"	<< divider	<< experimentLocalSettings.dataDesorption[i].temps_volume		<< divider << "min" << finl;
+		text <<L"Temps de l'expérience dans l'adsorption "			<< divider	<< experimentLocalSettings.dataDesorption[i].temps_desorption	<< divider << "min" << finl;
+		text <<L"Pression finale"									<< divider	<< experimentLocalSettings.dataDesorption[i].pression_finale	<< divider << "bar" << finl;
 		text																																						<< finl;	
 	}
 
@@ -344,11 +344,11 @@ void Automation::RecordDataChange(const ExperimentSettings& newSettings, bool cs
 	}
 
 	// Get title
-	std::string title;
+	std::wstring title;
 	if (csv)
-		title = BuildFileName("csv", true).c_str();
+		title = BuildFileName(L"csv", true).c_str();
 	else
-		title = BuildFileName("txt", true).c_str();
+		title = BuildFileName(L"txt", true).c_str();
 
 	// Write to file
 	std::ofstream file;
@@ -366,56 +366,55 @@ void Automation::RecordDataChange(const ExperimentSettings& newSettings, bool cs
 *        std::string extension: Extension you want the file to have
 *        bool entete: specify true to get the entete std::string or false for the regular file
 ***********************************************************************/
-std::string Automation::BuildFileName(std::string extension, bool entete)
+std::wstring Automation::BuildFileName(std::wstring extension, bool entete)
 {
 	// Create buffer
-	char fileNameBuffer[255];
+	wchar_t fileNameBuffer[255];
 
 	// Put path in buffer
-	sprintf_s(fileNameBuffer, "%s", experimentLocalSettings.dataGeneral.chemin.c_str());
+	wprintf_s(fileNameBuffer, "%s", experimentLocalSettings.dataGeneral.chemin.c_str());
 
 	// Check for validity, if not, put the file in the C: drive
-	if (!PathIsDirectory(_T(fileNameBuffer)))
+	if (!PathIsDirectory(fileNameBuffer))
 	{
 		messageHandler.DisplayMessageBox(ERROR_PATHUNDEF, MB_ICONERROR | MB_OK, false);
-		sprintf_s(fileNameBuffer, "C:/");
+		wprintf_s(fileNameBuffer, "C:/");
 	}
 
 	// Check if the user field is empty
 	if (experimentLocalSettings.dataGeneral.experimentateur.surnom.empty())
 	{
-		sprintf_s(fileNameBuffer, "%s/Nouveau_Fichier", experimentLocalSettings.dataGeneral.chemin.c_str());
+		wprintf_s(fileNameBuffer, "%s/Nouveau_Fichier", experimentLocalSettings.dataGeneral.chemin.c_str());
 	}
 	else
 	{
 		// Check if the user directory exists, if not, create it
-		sprintf_s(fileNameBuffer, "%s/%s", experimentLocalSettings.dataGeneral.chemin.c_str(), experimentLocalSettings.dataGeneral.experimentateur.surnom.c_str());
-		if (!PathIsDirectory(_T(fileNameBuffer))) {
-			CreateDirectory(_T(fileNameBuffer), NULL);
+		wprintf_s(fileNameBuffer, "%s/%s", experimentLocalSettings.dataGeneral.chemin.c_str(), experimentLocalSettings.dataGeneral.experimentateur.surnom.c_str());
+		if (!PathIsDirectory(fileNameBuffer)) {
+			CreateDirectory(fileNameBuffer, NULL);
 		}
 		// Check if the sample directory exists
-		sprintf_s(fileNameBuffer, "%s/%s/%s", experimentLocalSettings.dataGeneral.chemin.c_str(), experimentLocalSettings.dataGeneral.experimentateur.surnom.c_str(),
+		wprintf_s(fileNameBuffer, "%s/%s/%s", experimentLocalSettings.dataGeneral.chemin.c_str(), experimentLocalSettings.dataGeneral.experimentateur.surnom.c_str(),
 			experimentLocalSettings.dataGeneral.nom_echantillon.c_str());
 	}
 
 	// Check if the full path exists, if not create it
-	if (!PathIsDirectory(_T(fileNameBuffer))) {
-		CreateDirectory(_T(fileNameBuffer), NULL);
+	if (!PathIsDirectory(fileNameBuffer)) {
+		CreateDirectory(fileNameBuffer, NULL);
 	}
 
 	// Finally store the entire path including the file name and return it
 	if (entete)
 	{
-		sprintf_s(fileNameBuffer, "%s/%s(entete).%s", fileNameBuffer, experimentLocalSettings.dataGeneral.fichier.c_str(), extension.c_str());
+		wprintf_s(fileNameBuffer, "%s/%s(entete).%s", fileNameBuffer, experimentLocalSettings.dataGeneral.fichier.c_str(), extension.c_str());
 	}
 	else
 	{
-		sprintf_s(fileNameBuffer, "%s/%s.%s", fileNameBuffer, experimentLocalSettings.dataGeneral.fichier.c_str(), extension.c_str());
+		wprintf_s(fileNameBuffer, "%s/%s.%s", fileNameBuffer, experimentLocalSettings.dataGeneral.fichier.c_str(), extension.c_str());
 	}
 
 	// Now return generated std::string
-	std::string nom_fichier = fileNameBuffer;
-	return nom_fichier;
+	return fileNameBuffer;
 }
 
 
