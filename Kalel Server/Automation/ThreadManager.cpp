@@ -6,7 +6,6 @@
 #include "../../Kalel Shared/Resources/DefineInstruments.h"
 #include "Class/Automation.h"										// Backend for all the automation
 
-#include "../Parameters/Parametres.h"
 
 // Netcode
 #include "../../Kalel Shared/Netcode/Server.h"
@@ -17,24 +16,25 @@
 // --------- Initialisation and destruction -------
 
 ThreadManager::ThreadManager()
-	: m_threadMainControlLoop(NULL)
-	, m_threadManualAction (NULL)
+	: m_threadMainControlLoop(nullptr)
+	, m_threadManualAction (nullptr)
 
-	, maParam(NULL)
-	, experimentSettings(NULL)
+	, maParam(nullptr)
+	, experimentSettings(nullptr)
 
-	, automation(NULL)
+	, automation(nullptr)
 {
-	// Check to see whether the parameters file has been created
-	VerifParametres();
+	experimentSettings = new ExperimentSettings();
 
-	// Start the thread
+	// Start the threads
 	StartThread();
 }
 
 ThreadManager::~ThreadManager()
 {
-	// signal the thread to exit
+	delete experimentSettings;
+
+	// signal the threads to exit
 	ShutdownThread();
 }
 
@@ -53,7 +53,7 @@ HRESULT ThreadManager::StartThread() {
 	HRESULT hr = S_OK;
 	
 	// Close the worker thread
-	if (m_threadMainControlLoop == NULL)
+	if (m_threadMainControlLoop == nullptr)
 	{
 
 		// Create the thread in a suspended state
@@ -79,7 +79,7 @@ HRESULT ThreadManager::ResumeThread() {
 	HRESULT hr = S_OK;
 
 	// Check if the thread exists
-	if (m_threadMainControlLoop != NULL)
+	if (m_threadMainControlLoop != nullptr)
 	{
 		// Signal the thread to start
 		::SetEvent(automation->h_eventResume);
@@ -97,7 +97,7 @@ HRESULT ThreadManager::PauseThread() {
 	HRESULT hr = S_OK;
 
 	// Check if the thread exists
-	if (m_threadMainControlLoop != NULL)
+	if (m_threadMainControlLoop != nullptr)
 	{
 		// Signal the thread to resume
 		::SetEvent(automation->h_eventPause);
@@ -116,7 +116,7 @@ HRESULT ThreadManager::ResetThread()
 	HRESULT hr = S_OK;
 
 	// Check if the thread exists
-	if (m_threadMainControlLoop != NULL)
+	if (m_threadMainControlLoop != nullptr)
 	{
 		// Signal the thread to reset
 		::SetEvent(automation->h_eventReset);
@@ -135,7 +135,7 @@ HRESULT ThreadManager::SetModifiedData()
 	HRESULT hr = S_OK;
 
 	// Check if the thread exists
-	if (m_threadMainControlLoop != NULL)
+	if (m_threadMainControlLoop != nullptr)
 	{
 		// Set the atomic bool as modified
 		automation->sb_settingsModified = true;
@@ -153,7 +153,7 @@ HRESULT ThreadManager::SetUserContinue()
 	HRESULT hr = S_OK;
 
 	// Check if the thread exists
-	if (m_threadMainControlLoop != NULL)
+	if (m_threadMainControlLoop != nullptr)
 	{
 		// Set the atomic bool as modified
 		automation->sb_userContinue = true;

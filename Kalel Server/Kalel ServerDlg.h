@@ -3,8 +3,7 @@
 //
 #pragma once
 
-#include "Automation/ThreadManager.h"
-#include <memory>
+#include "Kalel.h"
 
 // CKalelServerDlg dialog
 class CKalelServerDlg : public CDHtmlDialog
@@ -28,7 +27,6 @@ public:
 protected:
 	HICON m_hIcon;
 
-	std::unique_ptr<ThreadManager> threadManager;
 
 	// Generated message map functions
 	virtual BOOL OnInitDialog();
@@ -36,5 +34,7 @@ protected:
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
 	DECLARE_DHTML_EVENT_MAP()
+
+	Kalel mainBackend;
 
 };

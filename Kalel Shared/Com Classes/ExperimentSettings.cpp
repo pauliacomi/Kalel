@@ -5,9 +5,9 @@
 #include "../Resources/DefineStages.h"
 #include "../Resources/StringTable.h"
 
-ExperimentSettings::ExperimentSettings()
-{
-	ExperimentSettings(0, 0);
+ExperimentSettings::ExperimentSettings() 
+	: ExperimentSettings(0, 0)
+{	
 }
 
 ExperimentSettings::ExperimentSettings(int initialAdsorptions, int initialDesorptions)
@@ -88,7 +88,6 @@ void ExperimentSettings::ResetData(int initialAdsorptions, int initialDesorption
 ExperimentSettings & ExperimentSettings::operator=(const ExperimentSettings * p) {
 	if (this != p) {  // make sure not same object
 
-		//GUIhandle = p->GUIhandle;
 		experimentType = p->experimentType;
 
 		dataGeneral = p->dataGeneral;
