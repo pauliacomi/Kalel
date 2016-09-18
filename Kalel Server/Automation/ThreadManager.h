@@ -3,6 +3,7 @@
 #pragma once
 
 #include <thread>
+#include "../MessageHandler.h"
 
 class Automation;
 class ExperimentSettings;
@@ -11,18 +12,19 @@ class ManualActionParam;
 class ThreadManager
 {
 public:
-	ThreadManager();
+	ThreadManager(Handles h);
 	~ThreadManager();
 
 	// Pointer to settings storage
 	ManualActionParam * maParam;							// Storage for manual parameters
-	ExperimentSettings * experimentSettings;				// Storage for automatic parameters
+	std::shared_ptr<ExperimentSettings> experimentSettings;	// Storage for automatic parameters
 
 	CWinThread * m_threadMainControlLoop;					// Reference for main thread
 	std::thread * m_threadMeasurement;						// Reference for main thread
 	CWinThread * m_threadManualAction;						// Reference for manual thread
 
 private:
+	Handles handles;
 	Automation * automation;								// Main class that deals with the automatic functionality
 
 	// Public interface methods

@@ -15,7 +15,7 @@
 
 // --------- Initialisation and destruction -------
 
-ThreadManager::ThreadManager()
+ThreadManager::ThreadManager(Handles h)
 	: m_threadMainControlLoop(nullptr)
 	, m_threadManualAction (nullptr)
 
@@ -24,7 +24,8 @@ ThreadManager::ThreadManager()
 
 	, automation(nullptr)
 {
-	experimentSettings = new ExperimentSettings();
+	// 
+	handles = h;
 
 	// Start the threads
 	StartThread();
@@ -32,8 +33,6 @@ ThreadManager::ThreadManager()
 
 ThreadManager::~ThreadManager()
 {
-	delete experimentSettings;
-
 	// signal the threads to exit
 	ShutdownThread();
 }
@@ -228,7 +227,7 @@ UINT ThreadManager::ThreadMainWorkerStarter(LPVOID pParam)
 void ThreadManager::ThreadMainWorker()
 {
 	// Create the class to deal with the automatic functionality
-	automation = new Automation(experimentSettings);
+	automation = new Automation(handles);
 
 	// Launch functionality
 	automation->Execution();

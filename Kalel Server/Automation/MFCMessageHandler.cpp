@@ -31,6 +31,8 @@ bool MFCMessageHandler::SetHandle(HWND h)
 
 bool MFCMessageHandler::ExchangeData(ExperimentData pParam)
 {
+	return true;
+
 	// Create a new instance of the storage class and equate it to the local class
 	ExperimentData * newData = new ExperimentData();
 	*newData = pParam;
@@ -47,6 +49,8 @@ bool MFCMessageHandler::ExchangeData(ExperimentData pParam)
 
 bool MFCMessageHandler::DisplayMessage(int pParam, int pInt1, int pInt2, double pDouble)
 {
+	return true;
+
 	// Create a new pointer 
 	CString * message = new CString;
 	if (pDouble != default_val)
@@ -83,6 +87,8 @@ bool MFCMessageHandler::DisplayMessage(int pParam, int pInt1, int pInt2, double 
 
 bool MFCMessageHandler::DisplayMessage(int pParam, std::string m)
 {
+	return true;
+
 	// Create a new pointer 
 	CString * message = new CString;
 	message->Format(pParam, m);
@@ -98,6 +104,8 @@ bool MFCMessageHandler::DisplayMessage(int pParam, std::string m)
 
 bool MFCMessageHandler::DisplayMessageBox(int pParam, UINT nType, bool blocksProgram, double pDouble1, double pDouble2)
 {
+	return true;
+
 	// Create a new pointer 
 	UINT * type = new UINT(nType);
 	CString * message = new CString;
@@ -139,6 +147,8 @@ bool MFCMessageHandler::DisplayMessageBox(int pParam, UINT nType, bool blocksPro
 
 bool MFCMessageHandler::DisplayMessageBox(int pParam, UINT nType, bool blocksProgram, std::string pString)
 {
+	return true;
+
 	// Create a new pointer 
 	UINT * type = new UINT(nType);
 	CString * message = new CString;

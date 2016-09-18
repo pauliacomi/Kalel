@@ -9,8 +9,19 @@ struct http_request {
 
 	http_request() : authentication_given_(false) {}
 
+	/* method_: used to transmit the REST method desired
+	o  GET
+	o  POST
+	and so on */
 	std::string                        method_;
+
+	/* path_: used to transmit the path:
+	o  /api/rest */
 	std::string                        path_;
+
+	/* params_: used to transmit the parameters after the path
+	o  /rest?something=1
+	and so on */
 	std::map<std::string, std::string> params_;
 
 	std::string                        accept_;

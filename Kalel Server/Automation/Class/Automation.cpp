@@ -1,10 +1,11 @@
 #include "Automation.h"
 
-Automation::Automation(ExperimentSettings* exps)
+Automation::Automation(Handles h)
 	: running(true)
+	, messageHandler(h)
 {
 	// Save pointer to experiment settings
-	experimentSettings = exps;
+	experimentSettings = h.experimentSettings;
 
 	// Initialise class members
 	sb_settingsModified = false;
@@ -31,9 +32,6 @@ Automation::Automation(ExperimentSettings* exps)
 	events[2] = h_eventResume;
 	events[3] = h_eventReset;
 	events[4] = h_eventUserInput;
-
-	// Initialise local settings copy
-	experimentLocalSettings = GetSettings();
 
 	// Initialisation of the critical section
 	InitializeCriticalSection(&criticalSection);
@@ -391,7 +389,7 @@ ExperimentSettings Automation::GetSettings()
 	ExperimentSettings tempSettings;
 
 	// Copy the data from the main thread, no need for synchronisation as we are only copying
-	tempSettings = experimentSettings;
+	tempSettings = experimentSettings.get();
 
 	sb_settingsModified = false;
 

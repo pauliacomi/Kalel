@@ -7,6 +7,7 @@
 #include <vector>
 #include <atomic>
 #include <thread>
+#include "http_request.h"
 
 class Server : Socket
 {
@@ -14,9 +15,11 @@ public:
 	Server();
 	~Server();
 
+	typedef   void(*request_func) (http_request*);
+
 	// If no port specified, server defaults to http (80)
 	void Listen(PCSTR port = "http");
-	void Accept();
+	void Accept(request_func);
 
 protected:
 	struct addrinfo *result;							// Pointer to the result address
@@ -26,6 +29,8 @@ protected:
 	unsigned Process(SOCKET sock);
 	std::thread acceptThread;
 	std::exception_ptr teptr;
+
+	static request_func request_func_;
 };
 
 #endif

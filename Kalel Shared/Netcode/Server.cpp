@@ -11,6 +11,7 @@
 
 #define NO_OF_CONN		5      /* Passed to listen() */
 
+Server::request_func Server::request_func_ = 0;
 
 Server::Server()
 	: accepting{ false }
@@ -103,8 +104,10 @@ void Server::Listen(PCSTR port)
 }
 
 
-void Server::Accept()
+void Server::Accept(request_func r)
 {
+	request_func_ = r;
+
 	if (accepting == false)
 	{
 		accepting = true;
@@ -204,8 +207,7 @@ unsigned Server::Process(SOCKET l_sock)
 	else if (line.find("POST") == 0) {
 		req.method_ = "POST";
 	}
-
-	if (line.find("PUT") == 0) {
+	else if (line.find("PUT") == 0) {
 		req.method_ = "PUT";
 	}
 	else if (line.find("DELETE") == 0) {
@@ -270,13 +272,7 @@ unsigned Server::Process(SOCKET l_sock)
 	//	Construct the response
 	//
 
-	if (req.path_ == "/") {
-		req.answer_ = "<html><head><title>";
-		req.answer_ += "Top KEK";
-		req.answer_ += "</title></head><body bgcolor='#4444ff'>";
-		req.answer_ += "KEKKEK";
-		req.answer_ += "</body></html>";
-	}
+	request_func_(&req);
 
 	std::stringstream str_str;
 	str_str << req.answer_.size();

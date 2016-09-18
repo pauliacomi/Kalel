@@ -14,6 +14,8 @@ public:
 	void SplitUrl(std::string const& url, std::string& protocol, std::string& server, std::string& path);
 	bool RemoveProtocolFromUrl(std::string const& url, std::string& protocol, std::string& rest);
 	void SplitGetReq(std::string et_req, std::string& path, std::map<std::string, std::string>& params);
+
+	void BuildReq(std::string& request, std::string const& path, std::map<std::string, std::string> const& params);
 };
 
 #endif

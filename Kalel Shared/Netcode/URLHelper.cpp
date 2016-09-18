@@ -113,6 +113,7 @@ void URLHelper::SplitGetReq(std::string get_req, std::string& path, std::map<std
 	}
 }
 
+
 void URLHelper::SplitUrl(std::string const& url, std::string& protocol, std::string& server, std::string& path) {
 
 	RemoveProtocolFromUrl(url, protocol, server);
@@ -134,5 +135,20 @@ void URLHelper::SplitUrl(std::string const& url, std::string& protocol, std::str
 	}
 	else {
 		std::cerr << "unknown protocol in SplitUrl: '" << protocol << "'" << std::endl;
+	}
+	
+}
+
+void URLHelper::BuildReq(std::string & request, std::string const & path, std::map<std::string, std::string> const & params)
+{
+	request += path;
+	if (!params.empty())
+	{
+		request += "&";
+
+		for (size_t i = 0; i < params.; i++)
+		{
+
+		}
 	}
 }

@@ -15,7 +15,7 @@
 #include "../../../Kalel Shared/Resources/DefineStages.h"					// All stage, experiment type definitions are here
 
 // Synchronization classes
-#include "../MFCMessageHandler.h"											// Handles all the messages from this class to the client
+#include "../../MessageHandler.h"											// Handles all the messages from this class to the client
 #include "../../../Kalel Shared/Com Classes/ExperimentData.h"
 #include "../../../Kalel Shared/Com Classes/ExperimentSettings.h"	
 
@@ -35,7 +35,7 @@
 class Automation
 {
 public:
-	Automation(ExperimentSettings* exps);
+	Automation(Handles h);
 	~Automation();
 
 
@@ -50,10 +50,10 @@ protected:
 	//------------------------------------------------------------
 
 	// Instruments
-	CVannes* g_pVanne;									// Pointer to the valve opening class
-	CTemperature* g_pTemperature;						// Pointer to the class that deals with temperature recording
-	SerialInstruments * g_pSerialInstruments;			// Pointer to the class that deals with calorimeter & pressure recording
-	ExperimentSettings* experimentSettings;				// Pointer to the experiment settings from the main class, this is only read, never written
+	CVannes* g_pVanne;											// Pointer to the valve opening class
+	CTemperature* g_pTemperature;								// Pointer to the class that deals with temperature recording
+	SerialInstruments * g_pSerialInstruments;					// Pointer to the class that deals with calorimeter & pressure recording
+	std::shared_ptr<ExperimentSettings> experimentSettings;		// Pointer to the experiment settings from the main class, this is only read, never written
 
 	//------------------------------------------------------------
 	// Locally stored settings and data
@@ -69,7 +69,7 @@ protected:
 	
 	std::ofstream fileStream;							// The file stream is stored in this variable
 
-	MFCMessageHandler messageHandler;					// This class will send all the messages to the GUI using MFC's message pump
+	MessageHandler messageHandler;						// This class will send all the messages out
 
 	CChrono timerExperiment;							// Class for measuring the time from the experiment start
 	CChrono timerMeasurement;							// Class for measuring the time between each measurement

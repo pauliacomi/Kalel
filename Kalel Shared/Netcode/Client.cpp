@@ -1,8 +1,12 @@
 #include "../Forcelib.h"
 #include "Client.h"
 
+#include "URLHelper.h"
 #include "Netcode Resources.h"
 
+#include <sstream>
+
+Client::request_func Client::request_func_ = 0;
 
 Client::Client()
 	: peer{ nullptr }
@@ -22,8 +26,17 @@ Client::~Client()
 	}
 }
 
+
 void Client::Connect(std::string ip, std::string port)
 {
+	ip_ = ip;
+	port_ = port;
+
+	requestThread = std::thread(&Client::Start, this);
+}
+
+
+void Client::Start(){
 	// Create the address info struct
 	struct addrinfo hints;									// The requested address
 
@@ -35,7 +48,7 @@ void Client::Connect(std::string ip, std::string port)
 
 
 	// Resolve the local address and port to be used by the server
-	if (getaddrinfo(ip.c_str(), port.c_str(), &hints, &result) != 0) {
+	if (getaddrinfo(ip_.c_str(), port_.c_str(), &hints, &result) != 0) {
 		stringex.set(ERR_GETADDRINFO);
 		throw stringex;
 	}
@@ -50,7 +63,7 @@ void Client::Connect(std::string ip, std::string port)
 		}
 
 		// Connect to server.
-		if(connect(sock, loopAddr->ai_addr, (int)loopAddr->ai_addrlen) == SOCKET_ERROR){
+		if (connect(sock, loopAddr->ai_addr, (int)loopAddr->ai_addrlen) == SOCKET_ERROR) {
 			continue;
 		}
 
@@ -64,9 +77,59 @@ void Client::Connect(std::string ip, std::string port)
 
 	/*iResult = getpeername(clientSocket, peer, sizeof(struct sockaddr));
 	if (iResult == SOCKET_ERROR) {
-		std::string a("Cannot get identity!");
-		throw a;
+	std::string a("Cannot get identity!");
+	throw a;
 	}*/
+	/////
+
+	// send
+
+	http_request req;
+	request_func_(&req);
+
+	std::string reqUrl;
+
+	URLHelper urlHelper;
+	urlHelper.BuildReq(reqUrl, req.path_, req.params_);
+
+	std::stringstream str_str;
+	str_str << req.answer_.size();
+
+	Send(sock, req.method_);
+	Send(sock, reqUrl);
+	SendLine(sock, "HTTP/1.1");
+	SendLine(sock, req.accept_);
+
+
+	// receive
+
+	std::string line = ReceiveLine(sock);
+
+	while (1) {
+		line = ReceiveLine(sock);
+
+		if (line.empty())
+			break;
+
+		unsigned int pos_cr_lf = line.find_first_of("\x0a\x0d");
+		if (pos_cr_lf == 0)
+			break;
+
+		line = line.substr(0, pos_cr_lf);
+
+		if (line.substr(0, authorization.size()) == authorization) {
+			req.authentication_given_ = true;
+			std::string encoded = line.substr(authorization.size());
+			std::string decoded = base64_decode(encoded);
+
+			unsigned int pos_colon = decoded.find(":");
+
+			req.username_ = decoded.substr(0, pos_colon);
+			req.password_ = decoded.substr(pos_colon + 1);
+		}
+	}
+
+	/////
 
 	// clears no longer needed address info
 	freeaddrinfo(result);
