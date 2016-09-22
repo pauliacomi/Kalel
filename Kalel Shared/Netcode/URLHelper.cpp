@@ -144,11 +144,15 @@ void URLHelper::BuildReq(std::string & request, std::string const & path, std::m
 	request += path;
 	if (!params.empty())
 	{
-		request += "&";
+		request += "?";
 
-		for (size_t i = 0; i < params.; i++)
-		{
-
+		for (std::map<std::string, std::string>::const_iterator it = params.begin(); it != params.end(); ++it) {
+			request += it->first;
+			request += "=";
+			request += it->second;
+			if (it != params.end())	{
+				request += "&";
+			}
 		}
 	}
 }

@@ -17,7 +17,7 @@ public:
 	typedef   void(*request_func) (http_request*);
 
 	// If no port specified, client defaults to http (80)
-	void Connect(std::string ip, std::string port = "http");
+	void Connect(request_func r, std::string ip, std::string port = "http");
 
 
 protected:

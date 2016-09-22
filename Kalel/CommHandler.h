@@ -32,4 +32,6 @@ private:
 	UnicodeConv unicodeConverter;
 };
 
+void Initial(http_request* r);
+
 #endif

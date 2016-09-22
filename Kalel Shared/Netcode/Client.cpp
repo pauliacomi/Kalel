@@ -27,12 +27,14 @@ Client::~Client()
 }
 
 
-void Client::Connect(std::string ip, std::string port)
+void Client::Connect(request_func r, std::string ip, std::string port)
 {
 	ip_ = ip;
 	port_ = port;
+	request_func_ = r;
 
 	requestThread = std::thread(&Client::Start, this);
+	requestThread.detach();
 }
 
 
@@ -95,10 +97,21 @@ void Client::Start(){
 	std::stringstream str_str;
 	str_str << req.answer_.size();
 
-	Send(sock, req.method_);
-	Send(sock, reqUrl);
+	static const std::string accept				= "Accept: ";
+	static const std::string accept_language	= "Accept-Language: ";
+	static const std::string user_agent			= "User-Agent: ";
+	static const std::string accept_encoding	= "Accept-Encoding: ";
+	static const std::string host				= "Host: ";
+	static const std::string connection			= "Connection: ";
+
+	Send(sock, req.method_ + " ");
+	Send(sock, reqUrl + " ");
 	SendLine(sock, "HTTP/1.1");
-	SendLine(sock, req.accept_);
+	SendLine(sock, accept + req.accept_);
+	/*SendLine(sock, accept_language + req.accept_language_);
+	SendLine(sock, user_agent + req.user_agent_);
+	SendLine(sock, accept_encoding + req.accept_encoding_);
+	SendLine(sock, connection + req.status_);*/
 
 
 	// receive
@@ -117,7 +130,7 @@ void Client::Start(){
 
 		line = line.substr(0, pos_cr_lf);
 
-		if (line.substr(0, authorization.size()) == authorization) {
+		/*if (line.substr(0, authorization.size()) == authorization) {
 			req.authentication_given_ = true;
 			std::string encoded = line.substr(authorization.size());
 			std::string decoded = base64_decode(encoded);
@@ -126,7 +139,7 @@ void Client::Start(){
 
 			req.username_ = decoded.substr(0, pos_colon);
 			req.password_ = decoded.substr(pos_colon + 1);
-		}
+		}*/
 	}
 
 	/////

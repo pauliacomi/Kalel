@@ -3,6 +3,7 @@
 
 #include "Com Classes\ManualActionParam.h"
 #include "Netcode/http_request.h"
+#include "Netcode/Client.h"
 
 CommHandler::CommHandler()
 {
@@ -13,9 +14,20 @@ CommHandler::~CommHandler()
 {
 }
 
+void Initial(http_request* r) {
+
+	r->method_ = "GET";
+	r->path_ = "/api";
+	r->params_ = {
+		{"name","dog"},
+		{"breed","lab"},
+		{"age","1"}
+	};
+}
+
 void CommHandler::Connect(std::wstring address)
 {
-	client.Connect(unicodeConverter.ws2s(address.c_str()));
+	client.Connect(Initial, unicodeConverter.ws2s(address.c_str()));
 }
 
 void CommHandler::ManualCommand(int instrumentType, int instrumentNumber, bool shouldBeActivated)

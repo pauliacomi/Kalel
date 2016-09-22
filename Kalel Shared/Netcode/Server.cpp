@@ -6,8 +6,9 @@
 #include "URLHelper.h"
 #include "base64.h"
 
-#include <sstream>
+#include "../log.h"
 
+#include <sstream>
 
 #define NO_OF_CONN		5      /* Passed to listen() */
 
@@ -18,6 +19,8 @@ Server::Server()
 	, teptr{ nullptr }
 	, result{ nullptr }
 {
+	StreamLog::ReportingLevel() = logDEBUG4;
+	Output2stream::Stream() = &log;
 }
 
 
@@ -101,6 +104,9 @@ void Server::Listen(PCSTR port)
 		stringex.set(ERR_LISTENING);
 		throw stringex;
 	}
+
+	STREAM_LOG(logINFO) << "Listening to socket";
+
 }
 
 
@@ -173,8 +179,10 @@ void Server::AcceptLoop()
 			else {
 				//if (theirAddr.ss_family == AF_INET)
 				//{
-				//	 inet_ntoa(((struct sockaddr_in*)&theirAddr)->sin_addr), ntohs(((struct sockaddr_in*)&theirAddr)->sin_port);
+					 //inet_ntoa(((struct sockaddr_in*)&theirAddr)->sin_addr), ntohs(((struct sockaddr_in*)&theirAddr)->sin_port);
 				//}
+
+				STREAM_LOG(logINFO) << "Accepted new socket";
 
 				std::thread(&Server::Process, this, clientSocket).detach();
 			}
@@ -188,18 +196,21 @@ void Server::AcceptLoop()
 
 unsigned Server::Process(SOCKET l_sock)
 {
+	std::string request;
 	std::string line = ReceiveLine(l_sock);
+	request += line;
 
 	if (line.empty()) {
 		Close(l_sock);
 		return 1;
 	}
 
-	http_request req;
 	
 	//
 	//	Get the request
 	//
+	
+	http_request req;
 
 	if (line.find("GET") == 0) {
 		req.method_ = "GET";
@@ -226,14 +237,10 @@ unsigned Server::Process(SOCKET l_sock)
 	req.path_ = path;
 	req.params_ = params;
 
-	static const std::string authorization   = "Authorization: Basic ";
-	static const std::string accept          = "Accept: "             ;
-	static const std::string accept_language = "Accept-Language: "    ;
-	static const std::string accept_encoding = "Accept-Encoding: "    ;
-	static const std::string user_agent      = "User-Agent: "         ;
 
 	while (1) {
 		line = ReceiveLine(l_sock);
+		request += line;
 
 		if (line.empty()) 
 			break;
@@ -244,9 +251,9 @@ unsigned Server::Process(SOCKET l_sock)
 
 		line = line.substr(0, pos_cr_lf);
 
-		if (line.substr(0, authorization.size()) == authorization) {
+		if (line.substr(0, req.authorization.size()) == req.authorization) {
 			req.authentication_given_ = true;
-			std::string encoded = line.substr(authorization.size());
+			std::string encoded = line.substr(req.authorization.size());
 			std::string decoded = base64_decode(encoded);
 
 			unsigned int pos_colon = decoded.find(":");
@@ -254,17 +261,17 @@ unsigned Server::Process(SOCKET l_sock)
 			req.username_ = decoded.substr(0, pos_colon);
 			req.password_ = decoded.substr(pos_colon + 1);
 		}
-		else if (line.substr(0, accept.size()) == accept) {
-			req.accept_ = line.substr(accept.size());
+		else if (line.substr(0, req.accept.size()) == req.accept) {
+			req.accept_ = line.substr(req.accept.size());
 		}
-		else if (line.substr(0, accept_language.size()) == accept_language) {
-			req.accept_language_ = line.substr(accept_language.size());
+		else if (line.substr(0, req.accept_language.size()) == req.accept_language) {
+			req.accept_language_ = line.substr(req.accept_language.size());
 		}
-		else if (line.substr(0, accept_encoding.size()) == accept_encoding) {
-			req.accept_encoding_ = line.substr(accept_encoding.size());
+		else if (line.substr(0, req.accept_encoding.size()) == req.accept_encoding) {
+			req.accept_encoding_ = line.substr(req.accept_encoding.size());
 		}
-		else if (line.substr(0, user_agent.size()) == user_agent) {
-			req.user_agent_ = line.substr(user_agent.size());
+		else if (line.substr(0, req.user_agent.size()) == req.user_agent) {
+			req.user_agent_ = line.substr(req.user_agent.size());
 		}
 	}
 
@@ -288,7 +295,10 @@ unsigned Server::Process(SOCKET l_sock)
 	asctime_s(asctime_remove_nl, 26, &gmt);
 	asctime_remove_nl[24] = 0;
 
+	std::string response;
+
 	Send(l_sock, "HTTP/1.1 ");
+	response += "HTTP/1.1 ";
 
 	if (!req.auth_realm_.empty()) {
 		SendLine(l_sock, "401 Unauthorized");
@@ -298,6 +308,7 @@ unsigned Server::Process(SOCKET l_sock)
 	}
 	else {
 		SendLine(l_sock, req.status_);
+		response += req.status_ + "\n";
 	}
 	SendLine(l_sock, std::string("Date: ") + asctime_remove_nl + " GMT");
 	SendLine(l_sock, std::string("Server: ") + serverName);
@@ -307,6 +318,20 @@ unsigned Server::Process(SOCKET l_sock)
 	SendLine(l_sock, "");
 	SendLine(l_sock, req.answer_);
 
+	response += std::string("Date: ") + asctime_remove_nl + " GMT" + "\n";
+	response += std::string("Server: ") + serverName + "\n";
+	response += "Connection: close";
+	response += "\n";
+	response += "Content-Type: text/html; charset=ISO-8859-1";
+	response += "\n";
+	response += "Content-Length: " + str_str.str() + "\n";
+	response += "\n";
+	response += req.answer_ + "\n";
+		    
+
+	STREAM_LOG(logINFO) << "Request was: " << request;
+	STREAM_LOG(logINFO) << "Response sent: " << response;
+	
 	// Close connection socket
 	CloseGracefully(l_sock);
 	return 0;

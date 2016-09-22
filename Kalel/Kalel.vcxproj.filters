@@ -300,6 +300,9 @@
     <ClInclude Include="DialogTypeExperiment.h">
       <Filter>Header Files\GUI\Dialogs\Type Experiment</Filter>
     </ClInclude>
+    <ClInclude Include="..\Kalel Shared\log.h">
+      <Filter>Source Files\Commmon</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainFrm.cpp">

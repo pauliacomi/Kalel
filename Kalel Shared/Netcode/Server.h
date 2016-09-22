@@ -31,6 +31,8 @@ protected:
 	std::exception_ptr teptr;
 
 	static request_func request_func_;
+
+	std::string log;
 };
 
 #endif
