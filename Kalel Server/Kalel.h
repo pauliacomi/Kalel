@@ -18,10 +18,14 @@ public:
 	Kalel();
 	~Kalel();
 
+	void GetLogs(std::vector<std::string> &logs);
+
 protected:
 	ThreadManager threadManager;
 	Server server;
 	Handles handles;
+
+	std::vector<std::string> serverLogs;
 
 	std::vector<std::shared_ptr<std::string>> logCollection;		// All non-error logs are stored here
 	std::vector<std::shared_ptr<std::string>> errorCollection;		// All error logs are stored here

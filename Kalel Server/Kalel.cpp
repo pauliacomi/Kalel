@@ -16,6 +16,7 @@ Kalel::Kalel()
 	VerifParametres();
 
 	// Start server functionality
+	server.SetLogs(serverLogs);
 	server.Listen();
 	server.Accept(Get);
 }
@@ -23,6 +24,11 @@ Kalel::Kalel()
 
 Kalel::~Kalel()
 {
+}
+
+void Kalel::GetLogs(std::vector<std::string> &logs) {
+	logs.clear();
+	logs.insert(logs.begin(), serverLogs.begin(), serverLogs.end());
 }
 
 

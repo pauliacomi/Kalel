@@ -3,6 +3,7 @@
 
 #include <sstream>
 #include <string>
+#include <vector>
 #include <stdio.h>
 
 inline std::string NowTime();
@@ -85,28 +86,26 @@ TLogLevel Log<T>::FromString(const std::string& level)
     return logINFO;
 }
 
-
-class Output2stream
+class Output2vector
 {
 public:
-	static std::string*& Stream();
+	static std::vector<std::string>*& Stream();
 	static void Output(const std::string& msg);
 };
 
-inline std::string*& Output2stream::Stream()
+inline std::vector<std::string>*& Output2vector::Stream()
 {
-	static std::string* pStream = nullptr;
+	static std::vector<std::string>* pStream = nullptr;
 	return pStream;
 }
 
-inline void Output2stream::Output(const std::string& msg)
+inline void Output2vector::Output(const std::string& msg)
 {
-	std::string* pStream = Stream();
+	std::vector<std::string>* pStream = Stream();
 	if (!pStream)
 		return;
-
-	std::string &temp = *pStream;
-	temp += msg;
+	
+	pStream->push_back(msg);
 }
 
 
@@ -145,7 +144,7 @@ inline void Output2FILE::Output(const std::string& msg)
 #endif // _WIN32
 
 class FILELOG_DECLSPEC FILELog : public Log<Output2FILE> {};
-class StreamLog : public Log<Output2stream> {};
+class StreamLog : public Log<Output2vector> {};
 //typedef Log<Output2FILE> FILELog;
 
 #ifndef FILELOG_MAX_LEVEL
@@ -163,7 +162,7 @@ class StreamLog : public Log<Output2stream> {};
 
 #define STREAM_LOG(level) \
     if (level > STREAMLOG_MAX_LEVEL) ;\
-    else if (level > StreamLog::ReportingLevel() || !Output2stream::Stream()) ; \
+    else if (level > StreamLog::ReportingLevel() || !Output2vector::Stream()) ; \
     else StreamLog().Get(level)
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__)

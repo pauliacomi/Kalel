@@ -30,9 +30,12 @@ CKalelServerDlg::CKalelServerDlg(CWnd* pParent /*=NULL*/)
 void CKalelServerDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDHtmlDialog::DoDataExchange(pDX);
+
+	DDX_DHtml_ElementInnerText(pDX, _T("TextArea1"), displayText);
 }
 
 BEGIN_MESSAGE_MAP(CKalelServerDlg, CDHtmlDialog)
+	ON_WM_TIMER()				// timer for update of the values
 END_MESSAGE_MAP()
 
 // CKalelServerDlg message handlers
@@ -48,6 +51,9 @@ BOOL CKalelServerDlg::OnInitDialog()
 
 	// TODO: Add extra initialization here
 
+	// Set the timer for the window update
+	SetTimer(1, 1000, NULL);
+
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
 
@@ -57,6 +63,8 @@ BOOL CKalelServerDlg::OnInitDialog()
 
 void CKalelServerDlg::OnPaint()
 {
+	
+
 	if (IsIconic())
 	{
 		CPaintDC dc(this); // device context for painting
@@ -85,6 +93,18 @@ void CKalelServerDlg::OnPaint()
 HCURSOR CKalelServerDlg::OnQueryDragIcon()
 {
 	return static_cast<HCURSOR>(m_hIcon);
+}
+
+void CKalelServerDlg::OnTimer(UINT nIDEvent)
+{
+	mainBackend.GetLogs(logVector);
+
+	displayText = _T("");
+	for (size_t i = 0; i < logVector.size(); i++)
+	{
+		displayText += logVector[i].c_str();
+	}
+	UpdateData(FALSE);
 }
 
 HRESULT CKalelServerDlg::OnButtonOK(IHTMLElement* /*pElement*/)

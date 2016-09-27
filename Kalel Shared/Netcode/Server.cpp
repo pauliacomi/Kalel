@@ -19,8 +19,6 @@ Server::Server()
 	, teptr{ nullptr }
 	, result{ nullptr }
 {
-	StreamLog::ReportingLevel() = logDEBUG4;
-	Output2stream::Stream() = &log;
 }
 
 
@@ -45,6 +43,12 @@ Server::~Server()
 		delete connectedSockets[i];
 	}
 	connectedSockets.clear();
+}
+
+void Server::SetLogs(std::vector<std::string> & vct)
+{
+	StreamLog::ReportingLevel() = logDEBUG4;
+	Output2vector::Stream() = &vct;
 }
 
 
@@ -105,8 +109,7 @@ void Server::Listen(PCSTR port)
 		throw stringex;
 	}
 
-	STREAM_LOG(logINFO) << "Listening to socket";
-
+	STREAM_LOG(logINFO) << "Listening";
 }
 
 
@@ -177,10 +180,11 @@ void Server::AcceptLoop()
 				}
 			}
 			else {
-				//if (theirAddr.ss_family == AF_INET)
-				//{
+
+				if (theirAddr.ss_family == AF_INET)
+				{
 					 //inet_ntoa(((struct sockaddr_in*)&theirAddr)->sin_addr), ntohs(((struct sockaddr_in*)&theirAddr)->sin_port);
-				//}
+				}
 
 				STREAM_LOG(logINFO) << "Accepted new socket";
 
@@ -329,8 +333,8 @@ unsigned Server::Process(SOCKET l_sock)
 	response += req.answer_ + "\n";
 		    
 
-	STREAM_LOG(logINFO) << "Request was: " << request;
-	STREAM_LOG(logINFO) << "Response sent: " << response;
+	STREAM_LOG(logDEBUG) << "Request was: " << request;
+	STREAM_LOG(logDEBUG) << "Response sent: " << response;
 	
 	// Close connection socket
 	CloseGracefully(l_sock);

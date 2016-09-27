@@ -32,9 +32,12 @@ protected:
 	virtual BOOL OnInitDialog();
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
+	void OnTimer(UINT nIDEvent);
 	DECLARE_MESSAGE_MAP()
 	DECLARE_DHTML_EVENT_MAP()
 
 	Kalel mainBackend;
 
+	std::vector<std::string> logVector;
+	CString displayText;
 };

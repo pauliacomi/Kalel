@@ -15,6 +15,8 @@ public:
 	Server();
 	~Server();
 
+	void SetLogs(std::vector<std::string>& vct);
+
 	typedef   void(*request_func) (http_request*);
 
 	// If no port specified, server defaults to http (80)
@@ -31,8 +33,6 @@ protected:
 	std::exception_ptr teptr;
 
 	static request_func request_func_;
-
-	std::string log;
 };
 
 #endif
