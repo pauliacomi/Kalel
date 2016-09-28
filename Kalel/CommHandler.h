@@ -3,14 +3,16 @@
 #pragma once
 
 #include "Netcode\Client.h"
+#include "MFCMessageHandler.h"
 #include "unicodeConv.h"
 
 #include <string>
 
+
 class CommHandler
 {
 public:
-	CommHandler();
+	CommHandler(HWND h);
 	~CommHandler();
 
 	void Connect(std::wstring address);
@@ -30,8 +32,9 @@ public:
 private:
 	Client client;
 	UnicodeConv unicodeConverter;
+	MFCMessageHandler messageHandler;
 };
 
-void Initial(http_request* r);
+void Handshake(http_request* r);
 
 #endif

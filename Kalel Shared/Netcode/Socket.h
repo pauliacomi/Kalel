@@ -49,8 +49,8 @@ public:
 	Socket(SOCKET sk);
 	~Socket();
 
-	void Send(SOCKET sock, const std::string& sendbuf);
-	void SendLine(SOCKET sock, const std::string& sendbuf);
+	std::string Send(SOCKET sock, const std::string& sendbuf);
+	std::string SendLine(SOCKET sock, const std::string& sendbuf);
 	std::string Socket::Receive(SOCKET sock);
 	std::string Socket::ReceiveLine(SOCKET sock);
 	void Close(SOCKET sock);

@@ -10,23 +10,20 @@
 						// Make sure that it is set to a value that the actual parameters can never take
 
 // Required to pass the experimental data to the main GUI
-#include "../../Kalel Shared/Com Classes/ExperimentData.h"		
+#include "Com Classes/ExperimentData.h"		
 #include <string>
 
 class MFCMessageHandler
 {
 	// Constructor and destructor
 public:
-	MFCMessageHandler();
+	MFCMessageHandler(HWND h);
 	virtual ~MFCMessageHandler();
 	
 	// Window handle for message postback
 	HWND windowHandle;
 
 public:
-	// Set the handle
-	bool SetHandle(HWND h);
-
 	// PostMessage functions
 	bool ExperimentStart();
 	bool ExperimentEnd();

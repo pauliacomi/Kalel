@@ -1,5 +1,5 @@
-#ifndef MFCMESSAGEHANDLER_H
-#define MFCMESSAGEHANDLER_H
+#ifndef MESSAGEHANDLER_H
+#define MESSAGEHANDLER_H
 #pragma once
 
 #define default_val -1	// This value is used as the default value for the optional parameters of the message display function. 
@@ -51,4 +51,4 @@ public:
 };
 
 
-#endif // !MFCMESSAGEHANDLER_H
+#endif // !MESSAGEHANDLER_H

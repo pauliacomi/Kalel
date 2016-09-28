@@ -32,4 +32,4 @@ protected:
 	std::vector<std::shared_ptr<ExperimentData>> dataCollection;	// Data for an experiment is stored here
 };
 
-void Get(http_request* r);
+void Get(http_request* req, http_response* resp);

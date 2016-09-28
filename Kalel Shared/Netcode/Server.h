@@ -8,6 +8,7 @@
 #include <atomic>
 #include <thread>
 #include "http_request.h"
+#include "http_response.h"
 
 class Server : Socket
 {
@@ -17,7 +18,7 @@ public:
 
 	void SetLogs(std::vector<std::string>& vct);
 
-	typedef   void(*request_func) (http_request*);
+	typedef   void(*request_func) (http_request* , http_response*);
 
 	// If no port specified, server defaults to http (80)
 	void Listen(PCSTR port = "http");

@@ -303,6 +303,9 @@
     <ClInclude Include="..\Kalel Shared\log.h">
       <Filter>Source Files\Commmon</Filter>
     </ClInclude>
+    <ClInclude Include="MFCMessageHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainFrm.cpp">
@@ -442,6 +445,9 @@
     </ClCompile>
     <ClCompile Include="unicodeConv.cpp">
       <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="MFCMessageHandler.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

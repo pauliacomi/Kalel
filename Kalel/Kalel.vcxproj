@@ -239,6 +239,7 @@
     <ClInclude Include="KalelView.h" />
     <ClInclude Include="ListOfInstrumentButtons.h" />
     <ClInclude Include="MainFrm.h" />
+    <ClInclude Include="MFCMessageHandler.h" />
     <ClInclude Include="Parametres.h" />
     <ClInclude Include="ParserXML.h" />
     <ClInclude Include="Resource.h" />
@@ -295,6 +296,7 @@
     <ClCompile Include="KalelViewButtonsValves.cpp" />
     <ClCompile Include="ListOfInstrumentButtons.cpp" />
     <ClCompile Include="MainFrm.cpp" />
+    <ClCompile Include="MFCMessageHandler.cpp" />
     <ClCompile Include="Parametres.cpp" />
     <ClCompile Include="ParserXML.cpp" />
     <ClCompile Include="SpinBtnCtrl.cpp" />

@@ -7,11 +7,13 @@
 
 struct http_request {
 
-	const std::string authorization   = "Authorization: Basic ";
-	const std::string accept          = "Accept: "             ;
-	const std::string accept_language = "Accept-Language: "    ;
-	const std::string accept_encoding = "Accept-Encoding: "    ;
-	const std::string user_agent      = "User-Agent: "         ;
+	const std::string header_authorization		= "Authorization: Basic ";
+	const std::string header_accept				= "Accept: "             ;
+	const std::string header_accept_language	= "Accept-Language: "    ;
+	const std::string header_accept_encoding	= "Accept-Encoding: "    ;
+	const std::string header_host				= "Host: "				 ;
+	const std::string header_user_agent			= "User-Agent: "         ;
+	const std::string header_connection			= "Connection: "		 ;
 
 	struct method
 	{
@@ -48,20 +50,11 @@ struct http_request {
 	std::string                        user_agent_;
 
 	
-	/* status_: used to transmit server's error status, such as
-	o  202 OK
-	o  404 Not Found
-	and so on */
-	std::string                        status_;
-
-	
 	/* auth_realm_: allows to set the basic realm for an authentication,
 	no need to additionally set status_ if set */
 	std::string                        auth_realm_;
 
 	
-	std::string                        answer_;
-
 	/*   authentication_given_ is true when the user has entered a username and password.
 	These can then be read from username_ and password_ */
 	bool authentication_given_;

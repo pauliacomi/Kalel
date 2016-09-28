@@ -7,7 +7,6 @@
 
 // REQUIRED INCLUDES
 #include "MessageBoxTexts.h"		// Resource for the text. Ideally only a variable that describes the error should be returned, but this is a compromise
-#include "MFCMessageHandler.h"		// Handles all the messages from this class to the UI. Great if we want to upgrade to somehting that's not MFC
 #include "Classes_experiences.h"	// Resource where templates for all the data are stored, might be worth replacing with a single data type/class 
 
 
@@ -60,8 +59,6 @@ public:
 	//------------------------------------------------------------
 
 	ofstream fileStream;								// The file stream is stored in this variable
-
-	MFCMessageHandler messageHandler;					// This class will send all the messages to the GUI using MFC's message pump
 
 	ConnectionMesure AppareilCalo;						// Stores where each instrument index and number is
 	ConnectionMesure AppareilHP;						// Stores where each instrument index and number is

@@ -55,7 +55,7 @@ Socket::~Socket()
 
 
 
-void Socket::Send(SOCKET l_sock, const std::string& sendbuf)
+std::string Socket::Send(SOCKET l_sock, const std::string& sendbuf)
 {
 	int bytesSent;											// Error result
 	int total{ 0 };											// how many bytes we've sent
@@ -72,13 +72,17 @@ void Socket::Send(SOCKET l_sock, const std::string& sendbuf)
 		total += bytesSent;
 		length -= bytesSent;
 	}
+
+	return sendbuf;
 }
 
-void Socket::SendLine(SOCKET l_sock, const std::string& sendbuf)
+std::string Socket::SendLine(SOCKET l_sock, const std::string& sendbuf)
 {
 	std::string local = sendbuf;
 	local += '\n';
 	Send(l_sock, local);
+
+	return local;
 }
 
 std::string Socket::Receive(SOCKET l_sock)

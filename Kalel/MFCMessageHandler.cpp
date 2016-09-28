@@ -1,30 +1,21 @@
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "MFCMessageHandler.h"
 
 // Message definitions
-#include "../../Kalel/DefinePostMessages.h"
-#include "../../Kalel Shared/Resources/StringTable.h"
+#include "DefinePostMessages.h"
+#include "Resources/StringTable.h"
 
 
-MFCMessageHandler::MFCMessageHandler()
-	:windowHandle(NULL)
+MFCMessageHandler::MFCMessageHandler(HWND h)
+	:windowHandle(h)
 {
+	ASSERT(windowHandle != NULL);
 }
 
 
 MFCMessageHandler::~MFCMessageHandler()
 {
 }
-
-bool MFCMessageHandler::SetHandle(HWND h)
-{
-	// Get view handler and check for validity
-	windowHandle = reinterpret_cast<HWND>(h);
-	ASSERT(windowHandle != NULL);
-
-	return true;
-}
-
 
 // Functions for sending messages below
 

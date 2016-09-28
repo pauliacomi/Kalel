@@ -4,6 +4,7 @@
 
 #include "Socket.h"
 #include "http_request.h"
+#include "http_response.h"
 
 #include <string>
 #include <thread>
@@ -17,16 +18,14 @@ public:
 	typedef   void(*request_func) (http_request*);
 
 	// If no port specified, client defaults to http (80)
-	void Connect(request_func r, std::string ip, std::string port = "http");
+	void Request(request_func r, std::string ip, std::string port = "http");
 
 
 protected:
 	struct addrinfo *result;							// Pointer to the result address
 	struct sockaddr *peer;								// Pointer to the server address
 
-	void Start();
-	std::string ip_;
-	std::string port_;
+	unsigned Process(std::string ip, std::string port);
 
 	std::thread requestThread;
 

@@ -27,18 +27,16 @@ Client::~Client()
 }
 
 
-void Client::Connect(request_func r, std::string ip, std::string port)
+void Client::Request(request_func r, std::string ip, std::string port)
 {
-	ip_ = ip;
-	port_ = port;
 	request_func_ = r;
 
-	requestThread = std::thread(&Client::Start, this);
+	requestThread = std::thread(&Client::Process, this, ip, port);
 	requestThread.detach();
 }
 
 
-void Client::Start(){
+unsigned Client::Process(std::string ip, std::string port){
 	// Create the address info struct
 	struct addrinfo hints;									// The requested address
 
@@ -50,7 +48,7 @@ void Client::Start(){
 
 
 	// Resolve the local address and port to be used by the server
-	if (getaddrinfo(ip_.c_str(), port_.c_str(), &hints, &result) != 0) {
+	if (getaddrinfo(ip.c_str(), port.c_str(), &hints, &result) != 0) {
 		stringex.set(ERR_GETADDRINFO);
 		throw stringex;
 	}
@@ -90,33 +88,43 @@ void Client::Start(){
 	request_func_(&req);
 
 	std::string reqUrl;
-
 	URLHelper urlHelper;
 	urlHelper.BuildReq(reqUrl, req.path_, req.params_);
-
-	std::stringstream str_str;
-	str_str << req.answer_.size();
-
-	static const std::string accept				= "Accept: ";
-	static const std::string accept_language	= "Accept-Language: ";
-	static const std::string user_agent			= "User-Agent: ";
-	static const std::string accept_encoding	= "Accept-Encoding: ";
-	static const std::string host				= "Host: ";
-	static const std::string connection			= "Connection: ";
 
 	Send(sock, req.method_ + " ");
 	Send(sock, reqUrl + " ");
 	SendLine(sock, "HTTP/1.1");
-	SendLine(sock, accept + req.accept_);
-	/*SendLine(sock, accept_language + req.accept_language_);
-	SendLine(sock, user_agent + req.user_agent_);
-	SendLine(sock, accept_encoding + req.accept_encoding_);
-	SendLine(sock, connection + req.status_);*/
+	SendLine(sock, req.header_accept + req.accept_);
+	SendLine(sock, "");
 
 
 	// receive
 
+	std::string response;
 	std::string line = ReceiveLine(sock);
+	response += line;
+
+	if (line.empty()) {
+		freeaddrinfo(result);
+		result = nullptr;
+		Close(sock);
+		return 1;
+	}
+
+	http_response resp;
+
+	if (line.find("404 Not Found") == 0) {
+		resp.status_ = "404 Not Found";
+	}
+	else if (line.find("200 Success") == 0) {
+		resp.status_ = "200 Success";
+	}
+	else if (line.find("202 OK") == 0) {
+		resp.status_ = "202 OK";
+	}
+	else if (line.find("401 Unauthorised") == 0) {
+		resp.status_ = "401 Unauthorised";
+	}
 
 	while (1) {
 		line = ReceiveLine(sock);
@@ -130,16 +138,9 @@ void Client::Start(){
 
 		line = line.substr(0, pos_cr_lf);
 
-		/*if (line.substr(0, authorization.size()) == authorization) {
-			req.authentication_given_ = true;
-			std::string encoded = line.substr(authorization.size());
-			std::string decoded = base64_decode(encoded);
-
-			unsigned int pos_colon = decoded.find(":");
-
-			req.username_ = decoded.substr(0, pos_colon);
-			req.password_ = decoded.substr(pos_colon + 1);
-		}*/
+		if (line.substr(0, resp.header_server.size()) == resp.header_server) {
+			resp.server_ = line.substr(resp.header_server.size());
+		}
 	}
 
 	/////

@@ -4,8 +4,10 @@
 #include "Com Classes\ManualActionParam.h"
 #include "Netcode/http_request.h"
 #include "Netcode/Client.h"
+#include "Resources/StringTable.h"
 
-CommHandler::CommHandler()
+CommHandler::CommHandler(HWND h)
+	: messageHandler(h)
 {
 }
 
@@ -14,20 +16,16 @@ CommHandler::~CommHandler()
 {
 }
 
-void Initial(http_request* r) {
-
-	r->method_ = "GET";
-	r->path_ = "/api";
-	r->params_ = {
-		{"name","dog"},
-		{"breed","lab"},
-		{"age","1"}
-	};
-}
-
 void CommHandler::Connect(std::wstring address)
 {
-	client.Connect(Initial, unicodeConverter.ws2s(address.c_str()));
+	try
+	{
+		client.Request(Handshake, unicodeConverter.ws2s(address.c_str()));
+	}
+	catch (const std::exception& e)
+	{
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK,false, e.what());
+	}
 }
 
 void CommHandler::ManualCommand(int instrumentType, int instrumentNumber, bool shouldBeActivated)
@@ -73,20 +71,24 @@ void CommHandler::SetModifiedData()
 {
 }
 
+void OutHandshake(http_request* r) {
+	r->method_ = "GET";
+	r->path_ = "/api/handshake";
+}
 
+void InHandshake(http_request* r) {
+	r->method_ = "GET";
+	r->path_ = "/api/handshake";
+}
 
-void Get(http_request* r) {
+void getJson(http_request* r) {
 
-	if (r->path_ == "/api") {
-		r->status_ = "202 OK";
-	}
-	else if (r->path_ == "/api/machinesettings") {
-	}
-	else if (r->path_ == "/api/experimentdata") {
-	}
-	else if (r->path_ == "/api/results") {
-	}
-	else {
-		r->status_ = "404 Not Found";
-	}
+	r->method_ = "GET";
+	r->path_ = "/api";
+	r->params_ = {
+		{ "name","dog" },
+		{ "breed","lab" },
+		{ "age","1" }
+	};
+	r->accept_ = "text/json";
 }

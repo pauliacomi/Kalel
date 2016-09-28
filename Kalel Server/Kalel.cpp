@@ -2,7 +2,7 @@
 #include "Kalel.h"
 
 #include "Parameters/Parametres.h"
-#include "../Kalel Shared/Netcode/http_request.h"
+#include "../Kalel Shared/Netcode/json.hpp"
 
 
 Kalel::Kalel()
@@ -32,18 +32,27 @@ void Kalel::GetLogs(std::vector<std::string> &logs) {
 }
 
 
-void Get(http_request* r) {
+void Get(http_request* req, http_response* resp) {
 
-	if (r->path_ == "/api") {
-		r->status_ = "202 OK";
+	if (req->path_ == "/api/handshake") {
+		resp->status_ = "202 OK";
+		resp->content_type_ = "text/html";
+		resp->answer_ = "<body><div>Handshake complete</div></body>";
 	}
-	else if (r->path_ == "/api/machinesettings") {
+
+	else if (req->path_ == "/api/machinesettings") {
+		resp->status_ = "202 OK";
+		resp->content_type_ = "text/json";
+		resp->answer_ = "";
 	}
-	else if (r->path_ == "/api/experimentdata") {
+
+	else if (req->path_ == "/api/experimentdata") {
 	}
-	else if (r->path_ == "/api/results") {
+
+	else if (req->path_ == "/api/results") {
 	}
+
 	else {
-		r->status_ = "404 Not Found";
+		resp->status_ = "404 Not Found";
 	}
 }

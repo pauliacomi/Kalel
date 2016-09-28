@@ -124,6 +124,7 @@ CKalelView::CKalelView()
 
 	, experimentSettings{ nullptr }
 	, experimentData{ nullptr }
+	, commHandler {GetSafeHwnd()}
 {
 }
 
