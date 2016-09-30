@@ -13,7 +13,6 @@ struct http_request {
 	const std::string header_accept_encoding	= "Accept-Encoding: "    ;
 	const std::string header_host				= "Host: "				 ;
 	const std::string header_user_agent			= "User-Agent: "         ;
-	const std::string header_connection			= "Connection: "		 ;
 
 	struct method
 	{

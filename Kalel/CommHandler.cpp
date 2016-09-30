@@ -6,8 +6,7 @@
 #include "Netcode/Client.h"
 #include "Resources/StringTable.h"
 
-CommHandler::CommHandler(HWND h)
-	: messageHandler(h)
+CommHandler::CommHandler()
 {
 }
 
@@ -16,11 +15,15 @@ CommHandler::~CommHandler()
 {
 }
 
+void CommHandler::SetHandle(HWND h){
+
+}
+
 void CommHandler::Connect(std::wstring address)
 {
 	try
 	{
-		client.Request(Handshake, unicodeConverter.ws2s(address.c_str()));
+		client.Request(OutHandshake, InHandshake, unicodeConverter.ws2s(address.c_str()));
 	}
 	catch (const std::exception& e)
 	{
@@ -71,14 +74,19 @@ void CommHandler::SetModifiedData()
 {
 }
 
-void OutHandshake(http_request* r) {
+void CommHandler::OutHandshake(http_request* r) {
 	r->method_ = "GET";
 	r->path_ = "/api/handshake";
 }
 
-void InHandshake(http_request* r) {
-	r->method_ = "GET";
-	r->path_ = "/api/handshake";
+void CommHandler::InHandshake(http_response* r) {
+
+	//messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, "connected");
+
+	if (r->status_ == "202 OK")
+	{
+		AfxMessageBox(_T("connected"));
+	}
 }
 
 void getJson(http_request* r) {

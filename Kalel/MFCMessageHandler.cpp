@@ -6,10 +6,8 @@
 #include "Resources/StringTable.h"
 
 
-MFCMessageHandler::MFCMessageHandler(HWND h)
-	:windowHandle(h)
+MFCMessageHandler::MFCMessageHandler()
 {
-	ASSERT(windowHandle != NULL);
 }
 
 
@@ -165,6 +163,13 @@ bool MFCMessageHandler::DisplayMessageBox(int pParam, UINT nType, bool blocksPro
 	return true;
 }
 
+
+bool MFCMessageHandler::setHandle(HWND h)
+{
+	ASSERT(h != NULL);
+	windowHandle = h;
+	return false;
+}
 
 bool MFCMessageHandler::ExperimentStart()
 {

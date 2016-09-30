@@ -7,6 +7,7 @@
 #include <sstream>
 
 Client::request_func Client::request_func_ = 0;
+Client::response_func Client::response_func_ = 0;
 
 Client::Client()
 	: peer{ nullptr }
@@ -27,12 +28,13 @@ Client::~Client()
 }
 
 
-void Client::Request(request_func r, std::string ip, std::string port)
+void Client::Request(request_func req, response_func resp, std::string ip, std::string port = "http")
 {
-	request_func_ = r;
+	request_func_ = req;
+	response_func_ = resp;
 
-	requestThread = std::thread(&Client::Process, this, ip, port);
-	requestThread.detach();
+	processThread = std::thread(&Client::Process, this, ip, port);
+	processThread.detach();
 }
 
 
@@ -142,6 +144,8 @@ unsigned Client::Process(std::string ip, std::string port){
 			resp.server_ = line.substr(resp.header_server.size());
 		}
 	}
+
+	response_func_(&resp);
 
 	/////
 

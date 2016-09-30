@@ -17,13 +17,14 @@ class MFCMessageHandler
 {
 	// Constructor and destructor
 public:
-	MFCMessageHandler(HWND h);
+	MFCMessageHandler();
 	virtual ~MFCMessageHandler();
 	
 	// Window handle for message postback
 	HWND windowHandle;
 
 public:
+	bool setHandle(HWND h);
 	// PostMessage functions
 	bool ExperimentStart();
 	bool ExperimentEnd();

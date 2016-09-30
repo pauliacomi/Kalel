@@ -12,8 +12,10 @@
 class CommHandler
 {
 public:
-	CommHandler(HWND h);
+	CommHandler();
 	~CommHandler();
+
+	void SetHandle(HWND h);
 
 	void Connect(std::wstring address);
 
@@ -29,12 +31,14 @@ public:
 	void SetUserContinue();
 	void SetModifiedData();
 
+	static void OutHandshake(http_request* r);
+	static void InHandshake(http_response * r);
+
 private:
 	Client client;
 	UnicodeConv unicodeConverter;
 	MFCMessageHandler messageHandler;
 };
 
-void Handshake(http_request* r);
 
 #endif

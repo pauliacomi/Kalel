@@ -7,7 +7,6 @@
 
 struct http_response {
 
-	const std::string header_host				= "Host: "				 ;
 	const std::string header_server				= "Server: "			 ;
 	const std::string header_date				= "Date: "				 ;
 	const std::string header_connection			= "Connection: "		 ;

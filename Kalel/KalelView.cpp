@@ -124,7 +124,6 @@ CKalelView::CKalelView()
 
 	, experimentSettings{ nullptr }
 	, experimentData{ nullptr }
-	, commHandler {GetSafeHwnd()}
 {
 }
 
@@ -225,6 +224,8 @@ void CKalelView::OnInitialUpdate()
 
 	// Set the timer for the window update
 	SetTimer(1, 100, NULL);
+
+	commHandler.SetHandle(GetSafeHwnd());
 }
 
 
