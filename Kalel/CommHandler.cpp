@@ -23,7 +23,7 @@ void CommHandler::Connect(std::wstring address)
 {
 	try
 	{
-		client.Request(OutHandshake, InHandshake, unicodeConverter.ws2s(address.c_str()));
+		client.Request(Handshake_req, Handshake_resp, unicodeConverter.ws2s(address.c_str()));
 	}
 	catch (const std::exception& e)
 	{
@@ -74,12 +74,15 @@ void CommHandler::SetModifiedData()
 {
 }
 
-void CommHandler::OutHandshake(http_request* r) {
+
+
+
+void CommHandler::Handshake_req(http_request* r) {
 	r->method_ = "GET";
 	r->path_ = "/api/handshake";
 }
 
-void CommHandler::InHandshake(http_response* r) {
+void CommHandler::Handshake_resp(http_response* r) {
 
 	//messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, "connected");
 

@@ -183,17 +183,28 @@ void Socket::CloseGracefully(SOCKET l_sock)
 			status = closesocket(l_sock);
 			l_sock = INVALID_SOCKET;
 		}
+		else if (status == SOCKET_ERROR && WSAGetLastError() == WSAECONNRESET)
+		{
+			status = closesocket(l_sock);
+			l_sock = INVALID_SOCKET;
+		}
 #else
 		status = shutdown(l_sock, SHUT_RDWR);
 		if (status == 0) {
 			status = close(l_sock);
 			l_sock = INVALID_SOCKET;
 		}
+		else if (status == SOCKET_ERROR && WSAGetLastError() == WSAECONNRESET)
+		{
+			status = closesocket(l_sock);
+			l_sock = INVALID_SOCKET;
+		}
 #endif
 
 		if (status == SOCKET_ERROR)
 		{
-			stringex.set(ERR_CLOSESOCKET);
+			std::string l = std::to_string(WSAGetLastError());
+			stringex.set(ERR_CLOSESOCKET + l);
 			throw stringex;
 		}
 

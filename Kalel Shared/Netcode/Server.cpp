@@ -148,9 +148,10 @@ void Server::AcceptLoop()
 				stringex.set(ERR_ACCEPT);
 				throw stringex;
 			}
-			catch (const std::exception&)
+			catch (const std::exception& e)
 			{
 				teptr = std::current_exception();
+				STREAM_LOG(logDEBUG2) << e.what();
 			}
 		}
 
@@ -173,9 +174,10 @@ void Server::AcceptLoop()
 					stringex.set(ERR_ACCEPT);
 					throw stringex;
 				}
-				catch (const std::exception&)
+				catch (const std::exception& e)
 				{
 					teptr = std::current_exception();
+					STREAM_LOG(logDEBUG2) << e.what();
 				}
 			}
 			else {
@@ -204,11 +206,28 @@ unsigned Server::Process(SOCKET l_sock)
 	//
 
 	std::string request;
-	std::string line = ReceiveLine(l_sock);
+	std::string line;
+
+	try
+	{
+		line = ReceiveLine(l_sock);
+	}
+	catch (const std::exception& e)
+	{
+		STREAM_LOG(logDEBUG2) << e.what();
+	}
+
 	request += line;
 
 	if (line.empty()) {
-		Close(l_sock);
+		try
+		{
+			Close(l_sock);
+		}
+		catch (const std::exception& e)
+		{
+			STREAM_LOG(logDEBUG2) << e.what();
+		}
 		return 1;
 	}
 
@@ -240,7 +259,15 @@ unsigned Server::Process(SOCKET l_sock)
 
 
 	while (1) {
-		line = ReceiveLine(l_sock);
+		try
+		{
+			line = ReceiveLine(l_sock);
+		}
+		catch (const std::exception& e)
+		{
+			STREAM_LOG(logDEBUG2) << e.what();
+		}
+
 		request += line;
 
 		if (line.empty()) 
@@ -278,6 +305,7 @@ unsigned Server::Process(SOCKET l_sock)
 
 	STREAM_LOG(logDEBUG) << "Request was: " << request;
 
+
 	//
 	//	Construct the response
 	//
@@ -303,35 +331,56 @@ unsigned Server::Process(SOCKET l_sock)
 	resp.content_type_		= "text/json; charset=ISO-8859-1";
 	resp.content_length_	= str_str.str();
 
+
 	//
 	//	Send the response
 	//
 
 	std::string response;
 
-	response += Send(l_sock, "HTTP/1.1 ");
+	try
+	{
+		response += Send(l_sock, "HTTP/1.1 ");
 
-	if (!req.auth_realm_.empty()) {
-		response += SendLine(l_sock, "401 Unauthorized");
-		response += Send(l_sock, resp.header_www_authenticate + "Basic Realm=\"");
-		response += Send(l_sock, req.auth_realm_);
-		response += SendLine(l_sock, "\"");
+		if (!req.auth_realm_.empty()) {
+			response += SendLine(l_sock, "401 Unauthorized");
+			response += Send(l_sock, resp.header_www_authenticate + "Basic Realm=\"");
+			response += Send(l_sock, req.auth_realm_);
+			response += SendLine(l_sock, "\"");
+		}
+		else {
+			response += SendLine(l_sock, resp.status_);
+		}
+
+		response += SendLine(l_sock, resp.header_date + resp.date_);
+		response += SendLine(l_sock, resp.header_server + resp.server_);
+		response += SendLine(l_sock, resp.header_connection + resp.connection_);
+		response += SendLine(l_sock, resp.header_content_type + resp.content_type_);
+		response += SendLine(l_sock, resp.header_content_length + resp.header_content_length);
+		response += SendLine(l_sock, "");
+		response += SendLine(l_sock, resp.answer_);
 	}
-	else {
-		response += SendLine(l_sock, resp.status_);
+	catch (const std::exception& e)
+	{
+		STREAM_LOG(logDEBUG2) << e.what();
 	}
-
-	response += SendLine(l_sock, resp.header_date + resp.date_);
-	response += SendLine(l_sock, resp.header_server + resp.server_);
-	response += SendLine(l_sock, resp.header_connection + resp.connection_);
-	response += SendLine(l_sock, resp.header_content_type + resp.content_type_);
-	response += SendLine(l_sock, resp.header_content_length + resp.header_content_length);
-	response += SendLine(l_sock, "");
-	response += SendLine(l_sock, resp.answer_);
-
+	
 	STREAM_LOG(logDEBUG) << "Response sent: " << response;
 	
+
+
+	//
 	// Close connection socket
-	CloseGracefully(l_sock);
+	//
+
+	try
+	{
+		CloseGracefully(l_sock);
+	}
+	catch (const std::exception& e)
+	{
+		STREAM_LOG(logDEBUG2) << e.what();
+	}
+
 	return 0;
 }

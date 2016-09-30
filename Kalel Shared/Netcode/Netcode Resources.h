@@ -9,7 +9,7 @@
 #define ERR_LISTENING			"Listening to the socket failed."
 #define ERR_SEND				"Send failed"
 #define ERR_RECEIVE				"Receive failed"
-#define ERR_CLOSESOCKET			"close socket failed"
+#define ERR_CLOSESOCKET			"Close socket failed: "
 #define ERR_ACCEPT				"Accept failed"
 #define ERR_CONNECT				"Unable to connect to server!"
 

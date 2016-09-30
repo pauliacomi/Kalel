@@ -19,8 +19,6 @@ public:
 
 	void Connect(std::wstring address);
 
-	void ManualCommand(int instrumentType, int instrumentNumber, bool shouldBeActivated);
-	
 	int StartClient();
 	int ShutdownClient();
 	int RestartClient();
@@ -31,13 +29,15 @@ public:
 	void SetUserContinue();
 	void SetModifiedData();
 
-	static void OutHandshake(http_request* r);
-	static void InHandshake(http_response * r);
+	void ManualCommand(int instrumentType, int instrumentNumber, bool shouldBeActivated);
 
 private:
 	Client client;
 	UnicodeConv unicodeConverter;
 	MFCMessageHandler messageHandler;
+
+	static void Handshake_req(http_request* r);
+	static void Handshake_resp(http_response * r);
 };
 
 

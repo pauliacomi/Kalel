@@ -32,7 +32,7 @@ protected:
 public:
 	void set(std::string l_err)
 	{
-		this->err = err;
+		this->err = l_err;
 	}
 
 	virtual const char* what() const throw()

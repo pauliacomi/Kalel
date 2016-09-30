@@ -27,14 +27,14 @@ Client::~Client()
 	}
 }
 
-
-void Client::Request(request_func req, response_func resp, std::string ip, std::string port = "http")
+void Client::Request(request_func req, response_func resp, std::string ip, std::string port)
 {
 	request_func_ = req;
 	response_func_ = resp;
 
 	processThread = std::thread(&Client::Process, this, ip, port);
 	processThread.detach();
+
 }
 
 
