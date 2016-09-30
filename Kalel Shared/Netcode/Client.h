@@ -8,12 +8,15 @@
 
 #include <string>
 #include <thread>
+#include <vector>
 
 class Client : Socket
 {
 public:
 	Client();
 	~Client();
+
+	void SetLogs(std::vector<std::string>& vct);
 	
 	typedef   void(*request_func) (http_request*);
 	typedef   void(*response_func) (http_response*);

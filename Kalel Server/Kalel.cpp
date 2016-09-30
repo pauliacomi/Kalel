@@ -17,8 +17,14 @@ Kalel::Kalel()
 
 	// Start server functionality
 	server.SetLogs(serverLogs);
-	server.Listen();
-	server.Accept(Get);
+	try	{
+		server.Listen();
+		server.Accept(Get);
+	}
+	catch (const std::exception& e) {
+		std::string err (e.what());
+		serverLogs.push_back("Fatal Error: Cannot listen to sockets, Details:" + err);
+	}
 }
 
 

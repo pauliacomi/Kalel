@@ -3,6 +3,7 @@
 
 #include "URLHelper.h"
 #include "Netcode Resources.h"
+#include "../log.h"
 
 #include <sstream>
 
@@ -27,6 +28,15 @@ Client::~Client()
 	}
 }
 
+
+void Client::SetLogs(std::vector<std::string> & vct)
+{
+	StreamLog::ReportingLevel() = logDEBUG4;
+	Output2vector::Stream() = &vct;
+}
+
+
+
 void Client::Request(request_func req, response_func resp, std::string ip, std::string port)
 {
 	request_func_ = req;
@@ -34,7 +44,6 @@ void Client::Request(request_func req, response_func resp, std::string ip, std::
 
 	processThread = std::thread(&Client::Process, this, ip, port);
 	processThread.detach();
-
 }
 
 
@@ -51,8 +60,8 @@ unsigned Client::Process(std::string ip, std::string port){
 
 	// Resolve the local address and port to be used by the server
 	if (getaddrinfo(ip.c_str(), port.c_str(), &hints, &result) != 0) {
-		stringex.set(ERR_GETADDRINFO);
-		throw stringex;
+		STREAM_LOG(logDEBUG2) << ERR_GETADDRINFO;
+		return 1;
 	}
 
 	// Loop through all the results and bind to the first we can
@@ -73,8 +82,8 @@ unsigned Client::Process(std::string ip, std::string port){
 	}
 
 	if (sock == INVALID_SOCKET) {
-		stringex.set(ERR_CONNECT);
-		throw stringex;
+		STREAM_LOG(logDEBUG2) << ERR_CONNECT;
+		return 1;
 	}
 
 	/*iResult = getpeername(clientSocket, peer, sizeof(struct sockaddr));
@@ -93,17 +102,30 @@ unsigned Client::Process(std::string ip, std::string port){
 	URLHelper urlHelper;
 	urlHelper.BuildReq(reqUrl, req.path_, req.params_);
 
-	Send(sock, req.method_ + " ");
-	Send(sock, reqUrl + " ");
-	SendLine(sock, "HTTP/1.1");
-	SendLine(sock, req.header_accept + req.accept_);
-	SendLine(sock, "");
+	try	{
+		Send(sock, req.method_ + " ");
+		Send(sock, reqUrl + " ");
+		SendLine(sock, "HTTP/1.1");
+		SendLine(sock, req.header_accept + req.accept_);
+		SendLine(sock, "");
+	}
+	catch (const std::exception& e)
+	{
+		STREAM_LOG(logDEBUG2) << e.what();
+	}
+	
 
 
 	// receive
 
 	std::string response;
-	std::string line = ReceiveLine(sock);
+	std::string line;
+	try {
+		line = ReceiveLine(sock);
+	}
+	catch (const std::exception& e)	{
+		STREAM_LOG(logDEBUG2) << e.what();
+	}
 	response += line;
 
 	if (line.empty()) {
@@ -129,7 +151,13 @@ unsigned Client::Process(std::string ip, std::string port){
 	}
 
 	while (1) {
-		line = ReceiveLine(sock);
+		try	{
+			line = ReceiveLine(sock);
+		}
+		catch (const std::exception& e)
+		{
+			STREAM_LOG(logDEBUG2) << e.what();
+		}
 
 		if (line.empty())
 			break;
