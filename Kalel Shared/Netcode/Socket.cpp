@@ -210,3 +210,63 @@ void Socket::CloseGracefully(SOCKET l_sock)
 
 	}
 }
+
+
+std::string Socket::GetIP(const sockaddr_storage &address)
+{
+	std::string humanIP;
+	char name[256] = { 0 };
+	int addrSize;
+
+#ifdef _WIN32
+
+	DWORD size;
+	switch (address.ss_family)
+	{
+	case AF_INET:
+		size = INET_ADDRSTRLEN;
+		addrSize = sizeof(struct sockaddr_in);
+		break;
+	case AF_INET6:
+		size = INET6_ADDRSTRLEN;
+		addrSize = sizeof(struct sockaddr_in6);
+		break;
+	default:
+		return NULL;
+		break;
+	}
+
+	int rtval = WSAAddressToStringA((LPSOCKADDR)&address, addrSize, NULL, (LPSTR)name, &size);
+
+	if (rtval)
+	{
+		humanIP = ERR_IP_CONVERT + WSAGetLastError();
+	}
+	else
+	{
+		humanIP = name;
+	}
+
+#else
+
+	switch (address.ss_family)
+	{
+	case AF_INET:
+		addrSize = sizeof(struct sockaddr_storage);
+		inet_ntop(AF_INET, &(((struct sockaddr_in *)sa)->sin_addr), name, INET_ADDRSTRLEN);
+		break;
+	case AF_INET6:
+		addrSize = sizeof(struct sockaddr_storage);
+		inet_ntop(AF_INET6, &(((struct sockaddr_in6 *)sa)->sin6_addr), name, INET6_ADDRSTRLEN);
+		break;
+	default:
+		return NULL;
+		break;
+	}
+
+	humanIP = name;
+
+#endif
+
+	return humanIP;
+}

@@ -12,5 +12,10 @@
 #define ERR_CLOSESOCKET			"Close socket failed: "
 #define ERR_ACCEPT				"Accept failed"
 #define ERR_CONNECT				"Unable to connect to server!"
+#define ERR_IP_CONVERT			"Error translating IP to readable form: "
 
+#define LOG_LISTENING			"Listening"
+#define LOG_ACCEPTED_SOCK		"Accepted new socket :"
+#define LOG_REQUEST				"Request was: "
+#define LOG_RESPONSE			"Response sent: "
 #endif

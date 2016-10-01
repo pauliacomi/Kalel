@@ -108,7 +108,7 @@ void Server::Listen(PCSTR port)
 		throw stringex;
 	}
 
-	STREAM_LOG(logINFO) << "Listening";
+	STREAM_LOG(logINFO) << LOG_LISTENING;
 }
 
 
@@ -151,7 +151,7 @@ void Server::AcceptLoop()
 			catch (const std::exception& e)
 			{
 				teptr = std::current_exception();
-				STREAM_LOG(logDEBUG2) << e.what();
+				STREAM_LOG(logERROR) << e.what();
 			}
 		}
 
@@ -177,18 +177,11 @@ void Server::AcceptLoop()
 				catch (const std::exception& e)
 				{
 					teptr = std::current_exception();
-					STREAM_LOG(logDEBUG2) << e.what();
+					STREAM_LOG(logERROR) << e.what();
 				}
 			}
 			else {
-
-				if (theirAddr.ss_family == AF_INET)
-				{
-					 //inet_ntoa(((struct sockaddr_in*)&theirAddr)->sin_addr), ntohs(((struct sockaddr_in*)&theirAddr)->sin_port);
-				}
-
-				STREAM_LOG(logINFO) << "Accepted new socket";
-
+				STREAM_LOG(logINFO) << LOG_ACCEPTED_SOCK << GetIP(theirAddr);
 				std::thread(&Server::Process, this, clientSocket).detach();
 			}
 
@@ -214,7 +207,7 @@ unsigned Server::Process(SOCKET l_sock)
 	}
 	catch (const std::exception& e)
 	{
-		STREAM_LOG(logDEBUG2) << e.what();
+		STREAM_LOG(logERROR) << e.what();
 	}
 
 	request += line;
@@ -226,24 +219,24 @@ unsigned Server::Process(SOCKET l_sock)
 		}
 		catch (const std::exception& e)
 		{
-			STREAM_LOG(logDEBUG2) << e.what();
+			STREAM_LOG(logERROR) << e.what();
 		}
 		return 1;
 	}
 
 	http_request req;
 
-	if (line.find("GET") == 0) {
-		req.method_ = "GET";
+	if (line.find(http::method::get) == 0) {
+		req.method_ = http::method::get;
 	}
-	else if (line.find("POST") == 0) {
-		req.method_ = "POST";
+	else if (line.find(http::method::post) == 0) {
+		req.method_ = http::method::post;
 	}
-	else if (line.find("PUT") == 0) {
-		req.method_ = "PUT";
+	else if (line.find(http::method::put) == 0) {
+		req.method_ = http::method::put;
 	}
-	else if (line.find("DELETE") == 0) {
-		req.method_ = "DELETE";
+	else if (line.find(http::method::del) == 0) {
+		req.method_ = http::method::del;
 	}
 
 	std::string path;
@@ -265,7 +258,7 @@ unsigned Server::Process(SOCKET l_sock)
 		}
 		catch (const std::exception& e)
 		{
-			STREAM_LOG(logDEBUG2) << e.what();
+			STREAM_LOG(logERROR) << e.what();
 		}
 
 		request += line;
@@ -303,7 +296,7 @@ unsigned Server::Process(SOCKET l_sock)
 		}
 	}
 
-	STREAM_LOG(logDEBUG) << "Request was: " << request;
+	STREAM_LOG(logDEBUG) << LOG_REQUEST << request;
 
 
 	//
@@ -343,7 +336,7 @@ unsigned Server::Process(SOCKET l_sock)
 		response += Send(l_sock, "HTTP/1.1 ");
 
 		if (!req.auth_realm_.empty()) {
-			response += SendLine(l_sock, "401 Unauthorized");
+			response += SendLine(l_sock, http::responses::unauthorised);
 			response += Send(l_sock, resp.header_www_authenticate + "Basic Realm=\"");
 			response += Send(l_sock, req.auth_realm_);
 			response += SendLine(l_sock, "\"");
@@ -362,10 +355,10 @@ unsigned Server::Process(SOCKET l_sock)
 	}
 	catch (const std::exception& e)
 	{
-		STREAM_LOG(logDEBUG2) << e.what();
+		STREAM_LOG(logERROR) << e.what();
 	}
 	
-	STREAM_LOG(logDEBUG) << "Response sent: " << response;
+	STREAM_LOG(logDEBUG) << LOG_RESPONSE << response;
 	
 
 
@@ -379,7 +372,7 @@ unsigned Server::Process(SOCKET l_sock)
 	}
 	catch (const std::exception& e)
 	{
-		STREAM_LOG(logDEBUG2) << e.what();
+		STREAM_LOG(logERROR) << e.what();
 	}
 
 	return 0;

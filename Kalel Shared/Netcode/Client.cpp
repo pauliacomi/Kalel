@@ -60,7 +60,7 @@ unsigned Client::Process(std::string ip, std::string port){
 
 	// Resolve the local address and port to be used by the server
 	if (getaddrinfo(ip.c_str(), port.c_str(), &hints, &result) != 0) {
-		STREAM_LOG(logDEBUG2) << ERR_GETADDRINFO;
+		STREAM_LOG(logERROR) << ERR_GETADDRINFO;
 		return 1;
 	}
 
@@ -82,7 +82,7 @@ unsigned Client::Process(std::string ip, std::string port){
 	}
 
 	if (sock == INVALID_SOCKET) {
-		STREAM_LOG(logDEBUG2) << ERR_CONNECT;
+		STREAM_LOG(logERROR) << ERR_CONNECT;
 		return 1;
 	}
 
@@ -111,7 +111,7 @@ unsigned Client::Process(std::string ip, std::string port){
 	}
 	catch (const std::exception& e)
 	{
-		STREAM_LOG(logDEBUG2) << e.what();
+		STREAM_LOG(logERROR) << e.what();
 	}
 	
 
@@ -124,7 +124,7 @@ unsigned Client::Process(std::string ip, std::string port){
 		line = ReceiveLine(sock);
 	}
 	catch (const std::exception& e)	{
-		STREAM_LOG(logDEBUG2) << e.what();
+		STREAM_LOG(logERROR) << e.what();
 	}
 	response += line;
 
@@ -156,7 +156,7 @@ unsigned Client::Process(std::string ip, std::string port){
 		}
 		catch (const std::exception& e)
 		{
-			STREAM_LOG(logDEBUG2) << e.what();
+			STREAM_LOG(logERROR) << e.what();
 		}
 
 		if (line.empty())
@@ -180,4 +180,6 @@ unsigned Client::Process(std::string ip, std::string port){
 	// clears no longer needed address info
 	freeaddrinfo(result);
 	result = nullptr;
+	
+	return 1;
 }

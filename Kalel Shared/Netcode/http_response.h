@@ -5,6 +5,17 @@
 #include <string>
 #include <map>
 
+namespace http
+{
+	namespace responses
+	{
+		static const std::string success			= "200 Success";
+		static const std::string ok					= "202 OK";
+		static const std::string unauthorised		= "401 Unauthorised";
+		static const std::string not_found			= "404 Not Found";
+	};
+}
+
 struct http_response {
 
 	const std::string header_server				= "Server: "			 ;
@@ -14,13 +25,7 @@ struct http_response {
 	const std::string header_content_length		= "Content-Length: "	 ;
 	const std::string header_www_authenticate	= "WWW - Authenticate: " ;
 
-	struct responses
-	{
-		const std::string success		= "200 Success";
-		const std::string ok			= "202 OK";
-		const std::string unauthorised	= "401 Unauthorised";
-		const std::string not_found		= "404 Not Found";
-	};
+	
 
 	http_response() : authentication_given_(false) {}
 

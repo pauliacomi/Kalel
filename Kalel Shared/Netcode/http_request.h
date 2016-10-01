@@ -5,6 +5,17 @@
 #include <string>
 #include <map>
 
+namespace http 
+{
+	namespace method
+	{
+		static const std::string get	= "GET";
+		static const std::string put	= "PUT";
+		static const std::string post	= "POST";
+		static const std::string del	= "DEL";
+	};
+}
+
 struct http_request {
 
 	const std::string header_authorization		= "Authorization: Basic ";
@@ -14,13 +25,7 @@ struct http_request {
 	const std::string header_host				= "Host: "				 ;
 	const std::string header_user_agent			= "User-Agent: "         ;
 
-	struct method
-	{
-		const std::string get   = "GET";
-		const std::string set	= "SET";
-		const std::string post	= "POST";
-		const std::string del	= "DEL";
-	};
+	
 
 	http_request() : authentication_given_(false) {}
 
