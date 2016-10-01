@@ -7,8 +7,8 @@
 
 #include <sstream>
 
-Client::request_func Client::request_func_ = 0;
-Client::response_func Client::response_func_ = 0;
+//Client::request_func Client::request_func_ = 0;
+//Client::response_func Client::response_func_ = 0;
 
 Client::Client()
 	: peer{ nullptr }
@@ -37,7 +37,7 @@ void Client::SetLogs(std::vector<std::string> & vct)
 
 
 
-void Client::Request(request_func req, response_func resp, std::string ip, std::string port)
+void Client::Request(std::function<void(http_request*)> req, std::function<void(http_response*)> resp, std::string ip, std::string port)
 {
 	request_func_ = req;
 	response_func_ = resp;
@@ -86,14 +86,9 @@ unsigned Client::Process(std::string ip, std::string port){
 		return 1;
 	}
 
-	/*iResult = getpeername(clientSocket, peer, sizeof(struct sockaddr));
-	if (iResult == SOCKET_ERROR) {
-	std::string a("Cannot get identity!");
-	throw a;
-	}*/
-	/////
-
+	//
 	// send
+	//
 
 	http_request req;
 	request_func_(&req);
@@ -115,8 +110,9 @@ unsigned Client::Process(std::string ip, std::string port){
 	}
 	
 
-
+	//
 	// receive
+	//
 
 	std::string response;
 	std::string line;
@@ -137,17 +133,17 @@ unsigned Client::Process(std::string ip, std::string port){
 
 	http_response resp;
 
-	if (line.find("404 Not Found") == 0) {
-		resp.status_ = "404 Not Found";
+	if (line.find(http::responses::not_found) == 0) {
+		resp.status_ = http::responses::not_found;
 	}
-	else if (line.find("200 Success") == 0) {
-		resp.status_ = "200 Success";
+	else if (line.find(http::responses::success) == 0) {
+		resp.status_ = http::responses::success;
 	}
-	else if (line.find("202 OK") == 0) {
-		resp.status_ = "202 OK";
+	else if (line.find(http::responses::ok) == 0) {
+		resp.status_ = http::responses::ok;
 	}
-	else if (line.find("401 Unauthorised") == 0) {
-		resp.status_ = "401 Unauthorised";
+	else if (line.find(http::responses::unauthorised) == 0) {
+		resp.status_ = http::responses::unauthorised;
 	}
 
 	while (1) {

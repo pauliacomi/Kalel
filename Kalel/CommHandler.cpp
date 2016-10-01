@@ -6,6 +6,8 @@
 #include "Netcode/Client.h"
 #include "Resources/StringTable.h"
 
+#include <functional>
+
 CommHandler::CommHandler()
 {
 }
@@ -16,14 +18,17 @@ CommHandler::~CommHandler()
 }
 
 void CommHandler::SetHandle(HWND h){
-
+	messageHandler.setHandle(h);
 }
 
 void CommHandler::Connect(std::wstring address)
 {
+	auto request = std::bind(&CommHandler::Handshake_req, this, std::placeholders::_1);
+	auto callback = std::bind(&CommHandler::Handshake_resp, this, std::placeholders::_1);
+
 	try
 	{
-		client.Request(Handshake_req, Handshake_resp, unicodeConverter.ws2s(address.c_str()));
+		client.Request(request, callback, unicodeConverter.ws2s(address.c_str()));
 	}
 	catch (const std::exception& e)
 	{
@@ -74,9 +79,6 @@ void CommHandler::SetModifiedData()
 {
 }
 
-
-
-
 void CommHandler::Handshake_req(http_request* r) {
 	r->method_ = "GET";
 	r->path_ = "/api/handshake";
@@ -84,13 +86,12 @@ void CommHandler::Handshake_req(http_request* r) {
 
 void CommHandler::Handshake_resp(http_response* r) {
 
-	//messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, "connected");
-
-	if (r->status_ == "202 OK")
+	if (r->status_ == http::responses::ok)
 	{
-		AfxMessageBox(_T("connected"));
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, "connected");
 	}
 }
+
 
 void getJson(http_request* r) {
 

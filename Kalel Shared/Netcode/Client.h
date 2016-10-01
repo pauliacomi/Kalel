@@ -9,6 +9,7 @@
 #include <string>
 #include <thread>
 #include <vector>
+#include <functional>
 
 class Client : Socket
 {
@@ -18,11 +19,11 @@ public:
 
 	void SetLogs(std::vector<std::string>& vct);
 	
-	typedef   void(*request_func) (http_request*);
-	typedef   void(*response_func) (http_response*);
+	//typedef   void(*request_func) (http_request*);
+	//typedef   void(*response_func) (http_response*);
 
 	// If no port specified, client defaults to http (80)	
-	void Request(request_func req, response_func resp, std::string ip, std::string port = "http");
+	void Request(std::function<void(http_request*)> req, std::function<void(http_response*)> resp, std::string ip, std::string port = "http");
 
 protected:
 	struct addrinfo *result;							// Pointer to the result address
@@ -32,8 +33,8 @@ protected:
 
 	std::thread processThread;
 
-	static request_func request_func_;
-	static response_func response_func_;
+	std::function<void(http_request*)> request_func_;
+	std::function<void(http_response*)> response_func_;
 };
 
 #endif
