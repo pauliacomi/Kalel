@@ -18,9 +18,6 @@ public:
 	~Client();
 
 	void SetLogs(std::vector<std::string>& vct);
-	
-	//typedef   void(*request_func) (http_request*);
-	//typedef   void(*response_func) (http_response*);
 
 	// If no port specified, client defaults to http (80)	
 	void Request(std::function<void(http_request*)> req, std::function<void(http_response*)> resp, std::string ip, std::string port = "http");

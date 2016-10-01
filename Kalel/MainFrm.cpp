@@ -39,7 +39,6 @@ static UINT indicators[] =
 // CMainFrame construction/destruction
 
 CMainFrame::CMainFrame()
-	:connected{false}
 {
 }
 
@@ -155,7 +154,10 @@ void CMainFrame::OnSysCommand(UINT nID, LPARAM lParam)
 void CMainFrame::OnUpdateStatusText(CCmdUI *pCmdUI)
 {
 	pCmdUI->Enable();
-	if (connected)
+
+	CKalelApp* pApp = static_cast<CKalelApp *>(AfxGetApp());
+
+	if (pApp->serverConnected)
 	{
 		pCmdUI->SetText(_T("Connected"));
 	}

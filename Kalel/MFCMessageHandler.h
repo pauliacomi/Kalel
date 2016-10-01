@@ -26,6 +26,7 @@ public:
 public:
 	bool setHandle(HWND h);
 	// PostMessage functions
+	bool ConnectionComplete();
 	bool ExperimentStart();
 	bool ExperimentEnd();
 	bool ThreadShutdown();

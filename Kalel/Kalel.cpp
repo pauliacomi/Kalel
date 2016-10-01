@@ -71,8 +71,11 @@ CKalelApp::CKalelApp()
 	SetAppID(_T("MADIREL.Kalel.1"));
 
 	// TODO: add construction code here,
+
 	menuIsAvailable = true;
 	experimentRunning = false;
+	serverConnected = false;
+
 	// Place all significant initialization in InitInstance
 }
 

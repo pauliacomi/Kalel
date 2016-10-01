@@ -8,6 +8,7 @@
 #include "Com Classes/ExperimentData.h"								// Where data about the experimental parameters, results and current status is stored
 #include "Com Classes/ExperimentSettings.h"							// Where returned data from results is stored
 #include "Com Classes/MachineSettings.h"							// Where the settings for the connected machine are stored
+#include "Parametres.h"												// Parameters file read/write
 #include "CommHandler.h"											// Responsible for all communication to/from client
 
 #include "KalelDoc.h"
@@ -22,6 +23,8 @@ class CKalelView : public CFormView
 public:
 	CKalelApp* pApp;				// pointer to the main app
 	CKalelDoc* m_mainDocument;		// pointer to the main document
+
+	Parameters savedParams;
 
 	// Storage for all the data
 	ExperimentSettings * experimentSettings;
@@ -121,6 +124,7 @@ protected:
 	// Thread callbacks
 	LRESULT OnRegularThreadFinished(WPARAM wParam, LPARAM);
 	LRESULT CancelBeforeStarting(WPARAM wParam, LPARAM lParam);
+	LRESULT ServerConnected(WPARAM wParam, LPARAM lParam);
 
 protected:
 

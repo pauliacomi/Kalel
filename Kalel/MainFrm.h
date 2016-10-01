@@ -31,8 +31,6 @@ public:
 	virtual void Dump(CDumpContext& dc) const;
 #endif
 
-	bool connected;
-
 protected:  // control bar embedded members
 	CToolBar        m_wndToolBar;
 	CStatusBar		m_wndStatusBar;

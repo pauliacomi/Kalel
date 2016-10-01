@@ -88,7 +88,11 @@ void CommHandler::Handshake_resp(http_response* r) {
 
 	if (r->status_ == http::responses::ok)
 	{
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, "connected");
+		messageHandler.ConnectionComplete();
+	}
+	else if (r->status_ == http::responses::not_found)
+	{
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, "Server not found");
 	}
 }
 

@@ -31,14 +31,14 @@ public:
 
 	void ManualCommand(int instrumentType, int instrumentNumber, bool shouldBeActivated);
 
-	void Handshake_req(http_request* r);
-	void Handshake_resp(http_response * r);
 
 private:
 	Client client;
 	UnicodeConv unicodeConverter;
 	MFCMessageHandler messageHandler;
 
+	void Handshake_req(http_request* r);
+	void Handshake_resp(http_response * r);
 };
 
 

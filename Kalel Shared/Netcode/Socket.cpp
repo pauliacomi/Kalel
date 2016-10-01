@@ -156,7 +156,7 @@ std::string Socket::ReceiveLine(SOCKET l_sock)
 	}
 }
 
-void Socket::Close(SOCKET l_sock)
+void Socket::Close(SOCKET &l_sock)
 {
 	if (l_sock != INVALID_SOCKET) {
 		
@@ -168,11 +168,10 @@ void Socket::Close(SOCKET l_sock)
 			stringex.set(ERR_CLOSESOCKET);
 			throw stringex;
 		}
-
 	}
 }
 
-void Socket::CloseGracefully(SOCKET l_sock)
+void Socket::CloseGracefully(SOCKET &l_sock)
 {
 	if (l_sock != INVALID_SOCKET) {
 		int status = 0;

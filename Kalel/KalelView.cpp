@@ -19,7 +19,6 @@
 #include "DialogConnectServer.h"
 
 #include "DefinePostMessages.h"										// Definition of messages received from the automation functionality
-#include "Parametres.h"												// Parameters file read/write
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -49,6 +48,7 @@ BEGIN_MESSAGE_MAP(CKalelView, CFormView)
 	ON_MESSAGE(UWM_DISP_CONNECTS_DIALOG, &CKalelView::DisplayConnectDialog)
 	ON_MESSAGE(UWM_DISP_PORT_DIALOG, &CKalelView::DisplayPortDialog)
 	ON_MESSAGE(UWM_DISP_DEVSETTINGS_DIALOG, &CKalelView::DisplayApparatusSettingsDialog)
+	ON_MESSAGE(UWM_SIGNAL_SERVER_CONNECTED, &CKalelView::ServerConnected)
 	
 
 	// Manual command messages
@@ -216,16 +216,24 @@ void CKalelView::OnInitialUpdate()
 	
 	// Initial button set-up
 	UpdateButtons();
+	
+	// Pass window handle
+	commHandler.SetHandle(GetSafeHwnd());
+
+	// Set the timer for the window update
+	SetTimer(1, 100, NULL);
+
+	// Check if we can connect to the saved server
+	std::wstring serverAddress = savedParams.GetServerAddress();
+	if (serverAddress != _T(""))
+	{
+		commHandler.Connect(serverAddress);
+	}
 
 	// Create the experiment storage class
 	//int initialAdsorptions = 3;
 	//int initialDesorptions = 1;
 	//experimentSettings = new ExperimentSettings(initialAdsorptions, initialDesorptions, machineSettings);		// Create a new experiment storage
-
-	// Set the timer for the window update
-	SetTimer(1, 100, NULL);
-
-	commHandler.SetHandle(GetSafeHwnd());
 }
 
 
@@ -409,8 +417,7 @@ LRESULT CKalelView::DisplayConnectDialog(WPARAM, LPARAM)
 		std::wstring address{ connectServer.GetAddress() };
 		
 		// First set the address
-		Parameters param;
-		param.SetServerAddress(address);
+		savedParams.SetServerAddress(address);
 
 		// Then connect to the server
 		commHandler.Connect(address);
@@ -484,6 +491,14 @@ LRESULT CKalelView::CancelBeforeStarting(WPARAM, LPARAM)
 
 	return 0;
 }
+
+LRESULT CKalelView::ServerConnected(WPARAM wParam, LPARAM lParam)
+{
+	pApp->serverConnected = true;
+	return 0;
+}
+
+
 
 
 LRESULT CKalelView::BackgroundThreadStart(WPARAM, LPARAM)

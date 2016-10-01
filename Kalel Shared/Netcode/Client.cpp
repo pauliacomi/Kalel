@@ -7,9 +7,6 @@
 
 #include <sstream>
 
-//Client::request_func Client::request_func_ = 0;
-//Client::response_func Client::response_func_ = 0;
-
 Client::Client()
 	: peer{ nullptr }
 	, result{ nullptr }
@@ -19,9 +16,6 @@ Client::Client()
 
 Client::~Client()
 {
-	// Client sockets close gracefully
-	CloseGracefully(sock);
-
 	// Free result structure in case we throw
 	if (result != nullptr){
 		freeaddrinfo(result);
@@ -64,24 +58,26 @@ unsigned Client::Process(std::string ip, std::string port){
 		return 1;
 	}
 
+	SOCKET l_sock = INVALID_SOCKET;
+
 	// Loop through all the results and bind to the first we can
 	for (struct addrinfo * loopAddr = result; loopAddr != NULL; loopAddr = loopAddr->ai_next)
 	{
 		// Create the socket
-		sock = socket(loopAddr->ai_family, loopAddr->ai_socktype, loopAddr->ai_protocol);
-		if (sock == INVALID_SOCKET) {
+		l_sock = socket(loopAddr->ai_family, loopAddr->ai_socktype, loopAddr->ai_protocol);
+		if (l_sock == INVALID_SOCKET) {
 			continue;
 		}
 
 		// Connect to server.
-		if (connect(sock, loopAddr->ai_addr, (int)loopAddr->ai_addrlen) == SOCKET_ERROR) {
+		if (connect(l_sock, loopAddr->ai_addr, (int)loopAddr->ai_addrlen) == SOCKET_ERROR) {
 			continue;
 		}
 
 		break;	// if we got here we are connected
 	}
 
-	if (sock == INVALID_SOCKET) {
+	if (l_sock == INVALID_SOCKET) {
 		STREAM_LOG(logERROR) << ERR_CONNECT;
 		return 1;
 	}
@@ -98,11 +94,11 @@ unsigned Client::Process(std::string ip, std::string port){
 	urlHelper.BuildReq(reqUrl, req.path_, req.params_);
 
 	try	{
-		Send(sock, req.method_ + " ");
-		Send(sock, reqUrl + " ");
-		SendLine(sock, "HTTP/1.1");
-		SendLine(sock, req.header_accept + req.accept_);
-		SendLine(sock, "");
+		Send(l_sock, req.method_ + " ");
+		Send(l_sock, reqUrl + " ");
+		SendLine(l_sock, "HTTP/1.1");
+		SendLine(l_sock, req.header_accept + req.accept_);
+		SendLine(l_sock, "");
 	}
 	catch (const std::exception& e)
 	{
@@ -116,39 +112,46 @@ unsigned Client::Process(std::string ip, std::string port){
 
 	std::string response;
 	std::string line;
+
 	try {
-		line = ReceiveLine(sock);
+		line = ReceiveLine(l_sock);
 	}
 	catch (const std::exception& e)	{
 		STREAM_LOG(logERROR) << e.what();
 	}
+
 	response += line;
 
 	if (line.empty()) {
 		freeaddrinfo(result);
 		result = nullptr;
-		Close(sock);
+		try {
+			Close(l_sock);
+		}
+		catch (const std::exception& e) {
+			STREAM_LOG(logERROR) << e.what();
+		}
 		return 1;
 	}
 
 	http_response resp;
 
-	if (line.find(http::responses::not_found) == 0) {
+	if (line.find(http::responses::not_found) != std::string::npos) {
 		resp.status_ = http::responses::not_found;
 	}
-	else if (line.find(http::responses::success) == 0) {
+	else if (line.find(http::responses::success) != std::string::npos) {
 		resp.status_ = http::responses::success;
 	}
-	else if (line.find(http::responses::ok) == 0) {
+	else if (line.find(http::responses::ok) != std::string::npos) {
 		resp.status_ = http::responses::ok;
 	}
-	else if (line.find(http::responses::unauthorised) == 0) {
+	else if (line.find(http::responses::unauthorised) != std::string::npos) {
 		resp.status_ = http::responses::unauthorised;
 	}
 
 	while (1) {
 		try	{
-			line = ReceiveLine(sock);
+			line = ReceiveLine(l_sock);
 		}
 		catch (const std::exception& e)
 		{
@@ -169,9 +172,18 @@ unsigned Client::Process(std::string ip, std::string port){
 		}
 	}
 
+	/////
+
 	response_func_(&resp);
 
 	/////
+
+	try {
+		CloseGracefully(l_sock);
+	}
+	catch (const std::exception& e) {
+		STREAM_LOG(logERROR) << e.what();
+	}
 
 	// clears no longer needed address info
 	freeaddrinfo(result);

@@ -17,9 +17,10 @@ Kalel::Kalel()
 
 	// Start server functionality
 	server.SetLogs(serverLogs);
+	auto func = std::bind(&Kalel::ServerProcessing, this, std::placeholders::_1, std::placeholders::_2);
 	try	{
 		server.Listen();
-		server.Accept(Get);
+		server.Accept(func);
 	}
 	catch (const std::exception& e) {
 		std::string err (e.what());
@@ -38,7 +39,7 @@ void Kalel::GetLogs(std::vector<std::string> &logs) {
 }
 
 
-void Get(http_request* req, http_response* resp) {
+void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 
 	if (req->path_ == "/api/handshake") {
 		resp->status_ = http::responses::ok;

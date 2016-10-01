@@ -15,8 +15,25 @@ MFCMessageHandler::~MFCMessageHandler()
 {
 }
 
+bool MFCMessageHandler::setHandle(HWND h)
+{
+	ASSERT(h != NULL);
+	windowHandle = h;
+	return false;
+}
+
+
 // Functions for sending messages below
 
+bool MFCMessageHandler::ConnectionComplete()
+{
+	// Post the required message, now the main thread is responsible for deleting the new class
+	if (::PostMessage(windowHandle, UWM_SIGNAL_SERVER_CONNECTED, NULL, NULL)) {
+		return false;
+	}
+
+	return true;
+}
 
 bool MFCMessageHandler::ExchangeData(ExperimentData pParam)
 {
@@ -153,13 +170,6 @@ bool MFCMessageHandler::DisplayMessageBox(int pParam, UINT nType, bool blocksPro
 	return true;
 }
 
-
-bool MFCMessageHandler::setHandle(HWND h)
-{
-	ASSERT(h != NULL);
-	windowHandle = h;
-	return false;
-}
 
 bool MFCMessageHandler::ExperimentStart()
 {

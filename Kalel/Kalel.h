@@ -22,6 +22,7 @@ public:
 	// Global flags
 	bool menuIsAvailable;
 	bool experimentRunning;
+	bool serverConnected;
 
 // Overrides
 public:

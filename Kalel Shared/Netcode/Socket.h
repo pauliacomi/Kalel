@@ -53,8 +53,8 @@ public:
 	std::string SendLine(SOCKET sock, const std::string& sendbuf);
 	std::string Socket::Receive(SOCKET sock);
 	std::string Socket::ReceiveLine(SOCKET sock);
-	void Close(SOCKET sock);
-	void CloseGracefully(SOCKET sock);
+	void Close(SOCKET &sock);
+	void CloseGracefully(SOCKET &sock);
 
 	std::string GetIP(const sockaddr_storage &address);
 

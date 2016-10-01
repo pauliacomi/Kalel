@@ -11,8 +11,6 @@
 
 #define NO_OF_CONN		5      /* Passed to listen() */
 
-Server::request_func Server::request_func_ = 0;
-
 Server::Server()
 	: accepting{ false }
 	, teptr{ nullptr }
@@ -35,13 +33,16 @@ Server::~Server()
 		freeaddrinfo(result);
 	}
 
-	// Remove all connected sockets
-	for (size_t i = 0; i < connectedSockets.size(); i++)
+
+	// Close all sockets?
+	/*for (size_t i = 0; i < socketCollection.size(); i++)
 	{
-		Close(*connectedSockets[i]);
-		delete connectedSockets[i];
+		if (socketCollection[i] != INVALID_SOCKET)
+		{
+			CloseGracefully(socketCollection[i]);
+		}
 	}
-	connectedSockets.clear();
+	socketCollection.clear();*/
 }
 
 void Server::SetLogs(std::vector<std::string> & vct)
@@ -112,9 +113,9 @@ void Server::Listen(PCSTR port)
 }
 
 
-void Server::Accept(request_func r)
+void Server::Accept(std::function<void(http_request*, http_response*)> r)
 {
-	request_func_ = r;
+	proc_func_ = r;
 
 	if (accepting == false)
 	{
@@ -155,7 +156,6 @@ void Server::AcceptLoop()
 			}
 		}
 
-
 		if (FD_ISSET(sock, &readfds))
 		{
 			// handle new connections
@@ -167,6 +167,7 @@ void Server::AcceptLoop()
 			memset(&theirAddr, 0, size);						// Fill addrinfo with zeroes
 
 			clientSocket = accept(sock, (struct sockaddr*)&theirAddr, &size);
+			//socketCollection.push_back(clientSocket);
 
 			if (clientSocket == INVALID_SOCKET) {
 				try
@@ -182,14 +183,12 @@ void Server::AcceptLoop()
 			}
 			else {
 				STREAM_LOG(logINFO) << LOG_ACCEPTED_SOCK << GetIP(theirAddr);
-				std::thread(&Server::Process, this, clientSocket).detach();
+				std::thread newThread = std::thread(&Server::Process, this, socketCollection.back());
+				newThread.detach();
 			}
-
 		}
 	}
 }
-
-
 
 
 unsigned Server::Process(SOCKET l_sock)
@@ -201,24 +200,20 @@ unsigned Server::Process(SOCKET l_sock)
 	std::string request;
 	std::string line;
 
-	try
-	{
+	try	{
 		line = ReceiveLine(l_sock);
 	}
-	catch (const std::exception& e)
-	{
+	catch (const std::exception& e)	{
 		STREAM_LOG(logERROR) << e.what();
 	}
 
 	request += line;
 
 	if (line.empty()) {
-		try
-		{
+		try	{
 			Close(l_sock);
 		}
-		catch (const std::exception& e)
-		{
+		catch (const std::exception& e)	{
 			STREAM_LOG(logERROR) << e.what();
 		}
 		return 1;
@@ -304,7 +299,7 @@ unsigned Server::Process(SOCKET l_sock)
 	//
 
 	http_response resp;
-	request_func_(&req, &resp);
+	proc_func_(&req, &resp);
 
 	std::stringstream str_str;
 	str_str << resp.answer_.size();
@@ -366,12 +361,10 @@ unsigned Server::Process(SOCKET l_sock)
 	// Close connection socket
 	//
 
-	try
-	{
+	try	{
 		CloseGracefully(l_sock);
 	}
-	catch (const std::exception& e)
-	{
+	catch (const std::exception& e)	{
 		STREAM_LOG(logERROR) << e.what();
 	}
 
