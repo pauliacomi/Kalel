@@ -469,6 +469,12 @@ void SetVolumeP6(float fVolumeP6)
 }
 
 
+void SetNumberInstruments(int numberInstruments)
+{
+	WritePrivateProfileString(_T("Appareil"), _T("Instrument_number"), std::to_wstring(numberInstruments).c_str(), Fichier_parametres);
+}
+
+
 
 
 void SetTypeInstrument(int num, int TypeInstrument)

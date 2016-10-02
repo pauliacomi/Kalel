@@ -67,6 +67,8 @@ void SetPresenceTuyereSonique(bool bTuyere);
 void SetVolumeRef(float fVolumeRef);
 void SetVolumeP6(float fVolumeP6);
 
+void SetNumberInstruments(int numberInstruments);
+
 void SetTypeInstrument(int num, int TypeInstrument);
 void SetTypeInstrument1(int TypeInstrument);
 void SetTypeInstrument2(int TypeInstrument);

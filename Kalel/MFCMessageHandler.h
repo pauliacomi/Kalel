@@ -30,6 +30,7 @@ public:
 	// PostMessage functions
 	bool ConnectionComplete();
 	bool GotMachineSettings(const MachineSettings &pParam);
+	bool OnSync();
 	bool ExchangeData(const ExperimentData &pParam);
 	bool ExperimentStart();
 	bool ExperimentEnd();

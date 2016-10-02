@@ -35,6 +35,7 @@ BEGIN_MESSAGE_MAP(CKalelView, CFormView)
 	// Callbacks:
 	ON_MESSAGE(UWM_GOT_MACHINE_SETTINGS, &CKalelView::OnGetMachineSettings)
 	ON_MESSAGE(UWM_SIGNAL_SERVER_CONNECTED, &CKalelView::OnServerConnected)
+	ON_MESSAGE(UWM_SYNCED, &CKalelView::OnSync)
 	ON_MESSAGE(WM_EXCHANGEDATA, &CKalelView::OnExchangeData)						// Calls to save the incoming data from the thread
 	ON_MESSAGE(WM_THREADFINISHEDREG, &CKalelView::OnRegularThreadFinished)			// Calls when manual functionality ends
 	ON_MESSAGE(WM_DISPLAYMESSAGE, &CKalelView::AffichageMessages)					// Displays a message from the automation thread 
@@ -424,7 +425,12 @@ LRESULT CKalelView::DisplayPortDialog(WPARAM, LPARAM)
 	{
 		ApparatusParameters apparatusParameters;
 		apparatusParameters.PassSettings(machineSettings.get());
-		apparatusParameters.DoModal();
+		if (apparatusParameters.DoModal() == IDOK) {
+			if (machineSettings->synced == false)
+			{
+				commHandler.SetMachineSettings(machineSettings);
+			}
+		}
 	}
 	else
 	{
@@ -496,6 +502,12 @@ LRESULT CKalelView::OnGetMachineSettings(WPARAM wParam, LPARAM incomingMachineSe
 {
 	// Get the incoming pointer
 	machineSettings.reset(reinterpret_cast<MachineSettings*>(incomingMachineSettings));
+
+	return 0;
+}
+
+LRESULT CKalelView::OnSync(WPARAM wParam, LPARAM lParam)
+{
 	machineSettings->synced = true;
 
 	return 0;

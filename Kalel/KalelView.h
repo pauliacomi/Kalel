@@ -124,6 +124,7 @@ protected:
 
 	LRESULT OnServerConnected(WPARAM wParam, LPARAM lParam);
 	LRESULT OnGetMachineSettings(WPARAM wParam, LPARAM lParam);
+	LRESULT OnSync(WPARAM wParam, LPARAM lParam);
 	LRESULT OnExchangeData(WPARAM wParam, LPARAM lParam);
 	LRESULT OnRegularThreadFinished(WPARAM wParam, LPARAM);
 	LRESULT CancelBeforeStarting(WPARAM wParam, LPARAM lParam);

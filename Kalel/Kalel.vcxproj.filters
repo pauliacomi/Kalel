@@ -306,6 +306,9 @@
     <ClInclude Include="..\Kalel Shared\unicodeConv.h">
       <Filter>Header Files\Commmon</Filter>
     </ClInclude>
+    <ClInclude Include="..\Kalel Shared\Netcode\http_define.h">
+      <Filter>Header Files\Commmon\Netcode</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainFrm.cpp">

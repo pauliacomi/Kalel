@@ -5,6 +5,7 @@
 #include "Socket.h"
 #include "http_request.h"
 #include "http_response.h"
+#include "http_define.h"
 
 #include <vector>
 #include <atomic>

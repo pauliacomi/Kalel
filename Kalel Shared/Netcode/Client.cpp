@@ -89,16 +89,27 @@ unsigned Client::Process(std::string ip, std::string port){
 	http_request req;
 	request_func_(&req);
 
+	std::stringstream str_str;
+	str_str << req.entity_.size();
+
 	std::string reqUrl;
 	URLHelper urlHelper;
 	urlHelper.BuildReq(reqUrl, req.path_, req.params_);
+
+	req.content_length_ = str_str.str();
 
 	try	{
 		Send(l_sock, req.method_ + " ");
 		Send(l_sock, reqUrl + " ");
 		SendLine(l_sock, "HTTP/1.1");
-		SendLine(l_sock, req.header_accept + req.accept_);
+		SendLine(l_sock, http::header::accept + req.accept_);
+		if (!req.entity_.empty()) {
+			SendLine(l_sock, http::header::content_length + req.content_length_);
+		}
 		SendLine(l_sock, "");
+		if (!req.entity_.empty()) {
+			SendLine(l_sock, req.entity_);
+		}
 	}
 	catch (const std::exception& e)
 	{
@@ -139,9 +150,6 @@ unsigned Client::Process(std::string ip, std::string port){
 	if (line.find(http::responses::not_found) != std::string::npos) {
 		resp.status_ = http::responses::not_found;
 	}
-	else if (line.find(http::responses::success) != std::string::npos) {
-		resp.status_ = http::responses::success;
-	}
 	else if (line.find(http::responses::ok) != std::string::npos) {
 		resp.status_ = http::responses::ok;
 	}
@@ -149,7 +157,7 @@ unsigned Client::Process(std::string ip, std::string port){
 		resp.status_ = http::responses::unauthorised;
 	}
 
-	bool headerReceived = false;
+	bool messageReceived = false;
 
 	while (1) {
 		try	{
@@ -165,9 +173,9 @@ unsigned Client::Process(std::string ip, std::string port){
 
 		unsigned int pos_cr_lf = line.find_first_of("\x0a\x0d");
 		if (pos_cr_lf == 0) {
-			if (!headerReceived)
+			if (!messageReceived)
 			{
-				headerReceived = true;
+				messageReceived = true;
 				continue;
 			}
 			break;
@@ -175,22 +183,22 @@ unsigned Client::Process(std::string ip, std::string port){
 
 		line = line.substr(0, pos_cr_lf);
 
-		if (line.substr(0, resp.header_server.size()) == resp.header_server) {
-			resp.server_ = line.substr(resp.header_server.size());
+		if (line.substr(0, http::header::server.size()) == http::header::server) {
+			resp.server_ = line.substr(http::header::server.size());
 		}
-		else if (line.substr(0, resp.header_date.size()) == resp.header_date) {
-			resp.date_ = line.substr(resp.header_date.size());
+		else if (line.substr(0, http::header::date.size()) == http::header::date) {
+			resp.date_ = line.substr(http::header::date.size());
 		}
-		else if (line.substr(0, resp.header_connection.size()) == resp.header_connection) {
-			resp.connection_ = line.substr(resp.header_connection.size());
+		else if (line.substr(0, http::header::connection.size()) == http::header::connection) {
+			resp.connection_ = line.substr(http::header::connection.size());
 		}
-		else if (line.substr(0, resp.header_content_length.size()) == resp.header_content_length) {
-			resp.content_length_ = line.substr(resp.header_content_length.size());
+		else if (line.substr(0, http::header::content_length.size()) == http::header::content_length) {
+			resp.content_length_ = line.substr(http::header::content_length.size());
 		}
-		else if (line.substr(0, resp.header_content_type.size()) == resp.header_content_type) {
-			resp.content_type_ = line.substr(resp.header_content_type.size());
+		else if (line.substr(0, http::header::content_type.size()) == http::header::content_type) {
+			resp.content_type_ = line.substr(http::header::content_type.size());
 		}
-		else if (headerReceived) {
+		else if (messageReceived) {
 			resp.answer_ += line;
 		}
 	}

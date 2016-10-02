@@ -245,6 +245,8 @@ unsigned Server::Process(SOCKET l_sock)
 	req.path_ = path;
 	req.params_ = params;
 
+	bool messageToReceive = false;
+	bool messageReceived = false;
 
 	while (1) {
 		try
@@ -261,15 +263,23 @@ unsigned Server::Process(SOCKET l_sock)
 		if (line.empty()) 
 			break;
 		
+		// Check for empty line
 		unsigned int pos_cr_lf = line.find_first_of("\x0a\x0d");
-		if (pos_cr_lf == 0) 
+		if (pos_cr_lf == 0) {
+			if (messageToReceive)
+			{
+				messageToReceive = false;
+				messageReceived = true;
+				continue;
+			}
 			break;
+		}
 
 		line = line.substr(0, pos_cr_lf);
 
-		if (line.substr(0, req.header_authorization.size()) == req.header_authorization) {
+		if (line.substr(0, http::header::authorization.size()) == http::header::authorization) {
 			req.authentication_given_ = true;
-			std::string encoded = line.substr(req.header_authorization.size());
+			std::string encoded = line.substr(http::header::authorization.size());
 			std::string decoded = base64_decode(encoded);
 
 			unsigned int pos_colon = decoded.find(":");
@@ -277,17 +287,24 @@ unsigned Server::Process(SOCKET l_sock)
 			req.username_ = decoded.substr(0, pos_colon);
 			req.password_ = decoded.substr(pos_colon + 1);
 		}
-		else if (line.substr(0, req.header_accept.size()) == req.header_accept) {
-			req.accept_ = line.substr(req.header_accept.size());
+		else if (line.substr(0, http::header::accept.size()) == http::header::accept) {
+			req.accept_ = line.substr(http::header::accept.size());
 		}
-		else if (line.substr(0, req.header_accept_language.size()) == req.header_accept_language) {
-			req.accept_language_ = line.substr(req.header_accept_language.size());
+		else if (line.substr(0, http::header::accept_language.size()) == http::header::accept_language) {
+			req.accept_language_ = line.substr(http::header::accept_language.size());
 		}
-		else if (line.substr(0, req.header_accept_encoding.size()) == req.header_accept_encoding) {
-			req.accept_encoding_ = line.substr(req.header_accept_encoding.size());
+		else if (line.substr(0, http::header::accept_encoding.size()) == http::header::accept_encoding) {
+			req.accept_encoding_ = line.substr(http::header::accept_encoding.size());
 		}
-		else if (line.substr(0, req.header_user_agent.size()) == req.header_user_agent) {
-			req.user_agent_ = line.substr(req.header_user_agent.size());
+		else if (line.substr(0, http::header::user_agent.size()) == http::header::user_agent) {
+			req.user_agent_ = line.substr(http::header::user_agent.size());
+		}
+		else if (line.substr(0, http::header::content_length.size()) == http::header::content_length) {
+			req.user_agent_ = line.substr(http::header::content_length.size());
+			messageToReceive = true;
+		}
+		else if (messageReceived) {
+			req.entity_ += line;
 		}
 	}
 
@@ -331,7 +348,7 @@ unsigned Server::Process(SOCKET l_sock)
 
 		if (!req.auth_realm_.empty()) {
 			response += SendLine(l_sock, http::responses::unauthorised);
-			response += Send(l_sock, resp.header_www_authenticate + "Basic Realm=\"");
+			response += Send(l_sock, http::header::www_authenticate + "Basic Realm=\"");
 			response += Send(l_sock, req.auth_realm_);
 			response += SendLine(l_sock, "\"");
 		}
@@ -339,11 +356,11 @@ unsigned Server::Process(SOCKET l_sock)
 			response += SendLine(l_sock, resp.status_);
 		}
 
-		response += SendLine(l_sock, resp.header_date + resp.date_);
-		response += SendLine(l_sock, resp.header_server + resp.server_);
-		response += SendLine(l_sock, resp.header_connection + resp.connection_);
-		response += SendLine(l_sock, resp.header_content_type + resp.content_type_);
-		response += SendLine(l_sock, resp.header_content_length + resp.content_length_);
+		response += SendLine(l_sock, http::header::date				+ resp.date_);
+		response += SendLine(l_sock, http::header::server			+ resp.server_);
+		response += SendLine(l_sock, http::header::connection		+ resp.connection_);
+		response += SendLine(l_sock, http::header::content_type		+ resp.content_type_);
+		response += SendLine(l_sock, http::header::content_length	+ resp.content_length_);
 		response += SendLine(l_sock, "");
 		response += SendLine(l_sock, resp.answer_);
 	}

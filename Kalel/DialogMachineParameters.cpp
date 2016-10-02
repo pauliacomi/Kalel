@@ -13,9 +13,9 @@ IMPLEMENT_DYNAMIC(ApparatusParameters, CDialog)
 
 ApparatusParameters::ApparatusParameters(CWnd* pParent /*=NULL*/)
 	: CDialog(ApparatusParameters::IDD, pParent)
-	, Fichier_parametres(_T("./Parametres.ini"))
 	, m_StrNomCalo(_T(""))
 	, m_StrEnteteFichier(_T(""))
+	, modified {false}
 {	
 }
 
@@ -50,6 +50,7 @@ BOOL ApparatusParameters::OnCommand(WPARAM wParam, LPARAM lParam)
 {
 	return CDialog::OnCommand(wParam, lParam);
 }
+
 
 void ApparatusParameters::DoDataExchange(CDataExchange* pDX)
 {
@@ -156,27 +157,31 @@ BOOL ApparatusParameters::OnInitDialog()
 BEGIN_MESSAGE_MAP(ApparatusParameters, CDialog)
 	ON_BN_CLICKED(IDOK, &ApparatusParameters::OnBnClickedOk)
 	ON_BN_CLICKED(IDCANCEL, &ApparatusParameters::OnBnClickedCancel)
+	ON_CONTROL_RANGE(EN_CHANGE, IDC_EDIT_SENSIBILITE_CALO, IDC_CHECK_TUYERE_SONIQUE, &ApparatusParameters::OnModified)
+	ON_CONTROL_RANGE(BN_CLICKED, IDC_CHECK_ACTIVATION_SECURITE, IDC_CHECK_TUYERE_SONIQUE, &ApparatusParameters::OnModified)
 END_MESSAGE_MAP()
 
 
 void ApparatusParameters::OnBnClickedOk()
 {
 	UpdateData(TRUE);
+	
+	if (modified) {
+		settings->SensibiliteCalo = m_fSensibiliteCalo;
+		settings->SensibiliteCapteurBassePression = m_fSensibiliteCapteurBassePression;
+		settings->SensibiliteCapteurHautePression = m_fSensibiliteCapteurHautePression;
+		settings->ActivationSecurite = m_bSecurite;
+		settings->PressionSecuriteBassePression = m_fPressionSecuriteBassePression;
+		settings->PressionSecuriteHautePression = m_fPressionSecuriteHautePression;
+		settings->PressionLimiteVide = m_fPressionLimiteVide;
+		settings->PresenceTuyereSonique = m_bTuyere;
+		settings->VolumeRef = m_fVolumeRef;
+		settings->VolumeP6 = m_fVolumeP6;
+		settings->CaloName = m_StrNomCalo.GetBuffer();
+		settings->CaloEntete = m_StrEnteteFichier.GetBuffer();
 
-	MachineSettings newSettings;
-
-	newSettings.SensibiliteCalo						= m_fSensibiliteCalo;
-	newSettings.SensibiliteCapteurBassePression		= m_fSensibiliteCapteurBassePression;
-	newSettings.SensibiliteCapteurHautePression		= m_fSensibiliteCapteurHautePression;
-	newSettings.ActivationSecurite					= m_bSecurite;
-	newSettings.PressionSecuriteBassePression		= m_fPressionSecuriteBassePression;
-	newSettings.PressionSecuriteHautePression		= m_fPressionSecuriteHautePression;
-	newSettings.PressionLimiteVide					= m_fPressionLimiteVide;
-	newSettings.PresenceTuyereSonique				= m_bTuyere;
-	newSettings.VolumeRef							= m_fVolumeRef;
-	newSettings.VolumeP6							= m_fVolumeP6;
-	newSettings.CaloName							= m_StrNomCalo.GetBuffer();
-	newSettings.CaloEntete							= m_StrEnteteFichier.GetBuffer();
+		settings->synced = false;
+	}	
 
 	OnOK();
 }
@@ -184,4 +189,10 @@ void ApparatusParameters::OnBnClickedOk()
 void ApparatusParameters::OnBnClickedCancel()
 {
 	OnCancel();
+}
+
+
+void ApparatusParameters::OnModified(UINT nID)
+{
+	modified = true;
 }

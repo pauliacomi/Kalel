@@ -30,7 +30,6 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 public:
-	CString Fichier_parametres;
 
 	double m_fSensibiliteCalo;
 	CSpinBtnCtrl m_SpinSensibiliteCalo;
@@ -58,6 +57,9 @@ public:
 
 protected:
 	virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
+	void OnModified(UINT nID);
+	bool modified;
+
 public:
 	virtual BOOL Create(LPCTSTR lpszTemplateName, CWnd* pParentWnd = NULL);
 	virtual BOOL OnInitDialog();

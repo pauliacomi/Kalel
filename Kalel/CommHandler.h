@@ -21,6 +21,7 @@ public:
 	void SaveAddress(std::wstring address);
 	void Sync();
 	void GetMachineSettings();
+	void SetMachineSettings(std::shared_ptr<const MachineSettings> ptr);
 	void GetData();
 	void GetLog();
 	void GetPorts();
@@ -42,12 +43,16 @@ private:
 	Client client;
 	UnicodeConv unicodeConverter;
 	MFCMessageHandler messageHandler;
-	std::string address;
+	std::string localAddress;
+
+	std::shared_ptr<const MachineSettings> localSettings;
 
 	void Handshake_req(http_request* r);
 	void Handshake_resp(http_response * r);
 	void GetMachineSettings_req(http_request * r);
 	void GetMachineSettings_resp(http_response * r);
+	void SetMachineSettings_req(http_request * r);
+	void SetMachineSettings_resp(http_response * r);
 };
 
 
