@@ -17,10 +17,11 @@
 // When clicking on the Launch button
 void CKalelView::OnBnClickedLancer()
 {
-	if (machineSettings.synced)
+	if (machineSettings->synced)
 	{
 		// Create the experiment type window
 		DialogTypeExperiment dialogExperimentType;
+		dialogExperimentType.PassSettings(*machineSettings.get());
 
 		if (dialogExperimentType.DoModal() == IDOK)
 		{
@@ -28,7 +29,7 @@ void CKalelView::OnBnClickedLancer()
 			experimentSettings->experimentType = dialogExperimentType.TypeExperience;
 
 			// Create dialog
-			ExperimentPropertySheet dialogExperimentProperties(_T(""), &machineSettings);
+			ExperimentPropertySheet dialogExperimentProperties(_T(""), machineSettings.get());
 			dialogExperimentProperties.Initiate(experimentSettings);
 
 			if (dialogExperimentProperties.DoModal() == IDOK)
@@ -93,7 +94,7 @@ void CKalelView::OnBnClickedButtonParametresExperience()
 	if (pApp->experimentRunning) {
 
 		// Create dialog
-		ExperimentPropertySheet dialogExperimentProperties(_T(""), &machineSettings);
+		ExperimentPropertySheet dialogExperimentProperties(_T(""), machineSettings.get());
 		dialogExperimentProperties.Initiate(experimentSettings);
 
 		int counter = 0;

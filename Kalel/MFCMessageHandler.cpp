@@ -28,25 +28,34 @@ bool MFCMessageHandler::setHandle(HWND h)
 bool MFCMessageHandler::ConnectionComplete()
 {
 	// Post the required message, now the main thread is responsible for deleting the new class
-	if (::PostMessage(windowHandle, UWM_SIGNAL_SERVER_CONNECTED, NULL, NULL)) {
+	if (::PostMessage(windowHandle, UWM_SIGNAL_SERVER_CONNECTED, NULL, NULL) == 0) {
 		return false;
 	}
-
 	return true;
 }
 
-bool MFCMessageHandler::ExchangeData(ExperimentData pParam)
+bool MFCMessageHandler::GotMachineSettings(const MachineSettings &pParam)
 {
 	// Create a new instance of the storage class and equate it to the local class
-	ExperimentData * newData = new ExperimentData();
-	*newData = pParam;
+	MachineSettings * newData = new MachineSettings(pParam);
+
+	// Post the required message, now the main thread is responsible for deleting the new class
+	if (::PostMessage(windowHandle, UWM_GOT_MACHINE_SETTINGS, NULL, (LPARAM)newData) == 0) {
+		return false;
+	}
+	return true;
+}
+
+bool MFCMessageHandler::ExchangeData(const ExperimentData &pParam)
+{
+	// Create a new instance of the storage class and equate it to the local class
+	ExperimentData * newData = new ExperimentData(pParam);
 
 	// Post the required message, now the main thread is responsible for deleting the new class
 	if (::PostMessage(windowHandle, WM_EXCHANGEDATA, NULL, (LPARAM)newData) == 0 ) {
 		delete newData;
 		return false;
 	}
-
 	return true;
 }
 
@@ -87,7 +96,7 @@ bool MFCMessageHandler::DisplayMessage(int pParam, int pInt1, int pInt2, double 
 	return true;
 }
 
-bool MFCMessageHandler::DisplayMessage(int pParam, std::string m)
+bool MFCMessageHandler::DisplayMessage(int pParam, std::wstring m)
 {
 	// Create a new pointer 
 	CString * message = new CString;
@@ -143,7 +152,7 @@ bool MFCMessageHandler::DisplayMessageBox(int pParam, UINT nType, bool blocksPro
 	return true;
 }
 
-bool MFCMessageHandler::DisplayMessageBox(int pParam, UINT nType, bool blocksProgram, std::string pString)
+bool MFCMessageHandler::DisplayMessageBox(int pParam, UINT nType, bool blocksProgram, std::wstring pString)
 {
 	// Create a new pointer 
 	UINT * type = new UINT(nType);

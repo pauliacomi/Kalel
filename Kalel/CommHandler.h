@@ -18,6 +18,12 @@ public:
 	void SetHandle(HWND h);
 
 	void Connect(std::wstring address);
+	void SaveAddress(std::wstring address);
+	void Sync();
+	void GetMachineSettings();
+	void GetData();
+	void GetLog();
+	void GetPorts();
 
 	int StartClient();
 	int ShutdownClient();
@@ -36,9 +42,12 @@ private:
 	Client client;
 	UnicodeConv unicodeConverter;
 	MFCMessageHandler messageHandler;
+	std::string address;
 
 	void Handshake_req(http_request* r);
 	void Handshake_resp(http_response * r);
+	void GetMachineSettings_req(http_request * r);
+	void GetMachineSettings_resp(http_response * r);
 };
 
 

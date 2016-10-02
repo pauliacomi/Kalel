@@ -183,7 +183,7 @@ void Server::AcceptLoop()
 			}
 			else {
 				STREAM_LOG(logINFO) << LOG_ACCEPTED_SOCK << GetIP(theirAddr);
-				std::thread newThread = std::thread(&Server::Process, this, socketCollection.back());
+				std::thread newThread = std::thread(&Server::Process, this, clientSocket);
 				newThread.detach();
 			}
 		}
@@ -316,7 +316,6 @@ unsigned Server::Process(SOCKET l_sock)
 	resp.server_			= "Some Server";								//should fill
 	resp.date_				= std::string(asctime_remove_nl) + " GMT";
 	resp.connection_		= "close";
-	resp.content_type_		= "text/json; charset=ISO-8859-1";
 	resp.content_length_	= str_str.str();
 
 
@@ -344,7 +343,7 @@ unsigned Server::Process(SOCKET l_sock)
 		response += SendLine(l_sock, resp.header_server + resp.server_);
 		response += SendLine(l_sock, resp.header_connection + resp.connection_);
 		response += SendLine(l_sock, resp.header_content_type + resp.content_type_);
-		response += SendLine(l_sock, resp.header_content_length + resp.header_content_length);
+		response += SendLine(l_sock, resp.header_content_length + resp.content_length_);
 		response += SendLine(l_sock, "");
 		response += SendLine(l_sock, resp.answer_);
 	}

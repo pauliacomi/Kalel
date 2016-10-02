@@ -149,6 +149,8 @@ unsigned Client::Process(std::string ip, std::string port){
 		resp.status_ = http::responses::unauthorised;
 	}
 
+	bool headerReceived = false;
+
 	while (1) {
 		try	{
 			line = ReceiveLine(l_sock);
@@ -162,13 +164,34 @@ unsigned Client::Process(std::string ip, std::string port){
 			break;
 
 		unsigned int pos_cr_lf = line.find_first_of("\x0a\x0d");
-		if (pos_cr_lf == 0)
+		if (pos_cr_lf == 0) {
+			if (!headerReceived)
+			{
+				headerReceived = true;
+				continue;
+			}
 			break;
+		}
 
 		line = line.substr(0, pos_cr_lf);
 
 		if (line.substr(0, resp.header_server.size()) == resp.header_server) {
 			resp.server_ = line.substr(resp.header_server.size());
+		}
+		else if (line.substr(0, resp.header_date.size()) == resp.header_date) {
+			resp.date_ = line.substr(resp.header_date.size());
+		}
+		else if (line.substr(0, resp.header_connection.size()) == resp.header_connection) {
+			resp.connection_ = line.substr(resp.header_connection.size());
+		}
+		else if (line.substr(0, resp.header_content_length.size()) == resp.header_content_length) {
+			resp.content_length_ = line.substr(resp.header_content_length.size());
+		}
+		else if (line.substr(0, resp.header_content_type.size()) == resp.header_content_type) {
+			resp.content_type_ = line.substr(resp.header_content_type.size());
+		}
+		else if (headerReceived) {
+			resp.answer_ += line;
 		}
 	}
 

@@ -19,7 +19,7 @@ public:
 
 // Données de boîte de dialogue
 	enum { IDD = IDD_TYPE_EXPERIENCE };
-	void PassSettings(const MachineSettings& machineSettings);
+	void PassSettings(const MachineSettings & machineSettings);
 
 protected:
 	MachineSettings * settings;

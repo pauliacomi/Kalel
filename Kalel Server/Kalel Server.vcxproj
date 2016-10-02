@@ -211,6 +211,7 @@
     <ClInclude Include="..\Kalel Shared\Resources\DefineInstruments.h" />
     <ClInclude Include="..\Kalel Shared\Resources\DefineStages.h" />
     <ClInclude Include="..\Kalel Shared\Resources\StringTable.h" />
+    <ClInclude Include="..\Kalel Shared\unicodeConv.h" />
     <ClInclude Include="Automation\Class\Automation.h" />
     <ClInclude Include="Automation\Old\MainFrm.h" />
     <ClInclude Include="Automation\Old\Manip.h">
@@ -257,6 +258,7 @@
     <ClCompile Include="..\Kalel Shared\Netcode\Socket.cpp" />
     <ClCompile Include="..\Kalel Shared\Netcode\stdHelpers.cpp" />
     <ClCompile Include="..\Kalel Shared\Netcode\URLHelper.cpp" />
+    <ClCompile Include="..\Kalel Shared\unicodeConv.cpp" />
     <ClCompile Include="Automation\Class\Automation.cpp" />
     <ClCompile Include="Automation\Class\AutomationFileWriting.cpp" />
     <ClCompile Include="Automation\Class\AutomationMeasurement.cpp" />

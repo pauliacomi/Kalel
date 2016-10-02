@@ -29,7 +29,7 @@ public:
 	// Storage for all the data
 	ExperimentSettings * experimentSettings;
 	ExperimentData * experimentData;
-	MachineSettings machineSettings;
+	std::shared_ptr<MachineSettings> machineSettings;
 	CommHandler commHandler;
 
 	// Some storage variables for each MFC control
@@ -106,6 +106,13 @@ protected:
 
 	void DoEvents(void);
 
+
+
+	void GetExperimentData(ExperimentPropertySheet * dialogExperimentProperties, bool initialRequest);
+	void UpdateButtons();
+
+	// Menu messages
+
 	LRESULT OnMsvAmpoule(WPARAM wParam, LPARAM lParam);
 	LRESULT OnMsvBouteille(WPARAM wParam, LPARAM lParam);
 	LRESULT OnChangementBouteille(WPARAM wParam, LPARAM lParam);
@@ -113,18 +120,16 @@ protected:
 	LRESULT DisplayPortDialog(WPARAM wParam, LPARAM lParam);
 	LRESULT DisplayApparatusSettingsDialog(WPARAM wParam, LPARAM lParam);
 
-	void GetExperimentData(ExperimentPropertySheet * dialogExperimentProperties, bool initialRequest);
-	void UpdateButtons();
+	// Thread callbacks
 
-	LRESULT ExchangeData(WPARAM wParam, LPARAM lParam);
+	LRESULT OnServerConnected(WPARAM wParam, LPARAM lParam);
+	LRESULT OnGetMachineSettings(WPARAM wParam, LPARAM lParam);
+	LRESULT OnExchangeData(WPARAM wParam, LPARAM lParam);
+	LRESULT OnRegularThreadFinished(WPARAM wParam, LPARAM);
+	LRESULT CancelBeforeStarting(WPARAM wParam, LPARAM lParam);
 	LRESULT BackgroundThreadStart(WPARAM wParam, LPARAM lParam);
 	LRESULT BackgroundThreadStop(WPARAM wParam, LPARAM lParam);
 	LRESULT BackgroundThreadRestart(WPARAM wParam, LPARAM lParam);
-
-	// Thread callbacks
-	LRESULT OnRegularThreadFinished(WPARAM wParam, LPARAM);
-	LRESULT CancelBeforeStarting(WPARAM wParam, LPARAM lParam);
-	LRESULT ServerConnected(WPARAM wParam, LPARAM lParam);
 
 protected:
 

@@ -25,7 +25,7 @@ DialogTypeExperiment::~DialogTypeExperiment()
 
 void DialogTypeExperiment::PassSettings(const MachineSettings & machineSettings)
 {
-	 * settings = machineSettings;
+	 settings = new MachineSettings(machineSettings);
 }
 
 // Data exchange and message map

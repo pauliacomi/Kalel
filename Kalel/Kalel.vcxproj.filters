@@ -291,9 +291,6 @@
     <ClInclude Include="Parametres.h">
       <Filter>Header Files\Parameters File</Filter>
     </ClInclude>
-    <ClInclude Include="unicodeConv.h">
-      <Filter>Header Files\Utils</Filter>
-    </ClInclude>
     <ClInclude Include="DialogMachineParameters.h">
       <Filter>Header Files\GUI\Dialogs\Machine Parameters</Filter>
     </ClInclude>
@@ -305,6 +302,9 @@
     </ClInclude>
     <ClInclude Include="MFCMessageHandler.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Kalel Shared\unicodeConv.h">
+      <Filter>Header Files\Commmon</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -443,11 +443,11 @@
     <ClCompile Include="Parametres.cpp">
       <Filter>Source Files\Parameters File</Filter>
     </ClCompile>
-    <ClCompile Include="unicodeConv.cpp">
-      <Filter>Source Files\Utils</Filter>
-    </ClCompile>
     <ClCompile Include="MFCMessageHandler.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Kalel Shared\unicodeConv.cpp">
+      <Filter>Source Files\Commmon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

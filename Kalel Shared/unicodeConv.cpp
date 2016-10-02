@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "unicodeConv.h"
 
 #include <locale>			// wstring/string conversions

@@ -30,8 +30,12 @@
 IMPLEMENT_DYNCREATE(CKalelView, CFormView)
 
 BEGIN_MESSAGE_MAP(CKalelView, CFormView)
-	// Custom messages for threads
-	ON_MESSAGE(WM_EXCHANGEDATA, &CKalelView::ExchangeData)							// Calls to save the incoming data from the thread
+
+
+	// Callbacks:
+	ON_MESSAGE(UWM_GOT_MACHINE_SETTINGS, &CKalelView::OnGetMachineSettings)
+	ON_MESSAGE(UWM_SIGNAL_SERVER_CONNECTED, &CKalelView::OnServerConnected)
+	ON_MESSAGE(WM_EXCHANGEDATA, &CKalelView::OnExchangeData)						// Calls to save the incoming data from the thread
 	ON_MESSAGE(WM_THREADFINISHEDREG, &CKalelView::OnRegularThreadFinished)			// Calls when manual functionality ends
 	ON_MESSAGE(WM_DISPLAYMESSAGE, &CKalelView::AffichageMessages)					// Displays a message from the automation thread 
 	ON_MESSAGE(WM_DISPLAYMESSAGEBOX, &CKalelView::MessageBoxAlert)					// Displays an messageBOX to alert user of something
@@ -42,13 +46,13 @@ BEGIN_MESSAGE_MAP(CKalelView, CFormView)
 	ON_MESSAGE(UWM_THREAD_RESTART, &CKalelView::BackgroundThreadRestart)
 	ON_MESSAGE(WM_CANCELEXPERIMENT, &CKalelView::CancelBeforeStarting)
 
+	// Menu messages:
 	ON_MESSAGE(UWM_FUNC_VACUUM_SAMPLE, &CKalelView::OnMsvAmpoule)
 	ON_MESSAGE(UWM_FUNC_VACUUM_BOTTLE, &CKalelView::OnMsvBouteille)
 	ON_MESSAGE(UWM_FUNC_CHANGE_BOTTLE, &CKalelView::OnChangementBouteille)
 	ON_MESSAGE(UWM_DISP_CONNECTS_DIALOG, &CKalelView::DisplayConnectDialog)
 	ON_MESSAGE(UWM_DISP_PORT_DIALOG, &CKalelView::DisplayPortDialog)
 	ON_MESSAGE(UWM_DISP_DEVSETTINGS_DIALOG, &CKalelView::DisplayApparatusSettingsDialog)
-	ON_MESSAGE(UWM_SIGNAL_SERVER_CONNECTED, &CKalelView::ServerConnected)
 	
 
 	// Manual command messages
@@ -124,6 +128,7 @@ CKalelView::CKalelView()
 
 	, experimentSettings{ nullptr }
 	, experimentData{ nullptr }
+	, machineSettings(new MachineSettings)
 {
 }
 
@@ -136,19 +141,6 @@ CKalelView::~CKalelView()
 	if (experimentData != nullptr) {
 		delete experimentData;
 	}
-}
-
-LRESULT CKalelView::ExchangeData(WPARAM, LPARAM incomingExperimentData)
-{
-	// Delete previous
-	if (experimentData != nullptr) {
-		delete experimentData;
-		experimentData = nullptr;
-	}
-	// Get the incoming pointer
-	experimentData = reinterpret_cast<ExperimentData*>(incomingExperimentData);
-
-	return 0;
 }
 
 // Liaising between variables and controls
@@ -428,10 +420,10 @@ LRESULT CKalelView::DisplayConnectDialog(WPARAM, LPARAM)
 
 LRESULT CKalelView::DisplayPortDialog(WPARAM, LPARAM)
 {
-	if (machineSettings.synced)
+	if (machineSettings->synced)
 	{
 		ApparatusParameters apparatusParameters;
-		apparatusParameters.PassSettings(&machineSettings);
+		apparatusParameters.PassSettings(machineSettings.get());
 		apparatusParameters.DoModal();
 	}
 	else
@@ -444,10 +436,10 @@ LRESULT CKalelView::DisplayPortDialog(WPARAM, LPARAM)
 
 LRESULT CKalelView::DisplayApparatusSettingsDialog(WPARAM, LPARAM)
 {
-	if (machineSettings.synced)
+	if (machineSettings->synced)
 	{
 		ConnectionPort m_connection_ports;
-		m_connection_ports.PassSettings(&machineSettings);
+		m_connection_ports.PassSettings(machineSettings.get());
 		m_connection_ports.DoModal();
 	}
 	else
@@ -492,13 +484,35 @@ LRESULT CKalelView::CancelBeforeStarting(WPARAM, LPARAM)
 	return 0;
 }
 
-LRESULT CKalelView::ServerConnected(WPARAM wParam, LPARAM lParam)
+LRESULT CKalelView::OnServerConnected(WPARAM wParam, LPARAM lParam)
 {
 	pApp->serverConnected = true;
+	commHandler.SaveAddress(savedParams.GetServerAddress());
+	commHandler.Sync();
 	return 0;
 }
 
+LRESULT CKalelView::OnGetMachineSettings(WPARAM wParam, LPARAM incomingMachineSettings)
+{
+	// Get the incoming pointer
+	machineSettings.reset(reinterpret_cast<MachineSettings*>(incomingMachineSettings));
+	machineSettings->synced = true;
 
+	return 0;
+}
+
+LRESULT CKalelView::OnExchangeData(WPARAM, LPARAM incomingExperimentData)
+{
+	// Delete previous
+	if (experimentData != nullptr) {
+		delete experimentData;
+		experimentData = nullptr;
+	}
+	// Get the incoming pointer
+	experimentData = reinterpret_cast<ExperimentData*>(incomingExperimentData);
+
+	return 0;
+}
 
 
 LRESULT CKalelView::BackgroundThreadStart(WPARAM, LPARAM)
