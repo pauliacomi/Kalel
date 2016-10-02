@@ -156,6 +156,58 @@ std::string Socket::ReceiveLine(SOCKET l_sock)
 	}
 }
 
+std::string Socket::ReceiveBytes(SOCKET l_sock, u_long bytes)
+{
+	std::string ret;
+	char buf[1024];
+	int received;
+	size_t total = 0;
+
+	bool overflow = false;
+
+	while (true) {
+		u_long arg = 0;
+
+		if (total > bytes) {
+			overflow = true;
+			break;
+		}
+		if (ioctlsocket(l_sock, FIONREAD, &arg) != 0)
+			break;
+		if (arg == 0)
+			break;
+		if (arg > 1024)
+			arg = 1024;
+
+		received = recv(l_sock, buf, arg, 0);
+
+		switch (received) {
+		case 0: // not connected anymore;
+			return "";
+		case INVALID_SOCKET:
+			if (errno == EAGAIN) {
+				return ret;
+			}
+			else {
+				stringex.set(ERR_RECEIVE);
+				throw stringex;
+				//// not connected anymore
+				//return "";
+			}
+		}
+
+		std::string t;
+		t.assign(buf, received);
+		ret += t;
+		total += arg;
+	}
+	if (total < bytes || overflow)
+	{
+		ret.clear();
+	}
+	return ret;
+}
+
 void Socket::Close(SOCKET &l_sock)
 {
 	if (l_sock != INVALID_SOCKET) {

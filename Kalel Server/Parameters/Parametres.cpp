@@ -11,6 +11,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <sstream>
 
 #define nSizeInt 6
 #define nSizeFloat 20
@@ -402,13 +403,12 @@ bool GetMesureHautePression()
 
 // Ecriture des paramètres de l'appareil
 
-void SetSensibiliteCalo(float fSensCalo)
+void SetSensibiliteCalo(long double fSensCalo)
 {
-	wchar_t charSensCalo[nSizeFloat];
-	TCHAR TCHARSensCalo[nSizeFloat];
-	wprintf_s(charSensCalo,"%1.8f",fSensCalo);
-	wsprintf(TCHARSensCalo, charSensCalo);
-	WritePrivateProfileString(_T("Appareil"), _T("Sensibilite_calo"), TCHARSensCalo, Fichier_parametres);
+	std::wstringstream temp;
+	temp.precision(10);
+	temp << fSensCalo;
+	WritePrivateProfileString(_T("Appareil"), _T("Sensibilite_calo"), temp.str().c_str(), Fichier_parametres);
 }
 
 void SetSensibiliteCapteurBassePression(float fSensBP)

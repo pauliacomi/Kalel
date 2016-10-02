@@ -51,8 +51,9 @@ public:
 
 	std::string Send(SOCKET sock, const std::string& sendbuf);
 	std::string SendLine(SOCKET sock, const std::string& sendbuf);
-	std::string Socket::Receive(SOCKET sock);
-	std::string Socket::ReceiveLine(SOCKET sock);
+	std::string Receive(SOCKET sock);
+	std::string ReceiveLine(SOCKET sock);
+	std::string ReceiveBytes(SOCKET l_sock, u_long bytes);
 	void Close(SOCKET &sock);
 	void CloseGracefully(SOCKET &sock);
 

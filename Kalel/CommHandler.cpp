@@ -209,7 +209,7 @@ void CommHandler::GetMachineSettings_resp(http_response* r) {
 }
 
 void CommHandler::SetMachineSettings_req(http_request* r) {
-	r->method_			= "POST";
+	r->method_			= http::method::post;
 	r->path_			= "/api/machinesettings";
 	r->content_type_	= "application/json";
 

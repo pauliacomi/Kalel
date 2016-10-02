@@ -6,6 +6,7 @@
 #include "../log.h"
 
 #include <sstream>
+#include <bitset>         // std::bitset
 
 Client::Client()
 	: peer{ nullptr }
@@ -98,17 +99,20 @@ unsigned Client::Process(std::string ip, std::string port){
 
 	req.content_length_ = str_str.str();
 
+	std::string request;
+
 	try	{
-		Send(l_sock, req.method_ + " ");
-		Send(l_sock, reqUrl + " ");
-		SendLine(l_sock, "HTTP/1.1");
-		SendLine(l_sock, http::header::accept + req.accept_);
+		request += Send(l_sock, req.method_ + " ");
+		request += Send(l_sock, reqUrl + " ");
+		request += SendLine(l_sock, "HTTP/1.1");
+		request += SendLine(l_sock, http::header::accept + req.accept_);
 		if (!req.entity_.empty()) {
-			SendLine(l_sock, http::header::content_length + req.content_length_);
+			request += SendLine(l_sock, http::header::content_length + req.content_length_);
+			request += SendLine(l_sock, http::header::content_type + req.content_type_);
 		}
-		SendLine(l_sock, "");
+		request += SendLine(l_sock, "");
 		if (!req.entity_.empty()) {
-			SendLine(l_sock, req.entity_);
+			request += Send(l_sock, req.entity_);
 		}
 	}
 	catch (const std::exception& e)
@@ -116,6 +120,7 @@ unsigned Client::Process(std::string ip, std::string port){
 		STREAM_LOG(logERROR) << e.what();
 	}
 	
+	STREAM_LOG(logDEBUG) << LOG_REQUEST << request;
 
 	//
 	// receive
@@ -157,11 +162,30 @@ unsigned Client::Process(std::string ip, std::string port){
 		resp.status_ = http::responses::unauthorised;
 	}
 
-	bool messageReceived = false;
+	bool messageToReceive = true;		// expecting a message
+	bool messageReceived = false;		// but not ready to receive it, first the header
 
 	while (1) {
 		try	{
-			line = ReceiveLine(l_sock);
+			if (!messageReceived) {			// no message body is to be received, regular line-based receive 
+				line = ReceiveLine(l_sock);
+			}
+			else {							// a message body is specified using "Content-Length" header, will receive the required number of bytes
+				std::stringstream buffer(resp.content_length_);
+				u_long bytes;
+				buffer >> bytes;
+
+				line = ReceiveBytes(l_sock, bytes);
+
+				if (line.empty()) {
+					resp.answer_ = http::responses::bad_request;
+				}
+				else {
+					resp.answer_ = line;
+					response += line;
+				}
+				break;
+			}
 		}
 		catch (const std::exception& e)
 		{
@@ -171,10 +195,13 @@ unsigned Client::Process(std::string ip, std::string port){
 		if (line.empty())
 			break;
 
+		response += line;
+
 		unsigned int pos_cr_lf = line.find_first_of("\x0a\x0d");
 		if (pos_cr_lf == 0) {
-			if (!messageReceived)
+			if (messageToReceive)
 			{
+				messageToReceive = false;
 				messageReceived = true;
 				continue;
 			}
@@ -198,10 +225,9 @@ unsigned Client::Process(std::string ip, std::string port){
 		else if (line.substr(0, http::header::content_type.size()) == http::header::content_type) {
 			resp.content_type_ = line.substr(http::header::content_type.size());
 		}
-		else if (messageReceived) {
-			resp.answer_ += line;
-		}
 	}
+
+	STREAM_LOG(logDEBUG) << LOG_RESPONSE << response;
 
 	/////
 

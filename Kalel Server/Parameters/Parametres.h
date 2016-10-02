@@ -56,7 +56,7 @@ bool GetMesureHautePression();
 
 // Set
 
-void SetSensibiliteCalo(float fSensCalo);
+void SetSensibiliteCalo(long double fSensCalo);
 void SetSensibiliteCapteurBassePression(float fSensBP);
 void SetSensibiliteCapteurHautePression(float fSensHP);
 void SetActivationSecurite(bool bSecurite);

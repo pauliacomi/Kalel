@@ -8,6 +8,7 @@
 #include "../log.h"
 
 #include <sstream>
+#include <bitset>         // std::bitset
 
 #define NO_OF_CONN		5      /* Passed to listen() */
 
@@ -237,7 +238,7 @@ unsigned Server::Process(SOCKET l_sock)
 	std::string path;
 	std::map<std::string, std::string> params;
 
-	size_t posStartPath = line.find_first_not_of(" ", 3);
+	size_t posStartPath = line.find_first_of(" ") + 1;
 
 	URLHelper urlhelper;
 	urlhelper.SplitGetReq(line.substr(posStartPath), path, params);
@@ -245,23 +246,36 @@ unsigned Server::Process(SOCKET l_sock)
 	req.path_ = path;
 	req.params_ = params;
 
-	bool messageToReceive = false;
-	bool messageReceived = false;
+	bool messageToReceive = false;			// not expecting a message
+	bool messageReceived = false;			// not ready to receive it, first the header
 
 	while (1) {
 		try
-		{
-			line = ReceiveLine(l_sock);
+		{			
+			if (!messageReceived) {			// no message body is to be received, regular line-based receive 
+				line = ReceiveLine(l_sock);
+			}
+			else {							// a message body is specified using "Content-Length" header, will receive the required number of bytes
+				std::stringstream buffer(req.content_length_);
+				u_long bytes;
+				buffer >> bytes;
+
+				line = ReceiveBytes(l_sock, bytes);
+
+				req.entity_ = line;
+				request += line;
+				break;
+			}
 		}
 		catch (const std::exception& e)
 		{
 			STREAM_LOG(logERROR) << e.what();
 		}
 
-		request += line;
-
 		if (line.empty()) 
 			break;
+		
+		request += line;
 		
 		// Check for empty line
 		unsigned int pos_cr_lf = line.find_first_of("\x0a\x0d");
@@ -299,12 +313,12 @@ unsigned Server::Process(SOCKET l_sock)
 		else if (line.substr(0, http::header::user_agent.size()) == http::header::user_agent) {
 			req.user_agent_ = line.substr(http::header::user_agent.size());
 		}
-		else if (line.substr(0, http::header::content_length.size()) == http::header::content_length) {
-			req.user_agent_ = line.substr(http::header::content_length.size());
-			messageToReceive = true;
+		else if (line.substr(0, http::header::content_type.size()) == http::header::content_type) {
+			req.content_type_ = line.substr(http::header::content_type.size());
 		}
-		else if (messageReceived) {
-			req.entity_ += line;
+		else if (line.substr(0, http::header::content_length.size()) == http::header::content_length) {
+			req.content_length_ = line.substr(http::header::content_length.size());
+			messageToReceive = true;
 		}
 	}
 
@@ -318,6 +332,8 @@ unsigned Server::Process(SOCKET l_sock)
 	http_response resp;
 	proc_func_(&req, &resp);
 
+	
+
 	std::stringstream str_str;
 	str_str << resp.answer_.size();
 
@@ -330,7 +346,7 @@ unsigned Server::Process(SOCKET l_sock)
 	asctime_s(asctime_remove_nl, 26, &gmt);
 	asctime_remove_nl[24] = 0;
 
-	resp.server_			= "Some Server";								//should fill
+	resp.server_			= "Kalel Server";								//should fill
 	resp.date_				= std::string(asctime_remove_nl) + " GMT";
 	resp.connection_		= "close";
 	resp.content_length_	= str_str.str();
@@ -346,23 +362,31 @@ unsigned Server::Process(SOCKET l_sock)
 	{
 		response += Send(l_sock, "HTTP/1.1 ");
 
-		if (!req.auth_realm_.empty()) {
-			response += SendLine(l_sock, http::responses::unauthorised);
-			response += Send(l_sock, http::header::www_authenticate + "Basic Realm=\"");
-			response += Send(l_sock, req.auth_realm_);
-			response += SendLine(l_sock, "\"");
-		}
-		else {
+		if (messageToReceive && messageReceived && req.entity_.empty()) {
+			resp.status_ = http::responses::bad_request;
 			response += SendLine(l_sock, resp.status_);
 		}
+		else
+		{
+			if (!req.auth_realm_.empty()) {
+				response += SendLine(l_sock, http::responses::unauthorised);
+				response += Send(l_sock, http::header::www_authenticate + "Basic Realm=\"");
+				response += Send(l_sock, req.auth_realm_);
+				response += SendLine(l_sock, "\"");
+			}
+			else {
 
-		response += SendLine(l_sock, http::header::date				+ resp.date_);
-		response += SendLine(l_sock, http::header::server			+ resp.server_);
-		response += SendLine(l_sock, http::header::connection		+ resp.connection_);
-		response += SendLine(l_sock, http::header::content_type		+ resp.content_type_);
-		response += SendLine(l_sock, http::header::content_length	+ resp.content_length_);
-		response += SendLine(l_sock, "");
-		response += SendLine(l_sock, resp.answer_);
+				response += SendLine(l_sock, resp.status_);
+			}
+
+			response += SendLine(l_sock, http::header::date + resp.date_);
+			response += SendLine(l_sock, http::header::server + resp.server_);
+			response += SendLine(l_sock, http::header::connection + resp.connection_);
+			response += SendLine(l_sock, http::header::content_type + resp.content_type_);
+			response += SendLine(l_sock, http::header::content_length + resp.content_length_);
+			response += SendLine(l_sock, "");
+			response += Send(l_sock, resp.answer_);
+		}
 	}
 	catch (const std::exception& e)
 	{

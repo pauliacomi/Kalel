@@ -166,6 +166,11 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 				SetFonctionInstrument(i, machineSettings->FunctionInstruments[i]);
 				SetTypeInstrument(i, machineSettings->typeInstruments[i]);
 			}
+
+			resp->status_ = http::responses::ok;
+		}
+		else {
+			resp->status_ = http::responses::bad_request;
 		}
 	}
 
