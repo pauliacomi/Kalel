@@ -10,6 +10,8 @@
 #define INSTRUMENT_UNDEF		-20
 #define INSTRUMENT_INEXIST		-21
 
+#define COM_UNDEF				-1
+
 #define READ_LP					0
 #define READ_HP					1
 

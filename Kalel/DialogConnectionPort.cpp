@@ -18,6 +18,7 @@ ConnectionPort::ConnectionPort(CWnd* pParent /*=NULL*/)
 	, settings{ nullptr }
 	, m_nIndexPortVannes{ 0 }
 	, m_nIndexPortTemperatures{ 0 }
+	, modified{ false }
 {
 	// CURRENTLY ONLY DESIGNED FOR A MAXIMUM OF 3 INSTURMENTS
 	for (size_t i = 0; i < NB_OF_INSTRUMENTS; i++)
@@ -63,6 +64,16 @@ void ConnectionPort::PassSettings(MachineSettings * machineSettings)
 
 ConnectionPort::~ConnectionPort()
 {
+}
+
+bool ConnectionPort::Changed()
+{
+	return modified;
+}
+
+std::shared_ptr<MachineSettings> ConnectionPort::GetSettings()
+{
+	return localSettings;
 }
 
 void ConnectionPort::DoDataExchange(CDataExchange* pDX)
@@ -136,9 +147,8 @@ BEGIN_MESSAGE_MAP(ConnectionPort, CDialog)
 	ON_CBN_SELCHANGE(IDC_COMBO_TYPE_INSTRUMENT1, &ConnectionPort::OnCbnSelchangeComboTypeInstrument1)
 	ON_CBN_SELCHANGE(IDC_COMBO_TYPE_INSTRUMENT2, &ConnectionPort::OnCbnSelchangeComboTypeInstrument2)
 	ON_CBN_SELCHANGE(IDC_COMBO_TYPE_INSTRUMENT3, &ConnectionPort::OnCbnSelchangeComboTypeInstrument3)
-	ON_BN_CLICKED(IDC_CHECK_INSTRUMENT1_KEITHLEY_VOIE2, &ConnectionPort::OnBnClickedCheckInstrument1KeithleyVoie2)
-	ON_BN_CLICKED(IDC_CHECK_INSTRUMENT2_KEITHLEY_VOIE2, &ConnectionPort::OnBnClickedCheckInstrument2KeithleyVoie2)
-	ON_BN_CLICKED(IDC_CHECK_INSTRUMENT3_KEITHLEY_VOIE2, &ConnectionPort::OnBnClickedCheckInstrument3KeithleyVoie2)
+	ON_CONTROL_RANGE(CBN_SELCHANGE, IDC_COMBO_INSTRUMENT1_KEITHLEY_VOIE2, IDC_COMBO_INSTRUMENT3_MENSOR, &ConnectionPort::OnModified)
+	ON_CONTROL_RANGE(BN_CLICKED, IDC_CHECK_INSTRUMENT1_KEITHLEY_VOIE1, IDC_CHECK_INSTRUMENT3_KEITHLEY_VOIE2, &ConnectionPort::OnModified)
 END_MESSAGE_MAP()
 
 
@@ -164,9 +174,12 @@ void ConnectionPort::OnBnClickedOk()
 
 	if (!bPbm && !bWarning)
 	{
-		MachineSettings newSettings;
-		EnregistrementConnection_port(newSettings);
-		EnregistrementVerifications(newSettings);
+		if (modified)
+		{
+			localSettings = std::make_shared<MachineSettings>(*settings);
+			EnregistrementConnection_port(*localSettings);
+			EnregistrementVerifications(*localSettings);
+		}
 		OnOK();
 		return;
 	}
@@ -198,9 +211,12 @@ void ConnectionPort::OnBnClickedOk()
 	
 	if(AfxMessageBox(StrMessageWarning,MB_YESNO|MB_ICONEXCLAMATION)==IDYES)
 	{
-		MachineSettings newSettings;
-		EnregistrementConnection_port(newSettings);
-		EnregistrementVerifications(newSettings);
+		if (modified)
+		{
+			localSettings = std::make_shared<MachineSettings>(*settings);
+			EnregistrementConnection_port(*localSettings);
+			EnregistrementVerifications(*localSettings);
+		}
 		OnOK();
 	}
 }
@@ -214,6 +230,8 @@ void ConnectionPort::OnBnClickedCancel()
 
 void ConnectionPort::OnCbnSelchangeComboTypeInstrument1()
 {
+	modified = true;
+
 	UpdateData(TRUE);
 	
 	// Show instrument 1
@@ -224,12 +242,14 @@ void ConnectionPort::OnCbnSelchangeComboTypeInstrument1()
 		m_CheckInstrumentKeithleyVoie2[0],
 		m_CBInstrumentKeithleyVoie2[0],
 		m_CBInstrumentMensor[0]);
-
+	modified = true;
 	UpdateData(FALSE);
 }
 
 void ConnectionPort::OnCbnSelchangeComboTypeInstrument2()
 {
+	modified = true;
+
 	UpdateData(TRUE);
 
 	// Show instrument 2
@@ -246,6 +266,8 @@ void ConnectionPort::OnCbnSelchangeComboTypeInstrument2()
 
 void ConnectionPort::OnCbnSelchangeComboTypeInstrument3()
 {
+	modified = true;
+
 	UpdateData(TRUE);
 
 	// Show instrument 3
@@ -260,28 +282,20 @@ void ConnectionPort::OnCbnSelchangeComboTypeInstrument3()
 	UpdateData(FALSE);
 }
 
-void ConnectionPort::OnBnClickedCheckInstrument1KeithleyVoie2()
+void ConnectionPort::OnModified(UINT nID)
 {
-	UpdateData(TRUE);
-	m_CBInstrument1KeithleyVoie2.EnableWindow (m_bInstrumentKeithleyVoie2[0]);
-	UpdateData(FALSE);
+	for (UINT i = 0; i < m_CBInstrumentKeithleyVoie2.size(); i++)
+	{
+		if (nID == IDC_CHECK_INSTRUMENT1_KEITHLEY_VOIE2 + i)
+		{
+			UpdateData(TRUE);
+			m_CBInstrumentKeithleyVoie2[i]->EnableWindow(m_bInstrumentKeithleyVoie2[i]);
+			UpdateData(FALSE);
+		}
+	}
+	
+	modified = true;
 }
-
-void ConnectionPort::OnBnClickedCheckInstrument2KeithleyVoie2()
-{
-	UpdateData(TRUE);
-	m_CBInstrument2KeithleyVoie2.EnableWindow (m_bInstrumentKeithleyVoie2[1]);
-	UpdateData(FALSE);
-}
-
-void ConnectionPort::OnBnClickedCheckInstrument3KeithleyVoie2()
-{
-	UpdateData(TRUE);
-	m_CBInstrument3KeithleyVoie2.EnableWindow (m_bInstrumentKeithleyVoie2[2]);
-	UpdateData(FALSE);
-}
-
-
 
 ////////////////////////////////////////////////////////////
 //
@@ -295,7 +309,7 @@ void ConnectionPort::EnregistrementConnection_port(MachineSettings& newSettings)
 	// Save instruments
 	for (size_t instrument = 0; instrument < NB_OF_INSTRUMENTS; instrument++)
 	{
-		EnregistrementParametresInstrument(1,
+		EnregistrementParametresInstrument(instrument,
 			m_nIndexTypeInstrument[instrument],
 			m_nPortInstrument[instrument] + 1,
 			m_bInstrumentKeithleyVoie1[instrument],
@@ -717,5 +731,6 @@ void ConnectionPort::EnregistrementVerifications(MachineSettings& newSettings)
 	if (CM_HP.index == -1)
 		newSettings.HighPressureToMeasure = false;
 	else
-		newSettings.HighPressureToMeasure = false;
+		newSettings.HighPressureToMeasure = true;
 }
+

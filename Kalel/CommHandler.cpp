@@ -193,6 +193,7 @@ void CommHandler::GetMachineSettings_resp(http_response* r) {
 			receivedSettings.COMInstruments							 = j["COMInstruments"].get<std::vector<int>>();						
 			receivedSettings.FunctionInstruments					 = j["FunctionInstruments"].get<std::vector<int>>();
 			receivedSettings.typeInstruments						 = j["typeInstruments"].get<std::vector<int>>();
+			receivedSettings.synced									 = true;
 
 			messageHandler.GotMachineSettings(receivedSettings);
 			messageHandler.OnSync();

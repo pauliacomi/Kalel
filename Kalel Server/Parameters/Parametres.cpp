@@ -55,41 +55,33 @@ void Initialisation_parametres()
 	
 	*/
 
-
-	WritePrivateProfileString(_T("Appareil"),_T("Sensibilite_calo"),_T("0.05470197"),Fichier_parametres);
-	WritePrivateProfileString(_T("Appareil"),_T("Sensibilite_capteur_basse_pression"),_T("7.6"),Fichier_parametres);
-	WritePrivateProfileString(_T("Appareil"),_T("Sensibilite_capteur_haute_pression"),_T("1"),Fichier_parametres);
-	WritePrivateProfileString(_T("Appareil"),_T("Activation_Securite"),_T("Vrai"),Fichier_parametres);
-	WritePrivateProfileString(_T("Appareil"),_T("Pression_securite_capteur_basse_pression"),_T("1.1"),Fichier_parametres);
-	WritePrivateProfileString(_T("Appareil"),_T("Pression_securite_capteur_haute_pression"),_T("5.1"),Fichier_parametres);
-	WritePrivateProfileString(_T("Appareil"),_T("Pression_limite_vide"),_T("0.02"),Fichier_parametres);
-	WritePrivateProfileString(_T("Appareil"),_T("Presence_Tuyere_Sonique"),_T("Vrai"),Fichier_parametres);
-	WritePrivateProfileString(_T("Appareil"),_T("Volume_ref"),_T("1"),Fichier_parametres);
-	WritePrivateProfileString(_T("Appareil"),_T("Volume_P6"),_T("1"),Fichier_parametres);
-	WritePrivateProfileString(_T("Appareil"),_T("Instrument_number"), _T("3"), Fichier_parametres);
-
-	WritePrivateProfileString(_T("Connection"),_T("USB_Vannes"),_T("1"),Fichier_parametres);
-	WritePrivateProfileString(_T("Connection"),_T("USB_Temperature"),_T("2"),Fichier_parametres);
-
+	SetSensibiliteCalo(							0.05470197			);
+	SetSensibiliteCapteurBassePression(			7.6					);
+	SetSensibiliteCapteurHautePression(			1					);
+	SetActivationSecurite(						true				);
+	SetPressionSecuriteBassePression(			1.1					);
+	SetPressionSecuriteHautePression(			5.1					);
+	SetPressionLimiteVide(						0.02				);
+	SetPresenceTuyereSonique(					true				);
+	SetVolumeRef(								1					);
+	SetVolumeP6(								1					);
+	SetNumberInstruments(						3					);
+	SetPortVannes(								1					);
+	SetPortTemperatures(						2					);
+	
 	for (int i = 1; i <= NB_OF_INSTRUMENTS; i++)
 	{
-		std::wstring title = L"Instrument" + std::to_wstring(i);
-		std::wstring type = std::to_wstring(INSTRUMENT_UNDEF);
-		std::wstring function = std::to_wstring(FUNCTION_UNDEF);
-
-		WritePrivateProfileString(title.c_str(), _T("type"), type.c_str(), Fichier_parametres);
-		WritePrivateProfileString(title.c_str(), _T("COM"), _T("-1"), Fichier_parametres);
-		WritePrivateProfileString(title.c_str(), _T("fonction"), function.c_str(), Fichier_parametres);
+		SetTypeInstrument(						i, INSTRUMENT_UNDEF	);
+		SetCOMInstrument(						i, COM_UNDEF		);
+		SetFonctionInstrument(					i, FUNCTION_UNDEF	);
 	}
 	
-	WritePrivateProfileString(_T("Calorimetre"),_T("Nom"),_T("Indéfini"),Fichier_parametres);
-	WritePrivateProfileString(_T("Calorimetre"),_T("Entete"),_T("Calo"),Fichier_parametres);
-
-	WritePrivateProfileString(_T("General"),_T("Chemin_Fichier"),_T("C:/"),Fichier_parametres);
-
-	WritePrivateProfileString(_T("Mesure"),_T("Calo"),_T("Faux"),Fichier_parametres);
-	WritePrivateProfileString(_T("Mesure"),_T("BP"),_T("Faux"),Fichier_parametres);
-	WritePrivateProfileString(_T("Mesure"),_T("HP"),_T("Faux"),Fichier_parametres);
+	SetNomCalo(									_T("Indéfini")		);
+	SetEnteteCalo(								_T("Calo")			);
+	SetCheminFichierGeneral(					_T("C:/")			);
+	SetMesureCalo(								false				);
+	SetMesureBassePression(						false				);
+	SetMesureHautePression(						false				);
 }
 
 

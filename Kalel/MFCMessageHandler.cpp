@@ -166,7 +166,7 @@ bool MFCMessageHandler::DisplayMessageBox(int pParam, UINT nType, bool blocksPro
 	// Create a new pointer 
 	UINT * type = new UINT(nType);
 	CString * message = new CString;
-	message->Format(pParam, pString);
+	message->Format(pParam, pString.c_str());
 
 	// Check if the message box is supposed to alert the user or ask for input
 	// Other thread is now responsible for deleting this object

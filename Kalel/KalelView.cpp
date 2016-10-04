@@ -317,29 +317,40 @@ void CKalelView::DoEvents(void)
 	}
 }
 
+/**********************************************************************************************************************************
+// Menu functionality
+**********************************************************************************************************************************/
+
 LRESULT CKalelView::OnMsvAmpoule(WPARAM, LPARAM)
 {
-	if (pApp->experimentRunning) {
-		AfxMessageBox(ERROR_EXP_INPROGRESS, MB_ICONEXCLAMATION | MB_OK);
-	}
-	else {
-		if (AfxMessageBox(PROMPT_VACUUM_SAMPLE, MB_YESNO | MB_ICONQUESTION) == IDYES)
-		{
-			experimentSettings->experimentType = EXPERIMENT_TYPE_SAMPLE_VACUUM;
-
-			// the start button is blocked
-			GetDlgItem(IDC_LANCER)->EnableWindow(FALSE);
-			// the stop button is activated
-			GetDlgItem(IDC_ARRETER)->EnableWindow(TRUE);
-
-			// Block menu and set running flag
-			pApp->experimentRunning = true;
-			pApp->menuIsAvailable = false;
-			UpdateButtons();
-
-			// Raise the flag for data modified
-			commHandler.SetModifiedData();
+	if (pApp->serverConnected)
+	{
+		if (pApp->experimentRunning) {
+			AfxMessageBox(ERROR_EXP_INPROGRESS, MB_ICONEXCLAMATION | MB_OK);
 		}
+		else {
+			if (AfxMessageBox(PROMPT_VACUUM_SAMPLE, MB_YESNO | MB_ICONQUESTION) == IDYES)
+			{
+				experimentSettings->experimentType = EXPERIMENT_TYPE_SAMPLE_VACUUM;
+
+				// the start button is blocked
+				GetDlgItem(IDC_LANCER)->EnableWindow(FALSE);
+				// the stop button is activated
+				GetDlgItem(IDC_ARRETER)->EnableWindow(TRUE);
+
+				// Block menu and set running flag
+				pApp->experimentRunning = true;
+				pApp->menuIsAvailable = false;
+				UpdateButtons();
+
+				// Raise the flag for data modified
+				commHandler.SetModifiedData();
+			}
+		}
+	}
+	else
+	{
+		AfxMessageBox(ERROR_CONNECTION_STATUS, MB_OK);
 	}
 
 	return 0;
@@ -347,27 +358,34 @@ LRESULT CKalelView::OnMsvAmpoule(WPARAM, LPARAM)
 
 LRESULT CKalelView::OnMsvBouteille(WPARAM, LPARAM)
 {
-	if (pApp->experimentRunning) {
-		AfxMessageBox(ERROR_EXP_INPROGRESS, MB_ICONEXCLAMATION | MB_OK);
-	}
-	else {
-		if(AfxMessageBox(PROMPT_VACUUM_BOTTLE, MB_YESNO | MB_ICONQUESTION) == IDYES)
-		{
-			experimentSettings->experimentType = EXPERIMENT_TYPE_BOTTLE_VACUUM;
-
-			// the start button is blocked
-			GetDlgItem(IDC_LANCER)->EnableWindow(FALSE);
-			// the stop button is activated
-			GetDlgItem(IDC_ARRETER)->EnableWindow(TRUE);
-
-			// Block menu and set running flag
-			pApp->experimentRunning = true;
-			pApp->menuIsAvailable = false;
-			UpdateButtons();
-
-			// Raise the flag for data modified
-			commHandler.SetModifiedData();
+	if (pApp->serverConnected)
+	{
+		if (pApp->experimentRunning) {
+			AfxMessageBox(ERROR_EXP_INPROGRESS, MB_ICONEXCLAMATION | MB_OK);
 		}
+		else {
+			if (AfxMessageBox(PROMPT_VACUUM_BOTTLE, MB_YESNO | MB_ICONQUESTION) == IDYES)
+			{
+				experimentSettings->experimentType = EXPERIMENT_TYPE_BOTTLE_VACUUM;
+
+				// the start button is blocked
+				GetDlgItem(IDC_LANCER)->EnableWindow(FALSE);
+				// the stop button is activated
+				GetDlgItem(IDC_ARRETER)->EnableWindow(TRUE);
+
+				// Block menu and set running flag
+				pApp->experimentRunning = true;
+				pApp->menuIsAvailable = false;
+				UpdateButtons();
+
+				// Raise the flag for data modified
+				commHandler.SetModifiedData();
+			}
+		}
+	}
+	else
+	{
+		AfxMessageBox(ERROR_CONNECTION_STATUS, MB_OK);
 	}
 
 	return 0;
@@ -375,28 +393,35 @@ LRESULT CKalelView::OnMsvBouteille(WPARAM, LPARAM)
 
 LRESULT CKalelView::OnChangementBouteille(WPARAM, LPARAM)
 {
-	if (pApp->experimentRunning) {
-		AfxMessageBox(ERROR_EXP_INPROGRESS, MB_ICONEXCLAMATION | MB_OK);
-	}
-	else {
-		if (AfxMessageBox(PROMPT_CHANGE_BOTTLE, MB_YESNO | MB_ICONQUESTION) == IDYES)
-		{
-			ASSERT(0);
-			experimentSettings->experimentType = EXPERIMENT_TYPE_BOTTLE_VACUUM;
-
-			// the start button is blocked
-			GetDlgItem(IDC_LANCER)->EnableWindow(FALSE);
-			// the stop button is activated
-			GetDlgItem(IDC_ARRETER)->EnableWindow(TRUE);
-
-			// Block menu and set running flag
-			pApp->experimentRunning = true;
-			pApp->menuIsAvailable = false;
-			UpdateButtons();
-
-			// Raise the flag for data modified
-			commHandler.SetModifiedData();
+	if (pApp->serverConnected)
+	{
+		if (pApp->experimentRunning) {
+			AfxMessageBox(ERROR_EXP_INPROGRESS, MB_ICONEXCLAMATION | MB_OK);
 		}
+		else {
+			if (AfxMessageBox(PROMPT_CHANGE_BOTTLE, MB_YESNO | MB_ICONQUESTION) == IDYES)
+			{
+				ASSERT(0);
+				experimentSettings->experimentType = EXPERIMENT_TYPE_BOTTLE_VACUUM;
+
+				// the start button is blocked
+				GetDlgItem(IDC_LANCER)->EnableWindow(FALSE);
+				// the stop button is activated
+				GetDlgItem(IDC_ARRETER)->EnableWindow(TRUE);
+
+				// Block menu and set running flag
+				pApp->experimentRunning = true;
+				pApp->menuIsAvailable = false;
+				UpdateButtons();
+
+				// Raise the flag for data modified
+				commHandler.SetModifiedData();
+			}
+		}
+	}
+	else
+	{
+		AfxMessageBox(ERROR_CONNECTION_STATUS, MB_OK);
 	}
 
 	return 0;
@@ -421,14 +446,16 @@ LRESULT CKalelView::DisplayConnectDialog(WPARAM, LPARAM)
 
 LRESULT CKalelView::DisplayPortDialog(WPARAM, LPARAM)
 {
-	if (machineSettings->synced)
+	if (pApp->serverConnected)
 	{
 		ApparatusParameters apparatusParameters;
 		apparatusParameters.PassSettings(machineSettings.get());
 		if (apparatusParameters.DoModal() == IDOK) {
-			if (machineSettings->synced == false)
+			if (apparatusParameters.Changed())
 			{
-				commHandler.SetMachineSettings(machineSettings);
+				machineSettings->synced = false;
+				tempSettings = apparatusParameters.GetSettings();
+				commHandler.SetMachineSettings(tempSettings);
 			}
 		}
 	}
@@ -442,11 +469,18 @@ LRESULT CKalelView::DisplayPortDialog(WPARAM, LPARAM)
 
 LRESULT CKalelView::DisplayApparatusSettingsDialog(WPARAM, LPARAM)
 {
-	if (machineSettings->synced)
+	if (pApp->serverConnected)
 	{
 		ConnectionPort m_connection_ports;
 		m_connection_ports.PassSettings(machineSettings.get());
-		m_connection_ports.DoModal();
+		if (m_connection_ports.DoModal() == IDOK) {
+			if (m_connection_ports.Changed())
+			{
+				machineSettings->synced = false;
+				tempSettings = m_connection_ports.GetSettings();
+				commHandler.SetMachineSettings(tempSettings);
+			}
+		}
 	}
 	else
 	{
@@ -508,7 +542,11 @@ LRESULT CKalelView::OnGetMachineSettings(WPARAM wParam, LPARAM incomingMachineSe
 
 LRESULT CKalelView::OnSync(WPARAM wParam, LPARAM lParam)
 {
-	machineSettings->synced = true;
+	if (machineSettings->synced != true) {
+		machineSettings = tempSettings;
+		tempSettings.reset();
+		machineSettings->synced = true;
+	}
 
 	return 0;
 }

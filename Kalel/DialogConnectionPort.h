@@ -10,6 +10,7 @@
 #include "Resources/DefineInstruments.h"
 
 #include <vector>
+#include <memory>
 
 // Boîte de dialogue ConnectionPort
 
@@ -25,14 +26,23 @@ public:
 
 // Données de boîte de dialogue
 	enum { IDD = IDD_CONNECTION_PORT };
-	void PassSettings(MachineSettings * machineSettings);
+
+	// Pass the settings to display and be checked against changes
+	void PassSettings(MachineSettings* machineSettings);
+
+	// Returns whether the user modified any data
+	bool Changed();
+
+	// Returns the new machine settings
+	std::shared_ptr<MachineSettings> GetSettings();
 
 protected:
-	MachineSettings* settings;
 	virtual void DoDataExchange(CDataExchange* pDX);    // Prise en charge de DDX/DDV
-
 	DECLARE_MESSAGE_MAP()
-public:
+
+	MachineSettings * settings;
+	std::shared_ptr<MachineSettings> localSettings;
+
 	// --- Variables ---
 	std::vector<int> m_nIndexTypeInstrument;
 	std::vector<int> m_nPortInstrument;
@@ -41,10 +51,8 @@ public:
 	std::vector<BOOL> m_bInstrumentKeithleyVoie1;
 	std::vector<BOOL> m_bInstrumentKeithleyVoie2;
 
-
 	int m_nIndexPortVannes;
 	int m_nIndexPortTemperatures;
-
 
 	VerifInstrument verifInstrument[NB_OF_INSTRUMENTS];
 	ConnectionMesure CM_Calo,CM_HP,CM_BP;
@@ -62,7 +70,6 @@ public:
 	CString StrPbmHP; 
 	CString StrMessageErreur;
 	CString StrMessageWarning;
-
 
 	// --- Contrôles ---
 	std::vector<CComboBox*> m_CBTypeInstrument;
@@ -104,6 +111,9 @@ public:
 	// ---- Fonctions ---
 
 	// Connection_port
+protected:
+	bool modified;
+	void OnModified(UINT nID);
 
 public:
 	virtual BOOL OnInitDialog();
@@ -112,21 +122,13 @@ public:
 	afx_msg void OnCbnSelchangeComboTypeInstrument1();
 	afx_msg void OnCbnSelchangeComboTypeInstrument2();
 	afx_msg void OnCbnSelchangeComboTypeInstrument3();
-	afx_msg void OnBnClickedCheckInstrument1KeithleyVoie2();
-	afx_msg void OnBnClickedCheckInstrument2KeithleyVoie2();
-	afx_msg void OnBnClickedCheckInstrument3KeithleyVoie2();
 	void EnregistrementConnection_port(MachineSettings & newSettings);
 	void InitConnection_port();
 
 
-	// Connection_port_fct
-
 	void InitDonneesInstrument(int TypeInstr,int* m_nIndex,int* m_nPortInstrument,BOOL* m_bInstrumentKeithleyVoie1,BOOL* m_bInstrumentKeithleyVoie2,CComboBox* m_CBInstrumentKeithleyVoie2,int* m_nIndexInstrumentKeithleyVoie2,int* m_nInstrumentMensor,int GetPort,int GetFonction);
 	void EnregistrementParametresInstrument(int num_instr,int m_nIndex,int COMInstrument,bool m_bInstrumentKeithleyVoie1, bool m_bInstrumentKeithleyVoie2,int m_nIndexInstrumentKeithleyVoie2,int m_nInstrumentMensor, MachineSettings & newSettings);
 	void ShowItem(int m_nIndex,bool m_bInstrumentKeithleyVoie2,CComboBox* m_CBPortInstrument,CButton* m_CheckInstrumentKeithleyVoie1,CButton* m_CheckInstrumentKeithleyVoie2,CComboBox* m_CBInstrumentKeithleyVoie2,CComboBox* m_CBInstrumentMensor);
-
-
-	// Connection_port_Verifications
 
 	void Verifications();
 

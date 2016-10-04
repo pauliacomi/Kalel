@@ -46,6 +46,16 @@ ApparatusParameters::~ApparatusParameters()
 {
 }
 
+bool ApparatusParameters::Changed()
+{
+	return modified;
+}
+
+std::shared_ptr<MachineSettings> ApparatusParameters::GetSettings()
+{
+	return localSettings;
+}
+
 BOOL ApparatusParameters::OnCommand(WPARAM wParam, LPARAM lParam)
 {
 	return CDialog::OnCommand(wParam, lParam);
@@ -167,20 +177,20 @@ void ApparatusParameters::OnBnClickedOk()
 	UpdateData(TRUE);
 	
 	if (modified) {
-		settings->SensibiliteCalo = m_fSensibiliteCalo;
-		settings->SensibiliteCapteurBassePression = m_fSensibiliteCapteurBassePression;
-		settings->SensibiliteCapteurHautePression = m_fSensibiliteCapteurHautePression;
-		settings->ActivationSecurite = m_bSecurite;
-		settings->PressionSecuriteBassePression = m_fPressionSecuriteBassePression;
-		settings->PressionSecuriteHautePression = m_fPressionSecuriteHautePression;
-		settings->PressionLimiteVide = m_fPressionLimiteVide;
-		settings->PresenceTuyereSonique = m_bTuyere;
-		settings->VolumeRef = m_fVolumeRef;
-		settings->VolumeP6 = m_fVolumeP6;
-		settings->CaloName = m_StrNomCalo.GetBuffer();
-		settings->CaloEntete = m_StrEnteteFichier.GetBuffer();
+		localSettings = std::make_shared<MachineSettings>(*settings);
 
-		settings->synced = false;
+		localSettings->SensibiliteCalo = m_fSensibiliteCalo;
+		localSettings->SensibiliteCapteurBassePression = m_fSensibiliteCapteurBassePression;
+		localSettings->SensibiliteCapteurHautePression = m_fSensibiliteCapteurHautePression;
+		localSettings->ActivationSecurite = m_bSecurite;
+		localSettings->PressionSecuriteBassePression = m_fPressionSecuriteBassePression;
+		localSettings->PressionSecuriteHautePression = m_fPressionSecuriteHautePression;
+		localSettings->PressionLimiteVide = m_fPressionLimiteVide;
+		localSettings->PresenceTuyereSonique = m_bTuyere;
+		localSettings->VolumeRef = m_fVolumeRef;
+		localSettings->VolumeP6 = m_fVolumeP6;
+		localSettings->CaloName = m_StrNomCalo.GetBuffer();
+		localSettings->CaloEntete = m_StrEnteteFichier.GetBuffer();			 
 	}	
 
 	OnOK();

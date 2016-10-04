@@ -30,6 +30,7 @@ public:
 	ExperimentSettings * experimentSettings;
 	ExperimentData * experimentData;
 	std::shared_ptr<MachineSettings> machineSettings;
+	std::shared_ptr<MachineSettings> tempSettings;
 	CommHandler commHandler;
 
 	// Some storage variables for each MFC control
@@ -105,9 +106,6 @@ protected:
 	//------- KalelView
 
 	void DoEvents(void);
-
-
-
 	void GetExperimentData(ExperimentPropertySheet * dialogExperimentProperties, bool initialRequest);
 	void UpdateButtons();
 
