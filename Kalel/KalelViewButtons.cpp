@@ -69,7 +69,7 @@ void CKalelView::OnBnClickedLancer()
 // When clicking on the Stop button
 void CKalelView::OnBnClickedArreter()
 {
-	if (experimentData->experimentInProgress) {
+	if (dataCollection.back()->experimentInProgress) {
 		int result = AfxMessageBox(PROMPT_CANCELEXP, MB_ICONQUESTION | MB_YESNO);
 		switch (result)
 		{
@@ -98,16 +98,16 @@ void CKalelView::OnBnClickedButtonParametresExperience()
 		dialogExperimentProperties.Initiate(experimentSettings);
 
 		int counter = 0;
-		if (experimentData->experimentStage == STAGE_ADSORPTION)
+		if (dataCollection.back()->experimentStage == STAGE_ADSORPTION)
 		{
-			counter = experimentData->adsorptionCounter;
+			counter = dataCollection.back()->adsorptionCounter;
 		}
-		if (experimentData->experimentStage == STAGE_DESORPTION)
+		if (dataCollection.back()->experimentStage == STAGE_DESORPTION)
 		{
-			counter = experimentData->desorptionCounter;
+			counter = dataCollection.back()->desorptionCounter;
 		}
 
-		dialogExperimentProperties.SetProprietiesModif(experimentData->experimentStage, counter);
+		dialogExperimentProperties.SetProprietiesModif(dataCollection.back()->experimentStage, counter);
 
 		if (dialogExperimentProperties.DoModal() == IDOK)
 		{

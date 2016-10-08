@@ -13,7 +13,7 @@ protected: // create from serialization only
 
 // Attributes
 public:	
-	CArrayMeasurments m_TableauMesures;
+	MeasurementsArray m_TableauMesures;
 
 // Operations
 public:

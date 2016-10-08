@@ -60,6 +60,14 @@ namespace http
 		static const std::string connect		= "CONNECT"					;
 	}
 
+	namespace mimetype
+	{
+		static const std::string texthtml			= "text/html"				;
+		static const std::string textplain			= "text/plain"				;
+		static const std::string appjson			= "application/json"		;
+		static const std::string appxml				= "application/xml"			;
+	}
+
 	namespace header
 	{
 		// request-specific

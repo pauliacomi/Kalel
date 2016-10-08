@@ -28,7 +28,7 @@ public:
 
 	// Storage for all the data
 	ExperimentSettings * experimentSettings;
-	ExperimentData * experimentData;
+	MeasurementsArray dataCollection;						// Data for an experiment is stored here
 	std::shared_ptr<MachineSettings> machineSettings;
 	std::shared_ptr<MachineSettings> tempSettings;
 	CommHandler commHandler;

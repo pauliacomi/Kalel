@@ -240,8 +240,7 @@ unsigned Server::Process(SOCKET l_sock)
 
 	size_t posStartPath = line.find_first_of(" ") + 1;
 
-	URLHelper urlhelper;
-	urlhelper.SplitGetReq(line.substr(posStartPath), path, params);
+	URLHelper::SplitGetReq(line.substr(posStartPath), path, params);
 
 	req.path_ = path;
 	req.params_ = params;

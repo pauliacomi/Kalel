@@ -22,7 +22,7 @@ public:
 	void Sync();
 	void GetMachineSettings();
 	void SetMachineSettings(std::shared_ptr<const MachineSettings> ptr);
-	void GetData();
+	void GetData(time_t lastMeasurement = NULL);
 	void GetLog();
 	void GetPorts();
 
@@ -41,10 +41,11 @@ public:
 
 private:
 	Client client;
-	UnicodeConv unicodeConverter;
 	MFCMessageHandler messageHandler;
-	std::string localAddress;
 
+	// don't like these
+	std::string localAddress;
+	std::string localLastMeasurement;
 	std::shared_ptr<const MachineSettings> localSettings;
 
 	void Handshake_req(http_request* r);
@@ -53,6 +54,8 @@ private:
 	void GetMachineSettings_resp(http_response * r);
 	void SetMachineSettings_req(http_request * r);
 	void SetMachineSettings_resp(http_response * r);
+	void GetData_req(http_request * r);
+	void GetData_resp(http_response * r);
 };
 
 

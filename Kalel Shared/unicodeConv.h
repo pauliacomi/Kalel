@@ -7,7 +7,7 @@ class UnicodeConv
 public:
 	UnicodeConv();
 	~UnicodeConv();
-	std::wstring s2ws(const std::string & str);
-	std::string ws2s(const std::wstring & wstr);
+	static std::wstring s2ws(const std::string & str);
+	static std::string ws2s(const std::wstring & wstr);
 };
 

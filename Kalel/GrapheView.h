@@ -33,7 +33,7 @@ public:
 	int NbrIntervalles(double max);
 
 private:
-	CArrayMeasurments * measurementArray;
+	MeasurementsArray * measurementArray;
 	double maxPressure, minPressure, maxCalo, minCalo;
 	CString titleGrapheEtape;
 	float timeMinimum;

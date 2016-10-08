@@ -27,12 +27,9 @@ protected:
 	struct addrinfo *result;							// Pointer to the result address
 	struct sockaddr *peer;								// Pointer to the server address
 
-	unsigned Process(std::string ip, std::string port);
+	unsigned Process(std::string ip, std::string port, std::function<void(http_request*)> request_func_, std::function<void(http_response*)> response_func_);
 
 	std::thread processThread;
-
-	std::function<void(http_request*)> request_func_;
-	std::function<void(http_response*)> response_func_;
 };
 
 #endif

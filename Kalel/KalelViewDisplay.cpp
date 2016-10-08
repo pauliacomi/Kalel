@@ -14,17 +14,18 @@
 
 void CKalelView::OnTimer(UINT nIDEvent)
 {
-	if (experimentData != nullptr) {
+	if (!dataCollection.empty()) {
+
 		// Convert to strings
-		m_StrCalo.Format(_T("%.9e"), experimentData->resultCalorimeter);
-		m_StrBassePression.Format(_T("%.6f"), experimentData->pressureLow);
-		m_StrHautePression.Format(_T("%.6f"), experimentData->pressureHigh);
-		m_StrTemperatureCalo.Format(_T("%.2f"), experimentData->temperatureCalo);
-		m_StrTemperatureCage.Format(_T("%.2f"), experimentData->temperatureCage);
-		m_StrTemperaturePiece.Format(_T("%.2f"), experimentData->temperatureRoom);
-		m_StrTemps.Format(_T("%.1f"), experimentData->experimentTime);
-		m_StrPressionInitiale.Format(_T("%.6f"), experimentData->pressureInitial);
-		m_StrPressionFinale.Format(_T("%.6f"), experimentData->pressureFinal);
+		m_StrCalo.Format(_T("%.9e"), dataCollection.back()->resultCalorimeter);
+		m_StrBassePression.Format(_T("%.6f"), dataCollection.back()->pressureLow);
+		m_StrHautePression.Format(_T("%.6f"), dataCollection.back()->pressureHigh);
+		m_StrTemperatureCalo.Format(_T("%.2f"), dataCollection.back()->temperatureCalo);
+		m_StrTemperatureCage.Format(_T("%.2f"), dataCollection.back()->temperatureCage);
+		m_StrTemperaturePiece.Format(_T("%.2f"), dataCollection.back()->temperatureRoom);
+		m_StrTemps.Format(_T("%.1f"), dataCollection.back()->experimentTime);
+		m_StrPressionInitiale.Format(_T("%.6f"), dataCollection.back()->pressureInitial);
+		m_StrPressionFinale.Format(_T("%.6f"), dataCollection.back()->pressureFinal);
 
 		// Refresh textboxes
 		SetDlgItemText(IDC_CALO, m_StrCalo);
@@ -41,7 +42,7 @@ void CKalelView::OnTimer(UINT nIDEvent)
 		AffichageEtape();
 
 		// Write graph
-		bool recorded = GetDocument()->GraphAddMeasurement(experimentData);
+		bool recorded = GetDocument()->GraphAddMeasurement(dataCollection.back());
 
 		// Write in measurement box
 		if (recorded) {
@@ -51,6 +52,8 @@ void CKalelView::OnTimer(UINT nIDEvent)
 			GetDocument()->UpdateAllViews(this);
 		}
 	}
+
+	commHandler.GetData(dataCollection.back()->experimentGraphPoints);
 
 	CFormView::OnTimer(nIDEvent);	// Call base class handler.
 }
@@ -91,7 +94,7 @@ LRESULT CKalelView::AffichageMesures()
 {
 	CString mesure;
 
-	mesure.Format(_T("Time=%.2f  Calo=%.2f  LP=%.2f  HP=%.2f"), experimentData->experimentTime, experimentData->resultCalorimeter, experimentData->pressureLow, experimentData->pressureHigh);
+	mesure.Format(_T("Time=%.2f  Calo=%.2f  LP=%.2f  HP=%.2f"), dataCollection.back()->experimentTime, dataCollection.back()->resultCalorimeter, dataCollection.back()->pressureLow, dataCollection.back()->pressureHigh);
 
 	m_StrEditMesures += mesure;
 	m_StrEditMesures += "\r\n";
@@ -109,25 +112,25 @@ LRESULT CKalelView::AffichageEtape()
 
 	CString temp;
 	
-	temp.Format(experimentData->experimentStage);
+	temp.Format(dataCollection.back()->experimentStage);
 
 	m_StrEtape = temp;
 
-	if (experimentData->verificationStep != STEP_VERIFICATIONS_UNDEF && experimentData->verificationStep != STEP_VERIFICATIONS_COMPLETE)
+	if (dataCollection.back()->verificationStep != STEP_VERIFICATIONS_UNDEF && dataCollection.back()->verificationStep != STEP_VERIFICATIONS_COMPLETE)
 	{
-		temp.Format(experimentData->verificationStep);
+		temp.Format(dataCollection.back()->verificationStep);
 		m_StrEtape += _T(",   Substage: ") + temp;
 	}
 
-	if (experimentData->experimentWaiting == true)
+	if (dataCollection.back()->experimentWaiting == true)
 	{
-		if (experimentData->timeToEquilibrate / 60 > 1)
+		if (dataCollection.back()->timeToEquilibrate / 60 > 1)
 		{
-			temp.Format(_T(" *** Waiting: %.0f min %.0f s /  %.0f min %.0f s"), floorf(experimentData->timeToEquilibrateCurrent / 60.0f), fmodf(experimentData->timeToEquilibrateCurrent, 60.0f), floorf(experimentData->timeToEquilibrate / 60.0f), fmodf(experimentData->timeToEquilibrate, 60.0f));
+			temp.Format(_T(" *** Waiting: %.0f min %.0f s /  %.0f min %.0f s"), floorf(dataCollection.back()->timeToEquilibrateCurrent / 60.0f), fmodf(dataCollection.back()->timeToEquilibrateCurrent, 60.0f), floorf(dataCollection.back()->timeToEquilibrate / 60.0f), fmodf(dataCollection.back()->timeToEquilibrate, 60.0f));
 		}
 		else
 		{
-			temp.Format(_T(" *** Waiting: %.0f s /  %.0f s"), experimentData->timeToEquilibrateCurrent, experimentData->timeToEquilibrate);
+			temp.Format(_T(" *** Waiting: %.0f s /  %.0f s"), dataCollection.back()->timeToEquilibrateCurrent, dataCollection.back()->timeToEquilibrate);
 		}
 		m_StrEtape += temp;
 	}

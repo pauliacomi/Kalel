@@ -34,15 +34,12 @@ void Client::SetLogs(std::vector<std::string> & vct)
 
 void Client::Request(std::function<void(http_request*)> req, std::function<void(http_response*)> resp, std::string ip, std::string port)
 {
-	request_func_ = req;
-	response_func_ = resp;
-
-	processThread = std::thread(&Client::Process, this, ip, port);
+	processThread = std::thread(&Client::Process, this, ip, port, req, resp);
 	processThread.detach();
 }
 
 
-unsigned Client::Process(std::string ip, std::string port){
+unsigned Client::Process(std::string ip, std::string port, std::function<void(http_request*)> request_func_, std::function<void(http_response*)> response_func_){
 	// Create the address info struct
 	struct addrinfo hints;									// The requested address
 
@@ -94,8 +91,7 @@ unsigned Client::Process(std::string ip, std::string port){
 	str_str << req.entity_.size();
 
 	std::string reqUrl;
-	URLHelper urlHelper;
-	urlHelper.BuildReq(reqUrl, req.path_, req.params_);
+	URLHelper::BuildReq(reqUrl, req.path_, req.params_);
 
 	req.content_length_ = str_str.str();
 
@@ -118,6 +114,13 @@ unsigned Client::Process(std::string ip, std::string port){
 	catch (const std::exception& e)
 	{
 		STREAM_LOG(logERROR) << e.what();
+		try {
+			Close(l_sock);
+		}
+		catch (const std::exception& e) {
+			STREAM_LOG(logERROR) << e.what();
+		}
+		return 1;
 	}
 	
 	STREAM_LOG(logDEBUG) << LOG_REQUEST << request;

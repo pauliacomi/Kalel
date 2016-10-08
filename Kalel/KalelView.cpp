@@ -128,7 +128,6 @@ CKalelView::CKalelView()
 	, m_StrTemoinPompe(_T(""))
 
 	, experimentSettings{ nullptr }
-	, experimentData{ nullptr }
 	, machineSettings(new MachineSettings)
 {
 }
@@ -138,9 +137,6 @@ CKalelView::~CKalelView()
 {
 	if (experimentSettings != nullptr) {
 		delete experimentSettings;
-	}
-	if (experimentData != nullptr) {
-		delete experimentData;
 	}
 }
 
@@ -553,13 +549,12 @@ LRESULT CKalelView::OnSync(WPARAM wParam, LPARAM lParam)
 
 LRESULT CKalelView::OnExchangeData(WPARAM, LPARAM incomingExperimentData)
 {
-	// Delete previous
-	if (experimentData != nullptr) {
-		delete experimentData;
-		experimentData = nullptr;
-	}
-	// Get the incoming pointer
-	experimentData = reinterpret_cast<ExperimentData*>(incomingExperimentData);
+	// Get the incoming vector and add it to the local data
+	MeasurementsArray * newData = reinterpret_cast<MeasurementsArray*>(incomingExperimentData);
+	dataCollection.insert(dataCollection.end(), newData->begin(), newData->end());
+
+	// Delete the useless vector now
+	delete newData;
 
 	return 0;
 }

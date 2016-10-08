@@ -4,12 +4,14 @@
 #include "Com Classes/ManualActionParam.h"
 #include "Netcode/http_request.h"
 #include "Netcode/Client.h"
-#include "Resources/StringTable.h"
 #include "Netcode/json.hpp"
+#include "Resources/StringTable.h"
 
 #include <functional>
 
 using json = nlohmann::json;
+
+#define STRINGIFY(var) (#var)
 
 CommHandler::CommHandler()
 {
@@ -30,22 +32,22 @@ void CommHandler::Connect(std::wstring address)
 	auto callback = std::bind(&CommHandler::Handshake_resp, this, std::placeholders::_1);
 
 	try	{
-		client.Request(request, callback, unicodeConverter.ws2s(address.c_str()));
+		client.Request(request, callback, UnicodeConv::ws2s(address.c_str()));
 	}
 	catch (const std::exception& e)	{
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK,false, unicodeConverter.s2ws(e.what()));
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK,false, UnicodeConv::s2ws(e.what()));
 	}
 }
 
 void CommHandler::SaveAddress(std::wstring address)
 {
-	localAddress = unicodeConverter.ws2s(address.c_str());
+	localAddress = UnicodeConv::ws2s(address.c_str());
 }
 
 void CommHandler::Sync()
 {
 	GetMachineSettings();
-	//GetData();
+	GetData();
 	//GetLog();
 }
 
@@ -58,7 +60,7 @@ void CommHandler::GetMachineSettings()
 		client.Request(request, callback, localAddress);
 	}
 	catch (const std::exception& e)	{
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, unicodeConverter.s2ws(e.what()));
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, UnicodeConv::s2ws(e.what()));
 	}
 }
 
@@ -73,13 +75,24 @@ void CommHandler::SetMachineSettings(std::shared_ptr<const MachineSettings> ptr)
 		client.Request(request, callback, localAddress);
 	}
 	catch (const std::exception& e) {
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, unicodeConverter.s2ws(e.what()));
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, UnicodeConv::s2ws(e.what()));
 	}
 }
 
 
-void CommHandler::GetData()
+void CommHandler::GetData(time_t lastMeasurement)
 {
+	localLastMeasurement = std::to_string(lastMeasurement);
+
+	auto request = std::bind(&CommHandler::GetData_req, this, std::placeholders::_1);
+	auto callback = std::bind(&CommHandler::GetData_resp, this, std::placeholders::_1);
+
+	try {
+		client.Request(request, callback, localAddress);
+	}
+	catch (const std::exception& e) {
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, UnicodeConv::s2ws(e.what()));
+	}
 }
 
 void CommHandler::GetLog()
@@ -139,7 +152,7 @@ void CommHandler::SetModifiedData()
 **********************************************************************************************************************************/
 
 void CommHandler::Handshake_req(http_request* r) {
-	r->method_ = "GET";
+	r->method_ = http::method::get;
 	r->path_ = "/api/handshake";
 }
 
@@ -155,25 +168,24 @@ void CommHandler::Handshake_resp(http_response* r) {
 	}
 }
 
-
 void CommHandler::GetMachineSettings_req(http_request* r) {
-	r->method_ = "GET";
+	r->method_ = http::method::get;
+	r->accept_ = http::mimetype::appjson;
 	r->path_ = "/api/machinesettings";
-	r->accept_ = "application/json";
 }
 
 void CommHandler::GetMachineSettings_resp(http_response* r) {
 
 	if (r->status_ == http::responses::ok)
 	{
-		if (r->content_type_ == "application/json") {
+		if (r->content_type_ == http::mimetype::appjson) {
 			auto j = json::parse(r->answer_);
 			MachineSettings receivedSettings;
 
-			receivedSettings.CaloName								 = unicodeConverter.s2ws(j["CaloName"]);
-			receivedSettings.CaloEntete								 = unicodeConverter.s2ws(j["CaloEntete"]);
+			receivedSettings.CaloName								 = UnicodeConv::s2ws(j["CaloName"]);
+			receivedSettings.CaloEntete								 = UnicodeConv::s2ws(j["CaloEntete"]);
 			receivedSettings.ActivationSecurite						 = j["ActivationSecurite"];				
-			receivedSettings.CheminFichierGeneral					 = unicodeConverter.s2ws(j["CheminFichierGeneral"]);
+			receivedSettings.CheminFichierGeneral					 = UnicodeConv::s2ws(j["CheminFichierGeneral"]);
 			receivedSettings.HighPressureToMeasure					 = j["HighPressureToMeasure"];				
 			receivedSettings.LowPressureToMeasure					 = j["LowPressureToMeasure"];				
 			receivedSettings.NumberInstruments						 = j["NumberInstruments"];					
@@ -211,13 +223,13 @@ void CommHandler::GetMachineSettings_resp(http_response* r) {
 
 void CommHandler::SetMachineSettings_req(http_request* r) {
 	r->method_			= http::method::post;
+	r->content_type_	= http::mimetype::appjson;
 	r->path_			= "/api/machinesettings";
-	r->content_type_	= "application/json";
 
 	json j;
-	j["CaloName"]							= unicodeConverter.ws2s(localSettings->CaloName);
-	j["CaloEntete"]							= unicodeConverter.ws2s(localSettings->CaloEntete);
-	j["CheminFichierGeneral"]				= unicodeConverter.ws2s(localSettings->CheminFichierGeneral);
+	j["CaloName"]							= UnicodeConv::ws2s(localSettings->CaloName);
+	j["CaloEntete"]							= UnicodeConv::ws2s(localSettings->CaloEntete);
+	j["CheminFichierGeneral"]				= UnicodeConv::ws2s(localSettings->CheminFichierGeneral);
 	j["ActivationSecurite"]					= localSettings->ActivationSecurite;
 	j["HighPressureToMeasure"]				= localSettings->HighPressureToMeasure;
 	j["LowPressureToMeasure"]				= localSettings->LowPressureToMeasure;
@@ -253,5 +265,72 @@ void CommHandler::SetMachineSettings_resp(http_response* r) {
 	else if (r->status_ == http::responses::internal_err)
 	{
 		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Server error, could not update settings"));
+	}
+}
+
+void CommHandler::GetData_req(http_request* r) {
+	r->method_ = http::method::get;
+	r->accept_ = http::mimetype::appjson;
+	r->path_ = "/api/experimentdata";
+	r->params_.emplace("last", localLastMeasurement);
+}
+
+void CommHandler::GetData_resp(http_response* r) {
+
+	if (r->status_ == http::responses::ok)
+	{
+		if (r->content_type_ == http::mimetype::appjson) {
+			
+			auto j = json::parse(r->answer_);
+
+			ExperimentData * receivedData = nullptr;
+			MeasurementsArray * receivedDataArray = new MeasurementsArray();
+
+			for (json::iterator i = j.begin(); i != j.end(); ++i)
+			{
+				receivedData = new ExperimentData();
+
+				receivedData->experimentInProgress								= j[i.key()][	STRINGIFY(experimentInProgress			)];
+				receivedData->experimentRecording								= j[i.key()][	STRINGIFY(experimentRecording			)];
+				receivedData->experimentWaiting									= j[i.key()][	STRINGIFY(experimentWaiting				)];
+				receivedData->experimentCommandsRequested						= j[i.key()][	STRINGIFY(experimentCommandsRequested	)];
+				receivedData->experimentStage									= j[i.key()][	STRINGIFY(experimentStage				)];
+				receivedData->verificationStep									= j[i.key()][	STRINGIFY(verificationStep				)];
+				receivedData->experimentStepStatus								= j[i.key()][	STRINGIFY(experimentStepStatus			)];
+				receivedData->experimentSubstepStage							= j[i.key()][	STRINGIFY(experimentSubstepStage		)];
+				receivedData->experimentDose									= j[i.key()][	STRINGIFY(experimentDose				)];
+				receivedData->experimentGraphPoints								= j[i.key()][	STRINGIFY(experimentGraphPoints			)];
+				receivedData->experimentPreviousStage							= j[i.key()][	STRINGIFY(experimentPreviousStage		)];
+				receivedData->experimentTime									= j[i.key()][	STRINGIFY(experimentTime				)];
+				receivedData->experimentTimeStart								= j[i.key()][	STRINGIFY(experimentTimeStart			)];
+				receivedData->timeToEquilibrate									= j[i.key()][	STRINGIFY(timeToEquilibrate				)];
+				receivedData->timeToEquilibrateCurrent							= j[i.key()][	STRINGIFY(timeToEquilibrateCurrent		)];
+				receivedData->injectionAttemptCounter							= j[i.key()][	STRINGIFY(injectionAttemptCounter		)];
+				receivedData->adsorptionCounter									= j[i.key()][	STRINGIFY(adsorptionCounter				)];
+				receivedData->desorptionCounter									= j[i.key()][	STRINGIFY(desorptionCounter				)];
+				receivedData->pressureInitial									= j[i.key()][	STRINGIFY(pressureInitial				)];
+				receivedData->pressureFinal										= j[i.key()][	STRINGIFY(pressureFinal					)];
+				receivedData->pressureHighOld									= j[i.key()][	STRINGIFY(pressureHighOld				)];
+				receivedData->resultCalorimeter									= j[i.key()][	STRINGIFY(resultCalorimeter				)];
+				receivedData->pressureLow										= j[i.key()][	STRINGIFY(pressureLow					)];
+				receivedData->pressureHigh										= j[i.key()][	STRINGIFY(pressureHigh					)];
+				receivedData->temperatureCalo									= j[i.key()][	STRINGIFY(temperatureCalo				)];
+				receivedData->temperatureCage									= j[i.key()][	STRINGIFY(temperatureCage				)];
+				receivedData->temperatureRoom									= j[i.key()][	STRINGIFY(temperatureRoom				)];
+
+				receivedDataArray->push_back(receivedData);
+			}																													 
+
+			messageHandler.ExchangeData(receivedDataArray);
+
+		}
+		else
+		{
+			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Corrupt response format"));
+		}
+	}
+	else if (r->status_ == http::responses::not_found)
+	{
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Server not found"));
 	}
 }

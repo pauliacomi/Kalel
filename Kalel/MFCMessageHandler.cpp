@@ -40,7 +40,9 @@ bool MFCMessageHandler::GotMachineSettings(const MachineSettings &pParam)
 	MachineSettings * newData = new MachineSettings(pParam);
 
 	// Post the required message, now the main thread is responsible for deleting the new class
-	if (::PostMessage(windowHandle, UWM_GOT_MACHINE_SETTINGS, NULL, (LPARAM)newData) == 0) {
+	if (::PostMessage(windowHandle, UWM_GOT_MACHINE_SETTINGS, NULL, (LPARAM)newData) == 0) 
+	{
+		delete newData;
 		return false;
 	}
 	return true;
@@ -55,14 +57,12 @@ bool MFCMessageHandler::OnSync()
 	return true;
 }
 
-bool MFCMessageHandler::ExchangeData(const ExperimentData &pParam)
+bool MFCMessageHandler::ExchangeData(std::vector<ExperimentData*> * pParam)
 {
-	// Create a new instance of the storage class and equate it to the local class
-	ExperimentData * newData = new ExperimentData(pParam);
-
 	// Post the required message, now the main thread is responsible for deleting the new class
-	if (::PostMessage(windowHandle, WM_EXCHANGEDATA, NULL, (LPARAM)newData) == 0 ) {
-		delete newData;
+	if (::PostMessage(windowHandle, WM_EXCHANGEDATA, NULL, (LPARAM)pParam) == 0 ) 
+	{
+		delete pParam;
 		return false;
 	}
 	return true;

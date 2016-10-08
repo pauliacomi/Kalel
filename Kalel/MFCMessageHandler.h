@@ -31,7 +31,7 @@ public:
 	bool ConnectionComplete();
 	bool GotMachineSettings(const MachineSettings &pParam);
 	bool OnSync();
-	bool ExchangeData(const ExperimentData &pParam);
+	bool ExchangeData(std::vector<ExperimentData*> * pParam);
 	bool ExperimentStart();
 	bool ExperimentEnd();
 	bool ThreadShutdown();
