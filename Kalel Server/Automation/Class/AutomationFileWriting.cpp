@@ -100,7 +100,7 @@ void Automation::FileMeasurementRecord()
 	if (fileStream)
 	{
 		fileStream << experimentLocalData.experimentDose << ";";				   // Experiment dose
-		fileStream << experimentLocalData.experimentTime << ";";				   // Experiment time
+		fileStream << experimentLocalData.timeElapsed << ";";				   // Experiment time
 		fileStream << char_resultat_calo << ";";								   // Calorimeter value
 		fileStream << experimentLocalData.pressureLow << ";";					   // Pressure low range
 		fileStream << experimentLocalData.pressureHigh << ";";					   // Pressure high range

@@ -1,8 +1,8 @@
 #include "Automation.h"
 
-Automation::Automation(Handles h)
+Automation::Automation(Storage &h)
 	: running(true)
-	, messageHandler(h)
+	, messageHandler{ h }
 {
 	// Save pointer to experiment settings
 	experimentSettings = h.experimentSettings;
@@ -55,7 +55,7 @@ Automation::Automation(Handles h)
 	shutdownReason = STOP_CANCEL;
 
 	// Time
-	experimentLocalData.experimentTimeStart = time(0);
+	experimentLocalData.timeStart = time(0);
 	timerExperiment.TopChrono();	// Start global experiment timer	
 	timerMeasurement.TopChrono();	// Start the timer to record time between measurements
 }
@@ -168,7 +168,8 @@ void Automation::Execution()
 		ThreadMeasurement();
 
 		// Record time
-		experimentLocalData.experimentTime = timerExperiment.TempsActuel();			// Save the time at which the measurement took place
+		experimentLocalData.measurementsMade++;										// Save the measurement number
+		experimentLocalData.timeElapsed = timerExperiment.TempsActuel();			// Save the time elapsed from the beginning of the experiment
 		experimentLocalData.timeToEquilibrateCurrent = timerWaiting.TempsActuel();	// Save the waiting time if it exists
 
 		/*
@@ -377,7 +378,7 @@ void Automation::ResetAutomation()
 	shutdownReason = STOP_CANCEL;
 
 	// Time
-	experimentLocalData.experimentTimeStart = time(0);
+	experimentLocalData.timeStart = time(0);
 	timerExperiment.TopChrono();	// Start global experiment timer	
 	timerMeasurement.TopChrono();	// Start the timer to record time between measurements
 }

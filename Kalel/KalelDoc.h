@@ -13,7 +13,7 @@ protected: // create from serialization only
 
 // Attributes
 public:	
-	MeasurementsArray m_TableauMesures;
+	MeasurementsArray * m_TableauMesures;
 
 // Operations
 public:
@@ -43,6 +43,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 public:
+	void GraphSetArray(MeasurementsArray & expData);
 	bool GraphAddMeasurement(ExperimentData * expData);
 	LRESULT GraphReset();
 	

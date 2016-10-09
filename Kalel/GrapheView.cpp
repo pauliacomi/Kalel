@@ -43,7 +43,7 @@ void CGrapheView::OnInitialUpdate()
 
 	CKalelDoc* pDoc = GetDocument();
 	ASSERT_VALID(pDoc);
-	measurementArray = &pDoc->m_TableauMesures;
+	measurementArray = pDoc->m_TableauMesures;
 }
 
 
@@ -77,7 +77,7 @@ void CGrapheView::OnDraw(CDC* pDC)
 	}
 
 	else{
-		if (measurementArray->size() != 0)
+		if (measurementArray != nullptr && !measurementArray->empty())
 		{
 
 			// Acquisition des données 
@@ -97,8 +97,8 @@ void CGrapheView::OnDraw(CDC* pDC)
 			minCalo = min(minCalo, experimentData->resultCalorimeter);
 
 			double displayedSeconds = RECENT_HOURS * 3600;
-			timeMinimum = experimentData->experimentTime - displayedSeconds;
-			double partialCoefficient = (experimentData->experimentTime / experimentData->experimentGraphPoints);
+			timeMinimum = experimentData->timeElapsed - displayedSeconds;
+			double partialCoefficient = (experimentData->timeElapsed / experimentData->experimentGraphPoints);
 			measurementMinimum  = (int)(experimentData->experimentGraphPoints - displayedSeconds / partialCoefficient);
 			if (measurementMinimum < 0)
 				measurementMinimum = 0;
@@ -380,7 +380,7 @@ void CGrapheView::TraceScale(CRect graphe,CRect axe_graphe,int max_pression,int 
 
 	// ----- marquage du temps ----------------------------------------------
 	int nb_trait_abs=4;
-	int temps = (int)(*measurementArray).back()->experimentTime;
+	int temps = (int)(*measurementArray).back()->timeElapsed;
 
 	for (int i=0;i<=nb_trait_abs;i++)
 	{
@@ -426,7 +426,7 @@ void CGrapheView::TraceGraph(CRect graphe,int max_pression,int min_pression,doub
 	// rapport = hauteur du graphe / (max_calo - min_calo)
 	// rapport = valeur (bar ou µV) par pixel
 	float rapport_calo, rapport_pression, rapport_temps;
-	float max_temps = (*measurementArray).back()->experimentTime;
+	float max_temps = (*measurementArray).back()->timeElapsed;
 	float ecart_temps = max_temps - min_temps;
 	float ecart_calo = max_calo - min_calo;
 	float ecart_pression = max_pression - min_pression;
@@ -846,7 +846,7 @@ void CGrapheView::TraceGraph(CRect graphe,int max_pression,int min_pression,doub
 	for(size_t i = firstMeasurement;i <= measurementArray->size() - 1;i++)
 	{
 		POINT PCalo;
-		PCalo.x = graphe.left + rapport_temps * ((*measurementArray)[i]->experimentTime - min_temps);
+		PCalo.x = graphe.left + rapport_temps * ((*measurementArray)[i]->timeElapsed - min_temps);
 		PCalo.y = graphe.bottom - rapport_calo * ((*measurementArray)[i]->resultCalorimeter - min_calo);
 		if(i == firstMeasurement)
 			pDC->MoveTo(PCalo);
@@ -864,7 +864,7 @@ void CGrapheView::TraceGraph(CRect graphe,int max_pression,int min_pression,doub
 	for(size_t i = firstMeasurement;i<= measurementArray->size() - 1;i++)
 	{
 		POINT PBasse_pression;
-		PBasse_pression.x = graphe.left + rapport_temps * ((*measurementArray)[i]->experimentTime - min_temps);
+		PBasse_pression.x = graphe.left + rapport_temps * ((*measurementArray)[i]->timeElapsed - min_temps);
 		PBasse_pression.y = graphe.bottom - rapport_pression * ((*measurementArray)[i]->pressureLow - min_pression);
 		if(i == firstMeasurement)
 			pDC->MoveTo(PBasse_pression);
@@ -881,7 +881,7 @@ void CGrapheView::TraceGraph(CRect graphe,int max_pression,int min_pression,doub
 	for(size_t i= firstMeasurement;i<= measurementArray->size() - 1;i++)
 	{
 		POINT PHaute_pression;
-		PHaute_pression.x = graphe.left + rapport_temps * ((*measurementArray)[i]->experimentTime - min_temps);
+		PHaute_pression.x = graphe.left + rapport_temps * ((*measurementArray)[i]->timeElapsed - min_temps);
 		PHaute_pression.y = graphe.bottom - rapport_pression * ((*measurementArray)[i]->pressureHigh - min_pression);
 		if(i == firstMeasurement)
 			pDC->MoveTo(PHaute_pression);

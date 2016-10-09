@@ -35,7 +35,7 @@
 class Automation
 {
 public:
-	Automation(Handles h);
+	Automation(Storage &h);
 	~Automation();
 
 

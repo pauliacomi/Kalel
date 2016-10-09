@@ -12,7 +12,7 @@ class ManualActionParam;
 class ThreadManager
 {
 public:
-	ThreadManager(Handles h);
+	ThreadManager(Storage &h);
 	~ThreadManager();
 
 	// Pointer to settings storage
@@ -24,7 +24,7 @@ public:
 	CWinThread * m_threadManualAction;						// Reference for manual thread
 
 private:
-	Handles handles;
+	Storage * handles;										// pointer to storage class
 	Automation * automation;								// Main class that deals with the automatic functionality
 
 	// Public interface methods

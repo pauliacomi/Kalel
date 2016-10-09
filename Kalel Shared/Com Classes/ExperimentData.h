@@ -36,8 +36,9 @@ public:
 	int experimentPreviousStage;			// Previous experiment stage
 
 	// Time
-	time_t experimentTimeStart;				// When the experiment started
-	double experimentTime;					// Time from the experiment start
+	time_t timeStart;						// When the experiment started
+	long int measurementsMade;				// Number of measurements recorded since the experiment was started
+	double timeElapsed;						// Time from the experiment start
 	double timeToEquilibrate;				// The amount of time that the waiting + recording functionality will run before returning to an active state
 	double timeToEquilibrateCurrent;		// The current time of waiting
 	

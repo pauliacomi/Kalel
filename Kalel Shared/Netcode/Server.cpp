@@ -5,18 +5,28 @@
 #include "URLHelper.h"
 #include "base64.h"
 
-#include "../log.h"
+#define NO_OF_CONN		5      /* Passed to listen() */
+
+// Logging functionality
+#include "../log.h"	
+#define FILE_LOGGING	"serverlog.txt"		// Comment this line to disable file logging
+#define LOG_LEVEL		logDEBUG4			// Change the level of logging here
 
 #include <sstream>
-#include <bitset>         // std::bitset
-
-#define NO_OF_CONN		5      /* Passed to listen() */
 
 Server::Server()
 	: accepting{ false }
 	, teptr{ nullptr }
 	, result{ nullptr }
 {
+#ifdef FILE_LOGGING
+
+	FILELog::ReportingLevel() = LOG_LEVEL;
+	FILE * f;
+	fopen_s(&f, FILE_LOGGING, "w");
+	Output2FILE::Stream() = f;
+
+#endif // FILE_LOGGING
 }
 
 
@@ -33,22 +43,11 @@ Server::~Server()
 	if (result != nullptr) {
 		freeaddrinfo(result);
 	}
-
-
-	// Close all sockets?
-	/*for (size_t i = 0; i < socketCollection.size(); i++)
-	{
-		if (socketCollection[i] != INVALID_SOCKET)
-		{
-			CloseGracefully(socketCollection[i]);
-		}
-	}
-	socketCollection.clear();*/
 }
 
 void Server::SetLogs(std::vector<std::string> & vct)
 {
-	StreamLog::ReportingLevel() = logDEBUG4;
+	StreamLog::ReportingLevel() = LOG_LEVEL;
 	Output2vector::Stream() = &vct;
 }
 
@@ -110,7 +109,11 @@ void Server::Listen(PCSTR port)
 		throw stringex;
 	}
 
-	STREAM_LOG(logINFO) << LOG_LISTENING;
+	STREAM_LOG(logINFO) << LOG_LISTENING << sock;
+
+#ifdef FILE_LOGGING
+	FILE_LOG(logINFO) << LOG_LISTENING << sock;
+#endif // FILE_LOGGING
 }
 
 
@@ -129,6 +132,10 @@ void Server::Accept(std::function<void(http_request*, http_response*)> r)
 
 void Server::AcceptLoop()
 {
+#ifdef FILE_LOGGING
+	FILE_LOG(logDEBUG1) << "Entering accept loop";
+#endif // FILE_LOGGING
+
 	struct timeval tv;				// Time to run loop
 	tv.tv_sec = 1;					// 1 seconds
 	tv.tv_usec = 0;					// 0 microseconds
@@ -144,7 +151,7 @@ void Server::AcceptLoop()
 		readfds = master;
 		int selectResult = select(sock + 1, &readfds, NULL, NULL, &tv);
 
-		if ((selectResult < 0) && (errno != EINTR))	{
+		if ((selectResult < 0) && (errno != EINTR))	{			// Check to see if select returned correctly
 			try
 			{
 				stringex.set(ERR_ACCEPT);
@@ -157,12 +164,11 @@ void Server::AcceptLoop()
 			}
 		}
 
-		if (FD_ISSET(sock, &readfds))
+		if (FD_ISSET(sock, &readfds))							// Check if the socket is in the set
 		{
 			// handle new connections
 
-			// Create a client socket
-			SOCKET clientSocket;
+			SOCKET clientSocket;								// Create a client socket
 			struct sockaddr_storage theirAddr;					// The incoming address
 			socklen_t size = sizeof theirAddr;					// Size of address struct
 			memset(&theirAddr, 0, size);						// Fill addrinfo with zeroes
@@ -170,7 +176,7 @@ void Server::AcceptLoop()
 			clientSocket = accept(sock, (struct sockaddr*)&theirAddr, &size);
 			//socketCollection.push_back(clientSocket);
 
-			if (clientSocket == INVALID_SOCKET) {
+			if (clientSocket == INVALID_SOCKET) {				// Check for valid socket
 				try
 				{
 					stringex.set(ERR_ACCEPT);
@@ -182,18 +188,33 @@ void Server::AcceptLoop()
 					STREAM_LOG(logERROR) << e.what();
 				}
 			}
-			else {
+			else {												// If valid, start a new thread to handle the requests
+
 				STREAM_LOG(logINFO) << LOG_ACCEPTED_SOCK << GetIP(theirAddr);
+#ifdef FILE_LOGGING
+				FILE_LOG(logINFO) << LOG_ACCEPTED_SOCK << GetIP(theirAddr);
+#endif // FILE_LOGGING
+
 				std::thread newThread = std::thread(&Server::Process, this, clientSocket);
 				newThread.detach();
 			}
 		}
 	}
+
+#ifdef FILE_LOGGING
+	FILE_LOG(logDEBUG1) << "Leaving accept loop";
+#endif // FILE_LOGGING
 }
 
 
 unsigned Server::Process(SOCKET l_sock)
 {
+
+	STREAM_LOG(logDEBUG2) << "Enter thread for socket" << l_sock;
+#ifdef FILE_LOGGING
+	FILE_LOG(logDEBUG2) << "Enter thread for socket" << l_sock;
+#endif // FILE_LOGGING
+
 	//
 	//	Get the request
 	//
@@ -210,7 +231,7 @@ unsigned Server::Process(SOCKET l_sock)
 
 	request += line;
 
-	if (line.empty()) {
+	if (line.empty()) {								// Check for valid request
 		try	{
 			Close(l_sock);
 		}
@@ -222,7 +243,7 @@ unsigned Server::Process(SOCKET l_sock)
 
 	http_request req;
 
-	if (line.find(http::method::get) == 0) {
+	if (line.find(http::method::get) == 0) {		// Find the html method the client sent
 		req.method_ = http::method::get;
 	}
 	else if (line.find(http::method::post) == 0) {
@@ -235,35 +256,34 @@ unsigned Server::Process(SOCKET l_sock)
 		req.method_ = http::method::del;
 	}
 
-	std::string path;
+	std::string path;								// Process the path and parameters of the URL
 	std::map<std::string, std::string> params;
 
 	size_t posStartPath = line.find_first_of(" ") + 1;
-
 	URLHelper::SplitGetReq(line.substr(posStartPath), path, params);
 
 	req.path_ = path;
 	req.params_ = params;
 
-	bool messageToReceive = false;			// not expecting a message
-	bool messageReceived = false;			// not ready to receive it, first the header
+	bool messageToReceive = false;					// not expecting a message body
+	bool messageReceived = false;					// not ready to receive the message body
 
 	while (1) {
 		try
 		{			
-			if (!messageReceived) {			// no message body is to be received, regular line-based receive 
+			if (!messageReceived) {					// not attempting to receive message body, regular line-based receive 
 				line = ReceiveLine(l_sock);
 			}
-			else {							// a message body is specified using "Content-Length" header, will receive the required number of bytes
+			else {									// a message body is specified using "Content-Length" header, will receive the required number of bytes
 				std::stringstream buffer(req.content_length_);
 				u_long bytes;
 				buffer >> bytes;
 
 				line = ReceiveBytes(l_sock, bytes);
 
-				req.entity_ = line;
-				request += line;
-				break;
+				req.entity_ = line;					// save the message body
+				request += line;					// log the message body
+				break;								// leave the loop
 			}
 		}
 		catch (const std::exception& e)
@@ -279,7 +299,7 @@ unsigned Server::Process(SOCKET l_sock)
 		// Check for empty line
 		unsigned int pos_cr_lf = line.find_first_of("\x0a\x0d");
 		if (pos_cr_lf == 0) {
-			if (messageToReceive)
+			if (messageToReceive)					// if we are expecting a message body, the first empty line will signal that it is ready to be sent
 			{
 				messageToReceive = false;
 				messageReceived = true;
@@ -321,17 +341,17 @@ unsigned Server::Process(SOCKET l_sock)
 		}
 	}
 
-	STREAM_LOG(logDEBUG) << LOG_REQUEST << request;
-
+	STREAM_LOG(logDEBUG) << l_sock << LOG_REQUEST << request;
+#ifdef FILE_LOGGING
+	FILE_LOG(logDEBUG) << l_sock << LOG_REQUEST << request;
+#endif // FILE_LOGGING
 
 	//
 	//	Construct the response
 	//
 
 	http_response resp;
-	proc_func_(&req, &resp);
-
-	
+	proc_func_(&req, &resp);	
 
 	std::stringstream str_str;
 	str_str << resp.answer_.size();
@@ -392,13 +412,19 @@ unsigned Server::Process(SOCKET l_sock)
 		STREAM_LOG(logERROR) << e.what();
 	}
 	
-	STREAM_LOG(logDEBUG) << LOG_RESPONSE << response;
-	
-
+	STREAM_LOG(logDEBUG) << l_sock << LOG_RESPONSE << response;
+#ifdef FILE_LOGGING
+	FILE_LOG(logDEBUG) << l_sock << LOG_RESPONSE << response;
+#endif // FILE_LOGGING
 
 	//
 	// Close connection socket
 	//
+
+	STREAM_LOG(logDEBUG3) << "Exit thread " << l_sock;
+#ifdef FILE_LOGGING
+	FILE_LOG(logDEBUG3) << "Exit thread " << l_sock;
+#endif // FILE_LOGGING
 
 	try	{
 		CloseGracefully(l_sock);

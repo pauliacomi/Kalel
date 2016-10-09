@@ -6,6 +6,7 @@
 #include "Netcode/Client.h"
 #include "Netcode/json.hpp"
 #include "Resources/StringTable.h"
+#include "Com Classes/Serialization.h"
 
 #include <functional>
 
@@ -80,9 +81,18 @@ void CommHandler::SetMachineSettings(std::shared_ptr<const MachineSettings> ptr)
 }
 
 
-void CommHandler::GetData(time_t lastMeasurement)
+void CommHandler::GetData(time_t startTime, long int measurementsMade)
 {
-	localLastMeasurement = std::to_string(lastMeasurement);
+	if (measurementsMade == 0)
+	{
+		localStartTime = "";
+		localMeasurementsMade = "";
+	}
+	else
+	{
+		localStartTime = std::to_string(startTime);
+		localMeasurementsMade = std::to_string(measurementsMade);
+	}
 
 	auto request = std::bind(&CommHandler::GetData_req, this, std::placeholders::_1);
 	auto callback = std::bind(&CommHandler::GetData_resp, this, std::placeholders::_1);
@@ -182,30 +192,8 @@ void CommHandler::GetMachineSettings_resp(http_response* r) {
 			auto j = json::parse(r->answer_);
 			MachineSettings receivedSettings;
 
-			receivedSettings.CaloName								 = UnicodeConv::s2ws(j["CaloName"]);
-			receivedSettings.CaloEntete								 = UnicodeConv::s2ws(j["CaloEntete"]);
-			receivedSettings.ActivationSecurite						 = j["ActivationSecurite"];				
-			receivedSettings.CheminFichierGeneral					 = UnicodeConv::s2ws(j["CheminFichierGeneral"]);
-			receivedSettings.HighPressureToMeasure					 = j["HighPressureToMeasure"];				
-			receivedSettings.LowPressureToMeasure					 = j["LowPressureToMeasure"];				
-			receivedSettings.NumberInstruments						 = j["NumberInstruments"];					
-			receivedSettings.PortKeithley							 = j["PortKeithley"];						
-			receivedSettings.PortMensor								 = j["PortMensor"];							
-			receivedSettings.PortTemperatures						 = j["PortTemperatures"];					
-			receivedSettings.PortVannes								 = j["PortVannes"];							
-			receivedSettings.PresenceTuyereSonique					 = j["PresenceTuyereSonique"];				
-			receivedSettings.PressionLimiteVide						 = j["PressionLimiteVide"];					
-			receivedSettings.PressionSecuriteBassePression			 = j["PressionSecuriteBassePression"];		
-			receivedSettings.PressionSecuriteHautePression			 = j["PressionSecuriteHautePression"];		
-			receivedSettings.SensibiliteCalo						 = j["SensibiliteCalo"];					
-			receivedSettings.SensibiliteCapteurBassePression		 = j["SensibiliteCapteurBassePression"];	
-			receivedSettings.SensibiliteCapteurHautePression		 = j["SensibiliteCapteurHautePression"];	
-			receivedSettings.VolumeP6								 = j["VolumeP6"];							
-			receivedSettings.VolumeRef								 = j["VolumeRef"];							
-			receivedSettings.COMInstruments							 = j["COMInstruments"].get<std::vector<int>>();						
-			receivedSettings.FunctionInstruments					 = j["FunctionInstruments"].get<std::vector<int>>();
-			receivedSettings.typeInstruments						 = j["typeInstruments"].get<std::vector<int>>();
-			receivedSettings.synced									 = true;
+			serialization::deserializeJSONtoMachineSettings(j, receivedSettings);
+			receivedSettings.synced	= true;
 
 			messageHandler.GotMachineSettings(receivedSettings);
 			messageHandler.OnSync();
@@ -227,30 +215,7 @@ void CommHandler::SetMachineSettings_req(http_request* r) {
 	r->path_			= "/api/machinesettings";
 
 	json j;
-	j["CaloName"]							= UnicodeConv::ws2s(localSettings->CaloName);
-	j["CaloEntete"]							= UnicodeConv::ws2s(localSettings->CaloEntete);
-	j["CheminFichierGeneral"]				= UnicodeConv::ws2s(localSettings->CheminFichierGeneral);
-	j["ActivationSecurite"]					= localSettings->ActivationSecurite;
-	j["HighPressureToMeasure"]				= localSettings->HighPressureToMeasure;
-	j["LowPressureToMeasure"]				= localSettings->LowPressureToMeasure;
-	j["NumberInstruments"]					= localSettings->NumberInstruments;
-	j["PortKeithley"]						= localSettings->PortKeithley;
-	j["PortMensor"]							= localSettings->PortMensor;
-	j["PortTemperatures"]					= localSettings->PortTemperatures;
-	j["PortVannes"]							= localSettings->PortVannes;
-	j["PresenceTuyereSonique"]				= localSettings->PresenceTuyereSonique;
-	j["PressionLimiteVide"]					= localSettings->PressionLimiteVide;
-	j["PressionSecuriteBassePression"]		= localSettings->PressionSecuriteBassePression;
-	j["PressionSecuriteHautePression"]		= localSettings->PressionSecuriteHautePression;
-	j["SensibiliteCalo"]					= localSettings->SensibiliteCalo;
-	j["SensibiliteCapteurBassePression"]	= localSettings->SensibiliteCapteurBassePression;
-	j["SensibiliteCapteurHautePression"]	= localSettings->SensibiliteCapteurHautePression;
-	j["VolumeP6"]							= localSettings->VolumeP6;
-	j["VolumeRef"]							= localSettings->VolumeRef;
-	j["COMInstruments"]						= localSettings->COMInstruments;
-	j["FunctionInstruments"]				= localSettings->FunctionInstruments;
-	j["typeInstruments"]					= localSettings->typeInstruments;
-
+	serialization::serializeMachineSettingsToJSON(*localSettings, j);
 	r->entity_ = j.dump();
 }
 
@@ -272,7 +237,8 @@ void CommHandler::GetData_req(http_request* r) {
 	r->method_ = http::method::get;
 	r->accept_ = http::mimetype::appjson;
 	r->path_ = "/api/experimentdata";
-	r->params_.emplace("last", localLastMeasurement);
+	r->params_.emplace("start", localStartTime);
+	r->params_.emplace("measurements", localMeasurementsMade);
 }
 
 void CommHandler::GetData_resp(http_response* r) {
@@ -281,7 +247,16 @@ void CommHandler::GetData_resp(http_response* r) {
 	{
 		if (r->content_type_ == http::mimetype::appjson) {
 			
-			auto j = json::parse(r->answer_);
+			json j;
+
+			try
+			{
+				j = json::parse(r->answer_);
+			}
+			catch (const std::exception& e)
+			{
+				messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, UnicodeConv::s2ws(e.what()));
+			}
 
 			ExperimentData * receivedData = nullptr;
 			MeasurementsArray * receivedDataArray = new MeasurementsArray();
@@ -289,35 +264,8 @@ void CommHandler::GetData_resp(http_response* r) {
 			for (json::iterator i = j.begin(); i != j.end(); ++i)
 			{
 				receivedData = new ExperimentData();
-
-				receivedData->experimentInProgress								= j[i.key()][	STRINGIFY(experimentInProgress			)];
-				receivedData->experimentRecording								= j[i.key()][	STRINGIFY(experimentRecording			)];
-				receivedData->experimentWaiting									= j[i.key()][	STRINGIFY(experimentWaiting				)];
-				receivedData->experimentCommandsRequested						= j[i.key()][	STRINGIFY(experimentCommandsRequested	)];
-				receivedData->experimentStage									= j[i.key()][	STRINGIFY(experimentStage				)];
-				receivedData->verificationStep									= j[i.key()][	STRINGIFY(verificationStep				)];
-				receivedData->experimentStepStatus								= j[i.key()][	STRINGIFY(experimentStepStatus			)];
-				receivedData->experimentSubstepStage							= j[i.key()][	STRINGIFY(experimentSubstepStage		)];
-				receivedData->experimentDose									= j[i.key()][	STRINGIFY(experimentDose				)];
-				receivedData->experimentGraphPoints								= j[i.key()][	STRINGIFY(experimentGraphPoints			)];
-				receivedData->experimentPreviousStage							= j[i.key()][	STRINGIFY(experimentPreviousStage		)];
-				receivedData->experimentTime									= j[i.key()][	STRINGIFY(experimentTime				)];
-				receivedData->experimentTimeStart								= j[i.key()][	STRINGIFY(experimentTimeStart			)];
-				receivedData->timeToEquilibrate									= j[i.key()][	STRINGIFY(timeToEquilibrate				)];
-				receivedData->timeToEquilibrateCurrent							= j[i.key()][	STRINGIFY(timeToEquilibrateCurrent		)];
-				receivedData->injectionAttemptCounter							= j[i.key()][	STRINGIFY(injectionAttemptCounter		)];
-				receivedData->adsorptionCounter									= j[i.key()][	STRINGIFY(adsorptionCounter				)];
-				receivedData->desorptionCounter									= j[i.key()][	STRINGIFY(desorptionCounter				)];
-				receivedData->pressureInitial									= j[i.key()][	STRINGIFY(pressureInitial				)];
-				receivedData->pressureFinal										= j[i.key()][	STRINGIFY(pressureFinal					)];
-				receivedData->pressureHighOld									= j[i.key()][	STRINGIFY(pressureHighOld				)];
-				receivedData->resultCalorimeter									= j[i.key()][	STRINGIFY(resultCalorimeter				)];
-				receivedData->pressureLow										= j[i.key()][	STRINGIFY(pressureLow					)];
-				receivedData->pressureHigh										= j[i.key()][	STRINGIFY(pressureHigh					)];
-				receivedData->temperatureCalo									= j[i.key()][	STRINGIFY(temperatureCalo				)];
-				receivedData->temperatureCage									= j[i.key()][	STRINGIFY(temperatureCage				)];
-				receivedData->temperatureRoom									= j[i.key()][	STRINGIFY(temperatureRoom				)];
-
+				json j2 = j[i.key()];
+				serialization::deserializeJSONtoExperimentData(j2, *receivedData);
 				receivedDataArray->push_back(receivedData);
 			}																													 
 

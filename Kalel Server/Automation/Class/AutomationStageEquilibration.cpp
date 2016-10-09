@@ -25,7 +25,7 @@ void Automation::StageEquilibration()
 		EnteteCSVCreate();			// Entete CSV
 		FileMeasurementOpen();		// Measurement file
 
-		experimentLocalData.experimentTimeStart = time(0);		// Record experiment start time
+		experimentLocalData.timeStart = time(0);		// Record experiment start time
 		timerExperiment.TopChrono();							// Start global experiment timer	
 		timerMeasurement.TopChrono();							// Start the timer to record time between measurements
 

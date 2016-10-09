@@ -181,12 +181,12 @@ unsigned Client::Process(std::string ip, std::string port, std::function<void(ht
 				line = ReceiveBytes(l_sock, bytes);
 
 				if (line.empty()) {
-					resp.answer_ = http::responses::bad_request;
+					resp.status_ = http::responses::bad_request;
 				}
 				else {
 					resp.answer_ = line;
-					response += line;
 				}
+				response += line;
 				break;
 			}
 		}

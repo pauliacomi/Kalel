@@ -209,6 +209,9 @@ void CKalelView::OnInitialUpdate()
 	// Pass window handle
 	commHandler.SetHandle(GetSafeHwnd());
 
+	// Pass stored array to graph
+	GetDocument()->GraphSetArray(dataCollection);
+
 	// Set the timer for the window update
 	SetTimer(1, 100, NULL);
 
@@ -389,36 +392,38 @@ LRESULT CKalelView::OnMsvBouteille(WPARAM, LPARAM)
 
 LRESULT CKalelView::OnChangementBouteille(WPARAM, LPARAM)
 {
-	if (pApp->serverConnected)
-	{
-		if (pApp->experimentRunning) {
-			AfxMessageBox(ERROR_EXP_INPROGRESS, MB_ICONEXCLAMATION | MB_OK);
-		}
-		else {
-			if (AfxMessageBox(PROMPT_CHANGE_BOTTLE, MB_YESNO | MB_ICONQUESTION) == IDYES)
-			{
-				ASSERT(0);
-				experimentSettings->experimentType = EXPERIMENT_TYPE_BOTTLE_VACUUM;
+	commHandler.GetData(dataCollection.back()->timeStart, dataCollection.back()->measurementsMade);
 
-				// the start button is blocked
-				GetDlgItem(IDC_LANCER)->EnableWindow(FALSE);
-				// the stop button is activated
-				GetDlgItem(IDC_ARRETER)->EnableWindow(TRUE);
+	//if (pApp->serverConnected)
+	//{
+	//	if (pApp->experimentRunning) {
+	//		AfxMessageBox(ERROR_EXP_INPROGRESS, MB_ICONEXCLAMATION | MB_OK);
+	//	}
+	//	else {
+	//		if (AfxMessageBox(PROMPT_CHANGE_BOTTLE, MB_YESNO | MB_ICONQUESTION) == IDYES)
+	//		{
+	//			ASSERT(0);
+	//			experimentSettings->experimentType = EXPERIMENT_TYPE_BOTTLE_VACUUM;
 
-				// Block menu and set running flag
-				pApp->experimentRunning = true;
-				pApp->menuIsAvailable = false;
-				UpdateButtons();
+	//			// the start button is blocked
+	//			GetDlgItem(IDC_LANCER)->EnableWindow(FALSE);
+	//			// the stop button is activated
+	//			GetDlgItem(IDC_ARRETER)->EnableWindow(TRUE);
 
-				// Raise the flag for data modified
-				commHandler.SetModifiedData();
-			}
-		}
-	}
-	else
-	{
-		AfxMessageBox(ERROR_CONNECTION_STATUS, MB_OK);
-	}
+	//			// Block menu and set running flag
+	//			pApp->experimentRunning = true;
+	//			pApp->menuIsAvailable = false;
+	//			UpdateButtons();
+
+	//			// Raise the flag for data modified
+	//			commHandler.SetModifiedData();
+	//		}
+	//	}
+	//}
+	//else
+	//{
+	//	AfxMessageBox(ERROR_CONNECTION_STATUS, MB_OK);
+	//}
 
 	return 0;
 }

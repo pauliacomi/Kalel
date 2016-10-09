@@ -27,8 +27,9 @@ void ExperimentData::ResetData()
 	experimentGraphPoints = 0;
 	verificationStep = STEP_VERIFICATIONS_UNDEF;
 
-	experimentTimeStart = NULL;
-	experimentTime = 0.f;
+	timeStart = NULL;
+	measurementsMade = 0;
+	timeElapsed = 0.f;
 	timeToEquilibrate = 0.f;
 	timeToEquilibrateCurrent = 0.f;
 
@@ -64,7 +65,7 @@ ExperimentData & ExperimentData::operator=(const ExperimentData * p) {
 		temperatureCage = p->temperatureCage;
 		temperatureRoom = p->temperatureRoom;
 
-		experimentTime = p->experimentTime;
+		timeElapsed = p->timeElapsed;
 
 	}
 	return *this;    // Return ref for multiple assignment

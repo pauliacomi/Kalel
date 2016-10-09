@@ -2,8 +2,8 @@
 #include "MessageHandler.h"
 
 
-MessageHandler::MessageHandler(Handles h)
-	: handle(h)
+MessageHandler::MessageHandler(Storage &h)
+	: handles(&h)
 {
 }
 
@@ -19,8 +19,8 @@ MessageHandler::~MessageHandler()
 bool MessageHandler::ExchangeData(ExperimentData pParam)
 {
 	// Create a new instance of the storage class and equate it to the local class
-	//std::shared_ptr<ExperimentData> newData = std::make_shared<ExperimentData>(pParam);
-	//handle.dataCollection->push_back(newData);
+	std::shared_ptr<ExperimentData> newData = std::make_shared<ExperimentData>(pParam);
+	handles->dataCollection.push_back(newData);
 
 	return true;
 }

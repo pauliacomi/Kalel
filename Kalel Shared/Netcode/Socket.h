@@ -54,7 +54,14 @@ public:
 	std::string Receive(SOCKET sock);
 	std::string ReceiveLine(SOCKET sock);
 	std::string ReceiveBytes(SOCKET l_sock, u_long bytes);
+
+	// Close a socket
+	// Will throw on error
 	void Close(SOCKET &sock);
+
+	// Close a socket
+	// First send shutdown signal
+	// Will throw on error
 	void CloseGracefully(SOCKET &sock);
 
 	std::string GetIP(const sockaddr_storage &address);

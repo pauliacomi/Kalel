@@ -15,7 +15,7 @@
 
 // --------- Initialisation and destruction -------
 
-ThreadManager::ThreadManager(Handles h)
+ThreadManager::ThreadManager(Storage &h)
 	: m_threadMainControlLoop(nullptr)
 	, m_threadManualAction (nullptr)
 
@@ -25,7 +25,7 @@ ThreadManager::ThreadManager(Handles h)
 	, automation(nullptr)
 {
 	// 
-	handles = h;
+	handles = &h;
 
 	// Start the threads
 	StartThread();
@@ -227,7 +227,7 @@ UINT ThreadManager::ThreadMainWorkerStarter(LPVOID pParam)
 void ThreadManager::ThreadMainWorker()
 {
 	// Create the class to deal with the automatic functionality
-	automation = new Automation(handles);
+	automation = new Automation(*handles);
 
 	// Launch functionality
 	automation->Execution();

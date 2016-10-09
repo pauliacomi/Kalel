@@ -22,7 +22,7 @@ public:
 	void Sync();
 	void GetMachineSettings();
 	void SetMachineSettings(std::shared_ptr<const MachineSettings> ptr);
-	void GetData(time_t lastMeasurement = NULL);
+	void GetData(time_t startTime = 0, long int measurementsMade = 0);
 	void GetLog();
 	void GetPorts();
 
@@ -45,7 +45,8 @@ private:
 
 	// don't like these
 	std::string localAddress;
-	std::string localLastMeasurement;
+	std::string localStartTime;
+	std::string localMeasurementsMade;
 	std::shared_ptr<const MachineSettings> localSettings;
 
 	void Handshake_req(http_request* r);

@@ -71,6 +71,11 @@ std::string Socket::Send(SOCKET l_sock, const std::string& sendbuf)
 		}
 		total += bytesSent;
 		length -= bytesSent;
+		if (total < (int)sendbuf.length())
+		{
+			int a = 0;
+			a++;
+		}
 	}
 
 	return sendbuf;
@@ -172,12 +177,19 @@ std::string Socket::ReceiveBytes(SOCKET l_sock, u_long bytes)
 			overflow = true;
 			break;
 		}
-		if (ioctlsocket(l_sock, FIONREAD, &arg) != 0)
+		if (ioctlsocket(l_sock, FIONREAD, &arg) != 0) {
 			break;
-		if (arg == 0)
+		}
+		if (arg == 0) {
+			if (total < bytes || overflow)
+			{
+				break;
+			}
 			break;
-		if (arg > 1024)
+		}
+		if (arg > 1024) {
 			arg = 1024;
+		}
 
 		received = recv(l_sock, buf, arg, 0);
 
@@ -191,8 +203,6 @@ std::string Socket::ReceiveBytes(SOCKET l_sock, u_long bytes)
 			else {
 				stringex.set(ERR_RECEIVE);
 				throw stringex;
-				//// not connected anymore
-				//return "";
 			}
 		}
 

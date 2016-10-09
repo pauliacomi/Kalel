@@ -14,24 +14,30 @@
 #include <vector>
 #include <memory>
 
-struct Handles {
-	std::shared_ptr<ExperimentSettings> experimentSettings;
-	std::shared_ptr<MachineSettings> machineSettings;
+class Storage {
+public:
+	// Logs
+	std::vector<std::string> serverLogs;								// Logs from the server are stored here
+	std::vector<std::string> automationInfoLogs;						// All non-error logs are stored here
+	std::vector<std::string> automationErrorLogs;						// All error logs are stored here
 
-	std::vector<std::shared_ptr<std::string>> * logCollection;		// All non-error logs are stored here
-	std::vector<std::shared_ptr<std::string>> * errorCollection;		// All error logs are stored here
-	std::vector<std::shared_ptr<ExperimentData>> * dataCollection;	// Data for an experiment is stored here
+	std::shared_ptr<MachineSettings> machineSettings;					// The machine settings are here
+	std::shared_ptr<ExperimentSettings> experimentSettings;				// The experiment settings are here
+
+	std::vector<std::shared_ptr<ExperimentData>> dataCollection;		// The collection of data from an experiment
 };
+
+
 
 class MessageHandler
 {
 	// Constructor and destructor
 public:
-	MessageHandler(Handles h);
+	MessageHandler(Storage &h);
 	virtual ~MessageHandler();
 
 	// Message postback
-	Handles handle;
+	Storage * handles;
 
 public:
 

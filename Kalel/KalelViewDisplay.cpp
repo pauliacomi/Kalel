@@ -23,7 +23,7 @@ void CKalelView::OnTimer(UINT nIDEvent)
 		m_StrTemperatureCalo.Format(_T("%.2f"), dataCollection.back()->temperatureCalo);
 		m_StrTemperatureCage.Format(_T("%.2f"), dataCollection.back()->temperatureCage);
 		m_StrTemperaturePiece.Format(_T("%.2f"), dataCollection.back()->temperatureRoom);
-		m_StrTemps.Format(_T("%.1f"), dataCollection.back()->experimentTime);
+		m_StrTemps.Format(_T("%.1f"), dataCollection.back()->timeElapsed);
 		m_StrPressionInitiale.Format(_T("%.6f"), dataCollection.back()->pressureInitial);
 		m_StrPressionFinale.Format(_T("%.6f"), dataCollection.back()->pressureFinal);
 
@@ -41,19 +41,24 @@ void CKalelView::OnTimer(UINT nIDEvent)
 		// Write the current step
 		AffichageEtape();
 
-		// Write graph
-		bool recorded = GetDocument()->GraphAddMeasurement(dataCollection.back());
-
 		// Write in measurement box
-		if (recorded) {
-			AffichageMesures();
+		AffichageMesures();
+		// Write graph
+		GetDocument()->UpdateAllViews(this);
+		
+		//bool recorded = GetDocument()->GraphAddMeasurement(dataCollection.back());
 
-			// Update all views
-			GetDocument()->UpdateAllViews(this);
+		//if (recorded) {
+
+		//	// Update all views
+		//}
+
+		if (pApp->serverConnected)
+		{
+			//commHandler.GetData(dataCollection.back()->experimentGraphPoints);
 		}
 	}
 
-	commHandler.GetData(dataCollection.back()->experimentGraphPoints);
 
 	CFormView::OnTimer(nIDEvent);	// Call base class handler.
 }
@@ -94,7 +99,7 @@ LRESULT CKalelView::AffichageMesures()
 {
 	CString mesure;
 
-	mesure.Format(_T("Time=%.2f  Calo=%.2f  LP=%.2f  HP=%.2f"), dataCollection.back()->experimentTime, dataCollection.back()->resultCalorimeter, dataCollection.back()->pressureLow, dataCollection.back()->pressureHigh);
+	mesure.Format(_T("Time=%.2f  Calo=%.2f  LP=%.2f  HP=%.2f"), dataCollection.back()->timeElapsed, dataCollection.back()->resultCalorimeter, dataCollection.back()->pressureLow, dataCollection.back()->pressureHigh);
 
 	m_StrEditMesures += mesure;
 	m_StrEditMesures += "\r\n";
