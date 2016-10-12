@@ -254,7 +254,7 @@ std::string Socket::Send(const std::string& sendbuf)
 std::string Socket::SendLine(const std::string& sendbuf)
 {
 	std::string local = sendbuf;
-	local += '\n';
+	local += "\x0D\x0A";
 	return Send(local);
 }
 
