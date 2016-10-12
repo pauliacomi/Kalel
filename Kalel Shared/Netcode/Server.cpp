@@ -125,70 +125,51 @@ unsigned Server::Process(std::unique_ptr<Socket> sock)
 #endif // FILE_LOGGING
 
 
-	//
+	//*************************************************************************************************************************
+	//						INCOMING REQUEST
+	//*************************************************************************************************************************
 	//	Get the request
-	//
 
-	std::string request;
-	std::string line;
+	std::string requestString;
 
-	try	{
-		line = sock->ReceiveLine();
+	try	{													// Get the first line
+		requestString = sock->ReceiveLine();
 	}
 	catch (const std::exception& e)	{
 		STREAM_LOG(logERROR) << e.what();
 	}
 
-	request += line;
-
-	if (line.empty()) {								// Check for valid request
-		return 10;
+	if (requestString.empty()) {							// Check for valid request
+		return 1;
 	}
 
-	http_request req;
+	http_request request;									// Create request class
 
-	if (line.find(http::method::get) == 0) {		// Find the html method the client sent
-		req.method_ = http::method::get;
+
+															// Find the html method the client sent
+	size_t posSpace = requestString.find_first_of(" ");
+
+	request.method_ = ParseMethod(requestString.substr(0, posSpace));
+	if(request.method_.empty()){
+		STREAM_LOG(logDEBUG2) << "Request method unknown: " << sock->GetSocket();
+#ifdef FILE_LOGGING
+		FILE_LOG(logDEBUG2) << "Request method unknown: " << sock->GetSocket();
+#endif // FILE_LOGGING
+		return 1;
 	}
-	else if (line.find(http::method::post) == 0) {
-		req.method_ = http::method::post;
-	}
-	else if (line.find(http::method::put) == 0) {
-		req.method_ = http::method::put;
-	}
-	else if (line.find(http::method::del) == 0) {
-		req.method_ = http::method::del;
-	}
 
-	std::string path;								// Process the path and parameters of the URL
-	std::map<std::string, std::string> params;
+															// Process the path and parameters of the URL
+	URLHelper::SplitGetReq(requestString.substr(posSpace + 1), request.path_, request.params_);
 
-	size_t posStartPath = line.find_first_of(" ") + 1;
-	URLHelper::SplitGetReq(line.substr(posStartPath), path, params);
 
-	req.path_ = path;
-	req.params_ = params;
 
-	bool messageToReceive = false;					// not expecting a message body
-	bool messageReceived = false;					// not ready to receive the message body
+	std::string line;										// Start receiving the rest of the request
+	bool messageToReceive = false;							// not expecting a message body
 
 	while (1) {
 		try
 		{			
-			if (!messageReceived) {					// not attempting to receive message body, regular line-based receive 
-				line = sock->ReceiveLine();
-			}
-			else {									// a message body is specified using "Content-Length" header, will receive the required number of bytes
-				std::stringstream buffer(req.content_length_);
-				u_long bytes;
-				buffer >> bytes;
-
-				line = sock->ReceiveBytes(bytes);
-
-				req.entity_ = line;					// save the message body
-				request += line;					// log the message body
-				break;								// leave the loop
-			}
+			line = sock->ReceiveLine();				// not attempting to receive message body, regular line-based receive 
 		}
 		catch (const std::exception& e)
 		{
@@ -198,16 +179,26 @@ unsigned Server::Process(std::unique_ptr<Socket> sock)
 		if (line.empty()) 
 			break;
 		
-		request += line;
+		requestString += line;
 		
-		// Check for empty line
+		// Check for CRLF position
 		unsigned int pos_cr_lf = line.find_first_of("\x0a\x0d");
-		if (pos_cr_lf == 0) {
-			if (messageToReceive)					// if we are expecting a message body, the first empty line will signal that it is ready to be sent
+		if (pos_cr_lf == 0) {						// if the line is empty, it's either the end of the request or we are expecting a message
+			if (messageToReceive)					// if we are expecting a message body, receive 
 			{
-				messageToReceive = false;
-				messageReceived = true;
-				continue;
+				u_long bytes = To<u_long>(request.content_length_);
+
+				try
+				{
+					line = sock->ReceiveBytes(bytes);		// get the required number of bytes
+				}
+				catch (const std::exception& e)
+				{
+					STREAM_LOG(logERROR) << e.what();
+				}
+
+				request.entity_ = line;					// save the message body
+				requestString += line;					// log the message body
 			}
 			break;
 		}
@@ -215,89 +206,92 @@ unsigned Server::Process(std::unique_ptr<Socket> sock)
 		line = line.substr(0, pos_cr_lf);
 
 		if (line.substr(0, http::header::authorization.size()) == http::header::authorization) {
-			req.authentication_given_ = true;
+			request.authentication_given_ = true;
 			std::string encoded = line.substr(http::header::authorization.size());
 			std::string decoded = base64_decode(encoded);
 
 			unsigned int pos_colon = decoded.find(":");
 
-			req.username_ = decoded.substr(0, pos_colon);
-			req.password_ = decoded.substr(pos_colon + 1);
+			request.username_ = decoded.substr(0, pos_colon);
+			request.password_ = decoded.substr(pos_colon + 1);
 		}
 		else if (line.substr(0, http::header::accept.size()) == http::header::accept) {
-			req.accept_ = line.substr(http::header::accept.size());
+			request.accept_ = line.substr(http::header::accept.size());
 		}
 		else if (line.substr(0, http::header::accept_language.size()) == http::header::accept_language) {
-			req.accept_language_ = line.substr(http::header::accept_language.size());
+			request.accept_language_ = line.substr(http::header::accept_language.size());
 		}
 		else if (line.substr(0, http::header::accept_encoding.size()) == http::header::accept_encoding) {
-			req.accept_encoding_ = line.substr(http::header::accept_encoding.size());
+			request.accept_encoding_ = line.substr(http::header::accept_encoding.size());
 		}
 		else if (line.substr(0, http::header::user_agent.size()) == http::header::user_agent) {
-			req.user_agent_ = line.substr(http::header::user_agent.size());
+			request.user_agent_ = line.substr(http::header::user_agent.size());
 		}
 		else if (line.substr(0, http::header::content_type.size()) == http::header::content_type) {
-			req.content_type_ = line.substr(http::header::content_type.size());
+			request.content_type_ = line.substr(http::header::content_type.size());
 		}
 		else if (line.substr(0, http::header::content_length.size()) == http::header::content_length) {
-			req.content_length_ = line.substr(http::header::content_length.size());
+			request.content_length_ = line.substr(http::header::content_length.size());
 			messageToReceive = true;
 		}
 	}
 
-	STREAM_LOG(logDEBUG) << sock->GetSocket() << LOG_REQUEST << request;
+	STREAM_LOG(logDEBUG) << sock->GetSocket() << LOG_REQUEST << requestString;
 #ifdef FILE_LOGGING
-	FILE_LOG(logDEBUG) << sock->GetSocket() << LOG_REQUEST << request;
+	FILE_LOG(logDEBUG) << sock->GetSocket() << LOG_REQUEST << requestString;
 #endif // FILE_LOGGING
 
-	//
-	//	Construct the response
-	//
 
-	http_response resp;
-	proc_func_(&req, &resp);
+
+	//*************************************************************************************************************************
+	//						OUTGOING RESPONSE
+	//*************************************************************************************************************************
+	// Construct it
+
+	http_response response;
+	proc_func_(&request, &response);
 
 	// Fill remaining headers
-	resp.server_			= "Kalel Server";
-	resp.date_				= GMTtime(RFC_1123);
-	resp.connection_		= "close";
-	resp.content_length_	= StringFrom(resp.answer_.size());
+	response.server_			= "Kalel Server";
+	response.date_				= GMTtime(RFC_1123);
+	response.connection_		= "close";
+	response.content_length_	= StringFrom<size_t>(response.answer_.size());
 
 
 	//
 	//	Send the response
 	//
 
-	std::string response;
+	std::string responseString;
 
 	try
 	{
-		response += sock->Send("HTTP/1.1 ");
+		responseString += sock->Send("HTTP/1.1 ");
 
-		if (messageToReceive && messageReceived && req.entity_.empty()) {
-			resp.status_ = http::responses::bad_request;
-			response += sock->SendLine(resp.status_);
+		if (messageToReceive && request.entity_.empty()) {
+			response.status_ = http::responses::bad_request;
+			responseString += sock->SendLine(response.status_);
 		}
 		else
 		{
-			if (!req.auth_realm_.empty()) {
-				response += sock->SendLine(http::responses::unauthorised);
-				response += sock->Send(http::header::www_authenticate + "Basic Realm=\"");
-				response += sock->Send(req.auth_realm_);
-				response += sock->SendLine("\"");
+			if (!request.auth_realm_.empty()) {
+				responseString += sock->SendLine(http::responses::unauthorised);
+				responseString += sock->Send(http::header::www_authenticate + "Basic Realm=\"");
+				responseString += sock->Send(request.auth_realm_);
+				responseString += sock->SendLine("\"");
 			}
 			else {
 
-				response += sock->SendLine(resp.status_);
+				responseString += sock->SendLine(response.status_);
 			}
 
-			response += sock->SendLine(http::header::date + resp.date_);
-			response += sock->SendLine(http::header::server + resp.server_);
-			response += sock->SendLine(http::header::connection + resp.connection_);
-			response += sock->SendLine(http::header::content_type + resp.content_type_);
-			response += sock->SendLine(http::header::content_length + resp.content_length_);
-			response += sock->SendLine("");
-			response += sock->Send(resp.answer_);
+			responseString += sock->SendLine(http::header::date + response.date_);
+			responseString += sock->SendLine(http::header::server + response.server_);
+			responseString += sock->SendLine(http::header::connection + response.connection_);
+			responseString += sock->SendLine(http::header::content_type + response.content_type_);
+			responseString += sock->SendLine(http::header::content_length + response.content_length_);
+			responseString += sock->SendLine("");
+			responseString += sock->Send(response.answer_);
 		}
 	}
 	catch (const std::exception& e)
@@ -305,13 +299,13 @@ unsigned Server::Process(std::unique_ptr<Socket> sock)
 		STREAM_LOG(logERROR) << e.what();
 	}
 	
-	STREAM_LOG(logDEBUG) << sock->GetSocket() << LOG_RESPONSE << response;
+	STREAM_LOG(logDEBUG) << sock->GetSocket() << LOG_RESPONSE << responseString;
 #ifdef FILE_LOGGING
-	FILE_LOG(logDEBUG) << sock->GetSocket() << LOG_RESPONSE << response;
+	FILE_LOG(logDEBUG) << sock->GetSocket() << LOG_RESPONSE << responseString;
 #endif // FILE_LOGGING
 
 	//
-	// Close connection socket
+	// Exit
 	//
 
 	STREAM_LOG(logDEBUG3) << "Exit thread " << sock->GetSocket();

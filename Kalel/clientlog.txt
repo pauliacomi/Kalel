@@ -1,12 +1,9 @@
-- 00:24:28.000 INFO:  listening on socket: 1060
-- 00:24:28.000 DEBUG1: 	Entering accept loop
-- 00:26:56.969 INFO:  accepted new socket: [::1]:58721
-- 00:26:56.969 DEBUG2: 		Enter thread for socket1964
-- 00:26:56.969 DEBUG: 1964 request was: \nGET /api/handshake HTTP/1.1
+- 00:26:56.000 DEBUG2: 		Enter thread
+- 00:26:56.032 DEBUG: 860 request was: \nGET /api/handshake HTTP/1.1
 Accept: 
 
 
-- 00:26:56.969 DEBUG: 1964 response sent: \nHTTP/1.1 200 OK
+- 00:26:56.032 DEBUG: 860 response sent: \nHTTP/1.1 200 OK
 Date: Wed, 12 Oct 2016 22:26:56 GMT
 Server: Kalel Server
 Connection: close
@@ -14,20 +11,18 @@ Content-Type: text/html
 Content-Length: 124
 
 <!DOCTYPE html PUBLIC " -//IETF//DTD HTML 2.0//EN"><html><head><title>Hello</title></head><body><h1>Hello</h1></body></html>
-- 00:26:56.969 DEBUG3: 			Exit thread 1964
-- 00:26:56.062 INFO:  accepted new socket: [::1]:58722
-- 00:26:56.062 DEBUG2: 		Enter thread for socket1972
-- 00:26:56.062 INFO:  accepted new socket: [::1]:58723
-- 00:26:56.062 DEBUG2: 		Enter thread for socket1968
-- 00:26:56.062 DEBUG: 1972 request was: \nGET /api/experimentdata?measurements=&start= HTTP/1.1
+- 00:26:56.032 DEBUG2: 		Exit thread
+- 00:26:56.110 DEBUG2: 		Enter thread
+- 00:26:56.110 DEBUG2: 		Enter thread
+- 00:26:56.125 DEBUG: 1020 request was: \nGET /api/machinesettings HTTP/1.1
 Accept: application/json
 
 
-- 00:26:56.062 DEBUG: 1968 request was: \nGET /api/machinesettings HTTP/1.1
+- 00:26:56.125 DEBUG: 1028 request was: \nGET /api/experimentdata?measurements=&start= HTTP/1.1
 Accept: application/json
 
 
-- 00:26:56.062 DEBUG: 1968 response sent: \nHTTP/1.1 200 OK
+- 00:26:56.125 DEBUG: 1020 response sent: \nHTTP/1.1 200 OK
 Date: Wed, 12 Oct 2016 22:26:56 GMT
 Server: Kalel Server
 Connection: close
@@ -35,8 +30,8 @@ Content-Type: application/json
 Content-Length: 563
 
 {"ActivationSecurite":true,"COMInstruments":[-1],"CaloEntete":"xxx","CaloName":"xxx","CheminFichierGeneral":"C:/","FunctionInstruments":[-23],"HighPressureToMeasure":false,"LowPressureToMeasure":false,"NumberInstruments":1,"PortKeithley":1,"PortMensor":3,"PortTemperatures":2,"PortVannes":1,"PresenceTuyereSonique":true,"PressionLimiteVide":2,"PressionSecuriteBassePression":2,"PressionSecuriteHautePression":2,"SensibiliteCalo":0.05470199,"SensibiliteCapteurBassePression":2,"SensibiliteCapteurHautePression":2,"VolumeP6":2,"VolumeRef":2,"typeInstruments":[-21]}
-- 00:26:56.062 DEBUG3: 			Exit thread 1968
-- 00:26:57.109 DEBUG: 1972 response sent: \nHTTP/1.1 200 OK
+- 00:26:56.141 DEBUG2: 		Exit thread
+- 00:26:57.172 DEBUG: 1028 response sent: \nHTTP/1.1 200 OK
 Date: Wed, 12 Oct 2016 22:26:57 GMT
 Server: Kalel Server
 Connection: close
@@ -44,14 +39,13 @@ Content-Type: application/json
 Content-Length: 6903
 
 {"1":{"adsorptionCounter":0,"desorptionCounter":0,"experimentCommandsRequested":true,"experimentDose":0,"experimentGraphPoints":0,"experimentInProgress":false,"experimentPreviousStage":20101,"experimentRecording":false,"experimentStage":20101,"experimentStepStatus":20401,"experimentSubstepStage":20300,"experimentWaiting":false,"injectionAttemptCounter":0,"measurementsMade":1,"pressureFinal":0.0,"pressureHigh":0.0,"pressureHighOld":0.0,"pressureInitial":0.0,"pressureLow":0.0,"resultCalorimeter":0.0,"temperatureCage":0.0,"temperatureCalo":0.0,"temperatureRoom":0.0,"timeElapsed":0.0,"timeStart":1476311068,"timeToEquilibrate":0.0,"timeToEquilibrateCurrent":0.0,"verificationStep":20205},"10":{"adsorptionCounter":0,"desorptionCounter":0,"experimentCommandsRequested":true,"experimentDose":0,"experimentGraphPoints":0,"experimentInProgress":false,"experimentPreviousStage":20101,"experimentRecording":false,"experimentStage":20101,"experimentStepStatus":20401,"experimentSubstepStage":20300,"experimentWaiting":false,"injectionAttemptCounter":0,"measurementsMade":10,"pressureFinal":0.0,"pressureHigh":0.0,"pressureHighOld":0.0,"pressureInitial":0.0,"pressureLow":0.0,"resultCalorimeter":0.0,"temperatureCage":0.0,"temperatureCalo":0.0,"temperatureRoom":0.0,"timeElapsed":0.0,"timeStart":1476311068,"timeToEquilibrate":0.0,"timeToEquilibrateCurrent":0.0,"verificationStep":20205},"2":{"adsorptionCounter":0,"desorptionCounter":0,"experimentCommandsRequested":true,"experimentDose":0,"experimentGraphPoints":0,"experimentInProgress":false,"experimentPreviousStage":20101,"experimentRecording":false,"experimentStage":20101,"experimentStepStatus":20401,"experimentSubstepStage":20300,"experimentWaiting":false,"injectionAttemptCounter":0,"measurementsMade":2,"pressureFinal":0.0,"pressureHigh":0.0,"pressureHighOld":0.0,"pressureInitial":0.0,"pressureLow":0.0,"resultCalorimeter":0.0,"temperatureCage":0.0,"temperatureCalo":0.0,"temperatureRoom":0.0,"timeElapsed":0.0,"timeStart":1476311068,"timeToEquilibrate":0.0,"timeToEquilibrateCurrent":0.0,"verificationStep":20205},"3":{"adsorptionCounter":0,"desorptionCounter":0,"experimentCommandsRequested":true,"experimentDose":0,"experimentGraphPoints":0,"experimentInProgress":false,"experimentPreviousStage":20101,"experimentRecording":false,"experimentStage":20101,"experimentStepStatus":20401,"experimentSubstepStage":20300,"experimentWaiting":false,"injectionAttemptCounter":0,"measurementsMade":3,"pressureFinal":0.0,"pressureHigh":0.0,"pressureHighOld":0.0,"pressureInitial":0.0,"pressureLow":0.0,"resultCalorimeter":0.0,"temperatureCage":0.0,"temperatureCalo":0.0,"temperatureRoom":0.0,"timeElapsed":0.0,"timeStart":1476311068,"timeToEquilibrate":0.0,"timeToEquilibrateCurrent":0.0,"verificationStep":20205},"4":{"adsorptionCounter":0,"desorptionCounter":0,"experimentCommandsRequested":true,"experimentDose":0,"experimentGraphPoints":0,"experimentInProgress":false,"experimentPreviousStage":20101,"experimentRecording":false,"experimentStage":20101,"experimentStepStatus":20401,"experimentSubstepStage":20300,"experimentWaiting":false,"injectionAttemptCounter":0,"measurementsMade":4,"pressureFinal":0.0,"pressureHigh":0.0,"pressureHighOld":0.0,"pressureInitial":0.0,"pressureLow":0.0,"resultCalorimeter":0.0,"temperatureCage":0.0,"temperatureCalo":0.0,"temperatureRoom":0.0,"timeElapsed":0.0,"timeStart":1476311068,"timeToEquilibrate":0.0,"timeToEquilibrateCurrent":0.0,"verificationStep":20205},"5":{"adsorptionCounter":0,"desorptionCounter":0,"experimentCommandsRequested":true,"experimentDose":0,"experimentGraphPoints":0,"experimentInProgress":false,"experimentPreviousStage":20101,"experimentRecording":false,"experimentStage":20101,"experimentStepStatus":20401,"experimentSubstepStage":20300,"experimentWaiting":false,"injectionAttemptCounter":0,"measurementsMade":5,"pressureFinal":0.0,"pressureHigh":0.0,"pressureHighOld":0.0,"pressureInitial":0.0,"pressureLow":0.0,"resultCalorimeter":0.0,"temperatureCage":0.0,"temperatureCalo":0.0,"temperatureRoom":0.0,"timeElapsed":0.0,"timeStart":1476311068,"timeToEquilibrate":0.0,"timeToEquilibrateCurrent":0.0,"verificationStep":20205},"6":{"adsorptionCounter":0,"desorptionCounter":0,"experimentCommandsRequested":true,"experimentDose":0,"experimentGraphPoints":0,"experimentInProgress":false,"experimentPreviousStage":20101,"experimentRecording":false,"experimentStage":20101,"experimentStepStatus":20401,"experimentSubstepStage":20300,"experimentWaiting":false,"injectionAttemptCounter":0,"measurementsMade":6,"pressureFinal":0.0,"pressureHigh":0.0,"pressureHighOld":0.0,"pressureInitial":0.0,"pressureLow":0.0,"resultCalorimeter":0.0,"temperatureCage":0.0,"temperatureCalo":0.0,"temperatureRoom":0.0,"timeElapsed":0.0,"timeStart":1476311068,"timeToEquilibrate":0.0,"timeToEquilibrateCurrent":0.0,"verificationStep":20205},"7":{"adsorptionCounter":0,"desorptionCounter":0,"experimentCommandsRequested":true,"experimentDose":0,"experimentGraphPoints":0,"experimentInProgress":false,"experimentPreviousStage":20101,"experimentRecording":false,"experimentStage":20101,"experimentStepStatus":20401,"experimentSubstepStage":20300,"experimentWaiting":false,"injectionAttemptCounter":0,"measurementsMade":7,"pressureFinal":0.0,"pressureHigh":0.0,"pressureHighOld":0.0,"pressureInitial":0.0,"pressureLow":0.0,"resultCalorimeter":0.0,"temperatureCage":0.0,"temperatureCalo":0.0,"temperatureRoom":0.0,"timeElapsed":0.0,"timeStart":1476311068,"timeToEquilibrate":0.0,"timeToEquilibrateCurrent":0.0,"verificationStep":20205},"8":{"adsorptionCounter":0,"desorptionCounter":0,"experimentCommandsRequested":true,"experimentDose":0,"experimentGraphPoints":0,"experimentInProgress":false,"experimentPreviousStage":20101,"experimentRecording":false,"experimentStage":20101,"experimentStepStatus":20401,"experimentSubstepStage":20300,"experimentWaiting":false,"injectionAttemptCounter":0,"measurementsMade":8,"pressureFinal":0.0,"pressureHigh":0.0,"pressureHighOld":0.0,"pressureInitial":0.0,"pressureLow":0.0,"resultCalorimeter":0.0,"temperatureCage":0.0,"temperatureCalo":0.0,"temperatureRoom":0.0,"timeElapsed":0.0,"timeStart":1476311068,"timeToEquilibrate":0.0,"timeToEquilibrateCurrent":0.0,"verificationStep":20205},"9":{"adsorptionCounter":0,"desorptionCounter":0,"experimentCommandsRequested":true,"experimentDose":0,"experimentGraphPoints":0,"experimentInProgress":false,"experimentPreviousStage":20101,"experimentRecording":false,"experimentStage":20101,"experimentStepStatus":20401,"experimentSubstepStage":20300,"experimentWaiting":false,"injectionAttemptCounter":0,"measurementsMade":9,"pressureFinal":0.0,"pressureHigh":0.0,"pressureHighOld":0.0,"pressureInitial":0.0,"pressureLow":0.0,"resultCalorimeter":0.0,"temperatureCage":0.0,"temperatureCalo":0.0,"temperatureRoom":0.0,"timeElapsed":0.0,"timeStart":1476311068,"timeToEquilibrate":0.0,"timeToEquilibrateCurrent":0.0,"verificationStep":20205}}
-- 00:26:57.109 DEBUG3: 			Exit thread 1972
-- 00:27:02.000 INFO:  accepted new socket: [::1]:58726
-- 00:27:02.000 DEBUG2: 		Enter thread for socket2016
-- 00:27:02.000 DEBUG: 2016 request was: \nGET /api/experimentdata?measurements=9&start=1476311068 HTTP/1.1
+- 00:26:57.203 DEBUG2: 		Exit thread
+- 00:27:02.063 DEBUG2: 		Enter thread
+- 00:27:02.063 DEBUG: 908 request was: \nGET /api/experimentdata?measurements=9&start=1476311068 HTTP/1.1
 Accept: application/json
 
 
-- 00:27:02.000 DEBUG: 2016 response sent: \nHTTP/1.1 200 OK
+- 00:27:02.063 DEBUG: 908 response sent: \nHTTP/1.1 200 OK
 Date: Wed, 12 Oct 2016 22:27:02 GMT
 Server: Kalel Server
 Connection: close
@@ -59,14 +53,13 @@ Content-Type: application/json
 Content-Length: 693
 
 {"10":{"adsorptionCounter":0,"desorptionCounter":0,"experimentCommandsRequested":true,"experimentDose":0,"experimentGraphPoints":0,"experimentInProgress":false,"experimentPreviousStage":20101,"experimentRecording":false,"experimentStage":20101,"experimentStepStatus":20401,"experimentSubstepStage":20300,"experimentWaiting":false,"injectionAttemptCounter":0,"measurementsMade":10,"pressureFinal":0.0,"pressureHigh":0.0,"pressureHighOld":0.0,"pressureInitial":0.0,"pressureLow":0.0,"resultCalorimeter":0.0,"temperatureCage":0.0,"temperatureCalo":0.0,"temperatureRoom":0.0,"timeElapsed":0.0,"timeStart":1476311068,"timeToEquilibrate":0.0,"timeToEquilibrateCurrent":0.0,"verificationStep":20205}}
-- 00:27:02.000 DEBUG3: 			Exit thread 2016
-- 00:27:06.140 INFO:  accepted new socket: [::1]:58727
-- 00:27:06.140 DEBUG2: 		Enter thread for socket2020
-- 00:27:06.140 DEBUG: 2020 request was: \nGET /api/experimentdata?measurements=10&start=1476311068 HTTP/1.1
+- 00:27:02.078 DEBUG2: 		Exit thread
+- 00:27:06.203 DEBUG2: 		Enter thread
+- 00:27:06.203 DEBUG: 880 request was: \nGET /api/experimentdata?measurements=10&start=1476311068 HTTP/1.1
 Accept: application/json
 
 
-- 00:27:06.140 DEBUG: 2020 response sent: \nHTTP/1.1 200 OK
+- 00:27:06.203 DEBUG: 880 response sent: \nHTTP/1.1 200 OK
 Date: Wed, 12 Oct 2016 22:27:06 GMT
 Server: Kalel Server
 Connection: close
@@ -74,14 +67,13 @@ Content-Type: application/json
 Content-Length: 4
 
 null
-- 00:27:06.140 DEBUG3: 			Exit thread 2020
-- 00:27:09.203 INFO:  accepted new socket: [::1]:58728
-- 00:27:09.203 DEBUG2: 		Enter thread for socket2036
-- 00:27:09.219 DEBUG: 2036 request was: \nGET /api/experimentdata?measurements=10&start=1476311068 HTTP/1.1
+- 00:27:06.203 DEBUG2: 		Exit thread
+- 00:27:09.266 DEBUG2: 		Enter thread
+- 00:27:09.266 DEBUG: 1052 request was: \nGET /api/experimentdata?measurements=10&start=1476311068 HTTP/1.1
 Accept: application/json
 
 
-- 00:27:09.219 DEBUG: 2036 response sent: \nHTTP/1.1 200 OK
+- 00:27:09.282 DEBUG: 1052 response sent: \nHTTP/1.1 200 OK
 Date: Wed, 12 Oct 2016 22:27:09 GMT
 Server: Kalel Server
 Connection: close
@@ -89,14 +81,13 @@ Content-Type: application/json
 Content-Length: 4
 
 null
-- 00:27:09.219 DEBUG3: 			Exit thread 2036
-- 00:27:10.015 INFO:  accepted new socket: [::1]:58729
-- 00:27:10.015 DEBUG2: 		Enter thread for socket2028
-- 00:27:10.015 DEBUG: 2028 request was: \nGET /api/experimentdata?measurements=10&start=1476311068 HTTP/1.1
+- 00:27:09.282 DEBUG2: 		Exit thread
+- 00:27:10.078 DEBUG2: 		Enter thread
+- 00:27:10.078 DEBUG: 748 request was: \nGET /api/experimentdata?measurements=10&start=1476311068 HTTP/1.1
 Accept: application/json
 
 
-- 00:27:10.015 DEBUG: 2028 response sent: \nHTTP/1.1 200 OK
+- 00:27:10.078 DEBUG: 748 response sent: \nHTTP/1.1 200 OK
 Date: Wed, 12 Oct 2016 22:27:10 GMT
 Server: Kalel Server
 Connection: close
@@ -104,14 +95,13 @@ Content-Type: application/json
 Content-Length: 4
 
 null
-- 00:27:10.015 DEBUG3: 			Exit thread 2028
-- 00:27:12.937 INFO:  accepted new socket: [::1]:58730
-- 00:27:12.937 DEBUG2: 		Enter thread for socket900
-- 00:27:12.937 DEBUG: 900 request was: \nGET /api/experimentdata?measurements=10&start=1476311068 HTTP/1.1
+- 00:27:10.078 DEBUG2: 		Exit thread
+- 00:27:12.000 DEBUG2: 		Enter thread
+- 00:27:12.000 DEBUG: 1016 request was: \nGET /api/experimentdata?measurements=10&start=1476311068 HTTP/1.1
 Accept: application/json
 
 
-- 00:27:12.937 DEBUG: 900 response sent: \nHTTP/1.1 200 OK
+- 00:27:12.000 DEBUG: 1016 response sent: \nHTTP/1.1 200 OK
 Date: Wed, 12 Oct 2016 22:27:12 GMT
 Server: Kalel Server
 Connection: close
@@ -119,14 +109,13 @@ Content-Type: application/json
 Content-Length: 4
 
 null
-- 00:27:12.937 DEBUG3: 			Exit thread 900
-- 00:27:14.844 INFO:  accepted new socket: [::1]:58731
-- 00:27:14.844 DEBUG2: 		Enter thread for socket1964
-- 00:27:14.844 DEBUG: 1964 request was: \nGET /api/experimentdata?measurements=10&start=1476311068 HTTP/1.1
+- 00:27:12.000 DEBUG2: 		Exit thread
+- 00:27:14.907 DEBUG2: 		Enter thread
+- 00:27:14.907 DEBUG: 1004 request was: \nGET /api/experimentdata?measurements=10&start=1476311068 HTTP/1.1
 Accept: application/json
 
 
-- 00:27:14.859 DEBUG: 1964 response sent: \nHTTP/1.1 200 OK
+- 00:27:14.922 DEBUG: 1004 response sent: \nHTTP/1.1 200 OK
 Date: Wed, 12 Oct 2016 22:27:14 GMT
 Server: Kalel Server
 Connection: close
@@ -134,14 +123,13 @@ Content-Type: application/json
 Content-Length: 4
 
 null
-- 00:27:14.859 DEBUG3: 			Exit thread 1964
-- 00:27:17.219 INFO:  accepted new socket: [::1]:58732
-- 00:27:17.219 DEBUG2: 		Enter thread for socket1580
-- 00:27:17.219 DEBUG: 1580 request was: \nGET /api/experimentdata?measurements=10&start=1476311068 HTTP/1.1
+- 00:27:14.922 DEBUG2: 		Exit thread
+- 00:27:17.282 DEBUG2: 		Enter thread
+- 00:27:17.282 DEBUG: 1044 request was: \nGET /api/experimentdata?measurements=10&start=1476311068 HTTP/1.1
 Accept: application/json
 
 
-- 00:27:17.219 DEBUG: 1580 response sent: \nHTTP/1.1 200 OK
+- 00:27:17.282 DEBUG: 1044 response sent: \nHTTP/1.1 200 OK
 Date: Wed, 12 Oct 2016 22:27:17 GMT
 Server: Kalel Server
 Connection: close
@@ -149,14 +137,13 @@ Content-Type: application/json
 Content-Length: 4
 
 null
-- 00:27:17.219 DEBUG3: 			Exit thread 1580
-- 00:27:19.234 INFO:  accepted new socket: [::1]:58735
-- 00:27:19.234 DEBUG2: 		Enter thread for socket1236
-- 00:27:19.234 DEBUG: 1236 request was: \nGET /api/experimentdata?measurements=10&start=1476311068 HTTP/1.1
+- 00:27:17.282 DEBUG2: 		Exit thread
+- 00:27:19.297 DEBUG2: 		Enter thread
+- 00:27:19.297 DEBUG: 1056 request was: \nGET /api/experimentdata?measurements=10&start=1476311068 HTTP/1.1
 Accept: application/json
 
 
-- 00:27:19.234 DEBUG: 1236 response sent: \nHTTP/1.1 200 OK
+- 00:27:19.297 DEBUG: 1056 response sent: \nHTTP/1.1 200 OK
 Date: Wed, 12 Oct 2016 22:27:19 GMT
 Server: Kalel Server
 Connection: close
@@ -164,14 +151,13 @@ Content-Type: application/json
 Content-Length: 4
 
 null
-- 00:27:19.234 DEBUG3: 			Exit thread 1236
-- 00:27:50.922 INFO:  accepted new socket: [::1]:58740
-- 00:27:50.922 DEBUG2: 		Enter thread for socket1964
-- 00:27:50.937 DEBUG: 1964 request was: \nGET /api/experimentdata?measurements=10&start=1476311068 HTTP/1.1
+- 00:27:19.313 DEBUG2: 		Exit thread
+- 00:27:50.985 DEBUG2: 		Enter thread
+- 00:27:50.985 DEBUG: 1040 request was: \nGET /api/experimentdata?measurements=10&start=1476311068 HTTP/1.1
 Accept: application/json
 
 
-- 00:27:50.937 DEBUG: 1964 response sent: \nHTTP/1.1 200 OK
+- 00:27:50.000 DEBUG: 1040 response sent: \nHTTP/1.1 200 OK
 Date: Wed, 12 Oct 2016 22:27:50 GMT
 Server: Kalel Server
 Connection: close
@@ -179,5 +165,4 @@ Content-Type: application/json
 Content-Length: 4
 
 null
-- 00:27:50.937 DEBUG3: 			Exit thread 1964
-- 00:28:48.953 DEBUG1: 	Leaving accept loop
+- 00:27:50.000 DEBUG2: 		Exit thread

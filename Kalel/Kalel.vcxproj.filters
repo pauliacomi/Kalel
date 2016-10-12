@@ -312,6 +312,9 @@
     <ClInclude Include="..\Kalel Shared\Com Classes\Serialization.h">
       <Filter>Header Files\Commmon\Com Classes</Filter>
     </ClInclude>
+    <ClInclude Include="..\Kalel Shared\Netcode\http_helpers.h">
+      <Filter>Header Files\Commmon\Netcode</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainFrm.cpp">
@@ -454,6 +457,9 @@
     </ClCompile>
     <ClCompile Include="..\Kalel Shared\unicodeConv.cpp">
       <Filter>Source Files\Commmon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Kalel Shared\Netcode\http_helpers.cpp">
+      <Filter>Source Files\Commmon\Netcode</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

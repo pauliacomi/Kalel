@@ -213,6 +213,7 @@
     <ClInclude Include="..\Kalel Shared\Netcode\base64.h" />
     <ClInclude Include="..\Kalel Shared\Netcode\Client.h" />
     <ClInclude Include="..\Kalel Shared\Netcode\http_define.h" />
+    <ClInclude Include="..\Kalel Shared\Netcode\http_helpers.h" />
     <ClInclude Include="..\Kalel Shared\Netcode\http_request.h" />
     <ClInclude Include="..\Kalel Shared\Netcode\json.hpp" />
     <ClInclude Include="..\Kalel Shared\Netcode\Netcode Resources.h" />
@@ -275,6 +276,7 @@
     <ClCompile Include="..\Kalel Shared\Com Classes\ManualActionParam.cpp" />
     <ClCompile Include="..\Kalel Shared\Netcode\base64.cpp" />
     <ClCompile Include="..\Kalel Shared\Netcode\Client.cpp" />
+    <ClCompile Include="..\Kalel Shared\Netcode\http_helpers.cpp" />
     <ClCompile Include="..\Kalel Shared\Netcode\Server.cpp" />
     <ClCompile Include="..\Kalel Shared\Netcode\Socket.cpp" />
     <ClCompile Include="..\Kalel Shared\Netcode\stdHelpers.cpp" />

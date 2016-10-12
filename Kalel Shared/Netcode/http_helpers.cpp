@@ -1,4 +1,5 @@
 #include "http_helpers.h"
+#include "http_define.h"
 
 #include <time.h>
 
@@ -40,4 +41,26 @@ std::string GMTtime(int format)
 		return std::string(asctime_remove_nl) + " GMT";
 	}
 	return std::string();
+}
+
+
+
+std::string ParseMethod(const std::string & method)
+{
+	if (method == http::method::get) {		
+		return http::method::get;
+	}
+	else if (method == http::method::post) {
+		return http::method::post;
+	}
+	else if (method == http::method::put) {
+		return http::method::put;
+	}
+	else if (method == http::method::del) {
+		return http::method::del;
+	}
+	else
+	{
+		return std::string();
+	}
 }

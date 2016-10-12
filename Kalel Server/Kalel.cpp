@@ -144,7 +144,8 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 		
 		std::deque<std::shared_ptr<ExperimentData>>::reverse_iterator it;
 
-		if (req->params_.at("start").empty() || 
+		if (req->params_.empty()			 ||
+			req->params_.at("start").empty() || 
 			req->params_.at("measurements").empty())
 		{
 			it = storageVectors.dataCollection.rend();

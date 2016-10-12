@@ -7,3 +7,6 @@
 
 // Get time in GMT format
 std::string GMTtime(int format);
+
+// Gets the method of the request
+std::string ParseMethod(const std::string &method);
