@@ -12,27 +12,24 @@
 #include <thread>
 #include <functional>
 
-class Server : Socket
+class Server
 {
 public:
-	Server();
+	// If no port specified, server defaults to http (80)
+	Server(PCSTR port = "http");
 	~Server();
 
 	void SetLogs(std::vector<std::string>& vct);
 
-	// If no port specified, server defaults to http (80)
-	void Listen(PCSTR port = "http");
 	void Accept(std::function<void(http_request*, http_response*)> r);
 
 protected:
-	struct addrinfo *result;							// Pointer to the result address
-	std::vector<SOCKET> socketCollection;				// The list of socket threads
+	Socket listeningSocket;
+	
 	std::atomic_bool accepting;							// Powers the main loop
-	void AcceptLoop();									// Function started as a thread to listen to incoming connections
-	unsigned Process(SOCKET sock);						// Function started when a socket connects
+	unsigned AcceptLoop();								// Function started as a thread to listen to incoming connections
+	unsigned Process(std::unique_ptr<Socket> sock);		// Function started when a socket connects
 	std::thread acceptThread;
-	std::exception_ptr teptr;
-
 	std::function<void(http_request*, http_response*)> proc_func_;
 };
 

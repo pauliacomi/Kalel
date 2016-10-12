@@ -1,11 +1,11 @@
 #include "../Forcelib.h"
 #include "Server.h"
 
-#include "Netcode Resources.h"
+#include "http_helpers.h"
 #include "URLHelper.h"
+#include "stdHelpers.h"
 #include "base64.h"
-
-#define NO_OF_CONN		5      /* Passed to listen() */
+#include "Netcode Resources.h"
 
 // Logging functionality
 #include "../log.h"	
@@ -14,10 +14,8 @@
 
 #include <sstream>
 
-Server::Server()
+Server::Server(PCSTR port)
 	: accepting{ false }
-	, teptr{ nullptr }
-	, result{ nullptr }
 {
 #ifdef FILE_LOGGING
 
@@ -26,6 +24,13 @@ Server::Server()
 	fopen_s(&f, FILE_LOGGING, "w");
 	Output2FILE::Stream() = f;
 
+#endif // FILE_LOGGING
+
+	// Listen on the socket
+	listeningSocket.Listen(port);
+
+#ifdef FILE_LOGGING
+	FILE_LOG(logINFO) << LOG_LISTENING << listeningSocket.GetSocket();
 #endif // FILE_LOGGING
 }
 
@@ -38,83 +43,16 @@ Server::~Server()
 	{
 		acceptThread.join();
 	}
-
-	// Free result structure in case we throw
-	if (result != nullptr) {
-		freeaddrinfo(result);
-	}
 }
 
 void Server::SetLogs(std::vector<std::string> & vct)
 {
 	StreamLog::ReportingLevel() = LOG_LEVEL;
 	Output2vector::Stream() = &vct;
+
+	STREAM_LOG(logINFO) << LOG_LISTENING << listeningSocket.GetSocket();
 }
 
-
-void Server::Listen(PCSTR port)
-{
-	// Create the address info struct
-	struct addrinfo hints;									// The requested address
-
-	memset(&hints, 0, sizeof hints);						// Fill addrinfo with zeroes
-	hints.ai_family = AF_UNSPEC;							// IPv4/IPv6 family
-	hints.ai_socktype = SOCK_STREAM;						// Stream socket
-	hints.ai_protocol = IPPROTO_TCP;						// Using TCP protocol
-	hints.ai_flags = AI_PASSIVE;							// Caller intends to use the returned socket address structure in a call to the bind function
-
-	
-	// Resolve the local address and port to be used by the server
-	if (getaddrinfo(NULL, port, &hints, &result) != 0) {
-		stringex.set(ERR_GETADDRINFO);
-		throw stringex;
-	}
-
-	// Loop through all the results and bind to the first we can
-	struct addrinfo * loopAddr = result;
-	for (loopAddr; loopAddr != NULL; loopAddr = loopAddr->ai_next)
-	{
-		// Create the socket
-		sock = socket(loopAddr->ai_family, loopAddr->ai_socktype, loopAddr->ai_protocol);
-		if (sock == INVALID_SOCKET) {
-			continue;
-		}
-
-		// Enable the socket to reuse the address, lose "Address already in use" error message
-		int reuseaddr = 1; /* True */
-		if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (const char *)&reuseaddr, sizeof(int)) == SOCKET_ERROR) {
-			continue;
-		}
-		
-		// Bind to the computer IP address - setup the TCP listening socket
-		if (bind(sock, loopAddr->ai_addr, (int)loopAddr->ai_addrlen) == SOCKET_ERROR) {
-			continue;
-		}
-
-		break;	// if we got here we are connected
-	}
-
-	if (loopAddr == NULL){
-		stringex.set(ERR_CREATEBIND);
-		throw stringex;
-	}
-
-	// clears no longer needed address info
-	freeaddrinfo(result);
-	result = nullptr;
-
-	// Listen to newly created socket
-	if (listen(sock, NO_OF_CONN) == SOCKET_ERROR) {
-		stringex.set(ERR_LISTENING);
-		throw stringex;
-	}
-
-	STREAM_LOG(logINFO) << LOG_LISTENING << sock;
-
-#ifdef FILE_LOGGING
-	FILE_LOG(logINFO) << LOG_LISTENING << sock;
-#endif // FILE_LOGGING
-}
 
 
 void Server::Accept(std::function<void(http_request*, http_response*)> r)
@@ -130,90 +68,62 @@ void Server::Accept(std::function<void(http_request*, http_response*)> r)
 
 
 
-void Server::AcceptLoop()
+unsigned Server::AcceptLoop()
 {
+
 #ifdef FILE_LOGGING
 	FILE_LOG(logDEBUG1) << "Entering accept loop";
 #endif // FILE_LOGGING
 
-	struct timeval tv;				// Time to run loop
-	tv.tv_sec = 1;					// 1 seconds
-	tv.tv_usec = 0;					// 0 microseconds
+	listeningSocket.Accept_PrimeSelect();
+	
+	struct timeval tv;								// Time to run loop
+	tv.tv_sec = 1;									// 1 seconds
+	tv.tv_usec = 0;									// 0 microseconds
 
-	fd_set master;					// master file descriptor list
-	fd_set readfds;					// Set of listening sockets
-	FD_ZERO(&master);				// Zero them out
-	FD_ZERO(&readfds);				// Zero them out
-	FD_SET(sock, &master);			// Add only main socket
-
+	SOCKET s;
+	std::string theirIP;													// The ip in string form
+	
 	while (accepting) {
 
-		readfds = master;
-		int selectResult = select(sock + 1, &readfds, NULL, NULL, &tv);
-
-		if ((selectResult < 0) && (errno != EINTR))	{			// Check to see if select returned correctly
-			try
-			{
-				stringex.set(ERR_ACCEPT);
-				throw stringex;
-			}
-			catch (const std::exception& e)
-			{
-				teptr = std::current_exception();
-				STREAM_LOG(logERROR) << e.what();
+		try
+		{
+			theirIP = listeningSocket.Accept(s, tv);
+			if (theirIP.empty()) {
+				continue;
 			}
 		}
-
-		if (FD_ISSET(sock, &readfds))							// Check if the socket is in the set
+		catch (const std::exception& e)
 		{
-			// handle new connections
+			STREAM_LOG(logERROR) << e.what();
+			return 1;
+		}
 
-			SOCKET clientSocket;								// Create a client socket
-			struct sockaddr_storage theirAddr;					// The incoming address
-			socklen_t size = sizeof theirAddr;					// Size of address struct
-			memset(&theirAddr, 0, size);						// Fill addrinfo with zeroes
-
-			clientSocket = accept(sock, (struct sockaddr*)&theirAddr, &size);
-			//socketCollection.push_back(clientSocket);
-
-			if (clientSocket == INVALID_SOCKET) {				// Check for valid socket
-				try
-				{
-					stringex.set(ERR_ACCEPT);
-					throw stringex;
-				}
-				catch (const std::exception& e)
-				{
-					teptr = std::current_exception();
-					STREAM_LOG(logERROR) << e.what();
-				}
-			}
-			else {												// If valid, start a new thread to handle the requests
-
-				STREAM_LOG(logINFO) << LOG_ACCEPTED_SOCK << GetIP(theirAddr);
+		STREAM_LOG(logINFO) << LOG_ACCEPTED_SOCK << theirIP;
 #ifdef FILE_LOGGING
-				FILE_LOG(logINFO) << LOG_ACCEPTED_SOCK << GetIP(theirAddr);
+		FILE_LOG(logINFO) << LOG_ACCEPTED_SOCK << theirIP;
 #endif // FILE_LOGGING
 
-				std::thread newThread = std::thread(&Server::Process, this, clientSocket);
-				newThread.detach();
-			}
-		}
+		std::unique_ptr<Socket> acceptedSocket = std::make_unique<Socket>(s);			// Create a client socket pointer from the accepted SOCKET
+		std::thread(&Server::Process, this, std::move(acceptedSocket)).detach();		// Start the request processing thread
 	}
 
 #ifdef FILE_LOGGING
 	FILE_LOG(logDEBUG1) << "Leaving accept loop";
 #endif // FILE_LOGGING
+
+	return 0;
 }
 
 
-unsigned Server::Process(SOCKET l_sock)
+unsigned Server::Process(std::unique_ptr<Socket> sock)
 {
 
-	STREAM_LOG(logDEBUG2) << "Enter thread for socket" << l_sock;
+	STREAM_LOG(logDEBUG2) << "Enter thread for socket" << sock->GetSocket();
 #ifdef FILE_LOGGING
-	FILE_LOG(logDEBUG2) << "Enter thread for socket" << l_sock;
+	FILE_LOG(logDEBUG2) << "Enter thread for socket" << sock->GetSocket();
 #endif // FILE_LOGGING
+
 
 	//
 	//	Get the request
@@ -223,7 +133,7 @@ unsigned Server::Process(SOCKET l_sock)
 	std::string line;
 
 	try	{
-		line = ReceiveLine(l_sock);
+		line = sock->ReceiveLine();
 	}
 	catch (const std::exception& e)	{
 		STREAM_LOG(logERROR) << e.what();
@@ -232,13 +142,7 @@ unsigned Server::Process(SOCKET l_sock)
 	request += line;
 
 	if (line.empty()) {								// Check for valid request
-		try	{
-			Close(l_sock);
-		}
-		catch (const std::exception& e)	{
-			STREAM_LOG(logERROR) << e.what();
-		}
-		return 1;
+		return 10;
 	}
 
 	http_request req;
@@ -272,14 +176,14 @@ unsigned Server::Process(SOCKET l_sock)
 		try
 		{			
 			if (!messageReceived) {					// not attempting to receive message body, regular line-based receive 
-				line = ReceiveLine(l_sock);
+				line = sock->ReceiveLine();
 			}
 			else {									// a message body is specified using "Content-Length" header, will receive the required number of bytes
 				std::stringstream buffer(req.content_length_);
 				u_long bytes;
 				buffer >> bytes;
 
-				line = ReceiveBytes(l_sock, bytes);
+				line = sock->ReceiveBytes(bytes);
 
 				req.entity_ = line;					// save the message body
 				request += line;					// log the message body
@@ -341,9 +245,9 @@ unsigned Server::Process(SOCKET l_sock)
 		}
 	}
 
-	STREAM_LOG(logDEBUG) << l_sock << LOG_REQUEST << request;
+	STREAM_LOG(logDEBUG) << sock->GetSocket() << LOG_REQUEST << request;
 #ifdef FILE_LOGGING
-	FILE_LOG(logDEBUG) << l_sock << LOG_REQUEST << request;
+	FILE_LOG(logDEBUG) << sock->GetSocket() << LOG_REQUEST << request;
 #endif // FILE_LOGGING
 
 	//
@@ -351,24 +255,13 @@ unsigned Server::Process(SOCKET l_sock)
 	//
 
 	http_response resp;
-	proc_func_(&req, &resp);	
+	proc_func_(&req, &resp);
 
-	std::stringstream str_str;
-	str_str << resp.answer_.size();
-
-	// Get time in GMT format
-	time_t ltime;
-	time(&ltime);
-	tm gmt;
-	gmtime_s(&gmt, &ltime);
-	char asctime_remove_nl[26];
-	asctime_s(asctime_remove_nl, 26, &gmt);
-	asctime_remove_nl[24] = 0;
-
-	resp.server_			= "Kalel Server";								//should fill
-	resp.date_				= std::string(asctime_remove_nl) + " GMT";
+	// Fill remaining headers
+	resp.server_			= "Kalel Server";
+	resp.date_				= GMTtime(RFC_1123);
 	resp.connection_		= "close";
-	resp.content_length_	= str_str.str();
+	resp.content_length_	= StringFrom(resp.answer_.size());
 
 
 	//
@@ -379,32 +272,32 @@ unsigned Server::Process(SOCKET l_sock)
 
 	try
 	{
-		response += Send(l_sock, "HTTP/1.1 ");
+		response += sock->Send("HTTP/1.1 ");
 
 		if (messageToReceive && messageReceived && req.entity_.empty()) {
 			resp.status_ = http::responses::bad_request;
-			response += SendLine(l_sock, resp.status_);
+			response += sock->SendLine(resp.status_);
 		}
 		else
 		{
 			if (!req.auth_realm_.empty()) {
-				response += SendLine(l_sock, http::responses::unauthorised);
-				response += Send(l_sock, http::header::www_authenticate + "Basic Realm=\"");
-				response += Send(l_sock, req.auth_realm_);
-				response += SendLine(l_sock, "\"");
+				response += sock->SendLine(http::responses::unauthorised);
+				response += sock->Send(http::header::www_authenticate + "Basic Realm=\"");
+				response += sock->Send(req.auth_realm_);
+				response += sock->SendLine("\"");
 			}
 			else {
 
-				response += SendLine(l_sock, resp.status_);
+				response += sock->SendLine(resp.status_);
 			}
 
-			response += SendLine(l_sock, http::header::date + resp.date_);
-			response += SendLine(l_sock, http::header::server + resp.server_);
-			response += SendLine(l_sock, http::header::connection + resp.connection_);
-			response += SendLine(l_sock, http::header::content_type + resp.content_type_);
-			response += SendLine(l_sock, http::header::content_length + resp.content_length_);
-			response += SendLine(l_sock, "");
-			response += Send(l_sock, resp.answer_);
+			response += sock->SendLine(http::header::date + resp.date_);
+			response += sock->SendLine(http::header::server + resp.server_);
+			response += sock->SendLine(http::header::connection + resp.connection_);
+			response += sock->SendLine(http::header::content_type + resp.content_type_);
+			response += sock->SendLine(http::header::content_length + resp.content_length_);
+			response += sock->SendLine("");
+			response += sock->Send(resp.answer_);
 		}
 	}
 	catch (const std::exception& e)
@@ -412,26 +305,19 @@ unsigned Server::Process(SOCKET l_sock)
 		STREAM_LOG(logERROR) << e.what();
 	}
 	
-	STREAM_LOG(logDEBUG) << l_sock << LOG_RESPONSE << response;
+	STREAM_LOG(logDEBUG) << sock->GetSocket() << LOG_RESPONSE << response;
 #ifdef FILE_LOGGING
-	FILE_LOG(logDEBUG) << l_sock << LOG_RESPONSE << response;
+	FILE_LOG(logDEBUG) << sock->GetSocket() << LOG_RESPONSE << response;
 #endif // FILE_LOGGING
 
 	//
 	// Close connection socket
 	//
 
-	STREAM_LOG(logDEBUG3) << "Exit thread " << l_sock;
+	STREAM_LOG(logDEBUG3) << "Exit thread " << sock->GetSocket();
 #ifdef FILE_LOGGING
-	FILE_LOG(logDEBUG3) << "Exit thread " << l_sock;
+	FILE_LOG(logDEBUG3) << "Exit thread " << sock->GetSocket();
 #endif // FILE_LOGGING
-
-	try	{
-		CloseGracefully(l_sock);
-	}
-	catch (const std::exception& e)	{
-		STREAM_LOG(logERROR) << e.what();
-	}
 
 	return 0;
 }

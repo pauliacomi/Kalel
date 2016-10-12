@@ -243,6 +243,9 @@
     <ClInclude Include="..\Kalel Shared\Netcode\http_define.h">
       <Filter>Header Files\Common\Netcode</Filter>
     </ClInclude>
+    <ClInclude Include="..\Kalel Shared\Netcode\http_helpers.h">
+      <Filter>Header Files\Common\Netcode</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Kalel Server.cpp">
@@ -481,6 +484,9 @@
     </ClCompile>
     <ClCompile Include="..\Kalel Shared\unicodeConv.cpp">
       <Filter>Source Files\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Kalel Shared\Netcode\http_helpers.cpp">
+      <Filter>Source Files\Common\Netcode</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

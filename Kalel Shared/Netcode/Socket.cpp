@@ -3,9 +3,12 @@
 
 #include "Netcode Resources.h"
 
+#define NO_OF_CONN		5      /* Passed to listen() */
+
 int Socket::nofSockets = 0;
 
-void Socket::Start() {
+void Socket::Start() 
+{
 	if (!nofSockets) {
 
 #ifdef _WIN32
@@ -32,6 +35,8 @@ void Socket::Start() {
 
 Socket::Socket()
 	: sock{ INVALID_SOCKET }
+	, master{ nullptr }
+	, readfds{ nullptr }
 {
 	Start();
 }
@@ -44,7 +49,13 @@ Socket::Socket(SOCKET sk)
 
 Socket::~Socket()
 {
-	Close(sock);
+	CloseGracefully();
+
+	if (master)
+	{
+		delete master;
+		delete readfds;
+	}
 
 #ifdef _WIN32
 	--nofSockets;
@@ -53,9 +64,167 @@ Socket::~Socket()
 #endif
 }
 
+SOCKET Socket::GetSocket()
+{
+	return sock;
+}
 
 
-std::string Socket::Send(SOCKET l_sock, const std::string& sendbuf)
+void Socket::Listen(PCSTR port)
+{
+	// Create the address info struct
+	struct addrinfo hints;									// The requested address
+	struct addrinfo *result;								// Pointer to the result address
+
+	memset(&hints, 0, sizeof hints);						// Fill addrinfo with zeroes
+	hints.ai_family = AF_UNSPEC;							// IPv4/IPv6 family
+	hints.ai_socktype = SOCK_STREAM;						// Stream socket
+	hints.ai_protocol = IPPROTO_TCP;						// Using TCP protocol
+	hints.ai_flags = AI_PASSIVE;							// Caller intends to use the returned socket address structure in a call to the bind function
+
+
+															// Resolve the local address and port to be used by the server
+	if (getaddrinfo(NULL, port, &hints, &result) != 0) {
+		stringex.set(ERR_GETADDRINFO);
+		throw stringex;
+	}
+
+	// Loop through all the results and bind to the first we can
+	struct addrinfo * loopAddr = result;
+	for (loopAddr; loopAddr != NULL; loopAddr = loopAddr->ai_next)
+	{
+		// Create the socket
+		sock = socket(loopAddr->ai_family, loopAddr->ai_socktype, loopAddr->ai_protocol);
+		if (sock == INVALID_SOCKET) {
+			continue;
+		}
+
+		// Enable the socket to reuse the address, lose "Address already in use" error message
+		int reuseaddr = 1; /* True */
+		if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (const char *)&reuseaddr, sizeof(int)) == SOCKET_ERROR) {
+			continue;
+		}
+
+		// Bind to the computer IP address - setup the TCP listening socket
+		if (bind(sock, loopAddr->ai_addr, (int)loopAddr->ai_addrlen) == SOCKET_ERROR) {
+			continue;
+		}
+
+		break;	// if we got here we are connected
+	}
+
+	if (loopAddr == NULL) {
+		freeaddrinfo(result);
+		stringex.set(ERR_CREATEBIND);
+		throw stringex;
+	}
+
+	// clears no longer needed address info
+	freeaddrinfo(result);
+
+	// Listen to newly created socket
+	if (listen(sock, NO_OF_CONN) == SOCKET_ERROR) {
+		stringex.set(ERR_LISTENING);
+		throw stringex;
+	}
+
+
+}
+
+void Socket::Accept_PrimeSelect()
+{
+	if (!master)
+	{
+		master = new fd_set;
+		readfds = new fd_set;
+		FD_ZERO(&*master);				// Zero master out
+		FD_ZERO(&*readfds);				// Zero read out
+		FD_SET(sock, &*master);			// Add only main socket
+	}
+}
+
+
+std::string Socket::Accept(SOCKET &clientSocket, timeval tv)
+{
+	*readfds = *master;
+	int selectResult = select(sock + 1, &*readfds, NULL, NULL, &tv);
+
+	if ((selectResult < 0) && (errno != EINTR)) {			// Check to see if select returned correctly
+		stringex.set(ERR_ACCEPT);
+		throw stringex;
+	}
+
+	if (FD_ISSET(sock, &*readfds))							// Check if the socket is in the set
+	{
+		// handle new connections
+
+		struct sockaddr_storage theirAddr;				// The incoming address
+		socklen_t size = sizeof theirAddr;				// Size of address struct
+		memset(&theirAddr, 0, size);					// Fill addrinfo with zeroes
+
+		clientSocket = accept(sock, (struct sockaddr*)&theirAddr, &size);
+
+		if (clientSocket ==  INVALID_SOCKET) {	// Check for valid socket
+			stringex.set(ERR_ACCEPT);
+			throw stringex;
+		}
+		else {											// If valid, return the new socket
+			return GetIP(theirAddr);
+		}
+	}
+	
+	return std::string();
+}
+
+unsigned Socket::Connect(PCSTR ip, PCSTR port)
+{
+	// Create the address info struct
+	struct addrinfo hints;									// The requested address
+	struct addrinfo *result;								// Pointer to the result address
+
+	memset(&hints, 0, sizeof hints);						// Fill addrinfo with zeroes
+	hints.ai_family = AF_UNSPEC;							// IPv4/IPv6 family
+	hints.ai_socktype = SOCK_STREAM;						// Stream socket
+	hints.ai_protocol = IPPROTO_TCP;						// Using TCP protocol
+	hints.ai_flags = AI_PASSIVE;							// Caller intends to use the returned socket address structure in a call to the bind function
+
+
+	// Resolve the local address and port to be used by the server
+	if (getaddrinfo(ip, port, &hints, &result) != 0) {
+		stringex.set(ERR_GETADDRINFO);
+		throw stringex;
+	}
+
+	// Loop through all the results and bind to the first we can
+	for (struct addrinfo * loopAddr = result; loopAddr != NULL; loopAddr = loopAddr->ai_next)
+	{
+		// Create the socket
+		sock = socket(loopAddr->ai_family, loopAddr->ai_socktype, loopAddr->ai_protocol);
+		if (sock == INVALID_SOCKET) {
+			continue;
+		}
+
+		// Connect to server.
+		if (connect(sock, loopAddr->ai_addr, (int)loopAddr->ai_addrlen) == SOCKET_ERROR) {
+			continue;
+		}
+
+		break;	// if we got here we are connected
+	}
+
+	// clears no longer needed address info
+	freeaddrinfo(result);
+
+	if (sock == INVALID_SOCKET) {
+		stringex.set(ERR_CONNECT);
+		throw stringex;
+	}
+
+	return 0;
+}
+
+
+std::string Socket::Send(const std::string& sendbuf)
 {
 	int bytesSent;											// Error result
 	int total{ 0 };											// how many bytes we've sent
@@ -64,9 +233,10 @@ std::string Socket::Send(SOCKET l_sock, const std::string& sendbuf)
 															// Send an initial buffer
 	while (total < (int)sendbuf.length())
 	{
-		bytesSent = send(l_sock, sendbuf.c_str() + total, length, 0);
+		bytesSent = send(sock, sendbuf.c_str() + total, length, 0);
 		if (bytesSent == SOCKET_ERROR) {
-			stringex.set(ERR_SEND);
+			std::string l = std::to_string(WSAGetLastError());
+			stringex.set(ERR_SEND + l);
 			throw stringex;
 		}
 		total += bytesSent;
@@ -81,16 +251,14 @@ std::string Socket::Send(SOCKET l_sock, const std::string& sendbuf)
 	return sendbuf;
 }
 
-std::string Socket::SendLine(SOCKET l_sock, const std::string& sendbuf)
+std::string Socket::SendLine(const std::string& sendbuf)
 {
 	std::string local = sendbuf;
 	local += '\n';
-	Send(l_sock, local);
-
-	return local;
+	return Send(local);
 }
 
-std::string Socket::Receive(SOCKET l_sock)
+std::string Socket::Receive()
 {
 	std::string ret;
 	char buf[1024];
@@ -99,14 +267,14 @@ std::string Socket::Receive(SOCKET l_sock)
 	while(true){
 		u_long arg = 0;
 
-		if (ioctlsocket(l_sock, FIONREAD, &arg) != 0)
+		if (ioctlsocket(sock, FIONREAD, &arg) != 0)
 			break;
 		if (arg == 0)
 			break;
 		if (arg > 1024)
 			arg = 1024;
 
-		received = recv(l_sock, buf, arg, 0);
+		received = recv(sock, buf, arg, 0);
 
 		switch (received) {
 		case 0: // not connected anymore;
@@ -130,7 +298,7 @@ std::string Socket::Receive(SOCKET l_sock)
 	return ret;
 }
 
-std::string Socket::ReceiveLine(SOCKET l_sock)
+std::string Socket::ReceiveLine()
 {
 	std::string ret;
 	int received;
@@ -138,7 +306,7 @@ std::string Socket::ReceiveLine(SOCKET l_sock)
 	while (true) {
 		char r;
 
-		received = recv(l_sock, &r, 1, 0);
+		received = recv(sock, &r, 1, 0);
 
 		switch (received) {
 		case 0: // not connected anymore;
@@ -161,7 +329,7 @@ std::string Socket::ReceiveLine(SOCKET l_sock)
 	}
 }
 
-std::string Socket::ReceiveBytes(SOCKET l_sock, u_long bytes)
+std::string Socket::ReceiveBytes(u_long bytes)
 {
 	std::string ret;
 	char buf[1024];
@@ -177,7 +345,7 @@ std::string Socket::ReceiveBytes(SOCKET l_sock, u_long bytes)
 			overflow = true;
 			break;
 		}
-		if (ioctlsocket(l_sock, FIONREAD, &arg) != 0) {
+		if (ioctlsocket(sock, FIONREAD, &arg) != 0) {
 			break;
 		}
 		if (arg == 0) {
@@ -191,7 +359,7 @@ std::string Socket::ReceiveBytes(SOCKET l_sock, u_long bytes)
 			arg = 1024;
 		}
 
-		received = recv(l_sock, buf, arg, 0);
+		received = recv(sock, buf, arg, 0);
 
 		switch (received) {
 		case 0: // not connected anymore;
@@ -218,12 +386,12 @@ std::string Socket::ReceiveBytes(SOCKET l_sock, u_long bytes)
 	return ret;
 }
 
-void Socket::Close(SOCKET &l_sock)
+void Socket::Close()
 {
-	if (l_sock != INVALID_SOCKET) {
+	if (sock != INVALID_SOCKET) {
 		
-		int status = closesocket(l_sock);
-		l_sock = INVALID_SOCKET;
+		int status = closesocket(sock);
+		sock = INVALID_SOCKET;
 
 		if (status == SOCKET_ERROR)
 		{
@@ -233,38 +401,38 @@ void Socket::Close(SOCKET &l_sock)
 	}
 }
 
-void Socket::CloseGracefully(SOCKET &l_sock)
+void Socket::CloseGracefully()
 {
-	if (l_sock != INVALID_SOCKET) {
+	if (sock != INVALID_SOCKET) {
 		int status = 0;
 
 #ifdef _WIN32
-		status = shutdown(l_sock, SD_SEND);
+		status = shutdown(sock, SD_SEND);
 		if (status == 0) {
-			status = closesocket(l_sock);
-			l_sock = INVALID_SOCKET;
+			status = closesocket(sock);
+			sock = INVALID_SOCKET;
 		}
 		else if (status == SOCKET_ERROR && WSAGetLastError() == WSAECONNRESET)
 		{
-			status = closesocket(l_sock);
-			l_sock = INVALID_SOCKET;
+			status = closesocket(sock);
+			sock = INVALID_SOCKET;
 		}
 #else
-		status = shutdown(l_sock, SHUT_RDWR);
+		status = shutdown(sock, SHUT_RDWR);
 		if (status == 0) {
-			status = close(l_sock);
-			l_sock = INVALID_SOCKET;
+			status = close(sock);
+			sock = INVALID_SOCKET;
 		}
-		else if (status == SOCKET_ERROR && WSAGetLastError() == WSAECONNRESET)
+		else if (status == SOCKET_ERROR && errno == ECONNRESET)
 		{
-			status = closesocket(l_sock);
-			l_sock = INVALID_SOCKET;
+			status = closesocket(sock);
+			sock = INVALID_SOCKET;
 		}
 #endif
 
 		if (status == SOCKET_ERROR)
 		{
-			std::string l = std::to_string(WSAGetLastError());
+			std::string l = std::to_string(WSAGetLastError());			/// wsaGetLastError is windows specific
 			stringex.set(ERR_CLOSESOCKET + l);
 			throw stringex;
 		}

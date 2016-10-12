@@ -48,16 +48,9 @@ Kalel::Kalel()
 	//
 	// Start server functionality
 	server.SetLogs(storageVectors.serverLogs);
-
 	auto func = std::bind(&Kalel::ServerProcessing, this, std::placeholders::_1, std::placeholders::_2);
-	try	{
-		server.Listen();
-		server.Accept(func);
-	}
-	catch (const std::exception& e) {
-		std::string err (e.what());
-		storageVectors.serverLogs.push_back("Fatal Error: Cannot listen to sockets, Details:" + err);
-	}
+	server.Accept(func);
+
 
 	// temp
 	time_t t = time(0);
@@ -75,11 +68,15 @@ Kalel::~Kalel()
 {
 }
 
-void Kalel::GetLogs(std::vector<std::string> &logs) {
-	logs.clear();
-	logs.insert(logs.begin(), storageVectors.serverLogs.begin(), storageVectors.serverLogs.end());
+void Kalel::GetLogs(std::vector<std::string> * &logs) {
+	logs = &storageVectors.serverLogs;
 }
 
+
+/*void Kalel::GetLogs(std::vector<std::string> &logs) {
+	logs.clear();
+	logs.insert(logs.begin(), storageVectors.serverLogs.begin(), storageVectors.serverLogs.end());
+}*/
 
 void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 
@@ -145,7 +142,7 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 		
 		// Figure out which range of data to send by looking at the time requested
 		
-		std::vector<std::shared_ptr<ExperimentData>>::reverse_iterator it;
+		std::deque<std::shared_ptr<ExperimentData>>::reverse_iterator it;
 
 		if (req->params_.at("start").empty() || 
 			req->params_.at("measurements").empty())

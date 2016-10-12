@@ -1,26 +1,33 @@
 #include "../Forcelib.h"
 #include "Client.h"
 
+#include "http_helpers.h"
+#include "stdHelpers.h"
 #include "URLHelper.h"
 #include "Netcode Resources.h"
-#include "../log.h"
+
+// Logging functionality
+#include "../log.h"	
+#define FILE_LOGGING	"clientlog.txt"		// Comment this line to disable file logging
+#define LOG_LEVEL		logDEBUG4			// Change the level of logging here
 
 #include <sstream>
-#include <bitset>         // std::bitset
 
 Client::Client()
-	: peer{ nullptr }
-	, result{ nullptr }
 {
+#ifdef FILE_LOGGING
+
+	FILELog::ReportingLevel() = LOG_LEVEL;
+	FILE * f;
+	fopen_s(&f, FILE_LOGGING, "w");
+	Output2FILE::Stream() = f;
+
+#endif // FILE_LOGGING
 }
 
 
 Client::~Client()
 {
-	// Free result structure in case we throw
-	if (result != nullptr){
-		freeaddrinfo(result);
-	}
 }
 
 
@@ -31,7 +38,6 @@ void Client::SetLogs(std::vector<std::string> & vct)
 }
 
 
-
 void Client::Request(std::function<void(http_request*)> req, std::function<void(http_response*)> resp, std::string ip, std::string port)
 {
 	processThread = std::thread(&Client::Process, this, ip, port, req, resp);
@@ -40,43 +46,24 @@ void Client::Request(std::function<void(http_request*)> req, std::function<void(
 
 
 unsigned Client::Process(std::string ip, std::string port, std::function<void(http_request*)> request_func_, std::function<void(http_response*)> response_func_){
-	// Create the address info struct
-	struct addrinfo hints;									// The requested address
+	
+	STREAM_LOG(logDEBUG2) << "Enter thread ";
+#ifdef FILE_LOGGING
+	FILE_LOG(logDEBUG2) << "Enter thread";
+#endif // FILE_LOGGING
 
-	memset(&hints, 0, sizeof hints);						// Fill addrinfo with zeroes
-	hints.ai_family = AF_UNSPEC;							// IPv4/IPv6 family
-	hints.ai_socktype = SOCK_STREAM;						// Stream socket
-	hints.ai_protocol = IPPROTO_TCP;						// Using TCP protocol
-	hints.ai_flags = AI_PASSIVE;							// Caller intends to use the returned socket address structure in a call to the bind function
+	// create socket and connect
 
-
-	// Resolve the local address and port to be used by the server
-	if (getaddrinfo(ip.c_str(), port.c_str(), &hints, &result) != 0) {
-		STREAM_LOG(logERROR) << ERR_GETADDRINFO;
-		return 1;
+	Socket l_sock;
+	try{
+		l_sock.Connect(ip.c_str(), port.c_str());
 	}
-
-	SOCKET l_sock = INVALID_SOCKET;
-
-	// Loop through all the results and bind to the first we can
-	for (struct addrinfo * loopAddr = result; loopAddr != NULL; loopAddr = loopAddr->ai_next)
+	catch (const std::exception& e)
 	{
-		// Create the socket
-		l_sock = socket(loopAddr->ai_family, loopAddr->ai_socktype, loopAddr->ai_protocol);
-		if (l_sock == INVALID_SOCKET) {
-			continue;
-		}
-
-		// Connect to server.
-		if (connect(l_sock, loopAddr->ai_addr, (int)loopAddr->ai_addrlen) == SOCKET_ERROR) {
-			continue;
-		}
-
-		break;	// if we got here we are connected
-	}
-
-	if (l_sock == INVALID_SOCKET) {
-		STREAM_LOG(logERROR) << ERR_CONNECT;
+		STREAM_LOG(logERROR) << e.what();
+#ifdef FILE_LOGGING
+		FILE_LOG(logERROR) << e.what();
+#endif // FILE_LOGGING
 		return 1;
 	}
 
@@ -87,43 +74,41 @@ unsigned Client::Process(std::string ip, std::string port, std::function<void(ht
 	http_request req;
 	request_func_(&req);
 
-	std::stringstream str_str;
-	str_str << req.entity_.size();
 
 	std::string reqUrl;
 	URLHelper::BuildReq(reqUrl, req.path_, req.params_);
 
-	req.content_length_ = str_str.str();
+	req.content_length_ = StringFrom(req.entity_.size());
 
 	std::string request;
 
 	try	{
-		request += Send(l_sock, req.method_ + " ");
-		request += Send(l_sock, reqUrl + " ");
-		request += SendLine(l_sock, "HTTP/1.1");
-		request += SendLine(l_sock, http::header::accept + req.accept_);
+		request += l_sock.Send(req.method_ + " ");
+		request += l_sock.Send(reqUrl + " ");
+		request += l_sock.SendLine("HTTP/1.1");
+		request += l_sock.SendLine(http::header::accept + req.accept_);
 		if (!req.entity_.empty()) {
-			request += SendLine(l_sock, http::header::content_length + req.content_length_);
-			request += SendLine(l_sock, http::header::content_type + req.content_type_);
+			request += l_sock.SendLine(http::header::content_length + req.content_length_);
+			request += l_sock.SendLine(http::header::content_type + req.content_type_);
 		}
-		request += SendLine(l_sock, "");
+		request += l_sock.SendLine("");
 		if (!req.entity_.empty()) {
-			request += Send(l_sock, req.entity_);
+			request += l_sock.Send(req.entity_);
 		}
 	}
 	catch (const std::exception& e)
 	{
 		STREAM_LOG(logERROR) << e.what();
-		try {
-			Close(l_sock);
-		}
-		catch (const std::exception& e) {
-			STREAM_LOG(logERROR) << e.what();
-		}
+#ifdef FILE_LOGGING
+		FILE_LOG(logERROR) << e.what();
+#endif // FILE_LOGGING
 		return 1;
 	}
-	
-	STREAM_LOG(logDEBUG) << LOG_REQUEST << request;
+
+	STREAM_LOG(logDEBUG) << l_sock.GetSocket() << LOG_REQUEST << request;
+#ifdef FILE_LOGGING
+	FILE_LOG(logDEBUG) << l_sock.GetSocket() << LOG_REQUEST << request;
+#endif // FILE_LOGGING
 
 	//
 	// receive
@@ -133,23 +118,19 @@ unsigned Client::Process(std::string ip, std::string port, std::function<void(ht
 	std::string line;
 
 	try {
-		line = ReceiveLine(l_sock);
+		line = l_sock.ReceiveLine();
 	}
 	catch (const std::exception& e)	{
 		STREAM_LOG(logERROR) << e.what();
+#ifdef FILE_LOGGING
+		FILE_LOG(logERROR) << e.what();
+#endif // FILE_LOGGING
+		return 1;
 	}
 
 	response += line;
 
 	if (line.empty()) {
-		freeaddrinfo(result);
-		result = nullptr;
-		try {
-			Close(l_sock);
-		}
-		catch (const std::exception& e) {
-			STREAM_LOG(logERROR) << e.what();
-		}
 		return 1;
 	}
 
@@ -171,14 +152,14 @@ unsigned Client::Process(std::string ip, std::string port, std::function<void(ht
 	while (1) {
 		try	{
 			if (!messageReceived) {			// no message body is to be received, regular line-based receive 
-				line = ReceiveLine(l_sock);
+				line = l_sock.ReceiveLine();
 			}
 			else {							// a message body is specified using "Content-Length" header, will receive the required number of bytes
 				std::stringstream buffer(resp.content_length_);
 				u_long bytes;
 				buffer >> bytes;
 
-				line = ReceiveBytes(l_sock, bytes);
+				line = l_sock.ReceiveBytes(bytes);
 
 				if (line.empty()) {
 					resp.status_ = http::responses::bad_request;
@@ -193,6 +174,9 @@ unsigned Client::Process(std::string ip, std::string port, std::function<void(ht
 		catch (const std::exception& e)
 		{
 			STREAM_LOG(logERROR) << e.what();
+#ifdef FILE_LOGGING
+			FILE_LOG(logERROR) << e.what();
+#endif // FILE_LOGGING
 		}
 
 		if (line.empty())
@@ -230,7 +214,10 @@ unsigned Client::Process(std::string ip, std::string port, std::function<void(ht
 		}
 	}
 
-	STREAM_LOG(logDEBUG) << LOG_RESPONSE << response;
+	STREAM_LOG(logDEBUG) << l_sock.GetSocket() << LOG_RESPONSE << response;
+#ifdef FILE_LOGGING
+	FILE_LOG(logDEBUG) << l_sock.GetSocket() << LOG_RESPONSE << response;
+#endif // FILE_LOGGING
 
 	/////
 
@@ -238,16 +225,10 @@ unsigned Client::Process(std::string ip, std::string port, std::function<void(ht
 
 	/////
 
-	try {
-		CloseGracefully(l_sock);
-	}
-	catch (const std::exception& e) {
-		STREAM_LOG(logERROR) << e.what();
-	}
+	STREAM_LOG(logDEBUG2) << "Exit thread";
+#ifdef FILE_LOGGING
+	FILE_LOG(logDEBUG2) << "Exit thread";
+#endif // FILE_LOGGING
 
-	// clears no longer needed address info
-	freeaddrinfo(result);
-	result = nullptr;
-	
-	return 1;
+	return 0;
 }

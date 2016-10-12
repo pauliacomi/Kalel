@@ -12,6 +12,7 @@
 
 #include <string>
 #include <vector>
+#include <deque>
 #include <memory>
 
 class Storage {
@@ -24,7 +25,7 @@ public:
 	std::shared_ptr<MachineSettings> machineSettings;					// The machine settings are here
 	std::shared_ptr<ExperimentSettings> experimentSettings;				// The experiment settings are here
 
-	std::vector<std::shared_ptr<ExperimentData>> dataCollection;		// The collection of data from an experiment
+	std::deque<std::shared_ptr<ExperimentData>> dataCollection;			// The collection of data from an experiment
 };
 
 

@@ -12,7 +12,7 @@
 #include <vector>
 #include <functional>
 
-class Client : Socket
+class Client
 {
 public:
 	Client();
@@ -24,11 +24,7 @@ public:
 	void Request(std::function<void(http_request*)> req, std::function<void(http_response*)> resp, std::string ip, std::string port = "http");
 
 protected:
-	struct addrinfo *result;							// Pointer to the result address
-	struct sockaddr *peer;								// Pointer to the server address
-
 	unsigned Process(std::string ip, std::string port, std::function<void(http_request*)> request_func_, std::function<void(http_response*)> response_func_);
-
 	std::thread processThread;
 };
 

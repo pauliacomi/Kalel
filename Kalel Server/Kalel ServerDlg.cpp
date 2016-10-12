@@ -5,13 +5,14 @@
 #include "stdafx.h"
 #include "Kalel Server.h"
 #include "Kalel ServerDlg.h"
+#include "resource.h"
 #include "afxdialogex.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
-#include "Automation\ThreadManager.h"
+#include "Automation/ThreadManager.h"
 
 // CKalelServerDlg dialog
 
@@ -31,7 +32,7 @@ void CKalelServerDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDHtmlDialog::DoDataExchange(pDX);
 
-	DDX_DHtml_ElementInnerText(pDX, _T("TextArea1"), displayText);
+	DDX_Text(pDX, IDC_EDIT1, displayText);
 }
 
 BEGIN_MESSAGE_MAP(CKalelServerDlg, CDHtmlDialog)
@@ -50,6 +51,9 @@ BOOL CKalelServerDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// Set small icon
 
 	// TODO: Add extra initialization here
+
+	// Get the vector pointer
+	mainBackend.GetLogs(logVector);
 
 	// Set the timer for the window update
 	SetTimer(1, 1000, NULL);
@@ -97,14 +101,14 @@ HCURSOR CKalelServerDlg::OnQueryDragIcon()
 
 void CKalelServerDlg::OnTimer(UINT nIDEvent)
 {
-	mainBackend.GetLogs(logVector);
-
-	displayText = _T("");
-	for (size_t i = 0; i < logVector.size(); i++)
-	{
-		displayText += logVector[i].c_str();
-	}
+	if (logSize < logVector->size()) {
+		for (size_t i = logSize; i < logVector->size(); i++)
+		{
+			displayText += logVector->at(i).c_str();
+		}
+		logSize = logVector->size();
 	UpdateData(FALSE);
+	}
 }
 
 HRESULT CKalelServerDlg::OnButtonOK(IHTMLElement* /*pElement*/)

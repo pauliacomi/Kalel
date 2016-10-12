@@ -8,7 +8,7 @@
 #define _WIN32_WINNT 0x0501  /* Windows XP. */
 #endif
 
-#define _WINSOCK_DEPRECATED_NO_WARNINGS
+//#define _WINSOCK_DEPRECATED_NO_WARNINGS
 #include <winsock2.h>
 #include <Ws2tcpip.h>
 #else
@@ -23,6 +23,7 @@ typedef	SOCKET int;			/* To make sure the POSIX-int handle can be compared to th
 
 #include <string>
 #include <exception>
+#include <atomic>
 
 class stringexception : public std::exception
 {
@@ -49,26 +50,37 @@ public:
 	Socket(SOCKET sk);
 	~Socket();
 
-	std::string Send(SOCKET sock, const std::string& sendbuf);
-	std::string SendLine(SOCKET sock, const std::string& sendbuf);
-	std::string Receive(SOCKET sock);
-	std::string ReceiveLine(SOCKET sock);
-	std::string ReceiveBytes(SOCKET l_sock, u_long bytes);
+	SOCKET GetSocket();
+
+	void Listen(PCSTR port);
+	void Accept_PrimeSelect();
+	std::string Socket::Accept(SOCKET &clientSocket, timeval tv);
+	unsigned Connect(PCSTR ip, PCSTR port);
+
+	std::string Send(const std::string& sendbuf);
+	std::string SendLine(const std::string& sendbuf);
+	std::string Receive();
+	std::string ReceiveLine();
+	std::string ReceiveBytes(u_long bytes);
 
 	// Close a socket
 	// Will throw on error
-	void Close(SOCKET &sock);
+	void Close();
 
 	// Close a socket
 	// First send shutdown signal
 	// Will throw on error
-	void CloseGracefully(SOCKET &sock);
+	void CloseGracefully();
 
 	std::string GetIP(const sockaddr_storage &address);
 
 protected:
 	SOCKET sock;										// Socket
-	stringexception stringex;
+	stringexception stringex;							// Custom exception
+
+	// For select functionality
+	fd_set * master;					// master file descriptor list
+	fd_set * readfds;					// Set of listening sockets
 
 private:
 	void Start();
