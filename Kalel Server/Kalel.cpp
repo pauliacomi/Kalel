@@ -8,7 +8,7 @@
 using json = nlohmann::json;
 
 Kalel::Kalel()
-	//: threadManager{ storageVectors }
+	: threadManager{ storageVectors }
 {
 	//
 	// Check to see whether the parameters file has been created
@@ -47,20 +47,20 @@ Kalel::Kalel()
 
 	//
 	// Start server functionality
-	server.SetLogs(storageVectors.serverLogs);
+	server.SetLogs(storageVectors.serverLogs, storageVectors.serverLogsMtx);
 	auto func = std::bind(&Kalel::ServerProcessing, this, std::placeholders::_1, std::placeholders::_2);
 	server.Accept(func);
 
 
-	// temp
-	time_t t = time(0);
-	for (size_t i = 0; i < 10; i++)
+	//// temp
+	/*time_t t = time(0);
+	for (size_t i = 0; i < 50; i++)
 	{
 		ExperimentData something;
 		something.measurementsMade = i + 1;
 		something.timeStart = t;
 		storageVectors.dataCollection.push_back(std::make_shared<ExperimentData>(something));
-	}
+	}*/
 }
 
 
@@ -143,12 +143,15 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 		// Figure out which range of data to send by looking at the time requested
 		
 		std::deque<std::shared_ptr<ExperimentData>>::reverse_iterator it;
+		storageVectors.sharedMutex.lock();
+		auto localCollection = storageVectors.dataCollection;
+		storageVectors.sharedMutex.unlock();
 
 		if (req->params_.empty()			 ||
 			req->params_.at("start").empty() || 
 			req->params_.at("measurements").empty())
 		{
-			it = storageVectors.dataCollection.rend();
+			it = localCollection.rend();
 		}
 		else
 		{
@@ -158,22 +161,22 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 			is >> experimentStartTime;
 			is.clear();
 
-			if (experimentStartTime != storageVectors.dataCollection.begin()->get()->timeStart) {
-				it = storageVectors.dataCollection.rend();
+			if (experimentStartTime != localCollection.begin()->get()->timeStart) {
+				it = localCollection.rend();
 			}
 			else
 			{
 				long int numberOfMeasurements;
 				is << req->params_.at("measurements");
 				is >> numberOfMeasurements;
-				it = std::find_if(storageVectors.dataCollection.rbegin(), storageVectors.dataCollection.rend(),
+				it = std::find_if(localCollection.rbegin(), localCollection.rend(),
 					[&numberOfMeasurements](std::shared_ptr<ExperimentData> d) -> bool {return d->measurementsMade == numberOfMeasurements; });
 			}
 		}
 		
 		json j;
 
-		while (it != storageVectors.dataCollection.rbegin())
+		while (it != localCollection.rbegin())
 		{
 			json j2;
 			--it;

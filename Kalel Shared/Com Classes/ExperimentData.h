@@ -2,7 +2,7 @@
 #define EXPERIMENT_DATA
 #pragma once
 
-#include <vector>
+#include <deque>
 #include <ctime>
 
 
@@ -82,6 +82,6 @@ public:
 	ExperimentData & ExperimentData::operator=(const ExperimentData * p);
 };
 
-typedef std::vector<ExperimentData*> MeasurementsArray;
+typedef std::deque<ExperimentData*> MeasurementsArray;
 
 #endif

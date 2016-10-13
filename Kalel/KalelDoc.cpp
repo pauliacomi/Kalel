@@ -144,38 +144,3 @@ CKalelDoc * CKalelDoc::GetDocument()
 void CKalelDoc::GraphSetArray(MeasurementsArray &expData) {
 	m_TableauMesures = &expData;
 }
-
-// Add a measurement to the graph
-//bool CKalelDoc::GraphAddMeasurement(ExperimentData * expData)
-//{
-//	bool result = false;
-//
-//	if (m_TableauMesures.size() == 0)
-//	{
-//		ExperimentData * newData = new ExperimentData(*expData);
-//		m_TableauMesures.push_back(newData);
-//		result = true;
-//	}
-//	else
-//	{
-//		if (expData->experimentGraphPoints > m_TableauMesures.back()->experimentGraphPoints) {
-//
-//			ExperimentData * newData = new ExperimentData(*expData);
-//			m_TableauMesures.push_back(newData);
-//			result = true;
-//		}
-//	}
-//	return result;
-//}
-
-
-LRESULT CKalelDoc::GraphReset() {
-
-	/*for (size_t i = 0; i < m_TableauMesures.size(); i++)
-	{
-		delete m_TableauMesures[i];
-	}
-
-	m_TableauMesures.clear();*/
-	return 0;
-}

@@ -161,12 +161,13 @@ void CommHandler::SetModifiedData()
 // Request and response functions
 **********************************************************************************************************************************/
 
-void CommHandler::Handshake_req(http_request* r) {
+unsigned CommHandler::Handshake_req(http_request* r) {
 	r->method_ = http::method::get;
 	r->path_ = "/api/handshake";
+	return 0;
 }
 
-void CommHandler::Handshake_resp(http_response* r) {
+unsigned CommHandler::Handshake_resp(http_response* r) {
 
 	if (r->status_ == http::responses::ok)
 	{
@@ -175,51 +176,94 @@ void CommHandler::Handshake_resp(http_response* r) {
 	else if (r->status_ == http::responses::not_found)
 	{
 		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Server not found"));
+		return 1;
 	}
+	return 0;
 }
 
-void CommHandler::GetMachineSettings_req(http_request* r) {
+
+unsigned CommHandler::GetMachineSettings_req(http_request* r) {
 	r->method_ = http::method::get;
 	r->accept_ = http::mimetype::appjson;
 	r->path_ = "/api/machinesettings";
+	return 0;
 }
 
-void CommHandler::GetMachineSettings_resp(http_response* r) {
+unsigned CommHandler::GetMachineSettings_resp(http_response* r) {
 
 	if (r->status_ == http::responses::ok)
 	{
 		if (r->content_type_ == http::mimetype::appjson) {
-			auto j = json::parse(r->answer_);
+
+			// Parse JSON
+			//////////////////////////////////////////////
+			json j;
+			try
+			{
+				j = json::parse(r->answer_);
+			}
+			catch (const std::exception& e)
+			{
+				messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, UnicodeConv::s2ws(e.what()));
+				return 1;
+			}
+
+			// Deserisalise data
+			//////////////////////////////////////////////
 			MachineSettings receivedSettings;
 
-			serialization::deserializeJSONtoMachineSettings(j, receivedSettings);
-			receivedSettings.synced	= true;
+			try
+			{
+				serialization::deserializeJSONtoMachineSettings(j, receivedSettings);
+			}
+			catch (const std::exception& e)
+			{
+				messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, UnicodeConv::s2ws(e.what()));
+				return 1;
+			}
 
+			receivedSettings.synced	= true;
 			messageHandler.GotMachineSettings(receivedSettings);
 			messageHandler.OnSync();
 		}
 		else
 		{
 			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Corrupt response format"));
+			return 1;
 		}
 	}
 	else if (r->status_ == http::responses::not_found)
 	{
 		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Server not found"));
+		return 1;
 	}
+
+	return 0;
 }
 
-void CommHandler::SetMachineSettings_req(http_request* r) {
+
+unsigned CommHandler::SetMachineSettings_req(http_request* r) {
 	r->method_			= http::method::post;
 	r->content_type_	= http::mimetype::appjson;
 	r->path_			= "/api/machinesettings";
 
 	json j;
-	serialization::serializeMachineSettingsToJSON(*localSettings, j);
+	try
+	{
+		serialization::serializeMachineSettingsToJSON(*localSettings, j);
+	}
+	catch (const std::exception& e)
+	{
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, UnicodeConv::s2ws(e.what()));
+		return 1;
+	}
+
 	r->entity_ = j.dump();
+
+	return 0;
 }
 
-void CommHandler::SetMachineSettings_resp(http_response* r) {
+unsigned CommHandler::SetMachineSettings_resp(http_response* r) {
 	
 	if (r->status_ == http::responses::ok)
 	{
@@ -230,18 +274,23 @@ void CommHandler::SetMachineSettings_resp(http_response* r) {
 	else if (r->status_ == http::responses::internal_err)
 	{
 		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Server error, could not update settings"));
+		return 1;
 	}
+
+	return 0;
 }
 
-void CommHandler::GetData_req(http_request* r) {
+
+unsigned CommHandler::GetData_req(http_request* r) {
 	r->method_ = http::method::get;
 	r->accept_ = http::mimetype::appjson;
 	r->path_ = "/api/experimentdata";
 	r->params_.emplace("start", localStartTime);
 	r->params_.emplace("measurements", localMeasurementsMade);
+	return 0;
 }
 
-void CommHandler::GetData_resp(http_response* r) {
+unsigned CommHandler::GetData_resp(http_response* r) {
 
 	if (r->status_ == http::responses::ok)
 	{
@@ -256,6 +305,7 @@ void CommHandler::GetData_resp(http_response* r) {
 			catch (const std::exception& e)
 			{
 				messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, UnicodeConv::s2ws(e.what()));
+				return 1;
 			}
 
 			ExperimentData * receivedData = nullptr;
@@ -265,7 +315,17 @@ void CommHandler::GetData_resp(http_response* r) {
 			{
 				receivedData = new ExperimentData();
 				json j2 = j[i.key()];
-				serialization::deserializeJSONtoExperimentData(j2, *receivedData);
+				try
+				{
+					serialization::deserializeJSONtoExperimentData(j2, *receivedData);
+				}
+				catch (const std::exception& e)
+				{
+					messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, UnicodeConv::s2ws(e.what()));
+					delete receivedData;
+					delete receivedDataArray;
+					return 1;
+				}
 				receivedDataArray->push_back(receivedData);
 			}																													 
 
@@ -275,10 +335,15 @@ void CommHandler::GetData_resp(http_response* r) {
 		else
 		{
 			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Corrupt response format"));
+			return 1;
 		}
 	}
 	else if (r->status_ == http::responses::not_found)
 	{
 		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Server not found"));
+		return 1;
 	}
+
+	return 0;
 }
+

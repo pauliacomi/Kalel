@@ -14,17 +14,21 @@
 #include <vector>
 #include <deque>
 #include <memory>
+#include <mutex>
 
 class Storage {
 public:
 	// Logs
+	std::mutex serverLogsMtx;											// Mutex for the server logs					
 	std::vector<std::string> serverLogs;								// Logs from the server are stored here
+	
 	std::vector<std::string> automationInfoLogs;						// All non-error logs are stored here
 	std::vector<std::string> automationErrorLogs;						// All error logs are stored here
 
 	std::shared_ptr<MachineSettings> machineSettings;					// The machine settings are here
 	std::shared_ptr<ExperimentSettings> experimentSettings;				// The experiment settings are here
 
+	std::mutex sharedMutex;												// Synchronisation class, should be used whenever there are writes to the deque
 	std::deque<std::shared_ptr<ExperimentData>> dataCollection;			// The collection of data from an experiment
 };
 
@@ -47,7 +51,7 @@ public:
 	bool ExperimentEnd();
 	bool ThreadShutdown();
 	bool GraphReset();
-	bool ExchangeData(ExperimentData pParam);
+	bool ExchangeData(const ExperimentData &pParam);
 	bool DisplayMessage(int pParam, int pInt1 = default_val, int pInt2 = default_val, double pDouble = default_val);								// Simple display message which takes an int
 
 	bool DisplayMessage(int pParam, std::string m);

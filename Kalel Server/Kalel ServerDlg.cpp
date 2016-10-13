@@ -56,7 +56,9 @@ BOOL CKalelServerDlg::OnInitDialog()
 	mainBackend.GetLogs(logVector);
 
 	// Set the timer for the window update
-	SetTimer(1, 1000, NULL);
+	if (logVector) {
+		SetTimer(1, 1000, NULL);
+	}
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
@@ -67,7 +69,6 @@ BOOL CKalelServerDlg::OnInitDialog()
 
 void CKalelServerDlg::OnPaint()
 {
-	
 
 	if (IsIconic())
 	{

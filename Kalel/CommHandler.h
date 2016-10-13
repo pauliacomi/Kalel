@@ -49,14 +49,14 @@ private:
 	std::string localMeasurementsMade;
 	std::shared_ptr<const MachineSettings> localSettings;
 
-	void Handshake_req(http_request* r);
-	void Handshake_resp(http_response * r);
-	void GetMachineSettings_req(http_request * r);
-	void GetMachineSettings_resp(http_response * r);
-	void SetMachineSettings_req(http_request * r);
-	void SetMachineSettings_resp(http_response * r);
-	void GetData_req(http_request * r);
-	void GetData_resp(http_response * r);
+	unsigned Handshake_req(http_request* r);
+	unsigned Handshake_resp(http_response * r);
+	unsigned GetMachineSettings_req(http_request * r);
+	unsigned GetMachineSettings_resp(http_response * r);
+	unsigned SetMachineSettings_req(http_request * r);
+	unsigned SetMachineSettings_resp(http_response * r);
+	unsigned GetData_req(http_request * r);
+	unsigned GetData_resp(http_response * r);
 };
 
 

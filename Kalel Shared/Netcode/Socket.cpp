@@ -388,55 +388,30 @@ std::string Socket::ReceiveBytes(u_long bytes)
 
 void Socket::Close()
 {
-	if (sock != INVALID_SOCKET) {
-		
-		int status = closesocket(sock);
-		sock = INVALID_SOCKET;
+	if (sock != INVALID_SOCKET)
+	{
+		int status = 0;
 
+#ifdef _WIN32
+		status = closesocket(sock);
+#else
+		status = close(sock);
+#endif
 		if (status == SOCKET_ERROR)
 		{
 			stringex.set(ERR_CLOSESOCKET);
 			throw stringex;
 		}
+
+		sock = INVALID_SOCKET;
 	}
 }
 
 void Socket::CloseGracefully()
 {
 	if (sock != INVALID_SOCKET) {
-		int status = 0;
-
-#ifdef _WIN32
-		status = shutdown(sock, SD_SEND);
-		if (status == 0) {
-			status = closesocket(sock);
-			sock = INVALID_SOCKET;
-		}
-		else if (status == SOCKET_ERROR && WSAGetLastError() == WSAECONNRESET)
-		{
-			status = closesocket(sock);
-			sock = INVALID_SOCKET;
-		}
-#else
-		status = shutdown(sock, SHUT_RDWR);
-		if (status == 0) {
-			status = close(sock);
-			sock = INVALID_SOCKET;
-		}
-		else if (status == SOCKET_ERROR && errno == ECONNRESET)
-		{
-			status = closesocket(sock);
-			sock = INVALID_SOCKET;
-		}
-#endif
-
-		if (status == SOCKET_ERROR)
-		{
-			std::string l = std::to_string(WSAGetLastError());			/// wsaGetLastError is windows specific
-			stringex.set(ERR_CLOSESOCKET + l);
-			throw stringex;
-		}
-
+		shutdown(sock, SD_SEND);
+		Close();
 	}
 }
 

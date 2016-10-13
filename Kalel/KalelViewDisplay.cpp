@@ -43,6 +43,7 @@ void CKalelView::OnTimer(UINT nIDEvent)
 
 		// Write in measurement box
 		AffichageMesures();
+
 		// Write graph
 		GetDocument()->UpdateAllViews(this);
 		
@@ -55,7 +56,7 @@ void CKalelView::OnTimer(UINT nIDEvent)
 
 		if (pApp->serverConnected)
 		{
-			//commHandler.GetData(dataCollection.back()->experimentGraphPoints);
+			commHandler.GetData(dataCollection.back()->timeStart, dataCollection.back()->measurementsMade);
 		}
 	}
 
@@ -65,8 +66,6 @@ void CKalelView::OnTimer(UINT nIDEvent)
 
 LRESULT CKalelView::GraphReset(WPARAM, LPARAM)
 {
-	GetDocument()->GraphReset();
-
 	return 0;
 }
 

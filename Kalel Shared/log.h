@@ -4,6 +4,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <mutex>
 #include <stdio.h>
 
 inline std::string NowTime();
@@ -90,6 +91,7 @@ class Output2vector
 {
 public:
 	static std::vector<std::string>*& Stream();
+	static std::mutex*& Mutex();
 	static void Output(const std::string& msg);
 };
 
@@ -99,13 +101,25 @@ inline std::vector<std::string>*& Output2vector::Stream()
 	return pStream;
 }
 
+inline std::mutex*& Output2vector::Mutex()
+{
+	static std::mutex* pMutex = nullptr;
+	return pMutex;
+}
+
 inline void Output2vector::Output(const std::string& msg)
 {
 	std::vector<std::string>* pStream = Stream();
 	if (!pStream)
 		return;
 	
+	std::mutex* pMutex = Mutex();
+	if (!pMutex)
+		return;
+
+	pMutex->lock();
 	pStream->push_back(msg);
+	pMutex->unlock();
 }
 
 
@@ -162,7 +176,7 @@ class StreamLog : public Log<Output2vector> {};
 
 #define STREAM_LOG(level) \
     if (level > STREAMLOG_MAX_LEVEL) ;\
-    else if (level > StreamLog::ReportingLevel() || !Output2vector::Stream()) ; \
+    else if (level > StreamLog::ReportingLevel() || !Output2vector::Stream() || !Output2vector::Mutex()) ; \
     else StreamLog().Get(level)
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__)

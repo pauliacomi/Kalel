@@ -52,9 +52,14 @@ unsigned Client::Process(std::string ip, std::string port, std::function<void(ht
 	FILE_LOG(logDEBUG2) << "Enter thread";
 #endif // FILE_LOGGING
 
+
+	//*************************************************************************************************************************
+	//						CONNECT TO SERVER
+	//*************************************************************************************************************************
 	// create socket and connect
 
 	Socket l_sock;
+
 	try{
 		l_sock.Connect(ip.c_str(), port.c_str());
 	}
@@ -67,33 +72,31 @@ unsigned Client::Process(std::string ip, std::string port, std::function<void(ht
 		return 1;
 	}
 
-	//
-	// send
-	//
+	//*************************************************************************************************************************
+	//						OUTGOING REQUEST
+	//*************************************************************************************************************************
 
-	http_request req;
-	request_func_(&req);
+	http_request request;
+	request_func_(&request);
 
 
 	std::string reqUrl;
-	URLHelper::BuildReq(reqUrl, req.path_, req.params_);
+	URLHelper::BuildReq(reqUrl, request.path_, request.params_);
 
-	req.content_length_ = StringFrom(req.entity_.size());
+	request.content_length_ = StringFrom(request.entity_.size());
 
-	std::string request;
+	std::string requestString;
 
 	try	{
-		request += l_sock.Send(req.method_ + " ");
-		request += l_sock.Send(reqUrl + " ");
-		request += l_sock.SendLine("HTTP/1.1");
-		request += l_sock.SendLine(http::header::accept + req.accept_);
-		if (!req.entity_.empty()) {
-			request += l_sock.SendLine(http::header::content_length + req.content_length_);
-			request += l_sock.SendLine(http::header::content_type + req.content_type_);
+		requestString += l_sock.SendLine(request.method_ + " " + reqUrl + " " + "HTTP/1.1");
+		requestString += l_sock.SendLine(http::header::accept + request.accept_);
+		if (!request.entity_.empty()) {
+			requestString += l_sock.SendLine(http::header::content_length + request.content_length_);
+			requestString += l_sock.SendLine(http::header::content_type + request.content_type_);
 		}
-		request += l_sock.SendLine("");
-		if (!req.entity_.empty()) {
-			request += l_sock.Send(req.entity_);
+		requestString += l_sock.SendLine("");
+		if (!request.entity_.empty()) {
+			requestString += l_sock.Send(request.entity_);
 		}
 	}
 	catch (const std::exception& e)
@@ -105,20 +108,20 @@ unsigned Client::Process(std::string ip, std::string port, std::function<void(ht
 		return 1;
 	}
 
-	STREAM_LOG(logDEBUG) << l_sock.GetSocket() << LOG_REQUEST << request;
+	STREAM_LOG(logDEBUG) << l_sock.GetSocket() << LOG_REQUEST << requestString;
 #ifdef FILE_LOGGING
-	FILE_LOG(logDEBUG) << l_sock.GetSocket() << LOG_REQUEST << request;
+	FILE_LOG(logDEBUG) << l_sock.GetSocket() << LOG_REQUEST << requestString;
 #endif // FILE_LOGGING
 
-	//
-	// receive
-	//
 
-	std::string response;
-	std::string line;
+	//*************************************************************************************************************************
+	//						INCOMING RESPONSE
+	//*************************************************************************************************************************
+
+	std::string responseString;
 
 	try {
-		line = l_sock.ReceiveLine();
+		responseString = l_sock.ReceiveLine();
 	}
 	catch (const std::exception& e)	{
 		STREAM_LOG(logERROR) << e.what();
@@ -128,48 +131,33 @@ unsigned Client::Process(std::string ip, std::string port, std::function<void(ht
 		return 1;
 	}
 
-	response += line;
-
-	if (line.empty()) {
+	if (responseString.empty()) {
 		return 1;
 	}
 
-	http_response resp;
+	http_response response;
 
-	if (line.find(http::responses::not_found) != std::string::npos) {
-		resp.status_ = http::responses::not_found;
-	}
-	else if (line.find(http::responses::ok) != std::string::npos) {
-		resp.status_ = http::responses::ok;
-	}
-	else if (line.find(http::responses::unauthorised) != std::string::npos) {
-		resp.status_ = http::responses::unauthorised;
+	size_t posSpace = responseString.find_first_of(" ");
+
+	response.http_version_	= responseString.substr(0, posSpace);
+	response.status_		= ParseStatusCode(responseString.substr(posSpace + 1, 3));
+
+	if (response.status_.empty()){
+		STREAM_LOG(logERROR) << "Bad status code";
+#ifdef FILE_LOGGING
+		FILE_LOG(logERROR) << "Bad status code";
+#endif // FILE_LOGGING
+		return 1;
 	}
 
+	std::string line;
 	bool messageToReceive = true;		// expecting a message
 	bool messageReceived = false;		// but not ready to receive it, first the header
 
 	while (1) {
-		try	{
-			if (!messageReceived) {			// no message body is to be received, regular line-based receive 
-				line = l_sock.ReceiveLine();
-			}
-			else {							// a message body is specified using "Content-Length" header, will receive the required number of bytes
-				std::stringstream buffer(resp.content_length_);
-				u_long bytes;
-				buffer >> bytes;
-
-				line = l_sock.ReceiveBytes(bytes);
-
-				if (line.empty()) {
-					resp.status_ = http::responses::bad_request;
-				}
-				else {
-					resp.answer_ = line;
-				}
-				response += line;
-				break;
-			}
+		try	
+		{
+			line = l_sock.ReceiveLine();	// no message body is to be received, regular line-based receive 
 		}
 		catch (const std::exception& e)
 		{
@@ -182,15 +170,32 @@ unsigned Client::Process(std::string ip, std::string port, std::function<void(ht
 		if (line.empty())
 			break;
 
-		response += line;
+		responseString += line;
 
 		unsigned int pos_cr_lf = line.find_first_of("\x0a\x0d");
 		if (pos_cr_lf == 0) {
-			if (messageToReceive)
-			{
-				messageToReceive = false;
-				messageReceived = true;
-				continue;
+			if (messageToReceive)		// a message body is specified using "Content-Length" header, will receive the required number of bytes
+			{						
+				u_long bytes = To<u_long>(response.content_length_);
+				try
+				{
+					line = l_sock.ReceiveBytes(bytes);
+				}
+				catch (const std::exception& e)
+				{
+					STREAM_LOG(logERROR) << e.what();
+#ifdef FILE_LOGGING
+					FILE_LOG(logERROR) << e.what();
+#endif // FILE_LOGGING
+				}
+
+				if (line.empty()) {
+					response.status_ = http::responses::bad_request;
+				}
+				else {
+					response.answer_ = line;
+				}
+				responseString += line;
 			}
 			break;
 		}
@@ -198,32 +203,38 @@ unsigned Client::Process(std::string ip, std::string port, std::function<void(ht
 		line = line.substr(0, pos_cr_lf);
 
 		if (line.substr(0, http::header::server.size()) == http::header::server) {
-			resp.server_ = line.substr(http::header::server.size());
+			response.server_ = line.substr(http::header::server.size());
 		}
 		else if (line.substr(0, http::header::date.size()) == http::header::date) {
-			resp.date_ = line.substr(http::header::date.size());
+			response.date_ = line.substr(http::header::date.size());
 		}
 		else if (line.substr(0, http::header::connection.size()) == http::header::connection) {
-			resp.connection_ = line.substr(http::header::connection.size());
+			response.connection_ = line.substr(http::header::connection.size());
 		}
 		else if (line.substr(0, http::header::content_length.size()) == http::header::content_length) {
-			resp.content_length_ = line.substr(http::header::content_length.size());
+			response.content_length_ = line.substr(http::header::content_length.size());
 		}
 		else if (line.substr(0, http::header::content_type.size()) == http::header::content_type) {
-			resp.content_type_ = line.substr(http::header::content_type.size());
+			response.content_type_ = line.substr(http::header::content_type.size());
 		}
 	}
 
-	STREAM_LOG(logDEBUG) << l_sock.GetSocket() << LOG_RESPONSE << response;
+	STREAM_LOG(logDEBUG) << l_sock.GetSocket() << LOG_RESPONSE << responseString;
 #ifdef FILE_LOGGING
-	FILE_LOG(logDEBUG) << l_sock.GetSocket() << LOG_RESPONSE << response;
+	FILE_LOG(logDEBUG) << l_sock.GetSocket() << LOG_RESPONSE << responseString;
 #endif // FILE_LOGGING
 
+	//*************************************************************************************************************************
+	//						CALLBACK AND EXIT
+	//*************************************************************************************************************************
+
+	response_func_(&response);
+
 	/////
 
-	response_func_(&resp);
-
-	/////
+	//
+	// Exit
+	//
 
 	STREAM_LOG(logDEBUG2) << "Exit thread";
 #ifdef FILE_LOGGING

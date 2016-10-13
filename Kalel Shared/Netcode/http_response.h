@@ -10,6 +10,8 @@ struct http_response {
 
 	http_response() : authentication_given_(false) {}
 
+	std::string                        http_version_;
+
 	/* status_: used to transmit server's error status, such as
 	o  202 OK
 	o  404 Not Found

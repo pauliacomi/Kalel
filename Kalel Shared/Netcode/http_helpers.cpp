@@ -25,7 +25,10 @@ std::string GMTtime(int format)
 		memcpy(buf, DAY_NAMES[tm.tm_wday], 3);
 		memcpy(buf + 8, MONTH_NAMES[tm.tm_mon], 3);
 
-		return buf;
+		std::string time(buf);
+		delete buf;
+
+		return time;
 	}
 
 	if (format = ANSI)
@@ -58,6 +61,24 @@ std::string ParseMethod(const std::string & method)
 	}
 	else if (method == http::method::del) {
 		return http::method::del;
+	}
+	else
+	{
+		return std::string();
+	}
+}
+
+
+std::string ParseStatusCode(const std::string & statuscode)
+{
+	if (statuscode == http::responses::not_found.substr(0, 3)) {
+		return http::responses::not_found;
+	}
+	else if (statuscode == http::responses::ok.substr(0, 3)) {
+		return http::responses::ok;
+	}
+	else if (statuscode == http::responses::unauthorised.substr(0, 3)) {
+		return http::responses::unauthorised;
 	}
 	else
 	{

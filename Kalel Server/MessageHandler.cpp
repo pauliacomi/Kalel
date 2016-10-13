@@ -16,11 +16,15 @@ MessageHandler::~MessageHandler()
 // Functions for sending messages below
 
 
-bool MessageHandler::ExchangeData(ExperimentData pParam)
+bool MessageHandler::ExchangeData(const ExperimentData &pParam)
 {
 	// Create a new instance of the storage class and equate it to the local class
 	std::shared_ptr<ExperimentData> newData = std::make_shared<ExperimentData>(pParam);
+
+	// Lock to prevent any synchronisation errors
+	handles->sharedMutex.lock();
 	handles->dataCollection.push_back(newData);
+	handles->sharedMutex.unlock();
 
 	return true;
 }

@@ -10,6 +10,7 @@
 #include <vector>
 #include <atomic>
 #include <thread>
+#include <mutex>
 #include <functional>
 
 class Server
@@ -19,7 +20,7 @@ public:
 	Server(PCSTR port = "http");
 	~Server();
 
-	void SetLogs(std::vector<std::string>& vct);
+	void SetLogs(std::vector<std::string>& vct, std::mutex & mtx);
 
 	void Accept(std::function<void(http_request*, http_response*)> r);
 

@@ -57,7 +57,7 @@ bool MFCMessageHandler::OnSync()
 	return true;
 }
 
-bool MFCMessageHandler::ExchangeData(std::vector<ExperimentData*> * pParam)
+bool MFCMessageHandler::ExchangeData(std::deque<ExperimentData*> * pParam)
 {
 	// Post the required message, now the main thread is responsible for deleting the new class
 	if (::PostMessage(windowHandle, WM_EXCHANGEDATA, NULL, (LPARAM)pParam) == 0 ) 

@@ -392,38 +392,36 @@ LRESULT CKalelView::OnMsvBouteille(WPARAM, LPARAM)
 
 LRESULT CKalelView::OnChangementBouteille(WPARAM, LPARAM)
 {
-	commHandler.GetData(dataCollection.back()->timeStart, dataCollection.back()->measurementsMade);
+	if (pApp->serverConnected)
+	{
+		if (pApp->experimentRunning) {
+			AfxMessageBox(ERROR_EXP_INPROGRESS, MB_ICONEXCLAMATION | MB_OK);
+		}
+		else {
+			if (AfxMessageBox(PROMPT_CHANGE_BOTTLE, MB_YESNO | MB_ICONQUESTION) == IDYES)
+			{
+				ASSERT(0);
+				experimentSettings->experimentType = EXPERIMENT_TYPE_BOTTLE_VACUUM;
 
-	//if (pApp->serverConnected)
-	//{
-	//	if (pApp->experimentRunning) {
-	//		AfxMessageBox(ERROR_EXP_INPROGRESS, MB_ICONEXCLAMATION | MB_OK);
-	//	}
-	//	else {
-	//		if (AfxMessageBox(PROMPT_CHANGE_BOTTLE, MB_YESNO | MB_ICONQUESTION) == IDYES)
-	//		{
-	//			ASSERT(0);
-	//			experimentSettings->experimentType = EXPERIMENT_TYPE_BOTTLE_VACUUM;
+				// the start button is blocked
+				GetDlgItem(IDC_LANCER)->EnableWindow(FALSE);
+				// the stop button is activated
+				GetDlgItem(IDC_ARRETER)->EnableWindow(TRUE);
 
-	//			// the start button is blocked
-	//			GetDlgItem(IDC_LANCER)->EnableWindow(FALSE);
-	//			// the stop button is activated
-	//			GetDlgItem(IDC_ARRETER)->EnableWindow(TRUE);
+				// Block menu and set running flag
+				pApp->experimentRunning = true;
+				pApp->menuIsAvailable = false;
+				UpdateButtons();
 
-	//			// Block menu and set running flag
-	//			pApp->experimentRunning = true;
-	//			pApp->menuIsAvailable = false;
-	//			UpdateButtons();
-
-	//			// Raise the flag for data modified
-	//			commHandler.SetModifiedData();
-	//		}
-	//	}
-	//}
-	//else
-	//{
-	//	AfxMessageBox(ERROR_CONNECTION_STATUS, MB_OK);
-	//}
+				// Raise the flag for data modified
+				commHandler.SetModifiedData();
+			}
+		}
+	}
+	else
+	{
+		AfxMessageBox(ERROR_CONNECTION_STATUS, MB_OK);
+	}
 
 	return 0;
 }

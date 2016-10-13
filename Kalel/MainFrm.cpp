@@ -85,8 +85,9 @@ BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT /*lpcs*/,
 	if (!m_wndSplitter.CreateStatic(this, 1, 2)){
 		return FALSE;
 	}
-	if (!m_wndSplitter.CreateView(0, 0, RUNTIME_CLASS(CGrapheView), CSize(rect.right / 2, rect.bottom), pContext) ||
-		!m_wndSplitter.CreateView(0, 1, RUNTIME_CLASS(CKalelView), CSize(rect.right / 2, rect.bottom), pContext))
+	if (!m_wndSplitter.CreateView(0, 1, RUNTIME_CLASS(CKalelView), CSize(rect.right / 2, rect.bottom), pContext) ||
+		!m_wndSplitter.CreateView(0, 0, RUNTIME_CLASS(CGrapheView), CSize(rect.right / 2, rect.bottom), pContext))
+		
 	{
 		m_wndSplitter.DestroyWindow();
 		return FALSE;

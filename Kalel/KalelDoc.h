@@ -44,8 +44,6 @@ protected:
 
 public:
 	void GraphSetArray(MeasurementsArray & expData);
-	bool GraphAddMeasurement(ExperimentData * expData);
-	LRESULT GraphReset();
 	
 
 #ifdef SHARED_HANDLERS

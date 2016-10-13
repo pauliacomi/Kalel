@@ -45,10 +45,11 @@ Server::~Server()
 	}
 }
 
-void Server::SetLogs(std::vector<std::string> & vct)
+void Server::SetLogs(std::vector<std::string> & vct, std::mutex & mtx)
 {
 	StreamLog::ReportingLevel() = LOG_LEVEL;
 	Output2vector::Stream() = &vct;
+	Output2vector::Mutex() = &mtx;
 
 	STREAM_LOG(logINFO) << LOG_LISTENING << listeningSocket.GetSocket();
 }
