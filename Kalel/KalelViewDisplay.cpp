@@ -47,13 +47,6 @@ void CKalelView::OnTimer(UINT nIDEvent)
 		// Write graph
 		GetDocument()->UpdateAllViews(this);
 		
-		//bool recorded = GetDocument()->GraphAddMeasurement(dataCollection.back());
-
-		//if (recorded) {
-
-		//	// Update all views
-		//}
-
 		if (pApp->serverConnected)
 		{
 			commHandler.GetData(dataCollection.back()->timeStart, dataCollection.back()->measurementsMade);

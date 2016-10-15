@@ -187,7 +187,22 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 		resp->answer_ = j.dump();
 
 	}
-	
+
+
+
+	else if (req->path_ == "/api/thread") {
+		resp->status_ = http::responses::ok;
+		resp->content_type_ = http::mimetype::appjson;
+
+		if (req->params_.empty() ||
+			req->params_.at("action").empty() ||
+			req->params_.at("measurements").empty())
+		{
+		}
+	}
+
+
+
 	else {
 		resp->status_ = http::responses::not_found;
 	}

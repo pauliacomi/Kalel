@@ -14,6 +14,13 @@ using json = nlohmann::json;
 
 #define STRINGIFY(var) (#var)
 
+#define START		1
+#define SHUTDOWN	2
+#define RESTART		3
+#define RESET		4
+#define PAUSE		5
+#define RESUME		6
+
 CommHandler::CommHandler()
 {
 }
@@ -105,7 +112,7 @@ void CommHandler::GetData(time_t startTime, long int measurementsMade)
 	}
 }
 
-void CommHandler::GetLog()
+void CommHandler::GetLog(time_t fromTime = 0)
 {
 }
 
@@ -120,32 +127,38 @@ void CommHandler::ManualCommand(int instrumentType, int instrumentNumber, bool s
 
 int CommHandler::StartClient()
 {
-	return 0;
+	localThreadCommand = START;
+	ThreadCommand();
 }
 
 int CommHandler::ShutdownClient()
 {
-	return 0;
+	localThreadCommand = SHUTDOWN;
+	ThreadCommand();
 }
 
 int CommHandler::RestartClient()
 {
-	return 0;
+	localThreadCommand = RESTART;
+	ThreadCommand();
 }
 
 int CommHandler::ResetClient()
 {
-	return 0;
+	localThreadCommand = RESET;
+	ThreadCommand();
 }
 
 int CommHandler::PauseClient()
 {
-	return 0;
+	localThreadCommand = PAUSE;
+	ThreadCommand();
 }
 
 int CommHandler::ResumeClient()
 {
-	return 0;
+	localThreadCommand = RESUME;
+	ThreadCommand();
 }
 
 void CommHandler::SetUserContinue()
@@ -156,10 +169,24 @@ void CommHandler::SetModifiedData()
 {
 }
 
+void CommHandler::ThreadCommand()
+{
+	auto request = std::bind(&CommHandler::ThreadCommand_req, this, std::placeholders::_1);
+	auto callback = std::bind(&CommHandler::ThreadCommand_resp, this, std::placeholders::_1);
+
+	try {
+		client.Request(request, callback, localAddress);
+	}
+	catch (const std::exception& e) {
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, UnicodeConv::s2ws(e.what()));
+	}
+}
+
 
 /**********************************************************************************************************************************
 // Request and response functions
 **********************************************************************************************************************************/
+
 
 unsigned CommHandler::Handshake_req(http_request* r) {
 	r->method_ = http::method::get;
@@ -344,6 +371,53 @@ unsigned CommHandler::GetData_resp(http_response* r) {
 		return 1;
 	}
 
+	return 0;
+}
+
+unsigned CommHandler::ThreadCommand_req(http_request * r)
+{
+	r->method_ = http::method::post;
+	r->path_ = "/api/thread";
+
+	std::string action;
+	switch (localThreadCommand)
+	{
+	case START:
+		action = "start";
+		break;
+	case SHUTDOWN:
+		action = "shutdown";
+		break;
+	case RESTART:
+		action = "restart";
+		break;
+	case RESET:
+		action = "reset";
+		break;
+	case PAUSE:
+		action = "pause";
+		break;
+	case RESUME:
+		action = "resume";
+		break;
+	default:
+		break;
+	}
+
+	r->params_.emplace("action", action);
+	return 0;
+}
+
+unsigned CommHandler::ThreadCommand_resp(http_response * r)
+{
+	if (r->status_ == http::responses::ok)
+	{
+		
+	}
+	else if (r->status_ == http::responses::not_found) {
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Server not found"));
+		return 1;
+	}
 	return 0;
 }
 

@@ -23,7 +23,7 @@ public:
 	void GetMachineSettings();
 	void SetMachineSettings(std::shared_ptr<const MachineSettings> ptr);
 	void GetData(time_t startTime = 0, long int measurementsMade = 0);
-	void GetLog();
+	void GetLog(time_t fromTime = 0);
 	void GetPorts();
 
 	int StartClient();
@@ -48,6 +48,9 @@ private:
 	std::string localStartTime;
 	std::string localMeasurementsMade;
 	std::shared_ptr<const MachineSettings> localSettings;
+	int localThreadCommand;
+	void ThreadCommand();
+
 
 	unsigned Handshake_req(http_request* r);
 	unsigned Handshake_resp(http_response * r);
@@ -57,6 +60,8 @@ private:
 	unsigned SetMachineSettings_resp(http_response * r);
 	unsigned GetData_req(http_request * r);
 	unsigned GetData_resp(http_response * r);
+	unsigned ThreadCommand_req(http_request * r);
+	unsigned ThreadCommand_resp(http_response * r);
 };
 
 
