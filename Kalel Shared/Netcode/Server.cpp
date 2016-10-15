@@ -309,6 +309,9 @@ unsigned Server::Process(std::unique_ptr<Socket> sock)
 	// Exit
 	//
 
+	// Make sure all data will get sent before socket is closed
+	// sock->SetLinger(true);
+
 	STREAM_LOG(logDEBUG3) << "Exit thread " << sock->GetSocket();
 #ifdef FILE_LOGGING
 	FILE_LOG(logDEBUG3) << "Exit thread " << sock->GetSocket();

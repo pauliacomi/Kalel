@@ -47,7 +47,7 @@ Kalel::Kalel()
 
 	//
 	// Start server functionality
-	server.SetLogs(storageVectors.serverLogs, storageVectors.serverLogsMtx);
+	// server.SetLogs(storageVectors.serverLogs, storageVectors.serverLogsMtx);
 	auto func = std::bind(&Kalel::ServerProcessing, this, std::placeholders::_1, std::placeholders::_2);
 	server.Accept(func);
 

@@ -63,6 +63,10 @@ public:
 	std::string ReceiveLine();
 	std::string ReceiveBytes(u_long bytes);
 
+	// Set socket to linger after closing, SHOULD NOT BE NORMALLY USED
+	// Will throw on error
+	void SetLinger(bool lingerOn);
+
 	// Close a socket
 	// Will throw on error
 	void Close();
@@ -75,8 +79,8 @@ public:
 	std::string GetIP(const sockaddr_storage &address);
 
 protected:
-	SOCKET sock;										// Socket
-	stringexception stringex;							// Custom exception
+	SOCKET sock;						// Socket
+	stringexception stringex;			// Custom exception
 
 	// For select functionality
 	fd_set * master;					// master file descriptor list

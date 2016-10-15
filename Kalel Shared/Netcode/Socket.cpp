@@ -351,6 +351,7 @@ std::string Socket::ReceiveBytes(u_long bytes)
 		if (arg == 0) {
 			if (total < bytes || overflow)
 			{
+				received = recv(sock, buf, arg, 0);
 				break;
 			}
 			break;
@@ -386,6 +387,21 @@ std::string Socket::ReceiveBytes(u_long bytes)
 	return ret;
 }
 
+void Socket::SetLinger(bool lingerOn)
+{
+	struct linger lingerOption;
+
+	if (lingerOn)
+		lingerOption.l_onoff = 1;
+	else 
+		lingerOption.l_onoff = 0;
+
+	if (setsockopt(sock, SOL_SOCKET, SO_LINGER, (char *)&lingerOption, sizeof(struct linger)) == -1){
+		stringex.set(ERR_LINGER);
+		throw stringex;
+	}
+}
+
 void Socket::Close()
 {
 	if (sock != INVALID_SOCKET)
@@ -410,7 +426,7 @@ void Socket::Close()
 void Socket::CloseGracefully()
 {
 	if (sock != INVALID_SOCKET) {
-		shutdown(sock, SD_SEND);
+		//shutdown(sock, SD_SEND);
 		Close();
 	}
 }

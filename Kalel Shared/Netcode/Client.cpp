@@ -108,9 +108,9 @@ unsigned Client::Process(std::string ip, std::string port, std::function<void(ht
 		return 1;
 	}
 
-	STREAM_LOG(logDEBUG) << l_sock.GetSocket() << LOG_REQUEST << requestString;
+	STREAM_LOG(logDEBUG) << l_sock.GetSocket() << LOG_RESPONSE << requestString;
 #ifdef FILE_LOGGING
-	FILE_LOG(logDEBUG) << l_sock.GetSocket() << LOG_REQUEST << requestString;
+	FILE_LOG(logDEBUG) << l_sock.GetSocket() << LOG_RESPONSE << requestString;
 #endif // FILE_LOGGING
 
 
@@ -152,7 +152,6 @@ unsigned Client::Process(std::string ip, std::string port, std::function<void(ht
 
 	std::string line;
 	bool messageToReceive = true;		// expecting a message
-	bool messageReceived = false;		// but not ready to receive it, first the header
 
 	while (1) {
 		try	
@@ -219,9 +218,9 @@ unsigned Client::Process(std::string ip, std::string port, std::function<void(ht
 		}
 	}
 
-	STREAM_LOG(logDEBUG) << l_sock.GetSocket() << LOG_RESPONSE << responseString;
+	STREAM_LOG(logDEBUG) << l_sock.GetSocket() << LOG_REQUEST << responseString;
 #ifdef FILE_LOGGING
-	FILE_LOG(logDEBUG) << l_sock.GetSocket() << LOG_RESPONSE << responseString;
+	FILE_LOG(logDEBUG) << l_sock.GetSocket() << LOG_REQUEST << responseString;
 #endif // FILE_LOGGING
 
 	//*************************************************************************************************************************
