@@ -112,7 +112,7 @@ void CommHandler::GetData(time_t startTime, long int measurementsMade)
 	}
 }
 
-void CommHandler::GetLog(time_t fromTime = 0)
+void CommHandler::GetLog(time_t fromTime)
 {
 }
 
@@ -125,37 +125,37 @@ void CommHandler::ManualCommand(int instrumentType, int instrumentNumber, bool s
 	ManualActionParam request(instrumentType, instrumentNumber, shouldBeActivated);
 }
 
-int CommHandler::StartClient()
+void CommHandler::StartClient()
 {
 	localThreadCommand = START;
 	ThreadCommand();
 }
 
-int CommHandler::ShutdownClient()
+void CommHandler::ShutdownClient()
 {
 	localThreadCommand = SHUTDOWN;
 	ThreadCommand();
 }
 
-int CommHandler::RestartClient()
+void CommHandler::RestartClient()
 {
 	localThreadCommand = RESTART;
 	ThreadCommand();
 }
 
-int CommHandler::ResetClient()
+void CommHandler::ResetClient()
 {
 	localThreadCommand = RESET;
 	ThreadCommand();
 }
 
-int CommHandler::PauseClient()
+void CommHandler::PauseClient()
 {
 	localThreadCommand = PAUSE;
 	ThreadCommand();
 }
 
-int CommHandler::ResumeClient()
+void CommHandler::ResumeClient()
 {
 	localThreadCommand = RESUME;
 	ThreadCommand();
@@ -412,7 +412,18 @@ unsigned CommHandler::ThreadCommand_resp(http_response * r)
 {
 	if (r->status_ == http::responses::ok)
 	{
-		
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Server not found"));
+		return 1;
+	}
+	else if (r->status_ == http::responses::conflict)
+	{
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Server cannot process thread command"));
+		return 1;
+	}
+	else if (r->status_ == http::responses::bad_request)
+	{
+
+		return 1;
 	}
 	else if (r->status_ == http::responses::not_found) {
 		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Server not found"));

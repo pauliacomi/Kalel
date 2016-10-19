@@ -191,13 +191,34 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 
 
 	else if (req->path_ == "/api/thread") {
-		resp->status_ = http::responses::ok;
-		resp->content_type_ = http::mimetype::appjson;
 
-		if (req->params_.empty() ||
-			req->params_.at("action").empty() ||
-			req->params_.at("measurements").empty())
+		if (!req->params_.empty() ||
+			!req->params_.at("action").empty())
 		{
+			if (req->params_.at("action") == "start")			{
+				threadManager.StartThread();
+			}
+			else if (req->params_.at("action") == "shutdown")	{
+				threadManager.ShutdownThread();
+			}
+			else if (req->params_.at("action") == "restart")	{
+				//threadManager.ResetThread();
+			}
+			else if (req->params_.at("action") == "reset")		{
+				threadManager.ResetThread();
+			}
+			else if (req->params_.at("action") == "pause")		{
+				threadManager.PauseThread();
+			}
+			else if (req->params_.at("action") == "resume")		{
+				threadManager.ResumeThread();
+			}
+
+			resp->status_ = http::responses::ok;
+		}
+		else
+		{
+			resp->status_ = http::responses::conflict;
 		}
 	}
 

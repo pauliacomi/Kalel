@@ -42,9 +42,6 @@ BEGIN_MESSAGE_MAP(CKalelView, CFormView)
 	ON_MESSAGE(WM_DISPLAYMESSAGEBOX, &CKalelView::MessageBoxAlert)					// Displays an messageBOX to alert user of something
 	ON_MESSAGE(WM_DISPLAYMESSAGEBOXCONF, &CKalelView::MessageBoxConfirmation)		// Displays an messageBOX to or ask user for confirmation
 	ON_MESSAGE(WM_GRAPHRESET, &CKalelView::GraphReset)								// Resets the graph and delets all data
-	ON_MESSAGE(UWM_THREAD_START, &CKalelView::BackgroundThreadStart)
-	ON_MESSAGE(UWM_THREAD_STOP, &CKalelView::BackgroundThreadStop)
-	ON_MESSAGE(UWM_THREAD_RESTART, &CKalelView::BackgroundThreadRestart)
 	ON_MESSAGE(WM_CANCELEXPERIMENT, &CKalelView::CancelBeforeStarting)
 
 	// Menu messages:
@@ -54,6 +51,9 @@ BEGIN_MESSAGE_MAP(CKalelView, CFormView)
 	ON_MESSAGE(UWM_DISP_CONNECTS_DIALOG, &CKalelView::DisplayConnectDialog)
 	ON_MESSAGE(UWM_DISP_PORT_DIALOG, &CKalelView::DisplayPortDialog)
 	ON_MESSAGE(UWM_DISP_DEVSETTINGS_DIALOG, &CKalelView::DisplayApparatusSettingsDialog)
+	ON_MESSAGE(UWM_THREAD_START, &CKalelView::BackgroundThreadStart)
+	ON_MESSAGE(UWM_THREAD_STOP, &CKalelView::BackgroundThreadStop)
+	ON_MESSAGE(UWM_THREAD_RESTART, &CKalelView::BackgroundThreadRestart)
 	
 
 	// Manual command messages
@@ -489,9 +489,30 @@ LRESULT CKalelView::DisplayApparatusSettingsDialog(WPARAM, LPARAM)
 	return 0;
 }
 
+LRESULT CKalelView::BackgroundThreadStart(WPARAM, LPARAM)
+{
+	commHandler.StartClient();
+	return 0;
+}
+
+
+LRESULT CKalelView::BackgroundThreadStop(WPARAM, LPARAM)
+{
+	commHandler.ShutdownClient();
+	return 0;
+}
+
+
+LRESULT CKalelView::BackgroundThreadRestart(WPARAM, LPARAM)
+{
+	commHandler.RestartClient();
+	return 0;
+}
+
+
 
 /**********************************************************************************************************************************
-// Thread callback commands
+// Server callback commands
 **********************************************************************************************************************************/
 
 LRESULT CKalelView::OnRegularThreadFinished(WPARAM, LPARAM) {
@@ -560,22 +581,4 @@ LRESULT CKalelView::OnExchangeData(WPARAM, LPARAM incomingExperimentData)
 	delete newData;
 
 	return 0;
-}
-
-
-LRESULT CKalelView::BackgroundThreadStart(WPARAM, LPARAM)
-{
-	return commHandler.StartClient();
-}
-
-
-LRESULT CKalelView::BackgroundThreadStop(WPARAM, LPARAM)
-{
-	return commHandler.ShutdownClient();
-}
-
-
-LRESULT CKalelView::BackgroundThreadRestart(WPARAM, LPARAM)
-{
-	return commHandler.RestartClient();
 }

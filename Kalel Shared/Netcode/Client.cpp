@@ -8,7 +8,7 @@
 
 // Logging functionality
 #include "../log.h"	
-#define FILE_LOGGING	"clientlog.txt"		// Comment this line to disable file logging
+#define FILE_LOGGING	"client.log"		// Comment this line to disable file logging
 #define LOG_LEVEL		logDEBUG4			// Change the level of logging here
 
 #include <sstream>

@@ -26,12 +26,12 @@ public:
 	void GetLog(time_t fromTime = 0);
 	void GetPorts();
 
-	int StartClient();
-	int ShutdownClient();
-	int RestartClient();
-	int ResetClient();
-	int PauseClient();
-	int ResumeClient();
+	void StartClient();
+	void ShutdownClient();
+	void RestartClient();
+	void ResetClient();
+	void PauseClient();
+	void ResumeClient();
 
 	void SetUserContinue();
 	void SetModifiedData();
