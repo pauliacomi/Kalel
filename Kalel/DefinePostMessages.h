@@ -2,9 +2,13 @@
 #define DEFINEPOSTMESSAGES_H
 #pragma once
 
-// Define windows message for threads
+
+//*************************************************************************************************************************
+//						SERVER REQUESTS
+//*************************************************************************************************************************
+
 /***************************************************************
-*                           WM_THREADFINISHEDREG
+*                           UWM_THREADSHUTDOWN
 * Inputs:
 *       WPARAM: ignored, 0
 *       LPARAM: RGB value to use for coloring
@@ -13,88 +17,42 @@
 * Effect:
 *	Causes the view to repaint itself in the specified color
 ***************************************************************/
-#define WM_THREADFINISHEDREG		WM_USER + 7
-
-/***************************************************************
-*                           WM_THREADSHUTDOWN
-* Inputs:
-*       WPARAM: ignored, 0
-*       LPARAM: RGB value to use for coloring
-* Result: LRESULT
-*	Logically void, 0, always
-* Effect:
-*	Causes the view to repaint itself in the specified color
-***************************************************************/
-#define WM_THREADSHUTDOWN			WM_USER + 8
-
-/***************************************************************
-*                           WM_UPDATEBUTTONS
-* Inputs:
-*       WPARAM: ignored, 0
-*       LPARAM: RGB value to use for coloring
-* Result: LRESULT
-*	Logically void, 0, always
-* Effect:
-*	Causes the view to repaint itself in the specified color
-***************************************************************/
-#define WM_UPDATEBUTTONS			WM_USER + 100
-
-// Calls to display parametrs 
-/***************************************************************
-*                           WM_UPDATEBUTTONS
-* Inputs:
-*       WPARAM: ignored, 0
-*       LPARAM: RGB value to use for coloring
-* Result: LRESULT
-*	Logically void, 0, always
-* Effect:
-*	Causes the view to repaint itself in the specified color
-***************************************************************/
-#define WM_DISPLAY_PORT_DIALOG						WM_USER + 9
-/***************************************************************
-*                           WM_UPDATEBUTTONS
-* Inputs:
-*       WPARAM: ignored, 0
-*       LPARAM: RGB value to use for coloring
-* Result: LRESULT
-*	Logically void, 0, always
-* Effect:
-*	Causes the view to repaint itself in the specified color
-***************************************************************/
-#define WM_DISPLAY_APPARATUS_SETTINGS_DIALOG		WM_USER + 10
+#define UWM_THREAD_STOP								(WM_USER + 31)
+#define UWM_THREAD_START							(WM_USER + 32)
+#define UWM_THREAD_RESTART							(WM_USER + 33)
+#define UWM_FUNC_VACUUM_SAMPLE						(WM_USER + 34)
+#define UWM_FUNC_VACUUM_BOTTLE						(WM_USER + 35)
+#define UWM_FUNC_CHANGE_BOTTLE						(WM_USER + 36)
 
 
-#define WM_DISPLAYMESSAGE			WM_USER + 11
-#define WM_DISPLAYADDMESSAGE		WM_USER + 12
-#define WM_DISPLAYSTEP				WM_USER + 13
-#define WM_DISPLAYADDSTEP			WM_USER + 14
-#define WM_DISPLAYPREVIOUSSTEP		WM_USER + 15
-#define WM_DISPLAYTEMPERATURES		WM_USER + 16
-#define WM_DISPLAYMESSAGEBOX		WM_USER + 17
-#define WM_DISPLAYMESSAGEBOXCONF	WM_USER + 18
-#define WM_DISPLAYMESSAGEBOXSTOPEX	WM_USER + 19
-#define WM_UPDATEDISPLAY			WM_USER + 21
-#define WM_UNLOCKMENU				WM_USER + 22
-#define WM_ENABLESTARTBUTTON		WM_USER + 23
-#define WM_CANCELEXPERIMENT			WM_USER + 24
-#define WM_EXCHANGEDATA				WM_USER + 27
-#define WM_GRAPHRESET				WM_USER + 28
 
-#define WM_PP_ADSORPTION_DELETE		WM_USER + 29
-#define WM_PP_DESORPTION_DELETE		WM_USER + 30
-#define UWM_THREAD_STOP				WM_USER + 31
-#define UWM_THREAD_START			WM_USER + 32
-#define UWM_THREAD_RESTART			WM_USER + 33
-#define UWM_FUNC_VACUUM_SAMPLE		WM_USER + 34
-#define UWM_FUNC_VACUUM_BOTTLE		WM_USER + 35
-#define UWM_FUNC_CHANGE_BOTTLE		WM_USER + 36
-#define UWM_DISP_PORT_DIALOG		WM_USER + 37
-#define UWM_DISP_DEVSETTINGS_DIALOG	WM_USER + 38
-#define UWM_DISP_CONNECTS_DIALOG	WM_USER + 39
-#define UWM_SIGNAL_SERVER_CONNECTED	WM_USER + 40
-#define UWM_GOT_MACHINE_SETTINGS	WM_USER + 41
-#define UWM_SYNCED					WM_USER + 42
+//*************************************************************************************************************************
+//						SERVER CALLBACKS
+//*************************************************************************************************************************
 
+#define UWM_SIGNAL_SERVER_CONNECTED					(WM_USER + 40)
+#define UWM_GOT_MACHINE_SETTINGS					(WM_USER + 41)
+#define UWM_EXCHANGEDATA							(WM_USER + 27)
+#define UWM_SYNCED									(WM_USER + 42)
+#define UWM_UPDATEBUTTONS							(WM_USER + 100)
+
+#define UWM_CANCELEXPERIMENT						(WM_USER + 24)
+#define UWM_GRAPHRESET								(WM_USER + 28)
+
+#define UWM_DISPLAYMESSAGE							(WM_USER + 11)
+#define UWM_DISPLAYMESSAGEBOX						(WM_USER + 17)
+#define UWM_DISPLAYMESSAGEBOXCONF					(WM_USER + 18)
+#define UWM_THREADFINISHEDREG						(WM_USER + 7)
+
+
+//*************************************************************************************************************************
+//						SERVER CALLBACKS
+//*************************************************************************************************************************
+
+
+
+
+#define UWM_THREADSHUTDOWN							(WM_USER + 8)
 #endif // !DEFINEPOSTMESSAGES_H
 
 

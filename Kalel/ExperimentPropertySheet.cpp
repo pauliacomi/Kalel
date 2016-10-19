@@ -4,7 +4,7 @@
 #include "stdafx.h"
 #include "ExperimentPropertySheet.h"
 
-#include "DefinePostMessages.h"								// For custom message definitions
+#include "DefineDialogMessages.h"							// For custom message definitions
 #include "Resources/DefineStages.h"							// For the types of experiments used
 #include "Resources/StringTable.h"							// Error message strings
 
@@ -296,8 +296,8 @@ BEGIN_MESSAGE_MAP(ExperimentPropertySheet, CMFCPropertySheet)
 	//}}AFX_MSG_MAP
 	ON_BN_CLICKED(IDC_PLUSADS, OnButtonAddAdsorption)					// Clicking the add adsorption button
 	ON_BN_CLICKED(IDC_PLUSDES, OnButtonAddDesorption)					// Clicking the add desorption button
-	ON_MESSAGE(WM_PP_ADSORPTION_DELETE, OnButtonRemoveAdsorption)		// Clicking the delete button, inside one of the property sheets
-	ON_MESSAGE(WM_PP_DESORPTION_DELETE, OnButtonRemoveDesorption)		// Clicking the delete button, inside one of the property sheets
+	ON_MESSAGE(UWM_PP_ADSORPTION_DELETE, OnButtonRemoveAdsorption)		// Clicking the delete button, inside one of the property sheets
+	ON_MESSAGE(UWM_PP_DESORPTION_DELETE, OnButtonRemoveDesorption)		// Clicking the delete button, inside one of the property sheets
 END_MESSAGE_MAP()
 
 

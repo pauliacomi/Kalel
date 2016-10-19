@@ -19,6 +19,7 @@
 #include "DialogConnectServer.h"
 
 #include "DefinePostMessages.h"										// Definition of messages received from the automation functionality
+#include "DefineMenuMessages.h"										// Definition of messages received from the menu
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -31,34 +32,51 @@ IMPLEMENT_DYNCREATE(CKalelView, CFormView)
 
 BEGIN_MESSAGE_MAP(CKalelView, CFormView)
 
+	//************************************
+	// Custom messages
+	//************************************
 
-	// Callbacks:
-	ON_MESSAGE(UWM_GOT_MACHINE_SETTINGS, &CKalelView::OnGetMachineSettings)
-	ON_MESSAGE(UWM_SIGNAL_SERVER_CONNECTED, &CKalelView::OnServerConnected)
-	ON_MESSAGE(UWM_SYNCED, &CKalelView::OnSync)
-	ON_MESSAGE(WM_EXCHANGEDATA, &CKalelView::OnExchangeData)						// Calls to save the incoming data from the thread
-	ON_MESSAGE(WM_THREADFINISHEDREG, &CKalelView::OnRegularThreadFinished)			// Calls when manual functionality ends
-	ON_MESSAGE(WM_DISPLAYMESSAGE, &CKalelView::AffichageMessages)					// Displays a message from the automation thread 
-	ON_MESSAGE(WM_DISPLAYMESSAGEBOX, &CKalelView::MessageBoxAlert)					// Displays an messageBOX to alert user of something
-	ON_MESSAGE(WM_DISPLAYMESSAGEBOXCONF, &CKalelView::MessageBoxConfirmation)		// Displays an messageBOX to or ask user for confirmation
-	ON_MESSAGE(WM_GRAPHRESET, &CKalelView::GraphReset)								// Resets the graph and delets all data
-	ON_MESSAGE(WM_CANCELEXPERIMENT, &CKalelView::CancelBeforeStarting)
+	// Server requests
+	ON_MESSAGE(UWM_FUNC_VACUUM_SAMPLE, &CKalelView::OnMsvAmpoule)							// Request sample under vacuum
+	ON_MESSAGE(UWM_FUNC_VACUUM_BOTTLE, &CKalelView::OnMsvBouteille)							// Request bottle under vacuum
+	ON_MESSAGE(UWM_FUNC_CHANGE_BOTTLE, &CKalelView::OnChangementBouteille)					// Request bottle change procedure
+	ON_MESSAGE(UWM_THREAD_START, &CKalelView::BackgroundThreadStart)						// Request thread shutdown
+	ON_MESSAGE(UWM_THREAD_STOP, &CKalelView::BackgroundThreadStop)							// Request thread stop
+	ON_MESSAGE(UWM_THREAD_RESTART, &CKalelView::BackgroundThreadRestart)					// Request thread restart
+
+	// Server callbacks:
+	ON_MESSAGE(UWM_SIGNAL_SERVER_CONNECTED, &CKalelView::OnServerConnected)			// Callback to notify of successful server connection
+	ON_MESSAGE(UWM_SYNCED, &CKalelView::OnSync)										// Modifies the global ??????????????
+	ON_MESSAGE(UWM_GOT_MACHINE_SETTINGS, &CKalelView::OnGetMachineSettings)			// Callback to notify of received MachineSettings
+	ON_MESSAGE(UWM_EXCHANGEDATA, &CKalelView::OnExchangeData)						// Callback to notify of incoming ExperimentData array
+	ON_MESSAGE(UWM_THREADFINISHEDREG, &CKalelView::OnAutoExperimentFinished)		// Calls when manual functionality ends
+	ON_MESSAGE(UWM_DISPLAYMESSAGE, &CKalelView::AffichageMessages)					// Callback to display a message from the automation thread
+	ON_MESSAGE(UWM_DISPLAYMESSAGEBOX, &CKalelView::MessageBoxAlert)					// Displays an messageBox to alert user of something
+	ON_MESSAGE(UWM_DISPLAYMESSAGEBOXCONF, &CKalelView::MessageBoxConfirmation)		// Displays an messageBox to or ask user for confirmation
+	ON_MESSAGE(UWM_GRAPHRESET, &CKalelView::GraphReset)										// Resets the graph and delets all data
+	ON_MESSAGE(UWM_CANCELEXPERIMENT, &CKalelView::CancelBeforeStarting)
+	ON_MESSAGE(UWM_UPDATEBUTTONS, &CKalelView::OnThreadRequestButtonUpdate)			// Calls to update a specific button pair and associated display on a manual message
 
 	// Menu messages:
-	ON_MESSAGE(UWM_FUNC_VACUUM_SAMPLE, &CKalelView::OnMsvAmpoule)
-	ON_MESSAGE(UWM_FUNC_VACUUM_BOTTLE, &CKalelView::OnMsvBouteille)
-	ON_MESSAGE(UWM_FUNC_CHANGE_BOTTLE, &CKalelView::OnChangementBouteille)
-	ON_MESSAGE(UWM_DISP_CONNECTS_DIALOG, &CKalelView::DisplayConnectDialog)
-	ON_MESSAGE(UWM_DISP_PORT_DIALOG, &CKalelView::DisplayPortDialog)
-	ON_MESSAGE(UWM_DISP_DEVSETTINGS_DIALOG, &CKalelView::DisplayApparatusSettingsDialog)
-	ON_MESSAGE(UWM_THREAD_START, &CKalelView::BackgroundThreadStart)
-	ON_MESSAGE(UWM_THREAD_STOP, &CKalelView::BackgroundThreadStop)
-	ON_MESSAGE(UWM_THREAD_RESTART, &CKalelView::BackgroundThreadRestart)
+	ON_MESSAGE(UWM_DISP_CONNECTS_DIALOG, &CKalelView::DisplayConnectDialog)					// Display dialog connection
+	ON_MESSAGE(UWM_DISP_PORT_DIALOG, &CKalelView::DisplayPortDialog)						// Display dialog ports
+	ON_MESSAGE(UWM_DISP_DEVSETTINGS_DIALOG, &CKalelView::DisplayApparatusSettingsDialog)	// Display dialog machine parameters
 	
+	//************************************
+	// Standard messages
+	//************************************
 
-	// Manual command messages
-	ON_MESSAGE(WM_UPDATEBUTTONS, &CKalelView::OnThreadRequestButtonUpdate)			// Calls to update a specific button pair and associated display
-
+	// Buttons which are used for automatic/advanced functionality
+	ON_BN_CLICKED(IDC_LANCER, &CKalelView::OnBnClickedLancer)
+	ON_BN_CLICKED(IDC_ARRETER, &CKalelView::OnBnClickedArreter)
+	ON_BN_CLICKED(IDC_REPRISE, &CKalelView::OnBnClickedReprise)
+	ON_BN_CLICKED(IDC_ARRET_SOUS_VIDE, &CKalelView::OnBnClickedArretSousVide)
+	ON_BN_CLICKED(IDC_PAUSE, &CKalelView::OnBnClickedPause)
+	ON_BN_CLICKED(IDC_PROCHAINE_COMMANDE, &CKalelView::OnBnClickedProchaineCommande)
+	ON_BN_CLICKED(IDC_PROCHAINE_DOSE, &CKalelView::OnBnClickedProchaineDose)
+	ON_BN_CLICKED(IDC_PROCHAINE_ETAPE, &CKalelView::OnBnClickedProchaineEtape)
+	ON_BN_CLICKED(IDC_BUTTON_PARAMETRES_EXPERIENCE, &CKalelView::OnBnClickedButtonParametresExperience)
+	
 	// Messages for UI buttons used for simple instrument manipulation
 	ON_BN_CLICKED(IDC_OUVRIR1, &CKalelView::OnBnClickedOuvrir1)
 	ON_BN_CLICKED(IDC_OUVRIR2, &CKalelView::OnBnClickedOuvrir2)
@@ -83,16 +101,6 @@ BEGIN_MESSAGE_MAP(CKalelView, CFormView)
 	ON_BN_CLICKED(IDC_ACTIVER_POMPE, &CKalelView::OnBnClickedActiverPompe)
 	ON_BN_CLICKED(IDC_DESACTIVER_POMPE, &CKalelView::OnBnClickedDesactiverPompe)
 
-	// Buttons which are used for automatic/advanced functionality
-	ON_BN_CLICKED(IDC_LANCER, &CKalelView::OnBnClickedLancer)
-	ON_BN_CLICKED(IDC_ARRETER, &CKalelView::OnBnClickedArreter)
-	ON_BN_CLICKED(IDC_REPRISE, &CKalelView::OnBnClickedReprise)
-	ON_BN_CLICKED(IDC_ARRET_SOUS_VIDE, &CKalelView::OnBnClickedArretSousVide)
-	ON_BN_CLICKED(IDC_PAUSE, &CKalelView::OnBnClickedPause)
-	ON_BN_CLICKED(IDC_PROCHAINE_COMMANDE, &CKalelView::OnBnClickedProchaineCommande)
-	ON_BN_CLICKED(IDC_PROCHAINE_DOSE, &CKalelView::OnBnClickedProchaineDose)
-	ON_BN_CLICKED(IDC_PROCHAINE_ETAPE, &CKalelView::OnBnClickedProchaineEtape)
-	ON_BN_CLICKED(IDC_BUTTON_PARAMETRES_EXPERIENCE, &CKalelView::OnBnClickedButtonParametresExperience)
 
 	// timer for update of the values
 	ON_WM_TIMER()					
@@ -103,32 +111,9 @@ END_MESSAGE_MAP()
 
 CKalelView::CKalelView()
 	: CFormView(CKalelView::IDD)
-	, m_StrEditMessages(_T(""))
-	, m_StrCalo(_T(""))
-	, m_StrBassePression(_T(""))
-	, m_StrHautePression(_T(""))
-	, m_StrTemperatureCalo(_T(""))
-	, m_StrTemperatureCage(_T(""))
-	, m_StrTemperaturePiece(_T(""))
-	, m_StrTemps(_T(""))
-	, m_StrEditMesures(_T(""))
-	, m_StrPressionInitiale(_T(""))
-	, m_StrPressionFinale(_T(""))
-	, m_StrEtape(_T(""))
-	, m_StrTemoinVanne1(_T(""))
-	, m_StrTemoinVanne2(_T(""))
-	, m_StrTemoinVanne3(_T(""))
-	, m_StrTemoinVanne4(_T(""))
-	, m_StrTemoinVanne5(_T(""))
-	, m_StrTemoinVanne6(_T(""))
-	, m_StrTemoinVanne7(_T(""))
-	, m_StrTemoinVanne8(_T(""))
-	, m_StrTemoinEV1(_T(""))
-	, m_StrTemoinEV2(_T(""))
-	, m_StrTemoinPompe(_T(""))
 
 	, experimentSettings{ nullptr }
-	, machineSettings(new MachineSettings)
+	, machineSettings(new MachineSettings())
 {
 }
 
@@ -144,8 +129,15 @@ CKalelView::~CKalelView()
 void CKalelView::DoDataExchange(CDataExchange* pDX)
 {
 	CFormView::DoDataExchange(pDX);
-	DDX_Text(pDX, IDC_EDIT_MESSAGES, m_StrEditMessages);
+	DDX_Control(pDX, IDC_LANCER, m_ButtonLancer);
+	DDX_Control(pDX, IDC_ARRETER, m_ButtonArreter);
+
 	DDX_Control(pDX, IDC_EDIT_MESSAGES, pEditMessages);
+	DDX_Text(pDX, IDC_EDIT_MESSAGES, m_StrEditMessages);
+
+	DDX_Control(pDX, IDC_EDIT_MESURES, pEditMesures);
+	DDX_Text(pDX, IDC_EDIT_MESURES, m_StrEditMesures);
+
 	DDX_Text(pDX, IDC_CALO, m_StrCalo);
 	DDX_Text(pDX, IDC_BASSE_PRESSION, m_StrBassePression);
 	DDX_Text(pDX, IDC_HAUTE_PRESSION, m_StrHautePression);
@@ -153,10 +145,6 @@ void CKalelView::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_TEMPERATURE_CAGE, m_StrTemperatureCage);
 	DDX_Text(pDX, IDC_TEMPERATURE_PIECE, m_StrTemperaturePiece);
 	DDX_Text(pDX, IDC_TEMPS, m_StrTemps);
-	DDX_Control(pDX, IDC_LANCER, m_ButtonLancer);
-	DDX_Control(pDX, IDC_ARRETER, m_ButtonArreter);
-	DDX_Control(pDX, IDC_EDIT_MESURES, pEditMesures);
-	DDX_Text(pDX, IDC_EDIT_MESURES, m_StrEditMesures);
 	DDX_Text(pDX, IDC_PRESSION_INITIALE, m_StrPressionInitiale);
 	DDX_Text(pDX, IDC_PRESSION_FINALE, m_StrPressionFinale);
 	DDX_Text(pDX, IDC_EDIT_ETAPE, m_StrEtape);
@@ -515,7 +503,7 @@ LRESULT CKalelView::BackgroundThreadRestart(WPARAM, LPARAM)
 // Server callback commands
 **********************************************************************************************************************************/
 
-LRESULT CKalelView::OnRegularThreadFinished(WPARAM, LPARAM) {
+LRESULT CKalelView::OnAutoExperimentFinished(WPARAM, LPARAM) {
 
 	experimentSettings->ResetData();
 

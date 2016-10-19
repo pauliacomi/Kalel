@@ -12,6 +12,7 @@
 #include "KalelDoc.h"
 #include "KalelView.h"
 
+#include "DefineMenuMessages.h"
 #include "DefinePostMessages.h"
 
 #ifdef _DEBUG

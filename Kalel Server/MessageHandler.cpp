@@ -102,14 +102,14 @@ bool MessageHandler::DisplayMessageBox(int pParam, UINT nType, bool blocksProgra
 	//// Other thread is now responsible for deleting this object
 	//if (blocksProgram)
 	//{
-	//	if (::PostMessage(windowHandle, WM_DISPLAYMESSAGEBOXCONF, (WPARAM)type, (LPARAM)message) == 0) {
+	//	if (::PostMessage(windowHandle, UWM_DISPLAYMESSAGEBOXCONF, (WPARAM)type, (LPARAM)message) == 0) {
 	//		delete message;
 	//		return false;
 	//	}
 	//}
 	//else
 	//{
-	//	if (::PostMessage(windowHandle, WM_DISPLAYMESSAGEBOX, (WPARAM)type, (LPARAM)message) == 0) {
+	//	if (::PostMessage(windowHandle, UWM_DISPLAYMESSAGEBOX, (WPARAM)type, (LPARAM)message) == 0) {
 	//		delete message;
 	//		return false;
 	//	}
@@ -129,14 +129,14 @@ bool MessageHandler::DisplayMessageBox(int pParam, UINT nType, bool blocksProgra
 	//// Other thread is now responsible for deleting this object
 	//if (blocksProgram)
 	//{
-	//	if (::PostMessage(windowHandle, WM_DISPLAYMESSAGEBOXCONF, (WPARAM)type, (LPARAM)message) == 0) {
+	//	if (::PostMessage(windowHandle, UWM_DISPLAYMESSAGEBOXCONF, (WPARAM)type, (LPARAM)message) == 0) {
 	//		delete message;
 	//		return false;
 	//	}
 	//}
 	//else
 	//{
-	//	if (::PostMessage(windowHandle, WM_DISPLAYMESSAGEBOX, (WPARAM)type, (LPARAM)message) == 0) {
+	//	if (::PostMessage(windowHandle, UWM_DISPLAYMESSAGEBOX, (WPARAM)type, (LPARAM)message) == 0) {
 	//		delete message;
 	//		return false;
 	//	}

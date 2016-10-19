@@ -60,7 +60,7 @@ bool MFCMessageHandler::OnSync()
 bool MFCMessageHandler::ExchangeData(std::deque<ExperimentData*> * pParam)
 {
 	// Post the required message, now the main thread is responsible for deleting the new class
-	if (::PostMessage(windowHandle, WM_EXCHANGEDATA, NULL, (LPARAM)pParam) == 0 ) 
+	if (::PostMessage(windowHandle, UWM_EXCHANGEDATA, NULL, (LPARAM)pParam) == 0 ) 
 	{
 		delete pParam;
 		return false;
@@ -97,7 +97,7 @@ bool MFCMessageHandler::DisplayMessage(int pParam, int pInt1, int pInt2, double 
 	}
 
 	// Other thread is now responsible for deleting this object
-	if(::PostMessage(windowHandle, WM_DISPLAYMESSAGE, NULL, (LPARAM)message) == 0) {
+	if(::PostMessage(windowHandle, UWM_DISPLAYMESSAGE, NULL, (LPARAM)message) == 0) {
 		delete message;
 		return false;
 	}
@@ -112,7 +112,7 @@ bool MFCMessageHandler::DisplayMessage(int pParam, std::wstring m)
 	message->Format(pParam, m);
 	
 	// Other thread is now responsible for deleting this object
-	if(::PostMessage(windowHandle, WM_DISPLAYMESSAGE, NULL, (LPARAM)message) == 0) {
+	if(::PostMessage(windowHandle, UWM_DISPLAYMESSAGE, NULL, (LPARAM)message) == 0) {
 		delete message;
 		return false;
 	}
@@ -145,14 +145,14 @@ bool MFCMessageHandler::DisplayMessageBox(int pParam, UINT nType, bool blocksPro
 	// Other thread is now responsible for deleting this object
 	if (blocksProgram)
 	{
-		if(::PostMessage(windowHandle, WM_DISPLAYMESSAGEBOXCONF, (WPARAM)type, (LPARAM)message) == 0) {
+		if(::PostMessage(windowHandle, UWM_DISPLAYMESSAGEBOXCONF, (WPARAM)type, (LPARAM)message) == 0) {
 			delete message;
 			return false;
 		}
 	}
 	else
 	{
-		if(::PostMessage(windowHandle, WM_DISPLAYMESSAGEBOX, (WPARAM)type, (LPARAM)message) == 0) {
+		if(::PostMessage(windowHandle, UWM_DISPLAYMESSAGEBOX, (WPARAM)type, (LPARAM)message) == 0) {
 			delete message;
 			return false;
 		}
@@ -172,14 +172,14 @@ bool MFCMessageHandler::DisplayMessageBox(int pParam, UINT nType, bool blocksPro
 	// Other thread is now responsible for deleting this object
 	if (blocksProgram)
 	{
-		if(::PostMessage(windowHandle, WM_DISPLAYMESSAGEBOXCONF, (WPARAM)type, (LPARAM)message) == 0) {
+		if(::PostMessage(windowHandle, UWM_DISPLAYMESSAGEBOXCONF, (WPARAM)type, (LPARAM)message) == 0) {
 			delete message;
 			return false;
 		}
 	}
 	else
 	{
-		if(::PostMessage(windowHandle, WM_DISPLAYMESSAGEBOX, (WPARAM)type, (LPARAM)message) == 0) {
+		if(::PostMessage(windowHandle, UWM_DISPLAYMESSAGEBOX, (WPARAM)type, (LPARAM)message) == 0) {
 			delete message;
 			return false;
 		}
@@ -200,7 +200,7 @@ bool MFCMessageHandler::ExperimentStart()
 
 bool MFCMessageHandler::ExperimentEnd()
 {
-	::PostMessage(windowHandle, WM_THREADFINISHEDREG, NULL, NULL);
+	::PostMessage(windowHandle, UWM_THREADFINISHEDREG, NULL, NULL);
 	DisplayMessage(MESSAGE_FILLLINE);
 	GraphReset();
 
@@ -209,7 +209,7 @@ bool MFCMessageHandler::ExperimentEnd()
 
 bool MFCMessageHandler::ThreadShutdown()
 {
-	::PostMessage(windowHandle, WM_THREADSHUTDOWN, NULL, NULL);
+	::PostMessage(windowHandle, UWM_THREADSHUTDOWN, NULL, NULL);
 	DisplayMessage(MESSAGE_THREAD_SHUTTINGDOWN);
 	GraphReset();
 
@@ -219,7 +219,7 @@ bool MFCMessageHandler::ThreadShutdown()
 
 bool MFCMessageHandler::GraphReset()
 {
-	::PostMessage(windowHandle, WM_GRAPHRESET, NULL, NULL);
+	::PostMessage(windowHandle, UWM_GRAPHRESET, NULL, NULL);
 
 	return true;
 }

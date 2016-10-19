@@ -5,7 +5,7 @@
 #include "TabDoses.h"
 #include "afxdialogex.h"
 
-#include "DefinePostMessages.h"		// For custom message definitions
+#include "DefineDialogMessages.h"		// For custom message definitions
 
 // TabDoses dialog
 
@@ -167,6 +167,6 @@ END_MESSAGE_MAP()
 
 void TabDoses::DeletePage()
 {
-	::SendMessage(GetParent()->GetSafeHwnd(), WM_PP_ADSORPTION_DELETE, NULL, static_cast<LPARAM>(position));
+	::SendMessage(GetParent()->GetSafeHwnd(), UWM_PP_ADSORPTION_DELETE, NULL, static_cast<LPARAM>(position));
 }
 

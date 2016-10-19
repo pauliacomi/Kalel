@@ -227,6 +227,8 @@
     <ClInclude Include="..\Kalel Shared\Resources\StringTable.h" />
     <ClInclude Include="..\Kalel Shared\unicodeConv.h" />
     <ClInclude Include="CommHandler.h" />
+    <ClInclude Include="DefineDialogMessages.h" />
+    <ClInclude Include="DefineMenuMessages.h" />
     <ClInclude Include="DialogConnectServer.h" />
     <ClInclude Include="DialogMachineParameters.h" />
     <ClInclude Include="ConnectionMesure.h" />

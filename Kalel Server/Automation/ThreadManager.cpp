@@ -301,5 +301,5 @@ void ThreadManager::ThreadManualAction()
 	}
 
 	// Ask for the app to show the change, pass the locally created object which must be deleted there
-	// ::PostMessage(localMP->windowHandle, WM_UPDATEBUTTONS, (WPARAM)localMP, actionSuccessful);
+	// ::PostMessage(localMP->windowHandle, UWM_UPDATEBUTTONS, (WPARAM)localMP, actionSuccessful);
 }

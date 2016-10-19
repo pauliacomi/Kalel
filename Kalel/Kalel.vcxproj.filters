@@ -315,6 +315,12 @@
     <ClInclude Include="..\Kalel Shared\Netcode\http_helpers.h">
       <Filter>Header Files\Commmon\Netcode</Filter>
     </ClInclude>
+    <ClInclude Include="DefineMenuMessages.h">
+      <Filter>Header Files\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="DefineDialogMessages.h">
+      <Filter>Header Files\Resources\DialogBoxes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainFrm.cpp">

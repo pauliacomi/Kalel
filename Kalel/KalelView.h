@@ -5,64 +5,22 @@
 #include "Resources/DefineStages.h"									// Stages/experiment type definitions
 #include "Resources/StringTable.h"									// Error message strings
 
+#include "Kalel.h"
+#include "KalelDoc.h"
+
 #include "Com Classes/ExperimentData.h"								// Where data about the experimental parameters, results and current status is stored
 #include "Com Classes/ExperimentSettings.h"							// Where returned data from results is stored
 #include "Com Classes/MachineSettings.h"							// Where the settings for the connected machine are stored
+
 #include "Parametres.h"												// Parameters file read/write
 #include "CommHandler.h"											// Responsible for all communication to/from client
 
-#include "KalelDoc.h"
-#include "Kalel.h"
 
 // Forward declarations
 class ExperimentPropertySheet;
 
 class CKalelView : public CFormView
 {
-
-public:
-	CKalelApp* pApp;				// pointer to the main app
-	CKalelDoc* m_mainDocument;		// pointer to the main document
-
-	Parameters savedParams;
-
-	// Storage for all the data
-	ExperimentSettings * experimentSettings;
-	MeasurementsArray dataCollection;						// Data for an experiment is stored here
-	std::shared_ptr<MachineSettings> machineSettings;
-	std::shared_ptr<MachineSettings> tempSettings;
-	CommHandler commHandler;
-
-	// Some storage variables for each MFC control
-	CEdit pEditMessages;
-	CEdit pEditMesures;
-	CString m_StrEditMessages;
-	CString m_StrCalo;
-	CString m_StrBassePression;
-	CString m_StrHautePression;
-	CString m_StrTemperatureCalo;
-	CString m_StrTemperatureCage;
-	CString m_StrTemperaturePiece;
-	CString m_StrTemps;
-	CButton m_ButtonLancer;
-	CButton m_ButtonArreter;
-	CString m_StrEditMesures;
-
-	CString m_StrPressionInitiale;
-	CString m_StrPressionFinale;
-	CString m_StrEtape;
-
-	CString m_StrTemoinVanne1;
-	CString m_StrTemoinVanne2;
-	CString m_StrTemoinVanne3;
-	CString m_StrTemoinVanne4;
-	CString m_StrTemoinVanne5;
-	CString m_StrTemoinVanne6;
-	CString m_StrTemoinVanne7;
-	CString m_StrTemoinVanne8;
-	CString m_StrTemoinEV1;
-	CString m_StrTemoinEV2;
-	CString m_StrTemoinPompe;
 
 protected: // create from serialization only
 	CKalelView();
@@ -71,24 +29,19 @@ protected: // create from serialization only
 public:
 	enum { IDD = IDD_Kalel_FORM };
 
-// Attributes
+	// Attributes
 public:
 	CKalelDoc* GetDocument() const;
 	static CKalelView * GetView();
 
-
-// Operations
-public:
-
-// Overrides
-public:
-	virtual void OnDraw(CDC* pDC);  // overridden to draw this view
-	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
+	// Overrides
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // Prise en charge de DDX/DDV
-	virtual void OnInitialUpdate(); // premier appel après la construction
+	virtual void OnDraw(CDC* pDC);							// overridden to draw this view
+	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
+	virtual void DoDataExchange(CDataExchange* pDX);		// Prise en charge de DDX/DDV
+	virtual void OnInitialUpdate();							// premier appel après la construction
 
-// Implementation
+	// Implementation
 public:
 	virtual ~CKalelView();
 #ifdef _DEBUG
@@ -96,15 +49,69 @@ public:
 	virtual void Dump(CDumpContext& dc) const;
 #endif
 
-protected:
-
-// Generated message map functions
+	// Generated message map functions
 protected:
 	DECLARE_MESSAGE_MAP()
 
-protected:
-	//------- KalelView
+	//*************************************************************************************************************************
+	//						Class shared
+	//*************************************************************************************************************************
 
+
+	// Classes and pointers
+private:
+	CKalelApp* pApp;				// pointer to the main app
+	CKalelDoc* m_mainDocument;		// pointer to the main document
+	Parameters savedParams;			// Class for saving the parameters file
+	CommHandler commHandler;		// Class dealing with all communication between frontend and backend
+
+	// Storage
+private:
+	ExperimentSettings * experimentSettings;
+	MeasurementsArray dataCollection;						// Measurement points for an experiment are stored here
+	std::shared_ptr<MachineSettings> machineSettings;		// Pointer to a machineSettings object
+	std::shared_ptr<MachineSettings> tempSettings;			// Temporary machineSettings stored here between sending change request to server and server acknowledgement
+	
+	
+	// Some storage variables for each MFC control
+private:
+	CButton m_ButtonLancer;
+	CButton m_ButtonArreter;
+
+	CEdit pEditMessages;
+	CEdit pEditMesures;
+
+	CString m_StrEditMessages					= _T("");
+	CString m_StrEditMesures					= _T("");
+
+	CString m_StrCalo							= _T("");
+	CString m_StrBassePression					= _T("");
+	CString m_StrHautePression					= _T("");
+	CString m_StrTemperatureCalo				= _T("");
+	CString m_StrTemperatureCage				= _T("");
+	CString m_StrTemperaturePiece				= _T("");
+	CString m_StrTemps							= _T("");
+	CString m_StrPressionInitiale				= _T("");
+	CString m_StrPressionFinale					= _T("");
+	CString m_StrEtape							= _T("");
+	CString m_StrTemoinVanne1					= _T("");
+	CString m_StrTemoinVanne2					= _T("");
+	CString m_StrTemoinVanne3					= _T("");
+	CString m_StrTemoinVanne4					= _T("");
+	CString m_StrTemoinVanne5					= _T("");
+	CString m_StrTemoinVanne6					= _T("");
+	CString m_StrTemoinVanne7					= _T("");
+	CString m_StrTemoinVanne8					= _T("");
+	CString m_StrTemoinEV1						= _T("");
+	CString m_StrTemoinEV2						= _T("");
+	CString m_StrTemoinPompe					= _T("");
+
+
+	//*************************************************************************************************************************
+	//						KalelView
+	//*************************************************************************************************************************
+
+private:
 	void DoEvents(void);
 	void GetExperimentData(ExperimentPropertySheet * dialogExperimentProperties, bool initialRequest);
 	void UpdateButtons();
@@ -124,17 +131,17 @@ protected:
 	LRESULT OnGetMachineSettings(WPARAM wParam, LPARAM lParam);
 	LRESULT OnSync(WPARAM wParam, LPARAM lParam);
 	LRESULT OnExchangeData(WPARAM wParam, LPARAM lParam);
-	LRESULT OnRegularThreadFinished(WPARAM wParam, LPARAM);
+	LRESULT OnAutoExperimentFinished(WPARAM wParam, LPARAM);
 	LRESULT CancelBeforeStarting(WPARAM wParam, LPARAM lParam);
 	LRESULT BackgroundThreadStart(WPARAM wParam, LPARAM lParam);
 	LRESULT BackgroundThreadStop(WPARAM wParam, LPARAM lParam);
 	LRESULT BackgroundThreadRestart(WPARAM wParam, LPARAM lParam);
 
-protected:
+	//*************************************************************************************************************************
+	//						KalelView_Affichage
+	//*************************************************************************************************************************
 
-	//-------- KalelView_Affichage
-
-protected:
+private:
 	void OnTimer(UINT nIDEvent);	//timer for window update
 
 	LRESULT AffichageMessages(WPARAM wParam, LPARAM lParam);
@@ -144,12 +151,11 @@ protected:
 	LRESULT MessageBoxConfirmation(WPARAM wParam, LPARAM);
 	LRESULT GraphReset(WPARAM wparam, LPARAM lParam);
 
-	
-	//
-	//-------- KalelView_Boutons
-	//
+	//*************************************************************************************************************************
+	//						KalelView_Boutons
+	//*************************************************************************************************************************
 
-protected:
+private:
 	void OnBnClickedLancer();
 	void OnBnClickedArreter();
 	void OnBnClickedButtonParametresExperience();
@@ -160,11 +166,11 @@ protected:
 	void OnBnClickedProchaineEtape();
 	void OnBnClickedReprise();
 
-	//
-	//-------- KalelView_Boutons_Vannes
-	//
+	//*************************************************************************************************************************
+	//						KalelView_Boutons_Vannes
+	//*************************************************************************************************************************
 
-protected:
+private:
 	void AskThreadForManualCommand(int instrument, int i, bool askToActivate);
 	LRESULT OnThreadRequestButtonUpdate(WPARAM wParam, LPARAM lParam);
 

@@ -4,7 +4,7 @@
 #include "stdafx.h"
 #include "TabDesorption.h"
 
-#include "DefinePostMessages.h"		// For custom message definitions
+#include "DefineDialogMessages.h"		// For custom message definitions
 
 // TabDesorption
 
@@ -170,5 +170,5 @@ END_MESSAGE_MAP()
 
 void TabDesorption::DeletePage()
 {
-	::SendMessage(GetParent()->GetSafeHwnd(), WM_PP_DESORPTION_DELETE, NULL, static_cast<LPARAM>(position));
+	::SendMessage(GetParent()->GetSafeHwnd(), UWM_PP_DESORPTION_DELETE, NULL, static_cast<LPARAM>(position));
 }
