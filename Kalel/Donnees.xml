@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-8859-1" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <experience>
     <experimentateurs>
         <experimentateur>
@@ -35,7 +35,7 @@
             <omega>0.639803</omega>
         </gaz>
         <gaz>
-            <nom>Méthane</nom>
+            <nom>MÃ©thane</nom>
             <symbole>CH4</symbole>
             <masse_moleculaire>16.043</masse_moleculaire>
             <temperature_critique>190.3</temperature_critique>
@@ -53,7 +53,7 @@
             <omega>0.6141</omega>
         </gaz>
         <gaz>
-            <nom>Oxygène</nom>
+            <nom>OxygÃ¨ne</nom>
             <symbole>O2</symbole>
             <masse_moleculaire>31.99</masse_moleculaire>
             <temperature_critique>154.58</temperature_critique>
@@ -98,7 +98,7 @@
             <omega>0.578616</omega>
         </gaz>
         <gaz>
-            <nom>Hydrogène</nom>
+            <nom>HydrogÃ¨ne</nom>
             <symbole>H2</symbole>
             <masse_moleculaire>2.016</masse_moleculaire>
             <temperature_critique>33.24</temperature_critique>
@@ -116,7 +116,7 @@
             <omega>0.641258</omega>
         </gaz>
         <gaz>
-            <nom>Propylène</nom>
+            <nom>PropylÃ¨ne</nom>
             <symbole>C3H6</symbole>
             <masse_moleculaire>42.08</masse_moleculaire>
             <temperature_critique>364.75</temperature_critique>
@@ -125,12 +125,6 @@
             <omega>0.61804</omega>
         </gaz>
     </gazs>
-    <cellules>
-        <cellule>
-            <numero>1</numero>
-            <volume_total>2</volume_total>
-            <volume_calo>1</volume_calo>
-        </cellule>
-    </cellules>
+    <cellules />
     <configs />
 </experience>

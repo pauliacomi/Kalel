@@ -19,7 +19,7 @@
 // When clicking on the Launch button
 void CKalelView::OnBnClickedLancer()
 {
-	if (pApp->serverConnected)
+	if (!pApp->serverConnected)
 	{
 		// Create the experiment type window
 		DialogTypeExperiment dialogExperimentType;
@@ -32,7 +32,7 @@ void CKalelView::OnBnClickedLancer()
 
 			// Create dialog
 			ExperimentPropertySheet dialogExperimentProperties(_T(""), machineSettings.get());
-			dialogExperimentProperties.Initiate(experimentSettings);
+			dialogExperimentProperties.Initiate(*experimentSettings);
 
 			if (dialogExperimentProperties.DoModal() == IDOK)
 			{
@@ -50,7 +50,7 @@ void CKalelView::OnBnClickedLancer()
 				GetExperimentData(&dialogExperimentProperties, true);
 
 				// Raise the flag for data modified
-				//commHandler.SetExperimentSettings(experimentSettings);
+				commHandler.SetExperimentSettings(experimentSettings);
 			}
 			else
 			{
@@ -106,7 +106,7 @@ void CKalelView::OnBnClickedButtonParametresExperience()
 
 			// Create dialog
 			ExperimentPropertySheet dialogExperimentProperties(_T(""), machineSettings.get());
-			dialogExperimentProperties.Initiate(experimentSettings);
+			dialogExperimentProperties.Initiate(*experimentSettings);
 
 			int counter = 0;
 			if (dataCollection.back()->experimentStage == STAGE_ADSORPTION)

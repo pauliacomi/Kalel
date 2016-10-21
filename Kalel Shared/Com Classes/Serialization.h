@@ -9,7 +9,23 @@
 #include "../unicodeConv.h"
 
 namespace serialization {
-	
+
+	static void serializeMachineSettingsToJSON(const MachineSettings &m, nlohmann::json &j);
+	static void deserializeJSONtoMachineSettings(const nlohmann::json &j, MachineSettings &m);
+	static void serializeExperimentDataToJSON(const ExperimentData &e, nlohmann::json &j); 
+	static void deserializeJSONtoExperimentData(const nlohmann::json &j, ExperimentData &e);
+	static void serializeExperimentSettingsToJSON(const ExperimentSettings &m, nlohmann::json &j);
+
+	static void serializeDataGeneralToJSON(const Donnees_General &m, nlohmann::json &j);
+	static void serializeDataDiversToJSON(const Donnees_Divers &m, nlohmann::json &j);
+	static void serializeDataAdsToJSON(const Donnees_Doses &m, nlohmann::json &j);
+	static void serializeDataDesToJSON(const Donnees_Desorption &m, nlohmann::json &j);
+
+	static void serializeGasToJSON(const gaz &m, nlohmann::json &j);
+	static void serializeCellToJSON(const cellule &m, nlohmann::json &j);
+	static void serializeUserToJSON(const experimentateur &m, nlohmann::json &j);
+
+
 	static void serializeMachineSettingsToJSON(const MachineSettings &m, nlohmann::json &j) {
 		
 		j["CaloName"]										= UnicodeConv::ws2s(m.CaloName);

@@ -14,7 +14,7 @@ UnicodeConv::~UnicodeConv()
 
 std::wstring UnicodeConv::s2ws(const std::string& str)
 {
-	using convert_typeX = std::codecvt_utf8<wchar_t>;
+	using convert_typeX = std::codecvt_utf8_utf16<wchar_t>;
 	std::wstring_convert<convert_typeX, wchar_t> converterX;
 
 	return converterX.from_bytes(str);
@@ -22,7 +22,7 @@ std::wstring UnicodeConv::s2ws(const std::string& str)
 
 std::string UnicodeConv::ws2s(const std::wstring& wstr)
 {
-	using convert_typeX = std::codecvt_utf8<wchar_t>;
+	using convert_typeX = std::codecvt_utf8_utf16<wchar_t>;
 	std::wstring_convert<convert_typeX, wchar_t> converterX;
 
 	return converterX.to_bytes(wstr);

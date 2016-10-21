@@ -36,7 +36,7 @@ public:
 	ExperimentPropertySheet(LPCTSTR pszCaption, MachineSettings * machineSettings, CWnd* pParentWnd = NULL, UINT iSelectPage = 0);
 	virtual ~ExperimentPropertySheet();
 
-	void Initiate(ExperimentSettings * experimentSettings);
+	void Initiate(const ExperimentSettings & experimentSettings);
 	BOOL OnInitDialog();
 
 protected:

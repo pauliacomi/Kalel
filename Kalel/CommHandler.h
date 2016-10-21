@@ -62,6 +62,8 @@ private:
 	unsigned SetMachineSettings_resp(http_response * r);
 	unsigned GetData_req(http_request * r);
 	unsigned GetData_resp(http_response * r);
+	unsigned GetLogs_req(http_request * r);
+	unsigned GetLogs_resp(http_response * r);
 	unsigned SetExperimentSettings_req(http_request * r);
 	unsigned SetExperimentSettings_resp(http_response * r);
 	unsigned ThreadCommand_req(http_request * r);

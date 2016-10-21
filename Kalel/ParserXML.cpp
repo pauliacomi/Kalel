@@ -22,7 +22,7 @@ void Initialisation_XML()
 {
 	// On initialise la déclaration et les éléments de bases
 	TiXmlDocument doc;
-	TiXmlDeclaration * decl = new TiXmlDeclaration( "1.0", "iso-8859-1", "" );
+	TiXmlDeclaration * decl = new TiXmlDeclaration( "1.0", "utf-8", "" );
 	TiXmlElement * element_principal = new TiXmlElement( "experience" );
 	TiXmlElement * groupe_experimentateur = new TiXmlElement( "experimentateurs" );
 	TiXmlElement * groupe_gaz = new TiXmlElement( "gazs" );
@@ -264,13 +264,13 @@ std::vector<gaz> GetGazs()
 	while(root)
 	{
 		gaz m_gaz;
-		m_gaz.nom = unicodeConverter.s2ws(root->FirstChildElement("nom")->GetText());
-		m_gaz.symbole = unicodeConverter.s2ws(root->FirstChildElement("symbole")->GetText());
-		m_gaz.masse_moleculaire = atof(root->FirstChildElement("masse_moleculaire")->GetText());
-		m_gaz.temperature_critique = atof(root->FirstChildElement("temperature_critique")->GetText());
-		m_gaz.pression_critique = atof(root->FirstChildElement("pression_critique")->GetText());
-		m_gaz.temperature_ebullition = atof(root->FirstChildElement("temperature_ebullition")->GetText());
-		m_gaz.omega = atof(root->FirstChildElement("omega")->GetText());
+		m_gaz.nom						= unicodeConverter.s2ws(root->FirstChildElement("nom")->GetText());
+		m_gaz.symbole					= unicodeConverter.s2ws(root->FirstChildElement("symbole")->GetText());
+		m_gaz.masse_moleculaire			= atof(root->FirstChildElement("masse_moleculaire")->GetText());
+		m_gaz.temperature_critique		= atof(root->FirstChildElement("temperature_critique")->GetText());
+		m_gaz.pression_critique			= atof(root->FirstChildElement("pression_critique")->GetText());
+		m_gaz.temperature_ebullition	= atof(root->FirstChildElement("temperature_ebullition")->GetText());
+		m_gaz.omega						= atof(root->FirstChildElement("omega")->GetText());
 
 		t_gaz.push_back(m_gaz);
 		root = root->NextSibling();
@@ -293,13 +293,13 @@ bool Rajout_Gaz(std::wstring nom,std::wstring symbole,double masse,double temp_c
 
 	TiXmlElement nouveau_gaz("gaz");
 
-	TiXmlElement * element_nom = NewElement(_T("nom"),nom);
-	TiXmlElement * element_symbole = NewElement(_T("symbole"),symbole);
-	TiXmlElement * element_masse = NewElement(_T("masse_moleculaire"),masse);
-	TiXmlElement * element_temp_critique = NewElement(_T("temperature_critique"),temp_critique);
-	TiXmlElement * element_pres_critique = NewElement(_T("pression_critique"),pres_critique);
-	TiXmlElement * element_temp_ebullition = NewElement(_T("temperature_ebullition"),temp_ebullition);
-	TiXmlElement * element_omega = NewElement(_T("omega"),temp_ebullition/temp_critique);
+	TiXmlElement * element_nom				= NewElement(_T("nom"),						nom);
+	TiXmlElement * element_symbole			= NewElement(_T("symbole"),					symbole);
+	TiXmlElement * element_masse			= NewElement(_T("masse_moleculaire"),		masse);
+	TiXmlElement * element_temp_critique	= NewElement(_T("temperature_critique"),	temp_critique);
+	TiXmlElement * element_pres_critique	= NewElement(_T("pression_critique"),		pres_critique);
+	TiXmlElement * element_temp_ebullition	= NewElement(_T("temperature_ebullition"),	temp_ebullition);
+	TiXmlElement * element_omega			= NewElement(_T("omega"),					temp_ebullition/temp_critique);
 
 	nouveau_gaz.LinkEndChild(element_nom);
 	nouveau_gaz.LinkEndChild(element_symbole);

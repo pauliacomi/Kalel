@@ -47,24 +47,24 @@ ExperimentPropertySheet::~ExperimentPropertySheet()
 	}
 }
 
-void ExperimentPropertySheet::Initiate(ExperimentSettings * experimentSettings)
+void ExperimentPropertySheet::Initiate(const ExperimentSettings & experimentSettings)
 {
 	// initiate variables
 	modified = false;
 
 	// Save number of adsorption / desorptions
-	numberOfAdsorptions = experimentSettings->dataAdsorption.size();
-	numberOfDesorptions = experimentSettings->dataDesorption.size();
+	numberOfAdsorptions = experimentSettings.dataAdsorption.size();
+	numberOfDesorptions = experimentSettings.dataDesorption.size();
 
 	// Populate tabs from the experiment settings
 	// General tabs
-	m_general.allSettings = experimentSettings->dataGeneral;
-	m_divers.allSettings = experimentSettings->dataDivers;
+	m_general.allSettings = experimentSettings.dataGeneral;
+	m_divers.allSettings = experimentSettings.dataDivers;
 	// Adsorption
 	for (int i = 0; i < numberOfAdsorptions; i++)
 	{
 		TabDoses * tempTab = new TabDoses(i + 1);
-		tempTab->allSettings = experimentSettings->dataAdsorption[i];
+		tempTab->allSettings = experimentSettings.dataAdsorption[i];
 
 		// Insert page
 		adsorptionTabs.push_back(tempTab);
@@ -76,7 +76,7 @@ void ExperimentPropertySheet::Initiate(ExperimentSettings * experimentSettings)
 	for (int i = 0; i < numberOfDesorptions; i++)
 	{
 		TabDesorption * tempTab = new TabDesorption(i + 1);
-		tempTab->allSettings = experimentSettings->dataDesorption[i];
+		tempTab->allSettings = experimentSettings.dataDesorption[i];
 
 		// Insert page
 		desorptionTabs.push_back(tempTab);
@@ -91,10 +91,9 @@ void ExperimentPropertySheet::Initiate(ExperimentSettings * experimentSettings)
 	{
 		availableTabs[i] = false;
 	}
-	if(experimentSettings->experimentType)
 	
 	// Instantiate the correct type of dialog
-	switch (experimentSettings->experimentType)
+	switch (experimentSettings.experimentType)
 	{
 	case EXPERIMENT_TYPE_MANUAL:
 		SetProprietiesManual();

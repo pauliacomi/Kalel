@@ -29,6 +29,8 @@
 #define new DEBUG_NEW
 #endif
 
+#define INITIAL_ADSORPTION		3
+#define INITIAL_DESORPTIONS		1
 
 // CKalelView
 
@@ -115,17 +117,15 @@ END_MESSAGE_MAP()
 CKalelView::CKalelView()
 	: CFormView(CKalelView::IDD)
 
-	, experimentSettings{ nullptr }
-	, machineSettings(new MachineSettings())
+	, experimentSettings{ new ExperimentSettings(INITIAL_ADSORPTION, INITIAL_DESORPTIONS) }
+	, machineSettings{ new MachineSettings() }
 {
 }
 
 
 CKalelView::~CKalelView()
 {
-	if (experimentSettings != nullptr) {
-		delete experimentSettings;
-	}
+
 }
 
 // Liaising between variables and controls
