@@ -112,9 +112,8 @@ private:
 	//*************************************************************************************************************************
 
 private:
-	void DoEvents(void);
+	void OnTimer(UINT nIDEvent);	//timer for window update
 	void GetExperimentData(ExperimentPropertySheet * dialogExperimentProperties, bool initialRequest);
-	void UpdateButtons();
 
 	// Menu messages
 
@@ -124,32 +123,32 @@ private:
 	LRESULT DisplayConnectDialog(WPARAM, LPARAM);
 	LRESULT DisplayPortDialog(WPARAM wParam, LPARAM lParam);
 	LRESULT DisplayApparatusSettingsDialog(WPARAM wParam, LPARAM lParam);
+	LRESULT BackgroundThreadStart(WPARAM wParam, LPARAM lParam);
+	LRESULT BackgroundThreadStop(WPARAM wParam, LPARAM lParam);
+	LRESULT BackgroundThreadRestart(WPARAM wParam, LPARAM lParam);
 
 	// Thread callbacks
 
 	LRESULT OnServerConnected(WPARAM wParam, LPARAM lParam);
 	LRESULT OnGetMachineSettings(WPARAM wParam, LPARAM lParam);
-	LRESULT OnSync(WPARAM wParam, LPARAM lParam);
+	LRESULT OnSetMachineSettings(WPARAM wParam, LPARAM lParam);
 	LRESULT OnExchangeData(WPARAM wParam, LPARAM lParam);
+	LRESULT OnExchangeLogs(WPARAM, LPARAM incomingLogs);
 	LRESULT OnAutoExperimentFinished(WPARAM wParam, LPARAM);
 	LRESULT CancelBeforeStarting(WPARAM wParam, LPARAM lParam);
-	LRESULT BackgroundThreadStart(WPARAM wParam, LPARAM lParam);
-	LRESULT BackgroundThreadStop(WPARAM wParam, LPARAM lParam);
-	LRESULT BackgroundThreadRestart(WPARAM wParam, LPARAM lParam);
 
 	//*************************************************************************************************************************
-	//						KalelView_Affichage
+	//						KalelView_Display
 	//*************************************************************************************************************************
 
 private:
-	void OnTimer(UINT nIDEvent);	//timer for window update
 
 	LRESULT AffichageMessages(WPARAM wParam, LPARAM lParam);
-	LRESULT AffichageMesures();
-	LRESULT AffichageEtape();
+	LRESULT DisplayTextboxValues(ExperimentData * data);
+	LRESULT DiplayMeasurements(ExperimentData * data);
+	LRESULT DisplayStepProgress(ExperimentData * data);
 	LRESULT MessageBoxAlert(WPARAM wParam, LPARAM lParam);
 	LRESULT MessageBoxConfirmation(WPARAM wParam, LPARAM);
-	LRESULT GraphReset(WPARAM wparam, LPARAM lParam);
 
 	//*************************************************************************************************************************
 	//						KalelView_Boutons
@@ -165,6 +164,8 @@ private:
 	void OnBnClickedProchaineDose();
 	void OnBnClickedProchaineEtape();
 	void OnBnClickedReprise();
+
+	void UpdateButtons();
 
 	//*************************************************************************************************************************
 	//						KalelView_Boutons_Vannes

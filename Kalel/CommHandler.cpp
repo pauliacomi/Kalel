@@ -3,10 +3,10 @@
 
 #include "Com Classes/ManualActionParam.h"
 #include "Netcode/http_request.h"
-#include "Netcode/Client.h"
 #include "Netcode/json.hpp"
 #include "Resources/StringTable.h"
 #include "Com Classes/Serialization.h"
+#include "unicodeConv.h"
 
 #include <functional>
 
@@ -56,7 +56,7 @@ void CommHandler::Sync()
 {
 	GetMachineSettings();
 	GetData();
-	//GetLog();
+	GetLog();
 }
 
 void CommHandler::GetMachineSettings()
@@ -74,7 +74,7 @@ void CommHandler::GetMachineSettings()
 
 void CommHandler::SetMachineSettings(std::shared_ptr<const MachineSettings> ptr)
 {
-	localSettings = ptr;
+	localMachineSettings = ptr;
 
 	auto request = std::bind(&CommHandler::SetMachineSettings_req, this, std::placeholders::_1);
 	auto callback = std::bind(&CommHandler::SetMachineSettings_resp, this, std::placeholders::_1);
@@ -116,9 +116,22 @@ void CommHandler::GetLog(time_t fromTime)
 {
 }
 
-void CommHandler::GetPorts()
+
+void CommHandler::SetExperimentSettings(std::shared_ptr<const ExperimentSettings> ptr)
 {
+	localExperimentSettings = ptr;
+
+	auto request = std::bind(&CommHandler::SetExperimentSettings_req, this, std::placeholders::_1);
+	auto callback = std::bind(&CommHandler::SetExperimentSettings_resp, this, std::placeholders::_1);
+
+	try {
+		client.Request(request, callback, localAddress);
+	}
+	catch (const std::exception& e) {
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, UnicodeConv::s2ws(e.what()));
+	}
 }
+
 
 void CommHandler::ManualCommand(int instrumentType, int instrumentNumber, bool shouldBeActivated)
 {
@@ -165,9 +178,6 @@ void CommHandler::SetUserContinue()
 {
 }
 
-void CommHandler::SetModifiedData()
-{
-}
 
 void CommHandler::ThreadCommand()
 {
@@ -251,7 +261,6 @@ unsigned CommHandler::GetMachineSettings_resp(http_response* r) {
 
 			receivedSettings.synced	= true;
 			messageHandler.GotMachineSettings(receivedSettings);
-			messageHandler.OnSync();
 		}
 		else
 		{
@@ -277,7 +286,7 @@ unsigned CommHandler::SetMachineSettings_req(http_request* r) {
 	json j;
 	try
 	{
-		serialization::serializeMachineSettingsToJSON(*localSettings, j);
+		serialization::serializeMachineSettingsToJSON(*localMachineSettings, j);
 	}
 	catch (const std::exception& e)
 	{
@@ -294,8 +303,8 @@ unsigned CommHandler::SetMachineSettings_resp(http_response* r) {
 	
 	if (r->status_ == http::responses::ok)
 	{
-		localSettings.reset();
-		messageHandler.OnSync();
+		localMachineSettings.reset();
+		messageHandler.OnSetMachineSettings();
 		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Machine settings updated"));
 	}
 	else if (r->status_ == http::responses::internal_err)
@@ -373,6 +382,46 @@ unsigned CommHandler::GetData_resp(http_response* r) {
 
 	return 0;
 }
+
+
+unsigned CommHandler::SetExperimentSettings_req(http_request* r) {
+	r->method_ = http::method::post;
+	r->content_type_ = http::mimetype::appjson;
+	r->path_ = "/api/experimentsettings";
+
+	json j;
+	try
+	{
+		serialization::serializeExperimentSettingsToJSON(*localExperimentSettings, j);
+	}
+	catch (const std::exception& e)
+	{
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, UnicodeConv::s2ws(e.what()));
+		return 1;
+	}
+
+	r->entity_ = j.dump();
+
+	return 0;
+}
+
+
+
+unsigned CommHandler::SetExperimentSettings_resp(http_response* r) {
+
+	if (r->status_ == http::responses::ok)
+	{
+	}
+	else if (r->status_ == http::responses::internal_err)
+	{
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Server error, could not start a new experiment"));
+		return 1;
+	}
+
+	return 0;
+}
+
+
 
 unsigned CommHandler::ThreadCommand_req(http_request * r)
 {

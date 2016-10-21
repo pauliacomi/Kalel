@@ -140,7 +140,7 @@ public:
 ***********************************************************************************************************************************/
 
 public:
-	void AffichageMesures();					// Obsolete, no direct data should be transmitted
+	void DiplayMeasurements();					// Obsolete, no direct data should be transmitted
 	void GraphAddMeasurement();					// Obsolete, this will be done through a separate thread in the main file
 	void RecuperationDonnees();
 	CString GetDonneesExperience();

@@ -2,9 +2,11 @@
 #define COMMHANDLER_H
 #pragma once
 
-#include "Netcode\Client.h"
+#include "Netcode/Client.h"
 #include "MFCMessageHandler.h"
-#include "unicodeConv.h"
+
+#include "Com Classes/MachineSettings.h"
+#include "Com Classes/ExperimentSettings.h"
 
 #include <string>
 
@@ -24,7 +26,7 @@ public:
 	void SetMachineSettings(std::shared_ptr<const MachineSettings> ptr);
 	void GetData(time_t startTime = 0, long int measurementsMade = 0);
 	void GetLog(time_t fromTime = 0);
-	void GetPorts();
+	void SetExperimentSettings(std::shared_ptr<const ExperimentSettings> ptr);
 
 	void StartClient();
 	void ShutdownClient();
@@ -34,7 +36,6 @@ public:
 	void ResumeClient();
 
 	void SetUserContinue();
-	void SetModifiedData();
 
 	void ManualCommand(int instrumentType, int instrumentNumber, bool shouldBeActivated);
 
@@ -47,7 +48,8 @@ private:
 	std::string localAddress;
 	std::string localStartTime;
 	std::string localMeasurementsMade;
-	std::shared_ptr<const MachineSettings> localSettings;
+	std::shared_ptr<const MachineSettings> localMachineSettings;
+	std::shared_ptr<const ExperimentSettings> localExperimentSettings;
 	int localThreadCommand;
 	void ThreadCommand();
 
@@ -60,6 +62,8 @@ private:
 	unsigned SetMachineSettings_resp(http_response * r);
 	unsigned GetData_req(http_request * r);
 	unsigned GetData_resp(http_response * r);
+	unsigned SetExperimentSettings_req(http_request * r);
+	unsigned SetExperimentSettings_resp(http_response * r);
 	unsigned ThreadCommand_req(http_request * r);
 	unsigned ThreadCommand_resp(http_response * r);
 };

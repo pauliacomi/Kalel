@@ -19,10 +19,14 @@ class CKalelApp : public CWinAppEx
 public:
 	CKalelApp();
 
+
+
 	// Global flags
-	bool menuIsAvailable;
-	bool experimentRunning;
-	bool serverConnected;
+	bool menuIsAvailable = true;
+	bool experimentRunning = false;
+	bool serverConnected = false;
+
+
 
 // Overrides
 public:

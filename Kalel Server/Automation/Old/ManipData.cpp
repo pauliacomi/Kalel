@@ -25,7 +25,7 @@ void CManip::DonneesManuelleGrapheEtape()
 
 // ---------- Measurements ----------------
 
-void CManip::AffichageMesures()
+void CManip::DiplayMeasurements()
 {
 	char char_resultat_calo[20];
 	sprintf_s(char_resultat_calo, "%.8E", resultat_calo);

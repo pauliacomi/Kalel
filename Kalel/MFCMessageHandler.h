@@ -30,12 +30,11 @@ public:
 	// PostMessage functions
 	bool ConnectionComplete();
 	bool GotMachineSettings(const MachineSettings &pParam);
-	bool OnSync();
+	bool OnSetMachineSettings();
 	bool ExchangeData(std::deque<ExperimentData*> * pParam);
 	bool ExperimentStart();
 	bool ExperimentEnd();
 	bool ThreadShutdown();
-	bool GraphReset();
 	bool DisplayMessage(int pParam, int pInt1 = default_val, int pInt2 = default_val, double pDouble = default_val);								// Simple display message which takes an int
 
 	bool DisplayMessage(int pParam, std::wstring m);

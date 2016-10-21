@@ -37,7 +37,6 @@
 #define UWM_UPDATEBUTTONS							(WM_USER + 100)
 
 #define UWM_CANCELEXPERIMENT						(WM_USER + 24)
-#define UWM_GRAPHRESET								(WM_USER + 28)
 
 #define UWM_DISPLAYMESSAGE							(WM_USER + 11)
 #define UWM_DISPLAYMESSAGEBOX						(WM_USER + 17)

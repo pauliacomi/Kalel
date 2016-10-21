@@ -14,10 +14,12 @@
 #include "TabDoses.h"					// For manipulating the settings object
 #include "TabDesorption.h"				// For manipulating the settings object
 
+
+
 // When clicking on the Launch button
 void CKalelView::OnBnClickedLancer()
 {
-	if (machineSettings->synced)
+	if (pApp->serverConnected)
 	{
 		// Create the experiment type window
 		DialogTypeExperiment dialogExperimentType;
@@ -48,7 +50,7 @@ void CKalelView::OnBnClickedLancer()
 				GetExperimentData(&dialogExperimentProperties, true);
 
 				// Raise the flag for data modified
-				commHandler.SetModifiedData();
+				//commHandler.SetExperimentSettings(experimentSettings);
 			}
 			else
 			{
@@ -69,21 +71,28 @@ void CKalelView::OnBnClickedLancer()
 // When clicking on the Stop button
 void CKalelView::OnBnClickedArreter()
 {
-	if (dataCollection.back()->experimentInProgress) {
-		int result = AfxMessageBox(PROMPT_CANCELEXP, MB_ICONQUESTION | MB_YESNO);
-		switch (result)
-		{
-		case IDYES:
-			commHandler.ResetClient();
-			break;
-		
-		case IDNO:
-			break;
+	if (pApp->serverConnected)
+	{
+		if (dataCollection.back()->experimentInProgress) {
+			int result = AfxMessageBox(PROMPT_CANCELEXP, MB_ICONQUESTION | MB_YESNO);
+			switch (result)
+			{
+			case IDYES:
+				commHandler.ResetClient();
+				break;
 
-		default:
-			ASSERT(0);
-			break;
+			case IDNO:
+				break;
+
+			default:
+				ASSERT(0);
+				break;
+			}
 		}
+	}
+	else
+	{
+		AfxMessageBox(ERROR_CONNECTION_STATUS, MB_OK);
 	}
 }
 
@@ -91,55 +100,97 @@ void CKalelView::OnBnClickedArreter()
 // Clicking the other buttons in the view
 void CKalelView::OnBnClickedButtonParametresExperience()
 {
-	if (pApp->experimentRunning) {
+	if (pApp->serverConnected)
+	{
+		if (pApp->experimentRunning) {
 
-		// Create dialog
-		ExperimentPropertySheet dialogExperimentProperties(_T(""), machineSettings.get());
-		dialogExperimentProperties.Initiate(experimentSettings);
+			// Create dialog
+			ExperimentPropertySheet dialogExperimentProperties(_T(""), machineSettings.get());
+			dialogExperimentProperties.Initiate(experimentSettings);
 
-		int counter = 0;
-		if (dataCollection.back()->experimentStage == STAGE_ADSORPTION)
-		{
-			counter = dataCollection.back()->adsorptionCounter;
+			int counter = 0;
+			if (dataCollection.back()->experimentStage == STAGE_ADSORPTION)
+			{
+				counter = dataCollection.back()->adsorptionCounter;
+			}
+			if (dataCollection.back()->experimentStage == STAGE_DESORPTION)
+			{
+				counter = dataCollection.back()->desorptionCounter;
+			}
+
+			dialogExperimentProperties.SetProprietiesModif(dataCollection.back()->experimentStage, counter);
+
+			if (dialogExperimentProperties.DoModal() == IDOK)
+			{
+				// Get the data from the dialog
+				GetExperimentData(&dialogExperimentProperties, false);
+			}
 		}
-		if (dataCollection.back()->experimentStage == STAGE_DESORPTION)
-		{
-			counter = dataCollection.back()->desorptionCounter;
-		}
-
-		dialogExperimentProperties.SetProprietiesModif(dataCollection.back()->experimentStage, counter);
-
-		if (dialogExperimentProperties.DoModal() == IDOK)
-		{
-			// Get the data from the dialog
-			GetExperimentData(&dialogExperimentProperties, false);
-		}
+	}
+	else
+	{
+		AfxMessageBox(ERROR_CONNECTION_STATUS, MB_OK);
 	}
 }
 
 void CKalelView::OnBnClickedPause()
 {
-	commHandler.PauseClient();
+	if (pApp->serverConnected)
+	{
+		commHandler.PauseClient();
+	}
+	else
+	{
+		AfxMessageBox(ERROR_CONNECTION_STATUS, MB_OK);
+	}
 }
 
 void CKalelView::OnBnClickedReprise()
 {
-	commHandler.ResumeClient();
+	if (pApp->serverConnected)
+	{
+		commHandler.ResumeClient();
+	}
+	else
+	{
+		AfxMessageBox(ERROR_CONNECTION_STATUS, MB_OK);
+	}
 }
 
 void CKalelView::OnBnClickedProchaineCommande()
 {
-	//ProchaineCommandeThreads();
+	if (pApp->serverConnected)
+	{
+		//ProchaineCommandeThreads();
+	}
+	else
+	{
+		AfxMessageBox(ERROR_CONNECTION_STATUS, MB_OK);
+	}
 }
 
 void CKalelView::OnBnClickedProchaineDose()
 {
-	//ProchaineDoseThreads();
+	if (pApp->serverConnected)
+	{
+		//ProchaineDoseThreads();
+	}
+	else
+	{
+		AfxMessageBox(ERROR_CONNECTION_STATUS, MB_OK);
+	}
 }
 
 void CKalelView::OnBnClickedProchaineEtape()
 {
-	//ProchaineEtapeThreads();
+	if (pApp->serverConnected)
+	{
+		//ProchaineEtapeThreads();
+	}
+	else
+	{
+		AfxMessageBox(ERROR_CONNECTION_STATUS, MB_OK);
+	}
 }
 
 void CKalelView::OnBnClickedArretSousVide()
@@ -162,99 +213,6 @@ void CKalelView::OnBnClickedArretSousVide()
 	}*/
 }
 
-
-
-// Copy all data from a property sheet dialog to the local object
-void CKalelView::GetExperimentData(ExperimentPropertySheet * pDialogExperimentProperties, bool initialRequest) {
-
-	if (initialRequest)
-	{
-		// Copy data across
-		experimentSettings->dataGeneral = pDialogExperimentProperties->m_general.allSettings;
-
-		if (experimentSettings->experimentType == EXPERIMENT_TYPE_AUTO)
-		{
-			experimentSettings->dataDivers = pDialogExperimentProperties->m_divers.allSettings;
-		
-			experimentSettings->dataAdsorption.clear();
-			for (size_t i = 0; i < pDialogExperimentProperties->adsorptionTabs.size(); i++)
-			{
-				experimentSettings->dataAdsorption.push_back(pDialogExperimentProperties->adsorptionTabs[i]->allSettings);
-			}
-			experimentSettings->dataDesorption.clear();
-			for (size_t i = 0; i < pDialogExperimentProperties->desorptionTabs.size(); i++)
-			{
-				experimentSettings->dataDesorption.push_back(pDialogExperimentProperties->desorptionTabs[i]->allSettings);
-			}
-		}
-	}
-
-	else
-	{
-		// Must check if everything is the same
-		
-		bool modified = false;
-
-		if (pDialogExperimentProperties->adsorptionTabs.size() != experimentSettings->dataAdsorption.size() 
-			&& pDialogExperimentProperties->desorptionTabs.size() != experimentSettings->dataDesorption.size())
-		{
-			modified = true;
-		}
-		else
-		{
-			if (pDialogExperimentProperties->m_general.allSettings != experimentSettings->dataGeneral)
-			{
-				modified = true;
-			}
-
-			if (pDialogExperimentProperties->m_divers.allSettings != experimentSettings->dataDivers)
-			{
-				modified = true;
-			}
-
-			for (size_t i = 0; i < pDialogExperimentProperties->adsorptionTabs.size(); i++)
-			{
-				if (pDialogExperimentProperties->adsorptionTabs[i]->allSettings != experimentSettings->dataAdsorption[i])
-				{
-					modified = true;
-				}
-			}
-			for (size_t i = 0; i < pDialogExperimentProperties->desorptionTabs.size(); i++)
-			{
-				if (pDialogExperimentProperties->desorptionTabs[i]->allSettings != experimentSettings->dataDesorption[i])
-				{
-					modified = true;
-				}
-			}
-		}
-		
-		if (modified)
-		{
-			// Raise the flag for data modified
-			commHandler.SetModifiedData();
-
-			// Copy data across
-			experimentSettings->dataGeneral = pDialogExperimentProperties->m_general.allSettings;
-
-			if (experimentSettings->experimentType == EXPERIMENT_TYPE_AUTO)
-			{
-				experimentSettings->dataDivers = pDialogExperimentProperties->m_divers.allSettings;
-
-				experimentSettings->dataAdsorption.clear();
-				for (size_t i = 0; i < pDialogExperimentProperties->adsorptionTabs.size(); i++)
-				{
-					experimentSettings->dataAdsorption.push_back(pDialogExperimentProperties->adsorptionTabs[i]->allSettings);
-				}
-				experimentSettings->dataDesorption.clear();
-				for (size_t i = 0; i < pDialogExperimentProperties->desorptionTabs.size(); i++)
-				{
-					experimentSettings->dataDesorption.push_back(pDialogExperimentProperties->desorptionTabs[i]->allSettings);
-				}
-			}
-		}
-	}
-
-}
 
 void CKalelView::UpdateButtons() {
 

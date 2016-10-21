@@ -56,7 +56,7 @@ bool CManip_AutoGaz::LireEcrireAfficher(LPVOID pParam)
 
 	messageHandler.ExchangeData();
 	GraphAddMeasurement();
-	AffichageMesures();
+	DiplayMeasurements();
 	EnregistrementFichierMesures();
 
 	::PostMessage((HWND) pParam, WM_THREADAFFICHAGE, 0, 0);

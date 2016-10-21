@@ -39,7 +39,7 @@ void CManip::ExecutionManuelle(LPVOID pParam)
 
 		messageHandler.ExchangeData();
 		GraphAddMeasurement();
-		AffichageMesures();
+		DiplayMeasurements();
 		EnregistrementFichierMesures();
 		DonneesManuelleGrapheEtape();
 

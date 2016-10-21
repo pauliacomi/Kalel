@@ -21,6 +21,10 @@
 #include "DefinePostMessages.h"										// Definition of messages received from the automation functionality
 #include "DefineMenuMessages.h"										// Definition of messages received from the menu
 
+#include "ExperimentPropertySheet.h"								// The dialog asking the user to input the experiment parameters
+#include "Com Classes\ManualActionParam.h"
+#include "ListOfInstrumentButtons.h"								// The class containing a list of the instruments' buttons ID's
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -45,18 +49,17 @@ BEGIN_MESSAGE_MAP(CKalelView, CFormView)
 	ON_MESSAGE(UWM_THREAD_RESTART, &CKalelView::BackgroundThreadRestart)					// Request thread restart
 
 	// Server callbacks:
-	ON_MESSAGE(UWM_SIGNAL_SERVER_CONNECTED, &CKalelView::OnServerConnected)			// Callback to notify of successful server connection
-	ON_MESSAGE(UWM_SYNCED, &CKalelView::OnSync)										// Modifies the global ??????????????
-	ON_MESSAGE(UWM_GOT_MACHINE_SETTINGS, &CKalelView::OnGetMachineSettings)			// Callback to notify of received MachineSettings
-	ON_MESSAGE(UWM_EXCHANGEDATA, &CKalelView::OnExchangeData)						// Callback to notify of incoming ExperimentData array
-	ON_MESSAGE(UWM_THREADFINISHEDREG, &CKalelView::OnAutoExperimentFinished)		// Calls when manual functionality ends
-	ON_MESSAGE(UWM_DISPLAYMESSAGE, &CKalelView::AffichageMessages)					// Callback to display a message from the automation thread
-	ON_MESSAGE(UWM_DISPLAYMESSAGEBOX, &CKalelView::MessageBoxAlert)					// Displays an messageBox to alert user of something
-	ON_MESSAGE(UWM_DISPLAYMESSAGEBOXCONF, &CKalelView::MessageBoxConfirmation)		// Displays an messageBox to or ask user for confirmation
-	ON_MESSAGE(UWM_GRAPHRESET, &CKalelView::GraphReset)										// Resets the graph and delets all data
-	ON_MESSAGE(UWM_CANCELEXPERIMENT, &CKalelView::CancelBeforeStarting)
-	ON_MESSAGE(UWM_UPDATEBUTTONS, &CKalelView::OnThreadRequestButtonUpdate)			// Calls to update a specific button pair and associated display on a manual message
-
+	ON_MESSAGE(UWM_SIGNAL_SERVER_CONNECTED, &CKalelView::OnServerConnected)					// Callback to notify of successful server connection
+	ON_MESSAGE(UWM_SYNCED, &CKalelView::OnSetMachineSettings)												// Modifies the global ??????????????
+	ON_MESSAGE(UWM_GOT_MACHINE_SETTINGS, &CKalelView::OnGetMachineSettings)					// Callback to notify of received MachineSettings
+	ON_MESSAGE(UWM_EXCHANGEDATA, &CKalelView::OnExchangeData)								// Callback to notify of incoming ExperimentData array
+	ON_MESSAGE(UWM_THREADFINISHEDREG, &CKalelView::OnAutoExperimentFinished)				// Calls when manual functionality ends
+	ON_MESSAGE(UWM_DISPLAYMESSAGE, &CKalelView::AffichageMessages)							// Callback to display a message from the automation thread
+	ON_MESSAGE(UWM_DISPLAYMESSAGEBOX, &CKalelView::MessageBoxAlert)							// Displays an messageBox to alert user of something
+	ON_MESSAGE(UWM_DISPLAYMESSAGEBOXCONF, &CKalelView::MessageBoxConfirmation)				// Displays an messageBox to or ask user for confirmation
+	ON_MESSAGE(UWM_CANCELEXPERIMENT, &CKalelView::CancelBeforeStarting)						
+	ON_MESSAGE(UWM_UPDATEBUTTONS, &CKalelView::OnThreadRequestButtonUpdate)					// Calls to update a specific button pair and associated display on a manual message
+																							
 	// Menu messages:
 	ON_MESSAGE(UWM_DISP_CONNECTS_DIALOG, &CKalelView::DisplayConnectDialog)					// Display dialog connection
 	ON_MESSAGE(UWM_DISP_PORT_DIALOG, &CKalelView::DisplayPortDialog)						// Display dialog ports
@@ -161,6 +164,7 @@ void CKalelView::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_TEMOIN_POMPE, m_StrTemoinPompe);
 }
 
+
 BOOL CKalelView::PreCreateWindow(CREATESTRUCT& cs)
 {
 	// TODO: Modify the Window class or styles here by modifying
@@ -169,6 +173,7 @@ BOOL CKalelView::PreCreateWindow(CREATESTRUCT& cs)
 	return CFormView::PreCreateWindow(cs);
 }
 
+
 void CKalelView::OnInitialUpdate()
 {
 	CFormView::OnInitialUpdate();
@@ -176,6 +181,12 @@ void CKalelView::OnInitialUpdate()
 
 	// Get a pointer to the app itself for access to the menu availability
 	pApp = static_cast<CKalelApp *>(AfxGetApp());
+
+	// Pass window handle
+	commHandler.SetHandle(GetSafeHwnd());
+
+	// Pass stored array to graph
+	GetDocument()->GraphSetArray(dataCollection);
 
 	// Deactivate the buttons that should not be available
 	GetDlgItem(IDC_ARRETER)->EnableWindow(FALSE);
@@ -194,27 +205,10 @@ void CKalelView::OnInitialUpdate()
 	// Initial button set-up
 	UpdateButtons();
 	
-	// Pass window handle
-	commHandler.SetHandle(GetSafeHwnd());
-
-	// Pass stored array to graph
-	GetDocument()->GraphSetArray(dataCollection);
-
 	// Set the timer for the window update
 	SetTimer(1, 100, NULL);
-
-	// Check if we can connect to the saved server
-	std::wstring serverAddress = savedParams.GetServerAddress();
-	if (serverAddress != _T(""))
-	{
-		commHandler.Connect(serverAddress);
-	}
-
-	// Create the experiment storage class
-	//int initialAdsorptions = 3;
-	//int initialDesorptions = 1;
-	//experimentSettings = new ExperimentSettings(initialAdsorptions, initialDesorptions, machineSettings);		// Create a new experiment storage
 }
+
 
 
 // CKalelView drawing
@@ -228,6 +222,7 @@ void CKalelView::OnDraw(CDC* /*pDC*/)
 
 	// TODO: add draw code for native data here
 }
+
 
 
 // CKalelView diagnostics
@@ -291,18 +286,131 @@ CKalelView * CKalelView::GetView()
 	return NULL;
 }
 
-// CKalelView message handlers
 
-void CKalelView::DoEvents(void)
+/**********************************************************************************************************************************
+//	Non-standard members
+**********************************************************************************************************************************/
+
+void CKalelView::OnTimer(UINT nIDEvent)
 {
-	MSG msg;
+	if (!dataCollection.empty()) {
 
-	while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
-	{
-		TranslateMessage(&msg);
-		DispatchMessage(&msg);
+		// Write textbox values
+		DisplayTextboxValues(dataCollection.back());
+
+		// Write the current step
+		DisplayStepProgress(dataCollection.back());
+
+		// Write in measurement box
+		DiplayMeasurements(dataCollection.back());
+
+
+		// Write graph
+		GetDocument()->UpdateAllViews(this);
+
+		if (pApp->serverConnected)
+		{
+			commHandler.GetData(dataCollection.back()->timeStart, dataCollection.back()->measurementsMade);
+		}
 	}
+
+
+	CFormView::OnTimer(nIDEvent);	// Call base class handler.
 }
+
+
+// Copy all data from a property sheet dialog to the local object
+void CKalelView::GetExperimentData(ExperimentPropertySheet * pDialogExperimentProperties, bool initialRequest) {
+
+	if (initialRequest)
+	{
+		// Copy data across
+		experimentSettings->dataGeneral = pDialogExperimentProperties->m_general.allSettings;
+
+		if (experimentSettings->experimentType == EXPERIMENT_TYPE_AUTO)
+		{
+			experimentSettings->dataDivers = pDialogExperimentProperties->m_divers.allSettings;
+
+			experimentSettings->dataAdsorption.clear();
+			for (size_t i = 0; i < pDialogExperimentProperties->adsorptionTabs.size(); i++)
+			{
+				experimentSettings->dataAdsorption.push_back(pDialogExperimentProperties->adsorptionTabs[i]->allSettings);
+			}
+			experimentSettings->dataDesorption.clear();
+			for (size_t i = 0; i < pDialogExperimentProperties->desorptionTabs.size(); i++)
+			{
+				experimentSettings->dataDesorption.push_back(pDialogExperimentProperties->desorptionTabs[i]->allSettings);
+			}
+		}
+	}
+
+	else
+	{
+		// Must check if everything is the same
+
+		bool modified = false;
+
+		if (pDialogExperimentProperties->adsorptionTabs.size() != experimentSettings->dataAdsorption.size()
+			&& pDialogExperimentProperties->desorptionTabs.size() != experimentSettings->dataDesorption.size())
+		{
+			modified = true;
+		}
+		else
+		{
+			if (pDialogExperimentProperties->m_general.allSettings != experimentSettings->dataGeneral)
+			{
+				modified = true;
+			}
+
+			if (pDialogExperimentProperties->m_divers.allSettings != experimentSettings->dataDivers)
+			{
+				modified = true;
+			}
+
+			for (size_t i = 0; i < pDialogExperimentProperties->adsorptionTabs.size(); i++)
+			{
+				if (pDialogExperimentProperties->adsorptionTabs[i]->allSettings != experimentSettings->dataAdsorption[i])
+				{
+					modified = true;
+				}
+			}
+			for (size_t i = 0; i < pDialogExperimentProperties->desorptionTabs.size(); i++)
+			{
+				if (pDialogExperimentProperties->desorptionTabs[i]->allSettings != experimentSettings->dataDesorption[i])
+				{
+					modified = true;
+				}
+			}
+		}
+
+		if (modified)
+		{
+			// Raise the flag for data modified
+			//commHandler.SetExperimentSettings(experimentSettings);
+
+			// Copy data across
+			experimentSettings->dataGeneral = pDialogExperimentProperties->m_general.allSettings;
+
+			if (experimentSettings->experimentType == EXPERIMENT_TYPE_AUTO)
+			{
+				experimentSettings->dataDivers = pDialogExperimentProperties->m_divers.allSettings;
+
+				experimentSettings->dataAdsorption.clear();
+				for (size_t i = 0; i < pDialogExperimentProperties->adsorptionTabs.size(); i++)
+				{
+					experimentSettings->dataAdsorption.push_back(pDialogExperimentProperties->adsorptionTabs[i]->allSettings);
+				}
+				experimentSettings->dataDesorption.clear();
+				for (size_t i = 0; i < pDialogExperimentProperties->desorptionTabs.size(); i++)
+				{
+					experimentSettings->dataDesorption.push_back(pDialogExperimentProperties->desorptionTabs[i]->allSettings);
+				}
+			}
+		}
+	}
+
+}
+
 
 /**********************************************************************************************************************************
 // Menu functionality
@@ -331,7 +439,7 @@ LRESULT CKalelView::OnMsvAmpoule(WPARAM, LPARAM)
 				UpdateButtons();
 
 				// Raise the flag for data modified
-				commHandler.SetModifiedData();
+				// commHandler.SetExperimentSettings();
 			}
 		}
 	}
@@ -366,7 +474,7 @@ LRESULT CKalelView::OnMsvBouteille(WPARAM, LPARAM)
 				UpdateButtons();
 
 				// Raise the flag for data modified
-				commHandler.SetModifiedData();
+				//commHandler.SetExperimentSettings();
 			}
 		}
 	}
@@ -402,7 +510,7 @@ LRESULT CKalelView::OnChangementBouteille(WPARAM, LPARAM)
 				UpdateButtons();
 
 				// Raise the flag for data modified
-				commHandler.SetModifiedData();
+				//commHandler.SetExperimentSettings();
 			}
 		}
 	}
@@ -479,21 +587,42 @@ LRESULT CKalelView::DisplayApparatusSettingsDialog(WPARAM, LPARAM)
 
 LRESULT CKalelView::BackgroundThreadStart(WPARAM, LPARAM)
 {
-	commHandler.StartClient();
+	if (pApp->serverConnected)
+	{
+		commHandler.StartClient();
+	}
+	else
+	{
+		AfxMessageBox(ERROR_CONNECTION_STATUS, MB_OK);
+	}
 	return 0;
 }
 
 
 LRESULT CKalelView::BackgroundThreadStop(WPARAM, LPARAM)
 {
-	commHandler.ShutdownClient();
+	if (pApp->serverConnected)
+	{
+		commHandler.ShutdownClient();
+	}
+	else
+	{
+		AfxMessageBox(ERROR_CONNECTION_STATUS, MB_OK);
+	}
 	return 0;
 }
 
 
 LRESULT CKalelView::BackgroundThreadRestart(WPARAM, LPARAM)
 {
-	commHandler.RestartClient();
+	if (pApp->serverConnected)
+	{
+		commHandler.RestartClient();
+	}
+	else
+	{
+		AfxMessageBox(ERROR_CONNECTION_STATUS, MB_OK);
+	}
 	return 0;
 }
 
@@ -502,6 +631,52 @@ LRESULT CKalelView::BackgroundThreadRestart(WPARAM, LPARAM)
 /**********************************************************************************************************************************
 // Server callback commands
 **********************************************************************************************************************************/
+
+LRESULT CKalelView::OnServerConnected(WPARAM wParam, LPARAM lParam)
+{
+	pApp->serverConnected = true;
+	commHandler.SaveAddress(savedParams.GetServerAddress());
+	commHandler.Sync();
+	return 0;
+}
+
+LRESULT CKalelView::OnGetMachineSettings(WPARAM wParam, LPARAM incomingMachineSettings)
+{
+	// Get the incoming pointer
+	machineSettings.reset(reinterpret_cast<MachineSettings*>(incomingMachineSettings));
+
+	return 0;
+}
+
+LRESULT CKalelView::OnSetMachineSettings(WPARAM wParam, LPARAM lParam)
+{
+	if (machineSettings->synced != true) {
+		machineSettings = tempSettings;
+		tempSettings.reset();
+		machineSettings->synced = true;
+	}
+
+	return 0;
+}
+
+LRESULT CKalelView::OnExchangeData(WPARAM, LPARAM incomingExperimentData)
+{
+	// Get the incoming vector and add it to the local data
+	MeasurementsArray * newData = reinterpret_cast<MeasurementsArray*>(incomingExperimentData);
+	dataCollection.insert(dataCollection.end(), newData->begin(), newData->end());
+
+	// Delete the useless vector now
+	delete newData;
+
+	return 0;
+}
+
+LRESULT CKalelView::OnExchangeLogs(WPARAM, LPARAM incomingLogs)
+{
+
+	return 0;
+}
+
 
 LRESULT CKalelView::OnAutoExperimentFinished(WPARAM, LPARAM) {
 
@@ -532,41 +707,79 @@ LRESULT CKalelView::CancelBeforeStarting(WPARAM, LPARAM)
 	return 0;
 }
 
-LRESULT CKalelView::OnServerConnected(WPARAM wParam, LPARAM lParam)
-{
-	pApp->serverConnected = true;
-	commHandler.SaveAddress(savedParams.GetServerAddress());
-	commHandler.Sync();
-	return 0;
-}
 
-LRESULT CKalelView::OnGetMachineSettings(WPARAM wParam, LPARAM incomingMachineSettings)
-{
-	// Get the incoming pointer
-	machineSettings.reset(reinterpret_cast<MachineSettings*>(incomingMachineSettings));
 
-	return 0;
-}
+// Single function to update UI when receiving the command that the thread posted before finishing
+LRESULT CKalelView::OnThreadRequestButtonUpdate(WPARAM wParam, LPARAM lParam) {
 
-LRESULT CKalelView::OnSync(WPARAM wParam, LPARAM lParam)
-{
-	if (machineSettings->synced != true) {
-		machineSettings = tempSettings;
-		tempSettings.reset();
-		machineSettings->synced = true;
+	// Cast the parameters object and take ownership
+	std::auto_ptr<ManualActionParam> maParam(reinterpret_cast<ManualActionParam*>(wParam));
+
+	// Create a new list object
+	ListOfInstrumentButtons list(maParam->instrumentType, maParam->instrumentNumber, maParam->shouldBeActivated);
+
+	CString message;
+
+	if (lParam) {
+		// Disable required button
+		GetDlgItem(list.GetButtonID())->EnableWindow(FALSE);
+
+		// Enable required button
+		GetDlgItem(list.GetOppositeButtonID())->EnableWindow(TRUE);
+
+		// Write message in the textbox
+		SetDlgItemText(list.GetTextboxID(), list.GetTextboxMessage());
+	}
+	else
+	{
+		CString * temp = new CString(list.GetTempTextboxMessage());
+		AffichageMessages(0, (LPARAM)temp);
 	}
 
+	// unlock the menu
+	pApp->menuIsAvailable = true;
+
 	return 0;
 }
 
-LRESULT CKalelView::OnExchangeData(WPARAM, LPARAM incomingExperimentData)
+
+LRESULT CKalelView::MessageBoxAlert(WPARAM wParam, LPARAM lParam)
 {
-	// Get the incoming vector and add it to the local data
-	MeasurementsArray * newData = reinterpret_cast<MeasurementsArray*>(incomingExperimentData);
-	dataCollection.insert(dataCollection.end(), newData->begin(), newData->end());
+	// Get the incoming pointer and cast it as a smart pointer
+	std::auto_ptr<CString> message(reinterpret_cast<CString*>(lParam));
+	std::auto_ptr<UINT> nType(reinterpret_cast<UINT*>(wParam));
+	
+	return AfxMessageBox(*message, *nType);
+}
 
-	// Delete the useless vector now
-	delete newData;
+LRESULT CKalelView::MessageBoxConfirmation(WPARAM wParam, LPARAM lParam)
+{
+	// Get the incoming pointer and cast it as a smart pointer
+	std::auto_ptr<CString> message(reinterpret_cast<CString*>(lParam));
+	std::auto_ptr<UINT> nType(reinterpret_cast<UINT*>(wParam));
 
-	return 0;
+	int result;
+	bool continuer = true;
+	do {
+		result = AfxMessageBox(*message, *nType);
+		if (result == IDCANCEL)
+		{
+			if (AfxMessageBox(PROMPT_CANCELEXP, MB_YESNO | MB_ICONWARNING, 0) == IDYES) {
+				commHandler.ResetClient();
+				continuer = false;
+			}
+		}
+		else {
+			if (result == IDYES || result == IDOK) {
+				commHandler.ResumeClient();
+				continuer = false;
+			}
+			if (result == IDNO) {
+				commHandler.ResumeClient();
+				commHandler.SetUserContinue();
+				continuer = false;
+			}
+		}
+	} while (continuer);
+	return result;
 }

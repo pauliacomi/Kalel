@@ -73,10 +73,6 @@ CKalelApp::CKalelApp()
 
 	// TODO: add construction code here,
 
-	menuIsAvailable = true;
-	experimentRunning = false;
-	serverConnected = false;
-
 	// Place all significant initialization in InitInstance
 }
 

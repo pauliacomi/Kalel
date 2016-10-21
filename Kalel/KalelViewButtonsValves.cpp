@@ -8,8 +8,6 @@
 #include "KalelDoc.h"
 #include "KalelView.h"
 
-#include "Com Classes\MachineSettings.h"							// The class that has the manual parameters stored
-#include "Com Classes\ManualActionParam.h"
 #include "Resources\DefineInstruments.h"							// Definitions for instruments
 #include "ListOfInstrumentButtons.h"								// The class containing a list of the instruments' buttons ID's
 
@@ -18,56 +16,28 @@
 // Single function to ask for thread start of manual controls
 void CKalelView::AskThreadForManualCommand(int instrumentType, int instrumentNumber, bool shouldBeActivated) {
 
-	// Create a new list object
-	ListOfInstrumentButtons list(instrumentType, instrumentNumber, shouldBeActivated);
+	if (pApp->serverConnected)
+	{
+		// Create a new list object
+		ListOfInstrumentButtons list(instrumentType, instrumentNumber, shouldBeActivated);
 
-	// Block the required button
-	GetDlgItem(list.GetButtonID())->EnableWindow(FALSE);
-
-	// Show that the action has started
-	SetDlgItemText(list.GetTextboxID(), list.GetTempTextboxMessage());
-
-	// lock the menu
-	pApp->menuIsAvailable = false;
-
-	// Create the storage object and then pass it to the threading function
-	commHandler.ManualCommand(instrumentType, instrumentNumber, shouldBeActivated);
-}
-
-
-// Single function to update UI when receiving the command that the thread posted before finishing
-LRESULT CKalelView::OnThreadRequestButtonUpdate(WPARAM wParam, LPARAM lParam) {
-
-	// Cast the parameters object and take ownership
-	std::auto_ptr<ManualActionParam> maParam(reinterpret_cast<ManualActionParam*>(wParam));
-
-	// Create a new list object
-	ListOfInstrumentButtons list(maParam->instrumentType, maParam->instrumentNumber, maParam->shouldBeActivated);
-
-	CString message;
-
-	if (lParam) {
-		// Disable required button
+		// Block the required button
 		GetDlgItem(list.GetButtonID())->EnableWindow(FALSE);
 
-		// Enable required button
-		GetDlgItem(list.GetOppositeButtonID())->EnableWindow(TRUE);
+		// Show that the action has started
+		SetDlgItemText(list.GetTextboxID(), list.GetTempTextboxMessage());
 
-		// Write message in the textbox
-		SetDlgItemText(list.GetTextboxID(), list.GetTextboxMessage());
+		// lock the menu
+		pApp->menuIsAvailable = false;
+
+		// Create the storage object and then pass it to the threading function
+		commHandler.ManualCommand(instrumentType, instrumentNumber, shouldBeActivated);
 	}
 	else
 	{
-		CString * temp = new CString(list.GetTempTextboxMessage());
-		AffichageMessages(0, (LPARAM) temp);
+		AfxMessageBox(ERROR_CONNECTION_STATUS, MB_OK);
 	}
-
-	// unlock the menu
-	pApp->menuIsAvailable = true;
-
-	return 0;
 }
-
 
 
 //-------------------- Individual functions for buttons ------------------

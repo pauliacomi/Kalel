@@ -48,7 +48,7 @@ bool MFCMessageHandler::GotMachineSettings(const MachineSettings &pParam)
 	return true;
 }
 
-bool MFCMessageHandler::OnSync()
+bool MFCMessageHandler::OnSetMachineSettings()
 {
 	// Post the required message, now the main thread is responsible for deleting the new class
 	if (::PostMessage(windowHandle, UWM_SYNCED, NULL, NULL) == 0) {
@@ -193,7 +193,6 @@ bool MFCMessageHandler::ExperimentStart()
 {
 	DisplayMessage(MESSAGE_FILLLINE);
 	DisplayMessage(MESSAGE_EXPSTART);
-	GraphReset();
 
 	return true;
 }
@@ -202,7 +201,6 @@ bool MFCMessageHandler::ExperimentEnd()
 {
 	::PostMessage(windowHandle, UWM_THREADFINISHEDREG, NULL, NULL);
 	DisplayMessage(MESSAGE_FILLLINE);
-	GraphReset();
 
 	return true;
 }
@@ -211,15 +209,6 @@ bool MFCMessageHandler::ThreadShutdown()
 {
 	::PostMessage(windowHandle, UWM_THREADSHUTDOWN, NULL, NULL);
 	DisplayMessage(MESSAGE_THREAD_SHUTTINGDOWN);
-	GraphReset();
-
-	return true;
-}
-
-
-bool MFCMessageHandler::GraphReset()
-{
-	::PostMessage(windowHandle, UWM_GRAPHRESET, NULL, NULL);
 
 	return true;
 }
