@@ -225,6 +225,7 @@
     <ClInclude Include="..\Kalel Shared\Resources\DefineInstruments.h" />
     <ClInclude Include="..\Kalel Shared\Resources\DefineStages.h" />
     <ClInclude Include="..\Kalel Shared\Resources\StringTable.h" />
+    <ClInclude Include="..\Kalel Shared\timestamp.h" />
     <ClInclude Include="..\Kalel Shared\unicodeConv.h" />
     <ClInclude Include="CommHandler.h" />
     <ClInclude Include="DefineDialogMessages.h" />

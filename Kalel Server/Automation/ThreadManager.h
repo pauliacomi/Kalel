@@ -5,6 +5,8 @@
 #include <thread>
 #include "../MessageHandler.h"
 
+#include "../Backend/Wrapper Classes/Vannes.h"
+
 class Automation;
 class ExperimentSettings;
 class ManualActionParam;
@@ -15,6 +17,7 @@ public:
 	ThreadManager(Storage &h);
 	~ThreadManager();
 
+private:
 	// Pointer to settings storage
 	ManualActionParam * maParam;							// Storage for manual parameters
 	std::shared_ptr<ExperimentSettings> experimentSettings;	// Storage for automatic parameters
@@ -23,9 +26,11 @@ public:
 	std::thread * m_threadMeasurement;						// Reference for main thread
 	CWinThread * m_threadManualAction;						// Reference for manual thread
 
-private:
 	Storage * handles;										// pointer to storage class
 	Automation * automation;								// Main class that deals with the automatic functionality
+
+	// Create the required objects
+	CVannes pVanne;
 
 	// Public interface methods
 public:

@@ -190,7 +190,6 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 		}
 
 		resp->answer_ = j.dump();
-
 	}
 
 
@@ -198,6 +197,42 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 	// Get Logs
 	*********************************/
 	else if (req->path_ == "/api/experimentlogs" && req->method_ == http::method::get) {
+		resp->status_ = http::responses::ok;
+		resp->content_type_ = http::mimetype::appjson;
+
+		// Figure out which range of logs to send by finding the requested timestamp
+
+		std::unordered_map<std::string, std::string>::iterator it;
+		storageVectors.autoInfoLogsMutex.lock();
+		auto localCollection = storageVectors.automationInfoLogs;
+		storageVectors.autoInfoLogsMutex.unlock();
+
+		if (req->params_.empty() ||									// If parameters don't exist, send all the logs
+			req->params_.at("time").empty())
+		{
+			it = localCollection.begin();
+		}
+		else
+		{
+			it = localCollection.find(req->params_.at("time"));
+
+			if (it != localCollection.end())						// If iterator is valid, send requested logs
+			{
+				json j;
+
+				while (it != localCollection.end())
+				{
+					j[it->first] = it->second;
+					++it;
+				}
+
+				resp->answer_ = j.dump();
+			}
+			else
+			{
+				resp->status_ = http::responses::bad_request;
+			}
+		}
 	}
 
 

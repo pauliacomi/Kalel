@@ -246,6 +246,12 @@
     <ClInclude Include="..\Kalel Shared\Netcode\http_helpers.h">
       <Filter>Header Files\Common\Netcode</Filter>
     </ClInclude>
+    <ClInclude Include="..\Kalel Shared\timestamp.h">
+      <Filter>Header Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Kalel Shared\Resources\DefineText.h">
+      <Filter>Header Files\Common\Resources</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Kalel Server.cpp">

@@ -268,8 +268,6 @@ void ThreadManager::ThreadManualAction()
 	// Create local copy so we don't have to depend on main one which can get deleted
 	ManualActionParam * localMP = new ManualActionParam(maParam);
 
-	// Create the required objects. Might be better to be done in the manip directly
-	CVannes pVanne;
 
 	// Launch required functionality
 	switch (localMP->instrumentType)

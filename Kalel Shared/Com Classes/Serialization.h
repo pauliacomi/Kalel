@@ -270,35 +270,35 @@ namespace serialization {
 
 
 	static void serializeDataAdsToJSON(const Donnees_Doses &m, nlohmann::json &j) {
-		j["dP"]								= m.delta_pression						;
-		j["Pfinal"]							= m.pression_finale						;
-		j["Tads"]							= m.temps_adsorption					;
-		j["Tref"]							= m.temps_volume						;
+		j["dP"]									= m.delta_pression						;
+		j["Pfinal"]								= m.pression_finale						;
+		j["Tads"]								= m.temps_adsorption					;
+		j["Tref"]								= m.temps_volume						;
 	}
 	
 	static void deserializeJSONToDataAds(const nlohmann::json & j, Donnees_Doses & m)
 	{
-		m.delta_pression					= j["dP"								];
-		m.pression_finale					= j["Pfinal"							];
-		m.temps_adsorption					= j["Tads"								];
-		m.temps_volume						= j["Tref"								];
+		m.delta_pression						= j["dP"								];
+		m.pression_finale						= j["Pfinal"							];
+		m.temps_adsorption						= j["Tads"								];
+		m.temps_volume							= j["Tref"								];
 	}
 
 
 
 	static void serializeDataDesToJSON(const Donnees_Desorption &m, nlohmann::json &j) {
-		j["dP"]								= m.delta_pression						;
-		j["Pfinal"]							= m.pression_finale						;
-		j["Tdes"]							= m.temps_desorption					;
-		j["Tref"]							= m.temps_volume						;
+		j["dP"]									= m.delta_pression						;
+		j["Pfinal"]								= m.pression_finale						;
+		j["Tdes"]								= m.temps_desorption					;
+		j["Tref"]								= m.temps_volume						;
 	}
 
 	static void deserializeJSONToDataDes(const nlohmann::json & j, Donnees_Desorption & m)
 	{
-		m.delta_pression					= j["dP"								];
-		m.pression_finale					= j["Pfinal"							];
-		m.temps_desorption					= j["Tdes"								];
-		m.temps_volume						= j["Tref"								];
+		m.delta_pression						= j["dP"								];
+		m.pression_finale						= j["Pfinal"							];
+		m.temps_desorption						= j["Tdes"								];
+		m.temps_volume							= j["Tref"								];
 	}
 
 
@@ -308,51 +308,51 @@ namespace serialization {
 	//*************************************************************************************************************************
 	static void serializeGasToJSON(const gaz &m, nlohmann::json &j) 
 	{
-		j["masse_moleculaire"		]		=					m.masse_moleculaire				;
-		j["nom"						]		= UnicodeConv::ws2s(m.nom							);
-		j["omega"					]		=					m.omega							;
-		j["pression_critique"		]		=					m.pression_critique				;
-		j["symbole"					]		= UnicodeConv::ws2s(m.symbole						);
-		j["temperature_critique"	]		=					m.temperature_critique			;
-		j["temperature_ebullition"	]		=					m.temperature_ebullition		;
+		j["masse_moleculaire"		]			=					m.masse_moleculaire				;
+		j["nom"						]			= UnicodeConv::ws2s(m.nom							);
+		j["omega"					]			=					m.omega							;
+		j["pression_critique"		]			=					m.pression_critique				;
+		j["symbole"					]			= UnicodeConv::ws2s(m.symbole						);
+		j["temperature_critique"	]			=					m.temperature_critique			;
+		j["temperature_ebullition"	]			=					m.temperature_ebullition		;
 	}
 
 	static void deserializeJSONToGas(const nlohmann::json & j, gaz & m)
 	{
-		m.masse_moleculaire					=					j["masse_moleculaire"			];
-		m.nom								= UnicodeConv::s2ws(j["nom"							]);
-		m.omega								=					j["omega"						];
-		m.pression_critique					=					j["pression_critique"			];
-		m.symbole							= UnicodeConv::s2ws(j["symbole"						]);
-		m.temperature_critique				=					j["temperature_critique"		];
-		m.temperature_ebullition			=					j["temperature_ebullition"		];
+		m.masse_moleculaire						=					j["masse_moleculaire"			];
+		m.nom									= UnicodeConv::s2ws(j["nom"							]);
+		m.omega									=					j["omega"						];
+		m.pression_critique						=					j["pression_critique"			];
+		m.symbole								= UnicodeConv::s2ws(j["symbole"						]);
+		m.temperature_critique					=					j["temperature_critique"		];
+		m.temperature_ebullition				=					j["temperature_ebullition"		];
 	}
 
 
 	static void serializeUserToJSON(const experimentateur &m, nlohmann::json &j) 
 	{
-		j["nom"]							= UnicodeConv::ws2s(m.nom			);
-		j["surnom"]							= UnicodeConv::ws2s(m.surnom		);
+		j["nom"]								= UnicodeConv::ws2s(m.nom			);
+		j["surnom"]								= UnicodeConv::ws2s(m.surnom		);
 	}
 
 	static void deserializeJSONToUser(const nlohmann::json & j, experimentateur & m)
 	{
-		m.nom								= UnicodeConv::s2ws(j["nom"			]);	
-		m.surnom							= UnicodeConv::s2ws(j["surnom"		]);	
+		m.nom									= UnicodeConv::s2ws(j["nom"			]);	
+		m.surnom								= UnicodeConv::s2ws(j["surnom"		]);	
 	}
 
 
 	static void serializeCellToJSON(const cellule &m, nlohmann::json &j) 
 	{
-		j["number"		]					= UnicodeConv::ws2s(m.numero		);
-		j["caloVolume"	]					=					m.volume_calo	;
-		j["totalVolume"	]					=					m.volume_total	;
+		j["number"		]						= UnicodeConv::ws2s(m.numero		);
+		j["caloVolume"	]						=					m.volume_calo	;
+		j["totalVolume"	]						=					m.volume_total	;
 	}
 
 	static void deserializeJSONToCell(const nlohmann::json & j, cellule & m)
 	{
-		m.numero							= UnicodeConv::s2ws(j["number"		]);
-		m.volume_calo						=					j["caloVolume"	];
-		m.volume_total						=					j["totalVolume"	];
+		m.numero								= UnicodeConv::s2ws(j["number"		]);
+		m.volume_calo							=					j["caloVolume"	];
+		m.volume_total							=					j["totalVolume"	];
 	}
 }

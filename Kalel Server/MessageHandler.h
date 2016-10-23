@@ -12,6 +12,7 @@
 
 #include <string>
 #include <vector>
+#include <unordered_map>
 #include <deque>
 #include <memory>
 #include <mutex>
@@ -22,8 +23,9 @@ public:
 	std::mutex serverLogsMtx;											// Mutex for the server logs					
 	std::vector<std::string> serverLogs;								// Logs from the server are stored here
 	
-	std::vector<std::string> automationInfoLogs;						// All non-error logs are stored here
-	std::vector<std::string> automationErrorLogs;						// All error logs are stored here
+	std::mutex autoInfoLogsMutex;										// Synchronisation class, should be used whenever there are writes to the logs
+	std::unordered_map<std::string, std::string> automationInfoLogs;	// All non-error logs are stored here
+	std::unordered_map<std::string, std::string> automationErrorLogs;	// All error logs are stored here
 
 	std::shared_ptr<MachineSettings> machineSettings;					// The machine settings are here
 	std::shared_ptr<ExperimentSettings> experimentSettings;				// The experiment settings are here
@@ -52,13 +54,13 @@ public:
 	bool ThreadShutdown();
 	bool GraphReset();
 	bool ExchangeData(const ExperimentData &pParam);
-	bool DisplayMessage(int pParam, int pInt1 = default_val, int pInt2 = default_val, double pDouble = default_val);								// Simple display message which takes an int
 
-	bool DisplayMessage(int pParam, std::string m);
+	bool DisplayMessage(std::string pParam, int pInt1 = default_val, int pInt2 = default_val, double pDouble = default_val);							// Simple display message which takes an int
+	bool DisplayMessage(std::string pParam, std::string m);
 
 	// Messageboxes
-	bool DisplayMessageBox(int message, UINT nType, bool blocksProgram, double pDouble1 = default_val, double pDouble2 = default_val);
-	bool DisplayMessageBox(int pParam, UINT nType, bool blocksProgram, std::string pString);
+	bool DisplayMessageBox(std::string message, UINT nType, bool blocksProgram, double pDouble1 = default_val, double pDouble2 = default_val);
+	bool DisplayMessageBox(std::string pParam, UINT nType, bool blocksProgram, std::string pString);
 };
 
 

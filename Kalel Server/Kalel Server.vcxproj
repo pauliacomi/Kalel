@@ -212,7 +212,9 @@
     <ClInclude Include="..\Kalel Shared\Resources\DefineAutomationSettings.h" />
     <ClInclude Include="..\Kalel Shared\Resources\DefineInstruments.h" />
     <ClInclude Include="..\Kalel Shared\Resources\DefineStages.h" />
+    <ClInclude Include="..\Kalel Shared\Resources\DefineText.h" />
     <ClInclude Include="..\Kalel Shared\Resources\StringTable.h" />
+    <ClInclude Include="..\Kalel Shared\timestamp.h" />
     <ClInclude Include="..\Kalel Shared\unicodeConv.h" />
     <ClInclude Include="Automation\Class\Automation.h" />
     <ClInclude Include="Automation\Old\MainFrm.h" />

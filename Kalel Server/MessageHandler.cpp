@@ -1,6 +1,10 @@
 #include "stdafx.h"
 #include "MessageHandler.h"
 
+#include "../Kalel Shared/Resources/StringTable.h"
+#include "../Kalel Shared/timestamp.h"
+
+#include <utility>
 
 MessageHandler::MessageHandler(Storage &h)
 	: handles(&h)
@@ -30,10 +34,10 @@ bool MessageHandler::ExchangeData(const ExperimentData &pParam)
 }
 
 
-bool MessageHandler::DisplayMessage(int pParam, int pInt1, int pInt2, double pDouble)
+bool MessageHandler::DisplayMessage(std::string pParam, int pInt1, int pInt2, double pDouble)
 {
 	// Create a new pointer 
-	CString message;
+	CStringA message;
 	if (pDouble != default_val)
 	{
 		message.Format(pParam, pDouble);
@@ -57,73 +61,55 @@ bool MessageHandler::DisplayMessage(int pParam, int pInt1, int pInt2, double pDo
 		}
 	}
 	
-	//std::shared_ptr<std::string> newData = std::make_shared<std::string>();
-	//handle.logCollection->push_back(newData);
+	std::string newData = message.GetBuffer();
+	handles->automationInfoLogs.insert(std::make_pair(NowTime(), newData));
 
 	return true;
 }
 
-bool MessageHandler::DisplayMessage(int pParam, std::string m)
+bool MessageHandler::DisplayMessage(std::string pParam, std::string m)
 {
-	
-	// Create a new pointer 
-	//CString message;
-	//message.Format(pParam, m);
+	CStringA message;
+	message.Format(pParam, m);
 
-	//std::shared_ptr<std::string> newData = std::make_shared<std::string>(message);
-	//handle.logCollection->push_back(newData);
+	std::string newData = message.GetBuffer();
+	handles->automationInfoLogs.insert (std::make_pair(NowTime(), newData));
 
 	return true;
 }
 
 bool MessageHandler::DisplayMessageBox(int pParam, UINT nType, bool blocksProgram, double pDouble1, double pDouble2)
 {
+	CStringA message;
 
-	//// Create a new pointer 
-	//UINT * type = new UINT(nType);
-	//CString * message = new CString;
+	// Format the string. Yes I know it's not the best solution.
+	if (pDouble1 != default_val)
+	{
+		if (pDouble2 != default_val) {
+			message.Format(pParam, pDouble1);
+		}
+		else {
+			message.Format(pParam, pDouble1, pDouble2);
+		}
+	}
+	else
+	{
+		message.Format(pParam);
+	}
 
-	//// Format the string. Yes I know it's not the best solution.
-	//if (pDouble1 != default_val)
-	//{
-	//	if (pDouble2 != default_val) {
-	//		message->Format(pParam, pDouble1);
-	//	}
-	//	else {
-	//		message->Format(pParam, pDouble1, pDouble2);
-	//	}
-	//}
-	//else
-	//{
-	//	message->Format(pParam);
-	//}
-
-	//// Check if the message box is supposed to alert the user or ask for input
-	//// Other thread is now responsible for deleting this object
-	//if (blocksProgram)
-	//{
-	//	if (::PostMessage(windowHandle, UWM_DISPLAYMESSAGEBOXCONF, (WPARAM)type, (LPARAM)message) == 0) {
-	//		delete message;
-	//		return false;
-	//	}
-	//}
-	//else
-	//{
-	//	if (::PostMessage(windowHandle, UWM_DISPLAYMESSAGEBOX, (WPARAM)type, (LPARAM)message) == 0) {
-	//		delete message;
-	//		return false;
-	//	}
-	//}
+	std::string newData = message.GetBuffer();
+	handles->automationErrorLogs.insert(std::make_pair(NowTime(), newData));
 
 	return true;
 }
 
 bool MessageHandler::DisplayMessageBox(int pParam, UINT nType, bool blocksProgram, std::string pString)
 {
-	//// Create a new pointer 
-	//UINT * type = new UINT(nType);
-	//CString * message = new CString;
-	//message->Format(pParam, pString);
+	CStringA message;
+	message.Format(pParam, pString);
+
+	std::string newData = message.GetBuffer();
+	handles->automationErrorLogs.insert(std::make_pair(NowTime(), newData));
 
 	//// Check if the message box is supposed to alert the user or ask for input
 	//// Other thread is now responsible for deleting this object
@@ -148,8 +134,8 @@ bool MessageHandler::DisplayMessageBox(int pParam, UINT nType, bool blocksProgra
 
 bool MessageHandler::ExperimentStart()
 {
-	//DisplayMessage(MESSAGE_FILLLINE);
-	//DisplayMessage(MESSAGE_EXPSTART);
+	DisplayMessage(MESSAGE_FILLLINE);
+	DisplayMessage(MESSAGE_EXPSTART);
 	GraphReset();
 
 	return true;
@@ -157,7 +143,7 @@ bool MessageHandler::ExperimentStart()
 
 bool MessageHandler::ExperimentEnd()
 {
-	//DisplayMessage(MESSAGE_FILLLINE);
+	DisplayMessage(MESSAGE_FILLLINE);
 	GraphReset();
 
 	return true;
@@ -165,7 +151,7 @@ bool MessageHandler::ExperimentEnd()
 
 bool MessageHandler::ThreadShutdown()
 {
-	//DisplayMessage(MESSAGE_THREAD_SHUTTINGDOWN);
+	DisplayMessage(MESSAGE_THREAD_SHUTTINGDOWN);
 	GraphReset();
 
 	return true;

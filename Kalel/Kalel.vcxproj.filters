@@ -297,9 +297,6 @@
     <ClInclude Include="DialogTypeExperiment.h">
       <Filter>Header Files\GUI\Dialogs\Type Experiment</Filter>
     </ClInclude>
-    <ClInclude Include="..\Kalel Shared\log.h">
-      <Filter>Source Files\Commmon</Filter>
-    </ClInclude>
     <ClInclude Include="MFCMessageHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -320,6 +317,12 @@
     </ClInclude>
     <ClInclude Include="DefineDialogMessages.h">
       <Filter>Header Files\Resources\DialogBoxes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Kalel Shared\timestamp.h">
+      <Filter>Header Files\Commmon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Kalel Shared\log.h">
+      <Filter>Header Files\Commmon</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -13,8 +13,6 @@
 
 using json = nlohmann::json;
 
-#define STRINGIFY(var) (#var)
-
 #define START		1
 #define SHUTDOWN	2
 #define RESTART		3
@@ -442,7 +440,7 @@ unsigned CommHandler::GetLogs_req(http_request * r)
 	r->method_ = http::method::get;
 	r->accept_ = http::mimetype::appjson;
 	r->path_ = "/api/experimentlogs";
-	r->params_.emplace("start", localLogsTime);
+	r->params_.emplace("", localLogsTime);
 	return 0;
 }
 

@@ -9,7 +9,7 @@
 #include "../../../Kalel Shared/Com Classes/ExperimentHelperClasses.h"		// Resource where templates for all the data are stored
 
 // Defines
-#include "../../../Kalel Shared/Resources/StringTable.h"					// Definitions for the text in the messages
+#include "../../../Kalel Shared/Resources/DefineText.h"						// Definitions for the text in the messages
 #include "../../../Kalel Shared/Resources/DefineAutomationSettings.h"		// All settings for automation are stored here
 #include "../../../Kalel Shared/Resources/DefineInstruments.h"				// All instruments definitions are here
 #include "../../../Kalel Shared/Resources/DefineStages.h"					// All stage, experiment type definitions are here
