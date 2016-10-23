@@ -472,7 +472,7 @@ unsigned CommHandler::GetLogs_resp(http_response * r)
 				receivedLog = new std::string();
 				try
 				{
-					receivedLog = new std::string(j[i.key()]);
+					receivedLog = new std::string(j[i.key()].get<std::string>());
 				}
 				catch (const std::exception& e)	{
 					messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, UnicodeConv::s2ws(e.what()));

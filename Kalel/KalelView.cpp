@@ -304,7 +304,6 @@ void CKalelView::OnTimer(UINT nIDEvent)
 		// Write in measurement box
 		DiplayMeasurements(dataCollection.back());
 
-
 		// Write graph
 		GetDocument()->UpdateAllViews(this);
 
@@ -386,7 +385,7 @@ void CKalelView::GetExperimentData(ExperimentPropertySheet * pDialogExperimentPr
 		if (modified)
 		{
 			// Raise the flag for data modified
-			//commHandler.SetExperimentSettings(experimentSettings);
+			commHandler.SetExperimentSettings(experimentSettings);
 
 			// Copy data across
 			experimentSettings->dataGeneral = pDialogExperimentProperties->m_general.allSettings;
@@ -673,6 +672,18 @@ LRESULT CKalelView::OnExchangeData(WPARAM, LPARAM incomingExperimentData)
 
 LRESULT CKalelView::OnExchangeLogs(WPARAM, LPARAM incomingLogs)
 {
+	// Get the incoming vector and add it to the local logs
+	std::deque<std::string *> * newLogs = reinterpret_cast<std::deque<std::string *>*>(incomingLogs);
+	logCollection.insert(logCollection.end(), newLogs->begin(), newLogs->end());
+
+	for (size_t i = 0; i < newLogs->size(); i++)
+	{
+		CString * temp = new CString(newLogs->at(i)->c_str());
+		AffichageMessages(NULL, (LPARAM)temp);
+	}
+
+	// Delete the useless vector now
+	delete newLogs;
 
 	return 0;
 }
