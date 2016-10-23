@@ -51,16 +51,6 @@ Kalel::Kalel()
 	auto func = std::bind(&Kalel::ServerProcessing, this, std::placeholders::_1, std::placeholders::_2);
 	server.Accept(func);
 
-
-	//// temp
-	/*time_t t = time(0);
-	for (size_t i = 0; i < 50; i++)
-	{
-		ExperimentData something;
-		something.measurementsMade = i + 1;
-		something.timeStart = t;
-		storageVectors.dataCollection.push_back(std::make_shared<ExperimentData>(something));
-	}*/
 }
 
 
@@ -80,12 +70,19 @@ void Kalel::GetLogs(std::vector<std::string> * &logs) {
 
 void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 
-	if (req->path_		== "/api/handshake") {
+	/*********************************
+	// Ping
+	*********************************/
+	if (req->path_		== "/api/handshake" && req->method_ == http::method::get) {
 		resp->status_ = http::responses::ok;
 		resp->content_type_ = http::mimetype::texthtml;
 		resp->answer_ = R"(<!DOCTYPE html PUBLIC " -//IETF//DTD HTML 2.0//EN"><html><head><title>Hello</title></head><body><h1>Hello</h1></body></html>)";
 	}
 
+
+	/*********************************
+	// Get MachineSettings
+	*********************************/
 	else if (req->path_ == "/api/machinesettings" && req->method_ == http::method::get) {
 		resp->status_ = http::responses::ok;
 		resp->content_type_ = http::mimetype::appjson;
@@ -95,6 +92,10 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 		resp->answer_ = j.dump();
 	}
 
+
+	/*********************************
+	// Set MachineSettings
+	*********************************/
 	else if (req->path_ == "/api/machinesettings" && req->method_ == http::method::post) {
 		if (req->content_type_ == http::mimetype::appjson) {
 			resp->status_ = http::responses::ok;
@@ -136,7 +137,11 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 		}
 	}
 
-	else if (req->path_ == "/api/experimentdata") {
+
+	/*********************************
+	// Get Data
+	*********************************/
+	else if (req->path_ == "/api/experimentdata" && req->method_ == http::method::get) {
 		resp->status_ = http::responses::ok;
 		resp->content_type_ = http::mimetype::appjson;
 		
@@ -189,8 +194,33 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 	}
 
 
+	/*********************************
+	// Get Logs
+	*********************************/
+	else if (req->path_ == "/api/experimentlogs" && req->method_ == http::method::get) {
+	}
 
-	else if (req->path_ == "/api/thread") {
+
+	/*********************************
+	// Set ExperimentSettings
+	*********************************/
+	else if (req->path_ == "/api/experimentdata" && req->method_ == http::method::post) {
+		if (req->content_type_ == http::mimetype::appjson) {
+			resp->status_ = http::responses::ok;
+
+			auto j = json::parse(req->entity_);
+			serialization::deserializeJSONtoExperimentSettings(j, *storageVectors.experimentSettings);
+		}
+		else {
+			resp->status_ = http::responses::bad_request;
+		}
+	}
+
+
+	/*********************************
+	// Thread Commands
+	*********************************/
+	else if (req->path_ == "/api/thread"  && req->method_ == http::method::post) {
 
 		if (!req->params_.empty() ||
 			!req->params_.at("action").empty())
@@ -222,6 +252,22 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 		}
 	}
 
+	/*********************************
+	// Instrument Commands
+	*********************************/
+	else if (req->path_ == "/api/instrument"  && req->method_ == http::method::post) {
+		if (!req->params_.empty() ||
+			!req->params_.at("type").empty() ||
+			!req->params_.at("number").empty() ||
+			!req->params_.at("active").empty())
+		{
+
+		}
+		else
+		{
+			resp->status_ = http::responses::conflict;
+		}
+	}
 
 
 	else {

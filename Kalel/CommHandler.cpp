@@ -607,11 +607,10 @@ unsigned CommHandler::ThreadCommand_resp(http_response * r)
 /*********************************
 // Instrument Commands
 *********************************/
-
 unsigned CommHandler::InstrumentCommand_req(http_request * r)
 {
 	r->method_ = http::method::post;
-	r->path_ = "/api/instrument/";
+	r->path_ = "/api/instrument";
 
 	r->params_.emplace("type", localInstrumentType);
 	r->params_.emplace("number", localInstrumentNumber);
