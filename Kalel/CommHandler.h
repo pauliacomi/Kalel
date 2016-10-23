@@ -46,8 +46,12 @@ private:
 
 	// don't like these
 	std::string localAddress;
-	std::string localStartTime;
+	std::string localExperimentStartTime;
 	std::string localMeasurementsMade;
+	std::string localLogsTime;
+	std::string localInstrumentType;
+	std::string localInstrumentNumber;
+	std::string localShouldBeActivated;
 	std::shared_ptr<const MachineSettings> localMachineSettings;
 	std::shared_ptr<const ExperimentSettings> localExperimentSettings;
 	int localThreadCommand;
@@ -68,6 +72,8 @@ private:
 	unsigned SetExperimentSettings_resp(http_response * r);
 	unsigned ThreadCommand_req(http_request * r);
 	unsigned ThreadCommand_resp(http_response * r);
+	unsigned InstrumentCommand_req(http_request * r);
+	unsigned InstrumentCommand_resp(http_response * r);
 };
 
 

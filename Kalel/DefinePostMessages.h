@@ -33,6 +33,7 @@
 #define UWM_SIGNAL_SERVER_CONNECTED					(WM_USER + 40)
 #define UWM_GOT_MACHINE_SETTINGS					(WM_USER + 41)
 #define UWM_EXCHANGEDATA							(WM_USER + 27)
+#define UWM_EXCHANGELOGS							(WM_USER + 28)
 #define UWM_SYNCED									(WM_USER + 42)
 #define UWM_UPDATEBUTTONS							(WM_USER + 100)
 

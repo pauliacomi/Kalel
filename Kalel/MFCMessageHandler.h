@@ -32,6 +32,7 @@ public:
 	bool GotMachineSettings(const MachineSettings &pParam);
 	bool OnSetMachineSettings();
 	bool ExchangeData(std::deque<ExperimentData*> * pParam);
+	bool ExchangeLogs(std::deque<std::string*> * pParam);
 	bool ExperimentStart();
 	bool ExperimentEnd();
 	bool ThreadShutdown();

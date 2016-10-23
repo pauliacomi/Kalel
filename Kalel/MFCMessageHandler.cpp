@@ -68,6 +68,17 @@ bool MFCMessageHandler::ExchangeData(std::deque<ExperimentData*> * pParam)
 	return true;
 }
 
+bool MFCMessageHandler::ExchangeLogs(std::deque<std::string*>* pParam)
+{
+	// Post the required message, now the main thread is responsible for deleting the new class
+	if (::PostMessage(windowHandle, UWM_EXCHANGELOGS, NULL, (LPARAM)pParam) == 0)
+	{
+		delete pParam;
+		return false;
+	}
+	return true;
+}
+
 
 bool MFCMessageHandler::DisplayMessage(int pParam, int pInt1, int pInt2, double pDouble)
 {

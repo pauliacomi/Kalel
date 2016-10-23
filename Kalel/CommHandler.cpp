@@ -5,6 +5,7 @@
 #include "Netcode/http_request.h"
 #include "Netcode/json.hpp"
 #include "Resources/StringTable.h"
+#include "Resources/DefineInstruments.h"
 #include "Com Classes/Serialization.h"
 #include "unicodeConv.h"
 
@@ -92,12 +93,12 @@ void CommHandler::GetData(time_t startTime, long int measurementsMade)
 {
 	if (measurementsMade == 0)
 	{
-		localStartTime = "";
+		localExperimentStartTime = "";
 		localMeasurementsMade = "";
 	}
 	else
 	{
-		localStartTime = std::to_string(startTime);
+		localExperimentStartTime = std::to_string(startTime);
 		localMeasurementsMade = std::to_string(measurementsMade);
 	}
 
@@ -146,7 +147,35 @@ void CommHandler::SetExperimentSettings(std::shared_ptr<const ExperimentSettings
 
 void CommHandler::ManualCommand(int instrumentType, int instrumentNumber, bool shouldBeActivated)
 {
-	ManualActionParam request(instrumentType, instrumentNumber, shouldBeActivated);
+	switch (instrumentType)
+	{
+	case INSTRUMENT_VALVE:
+		localInstrumentType = "valve";
+		break;
+
+	case INSTRUMENT_EV:
+		localInstrumentType = "ev";
+		break;
+
+	case INSTRUMENT_PUMP:
+		localInstrumentType = "pump";
+		break;
+	default:
+		break;
+	}
+	
+	localInstrumentNumber = instrumentNumber;
+	localShouldBeActivated = shouldBeActivated;
+	
+	auto request = std::bind(&CommHandler::GetLogs_req, this, std::placeholders::_1);
+	auto callback = std::bind(&CommHandler::GetLogs_resp, this, std::placeholders::_1);
+
+	try {
+		client.Request(request, callback, localAddress);
+	}
+	catch (const std::exception& e) {
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, UnicodeConv::s2ws(e.what()));
+	}
 }
 
 void CommHandler::StartClient()
@@ -341,7 +370,7 @@ unsigned CommHandler::GetData_req(http_request* r) {
 	r->method_ = http::method::get;
 	r->accept_ = http::mimetype::appjson;
 	r->path_ = "/api/experimentdata";
-	r->params_.emplace("start", localStartTime);
+	r->params_.emplace("start", localExperimentStartTime);
 	r->params_.emplace("measurements", localMeasurementsMade);
 	return 0;
 }
@@ -412,9 +441,8 @@ unsigned CommHandler::GetLogs_req(http_request * r)
 {
 	r->method_ = http::method::get;
 	r->accept_ = http::mimetype::appjson;
-	r->path_ = "/api/experimentdata";
-	r->params_.emplace("start", localStartTime);
-	r->params_.emplace("measurements", localMeasurementsMade);
+	r->path_ = "/api/experimentlogs";
+	r->params_.emplace("start", localLogsTime);
 	return 0;
 }
 
@@ -436,28 +464,26 @@ unsigned CommHandler::GetLogs_resp(http_response * r)
 				return 1;
 			}
 
-			ExperimentData * receivedData = nullptr;
-			MeasurementsArray * receivedDataArray = new MeasurementsArray();
+			std::string * receivedLog = nullptr;
+			auto receivedLogArray = new std::deque<std::string *>();
 
 			for (json::iterator i = j.begin(); i != j.end(); ++i)
 			{
-				receivedData = new ExperimentData();
-				json j2 = j[i.key()];
+				receivedLog = new std::string();
 				try
 				{
-					serialization::deserializeJSONtoExperimentData(j2, *receivedData);
+					receivedLog = new std::string(j[i.key()]);
 				}
-				catch (const std::exception& e)
-				{
+				catch (const std::exception& e)	{
 					messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, UnicodeConv::s2ws(e.what()));
-					delete receivedData;
-					delete receivedDataArray;
+					delete receivedLog;
+					delete receivedLogArray;
 					return 1;
 				}
-				receivedDataArray->push_back(receivedData);
+				receivedLogArray->push_back(receivedLog);
 			}
 
-			messageHandler.ExchangeData(receivedDataArray);
+			messageHandler.ExchangeLogs(receivedLogArray);
 
 		}
 		else
@@ -576,3 +602,44 @@ unsigned CommHandler::ThreadCommand_resp(http_response * r)
 	return 0;
 }
 
+
+
+/*********************************
+// Instrument Commands
+*********************************/
+
+unsigned CommHandler::InstrumentCommand_req(http_request * r)
+{
+	r->method_ = http::method::post;
+	r->path_ = "/api/instrument/";
+
+	r->params_.emplace("type", localInstrumentType);
+	r->params_.emplace("number", localInstrumentNumber);
+	r->params_.emplace("active", localShouldBeActivated);
+
+	return 0;
+}
+
+unsigned CommHandler::InstrumentCommand_resp(http_response * r)
+{
+	if (r->status_ == http::responses::ok)
+	{
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Server not found"));
+		return 1;
+	}
+	else if (r->status_ == http::responses::conflict)
+	{
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Server cannot process thread command"));
+		return 1;
+	}
+	else if (r->status_ == http::responses::bad_request)
+	{
+
+		return 1;
+	}
+	else if (r->status_ == http::responses::not_found) {
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Server not found"));
+		return 1;
+	}
+	return 0;
+}
