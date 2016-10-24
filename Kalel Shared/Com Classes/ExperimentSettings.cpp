@@ -3,7 +3,7 @@
 
 #include "CommonFunctions.h"
 #include "../Resources/DefineStages.h"
-#include "../Resources/StringTable.h"
+#include "../Resources/DefineText.h"
 
 ExperimentSettings::ExperimentSettings() 
 	: ExperimentSettings(0, 0)
@@ -40,14 +40,14 @@ void ExperimentSettings::ResetData(int initialAdsorptions, int initialDesorption
 	dataGeneral.date_experience = cF.getDate();
 	dataGeneral.experimentateur.nom = L"";
 	dataGeneral.experimentateur.surnom = L"";
-	dataGeneral.fichier = std::to_wstring(TEXT_NEWFILETEXT) + cF.getDateUnderline();
+	dataGeneral.fichier =									L"";		//std::to_wstring(TEXT_NEWFILETEXT) + cF.getDateUnderline();
 	dataGeneral.gaz.symbole = L"";
 	dataGeneral.gaz.masse_moleculaire = 0;
 	dataGeneral.gaz.pression_critique = 0;
 	dataGeneral.gaz.temperature_critique = 0;
 	dataGeneral.gaz.temperature_ebullition = 0;
 	dataGeneral.masse_echantillon = 1.0f;
-	dataGeneral.nom_echantillon = TEXT_SAMPLE;
+	dataGeneral.nom_echantillon =							L"";		//TEXT_SAMPLE;
 	dataGeneral.temperature_experience = 30;
 
 	// Divers

@@ -38,8 +38,6 @@ protected:
 
 	Kalel mainBackend;
 
-	std::vector<std::string> * logVector;
-	int logSize;
-
 	CString displayText;
+	int logSize;
 };

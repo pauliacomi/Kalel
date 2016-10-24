@@ -35,14 +35,17 @@ void CommHandler::SetHandle(HWND h){
 
 void CommHandler::Connect(std::wstring address)
 {
-	auto request = std::bind(&CommHandler::Handshake_req, this, std::placeholders::_1);
-	auto callback = std::bind(&CommHandler::Handshake_resp, this, std::placeholders::_1);
+	if (!address.empty())
+	{
+		auto request = std::bind(&CommHandler::Handshake_req, this, std::placeholders::_1);
+		auto callback = std::bind(&CommHandler::Handshake_resp, this, std::placeholders::_1);
 
-	try	{
-		client.Request(request, callback, UnicodeConv::ws2s(address.c_str()));
-	}
-	catch (const std::exception& e)	{
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK,false, UnicodeConv::s2ws(e.what()));
+		try	{
+			client.Request(request, callback, UnicodeConv::ws2s(address.c_str()));
+		}
+		catch (const std::exception& e)	{
+			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK,false, UnicodeConv::s2ws(e.what()));
+		}
 	}
 }
 
@@ -440,7 +443,7 @@ unsigned CommHandler::GetLogs_req(http_request * r)
 	r->method_ = http::method::get;
 	r->accept_ = http::mimetype::appjson;
 	r->path_ = "/api/experimentlogs";
-	r->params_.emplace("", localLogsTime);
+	r->params_.emplace("time", localLogsTime);
 	return 0;
 }
 

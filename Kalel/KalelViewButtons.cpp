@@ -19,7 +19,7 @@
 // When clicking on the Launch button
 void CKalelView::OnBnClickedLancer()
 {
-	if (!pApp->serverConnected)
+	if (pApp->serverConnected)
 	{
 		// Create the experiment type window
 		DialogTypeExperiment dialogExperimentType;

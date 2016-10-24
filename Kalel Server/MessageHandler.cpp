@@ -1,8 +1,9 @@
 #include "stdafx.h"
 #include "MessageHandler.h"
 
-#include "../Kalel Shared/Resources/StringTable.h"
+#include "../Kalel Shared/Resources/DefineText.h"
 #include "../Kalel Shared/timestamp.h"
+#include "../Kalel Shared/stringFormat.h"
 
 #include <utility>
 
@@ -37,10 +38,10 @@ bool MessageHandler::ExchangeData(const ExperimentData &pParam)
 bool MessageHandler::DisplayMessage(std::string pParam, int pInt1, int pInt2, double pDouble)
 {
 	// Create a new pointer 
-	CStringA message;
+	std::string message;
 	if (pDouble != default_val)
 	{
-		message.Format(pParam, pDouble);
+		message = string_format(message, pParam, pDouble );
 	}
 	else
 	{
@@ -48,68 +49,64 @@ bool MessageHandler::DisplayMessage(std::string pParam, int pInt1, int pInt2, do
 		{
 			if (pInt1 != default_val)
 			{
-				message.Format(pParam, pInt1, pInt2);
+				message = string_format(pParam, pInt1, pInt2);
 			}
 			else
 			{
-				message.Format(pParam, pInt1);
+				message = string_format(pParam, pInt1);
 			}
 		}
 		else
 		{
-			message.Format(pParam);
+			message = string_format(pParam);
 		}
 	}
 	
-	std::string newData = message.GetBuffer();
-	handles->automationInfoLogs.insert(std::make_pair(NowTime(), newData));
+	handles->automationInfoLogs.insert(std::make_pair(NowTime(), message));
 
 	return true;
 }
 
 bool MessageHandler::DisplayMessage(std::string pParam, std::string m)
 {
-	CStringA message;
-	message.Format(pParam, m);
+	std::string message;
+	message = string_format(pParam, m);
 
-	std::string newData = message.GetBuffer();
-	handles->automationInfoLogs.insert (std::make_pair(NowTime(), newData));
+	handles->automationInfoLogs.insert (std::make_pair(NowTime(), message));
 
 	return true;
 }
 
-bool MessageHandler::DisplayMessageBox(int pParam, UINT nType, bool blocksProgram, double pDouble1, double pDouble2)
+bool MessageHandler::DisplayMessageBox(std::string pParam, UINT nType, bool blocksProgram, double pDouble1, double pDouble2)
 {
-	CStringA message;
+	std::string message;
 
 	// Format the string. Yes I know it's not the best solution.
 	if (pDouble1 != default_val)
 	{
 		if (pDouble2 != default_val) {
-			message.Format(pParam, pDouble1);
+			message = string_format(pParam, pDouble1);
 		}
 		else {
-			message.Format(pParam, pDouble1, pDouble2);
+			message = string_format(pParam, pDouble1, pDouble2);
 		}
 	}
 	else
 	{
-		message.Format(pParam);
+		message = string_format(pParam);
 	}
 
-	std::string newData = message.GetBuffer();
-	handles->automationErrorLogs.insert(std::make_pair(NowTime(), newData));
+	handles->automationErrorLogs.insert(std::make_pair(NowTime(), message));
 
 	return true;
 }
 
-bool MessageHandler::DisplayMessageBox(int pParam, UINT nType, bool blocksProgram, std::string pString)
+bool MessageHandler::DisplayMessageBox(std::string pParam, UINT nType, bool blocksProgram, std::string pString)
 {
-	CStringA message;
-	message.Format(pParam, pString);
+	std::string message;
+	message = string_format(pParam, pString);
 
-	std::string newData = message.GetBuffer();
-	handles->automationErrorLogs.insert(std::make_pair(NowTime(), newData));
+	handles->automationErrorLogs.insert(std::make_pair(NowTime(), message));
 
 	//// Check if the message box is supposed to alert the user or ask for input
 	//// Other thread is now responsible for deleting this object

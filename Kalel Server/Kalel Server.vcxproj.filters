@@ -252,6 +252,9 @@
     <ClInclude Include="..\Kalel Shared\Resources\DefineText.h">
       <Filter>Header Files\Common\Resources</Filter>
     </ClInclude>
+    <ClInclude Include="..\Kalel Shared\stringFormat.h">
+      <Filter>Header Files\Common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Kalel Server.cpp">

@@ -185,6 +185,9 @@ void CKalelView::OnInitialUpdate()
 	// Pass window handle
 	commHandler.SetHandle(GetSafeHwnd());
 
+	// Then connect to the server if the address exists
+	commHandler.Connect(savedParams.GetServerAddress());
+
 	// Pass stored array to graph
 	GetDocument()->GraphSetArray(dataCollection);
 
@@ -310,6 +313,7 @@ void CKalelView::OnTimer(UINT nIDEvent)
 		if (pApp->serverConnected)
 		{
 			commHandler.GetData(dataCollection.back()->timeStart, dataCollection.back()->measurementsMade);
+			//commHandler.GetLog();
 		}
 	}
 

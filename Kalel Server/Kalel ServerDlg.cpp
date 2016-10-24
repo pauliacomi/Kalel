@@ -52,13 +52,8 @@ BOOL CKalelServerDlg::OnInitDialog()
 
 	// TODO: Add extra initialization here
 
-	// Get the vector pointer
-	mainBackend.GetLogs(logVector);
-
 	// Set the timer for the window update
-	if (logVector) {
-		SetTimer(1, 1000, NULL);
-	}
+	SetTimer(1, 1000, NULL);
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
@@ -102,13 +97,14 @@ HCURSOR CKalelServerDlg::OnQueryDragIcon()
 
 void CKalelServerDlg::OnTimer(UINT nIDEvent)
 {
-	if (logSize < logVector->size()) {
-		for (size_t i = logSize; i < logVector->size(); i++)
-		{
-			displayText += logVector->at(i).c_str();
-		}
-		logSize = logVector->size();
-	UpdateData(FALSE);
+	// Get the logs
+	std::string logString;
+	mainBackend.GetLogs(logString);
+
+	if (logString.size() > logSize) {
+		logSize = logString.size();
+		displayText = logString.c_str();
+		UpdateData(FALSE);
 	}
 }
 

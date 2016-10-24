@@ -20,7 +20,7 @@ public:
 	Kalel();
 	~Kalel();
 
-	void GetLogs(std::vector<std::string> * &logs);
+	void GetLogs(std::string &logs);
 
 protected:
 	Server server;

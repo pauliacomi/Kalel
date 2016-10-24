@@ -12,7 +12,7 @@
 
 #include <string>
 #include <vector>
-#include <unordered_map>
+#include <map>
 #include <deque>
 #include <memory>
 #include <mutex>
@@ -24,8 +24,8 @@ public:
 	std::vector<std::string> serverLogs;								// Logs from the server are stored here
 	
 	std::mutex autoInfoLogsMutex;										// Synchronisation class, should be used whenever there are writes to the logs
-	std::unordered_map<std::string, std::string> automationInfoLogs;	// All non-error logs are stored here
-	std::unordered_map<std::string, std::string> automationErrorLogs;	// All error logs are stored here
+	std::map<std::string, std::string> automationInfoLogs;				// All non-error logs are stored here
+	std::map<std::string, std::string> automationErrorLogs;				// All error logs are stored here
 
 	std::shared_ptr<MachineSettings> machineSettings;					// The machine settings are here
 	std::shared_ptr<ExperimentSettings> experimentSettings;				// The experiment settings are here

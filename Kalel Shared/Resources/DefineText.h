@@ -1,5 +1,70 @@
 #pragma once
 
+#define	TEXT_NEWFILETEXT					"Nouveau_fichier_%s"
+#define TEXT_SAMPLE							"Sample"
+
+#define ERROR_PATHUNDEF						"The path chosen does not exist"
+
+
+
+/***************************************************
+//
+//
+//			AUTOMATION MESSAGES
+//
+//
+****************************************************/
+/*
+//
+//	GENERAL EXPERIMENT MESSAGES
+//
+*/
+
+#define MESSAGE_FILLLINE					"***************************************************************"
+#define MESSAGE_EXPSTART					"Experiment started"
+#define MESSAGE_EXPFINISH					"Experiment finished"
+#define MESSAGE_EXPCANCEL					"Experiment cancelled"
+#define MESSAGE_EXPPAUSE					"Experiment paused"
+#define MESSAGE_EXPRESUME					"Experiment resumed"
+#define MESSAGE_WAIT_TIME					"Waiting for %d seconds..."
+#define MESSAGE_THREAD_SHUTTINGDOWN			"Thread is shutting down"
+#define MESSAGE_THREAD_SHUTDOWN				"Thread shut down"
+#define MESSAGE_INSTRUMENT_INIT_FAIL		"Instrument initiation failed: \t\n%s"
+
+/*
+//
+//	MESSAGES FOR VALVE AND PUMP COMMANDs
+//
+*/
+
+#define MESSAGE_VALVE_OPENED				"Valve %d opened"
+#define MESSAGE_VALVE_CLOSED				"Valve %d closed"
+#define MESSAGE_EV_ACTIVATED				"EV %d activated"
+#define MESSAGE_EV_DEACTIVATED				"EV %d deactivated"
+#define MESSAGE_PUMP_ACTIVATED				"Pump activated"
+#define MESSAGE_PUMP_DEACTIVATED			"Pump deactivated"
+#define MESSAGE_VALVE_OPENCLOSE				"Opening and closing valve %d"
+#define MESSAGE_VALVE_CLOSEALL				"Closing all valves"
+#define MESSAGE_PUMP_VALVE_CLOSEALL			"Closing pump and valves"
+#define MESSAGE_CLOSEEVERYTHING				"Closing everything"
+
+/*
+//
+//	MESSAGES FOR SECURITY WARNINGS
+//
+*/
+
+#define MESSAGE_WARNING_PHIGH				"Attention ! High PT above pressure limit \t\n Veuillez la mettre en dessous de : %f bar \t\n"
+#define MESSAGE_WARNING_PHNORMAL			"HAUTE PRESSION (%f) DEPASSANT LA SECURITE DE LA BASSE PRESSION (%f)\r\n PAR MESURE DE SECURITE, FERMETURE DE LA VANNE 6\r\n"
+#define MESSAGE_WARNING_CALOT_HIGH			"Attention ! Température du calo trop élevé par rapport à la température d'expérience\t\n"
+#define MESSAGE_WARNING_CALOT_NORMAL		"Attention ! Température du calo trop faible par rapport à la température d'expérience\t\n"
+#define MESSAGE_WARNING_CALOT_LOW			"Arrêt de l'expérience : La température du Calo étant trop élevée (supérieure à %d°C)\r\n"
+#define MESSAGE_WARNING_PHIGH_BOX			"Arrêt de l'expérience : La température du Calo étant trop faible (inférieure à %d°C)\r\n"
+#define MESSAGE_WARNING_PHIGH_V6			"High PT above pressure limit"
+#define MESSAGE_WARNING_THIGH_BOX			"High PT has returned to normal"
+#define MESSAGE_WARNING_TLOW_BOX			"Calorimeter temperature too high"
+#define MESSAGE_WARNING_THIGH_STOP			"Calorimeter temperature above pressure limit"
+#define MESSAGE_WARNING_TLOW_STOP			"Calorimeter temperature too low"
 
 /*
 //

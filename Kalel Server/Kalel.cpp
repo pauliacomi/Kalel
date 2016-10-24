@@ -58,15 +58,21 @@ Kalel::~Kalel()
 {
 }
 
-void Kalel::GetLogs(std::vector<std::string> * &logs) {
-	logs = &storageVectors.serverLogs;
-}
+//void Kalel::GetLogs(std::vector<std::string> * &logs) {
+//	logs = &storageVectors.serverLogs;
+//}
 
-
-/*void Kalel::GetLogs(std::vector<std::string> &logs) {
+void Kalel::GetLogs(std::string &logs) {
 	logs.clear();
-	logs.insert(logs.begin(), storageVectors.serverLogs.begin(), storageVectors.serverLogs.end());
-}*/
+
+	for (std::map<std::string, std::string>::iterator it = storageVectors.automationInfoLogs.begin(); it != storageVectors.automationInfoLogs.end(); ++it)
+	{
+		logs += it->first;
+		logs += "   ";
+		logs += it->second;
+		logs += "\r\n";
+	}
+}
 
 void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 
@@ -202,7 +208,7 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 
 		// Figure out which range of logs to send by finding the requested timestamp
 
-		std::unordered_map<std::string, std::string>::iterator it;
+		std::map<std::string, std::string>::iterator it;
 		storageVectors.autoInfoLogsMutex.lock();
 		auto localCollection = storageVectors.automationInfoLogs;
 		storageVectors.autoInfoLogsMutex.unlock();
@@ -215,23 +221,23 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 		else
 		{
 			it = localCollection.find(req->params_.at("time"));
+		}
 
-			if (it != localCollection.end())						// If iterator is valid, send requested logs
+		if (it != localCollection.end())						// If iterator is valid, send requested logs
+		{
+			json j;
+
+			while (it != localCollection.end())
 			{
-				json j;
-
-				while (it != localCollection.end())
-				{
-					j[it->first] = it->second;
-					++it;
-				}
-
-				resp->answer_ = j.dump();
+				j[it->first] = it->second;
+				++it;
 			}
-			else
-			{
-				resp->status_ = http::responses::bad_request;
-			}
+
+			resp->answer_ = j.dump();
+		}
+		else
+		{
+			resp->status_ = http::responses::bad_request;
 		}
 	}
 
