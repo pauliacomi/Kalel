@@ -209,7 +209,7 @@ void CKalelView::OnInitialUpdate()
 	UpdateButtons();
 	
 	// Set the timer for the window update
-	SetTimer(1, 100, NULL);
+	// SetTimer(1, 100, NULL);
 }
 
 
@@ -316,7 +316,6 @@ void CKalelView::OnTimer(UINT nIDEvent)
 			//commHandler.GetLog();
 		}
 	}
-
 
 	CFormView::OnTimer(nIDEvent);	// Call base class handler.
 }

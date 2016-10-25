@@ -58,9 +58,6 @@ Kalel::~Kalel()
 {
 }
 
-//void Kalel::GetLogs(std::vector<std::string> * &logs) {
-//	logs = &storageVectors.serverLogs;
-//}
 
 void Kalel::GetLogs(std::string &logs) {
 	logs.clear();
