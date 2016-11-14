@@ -518,5 +518,8 @@
     <Library Include="Backend\USB\NIDAQmx.lib">
       <Filter>Header Files\Backend\USB</Filter>
     </Library>
+    <Library Include="Backend\USB\NIDAQmx_x64.lib">
+      <Filter>Header Files\Backend\USB</Filter>
+    </Library>
   </ItemGroup>
 </Project>
