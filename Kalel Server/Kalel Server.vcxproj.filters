@@ -141,15 +141,6 @@
     <ClInclude Include="Backend\Wrapper Classes\Vannes.h">
       <Filter>Header Files\Backend\Wrapper Classes</Filter>
     </ClInclude>
-    <ClInclude Include="Automation\Old\Manip.h">
-      <Filter>Header Files\Automation\Manip Old</Filter>
-    </ClInclude>
-    <ClInclude Include="Automation\Old\Manip_Auto.h">
-      <Filter>Header Files\Automation\Manip Old</Filter>
-    </ClInclude>
-    <ClInclude Include="Automation\Old\Manip_AutoGaz.h">
-      <Filter>Header Files\Automation\Manip Old</Filter>
-    </ClInclude>
     <ClInclude Include="Automation\ThreadManager.h">
       <Filter>Header Files\Automation</Filter>
     </ClInclude>
@@ -254,6 +245,15 @@
     </ClInclude>
     <ClInclude Include="..\Kalel Shared\stringFormat.h">
       <Filter>Header Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Automation\Old\Manip.h">
+      <Filter>Header Files\Automation\Manip Old</Filter>
+    </ClInclude>
+    <ClInclude Include="Automation\Old\Manip_Auto.h">
+      <Filter>Header Files\Automation\Manip Old</Filter>
+    </ClInclude>
+    <ClInclude Include="Automation\Old\Manip_AutoGaz.h">
+      <Filter>Header Files\Automation\Manip Old</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

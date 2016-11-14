@@ -5,11 +5,11 @@
 #include "ExperimentPropertySheet.h"
 
 #include "DefineDialogMessages.h"							// For custom message definitions
-#include "Resources/DefineStages.h"							// For the types of experiments used
-#include "Resources/StringTable.h"							// Error message strings
+#include "../Kalel Shared/Resources/DefineStages.h"			// For the types of experiments used
+#include "../Kalel Shared/Resources/StringTable.h"			// Error message strings
 
 // Experiment settings class
-#include "Com Classes/ExperimentSettings.h"
+#include "../Kalel Shared/Com Classes/ExperimentSettings.h"
 
 
 IMPLEMENT_DYNAMIC(ExperimentPropertySheet, CMFCPropertySheet)

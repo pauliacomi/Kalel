@@ -5,7 +5,7 @@
 #include "DialogCell.h"
 
 #include "ParserXML.h"
-#include "Resources/StringTable.h"						// Error message strings
+#include "../Kalel Shared/Resources/StringTable.h"						// Error message strings
 
 //////////////////////////////////////////////////////////////////////////////////////
 			//------------------------------------------------------

@@ -5,7 +5,7 @@
 #include "GrapheView.h"
 
 #include "KalelDoc.h"															// For the document pointer
-#include "Resources\StringTable.h"												// Error message strings
+#include "../Kalel Shared/Resources/StringTable.h"								// Error message strings
 
 
 

@@ -3,7 +3,7 @@
 
 // Message definitions
 #include "DefinePostMessages.h"
-#include "Resources/StringTable.h"
+#include "../Kalel Shared/Resources/StringTable.h"
 
 
 MFCMessageHandler::MFCMessageHandler()

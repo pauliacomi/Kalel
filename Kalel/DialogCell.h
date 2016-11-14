@@ -5,7 +5,7 @@
 #include "afxwin.h"
 #include "ResourceDialogCell.h"
 
-#include "Com Classes\ExperimentHelperClasses.h"
+#include "../Kalel Shared/Com Classes/ExperimentHelperClasses.h"
 #include "SpinBtnCtrl.h"
 
 #include <vector>

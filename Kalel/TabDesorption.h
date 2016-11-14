@@ -4,7 +4,7 @@
 
 #include "ResourceDialogExperimentSettings.h"								// For resources
 #include "SpinBtnCtrl.h"													// For the Spin Button class
-#include "Com Classes/ExperimentHelperClasses.h"							// Definitions for all classes used in this file
+#include "../Kalel Shared/Com Classes/ExperimentHelperClasses.h"			// Definitions for all classes used in this file
 
 
 class TabDesorption : public CMFCPropertyPage

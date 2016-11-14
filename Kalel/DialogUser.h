@@ -5,7 +5,7 @@
 #include "afxwin.h"
 #include "ResourceDialogUser.h"
 
-#include "Com Classes\ExperimentHelperClasses.h"
+#include "../Kalel Shared/Com Classes/ExperimentHelperClasses.h"
 
 #include <vector>
 

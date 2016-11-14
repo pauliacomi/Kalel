@@ -22,7 +22,7 @@
 #include "DefineMenuMessages.h"										// Definition of messages received from the menu
 
 #include "ExperimentPropertySheet.h"								// The dialog asking the user to input the experiment parameters
-#include "Com Classes\ManualActionParam.h"
+#include "../Kalel Shared/Com Classes/ManualActionParam.h"
 #include "ListOfInstrumentButtons.h"								// The class containing a list of the instruments' buttons ID's
 
 #ifdef _DEBUG
@@ -294,7 +294,7 @@ CKalelView * CKalelView::GetView()
 //	Non-standard members
 **********************************************************************************************************************************/
 
-void CKalelView::OnTimer(UINT nIDEvent)
+void CKalelView::OnTimer(UINT_PTR nIDEvent)
 {
 	if (!dataCollection.empty()) {
 

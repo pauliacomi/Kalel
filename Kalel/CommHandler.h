@@ -2,11 +2,11 @@
 #define COMMHANDLER_H
 #pragma once
 
-#include "Netcode/Client.h"
+#include "../Kalel Shared/Netcode/Client.h"
 #include "MFCMessageHandler.h"
 
-#include "Com Classes/MachineSettings.h"
-#include "Com Classes/ExperimentSettings.h"
+#include "../Kalel Shared/Com Classes/MachineSettings.h"
+#include "../Kalel Shared/Com Classes/ExperimentSettings.h"
 
 #include <string>
 

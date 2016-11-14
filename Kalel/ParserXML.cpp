@@ -4,7 +4,7 @@
 #include "tinystr.h"
 #include "tinyxml.h"
 
-#include "unicodeConv.h"
+#include "../Kalel Shared/unicodeConv.h"
 
 UnicodeConv unicodeConverter;
 

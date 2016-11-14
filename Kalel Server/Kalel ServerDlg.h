@@ -32,7 +32,7 @@ protected:
 	virtual BOOL OnInitDialog();
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
-	void OnTimer(UINT nIDEvent);
+	void OnTimer(UINT_PTR nIDEvent);
 	DECLARE_MESSAGE_MAP()
 	DECLARE_DHTML_EVENT_MAP()
 

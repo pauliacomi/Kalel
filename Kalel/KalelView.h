@@ -2,15 +2,15 @@
 
 #include "afxwin.h"
 
-#include "Resources/DefineStages.h"									// Stages/experiment type definitions
-#include "Resources/StringTable.h"									// Error message strings
+#include "../Kalel Shared/Resources/DefineStages.h"					// Stages/experiment type definitions
+#include "../Kalel Shared/Resources/StringTable.h"					// Error message strings
 
 #include "Kalel.h"
 #include "KalelDoc.h"
 
-#include "Com Classes/ExperimentData.h"								// Where data about the experimental parameters, results and current status is stored
-#include "Com Classes/ExperimentSettings.h"							// Where returned data from results is stored
-#include "Com Classes/MachineSettings.h"							// Where the settings for the connected machine are stored
+#include "../Kalel Shared/Com Classes/ExperimentData.h"				// Where data about the experimental parameters, results and current status is stored
+#include "../Kalel Shared/Com Classes/ExperimentSettings.h"			// Where returned data from results is stored
+#include "../Kalel Shared/Com Classes/MachineSettings.h"			// Where the settings for the connected machine are stored
 
 #include "Parametres.h"												// Parameters file read/write
 #include "CommHandler.h"											// Responsible for all communication to/from client
@@ -113,7 +113,7 @@ private:
 	//*************************************************************************************************************************
 
 private:
-	void OnTimer(UINT nIDEvent);	//timer for window update
+	void OnTimer(UINT_PTR nIDEvent);	//timer for window update
 	void GetExperimentData(ExperimentPropertySheet * dialogExperimentProperties, bool initialRequest);
 
 	// Menu messages

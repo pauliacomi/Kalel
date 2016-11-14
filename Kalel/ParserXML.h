@@ -2,7 +2,7 @@
 #define PARSERXML_H
 #pragma once
 
-#include "Com Classes/ExperimentHelperClasses.h"
+#include "../Kalel Shared/Com Classes/ExperimentHelperClasses.h"
 
 #include <string>
 #include <vector>

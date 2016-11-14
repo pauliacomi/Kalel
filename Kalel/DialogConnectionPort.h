@@ -7,7 +7,7 @@
 
 #include "ConnectionMesure.h"
 #include "VerifInstrument.h"
-#include "Resources/DefineInstruments.h"
+#include "../Kalel Shared/Resources/DefineInstruments.h"
 
 #include <vector>
 #include <memory>

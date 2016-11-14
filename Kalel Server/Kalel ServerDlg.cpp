@@ -95,7 +95,7 @@ HCURSOR CKalelServerDlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
-void CKalelServerDlg::OnTimer(UINT nIDEvent)
+void CKalelServerDlg::OnTimer(UINT_PTR nIDEvent)
 {
 	// Get the logs
 	std::string logString;

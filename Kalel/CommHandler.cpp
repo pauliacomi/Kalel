@@ -1,13 +1,13 @@
 #include "stdafx.h"
 #include "CommHandler.h"
 
-#include "Com Classes/ManualActionParam.h"
-#include "Netcode/http_request.h"
-#include "Netcode/json.hpp"
-#include "Resources/StringTable.h"
-#include "Resources/DefineInstruments.h"
-#include "Com Classes/Serialization.h"
-#include "unicodeConv.h"
+#include "../Kalel Shared/Com Classes/ManualActionParam.h"
+#include "../Kalel Shared/Netcode/http_request.h"
+#include "../Kalel Shared/Netcode/json.hpp"
+#include "../Kalel Shared/Resources/StringTable.h"
+#include "../Kalel Shared/Resources/DefineInstruments.h"
+#include "../Kalel Shared/Com Classes/Serialization.h"
+#include "../Kalel Shared/unicodeConv.h"
 
 #include <functional>
 
