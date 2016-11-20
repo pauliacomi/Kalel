@@ -120,7 +120,7 @@ bool MFCMessageHandler::DisplayMessage(int pParam, std::wstring m)
 {
 	// Create a new pointer 
 	CString * message = new CString;
-	message->Format(pParam, m);
+	message->Format(pParam, m.c_str());
 	
 	// Other thread is now responsible for deleting this object
 	if(::PostMessage(windowHandle, UWM_DISPLAYMESSAGE, NULL, (LPARAM)message) == 0) {

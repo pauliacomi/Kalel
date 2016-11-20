@@ -26,6 +26,6 @@ protected:
 	Server server;
 	void ServerProcessing(http_request * req, http_response * resp);
 	
-	ThreadManager threadManager;
+	//ThreadManager threadManager;
 	Storage storageVectors;
 };

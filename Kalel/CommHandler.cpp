@@ -234,6 +234,19 @@ void CommHandler::ThreadCommand()
 }
 
 
+void CommHandler::TestConn()
+{
+	auto request = std::bind(&CommHandler::TestConn_req, this, std::placeholders::_1);
+	auto callback = std::bind(&CommHandler::TestConn_resp, this, std::placeholders::_1);
+
+	try {
+		client.Request(request, callback, localAddress);
+	}
+	catch (const std::exception& e) {
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, UnicodeConv::s2ws(e.what()));
+	}
+}
+
 /**********************************************************************************************************************************
 // Request and response functions
 **********************************************************************************************************************************/
@@ -583,7 +596,7 @@ unsigned CommHandler::ThreadCommand_resp(http_response * r)
 {
 	if (r->status_ == http::responses::ok)
 	{
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Server not found"));
+		//messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Server not found"));
 		return 1;
 	}
 	else if (r->status_ == http::responses::conflict)
@@ -641,5 +654,35 @@ unsigned CommHandler::InstrumentCommand_resp(http_response * r)
 		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Server not found"));
 		return 1;
 	}
+	return 0;
+}
+
+
+
+/*********************************
+// Debugging
+*********************************/
+
+unsigned CommHandler::TestConn_req(http_request* r) {
+	r->method_ = http::method::get;
+	r->path_ = "/api/testconnection";
+	return 0;
+}
+
+unsigned CommHandler::TestConn_resp(http_response* r) {
+
+	if (r->status_ == http::responses::ok)
+	{
+		debug_success++;
+	}
+	else if (r->status_ == http::responses::bad_request)
+	{
+		debug_fails++;
+	}
+	
+	std::wstring s = _T("Success: ") + std::to_wstring(debug_success) ;
+	s += _T(" Fail: ") + std::to_wstring(debug_fails);
+	messageHandler.DisplayMessage(GENERIC_STRING, s);
+
 	return 0;
 }

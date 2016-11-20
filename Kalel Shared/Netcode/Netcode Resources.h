@@ -11,6 +11,7 @@
 #define ERR_RECEIVE				"Receive failed: "
 #define ERR_CLOSESOCKET			"Close socket failed: "
 #define ERR_LINGER				"Error when setting socket to linger: "
+#define ERR_NAGLE				"Error when changing the state of Nagle's algorithm: "
 #define ERR_ACCEPT				"Accept failed"
 #define ERR_CONNECT				"Unable to connect to server!"
 #define ERR_IP_CONVERT			"Error translating IP to readable form: "

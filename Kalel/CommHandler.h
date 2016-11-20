@@ -39,10 +39,17 @@ public:
 
 	void ManualCommand(int instrumentType, int instrumentNumber, bool shouldBeActivated);
 
+	void TestConn();
 
 private:
 	Client client;
 	MFCMessageHandler messageHandler;
+	
+	void ThreadCommand();
+
+	/**********************************************************************************************************************************
+	// Local variables: don't like these
+	**********************************************************************************************************************************/
 
 	// don't like these
 	std::string localAddress;
@@ -55,9 +62,14 @@ private:
 	std::shared_ptr<const MachineSettings> localMachineSettings;
 	std::shared_ptr<const ExperimentSettings> localExperimentSettings;
 	int localThreadCommand;
-	void ThreadCommand();
 
+	// Debugging
+	int debug_success = 0;
+	int debug_fails = 0;
 
+	/**********************************************************************************************************************************
+	// Request and response functions
+	**********************************************************************************************************************************/
 	unsigned Handshake_req(http_request* r);
 	unsigned Handshake_resp(http_response * r);
 	unsigned GetMachineSettings_req(http_request * r);
@@ -74,6 +86,10 @@ private:
 	unsigned ThreadCommand_resp(http_response * r);
 	unsigned InstrumentCommand_req(http_request * r);
 	unsigned InstrumentCommand_resp(http_response * r);
+
+	// Debugging
+	unsigned TestConn_req(http_request * r);
+	unsigned TestConn_resp(http_response * r);
 };
 
 

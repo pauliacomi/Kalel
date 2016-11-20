@@ -8,7 +8,7 @@
 using json = nlohmann::json;
 
 Kalel::Kalel()
-	: threadManager{ storageVectors }
+	//: threadManager{ storageVectors }
 {
 	//
 	// Check to see whether the parameters file has been created
@@ -47,7 +47,7 @@ Kalel::Kalel()
 
 	//
 	// Start server functionality
-	// server.SetLogs(storageVectors.serverLogs, storageVectors.serverLogsMtx);
+	server.SetLogs(storageVectors.serverLogs, storageVectors.serverLogsMtx);
 	auto func = std::bind(&Kalel::ServerProcessing, this, std::placeholders::_1, std::placeholders::_2);
 	server.Accept(func);
 
@@ -263,24 +263,24 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 		if (!req->params_.empty() ||
 			!req->params_.at("action").empty())
 		{
-			if (req->params_.at("action") == "start")			{
-				threadManager.StartThread();
-			}
-			else if (req->params_.at("action") == "shutdown")	{
-				threadManager.ShutdownThread();
-			}
-			else if (req->params_.at("action") == "restart")	{
-				//threadManager.ResetThread();
-			}
-			else if (req->params_.at("action") == "reset")		{
-				threadManager.ResetThread();
-			}
-			else if (req->params_.at("action") == "pause")		{
-				threadManager.PauseThread();
-			}
-			else if (req->params_.at("action") == "resume")		{
-				threadManager.ResumeThread();
-			}
+			//if (req->params_.at("action") == "start")			{
+			//	threadManager.StartThread();
+			//}
+			//else if (req->params_.at("action") == "shutdown")	{
+			//	threadManager.ShutdownThread();
+			//}
+			//else if (req->params_.at("action") == "restart")	{
+			//	//threadManager.ResetThread();
+			//}
+			//else if (req->params_.at("action") == "reset")		{
+			//	threadManager.ResetThread();
+			//}
+			//else if (req->params_.at("action") == "pause")		{
+			//	threadManager.PauseThread();
+			//}
+			//else if (req->params_.at("action") == "resume")		{
+			//	threadManager.ResumeThread();
+			//}
 
 			resp->status_ = http::responses::ok;
 		}
@@ -307,7 +307,18 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 		}
 	}
 
+	/*********************************
+	// Debug
+	*********************************/
+	else if (req->path_ == "/api/testconnection" && req->method_ == http::method::get) {
+		resp->status_ = http::responses::ok;
+		resp->content_type_ = http::mimetype::texthtml;
+		resp->answer_ = R"(<!DOCTYPE html PUBLIC " -//IETF//DTD HTML 2.0//EN"><html><head><title>Hello</title></head><body><h1>Hello</h1></body></html>)";
+	}
 
+	/*********************************
+	// Default
+	*********************************/
 	else {
 		resp->status_ = http::responses::not_found;
 	}

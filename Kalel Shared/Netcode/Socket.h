@@ -67,6 +67,11 @@ public:
 	// Will throw on error
 	void SetLinger(bool lingerOn);
 
+	// Disable or enable Nagle's algorithm.
+	// Normally enabled
+	// Will throw on error
+	void SetNagle(bool nagleOn);
+
 	// Close a socket
 	// Will throw on error
 	void Close();

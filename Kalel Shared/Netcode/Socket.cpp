@@ -402,6 +402,23 @@ void Socket::SetLinger(bool lingerOn)
 	}
 }
 
+void Socket::SetNagle(bool nagleOn)
+{
+	int nagleOption;
+
+	if (nagleOn)
+		nagleOption = 0;
+	else
+		nagleOption = 1;
+
+	if (setsockopt(sock, IPPROTO_TCP, TCP_NODELAY, (char *)&nagleOption, sizeof(int)) == -1) {
+		std::string err = ERR_NAGLE + std::to_string(WSAGetLastError());
+		stringex.set(err);
+		throw stringex;
+	}
+}
+
+
 void Socket::Close()
 {
 	if (sock != INVALID_SOCKET)
@@ -460,7 +477,7 @@ std::string Socket::GetIP(const sockaddr_storage &address)
 
 	if (rtval)
 	{
-		humanIP = ERR_IP_CONVERT + WSAGetLastError();
+		humanIP = ERR_IP_CONVERT + std::to_string(WSAGetLastError());
 	}
 	else
 	{

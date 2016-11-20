@@ -13,8 +13,10 @@
 
 #include <sstream>
 
+
 Client::Client()
 {
+
 #ifdef FILE_LOGGING
 
 	FILELog::ReportingLevel() = LOG_LEVEL;
@@ -23,6 +25,7 @@ Client::Client()
 	Output2FILE::Stream() = f;
 
 #endif // FILE_LOGGING
+
 }
 
 
@@ -33,7 +36,7 @@ Client::~Client()
 
 void Client::SetLogs(std::vector<std::string> & vct)
 {
-	StreamLog::ReportingLevel() = logDEBUG4;
+	StreamLog::ReportingLevel() = LOG_LEVEL;
 	Output2vector::Stream() = &vct;
 }
 
@@ -62,6 +65,18 @@ unsigned Client::Process(std::string ip, std::string port, std::function<void(ht
 
 	try{
 		l_sock.Connect(ip.c_str(), port.c_str());
+	}
+	catch (const std::exception& e)
+	{
+		STREAM_LOG(logERROR) << e.what();
+#ifdef FILE_LOGGING
+		FILE_LOG(logERROR) << e.what();
+#endif // FILE_LOGGING
+		return 1;
+	}
+
+	try {
+		l_sock.SetNagle(false);		// Disable Nagle's algorithm, should lead to improved latency
 	}
 	catch (const std::exception& e)
 	{
@@ -212,6 +227,10 @@ unsigned Client::Process(std::string ip, std::string port, std::function<void(ht
 		}
 		else if (line.substr(0, http::header::content_length.size()) == http::header::content_length) {
 			response.content_length_ = line.substr(http::header::content_length.size());
+			if (response.content_length_ == "0")
+			{
+				messageToReceive = false;
+			}
 		}
 		else if (line.substr(0, http::header::content_type.size()) == http::header::content_type) {
 			response.content_type_ = line.substr(http::header::content_type.size());

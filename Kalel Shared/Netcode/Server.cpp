@@ -106,6 +106,7 @@ unsigned Server::AcceptLoop()
 #endif // FILE_LOGGING
 
 		std::unique_ptr<Socket> acceptedSocket = std::make_unique<Socket>(s);			// Create a client socket pointer from the accepted SOCKET
+		//acceptedSocket->SetNagle(false);												// Disable Nagle's algorithm, should lead to improved latency
 		std::thread(&Server::Process, this, std::move(acceptedSocket)).detach();		// Start the request processing thread
 	}
 
