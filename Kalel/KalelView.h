@@ -133,7 +133,7 @@ private:
 	LRESULT OnServerConnected(WPARAM wParam, LPARAM lParam);
 	LRESULT OnGetMachineSettings(WPARAM wParam, LPARAM lParam);
 	LRESULT OnSetMachineSettings(WPARAM wParam, LPARAM lParam);
-	LRESULT OnExchangeData(WPARAM wParam, LPARAM lParam);
+	LRESULT OnExchangeData(WPARAM, LPARAM incomingExperimentData);
 	LRESULT OnExchangeLogs(WPARAM, LPARAM incomingLogs);
 	LRESULT OnAutoExperimentFinished(WPARAM wParam, LPARAM);
 	LRESULT CancelBeforeStarting(WPARAM wParam, LPARAM lParam);

@@ -55,6 +55,7 @@ BEGIN_MESSAGE_MAP(CKalelView, CFormView)
 	ON_MESSAGE(UWM_SYNCED, &CKalelView::OnSetMachineSettings)												// Modifies the global ??????????????
 	ON_MESSAGE(UWM_GOT_MACHINE_SETTINGS, &CKalelView::OnGetMachineSettings)					// Callback to notify of received MachineSettings
 	ON_MESSAGE(UWM_EXCHANGEDATA, &CKalelView::OnExchangeData)								// Callback to notify of incoming ExperimentData array
+	ON_MESSAGE(UWM_EXCHANGELOGS, &CKalelView::OnExchangeLogs)
 	ON_MESSAGE(UWM_THREADFINISHEDREG, &CKalelView::OnAutoExperimentFinished)				// Calls when manual functionality ends
 	ON_MESSAGE(UWM_DISPLAYMESSAGE, &CKalelView::AffichageMessages)							// Callback to display a message from the automation thread
 	ON_MESSAGE(UWM_DISPLAYMESSAGEBOX, &CKalelView::MessageBoxAlert)							// Displays an messageBox to alert user of something
