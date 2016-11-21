@@ -665,7 +665,8 @@ unsigned CommHandler::InstrumentCommand_resp(http_response * r)
 
 unsigned CommHandler::TestConn_req(http_request* r) {
 	r->method_ = http::method::get;
-	r->path_ = "/api/testconnection";
+	r->path_ = "/api/debug/testconnection";
+	r->params_.emplace("return", "500");
 	return 0;
 }
 

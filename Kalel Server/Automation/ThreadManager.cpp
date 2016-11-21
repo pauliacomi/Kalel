@@ -28,7 +28,7 @@ ThreadManager::ThreadManager(Storage &h)
 	handles = &h;
 
 	// Start the threads
-	StartThread();
+	// StartThread();
 }
 
 ThreadManager::~ThreadManager()

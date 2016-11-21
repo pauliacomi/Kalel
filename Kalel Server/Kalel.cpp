@@ -4,11 +4,12 @@
 #include "Parameters/Parametres.h"
 #include "../Kalel Shared/Netcode/json.hpp"
 #include "../Kalel Shared/Com Classes/Serialization.h"
+#include "../Kalel Shared/Netcode/stdHelpers.h"
 
 using json = nlohmann::json;
 
 Kalel::Kalel()
-	//: threadManager{ storageVectors }
+	: threadManager{ storageVectors }
 {
 	//
 	// Check to see whether the parameters file has been created
@@ -70,6 +71,14 @@ void Kalel::GetLogs(std::string &logs) {
 		logs += "\r\n";
 	}
 }
+
+
+
+/*********************************
+//
+//  Request processing
+//
+*********************************/
 
 void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 
@@ -163,20 +172,14 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 		}
 		else
 		{
-			time_t experimentStartTime;
-			std::stringstream is;
-			is << req->params_.at("start");
-			is >> experimentStartTime;
-			is.clear();
+			time_t experimentStartTime = To<time_t>(req->params_.at("start"));
 
 			if (experimentStartTime != localCollection.begin()->get()->timeStart) {
 				it = localCollection.rend();
 			}
 			else
 			{
-				long int numberOfMeasurements;
-				is << req->params_.at("measurements");
-				is >> numberOfMeasurements;
+				long int numberOfMeasurements = To<long int>(req->params_.at("measurements"));
 				it = std::find_if(localCollection.rbegin(), localCollection.rend(),
 					[&numberOfMeasurements](std::shared_ptr<ExperimentData> d) -> bool {return d->measurementsMade == numberOfMeasurements; });
 			}
@@ -263,24 +266,24 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 		if (!req->params_.empty() ||
 			!req->params_.at("action").empty())
 		{
-			//if (req->params_.at("action") == "start")			{
-			//	threadManager.StartThread();
-			//}
-			//else if (req->params_.at("action") == "shutdown")	{
-			//	threadManager.ShutdownThread();
-			//}
-			//else if (req->params_.at("action") == "restart")	{
-			//	//threadManager.ResetThread();
-			//}
-			//else if (req->params_.at("action") == "reset")		{
-			//	threadManager.ResetThread();
-			//}
-			//else if (req->params_.at("action") == "pause")		{
-			//	threadManager.PauseThread();
-			//}
-			//else if (req->params_.at("action") == "resume")		{
-			//	threadManager.ResumeThread();
-			//}
+			if (req->params_.at("action") == "start")			{
+				threadManager.StartThread();
+			}
+			else if (req->params_.at("action") == "shutdown")	{
+				threadManager.ShutdownThread();
+			}
+			else if (req->params_.at("action") == "restart")	{
+				//threadManager.ResetThread();
+			}
+			else if (req->params_.at("action") == "reset")		{
+				threadManager.ResetThread();
+			}
+			else if (req->params_.at("action") == "pause")		{
+				threadManager.PauseThread();
+			}
+			else if (req->params_.at("action") == "resume")		{
+				threadManager.ResumeThread();
+			}
 
 			resp->status_ = http::responses::ok;
 		}
@@ -299,7 +302,7 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 			!req->params_.at("number").empty() ||
 			!req->params_.at("active").empty())
 		{
-
+			// threadManager.ManualAction();
 		}
 		else
 		{
@@ -310,10 +313,18 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 	/*********************************
 	// Debug
 	*********************************/
-	else if (req->path_ == "/api/testconnection" && req->method_ == http::method::get) {
+	else if (req->path_ == "/api/debug/testconnection" && req->method_ == http::method::get) {
 		resp->status_ = http::responses::ok;
-		resp->content_type_ = http::mimetype::texthtml;
-		resp->answer_ = R"(<!DOCTYPE html PUBLIC " -//IETF//DTD HTML 2.0//EN"><html><head><title>Hello</title></head><body><h1>Hello</h1></body></html>)";
+		if (!req->params_.empty() ||
+			!req->params_.at("return").empty()) {
+
+			resp->content_type_ = http::mimetype::texthtml;
+
+			for (size_t i = 0; i < To<size_t>(req->params_.at("return")); i++)
+			{
+				resp->answer_ += "test";
+			}
+		}
 	}
 
 	/*********************************
