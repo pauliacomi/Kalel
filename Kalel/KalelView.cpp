@@ -317,8 +317,6 @@ void CKalelView::OnTimer(UINT_PTR nIDEvent)
 		}
 	}
 
-	commHandler.TestConn();
-
 	CFormView::OnTimer(nIDEvent);	// Call base class handler.
 }
 

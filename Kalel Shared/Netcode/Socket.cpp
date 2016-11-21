@@ -295,6 +295,7 @@ std::string Socket::Receive()
 		t.assign(buf, received);
 		ret += t;
 	}
+
 	return ret;
 }
 
@@ -339,33 +340,21 @@ std::string Socket::ReceiveBytes(u_long bytes)
 	bool overflow = false;
 
 	while (true) {
-		u_long arg = 0;
 
-		if (total > bytes) {
+		if (total >= bytes) {
+			if (total = bytes){
+				break;
+			}
 			overflow = true;
 			break;
 		}
-		if (ioctlsocket(sock, FIONREAD, &arg) != 0) {
-			break;
-		}
-		if (arg == 0) {
-			if (total < bytes || overflow)
-			{
-				received = recv(sock, buf, arg, 0);
-				break;
-			}
-			break;
-		}
-		if (arg > 1024) {
-			arg = 1024;
-		}
 
-		received = recv(sock, buf, arg, 0);
+		received = recv(sock, buf, sizeof(buf), 0);
 
 		switch (received) {
-		case 0: // not connected anymore;
-			return "";
-		case INVALID_SOCKET:
+		case 0:					// not connected anymore;
+			break;
+		case INVALID_SOCKET:	// error
 			if (errno == EAGAIN) {
 				return ret;
 			}
@@ -378,8 +367,9 @@ std::string Socket::ReceiveBytes(u_long bytes)
 		std::string t;
 		t.assign(buf, received);
 		ret += t;
-		total += arg;
+		total += received;
 	}
+
 	if (total < bytes || overflow)
 	{
 		ret.clear();
