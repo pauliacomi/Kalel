@@ -299,6 +299,8 @@ void CKalelView::OnTimer(UINT_PTR nIDEvent)
 {
 	if (!dataCollection.empty()) {
 
+		// Should display only values after the last timestamp
+
 		// Write textbox values
 		DisplayTextboxValues(dataCollection.back());
 
@@ -314,7 +316,7 @@ void CKalelView::OnTimer(UINT_PTR nIDEvent)
 		if (pApp->serverConnected)
 		{
 			commHandler.GetData(dataCollection.back()->timeStart, dataCollection.back()->measurementsMade);
-			//commHandler.GetLog();
+			commHandler.GetLog(logCollection.rbegin()->first);
 		}
 	}
 
@@ -635,7 +637,7 @@ LRESULT CKalelView::BackgroundThreadRestart(WPARAM, LPARAM)
 // Server callback commands
 **********************************************************************************************************************************/
 
-LRESULT CKalelView::OnServerConnected(WPARAM wParam, LPARAM lParam)
+LRESULT CKalelView::OnServerConnected(WPARAM, LPARAM)
 {
 	pApp->serverConnected = true;
 	commHandler.SaveAddress(savedParams.GetServerAddress());
@@ -643,7 +645,7 @@ LRESULT CKalelView::OnServerConnected(WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 
-LRESULT CKalelView::OnGetMachineSettings(WPARAM wParam, LPARAM incomingMachineSettings)
+LRESULT CKalelView::OnGetMachineSettings(WPARAM, LPARAM incomingMachineSettings)
 {
 	// Get the incoming pointer
 	machineSettings.reset(reinterpret_cast<MachineSettings*>(incomingMachineSettings));
@@ -651,7 +653,7 @@ LRESULT CKalelView::OnGetMachineSettings(WPARAM wParam, LPARAM incomingMachineSe
 	return 0;
 }
 
-LRESULT CKalelView::OnSetMachineSettings(WPARAM wParam, LPARAM lParam)
+LRESULT CKalelView::OnSetMachineSettings(WPARAM, LPARAM)
 {
 	if (machineSettings->synced != true) {
 		machineSettings = tempSettings;
@@ -677,14 +679,20 @@ LRESULT CKalelView::OnExchangeData(WPARAM, LPARAM incomingExperimentData)
 LRESULT CKalelView::OnExchangeLogs(WPARAM, LPARAM incomingLogs)
 {
 	// Get the incoming vector and add it to the local logs
-	std::deque<std::string *> * newLogs = reinterpret_cast<std::deque<std::string *>*>(incomingLogs);
-	logCollection.insert(logCollection.end(), newLogs->begin(), newLogs->end());
+	std::map<std::wstring, std::wstring> * newLogs = reinterpret_cast<std::map<std::wstring, std::wstring>*>(incomingLogs);
+	logCollection.insert(newLogs->begin(), newLogs->end());
 
-	for (size_t i = 0; i < newLogs->size(); i++)
+	// Display logs
+	for (std::map<std::wstring, std::wstring>::iterator i = newLogs->begin(); i != newLogs->end(); i++)
 	{
-		CString * temp = new CString(newLogs->at(i)->c_str());
+		CString time = CString(i->first.c_str());
+		CString log = CString(i->second.c_str());
+		CString * temp = new CString();
+		*temp = time + log;
 		AffichageMessages(NULL, (LPARAM)temp);
 	}
+	
+	//lastLog = newLogs->end()->first;
 
 	// Delete the useless vector now
 	delete newLogs;

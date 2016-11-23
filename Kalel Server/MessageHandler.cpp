@@ -62,7 +62,9 @@ bool MessageHandler::DisplayMessage(std::string pParam, int pInt1, int pInt2, do
 		}
 	}
 	
+	handles->autoInfoLogsMutex.lock();
 	handles->automationInfoLogs.insert(std::make_pair(NowTime(), message));
+	handles->autoInfoLogsMutex.unlock();
 
 	return true;
 }
@@ -72,7 +74,9 @@ bool MessageHandler::DisplayMessage(std::string pParam, std::string m)
 	std::string message;
 	message = string_format(pParam, m);
 
+	handles->autoInfoLogsMutex.lock();
 	handles->automationInfoLogs.insert (std::make_pair(NowTime(), message));
+	handles->autoInfoLogsMutex.unlock();
 
 	return true;
 }
@@ -96,7 +100,7 @@ bool MessageHandler::DisplayMessageBox(std::string pParam, UINT nType, bool bloc
 		message = string_format(pParam);
 	}
 
-	handles->automationErrorLogs.insert(std::make_pair(NowTime(), message));
+	//handles->automationErrorLogs.insert(std::make_pair(NowTime(), message));
 
 	return true;
 }
@@ -106,7 +110,7 @@ bool MessageHandler::DisplayMessageBox(std::string pParam, UINT nType, bool bloc
 	std::string message;
 	message = string_format(pParam, pString);
 
-	handles->automationErrorLogs.insert(std::make_pair(NowTime(), message));
+	//handles->automationErrorLogs.insert(std::make_pair(NowTime(), message));
 
 	//// Check if the message box is supposed to alert the user or ask for input
 	//// Other thread is now responsible for deleting this object

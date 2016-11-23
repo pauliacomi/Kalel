@@ -116,8 +116,10 @@ void CommHandler::GetData(time_t startTime, long int measurementsMade)
 
 
 
-void CommHandler::GetLog(time_t fromTime)
+void CommHandler::GetLog(std::wstring fromTime)
 {
+	localLogsTime = UnicodeConv::ws2s(fromTime.c_str());
+
 	auto request = std::bind(&CommHandler::GetLogs_req, this, std::placeholders::_1);
 	auto callback = std::bind(&CommHandler::GetLogs_resp, this, std::placeholders::_1);
 
@@ -478,23 +480,22 @@ unsigned CommHandler::GetLogs_resp(http_response * r)
 				return 1;
 			}
 
-			std::string * receivedLog = nullptr;
-			auto receivedLogArray = new std::deque<std::string *>();
+			auto receivedLogArray = new std::map<std::wstring, std::wstring>();
 
 			for (json::iterator i = j.begin(); i != j.end(); ++i)
 			{
-				receivedLog = new std::string();
+				std::wstring receivedLog;
 				try
 				{
-					receivedLog = new std::string(j[i.key()].get<std::string>());
+					receivedLog = UnicodeConv::s2ws(j[i.key()].get<std::string>().c_str());
 				}
 				catch (const std::exception& e)	{
 					messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, UnicodeConv::s2ws(e.what()));
-					delete receivedLog;
 					delete receivedLogArray;
 					return 1;
 				}
-				receivedLogArray->push_back(receivedLog);
+				std::wstring receivedLogTime = UnicodeConv::s2ws(i.key().c_str());
+				receivedLogArray->insert(std::make_pair( receivedLogTime, receivedLog));
 			}
 
 			messageHandler.ExchangeLogs(receivedLogArray);

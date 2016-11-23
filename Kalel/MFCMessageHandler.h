@@ -14,6 +14,7 @@
 #include "../Kalel Shared/Com Classes/MachineSettings.h"
 
 #include <string>
+#include <map>
 
 class MFCMessageHandler
 {
@@ -32,7 +33,7 @@ public:
 	bool GotMachineSettings(const MachineSettings &pParam);
 	bool OnSetMachineSettings();
 	bool ExchangeData(std::deque<ExperimentData*> * pParam);
-	bool ExchangeLogs(std::deque<std::string*> * pParam);
+	bool ExchangeLogs(std::map<std::wstring, std::wstring> * pParam);
 	bool ExperimentStart();
 	bool ExperimentEnd();
 	bool ThreadShutdown();

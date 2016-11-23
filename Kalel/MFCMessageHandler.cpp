@@ -68,7 +68,7 @@ bool MFCMessageHandler::ExchangeData(std::deque<ExperimentData*> * pParam)
 	return true;
 }
 
-bool MFCMessageHandler::ExchangeLogs(std::deque<std::string*>* pParam)
+bool MFCMessageHandler::ExchangeLogs(std::map<std::wstring, std::wstring>* pParam)
 {
 	// Post the required message, now the main thread is responsible for deleting the new class
 	if (::PostMessage(windowHandle, UWM_EXCHANGELOGS, NULL, (LPARAM)pParam) == 0)

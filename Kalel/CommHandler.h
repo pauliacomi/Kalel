@@ -25,7 +25,7 @@ public:
 	void GetMachineSettings();
 	void SetMachineSettings(std::shared_ptr<const MachineSettings> ptr);
 	void GetData(time_t startTime = 0, long int measurementsMade = 0);
-	void GetLog(time_t fromTime = 0);
+	void GetLog(std::wstring fromTime = _T(""));
 	void SetExperimentSettings(std::shared_ptr<const ExperimentSettings> ptr);
 
 	void StartClient();
