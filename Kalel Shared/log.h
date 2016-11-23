@@ -9,42 +9,84 @@
 
 #include "timestamp.h"
 
-inline std::string NowTime();
+
+/**********************************************************************************************************************************
+// Template
+**********************************************************************************************************************************/
 
 enum TLogLevel {logERROR, logWARNING, logINFO, logDEBUG, logDEBUG1, logDEBUG2, logDEBUG3, logDEBUG4};
 
+/*********************************
+// Class
+*********************************/
 template <typename T>
 class Log
 {
 public:
     Log();
     virtual ~Log();
-    std::ostringstream& Get(TLogLevel level = logINFO);
+    std::ostringstream& GetNoStamp(TLogLevel level = logINFO);
+	std::ostringstream& GetTimeStamped(TLogLevel level = logINFO);
+	std::ostringstream& GetTimeStamp();
+
 public:
     static TLogLevel& ReportingLevel();
     static std::string ToString(TLogLevel level);
     static TLogLevel FromString(const std::string& level);
+
+	// String stream
 protected:
     std::ostringstream os;
+	std::ostringstream timestamp;
+
 private:
     Log(const Log&);
     Log& operator =(const Log&);
 };
 
+/*********************************
+// Constructor
+*********************************/
 template <typename T>
 Log<T>::Log()
 {
+	timestamp << NowTime();
 }
 
+/*********************************
+// Get log unstamped
+*********************************/
 template <typename T>
-std::ostringstream& Log<T>::Get(TLogLevel level)
+std::ostringstream& Log<T>::GetNoStamp(TLogLevel level)
 {
-    os << "- " << NowTime();
-    os << " " << ToString(level) << ": ";
     os << std::string(level > logDEBUG ? level - logDEBUG : 0, '\t');
     return os;
 }
 
+/*********************************
+// Get log stamped
+*********************************/
+template <typename T>
+std::ostringstream& Log<T>::GetTimeStamped(TLogLevel level)
+{
+	os << "- " << timestamp;
+	os << " " << ToString(level) << ": ";
+	os << std::string(level > logDEBUG ? level - logDEBUG : 0, '\t');
+	return os;
+}
+
+/*********************************
+// Get log stamped
+*********************************/
+template <typename T>
+std::ostringstream& Log<T>::GetTimeStamp()
+{
+	return timestamp;
+}
+
+/*********************************
+// Destructor
+*********************************/
 template <typename T>
 Log<T>::~Log()
 {
@@ -52,6 +94,9 @@ Log<T>::~Log()
     T::Output(os.str());
 }
 
+/*********************************
+// Reporting level
+*********************************/
 template <typename T>
 TLogLevel& Log<T>::ReportingLevel()
 {
@@ -59,6 +104,9 @@ TLogLevel& Log<T>::ReportingLevel()
     return reportingLevel;
 }
 
+/*********************************
+// Convert level to string
+*********************************/
 template <typename T>
 std::string Log<T>::ToString(TLogLevel level)
 {
@@ -66,6 +114,9 @@ std::string Log<T>::ToString(TLogLevel level)
     return buffer[level];
 }
 
+/*********************************
+// Convert string to level
+*********************************/
 template <typename T>
 TLogLevel Log<T>::FromString(const std::string& level)
 {
@@ -88,6 +139,11 @@ TLogLevel Log<T>::FromString(const std::string& level)
     Log<T>().Get(logWARNING) << "Unknown logging level '" << level << "'. Using INFO level as default.";
     return logINFO;
 }
+
+
+/**********************************************************************************************************************************
+// Output to a vector
+**********************************************************************************************************************************/
 
 class Output2vector
 {
@@ -124,6 +180,48 @@ inline void Output2vector::Output(const std::string& msg)
 	pMutex->unlock();
 }
 
+/**********************************************************************************************************************************
+// Output to a map
+**********************************************************************************************************************************/
+
+class Output2map
+{
+public:
+	static std::map<std::string, std::string>*& Stream();
+	static std::mutex*& Mutex();
+	static void Output(const std::string& msg);
+};
+
+inline std::map<std::string, std::string>*& Output2map::Stream()
+{
+	static std::map<std::string, std::string>* pStream = nullptr;
+	return pStream;
+}
+
+inline std::mutex*& Output2map::Mutex()
+{
+	static std::mutex* pMutex = nullptr;
+	return pMutex;
+}
+
+inline void Output2map::Output(const std::string& msg)
+{
+	std::map<std::string, std::string>* pStream = Stream();
+	if (!pStream)
+		return;
+
+	std::mutex* pMutex = Mutex();
+	if (!pMutex)
+		return;
+
+	pMutex->lock();
+	pStream->emplace(std::make_pair(NowTime(), msg));
+	pMutex->unlock();
+}
+
+/**********************************************************************************************************************************
+// Output to a file
+**********************************************************************************************************************************/
 
 class Output2FILE
 {
@@ -159,9 +257,18 @@ inline void Output2FILE::Output(const std::string& msg)
 #   define FILELOG_DECLSPEC
 #endif // _WIN32
 
+/**********************************************************************************************************************************
+// Class definitions
+**********************************************************************************************************************************/
+
 class FILELOG_DECLSPEC FILELog : public Log<Output2FILE> {};
 class StreamLog : public Log<Output2vector> {};
-//typedef Log<Output2FILE> FILELog;
+class MapLog : public Log<Output2map> {};
+
+/**********************************************************************************************************************************
+// Macro definitions
+**********************************************************************************************************************************/
+
 
 #ifndef FILELOG_MAX_LEVEL
 #define FILELOG_MAX_LEVEL logDEBUG4
@@ -171,14 +278,23 @@ class StreamLog : public Log<Output2vector> {};
 #define STREAMLOG_MAX_LEVEL logDEBUG4
 #endif
 
+#ifndef MAPLOG_MAX_LEVEL
+#define MAPLOG_MAX_LEVEL logDEBUG4
+#endif
+
 #define FILE_LOG(level) \
     if (level > FILELOG_MAX_LEVEL) ;\
     else if (level > FILELog::ReportingLevel() || !Output2FILE::Stream()) ; \
-    else FILELog().Get(level)
+    else FILELog().GetTimeStamped(level)
 
 #define STREAM_LOG(level) \
     if (level > STREAMLOG_MAX_LEVEL) ;\
     else if (level > StreamLog::ReportingLevel() || !Output2vector::Stream() || !Output2vector::Mutex()) ; \
-    else StreamLog().Get(level)
+    else StreamLog().GetTimeStamped(level)
+
+#define MAP_LOG(level) \
+    if (level > MAPLOG_MAX_LEVEL) ;\
+    else if (level > MapLog::ReportingLevel() || !Output2map::Stream() || !Output2map::Mutex()) ; \
+    else MapLog().GetNoStamp(level)
 
 #endif //__LOG_H__
