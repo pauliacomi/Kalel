@@ -1,11 +1,12 @@
-#pragma once
 #ifndef TABDIVERS_H
 #define TABDIVERS_H
+#pragma once
 
-#include "ResourceOnglets.h"		// For resources
-#include "SpinBtnCtrl.h"			// For the Spin Button class
-#include "Classes_experiences.h"	// Definitions for all classes used in this file
-#include <vector>					// Using the vector class
+#include "ResourceDialogExperimentSettings.h"								// For resources
+#include "SpinBtnCtrl.h"													// For the Spin Button class
+#include "../Kalel Shared/Com Classes/ExperimentHelperClasses.h"							// Definitions for all classes used in this file
+#include <vector>															// Using the vector class
+
 
 class TabDivers : public CMFCPropertyPage
 {
@@ -21,7 +22,7 @@ public:
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 	virtual BOOL OnInitDialog();
-	virtual BOOL OnCommand(WPARAM wParam,LPARAM lParam);
+	virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
 	virtual BOOL OnApply();
 	virtual void OnCancel();
 	virtual void OnOK();
@@ -52,7 +53,7 @@ protected:
 	CSpinBtnCtrl m_SpinTempsVide;
 
 	// Definintions for cells
-	vector<cellule> cellList;
+	std::vector<cellule> cellList;
 	cellule cellExp;
 
 public:

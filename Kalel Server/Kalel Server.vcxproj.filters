@@ -1,0 +1,525 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\Automation">
+      <UniqueIdentifier>{2a9f056c-9212-46f6-8f81-3745fb115416}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Backend">
+      <UniqueIdentifier>{c3418395-1816-4d65-81f5-dc29466e0f01}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Backend\USB">
+      <UniqueIdentifier>{564f0c66-fe29-41ce-945a-4e1b9db23913}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Backend\RS232">
+      <UniqueIdentifier>{b6cb7a4a-b0e6-4c57-9dc8-8c65908c5f58}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Parameters">
+      <UniqueIdentifier>{94d5a792-8b2e-4323-a115-e4c70e7c0864}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Backend\Wrapper Classes">
+      <UniqueIdentifier>{3216ebe0-60e7-488d-a8c1-6e8a79e147bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Automation">
+      <UniqueIdentifier>{b1ccb29f-2be7-4834-8df6-5c46ad075bf7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Backend">
+      <UniqueIdentifier>{848dd1f2-625c-49ca-98ee-d31905498b4e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Parameters">
+      <UniqueIdentifier>{29b66c5d-8311-48a6-8917-2772ad88b06a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Backend\USB">
+      <UniqueIdentifier>{2d2c139f-1f3c-464a-afd5-cf3f2e506f5c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Backend\Wrapper Classes">
+      <UniqueIdentifier>{088f445a-ea32-4638-ab07-6ca890227991}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Backend\RS232">
+      <UniqueIdentifier>{d395abf1-4f98-4ab8-b9c7-10125a817d9e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Automation\Class">
+      <UniqueIdentifier>{b4376b8b-4c5a-4536-bf49-7e7d47bf1cd9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Automation\Utils">
+      <UniqueIdentifier>{2f93dc81-58ca-435c-ab56-c644beee219b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Automation\Old">
+      <UniqueIdentifier>{75357d3e-1be3-42b0-83c0-213371a6ba42}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Automation\Manip Old">
+      <UniqueIdentifier>{fc6dd5e4-cc46-4cad-a9da-75dd0e56063a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Automation\Utils">
+      <UniqueIdentifier>{9edbb7ce-c543-4c3a-bb25-df258b70a828}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Measurement">
+      <UniqueIdentifier>{0ae70c48-f658-45fc-a459-61d7f9e5c5a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Common">
+      <UniqueIdentifier>{3f1b5b90-a803-40ba-9e9b-28a86c4ff657}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Common\Netcode">
+      <UniqueIdentifier>{cb10ea5e-f237-4d56-a833-17c3b942534f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Common\Resources">
+      <UniqueIdentifier>{65b339ad-7520-4c02-b05d-8765fe3e14c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Common\Com Classes">
+      <UniqueIdentifier>{328ffef3-db41-4e51-8add-10b309b7cc28}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Common">
+      <UniqueIdentifier>{7497e4d7-6552-4f68-97f6-ebcf81a18732}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Common\Com Classes">
+      <UniqueIdentifier>{b6fc9662-0488-4362-b845-ec1c2e82d870}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Common\Netcode">
+      <UniqueIdentifier>{99fb7fb4-345d-48da-abd7-19163eb011a6}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Kalel Server.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Kalel ServerDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Automation\Old\MainFrm.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Automation\Class\Automation.h">
+      <Filter>Header Files\Automation</Filter>
+    </ClInclude>
+    <ClInclude Include="Backend\RS232\Mensor.h">
+      <Filter>Header Files\Backend\RS232</Filter>
+    </ClInclude>
+    <ClInclude Include="Backend\RS232\Keithley.h">
+      <Filter>Header Files\Backend\RS232</Filter>
+    </ClInclude>
+    <ClInclude Include="Backend\RS232\LiaisonRS232.h">
+      <Filter>Header Files\Backend\RS232</Filter>
+    </ClInclude>
+    <ClInclude Include="Backend\USB\NI_USB_6008.h">
+      <Filter>Header Files\Backend\USB</Filter>
+    </ClInclude>
+    <ClInclude Include="Backend\USB\NIDAQmx.h">
+      <Filter>Header Files\Backend\USB</Filter>
+    </ClInclude>
+    <ClInclude Include="Backend\USB\NI_USB_9211A.h">
+      <Filter>Header Files\Backend\USB</Filter>
+    </ClInclude>
+    <ClInclude Include="Backend\Wrapper Classes\Temperature.h">
+      <Filter>Header Files\Backend\Wrapper Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Backend\Wrapper Classes\SerialInstruments.h">
+      <Filter>Header Files\Backend\Wrapper Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Backend\Wrapper Classes\Vannes.h">
+      <Filter>Header Files\Backend\Wrapper Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Automation\ThreadManager.h">
+      <Filter>Header Files\Automation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Kalel Shared\Netcode\base64.h">
+      <Filter>Header Files\Common\Netcode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Kalel Shared\Netcode\Client.h">
+      <Filter>Header Files\Common\Netcode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Kalel Shared\Netcode\http_request.h">
+      <Filter>Header Files\Common\Netcode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Kalel Shared\Netcode\json.hpp">
+      <Filter>Header Files\Common\Netcode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Kalel Shared\Netcode\Netcode Resources.h">
+      <Filter>Header Files\Common\Netcode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Kalel Shared\Netcode\Server.h">
+      <Filter>Header Files\Common\Netcode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Kalel Shared\Netcode\Socket.h">
+      <Filter>Header Files\Common\Netcode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Kalel Shared\Netcode\stdHelpers.h">
+      <Filter>Header Files\Common\Netcode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Kalel Shared\Netcode\URLHelper.h">
+      <Filter>Header Files\Common\Netcode</Filter>
+    </ClInclude>
+    <ClInclude Include="Parameters\FluxConverter.h">
+      <Filter>Header Files\Parameters</Filter>
+    </ClInclude>
+    <ClInclude Include="Parameters\Parametres.h">
+      <Filter>Header Files\Parameters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Kalel Shared\Com Classes\ExperimentData.h">
+      <Filter>Header Files\Common\Com Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Kalel Shared\Com Classes\ExperimentSettings.h">
+      <Filter>Header Files\Common\Com Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Automation\Utils\Chrono.h">
+      <Filter>Header Files\Automation\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Automation\Utils\InfoEtape.h">
+      <Filter>Header Files\Automation\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Kalel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Kalel Shared\Resources\DefineAutomationSettings.h">
+      <Filter>Header Files\Common\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Kalel Shared\Resources\DefineInstruments.h">
+      <Filter>Header Files\Common\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Kalel Shared\Resources\DefineStages.h">
+      <Filter>Header Files\Common\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Kalel Shared\Resources\StringTable.h">
+      <Filter>Header Files\Common\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Kalel Shared\Com Classes\CommonFunctions.h">
+      <Filter>Header Files\Common\Com Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Kalel Shared\Com Classes\ExperimentHelperClasses.h">
+      <Filter>Header Files\Common\Com Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Kalel Shared\Com Classes\MachineSettings.h">
+      <Filter>Header Files\Common\Com Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Kalel Shared\Com Classes\ManualActionParam.h">
+      <Filter>Header Files\Common\Com Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Kalel Shared\log.h">
+      <Filter>Header Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Kalel Shared\Forcelib.h">
+      <Filter>Header Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Kalel Shared\Netcode\http_response.h">
+      <Filter>Header Files\Common\Netcode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Kalel Shared\unicodeConv.h">
+      <Filter>Header Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Kalel Shared\Netcode\http_define.h">
+      <Filter>Header Files\Common\Netcode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Kalel Shared\Netcode\http_helpers.h">
+      <Filter>Header Files\Common\Netcode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Kalel Shared\timestamp.h">
+      <Filter>Header Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Kalel Shared\Resources\DefineText.h">
+      <Filter>Header Files\Common\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Kalel Shared\stringFormat.h">
+      <Filter>Header Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Automation\Old\Manip.h">
+      <Filter>Header Files\Automation\Manip Old</Filter>
+    </ClInclude>
+    <ClInclude Include="Automation\Old\Manip_Auto.h">
+      <Filter>Header Files\Automation\Manip Old</Filter>
+    </ClInclude>
+    <ClInclude Include="Automation\Old\Manip_AutoGaz.h">
+      <Filter>Header Files\Automation\Manip Old</Filter>
+    </ClInclude>
+    <ClInclude Include="MessageHandler.h">
+      <Filter>Header Files\Automation</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Kalel Server.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Kalel ServerDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\Manip.cpp">
+      <Filter>Source Files\Automation\Old</Filter>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\Manip_Auto.cpp">
+      <Filter>Source Files\Automation\Old</Filter>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\Manip_Auto_Arret.cpp">
+      <Filter>Source Files\Automation\Old</Filter>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\Manip_Auto_Donnees.cpp">
+      <Filter>Source Files\Automation\Old</Filter>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\Manip_Auto_Fichier.cpp">
+      <Filter>Source Files\Automation\Old</Filter>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\Manip_Auto_LireAfficher.cpp">
+      <Filter>Source Files\Automation\Old</Filter>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\Manip_Auto_Probleme_Injection.cpp">
+      <Filter>Source Files\Automation\Old</Filter>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\Manip_Auto_Vannes.cpp">
+      <Filter>Source Files\Automation\Old</Filter>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\Manip_Auto_Verifications.cpp">
+      <Filter>Source Files\Automation\Old</Filter>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\Manip_AutoGaz.cpp">
+      <Filter>Source Files\Automation\Old</Filter>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\Manip_AutoGaz_Adsorption_Continue.cpp">
+      <Filter>Source Files\Automation\Old</Filter>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\Manip_AutoGaz_AEffectuer.cpp">
+      <Filter>Source Files\Automation\Old</Filter>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\Manip_AutoGaz_Desorption.cpp">
+      <Filter>Source Files\Automation\Old</Filter>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\Manip_AutoGaz_Donnees.cpp">
+      <Filter>Source Files\Automation\Old</Filter>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\Manip_AutoGaz_Execution.cpp">
+      <Filter>Source Files\Automation\Old</Filter>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\Manip_AutoGaz_Fichier.cpp">
+      <Filter>Source Files\Automation\Old</Filter>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\Manip_AutoGaz_Grandes_Doses.cpp">
+      <Filter>Source Files\Automation\Old</Filter>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\Manip_AutoGaz_LEA.cpp">
+      <Filter>Source Files\Automation\Old</Filter>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\Manip_AutoGaz_Ligne_Base_Equilibre.cpp">
+      <Filter>Source Files\Automation\Old</Filter>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\Manip_AutoGaz_Mesure.cpp">
+      <Filter>Source Files\Automation\Old</Filter>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\Manip_AutoGaz_Mise_Sous_Vide.cpp">
+      <Filter>Source Files\Automation\Old</Filter>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\Manip_AutoGaz_MiseSousVide_Ampoule.cpp">
+      <Filter>Source Files\Automation\Old</Filter>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\Manip_AutoGaz_MiseSousVide_Bouteille.cpp">
+      <Filter>Source Files\Automation\Old</Filter>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\Manip_AutoGaz_MiseSousVide_ChangementBouteille.cpp">
+      <Filter>Source Files\Automation\Old</Filter>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\Manip_AutoGaz_Moyennes_Doses.cpp">
+      <Filter>Source Files\Automation\Old</Filter>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\Manip_AutoGaz_Petites_Doses.cpp">
+      <Filter>Source Files\Automation\Old</Filter>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\Manip_AutoGaz_Proprietes_Experience.cpp">
+      <Filter>Source Files\Automation\Old</Filter>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\Manip_AutoGaz_Vannes.cpp">
+      <Filter>Source Files\Automation\Old</Filter>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\ManipData.cpp">
+      <Filter>Source Files\Automation\Old</Filter>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\ManipFileWriting.cpp">
+      <Filter>Source Files\Automation\Old</Filter>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\ManipManualExecution.cpp">
+      <Filter>Source Files\Automation\Old</Filter>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\ManipMeasurement.cpp">
+      <Filter>Source Files\Automation\Old</Filter>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\ManipSecurity.cpp">
+      <Filter>Source Files\Automation\Old</Filter>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\ManipTimeKeeping.cpp">
+      <Filter>Source Files\Automation\Old</Filter>
+    </ClCompile>
+    <ClCompile Include="Automation\Old\ManipValves.cpp">
+      <Filter>Source Files\Automation\Old</Filter>
+    </ClCompile>
+    <ClCompile Include="Automation\ThreadManager.cpp">
+      <Filter>Source Files\Automation</Filter>
+    </ClCompile>
+    <ClCompile Include="Parameters\FluxConverter.cpp">
+      <Filter>Source Files\Parameters</Filter>
+    </ClCompile>
+    <ClCompile Include="Parameters\Parametres.cpp">
+      <Filter>Source Files\Parameters</Filter>
+    </ClCompile>
+    <ClCompile Include="Backend\RS232\Keithley.cpp">
+      <Filter>Source Files\Backend\RS232</Filter>
+    </ClCompile>
+    <ClCompile Include="Backend\RS232\LiaisonRS232.cpp">
+      <Filter>Source Files\Backend\RS232</Filter>
+    </ClCompile>
+    <ClCompile Include="Backend\RS232\Mensor.cpp">
+      <Filter>Source Files\Backend\RS232</Filter>
+    </ClCompile>
+    <ClCompile Include="Backend\USB\NI_USB_6008.cpp">
+      <Filter>Source Files\Backend\USB</Filter>
+    </ClCompile>
+    <ClCompile Include="Backend\USB\NI_USB_9211A.cpp">
+      <Filter>Source Files\Backend\USB</Filter>
+    </ClCompile>
+    <ClCompile Include="Backend\Wrapper Classes\SerialInstruments.cpp">
+      <Filter>Source Files\Backend\Wrapper Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="Backend\Wrapper Classes\Temperature.cpp">
+      <Filter>Source Files\Backend\Wrapper Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="Backend\Wrapper Classes\Vannes.cpp">
+      <Filter>Source Files\Backend\Wrapper Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="Automation\Class\Automation.cpp">
+      <Filter>Source Files\Automation\Class</Filter>
+    </ClCompile>
+    <ClCompile Include="Automation\Class\AutomationFileWriting.cpp">
+      <Filter>Source Files\Automation\Class</Filter>
+    </ClCompile>
+    <ClCompile Include="Automation\Class\AutomationMeasurement.cpp">
+      <Filter>Source Files\Automation\Class</Filter>
+    </ClCompile>
+    <ClCompile Include="Automation\Class\AutomationSecurity.cpp">
+      <Filter>Source Files\Automation\Class</Filter>
+    </ClCompile>
+    <ClCompile Include="Automation\Class\AutomationShutdown.cpp">
+      <Filter>Source Files\Automation\Class</Filter>
+    </ClCompile>
+    <ClCompile Include="Automation\Class\AutomationStageAdsoprtion.cpp">
+      <Filter>Source Files\Automation\Class</Filter>
+    </ClCompile>
+    <ClCompile Include="Automation\Class\AutomationStageDesorption.cpp">
+      <Filter>Source Files\Automation\Class</Filter>
+    </ClCompile>
+    <ClCompile Include="Automation\Class\AutomationStageEquilibration.cpp">
+      <Filter>Source Files\Automation\Class</Filter>
+    </ClCompile>
+    <ClCompile Include="Automation\Class\AutomationStageInitialChecks.cpp">
+      <Filter>Source Files\Automation\Class</Filter>
+    </ClCompile>
+    <ClCompile Include="Automation\Class\AutomationStageVacuum.cpp">
+      <Filter>Source Files\Automation\Class</Filter>
+    </ClCompile>
+    <ClCompile Include="Automation\Class\AutomationTimeKeeping.cpp">
+      <Filter>Source Files\Automation\Class</Filter>
+    </ClCompile>
+    <ClCompile Include="Automation\Class\AutomationVacuum.cpp">
+      <Filter>Source Files\Automation\Class</Filter>
+    </ClCompile>
+    <ClCompile Include="Automation\Class\AutomationValves.cpp">
+      <Filter>Source Files\Automation\Class</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Kalel Shared\Netcode\base64.cpp">
+      <Filter>Source Files\Common\Netcode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Kalel Shared\Netcode\Client.cpp">
+      <Filter>Source Files\Common\Netcode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Kalel Shared\Netcode\Server.cpp">
+      <Filter>Source Files\Common\Netcode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Kalel Shared\Netcode\Socket.cpp">
+      <Filter>Source Files\Common\Netcode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Kalel Shared\Netcode\stdHelpers.cpp">
+      <Filter>Source Files\Common\Netcode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Kalel Shared\Netcode\URLHelper.cpp">
+      <Filter>Source Files\Common\Netcode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Kalel Shared\Com Classes\ExperimentData.cpp">
+      <Filter>Source Files\Common\Com Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Kalel Shared\Com Classes\ExperimentSettings.cpp">
+      <Filter>Source Files\Common\Com Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="Automation\Utils\Chrono.cpp">
+      <Filter>Source Files\Automation\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Automation\Utils\InfoEtape.cpp">
+      <Filter>Source Files\Automation\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Kalel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Kalel Shared\Com Classes\MachineSettings.cpp">
+      <Filter>Source Files\Common\Com Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Kalel Shared\Com Classes\ManualActionParam.cpp">
+      <Filter>Source Files\Common\Com Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Kalel Shared\Com Classes\ExperimentHelperClasses.cpp">
+      <Filter>Source Files\Common\Com Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Kalel Shared\Com Classes\CommonFunctions.cpp">
+      <Filter>Source Files\Common\Com Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="MessageHandler.cpp">
+      <Filter>Source Files\Automation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Kalel Shared\unicodeConv.cpp">
+      <Filter>Source Files\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Kalel Shared\Netcode\http_helpers.cpp">
+      <Filter>Source Files\Common\Netcode</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Kalel Server.htm" />
+    <None Include="res\KalelServer.rc2">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Kalel Server.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\Kalel Server.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="Backend\USB\NIDAQmx.lib">
+      <Filter>Header Files\Backend\USB</Filter>
+    </Library>
+    <Library Include="Backend\USB\NIDAQmx_x64.lib">
+      <Filter>Header Files\Backend\USB</Filter>
+    </Library>
+  </ItemGroup>
+</Project>

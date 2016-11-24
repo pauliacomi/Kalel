@@ -8,144 +8,211 @@
 #include "KalelDoc.h"
 #include "KalelView.h"
 
-#include "ThreadManager.h"
+#include "DialogTypeExperiment.h"		// The dialog asking the user for the experiment type
+#include "ExperimentPropertySheet.h"	// The dialog asking the user to input the experiment parameters
 
-#include "Dialogue_TypeExperience.h"		// The dialog asking the user for the experiment type
+#include "TabDoses.h"					// For manipulating the settings object
+#include "TabDesorption.h"				// For manipulating the settings object
+
 
 
 // When clicking on the Launch button
 void CKalelView::OnBnClickedLancer()
 {
-	// Create the experiment type window
-	CDialogue_TypeExperience dialogExperimentType;
-	if (dialogExperimentType.DoModal() == IDOK)
+	if (pApp->serverConnected)
 	{
-		// Save user choice
-		experimentSettings->experimentType = dialogExperimentType.TypeExperience;
-		
-		// Instantiate the correct type of dialog
-		switch (experimentSettings->experimentType)
+		// Create the experiment type window
+		DialogTypeExperiment dialogExperimentType;
+		dialogExperimentType.PassSettings(*machineSettings.get());
+
+		if (dialogExperimentType.DoModal() == IDOK)
 		{
-		case EXPERIMENT_TYPE_MANUAL:
-			dialogExperimentProperties->SetProprietiesManual();
-			break;
-		case EXPERIMENT_TYPE_AUTO:
-			dialogExperimentProperties->SetProprietiesAuto();
-			break;
-		default:
-			ASSERT(0);  // Should never be reached
+			// Save user choice
+			experimentSettings->experimentType = dialogExperimentType.TypeExperience;
+
+			// Create dialog
+			ExperimentPropertySheet dialogExperimentProperties(_T(""), machineSettings.get());
+			dialogExperimentProperties.Initiate(*experimentSettings);
+
+			if (dialogExperimentProperties.DoModal() == IDOK)
+			{
+				// the start button is blocked
+				GetDlgItem(IDC_LANCER)->EnableWindow(FALSE);
+				// the stop button is activated
+				GetDlgItem(IDC_ARRETER)->EnableWindow(TRUE);
+
+				// Block menu and set running flag
+				pApp->experimentRunning = true;
+				pApp->menuIsAvailable = false;
+				UpdateButtons();
+
+				// Get the data from the dialog
+				GetExperimentData(&dialogExperimentProperties, true);
+
+				// Raise the flag for data modified
+				commHandler.SetExperimentSettings(experimentSettings);
+			}
+			else
+			{
+				// Save the data from the dialog
+				GetExperimentData(&dialogExperimentProperties, true);
+
+				// Roll back by calling stop function
+				CancelBeforeStarting(NULL, NULL);
+			}
 		}
-
-		if (dialogExperimentProperties->DoModal() == IDOK)
-		{
-			// the start button is blocked
-			GetDlgItem(IDC_LANCER)->EnableWindow(FALSE);
-			// the stop button is activated
-			GetDlgItem(IDC_ARRETER)->EnableWindow(TRUE);
-
-			// Block menu and set running flag
-			pApp->experimentRunning = true;
-			pApp->menuIsAvailable = false;
-			UpdateButtons();
-			
-			// Reset the graph
-			GetDocument()->GraphInitialize(NULL, NULL);
-
-			// Get the data from the dialog
-			GetExperimentData(dialogExperimentProperties);
-
-			// Launch the threads
-			threadManager->StartThread();
-		}
-		else
-		{
-			// Roll back by calling stop function
-			Annuler(NULL,NULL);
-		}
+	}
+	else
+	{
+		AfxMessageBox(ERROR_CONNECTION_STATUS, MB_OK);
 	}
 }
 
 // When clicking on the Stop button
 void CKalelView::OnBnClickedArreter()
 {
-	threadManager->ResetThread();
+	if (pApp->serverConnected)
+	{
+		if (dataCollection.back()->experimentInProgress) {
+			int result = AfxMessageBox(PROMPT_CANCELEXP, MB_ICONQUESTION | MB_YESNO);
+			switch (result)
+			{
+			case IDYES:
+				commHandler.ResetClient();
+				break;
+
+			case IDNO:
+				break;
+
+			default:
+				ASSERT(0);
+				break;
+			}
+		}
+	}
+	else
+	{
+		AfxMessageBox(ERROR_CONNECTION_STATUS, MB_OK);
+	}
 }
 
 
 // Clicking the other buttons in the view
 void CKalelView::OnBnClickedButtonParametresExperience()
 {
-	if (pApp->experimentRunning) {
+	if (pApp->serverConnected)
+	{
+		if (pApp->experimentRunning) {
 
-		dialogExperimentProperties->SetProprietiesModif(experimentData.experimentStage);
+			// Create dialog
+			ExperimentPropertySheet dialogExperimentProperties(_T(""), machineSettings.get());
+			dialogExperimentProperties.Initiate(*experimentSettings);
 
-		if (dialogExperimentProperties->DoModal() == IDOK)
-		{
-			// Get the data from the dialog
-			GetExperimentData(dialogExperimentProperties);
+			int counter = 0;
+			if (dataCollection.back()->experimentStage == STAGE_ADSORPTION)
+			{
+				counter = dataCollection.back()->adsorptionCounter;
+			}
+			if (dataCollection.back()->experimentStage == STAGE_DESORPTION)
+			{
+				counter = dataCollection.back()->desorptionCounter;
+			}
+
+			dialogExperimentProperties.SetProprietiesModif(dataCollection.back()->experimentStage, counter);
+
+			if (dialogExperimentProperties.DoModal() == IDOK)
+			{
+				// Get the data from the dialog
+				GetExperimentData(&dialogExperimentProperties, false);
+			}
 		}
+	}
+	else
+	{
+		AfxMessageBox(ERROR_CONNECTION_STATUS, MB_OK);
+	}
+}
+
+void CKalelView::OnBnClickedPause()
+{
+	if (pApp->serverConnected)
+	{
+		commHandler.PauseClient();
+	}
+	else
+	{
+		AfxMessageBox(ERROR_CONNECTION_STATUS, MB_OK);
+	}
+}
+
+void CKalelView::OnBnClickedReprise()
+{
+	if (pApp->serverConnected)
+	{
+		commHandler.ResumeClient();
+	}
+	else
+	{
+		AfxMessageBox(ERROR_CONNECTION_STATUS, MB_OK);
+	}
+}
+
+void CKalelView::OnBnClickedProchaineCommande()
+{
+	if (pApp->serverConnected)
+	{
+		//ProchaineCommandeThreads();
+	}
+	else
+	{
+		AfxMessageBox(ERROR_CONNECTION_STATUS, MB_OK);
+	}
+}
+
+void CKalelView::OnBnClickedProchaineDose()
+{
+	if (pApp->serverConnected)
+	{
+		//ProchaineDoseThreads();
+	}
+	else
+	{
+		AfxMessageBox(ERROR_CONNECTION_STATUS, MB_OK);
+	}
+}
+
+void CKalelView::OnBnClickedProchaineEtape()
+{
+	if (pApp->serverConnected)
+	{
+		//ProchaineEtapeThreads();
+	}
+	else
+	{
+		AfxMessageBox(ERROR_CONNECTION_STATUS, MB_OK);
 	}
 }
 
 void CKalelView::OnBnClickedArretSousVide()
 {
-	//ArretSousVideThreads();
-}
-
-void CKalelView::OnBnClickedPause()
-{
-	threadManager->PauseThread();
-}
-
-void CKalelView::OnBnClickedProchaineCommande()
-{
-	//ProchaineCommandeThreads();
-}
-
-void CKalelView::OnBnClickedProchaineDose()
-{
-	//ProchaineDoseThreads();
-}
-
-void CKalelView::OnBnClickedProchaineEtape()
-{
-	//ProchaineEtapeThreads();
-}
-
-void CKalelView::OnBnClickedReprise()
-{
-	threadManager->StartThread();
-}
-
-
-// Copy all data from a property sheet dialog to the local object
-void CKalelView::GetExperimentData(ExperimentPropertySheet * pDialogExperimentProperties) {
-
-	// Use a critical section to avoid data races
-	EnterCriticalSection(&experimentSettings->criticalSection);
-
-	// Raise the flag for data modified
-	experimentSettings->dataModified = true;
-
-	// Copy data accross
-	experimentSettings->dataGeneral = pDialogExperimentProperties->m_general.allSettings;
-	if (experimentSettings->experimentType == EXPERIMENT_TYPE_AUTO)
-	{
-		experimentSettings->dataDivers = pDialogExperimentProperties->m_divers.allSettings;
-		for (size_t i = 0; i < pDialogExperimentProperties->adsorptionTabs.size(); i++)
+	/*if (experimentData->experimentInProgress) {
+		int result = AfxMessageBox(PROMPT_CANCELEXP, MB_ICONQUESTION | MB_YESNO);
+		switch (result)
 		{
-			experimentSettings->dataAdsorption.push_back(pDialogExperimentProperties->adsorptionTabs[i]->allSettings);
-		}
-		for (size_t i = 0; i < pDialogExperimentProperties->desorptionTabs.size(); i++)
-		{
-			experimentSettings->dataDesorption.push_back(pDialogExperimentProperties->desorptionTabs[i]->allSettings);
-		}
-	}
+		case IDYES:
+			threadManager->ResetThread();
+			break;
 
-	// Leave the critical section
-	LeaveCriticalSection(&experimentSettings->criticalSection);
+		case IDNO:
+			break;
 
+		default:
+			ASSERT(0);
+			break;
+		}
+	}*/
 }
+
 
 void CKalelView::UpdateButtons() {
 

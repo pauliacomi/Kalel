@@ -2,17 +2,17 @@
 //
 
 #include "stdafx.h"
-#include "Kalel.h"
 #include "TabGeneral.h"
 #include "afxdialogex.h"
 
-#include "DialogUser.h"						// User selection dialog
-#include "DialogGas.h"						// Gas selection dialog
+#include "DialogUser.h"													// User selection dialog
+#include "DialogGas.h"													// Gas selection dialog
 
-#include "XSBrowseFolder.h"					// Browse for folder custom class
-#include "Parametres.h"						// For reading the parameters file
-#include "ParserXML.h"						// XML builder
+#include "XSBrowseFolder.h"												// Browse for folder custom class
+#include "ParserXML.h"													// XML builder
 
+#include "../Kalel Shared/Com Classes/MachineSettings.h"				// Accessing the settings
+#include "../Kalel Shared/Resources/StringTable.h"						// Error message strings
 
 // TabGeneral dialog
 
@@ -20,8 +20,13 @@ IMPLEMENT_DYNAMIC(TabGeneral, CMFCPropertyPage)
 
 TabGeneral::TabGeneral()
 	: CMFCPropertyPage(TabGeneral::IDD)
+	, settings{ nullptr }
 {
-	Reinitialisation();
+}
+
+void TabGeneral::PassSettings(const MachineSettings * machineSettings)
+{
+	settings = machineSettings;
 }
 
 TabGeneral::~TabGeneral()
@@ -35,14 +40,14 @@ void TabGeneral::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_NOM_FICHIER, m_FileName);
 	DDX_Text(pDX, IDC_NOM_CHEMIN, m_Path);
 	DDX_Text(pDX, IDC_NOM_ECHANTILLON, m_SampleName);
-	DDX_Text(pDX, IDC_MASSE_ECHANTILLON, m_SampleMass);
+	DDX_Text(pDX, IDC_MASSE_ECHANTILLON,m_SampleMass);
+	DDX_Control(pDX, IDC_SPIN_MASSE_ECHANTILLON, m_SpinSampleMass);
 	DDX_Text(pDX, IDC_TEMPERATURE_EXPERIENCE, m_ExperimentTemperature);
+	DDX_Control(pDX, IDC_SPIN_TEMPERATURE_EXPERIENCE, m_SpinTemperatureExperiment);
 	DDX_Text(pDX, IDC_COMMENTAIRES, m_Comments);
 
-	DDX_Control(pDX, IDC_SPIN_MASSE_ECHANTILLON, m_SpinSampleMass);
 	DDX_Control(pDX, IDC_COMBO_GAZ, m_CBGas);
 	DDX_CBIndex(pDX, IDC_COMBO_GAZ, m_GasIndex);
-	DDX_Control(pDX, IDC_SPIN_TEMPERATURE_EXPERIENCE, m_SpinTemperatureExperiment);
 	DDX_Control(pDX, IDC_COMMENTAIRES, m_EditComments);
 	DDX_Control(pDX, IDC_COMBO_EXPERIMENTATEUR, m_CBUser);
 	DDX_CBIndex(pDX, IDC_COMBO_EXPERIMENTATEUR, m_UserIndex);
@@ -51,40 +56,100 @@ void TabGeneral::DoDataExchange(CDataExchange* pDX)
 
 BOOL TabGeneral::OnInitDialog()
 {
-	CMFCPropertyPage::OnInitDialog();
-
-	// If there's no configuration, initialise the XML file
-	if (!ConfigsExists()){
+	// If there's no configuration, initialise the XML file storing the gasses
+	if (!ConfigsExists()) {
 		Initialisation_XML();
 	}
 
+	// Get settings from storage
+	m_Path = allSettings.chemin.c_str();
+	m_Comments = allSettings.commentaires.c_str();
+	experimentDate = allSettings.date_experience.c_str();
+	m_FileName = allSettings.fichier.c_str();
+	m_SampleMass = allSettings.masse_echantillon;
+	m_SampleName = allSettings.nom_echantillon.c_str();
+	m_ExperimentTemperature = allSettings.temperature_experience;
+	gasExp = allSettings.gaz;
+	userExp = allSettings.experimentateur;
+
+	StrCalo = settings->CaloEntete.c_str();
+	StrSurnom = userExp.surnom.c_str();
+	StrEchantillon = m_SampleName;
+	StrGaz = gasExp.symbole.c_str();
+
+	// Get array and find if there'a an already existing index
 	gasArray = GetGazs();
+	m_GasIndex = -1;
+	for (size_t i = 0; i < gasArray.size(); i++)
+	{
+		if (gasArray[i].nom == allSettings.gaz.nom)
+		{
+			m_GasIndex = i;
+			break;
+		}
+	}
+
+	// Get array and find if there'a an already existing index
 	userArray = GetExperimentateurs();
-	for (unsigned int i = 0; i<gasArray.size(); i++)
+	m_UserIndex = -1;
+	for (size_t i = 0;  i< userArray.size(); i++)
+	{
+		if (userArray[i].surnom == allSettings.experimentateur.surnom)
+		{
+			m_UserIndex = i;
+			break;
+		}
+	}
+
+	// Initialize dialog
+	CMFCPropertyPage::OnInitDialog();
+
+	// Populate list with values
+	for (size_t i = 0; i < gasArray.size(); i++)
 	{
 		CString symbol;
 		symbol.Format(_T("%s"), gasArray[i].symbole.c_str());
 		m_CBGas.InsertString(-1, symbol);
 	}
 
-	for (unsigned int i = 0; i<userArray.size(); i++)
+	for (size_t i = 0; i < userArray.size(); i++)
 	{
 		CString user;
 		user.Format(_T("%s"), userArray[i].surnom.c_str());
 		m_CBUser.InsertString(-1, user);
 	}
 
+	// Set indexes which was taken earlier
+	if (m_GasIndex != -1)
+	{
+		m_CBGas.SetTopIndex(m_GasIndex);
+		UpdateData(false);
+	}
+
+	if (m_UserIndex != -1)
+	{
+		m_CBUser.SetTopIndex(m_UserIndex);
+		UpdateData(false);
+	}
+
 	m_SpinSampleMass.SetRange(0, 1000000);
-	m_SpinSampleMass.SetPos(1);
 	m_SpinSampleMass.SetInc(-0.0001);
-	m_SpinSampleMass.SetFormat("%1.4f");
+	m_SpinSampleMass.SetFormat(_T("%1.4f"));
 	m_SpinSampleMass.UpdateBuddy();
 
 	m_SpinTemperatureExperiment.SetRange(0, 300);
-	m_SpinTemperatureExperiment.SetPos(30);
 	m_SpinTemperatureExperiment.SetInc(-1);
-	m_SpinTemperatureExperiment.SetFormat("%1.f");
+	m_SpinTemperatureExperiment.SetFormat(_T("%1.f"));
 	m_SpinTemperatureExperiment.UpdateBuddy();
+
+	ToggleGreyOut();
+
+	UpdateData(FALSE);
+
+	if (!PathIsDirectory(m_Path))
+	{
+		AfxMessageBox(ERROR_PATHUNDEF, MB_ICONERROR | MB_OK);
+	}
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 }
@@ -98,48 +163,20 @@ BOOL TabGeneral::OnCommand(WPARAM wParam, LPARAM lParam)
 
 BOOL TabGeneral::OnApply()
 {
-	WriteData();
-	return CMFCPropertyPage::OnApply();
+	if (!PathIsDirectory(m_Path))
+	{
+		AfxMessageBox(ERROR_PATHUNDEF, MB_ICONERROR | MB_OK);
+		return 0;
+	}
+	else
+	{
+		WriteData();
+		return CMFCPropertyPage::OnApply();
+	}
 }
 
 void TabGeneral::OnCancel()
 {
-	m_Path = _T(allSettings.chemin.c_str());
-	m_Comments = _T(allSettings.commentaires.c_str());
-	experimentDate = allSettings.date_experience.c_str();
-	userExp = allSettings.experimentateur;
-	m_FileName = _T(allSettings.fichier.c_str());
-	gasExp = allSettings.gaz;
-	m_SampleMass = allSettings.masse_echantillon;
-	m_SampleName = _T(allSettings.nom_echantillon.c_str());
-	m_ExperimentTemperature = allSettings.temperature_experience;
-
-	// remettre le bon index du gaz
-	m_GasIndex = -1;
-	for (unsigned int i = 0; i<gasArray.size(); i++)
-	{
-		if (gasArray[i].nom == allSettings.gaz.nom)
-		{
-			m_GasIndex = i;
-			break;
-		}
-	}
-
-	// remettre le bon index de l'expériementateur
-	m_UserIndex = -1;
-	for (unsigned int i = 0; i<userArray.size(); i++)
-	{
-		if (userArray[i].surnom == allSettings.experimentateur.surnom)
-		{
-			m_UserIndex = i;
-			break;
-		}
-	}
-
-	StrSurnom = _T(userExp.surnom.c_str());
-	StrEchantillon = m_SampleName;
-	StrGaz = _T(gasExp.symbole.c_str());
-
 	CMFCPropertyPage::OnCancel();
 }
 
@@ -148,11 +185,12 @@ void TabGeneral::OnOK()
 	if (!PathIsDirectory(m_Path))
 	{
 		AfxMessageBox(ERROR_PATHUNDEF, MB_ICONERROR | MB_OK);
-		return;
 	}
-	WriteData();
-
-	CMFCPropertyPage::OnOK();
+	else
+	{
+		WriteData();
+		CMFCPropertyPage::OnOK();
+	}
 }
 
 
@@ -181,39 +219,49 @@ void TabGeneral::UpdateDate(void)
 
 void TabGeneral::Reinitialisation(void)
 {
-	UpdateDate();
-	m_FileName.Format(TEXT_NEWFILETEXT, StrDate);
-	m_Path = _T(GetCheminFichierGeneral().c_str());
-	m_SampleName.Format(TEXT_SAMPLE);
+	// Get settings from storage
+	m_Path = allSettings.chemin.c_str();
+	m_Comments = allSettings.commentaires.c_str();
+	experimentDate = allSettings.date_experience.c_str();
+	m_FileName = allSettings.fichier.c_str();
+	m_SampleMass = allSettings.masse_echantillon;
+	m_SampleName = allSettings.nom_echantillon.c_str();
+	m_ExperimentTemperature = allSettings.temperature_experience;
 
-	m_SampleMass = 1.0f;
+	gasExp = allSettings.gaz;
+	// remettre le bon index du gaz
 	m_GasIndex = -1;
-	m_Comments = _T("");
+	for (unsigned int i = 0; i<gasArray.size(); i++)
+	{
+		if (gasArray[i].nom == allSettings.gaz.nom)
+		{
+			m_GasIndex = i;
+			break;
+		}
+	}
+
+	userExp = allSettings.experimentateur;
+	// remettre le bon index de l'expériementateur
 	m_UserIndex = -1;
-	m_ExperimentTemperature = 30;
+	for (unsigned int i = 0; i<userArray.size(); i++)
+	{
+		if (userArray[i].surnom == allSettings.experimentateur.surnom)
+		{
+			m_UserIndex = i;
+			break;
+		}
+	}
 
-	StrCalo = _T(GetEnteteCalo().c_str());
-	StrSurnom = _T("");
-	StrEchantillon = _T("");
-	StrGaz = _T("");
-
-	userExp.nom = "";
-	userExp.surnom = "";
-
-	gasExp.nom = "";
-	gasExp.symbole = "";
-	gasExp.masse_moleculaire = 0;
-	gasExp.pression_critique = 0;
-	gasExp.temperature_critique = 0;
-	gasExp.temperature_ebullition = 0;
-
-	/* Reinitialisation of the data with zero values */
-	WriteData();
+	StrCalo = settings->CaloEntete.c_str();
+	StrSurnom = userExp.surnom.c_str();
+	StrEchantillon = m_SampleName;
+	StrGaz = gasExp.symbole.c_str();
 }
 
 void TabGeneral::WriteData()
 {
-	SetCheminFichierGeneral(m_Path.GetBuffer());
+	MachineSettings newSettings;
+	newSettings.CheminFichierGeneral = m_Path.GetString();
 
 	allSettings.chemin = m_Path.GetBuffer();
 	allSettings.commentaires = m_Comments.GetBuffer();
@@ -225,6 +273,40 @@ void TabGeneral::WriteData()
 	allSettings.nom_echantillon = m_SampleName.GetBuffer();
 	allSettings.temperature_experience = m_ExperimentTemperature;
 }
+
+
+void TabGeneral::GreyOut(BOOL active)
+{
+	GetDlgItem(IDC_COMBO_GAZ)->EnableWindow(active);
+	GetDlgItem(IDC_COMBO_EXPERIMENTATEUR)->EnableWindow(active);
+
+	GetDlgItem(IDC_BUTTON_EXPERIMENTATEUR)->EnableWindow(active);
+	GetDlgItem(IDC_BUTTON_GAZ)->EnableWindow(active);
+	GetDlgItem(IDC_PARCOURIR_DOSSIER)->EnableWindow(active);
+
+	GetDlgItem(IDC_NOM_FICHIER)->EnableWindow(active);
+	GetDlgItem(IDC_NOM_CHEMIN)->EnableWindow(active);
+	GetDlgItem(IDC_NOM_ECHANTILLON)->EnableWindow(active);
+	GetDlgItem(IDC_MASSE_ECHANTILLON)->EnableWindow(active);
+	GetDlgItem(IDC_TEMPERATURE_EXPERIENCE)->EnableWindow(active);
+	GetDlgItem(IDC_COMMENTAIRES)->EnableWindow(active);
+
+	GetDlgItem(IDC_SPIN_MASSE_ECHANTILLON)->EnableWindow(active);
+	GetDlgItem(IDC_SPIN_TEMPERATURE_EXPERIENCE)->EnableWindow(active);
+}
+
+
+void TabGeneral::ToggleGreyOut()
+{
+	if (checkGeneral == true)
+		GreyOut(FALSE); 
+	else
+		GreyOut(TRUE);
+}
+
+
+
+// Message map
 
 
 BEGIN_MESSAGE_MAP(TabGeneral, CMFCPropertyPage)
@@ -284,7 +366,7 @@ void TabGeneral::OnEnChangeNomEchantillon()
 
 void TabGeneral::OnBnClickedUserMenu()
 {
-	CDialogueExperimentateur m_DialogueExperimentateur("");
+	CDialogueExperimentateur m_DialogueExperimentateur(_T(""));
 	m_DialogueExperimentateur.DoModal();
 
 	// Reset the array
@@ -303,7 +385,7 @@ void TabGeneral::OnBnClickedUserMenu()
 
 void TabGeneral::OnBnClickedGasMenu()
 {
-	CDialogueGaz m_DialogGas("");
+	CDialogueGaz m_DialogGas(_T(""));
 	m_DialogGas.DoModal();
 
 	// Reset the array
@@ -334,7 +416,7 @@ void TabGeneral::OnBnClickedChangeFolder()
 	DialogBoxBrowse.SetTitle(title.GetBuffer(title.GetLength()));
 
 	// Buffer for the returned path
-	char path[MAX_PATH];
+	wchar_t path[MAX_PATH];
 
 	// Display the dalog and check the return code
 	CString message;
@@ -342,7 +424,7 @@ void TabGeneral::OnBnClickedChangeFolder()
 
 		// Success
 	case CXSBrowseFolder::RET_OK:
-		m_Path = _T(path);
+		m_Path = path;
 		UpdateData(FALSE);
 		break;
 

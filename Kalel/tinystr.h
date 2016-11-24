@@ -38,6 +38,7 @@ distribution.
 
 #ifndef TIXML_STRING_INCLUDED
 #define TIXML_STRING_INCLUDED
+#pragma once
 
 #include <assert.h>
 #include <string.h>

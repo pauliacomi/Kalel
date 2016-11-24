@@ -1,11 +1,13 @@
-#pragma once
 #ifndef DIALOGUE_EXPERIMENTATEUR_H
 #define DIALOGUE_EXPERIMENTATEUR_H
+#pragma once
 
 #include "afxwin.h"
-#include "ParserXML.h"
 #include "ResourceDialogUser.h"
 
+#include "../Kalel Shared/Com Classes/ExperimentHelperClasses.h"
+
+#include <vector>
 
 
 
@@ -82,7 +84,7 @@ public:
 	CEdit m_EditModifExperimentateur;
 	CString m_strModifExperimentateur;
 
-	vector<experimentateur> list_modif_experimentateur;
+	std::vector<experimentateur> list_modif_experimentateur;
 
 	afx_msg void OnBnClickedModifier();
 	afx_msg void OnCbnSelchangeComboModifExperimentateur();
@@ -130,7 +132,7 @@ public:
 	CEdit m_EditSurnomSupprExperimentateur;
 	CString m_strSurnomSupprExperimentateur;
 
-	vector<experimentateur> list_suppr_experimentateur;
+	std::vector<experimentateur> list_suppr_experimentateur;
 
 	afx_msg void OnCbnSelchangeComboSupprExperimentateur();
 	afx_msg void OnBnClickedSupprimer();

@@ -1,12 +1,14 @@
-#pragma once
 #ifndef DIALOGUE_GAZ_H
 #define DIALOGUE_GAZ_H
+#pragma once
 
 #include "afxwin.h"
-#include "ParserXML.h"
-#include "SpinBtnCtrl.h"
 #include "ResourceDialogGas.h"
 
+#include "../Kalel Shared/Com Classes/ExperimentHelperClasses.h"
+#include "SpinBtnCtrl.h"
+
+#include <vector>
 
 
 //////////////////////////////////////////////////////////////////////////////////////
@@ -116,7 +118,7 @@ public:
 	CEdit m_EditMessageModifGaz;
 	CString m_strMessageModifGaz;
 
-	vector<gaz> list_modif_gaz;
+	std::vector<gaz> list_modif_gaz;
 
 	afx_msg void OnCbnSelchangeComboModifGaz();
 	virtual BOOL OnInitDialog();
@@ -160,11 +162,11 @@ public:
 
 	CString m_strNomSuppGaz;
 	CString m_strSymboleSuppGaz;
-	float m_fMasseMoleculaireSuppGaz;
-	float m_fTemperatureCritiqueSuppGaz;
-	float m_fPressionCritiqueSuppGaz;
-	float m_fTemperatureEbullitionSuppGaz;
-	float m_fOmegaSuppGaz;
+	double m_fMasseMoleculaireSuppGaz;
+	double m_fTemperatureCritiqueSuppGaz;
+	double m_fPressionCritiqueSuppGaz;
+	double m_fTemperatureEbullitionSuppGaz;
+	double m_fOmegaSuppGaz;
 
 
 	CEdit m_EditNomSuppGaz;
@@ -175,7 +177,7 @@ public:
 	CEdit m_EditTemperatureEbullitionSuppGaz;
 	CEdit m_EditOmegaSuppGaz;
 
-	vector<gaz> list_suppr_gaz;
+	std::vector<gaz> list_suppr_gaz;
 
 	virtual BOOL OnSetActive();
 	afx_msg void OnCbnSelchangeComboSupprGaz();

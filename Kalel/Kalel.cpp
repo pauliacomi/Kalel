@@ -5,19 +5,15 @@
 #include "stdafx.h"
 #include "afxwinappex.h"
 #include "afxdialogex.h"
+
 #include "MainFrm.h"
 #include "Kalel.h"
 
 #include "KalelDoc.h"
 #include "KalelView.h"
 
-#include "ThreadManager.h"
-
-// Dialog Box includes
-#include "Parametres_appareil.h"
-#include "Connection_port.h"
-#include "Donnees_Experience.h"
-
+#include "DefineMenuMessages.h"
+#include "DefinePostMessages.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -26,25 +22,35 @@
 
 // CKalelApp
 
-BEGIN_MESSAGE_MAP(CKalelApp, CWinApp)
+BEGIN_MESSAGE_MAP(CKalelApp, CWinAppEx)
+
+	// Standard document commands
 	ON_COMMAND(ID_APP_ABOUT, &CKalelApp::OnAppAbout)
-	// Standard file based document commands
-	ON_COMMAND(ID_FILE_NEW, &CWinApp::OnFileNew)
-	ON_COMMAND(ID_FILE_OPEN, &CWinApp::OnFileOpen)
-	// New menu based commands
-	ON_COMMAND(ID_PARAMATRES_APPAREIL, &CKalelApp::OnParamatresAppareil)
-	ON_COMMAND(ID_CONNECTION_PORTS, &CKalelApp::OnConnectionPorts)
-	ON_COMMAND(ID_DONNEES_EXPERIENCE, &CKalelApp::OnDonneesExperience)
-	ON_COMMAND(ID_MSV_AMPOULE, &CKalelView::OnMsvAmpoule)
-	ON_COMMAND(ID_MSV_BOUTEILLE, &CKalelView::OnMsvBouteille)
-	ON_COMMAND(ID_CHANGEMENT_BOUTEILLE, &CKalelView::OnChangementBouteille)
+	ON_COMMAND(ID_FILE_NEW, &CWinAppEx::OnFileNew)
+	ON_COMMAND(ID_FILE_OPEN, &CWinAppEx::OnFileOpen)
+
+	// New menu based commands to main view
+	ON_COMMAND(ID_PARAMATRES_SERVERCONNECT, &CKalelApp::DisplayServerConnect)
+	ON_COMMAND(ID_PARAMATRES_APPAREIL, &CKalelApp::DisplayPortDialog)
+	ON_COMMAND(ID_CONNECTION_PORTS, &CKalelApp::DisplayApparatusSettingsDialog)
+	ON_COMMAND(ID_MSV_AMPOULE, &CKalelApp::OnMsvAmpoule)
+	ON_COMMAND(ID_MSV_BOUTEILLE, &CKalelApp::OnMsvBouteille)
+	ON_COMMAND(ID_CHANGEMENT_BOUTEILLE, &CKalelApp::OnChangementBouteille)
+	ON_COMMAND(ID_BACKGROUNDTHREAD_START, &CKalelApp::OnBackgroundthreadStart)
+	ON_COMMAND(ID_BACKGROUNDTHREAD_STOP, &CKalelApp::OnBackgroundthreadStop)
+	ON_COMMAND(ID_BACKGROUNDTHREAD_RESTART, &CKalelApp::OnBackgroundthreadRestart)
+
 	// New update based commands
+	ON_UPDATE_COMMAND_UI(ID_PARAMATRES_SERVERCONNECT, &CKalelApp::OnUpdateServerConnect)
 	ON_UPDATE_COMMAND_UI(ID_PARAMATRES_APPAREIL, &CKalelApp::OnUpdateParamatresAppareil)
 	ON_UPDATE_COMMAND_UI(ID_CONNECTION_PORTS, &CKalelApp::OnUpdateConnectionPorts)
 	ON_UPDATE_COMMAND_UI(ID_MSV_AMPOULE, &CKalelApp::OnUpdateMsvAmpoule)
 	ON_UPDATE_COMMAND_UI(ID_MSV_BOUTEILLE, &CKalelApp::OnUpdateMsvBouteille)
 	ON_UPDATE_COMMAND_UI(ID_CHANGEMENT_BOUTEILLE, &CKalelApp::OnUpdateChangementBouteille)
 	ON_UPDATE_COMMAND_UI(ID_DONNEES_EXPERIENCE, &CKalelApp::OnUpdateDonneesExperience)
+	ON_UPDATE_COMMAND_UI(ID_BACKGROUNDTHREAD_START, &CKalelApp::OnUpdateBackgroundthreadStart)
+	ON_UPDATE_COMMAND_UI(ID_BACKGROUNDTHREAD_STOP, &CKalelApp::OnUpdateBackgroundthreadStop)
+	ON_UPDATE_COMMAND_UI(ID_BACKGROUNDTHREAD_RESTART, &CKalelApp::OnUpdateBackgroundthreadRestart)
 END_MESSAGE_MAP()
 
 
@@ -66,8 +72,7 @@ CKalelApp::CKalelApp()
 	SetAppID(_T("MADIREL.Kalel.1"));
 
 	// TODO: add construction code here,
-	menuIsAvailable = true;
-	experimentRunning = false;
+
 	// Place all significant initialization in InitInstance
 }
 
@@ -91,7 +96,7 @@ BOOL CKalelApp::InitInstance()
 	InitCtrls.dwICC = ICC_WIN95_CLASSES;
 	InitCommonControlsEx(&InitCtrls);
 
-	CWinApp::InitInstance();
+	CWinAppEx::InitInstance();
 
 
 	// Initialize OLE libraries
@@ -143,7 +148,7 @@ BOOL CKalelApp::InitInstance()
 		return FALSE;
 
 	// The one and only window has been initialized, so show and update it
-	m_pMainWnd->ShowWindow(SW_SHOW);
+	m_pMainWnd->ShowWindow(SW_SHOWMAXIMIZED);
 	m_pMainWnd->UpdateWindow();
 	
 	return TRUE;
@@ -154,7 +159,7 @@ int CKalelApp::ExitInstance()
 	//TODO: handle additional resources you may have added
 	AfxOleTerm(FALSE);
 
-	return CWinApp::ExitInstance();
+	return CWinAppEx::ExitInstance();
 }
 
 
@@ -201,34 +206,53 @@ void CKalelApp::OnAppAbout()
 	aboutDlg.DoModal();
 }
 
-
-///////////////////////////////
-// Custom functions to process when menu buttons are pressed
-
-void CKalelApp::OnParamatresAppareil()
-{
-	CParametres_appareil m_parametres_appareil;
-	m_parametres_appareil.DoModal();
+void CKalelApp::DisplayServerConnect() {
+	PostMessage(CKalelView::GetView()->GetSafeHwnd(), UWM_DISP_CONNECTS_DIALOG, 0, 0);
 }
 
-void CKalelApp::OnConnectionPorts()
-{
-	CConnection_port m_connection_ports;
-	m_connection_ports.DoModal();
-	ASSERT(0);
-	//ChangementDev(GetPortVannes(), GetPortTemperatures());
+void CKalelApp::DisplayPortDialog(){
+	PostMessage(CKalelView::GetView()->GetSafeHwnd(), UWM_DISP_PORT_DIALOG, 0, 0);
 }
 
-void CKalelApp::OnDonneesExperience()
-{
-	CDonnees_Experience m_donnees_experience;
-	ASSERT(0);
-	//m_donnees_experience.SetStrDonneesExperience(GetDonneesExperience());
-	m_donnees_experience.DoModal();
+void CKalelApp::DisplayApparatusSettingsDialog(){
+	PostMessage(CKalelView::GetView()->GetSafeHwnd(), UWM_DISP_DEVSETTINGS_DIALOG, 0, 0);
+}
+
+
+void CKalelApp::OnMsvAmpoule(){
+	PostMessage(CKalelView::GetView()->GetSafeHwnd(), UWM_FUNC_VACUUM_SAMPLE, 0, 0);
+}
+
+void CKalelApp::OnMsvBouteille(){
+	PostMessage(CKalelView::GetView()->GetSafeHwnd(), UWM_FUNC_VACUUM_BOTTLE, 0, 0);
+}
+
+
+void CKalelApp::OnChangementBouteille(){
+	PostMessage(CKalelView::GetView()->GetSafeHwnd(), UWM_FUNC_CHANGE_BOTTLE, 0, 0);
+}
+
+void CKalelApp::OnBackgroundthreadStart(){
+	PostMessage(CKalelView::GetView()->GetSafeHwnd(), UWM_THREAD_START, 0, 0);
+}
+
+
+void CKalelApp::OnBackgroundthreadStop(){
+	PostMessage(CKalelView::GetView()->GetSafeHwnd(), UWM_THREAD_STOP, 0, 0);
+}
+
+
+void CKalelApp::OnBackgroundthreadRestart(){
+	PostMessage(CKalelView::GetView()->GetSafeHwnd(), UWM_THREAD_RESTART, 0, 0);
 }
 
 
 // Make sure that the functionalities are only available when the experiment is not running
+
+void CKalelApp::OnUpdateServerConnect(CCmdUI *pCmdUI)
+{
+	pCmdUI->Enable(menuIsAvailable);
+}
 
 void CKalelApp::OnUpdateParamatresAppareil(CCmdUI *pCmdUI)
 {
@@ -260,3 +284,17 @@ void CKalelApp::OnUpdateChangementBouteille(CCmdUI *pCmdUI)
 	pCmdUI->Enable(menuIsAvailable);
 }
 
+void CKalelApp::OnUpdateBackgroundthreadStart(CCmdUI *pCmdUI)
+{
+	pCmdUI->Enable(!menuIsAvailable);
+}
+
+void CKalelApp::OnUpdateBackgroundthreadStop(CCmdUI *pCmdUI)
+{
+	pCmdUI->Enable(menuIsAvailable);
+}
+
+void CKalelApp::OnUpdateBackgroundthreadRestart(CCmdUI *pCmdUI)
+{
+	pCmdUI->Enable(menuIsAvailable);
+}

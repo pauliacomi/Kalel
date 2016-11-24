@@ -7,21 +7,26 @@
 	#error "include 'stdafx.h' before including this file for PCH"
 #endif
 
-#include "resource.h"				// main symbols
-#include "StringTable.h"			// For all the strings in the program
+#include "resource.h"													// main symbols
+#include "../Kalel Shared/Resources/StringTable.h"						// Error message strings
 
 // CKalelApp:
 // See Kalel.cpp for the implementation of this class
 //
 
-class CKalelApp : public CWinApp
+class CKalelApp : public CWinAppEx
 {
 public:
 	CKalelApp();
 
+
+
 	// Global flags
-	bool menuIsAvailable;
-	bool experimentRunning;
+	bool menuIsAvailable = true;
+	bool experimentRunning = false;
+	bool serverConnected = false;
+
+
 
 // Overrides
 public:
@@ -29,21 +34,31 @@ public:
 	virtual int ExitInstance();
 
 // Implementation
-	afx_msg void OnAppAbout();
+	void OnAppAbout();
+	void DisplayServerConnect();
+	void DisplayPortDialog();
+	void DisplayApparatusSettingsDialog();
+	void OnMsvAmpoule();
+	void OnMsvBouteille();
 	DECLARE_MESSAGE_MAP()
 
-	// menu commands
-	void OnParamatresAppareil();
-	void OnConnectionPorts();
-	void OnDonneesExperience();
+	void OnChangementBouteille();
+
+	void OnBackgroundthreadStart();
+	void OnBackgroundthreadStop();
+	void OnBackgroundthreadRestart();
 
 	// update commands
-	afx_msg void OnUpdateDonneesExperience(CCmdUI *pCmdUI);
-	afx_msg void OnUpdateMsvAmpoule(CCmdUI *pCmdUI);
-	afx_msg void OnUpdateMsvBouteille(CCmdUI *pCmdUI);
-	afx_msg void OnUpdateParamatresAppareil(CCmdUI *pCmdUI);
-	afx_msg void OnUpdateConnectionPorts(CCmdUI *pCmdUI);
-	afx_msg void OnUpdateChangementBouteille(CCmdUI *pCmdUI);
+	void OnUpdateServerConnect(CCmdUI * pCmdUI);
+	void OnUpdateDonneesExperience(CCmdUI *pCmdUI);
+	void OnUpdateMsvAmpoule(CCmdUI *pCmdUI);
+	void OnUpdateMsvBouteille(CCmdUI *pCmdUI);
+	void OnUpdateParamatresAppareil(CCmdUI *pCmdUI);
+	void OnUpdateConnectionPorts(CCmdUI *pCmdUI);
+	void OnUpdateChangementBouteille(CCmdUI *pCmdUI);
+	void OnUpdateBackgroundthreadStart(CCmdUI * pCmdUI);
+	void OnUpdateBackgroundthreadStop(CCmdUI * pCmdUI);
+	void OnUpdateBackgroundthreadRestart(CCmdUI * pCmdUI);
 };
 
 extern CKalelApp theApp;

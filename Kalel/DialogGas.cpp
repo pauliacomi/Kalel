@@ -2,10 +2,10 @@
 //
 
 #include "stdafx.h"
-#include "Kalel.h"
 #include "DialogGas.h"
 
-
+#include "ParserXML.h"
+#include "../Kalel Shared/Resources/StringTable.h"						// Error message strings
 
 //////////////////////////////////////////////////////////////////////////////////////
 			//------------------------------------------------------
@@ -152,31 +152,31 @@ BOOL CAjoutGaz::OnInitDialog()
 	//pSpinMasseMoleculaireAjoutGaz.SetRange(0,5);
 	pSpinMasseMoleculaireAjoutGaz.SetPos(1);
 	pSpinMasseMoleculaireAjoutGaz.SetInc(-0.0001);
-	pSpinMasseMoleculaireAjoutGaz.SetFormat("%1.4f");
+	pSpinMasseMoleculaireAjoutGaz.SetFormat(_T("%1.4f"));
 	pSpinMasseMoleculaireAjoutGaz.UpdateBuddy();
 
 	//pSpinTemperatureCritiqueAjoutGaz.SetRange(0,5);
 	pSpinTemperatureCritiqueAjoutGaz.SetPos(30);
 	pSpinTemperatureCritiqueAjoutGaz.SetInc(-1);
-	pSpinTemperatureCritiqueAjoutGaz.SetFormat("%1.f");
+	pSpinTemperatureCritiqueAjoutGaz.SetFormat(_T("%1.f"));
 	pSpinTemperatureCritiqueAjoutGaz.UpdateBuddy();
 
 	//pSpinPressionCritiqueAjoutGaz.SetRange(0,5);
 	pSpinPressionCritiqueAjoutGaz.SetPos(1);
 	pSpinPressionCritiqueAjoutGaz.SetInc(-0.0001);
-	pSpinPressionCritiqueAjoutGaz.SetFormat("%1.4f");
+	pSpinPressionCritiqueAjoutGaz.SetFormat(_T("%1.4f"));
 	pSpinPressionCritiqueAjoutGaz.UpdateBuddy();
 
 	//pSpinTemperatureEbullitionAjoutGaz.SetRange(0,5);
 	pSpinTemperatureEbullitionAjoutGaz.SetPos(30);
 	pSpinTemperatureEbullitionAjoutGaz.SetInc(-1);
-	pSpinTemperatureEbullitionAjoutGaz.SetFormat("%1.f");
+	pSpinTemperatureEbullitionAjoutGaz.SetFormat(_T("%1.f"));
 	pSpinTemperatureEbullitionAjoutGaz.UpdateBuddy();
 
 	//pSpinOmegaAjoutGaz.SetRange(0,5);
 	pSpinOmegaAjoutGaz.SetPos(1);
 	pSpinOmegaAjoutGaz.SetInc(-0.0001);
-	pSpinOmegaAjoutGaz.SetFormat("%1.4f");
+	pSpinOmegaAjoutGaz.SetFormat(_T("%1.4f"));
 	pSpinOmegaAjoutGaz.UpdateBuddy();
 
 	return TRUE;  // return TRUE unless you set the focus to a control
@@ -202,7 +202,7 @@ void CAjoutGaz::OnBnClickedAjouter()
 	if(m_strNomAjoutGaz == "" || m_strSymboleAjoutGaz=="")
 	{
 		message.Format(ERROR_FIELDS_NOT_FILLED);
-		m_strMessageAjoutGaz = message + "\r\n";
+		m_strMessageAjoutGaz = message + _T("\r\n");
 	}
 
 	else
@@ -213,11 +213,11 @@ void CAjoutGaz::OnBnClickedAjouter()
 			m_strMessageAjoutGaz = "";
 			if (DoublonNomGaz(m_strNomAjoutGaz.GetBuffer())) {
 				message.Format(ERROR_NAME_USED);
-				m_strMessageAjoutGaz = message + "\r\n";
+				m_strMessageAjoutGaz = message + _T("\r\n");
 			}
 			if (DoublonSymboleGaz(m_strSymboleAjoutGaz.GetBuffer())) {
 				message.Format(ERROR_SYMBOL_USED);
-				m_strMessageAjoutGaz = message + "\r\n";
+				m_strMessageAjoutGaz = message + _T("\r\n");
 			}
 		}
 		// Si toutes les conditions sont bonnes, on peut rajouter le gaz dans un fichier XML
@@ -228,7 +228,7 @@ void CAjoutGaz::OnBnClickedAjouter()
 					   m_fPressionCritiqueAjoutGaz, m_fTemperatureEbullitionAjoutGaz);
 
 			message.Format(TEXT_GAS_ADDED, m_strNomAjoutGaz, m_strSymboleAjoutGaz);
-			m_strMessageAjoutGaz = message + "\r\n";
+			m_strMessageAjoutGaz = message + _T("\r\n");
 			m_strNomAjoutGaz = "";
 			m_strSymboleAjoutGaz = "";
 		}
@@ -316,31 +316,31 @@ BOOL CModifGaz::OnInitDialog()
 	//pSpinMasseMoleculaireModifGaz.SetRange(0,5);
 	pSpinMasseMoleculaireModifGaz.SetPos(1);
 	pSpinMasseMoleculaireModifGaz.SetInc(-0.0001);
-	pSpinMasseMoleculaireModifGaz.SetFormat("%1.4f");
+	pSpinMasseMoleculaireModifGaz.SetFormat(_T("%1.4f"));
 	pSpinMasseMoleculaireModifGaz.UpdateBuddy();
 
 	//pSpinTemperatureCritiqueModifGaz.SetRange(0,5);
 	pSpinTemperatureCritiqueModifGaz.SetPos(30);
 	pSpinTemperatureCritiqueModifGaz.SetInc(-1);
-	pSpinTemperatureCritiqueModifGaz.SetFormat("%1.f");
+	pSpinTemperatureCritiqueModifGaz.SetFormat(_T("%1.f"));
 	pSpinTemperatureCritiqueModifGaz.UpdateBuddy();
 
 	//pSpinPressionCritiqueModifGaz.SetRange(0,5);
 	pSpinPressionCritiqueModifGaz.SetPos(1);
 	pSpinPressionCritiqueModifGaz.SetInc(-0.0001);
-	pSpinPressionCritiqueModifGaz.SetFormat("%1.4f");
+	pSpinPressionCritiqueModifGaz.SetFormat(_T("%1.4f"));
 	pSpinPressionCritiqueModifGaz.UpdateBuddy();
 
 	//pSpinTemperatureEbullitionModifGaz.SetRange(0,5);
 	pSpinTemperatureEbullitionModifGaz.SetPos(30);
 	pSpinTemperatureEbullitionModifGaz.SetInc(-1);
-	pSpinTemperatureEbullitionModifGaz.SetFormat("%1.f");
+	pSpinTemperatureEbullitionModifGaz.SetFormat(_T("%1.f"));
 	pSpinTemperatureEbullitionModifGaz.UpdateBuddy();
 
 	//pSpinOmegaModifGaz.SetRange(0,5);
 	pSpinOmegaModifGaz.SetPos(1);
 	pSpinOmegaModifGaz.SetInc(-0.0001);
-	pSpinOmegaModifGaz.SetFormat("%1.4f");
+	pSpinOmegaModifGaz.SetFormat(_T("%1.4f"));
 	pSpinOmegaModifGaz.UpdateBuddy();
 
 
@@ -371,8 +371,8 @@ void CModifGaz::OnCbnSelchangeComboModifGaz()
 	// On récupère les données des contrôles pour mettre à jour les variables
 	UpdateData(TRUE);
 	int index = m_nIndexModifGaz;
-	string nom_modif = list_modif_gaz[index].nom;
-	string symbole_modif = list_modif_gaz[index].symbole;
+	std::wstring nom_modif = list_modif_gaz[index].nom;
+	std::wstring symbole_modif = list_modif_gaz[index].symbole;
 
 	// On affiche les données du gaz désigné
 	m_strNomModifGaz.Format(_T("%s"),nom_modif.c_str());
@@ -392,8 +392,8 @@ void CModifGaz::OnBnClickedModifier()
 {
 	// On met à jour les variables
 	UpdateData(TRUE);
-	string nom_modif((LPCTSTR)m_strNomModifGaz);
-	string symbole_modif ((LPCTSTR)m_strSymboleModifGaz);
+	std::wstring nom_modif(m_strNomModifGaz);
+	std::wstring symbole_modif (m_strSymboleModifGaz);
 	int index = m_nIndexModifGaz;
 
 	CString message;
@@ -413,11 +413,11 @@ void CModifGaz::OnBnClickedModifier()
 				m_strMessageModifGaz = "";
 				if (DoublonNomGaz(m_strNomModifGaz.GetBuffer())) {
 					message.Format(ERROR_NAME_USED);
-					m_strMessageModifGaz = message + "\r\n";
+					m_strMessageModifGaz = message + _T("\r\n");
 				}
 				if (DoublonSymboleGaz(m_strSymboleModifGaz.GetBuffer())) {
 					message.Format(ERROR_SYMBOL_USED);
-					m_strMessageModifGaz = message + "\r\n";
+					m_strMessageModifGaz = message + _T("\r\n");
 				}
 			}
 			else {
@@ -582,8 +582,8 @@ void CSupprGaz::OnBnClickedSupprimer()
 		if(Suppression_Gaz(m_nIndexSupprGaz))
 		{	// Si tout se passe bien, on le signale dans la boite de dialogue
 			// Et on réinitialise le ComboBox
-			string nom_suppr = list_suppr_gaz[index].nom;
-			string symbole_suppr = list_suppr_gaz[index].symbole;
+			std::wstring nom_suppr = list_suppr_gaz[index].nom;
+			std::wstring symbole_suppr = list_suppr_gaz[index].symbole;
 			m_strMessageSupprGaz.Format(TEXT_GAS_DELETED, nom_suppr.c_str(), symbole_suppr.c_str());
 
 			ReinitialisationComboBox();

@@ -1,11 +1,7 @@
-#pragma once
-
 #ifndef VERIFINSTRUMENT_H
 #define VERIFINSTRUMENT_H
+#pragma once
 
-
-#include "Keithley.h"
-#include "Mensor.h"
 
 class VerifInstrument
 {

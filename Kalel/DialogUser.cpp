@@ -2,10 +2,10 @@
 //
 
 #include "stdafx.h"
-#include "Kalel.h"
 #include "DialogUser.h"
 
-
+#include "ParserXML.h"
+#include "../Kalel Shared/Resources/StringTable.h"						// Error message strings
 
 
 //////////////////////////////////////////////////////////////////////////////////////
@@ -142,7 +142,7 @@ void CAjoutExperimentateur::OnBnClickedAjouter()
 	if (m_strNomAjoutExperimentateur == "" || m_strSurnomAjoutExperimentateur == "")
 	{
 		message.Format(ERROR_FIELDS_NOT_FILLED);
-		m_strAjoutExperimentateur = message + "\r\n";
+		m_strAjoutExperimentateur = message + _T("\r\n");
 	}
 
 	else
@@ -150,7 +150,7 @@ void CAjoutExperimentateur::OnBnClickedAjouter()
 		if( DoublonSurnomExperimentateur(m_strSurnomAjoutExperimentateur.GetBuffer()))
 		{
 			message.Format(ERROR_NAME_USED);
-			m_strAjoutExperimentateur = message + "\r\n";
+			m_strAjoutExperimentateur = message + _T("\r\n");
 		}
 		// Si toutes les conditions sont bonnes, on peut rajouter l'experimentateur dans un fichier XML
 		else
@@ -159,7 +159,7 @@ void CAjoutExperimentateur::OnBnClickedAjouter()
 								   m_strSurnomAjoutExperimentateur.GetBuffer());
 
 			message.Format(TEXT_USER_ADDED, m_strNomAjoutExperimentateur, m_strSurnomAjoutExperimentateur);
-			m_strAjoutExperimentateur = message + "\r\n";
+			m_strAjoutExperimentateur = message + _T("\r\n");
 
 			m_strNomAjoutExperimentateur = "";
 			m_strSurnomAjoutExperimentateur = "";
@@ -244,8 +244,8 @@ void CModifExperimentateur::OnCbnSelchangeComboModifExperimentateur()
 	UpdateData(TRUE);
 
 	int index = m_nIndexModifExperimentateur;
-	string nom_modif = list_modif_experimentateur[index].nom;
-	string surnom_modif = list_modif_experimentateur[index].surnom;
+	std::wstring nom_modif = list_modif_experimentateur[index].nom;
+	std::wstring surnom_modif = list_modif_experimentateur[index].surnom;
 	// On affiche les nom et prenom de l'expérimentateur désigné
 	m_strNomModifExperimentateur.Format(_T("%s"),nom_modif.c_str());
 	m_strSurnomModifExperimentateur.Format(_T("%s"),surnom_modif.c_str());
@@ -259,8 +259,8 @@ void CModifExperimentateur::OnBnClickedModifier()
 {
 	// On met à jour les variables
 	UpdateData(TRUE);
-	string nom_modif((LPCTSTR)m_strNomModifExperimentateur);
-	string surnom_modif ((LPCTSTR)m_strSurnomModifExperimentateur);
+	std::wstring nom_modif((LPCTSTR)m_strNomModifExperimentateur);
+	std::wstring surnom_modif ((LPCTSTR)m_strSurnomModifExperimentateur);
 
 	int index = m_nIndexModifExperimentateur;
 
@@ -414,8 +414,8 @@ void CSupprExperimentateur::OnBnClickedSupprimer()
 			// Si tout se passe bien, on le signale dans la boite de dialogue
 			// Et on réinitialise le ComboBox
 			int index = m_IndexSupprExperimentateur;
-			string nom_suppr = list_suppr_experimentateur[index].nom;
-			string surnom_suppr = list_suppr_experimentateur[index].surnom;
+			std::wstring nom_suppr = list_suppr_experimentateur[index].nom;
+			std::wstring surnom_suppr = list_suppr_experimentateur[index].surnom;
 			m_MessageSupprExperimentateur.Format(TEXT_USER_DELETED,	nom_suppr.c_str(),surnom_suppr.c_str());
 
 			ReinitialisationComboBox();

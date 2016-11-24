@@ -1,3 +1,7 @@
+
+// KalelView_Boutons.cpp : all the code for the valve buttons in the view
+//
+
 #include "stdafx.h"
 #include "Kalel.h"
 
@@ -5,61 +9,7 @@
 #include "KalelView.h"
 
 
-LRESULT CKalelView::ExchangeData(WPARAM, LPARAM incomingExperimentData)
-{
-	// Get the incoming pointer and cast it as a smart pointer
-	std::auto_ptr<ExperimentData> tempExpData(reinterpret_cast<ExperimentData*>(incomingExperimentData));
-
-	// Copy the data across
-	experimentData = *tempExpData;
-
-	return 0;
-}
-
 // --------------- Displays -----------------------------
-
-
-void CKalelView::OnTimer(UINT nIDEvent)
-{
-	// Convert to strings
-	m_StrCalo.Format(_T("%.2f"), experimentData.resultCalorimeter);
-	m_StrBassePression.Format(_T("%.2f"), experimentData.pressureLow);
-	m_StrHautePression.Format(_T("%.2f"), experimentData.pressureHigh);
-	m_StrTemperatureCalo.Format(_T("%.2f"), experimentData.temperatureCalo);
-	m_StrTemperatureCage.Format(_T("%.2f"), experimentData.temperatureCage);
-	m_StrTemperaturePiece.Format(_T("%.2f"), experimentData.temperatureRoom);
-	m_StrTemps.Format(_T("%.1f"), experimentData.experimentTime);
-	m_StrPressionInitiale.Format(_T("%.1f"), experimentData.pressureInitial);
-	m_StrPressionFinale.Format(_T("%.1f"), experimentData.pressureFinal);
-
-	// Refresh textboxes
-	SetDlgItemText(IDC_CALO, m_StrCalo);
-	SetDlgItemText(IDC_BASSE_PRESSION, m_StrBassePression);
-	SetDlgItemText(IDC_HAUTE_PRESSION, m_StrHautePression);
-	SetDlgItemText(IDC_TEMPERATURE_CALO, m_StrTemperatureCalo);
-	SetDlgItemText(IDC_TEMPERATURE_CAGE, m_StrTemperatureCage);
-	SetDlgItemText(IDC_TEMPERATURE_PIECE, m_StrTemperaturePiece);
-	SetDlgItemText(IDC_TEMPS, m_StrTemps);
-	SetDlgItemText(IDC_PRESSION_INITIALE, m_StrPressionInitiale);
-	SetDlgItemText(IDC_PRESSION_FINALE, m_StrPressionFinale);
-
-	// Write the current step
-	AffichageEtape(experimentData);
-
-	// Write graph
-	bool recorded = GetDocument()->GraphAddMeasurement(experimentData);
-
-	// Write in measurement box
-	if (recorded) {
-		AffichageMesures(experimentData);
-	}
-
-	// Update all views
-	GetDocument()->UpdateAllViews(this);
-
-	CFormView::OnTimer(nIDEvent);	// Call base class handler.
-}
-
 
 // Write on the dialog box reserved for new messages
 LRESULT CKalelView::AffichageMessages(WPARAM, LPARAM lParam)
@@ -84,12 +34,41 @@ LRESULT CKalelView::AffichageMessages(WPARAM, LPARAM lParam)
 }
 
 
+// Write the 
+LRESULT CKalelView::DisplayTextboxValues(ExperimentData * data)
+{
+
+	// Convert to strings
+	m_StrCalo.Format(_T("%.9e"), data->resultCalorimeter);
+	m_StrBassePression.Format(_T("%.6f"), data->pressureLow);
+	m_StrHautePression.Format(_T("%.6f"), data->pressureHigh);
+	m_StrTemperatureCalo.Format(_T("%.2f"), data->temperatureCalo);
+	m_StrTemperatureCage.Format(_T("%.2f"), data->temperatureCage);
+	m_StrTemperaturePiece.Format(_T("%.2f"), data->temperatureRoom);
+	m_StrTemps.Format(_T("%.1f"), data->timeElapsed);
+	m_StrPressionInitiale.Format(_T("%.6f"), data->pressureInitial);
+	m_StrPressionFinale.Format(_T("%.6f"), data->pressureFinal);
+
+	// Refresh textboxes
+	SetDlgItemText(IDC_CALO, m_StrCalo);
+	SetDlgItemText(IDC_BASSE_PRESSION, m_StrBassePression);
+	SetDlgItemText(IDC_HAUTE_PRESSION, m_StrHautePression);
+	SetDlgItemText(IDC_TEMPERATURE_CALO, m_StrTemperatureCalo);
+	SetDlgItemText(IDC_TEMPERATURE_CAGE, m_StrTemperatureCage);
+	SetDlgItemText(IDC_TEMPERATURE_PIECE, m_StrTemperaturePiece);
+	SetDlgItemText(IDC_TEMPS, m_StrTemps);
+	SetDlgItemText(IDC_PRESSION_INITIALE, m_StrPressionInitiale);
+	SetDlgItemText(IDC_PRESSION_FINALE, m_StrPressionFinale);
+
+	return 0;
+}
+
 // Write on the dialog box reserved for new measurements
-LRESULT CKalelView::AffichageMesures(ExperimentData expD)
+LRESULT CKalelView::DiplayMeasurements(ExperimentData * data)
 {
 	CString mesure;
 
-	mesure.Format(_T("Time=%.2f  Calo=%.2f  LP=%.2f  HP=%.2f"), experimentData.experimentTime, experimentData.resultCalorimeter, experimentData.pressureLow, experimentData.pressureHigh);
+	mesure.Format(_T("Time=%.2f  Calo=%.2f  LP=%.2f  HP=%.2f"), data->timeElapsed, data->resultCalorimeter, data->pressureLow, data->pressureHigh);
 
 	m_StrEditMesures += mesure;
 	m_StrEditMesures += "\r\n";
@@ -102,30 +81,30 @@ LRESULT CKalelView::AffichageMesures(ExperimentData expD)
 }
 
 // Display the step
-LRESULT CKalelView::AffichageEtape(ExperimentData expD)
+LRESULT CKalelView::DisplayStepProgress(ExperimentData * data)
 {
 
 	CString temp;
 	
-	temp.Format(expD.experimentStage);
+	temp.Format(data->experimentStage);
 
 	m_StrEtape = temp;
 
-	if (expD.verificationStep != STEP_VERIFICATIONS_UNDEF && expD.verificationStep != STEP_VERIFICATIONS_COMPLETE)
+	if (data->verificationStep != STEP_VERIFICATIONS_UNDEF && data->verificationStep != STEP_VERIFICATIONS_COMPLETE)
 	{
-		temp.Format(expD.verificationStep);
-		m_StrEtape += ",   Substage: " + temp;
+		temp.Format(data->verificationStep);
+		m_StrEtape += _T(",   Substage: ") + temp;
 	}
 
-	if (expD.experimentWaiting == true)
+	if (data->experimentWaiting == true)
 	{
-		if (expD.timeToEquilibrate / 60 > 1)
+		if (data->timeToEquilibrate / 60 > 1)
 		{
-			temp.Format(" *** Waiting: %.0f min %.0f s /  %.0f min %.0f s", floorf(expD.timeToEquilibrateCurrent / 60.0f), fmodf(expD.timeToEquilibrateCurrent, 60.0f), floorf(expD.timeToEquilibrate / 60.0f), fmodf(expD.timeToEquilibrate, 60.0f));
+			temp.Format(_T(" *** Waiting: %.0f min %.0f s /  %.0f min %.0f s"), floorf(data->timeToEquilibrateCurrent / 60.0f), fmodf(data->timeToEquilibrateCurrent, 60.0f), floorf(data->timeToEquilibrate / 60.0f), fmodf(data->timeToEquilibrate, 60.0f));
 		}
 		else
 		{
-			temp.Format(" *** Waiting: %.0f s /  %.0f s", expD.timeToEquilibrateCurrent, expD.timeToEquilibrate);
+			temp.Format(_T(" *** Waiting: %.0f s /  %.0f s"), data->timeToEquilibrateCurrent, data->timeToEquilibrate);
 		}
 		m_StrEtape += temp;
 	}
@@ -190,128 +169,4 @@ LRESULT CKalelView::AffichageEtape(ExperimentData expD)
 		}
 		return temps_attente;
 	}*/
-}
-
-
-LRESULT CKalelView::RajoutAffichageEtape(WPARAM, LPARAM)
-{
-	CString rajout;
-
-	CString m_StrRajout = m_StrEtape;
-	m_StrRajout += rajout;
-	SetDlgItemText(IDC_EDIT_ETAPE,m_StrRajout);
-
-	return 0;
-}
-
-
-
-
-// ------------ Dialog Boxes ----
-
-LRESULT CKalelView::MessageBoxAlert(WPARAM wParam, LPARAM lParam)
-{
-	// Get the incoming pointer and cast it as a smart pointer
-	std::auto_ptr<CString> message(reinterpret_cast<CString*>(lParam));
-	
-	int result;
-	bool continuer = true;
-	do{
-		result = AfxMessageBox(*message, wParam);
-		if(result==IDCANCEL || result == IDNO)
-		{
-			if(AfxMessageBox(PROMPT_RUNNINGEXP, MB_YESNO | MB_ICONWARNING,0)==IDYES)
-				continuer=false;
-		}
-		else
-			continuer=false;
-		
-	}while(continuer);
-	return result;
-}
-
-LRESULT CKalelView::MessageBoxConfirmation(WPARAM wParam, LPARAM lParam)
-{
-	// Get the incoming pointer and cast it as a smart pointer
-	std::auto_ptr<CString> message(reinterpret_cast<CString*>(lParam));
-
-	int result;
-	bool continuer = true;
-	do {
-		result = AfxMessageBox(*message, wParam);
-		if (result == IDCANCEL)
-		{
-			if (AfxMessageBox(PROMPT_RUNNINGEXP, MB_YESNO | MB_ICONWARNING, 0) == IDYES)
-				continuer = false;
-		}
-		else {
-			if (result == IDYES || result == IDOK) {
-				threadManager->StartThread();
-				continuer = false;
-			}
-			if (result == IDNO) {
-				EnterCriticalSection(&experimentSettings->criticalSection);
-				experimentSettings->continueAnyway = true;
-				experimentSettings->dataModified = true;
-				LeaveCriticalSection(&experimentSettings->criticalSection);
-				threadManager->StartThread();
-				continuer = false;
-			}
-		}
-	} while (continuer);
-	return result;
-}
-
-
-
-
-
-
-
-
-
-
-/// sort this out
-
-
-
-
-
-// Temporary overload
-LRESULT CKalelView::AffichageMessages(CString message)
-{
-	// On rajoute le nouveau message 
-	m_StrEditMessages += message;
-	m_StrEditMessages += "\r\n";
-	SetDlgItemText(IDC_EDIT_MESSAGES, m_StrEditMessages);
-
-	// pEditMessages : le CEdit lié à m_StrEditMessages
-	// On écrit dans l'Edit le contenu de m_StrEditMessages
-	pEditMessages.GetWindowText(m_StrEditMessages);
-
-	// On met le curseur dans pEditMessages à la fin du contenu de M_StrEditMessages
-	// Ce qui permet d'être toujours sur la dernière ligne et voir le dernier message
-	pEditMessages.SetSel(m_StrEditMessages.GetLength(), -1);
-
-	return 0;
-}
-
-LRESULT CKalelView::RajoutAffichageMessages(WPARAM, LPARAM)
-{
-	CString rajout;
-
-	// On rajoute le nouveau message 
-	CString StrtmpMessages;
-	StrtmpMessages += m_StrEditMessages;
-	StrtmpMessages += rajout;
-	SetDlgItemText(IDC_EDIT_MESSAGES, StrtmpMessages);
-	// pEditMessages : le CEdit lié à m_StrEditMessages
-	// On écrit dans l'Edit le contenu de m_StrEditMessages
-	pEditMessages.GetWindowText(StrtmpMessages);
-
-	// On met le curseur dans pEditMessages à la fin du contenu de M_StrEditMessages
-	// Ce qui permet d'être toujours sur la dernière ligne et voir le dernier message
-	pEditMessages.SetSel(StrtmpMessages.GetLength(), -1);
-
-	return 0;
 }

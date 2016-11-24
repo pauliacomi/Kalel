@@ -42,7 +42,7 @@ DWORD CXSBrowseFolder::GetStyle(void)
 }
 
 // Displays the dialog
-CXSBrowseFolder::retCode CXSBrowseFolder::Show(HWND parent, LPSTR pathBuffer)
+CXSBrowseFolder::retCode CXSBrowseFolder::Show(HWND parent, LPWSTR pathBuffer)
 {
 
 	// Passed in a NULL pointer (!)
@@ -107,11 +107,11 @@ return ret;
 }
 
 // Set the title of the dialog
-void CXSBrowseFolder::SetTitle(LPSTR title)
+void CXSBrowseFolder::SetTitle(LPWSTR title)
 {
 	// NULL pointer (!)
 	ASSERT(title);
 	
 	if (title)
-		strcpy_s(m_title, title);
+		wcscpy_s(m_title, title);
 }

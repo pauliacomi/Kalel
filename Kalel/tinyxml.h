@@ -22,9 +22,12 @@ must not be misrepresented as being the original software.
 distribution.
 */
 
-#pragma once
+// USE STANDARD LIBRARY
+#define TIXML_USE_STL
+
 #ifndef TINYXML_INCLUDED
 #define TINYXML_INCLUDED
+#pragma once
 
 #ifdef _MSC_VER
 #pragma warning( push )

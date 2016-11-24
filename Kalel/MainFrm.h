@@ -21,6 +21,7 @@ public:
 public:
 	virtual BOOL OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext);
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
+	virtual void OnUpdateFrameTitle(BOOL bAddToTitle);
 
 // Implementation
 public:
@@ -32,13 +33,14 @@ public:
 
 protected:  // control bar embedded members
 	CToolBar        m_wndToolBar;
-	CStatusBar      m_wndStatusBar;
+	CStatusBar		m_wndStatusBar;
 	CSplitterWnd	m_wndSplitter;
 
 // Generated message map functions
 protected:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
+	void OnUpdateStatusText(CCmdUI * pCmdUI);
 	DECLARE_MESSAGE_MAP()
 public:
 };

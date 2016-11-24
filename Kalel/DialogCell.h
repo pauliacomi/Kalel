@@ -1,12 +1,14 @@
-#pragma once
 #ifndef DIALOGUE_CELLULE_H
 #define DIALOGUE_CELLULE_H
+#pragma once
 
 #include "afxwin.h"
-#include "ParserXML.h"
-#include "SpinBtnCtrl.h"
 #include "ResourceDialogCell.h"
 
+#include "../Kalel Shared/Com Classes/ExperimentHelperClasses.h"
+#include "SpinBtnCtrl.h"
+
+#include <vector>
 
 
 
@@ -87,12 +89,12 @@ public:
 	//CSpinBtnCtrl m_SpinModifNumeroCellule;
 	double m_fModifVolumeCellule;
 	CSpinBtnCtrl m_SpinModifVolumeCellule;
-	float m_fModifVolumeCalo;
+	double m_fModifVolumeCalo;
 	CSpinBtnCtrl m_SpinModifVolumeCalo;
 	CEdit m_EditMessageModifCellule;
 	CString m_strMessageModifCellule;
 
-	vector<cellule> list_modif_cellule;
+	std::vector<cellule> list_modif_cellule;
 
 	virtual BOOL OnInitDialog();
 	virtual BOOL OnSetActive();
@@ -137,12 +139,12 @@ public:
 	int m_nIndexSupprNumeroCellule;
 	double m_fSupprVolumeCellule;
 	CEdit m_EditSupprVolumeCellule;
-	float m_fSupprVolumeCalo;
+	double m_fSupprVolumeCalo;
 	CEdit m_EditSupprVolumeCalo;
 	CEdit m_EditMessageSupprCellule;
 	CString m_strMessageSupprCellule;
 
-	vector<cellule> list_suppr_cellule;
+	std::vector<cellule> list_suppr_cellule;
 
 	virtual BOOL OnSetActive();
 	afx_msg void OnCbnSelchangeComboSupprNumeroCellule();

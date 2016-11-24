@@ -1,11 +1,10 @@
-#pragma once
 #ifndef TABCONTINUOUSADSORPTION_H
 #define TABCONTINUOUSADSORPTION_H
+#pragma once
 
-
-#include "ResourceOngletsEtapes.h"	// For resources
-#include "SpinBtnCtrl.h"			// For the Spin Button class
-#include "Classes_experiences.h"	// Definitions for all classes used in this file
+#include "ResourceDialogExperimentSettings.h"								// For resources
+#include "SpinBtnCtrl.h"													// For the Spin Button class
+#include "../Kalel Shared/Com Classes/ExperimentHelperClasses.h"			// Definitions for all classes used in this file
 
 
 class TabContinuousAdsorption : public CMFCPropertyPage

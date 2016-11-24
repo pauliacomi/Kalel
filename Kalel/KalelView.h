@@ -1,72 +1,26 @@
-
-// KalelView.h : interface of the CKalelView class
-//
-
 #pragma once
 
 #include "afxwin.h"
-#include <afxmt.h> // CEvent
 
-#include "StringTable.h"				// All strings in the program
+#include "../Kalel Shared/Resources/DefineStages.h"					// Stages/experiment type definitions
+#include "../Kalel Shared/Resources/StringTable.h"					// Error message strings
 
-#include "DefinePostMessages.h"			// Definition of messages received from the automation functionality
-#include "DefineStages.h"				// Stages/experiment type definitions
-
-#include "Parametres.h"					// Functions for reading the parameters file
-#include "ThreadManager.h"				// The threading functionality
-#include "ExperimentData.h"				// Where data about the experimental parameters, results and current status is stored
-#include "ExperimentSettings.h"			// Where returned data from results is stored
-#include "ExperimentPropertySheet.h"	// Dialog box for setting experimental properties
-
-#include "KalelDoc.h"
 #include "Kalel.h"
+#include "KalelDoc.h"
 
+#include "../Kalel Shared/Com Classes/ExperimentData.h"				// Where data about the experimental parameters, results and current status is stored
+#include "../Kalel Shared/Com Classes/ExperimentSettings.h"			// Where returned data from results is stored
+#include "../Kalel Shared/Com Classes/MachineSettings.h"			// Where the settings for the connected machine are stored
+
+#include "Parametres.h"												// Parameters file read/write
+#include "CommHandler.h"											// Responsible for all communication to/from client
+
+
+// Forward declarations
+class ExperimentPropertySheet;
 
 class CKalelView : public CFormView
 {
-
-public:
-	CKalelApp* pApp;				// pointer to the main app
-	CKalelDoc* m_mainDocument;		// pointer to the main document
-	ThreadManager* threadManager;
-
-	// Storage for all the data
-	ExperimentSettings * experimentSettings;
-	ExperimentData experimentData;
-
-	// Experiment property dialog
-	ExperimentPropertySheet * dialogExperimentProperties;
-
-	// Some storage variables for each MFC control
-	CEdit pEditMessages;
-	CEdit pEditMesures;
-	CString m_StrEditMessages;
-	CString m_StrCalo;
-	CString m_StrBassePression;
-	CString m_StrHautePression;
-	CString m_StrTemperatureCalo;
-	CString m_StrTemperatureCage;
-	CString m_StrTemperaturePiece;
-	CString m_StrTemps;
-	CButton m_ButtonLancer;
-	CButton m_ButtonArreter;
-	CString m_StrEditMesures;
-
-	CString m_StrPressionInitiale;
-	CString m_StrPressionFinale;
-	CString m_StrEtape;
-
-	CString m_StrTemoinVanne1;
-	CString m_StrTemoinVanne2;
-	CString m_StrTemoinVanne3;
-	CString m_StrTemoinVanne4;
-	CString m_StrTemoinVanne5;
-	CString m_StrTemoinVanne6;
-	CString m_StrTemoinVanne7;
-	CString m_StrTemoinVanne8;
-	CString m_StrTemoinEV1;
-	CString m_StrTemoinEV2;
-	CString m_StrTemoinPompe;
 
 protected: // create from serialization only
 	CKalelView();
@@ -75,24 +29,19 @@ protected: // create from serialization only
 public:
 	enum { IDD = IDD_Kalel_FORM };
 
-// Attributes
+	// Attributes
 public:
 	CKalelDoc* GetDocument() const;
 	static CKalelView * GetView();
 
-
-// Operations
-public:
-
-// Overrides
-public:
-	virtual void OnDraw(CDC* pDC);  // overridden to draw this view
-	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
+	// Overrides
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // Prise en charge de DDX/DDV
-	virtual void OnInitialUpdate(); // premier appel après la construction
+	virtual void OnDraw(CDC* pDC);							// overridden to draw this view
+	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
+	virtual void DoDataExchange(CDataExchange* pDX);		// Prise en charge de DDX/DDV
+	virtual void OnInitialUpdate();							// premier appel après la construction
 
-// Implementation
+	// Implementation
 public:
 	virtual ~CKalelView();
 #ifdef _DEBUG
@@ -100,50 +49,118 @@ public:
 	virtual void Dump(CDumpContext& dc) const;
 #endif
 
-protected:
-
-// Generated message map functions
+	// Generated message map functions
 protected:
 	DECLARE_MESSAGE_MAP()
 
-public:
-	//------- KalelView
+	//*************************************************************************************************************************
+	//						Class shared
+	//*************************************************************************************************************************
 
-	void DoEvents(void);
-	void OnMsvAmpoule(void);
-	void OnMsvBouteille(void);
-	void OnChangementBouteille(void);
 
-	void GetExperimentData(ExperimentPropertySheet * dialogExperimentProperties);
+	// Classes and pointers
+private:
+	CKalelApp* pApp;				// pointer to the main app
+	CKalelDoc* m_mainDocument;		// pointer to the main document
+	Parameters savedParams;			// Class for saving the parameters file
+	CommHandler commHandler;		// Class dealing with all communication between frontend and backend
 
-	void UpdateButtons();
+	// Storage
+private:
+	MeasurementsArray dataCollection;							// Measurement points for an experiment are stored here
+	std::wstring lastLog;
+	std::map<std::wstring, std::wstring> 	logCollection;			// Log points for an experiment are stored here
+	std::shared_ptr<MachineSettings>	machineSettings;		// Pointer to a machineSettings object
+	std::shared_ptr<MachineSettings>	tempSettings;			// Temporary machineSettings stored here between sending change request to server and server acknowledgement
+	std::shared_ptr<ExperimentSettings> experimentSettings;		// Local storage of experimentSettings
+	
+	
+	// Some storage variables for each MFC control
+private:
+	CButton m_ButtonLancer;
+	CButton m_ButtonArreter;
+
+	CEdit pEditMessages;
+	CEdit pEditMesures;
+
+	CString m_StrEditMessages					= _T("");
+	CString m_StrEditMesures					= _T("");
+
+	CString m_StrCalo							= _T("");
+	CString m_StrBassePression					= _T("");
+	CString m_StrHautePression					= _T("");
+	CString m_StrTemperatureCalo				= _T("");
+	CString m_StrTemperatureCage				= _T("");
+	CString m_StrTemperaturePiece				= _T("");
+	CString m_StrTemps							= _T("");
+	CString m_StrPressionInitiale				= _T("");
+	CString m_StrPressionFinale					= _T("");
+	CString m_StrEtape							= _T("");
+	CString m_StrTemoinVanne1					= _T("");
+	CString m_StrTemoinVanne2					= _T("");
+	CString m_StrTemoinVanne3					= _T("");
+	CString m_StrTemoinVanne4					= _T("");
+	CString m_StrTemoinVanne5					= _T("");
+	CString m_StrTemoinVanne6					= _T("");
+	CString m_StrTemoinVanne7					= _T("");
+	CString m_StrTemoinVanne8					= _T("");
+	CString m_StrTemoinEV1						= _T("");
+	CString m_StrTemoinEV2						= _T("");
+	CString m_StrTemoinPompe					= _T("");
+
+
+	//*************************************************************************************************************************
+	//						KalelView
+	//*************************************************************************************************************************
+
+private:
+	UINT_PTR graphTimer;
+	UINT_PTR refrashTimer;
+	void OnTimer(UINT_PTR nIDEvent);	//timer for window update
+	void GetExperimentData(ExperimentPropertySheet * dialogExperimentProperties, bool initialRequest);
+
+	// Menu messages
+
+	LRESULT OnMsvAmpoule(WPARAM wParam, LPARAM lParam);
+	LRESULT OnMsvBouteille(WPARAM wParam, LPARAM lParam);
+	LRESULT OnChangementBouteille(WPARAM wParam, LPARAM lParam);
+	LRESULT DisplayConnectDialog(WPARAM, LPARAM);
+	LRESULT DisplayPortDialog(WPARAM wParam, LPARAM lParam);
+	LRESULT DisplayApparatusSettingsDialog(WPARAM wParam, LPARAM lParam);
+	LRESULT BackgroundThreadStart(WPARAM wParam, LPARAM lParam);
+	LRESULT BackgroundThreadStop(WPARAM wParam, LPARAM lParam);
+	LRESULT BackgroundThreadRestart(WPARAM wParam, LPARAM lParam);
 
 	// Thread callbacks
-	LRESULT OnRegularThreadFinished(WPARAM wParam, LPARAM);
 
-protected:
+	LRESULT OnServerConnected(WPARAM wParam, LPARAM lParam);
+	LRESULT OnGetMachineSettings(WPARAM wParam, LPARAM lParam);
+	LRESULT OnSetMachineSettings(WPARAM wParam, LPARAM lParam);
+	LRESULT OnExchangeData(WPARAM, LPARAM incomingExperimentData);
+	LRESULT OnExchangeLogs(WPARAM, LPARAM incomingLogs);
+	LRESULT OnAutoExperimentFinished(WPARAM wParam, LPARAM);
+	LRESULT CancelBeforeStarting(WPARAM wParam, LPARAM lParam);
 
-	//-------- KalelView_Affichage
+	//*************************************************************************************************************************
+	//						KalelView_Display
+	//*************************************************************************************************************************
 
-public:
+private:
+
 	LRESULT AffichageMessages(WPARAM wParam, LPARAM lParam);
-	LRESULT AffichageMessages(CString message);								// Temporary overload
-	LRESULT RajoutAffichageMessages(WPARAM wParam, LPARAM lParam);
-	LRESULT AffichageMesures(ExperimentData expD);
-	LRESULT AffichageEtape(ExperimentData expD);
-	LRESULT RajoutAffichageEtape(WPARAM wParam, LPARAM lParam);
-	LRESULT ExchangeData(WPARAM wParam, LPARAM lParam);
+	LRESULT DisplayTextboxValues(ExperimentData * data);
+	LRESULT DiplayMeasurements(ExperimentData * data);
+	LRESULT DisplayStepProgress(ExperimentData * data);
 	LRESULT MessageBoxAlert(WPARAM wParam, LPARAM lParam);
 	LRESULT MessageBoxConfirmation(WPARAM wParam, LPARAM);
 
-	void OnTimer(UINT nIDEvent);	//timer for window update
+	//*************************************************************************************************************************
+	//						KalelView_Boutons
+	//*************************************************************************************************************************
 
-	//-------- KalelView_Boutons
-public:
+private:
 	void OnBnClickedLancer();
 	void OnBnClickedArreter();
-	LRESULT Annuler(WPARAM wParam, LPARAM lParam);
-
 	void OnBnClickedButtonParametresExperience();
 	void OnBnClickedArretSousVide();
 	void OnBnClickedPause();
@@ -152,8 +169,13 @@ public:
 	void OnBnClickedProchaineEtape();
 	void OnBnClickedReprise();
 
-	//-------- KalelView_Boutons_Vannes
-public:
+	void UpdateButtons();
+
+	//*************************************************************************************************************************
+	//						KalelView_Boutons_Vannes
+	//*************************************************************************************************************************
+
+private:
 	void AskThreadForManualCommand(int instrument, int i, bool askToActivate);
 	LRESULT OnThreadRequestButtonUpdate(WPARAM wParam, LPARAM lParam);
 
@@ -181,6 +203,7 @@ public:
 	void OnBnClickedDesactiverEV2();
 	void OnBnClickedActiverPompe();
 	void OnBnClickedDesactiverPompe();
+
 };
 
 

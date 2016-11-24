@@ -1,11 +1,10 @@
-#pragma once
 #ifndef TABDESORPTION_H
 #define TABDESORPTION_H
+#pragma once
 
-
-#include "ResourceOngletsEtapes.h"	// For resources
-#include "SpinBtnCtrl.h"			// For the Spin Button class
-#include "Classes_experiences.h"	// Definitions for all classes used in this file
+#include "ResourceDialogExperimentSettings.h"								// For resources
+#include "SpinBtnCtrl.h"													// For the Spin Button class
+#include "../Kalel Shared/Com Classes/ExperimentHelperClasses.h"			// Definitions for all classes used in this file
 
 
 class TabDesorption : public CMFCPropertyPage
@@ -13,7 +12,7 @@ class TabDesorption : public CMFCPropertyPage
 	DECLARE_DYNAMIC(TabDesorption)
 
 public:
-	TabDesorption(CString i);
+	TabDesorption(int number);
 	virtual ~TabDesorption();
 
 	// Dialog Data
@@ -33,10 +32,7 @@ protected:
 protected:
 	CString m_caption;	// Title of the page
 
-	bool checkDesorption;
-
-	BOOL m_bDesorption;
-	BOOL m_bDerniereEtapeDesorption;
+	int position;
 
 	int m_nTempsDesorption;
 	int m_nTempsVolumeDesorption;
@@ -52,24 +48,21 @@ protected:
 
 public:
 	Donnees_Desorption allSettings;
+	bool checkDesorption;			//For greying out
 
 // Functions
 public:
 	void Reinitialisation();
+	void Rename(int number);
+	void GreyOut(BOOL active);
+	void ToggleGreyOut();
 
 protected:
 	void WriteData();
-	void EnableDesorption(BOOL active);
-
-	void GreyOut();
-	void UnGreyOut();
-	void CheckGreyOut();
-	void CheckUnGreyOut();
-	void ActionCheck_Desorption();
 
 // Message Handlers
 protected:
-	void OnBnClickedCheckDesorption();
+	void DeletePage();
 };
 
 #endif // !TABDESORPTION_H

@@ -2,11 +2,10 @@
 //
 
 #include "stdafx.h"
-#include "Kalel.h"
 #include "DialogCell.h"
 
-
-
+#include "ParserXML.h"
+#include "../Kalel Shared/Resources/StringTable.h"						// Error message strings
 
 //////////////////////////////////////////////////////////////////////////////////////
 			//------------------------------------------------------
@@ -143,13 +142,13 @@ BOOL CAjoutCellule::OnInitDialog()
 	m_SpinAjoutVolumeCellule.SetRange(0,10000);
 	m_SpinAjoutVolumeCellule.SetPos(0.000);
 	m_SpinAjoutVolumeCellule.SetInc(-0.001);
-	m_SpinAjoutVolumeCellule.SetFormat("%1.3f");
+	m_SpinAjoutVolumeCellule.SetFormat(_T("%1.3f"));
 	m_SpinAjoutVolumeCellule.UpdateBuddy();
 
 	m_SpinAjoutVolumeCalo.SetRange(0,10000);
 	m_SpinAjoutVolumeCalo.SetPos(0.000);
 	m_SpinAjoutVolumeCalo.SetInc(-0.001);
-	m_SpinAjoutVolumeCalo.SetFormat("%1.3f");
+	m_SpinAjoutVolumeCalo.SetFormat(_T("%1.3f"));
 	m_SpinAjoutVolumeCalo.UpdateBuddy();
 
 	return TRUE;  // return TRUE unless you set the focus to a control
@@ -169,13 +168,13 @@ void CAjoutCellule::OnBnClickedAjouter()
 	if(m_StrAjoutNumeroCellule == _T("") || m_fAjoutVolumeCellule == 0 || m_fAjoutVolumeCalo == 0)
 	{
 		message.Format(ERROR_FIELDS_NOT_FILLED);
-		m_strMessageAjoutCellule = message + "\r\n";
+		m_strMessageAjoutCellule = message + _T("\r\n");
 	}
 	else
 	{	// On vérifie que la cellule ne soit pas déjà initialisé
 		if (DoublonNumeroCellule(m_StrAjoutNumeroCellule.GetBuffer())) {
 			message.Format(ERROR_NAME_USED);
-			m_strMessageAjoutCellule = message + "\r\n";
+			m_strMessageAjoutCellule = message + _T("\r\n");
 		}
 
 		else
@@ -184,7 +183,7 @@ void CAjoutCellule::OnBnClickedAjouter()
 			if(m_fAjoutVolumeCellule < m_fAjoutVolumeCalo)
 			{
 				message.Format(ERROR_CELL_VCALO_CCELL);
-				m_strMessageAjoutCellule = message + "\r\n";
+				m_strMessageAjoutCellule = message + _T("\r\n");
 			}
 			// Si toutes les conditions sont bonnes, on peut rajouter l'experimentateur dans un fichier XML
 			else
@@ -272,13 +271,13 @@ BOOL CModifCellule::OnInitDialog()
 	m_SpinModifVolumeCellule.SetRange(0,10000);
 	m_SpinModifVolumeCellule.SetPos(0.000);
 	m_SpinModifVolumeCellule.SetInc(-0.001);
-	m_SpinModifVolumeCellule.SetFormat("%1.3f");
+	m_SpinModifVolumeCellule.SetFormat(_T("%1.3f"));
 	m_SpinModifVolumeCellule.UpdateBuddy();
 
 	m_SpinModifVolumeCalo.SetRange(0,10000);
 	m_SpinModifVolumeCalo.SetPos(0.000);
 	m_SpinModifVolumeCalo.SetInc(-0.001);
-	m_SpinModifVolumeCalo.SetFormat("%1.3f");
+	m_SpinModifVolumeCalo.SetFormat(_T("%1.3f"));
 	m_SpinModifVolumeCalo.UpdateBuddy();
 
 	return TRUE;  // return TRUE unless you set the focus to a control
@@ -303,7 +302,7 @@ void CModifCellule::OnCbnSelchangeComboModifCellule()
 
 	int index = m_nIndexModifCellule;
 	// On affiche les nom et prenom de l'expérimentateur désigné
-	string numero_modif = list_modif_cellule[index].numero;
+	std::wstring numero_modif = list_modif_cellule[index].numero;
 	m_StrModifNumeroCellule.Format(_T("%s"),numero_modif.c_str());
 	m_fModifVolumeCellule = list_modif_cellule[index].volume_total;
 	m_fModifVolumeCalo = list_modif_cellule[index].volume_calo;
@@ -467,7 +466,6 @@ void CSupprCellule::OnCbnSelchangeComboSupprNumeroCellule()
 void CSupprCellule::OnBnClickedSupprimer()
 {
 	int index = m_nIndexSupprNumeroCellule;
-	int Cellule_A_Supprime = index + 1;
 
 	if (index != -1)
 	{

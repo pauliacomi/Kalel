@@ -9,12 +9,10 @@
 #include "Kalel.h"
 #endif
 
-
 #include "KalelDoc.h"
 
 #include <propkey.h>
 
-#include "ExperimentData.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -31,9 +29,8 @@ END_MESSAGE_MAP()
 // CKalelDoc construction/destruction
 
 CKalelDoc::CKalelDoc()
+	:m_TableauMesures{ nullptr }
 {
-	TitreGrapheEtape = _T("");
-	GraphInitialize(NULL, NULL);
 }
 
 CKalelDoc::~CKalelDoc()
@@ -144,92 +141,6 @@ CKalelDoc * CKalelDoc::GetDocument()
 
 //-------------------- CKalelDoc custom functions
 
-LRESULT CKalelDoc::GraphInitialize(WPARAM wParam, LPARAM lParam)
-{
-	TempsMinimum = NULL;
-	MesureMinimum = NULL;
-	NumeroEtape = NULL;
-
-	return 0;
-}
-
-// Add a measurement to the graph -- Regular
-bool CKalelDoc::GraphAddMeasurement(ExperimentData expData)
-{
-	int lastMeasurement;
-	bool result = false;
-
-	if (m_TableauMesures.IsEmpty())
-	{
-		m_TableauMesures.SetSize(1);
-		m_TableauMesures[0] = expData;
-
-		//Set the maximums and minimums
-
-		maxPressure = max(expData.pressureLow, expData.pressureHigh);
-		minPressure = min(expData.pressureLow, expData.pressureHigh);
-
-		maxCalo = expData.resultCalorimeter;
-		minCalo = expData.resultCalorimeter;
-	}
-	else
-	{
-		lastMeasurement = m_TableauMesures.GetUpperBound();
-
-		if (expData.experimentMeasurements > m_TableauMesures[lastMeasurement].experimentMeasurements) {
-
-		maxPressure = max(maxPressure, expData.pressureLow);
-		maxPressure = max(maxPressure, expData.pressureHigh);
-		
-		minPressure = min(minPressure, expData.pressureLow);
-		minPressure = min(minPressure, expData.pressureHigh);
-		
-		maxCalo = max(maxCalo, expData.resultCalorimeter);
-		minCalo = min(minCalo, expData.resultCalorimeter);
-
-		m_TableauMesures.SetSize(lastMeasurement + 2);
-		m_TableauMesures[lastMeasurement+1] = expData;
-
-		result = true;
-		}
-	}
-	return result;
-}
-
-
-LRESULT CKalelDoc::GraphReset(WPARAM , LPARAM ) {
-	
-	m_TableauMesures.RemoveAll();
-	TempsMinimum = NULL;
-	MesureMinimum = NULL;
-	NumeroEtape = NULL;
-
-	return 0;
-}
-
-/*void CManip::DonneesManuelleGrapheEtape()
-{
-int nb_heures = 2;
-int nb_secondes = nb_heures * 3600;
-
-int coeff = (int)(temps_manip / nb_secondes);
-float temps_min = coeff * nb_secondes;
-
-
-if (true m_Doc->NumeroEtape < coeff + 1)
-{
-ASSERT(0);
-messageHandler.GraphDataAutoStep(temps_min, numero_mesure - 1, coeff + 1);
-
-CString titre;
-titre.Format(_T("%dh - %dh d'expérience"), nb_heures * coeff, nb_heures*(coeff + 1));
-messageHandler.GraphSetTitle(titre);
-}
-}*/
-
-
-// ?
-CArrayMesure* CKalelDoc::GetTableauMesures(void)
-{
-	return &m_TableauMesures;
+void CKalelDoc::GraphSetArray(MeasurementsArray &expData) {
+	m_TableauMesures = &expData;
 }
