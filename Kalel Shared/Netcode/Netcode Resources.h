@@ -16,6 +16,8 @@
 #define ERR_CONNECT				"Unable to connect to server!"
 #define ERR_IP_CONVERT			"Error translating IP to readable form: "
 
+#define ERR_HTTP_CODE			"Error: Bad http status code"
+
 #define LOG_LISTENING			" listening on socket: "
 #define LOG_ACCEPTED_SOCK		" accepted new socket: "
 #define LOG_REQUEST				" request was: \n"

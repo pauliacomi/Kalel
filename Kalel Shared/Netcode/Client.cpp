@@ -123,9 +123,9 @@ unsigned Client::Process(std::string ip, std::string port, std::function<void(ht
 		return 1;
 	}
 
-	STREAM_LOG(logDEBUG) << l_sock.GetSocket() << LOG_RESPONSE << requestString;
+	STREAM_LOG(logDEBUG) << l_sock.GetSocket() << LOG_REQUEST << requestString;
 #ifdef FILE_LOGGING
-	FILE_LOG(logDEBUG) << l_sock.GetSocket() << LOG_RESPONSE << requestString;
+	FILE_LOG(logDEBUG) << l_sock.GetSocket() << LOG_REQUEST << requestString;
 #endif // FILE_LOGGING
 
 
@@ -158,9 +158,9 @@ unsigned Client::Process(std::string ip, std::string port, std::function<void(ht
 	response.status_		= ParseStatusCode(responseString.substr(posSpace + 1, 3));
 
 	if (response.status_.empty()){
-		STREAM_LOG(logERROR) << "Bad status code";
+		STREAM_LOG(logERROR) << ERR_HTTP_CODE;
 #ifdef FILE_LOGGING
-		FILE_LOG(logERROR) << "Bad status code";
+		FILE_LOG(logERROR) << ERR_HTTP_CODE;
 #endif // FILE_LOGGING
 		return 1;
 	}
@@ -237,9 +237,9 @@ unsigned Client::Process(std::string ip, std::string port, std::function<void(ht
 		}
 	}
 
-	STREAM_LOG(logDEBUG) << l_sock.GetSocket() << LOG_REQUEST << responseString;
+	STREAM_LOG(logDEBUG) << l_sock.GetSocket() << LOG_RESPONSE << responseString;
 #ifdef FILE_LOGGING
-	FILE_LOG(logDEBUG) << l_sock.GetSocket() << LOG_REQUEST << responseString;
+	FILE_LOG(logDEBUG) << l_sock.GetSocket() << LOG_RESPONSE << responseString;
 #endif // FILE_LOGGING
 
 	//*************************************************************************************************************************

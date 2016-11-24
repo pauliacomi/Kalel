@@ -90,22 +90,13 @@ void CommHandler::SetMachineSettings(std::shared_ptr<const MachineSettings> ptr)
 }
 
 
-void CommHandler::GetData(time_t startTime, long int measurementsMade)
+void CommHandler::GetData(std::string fromTime)
 {
 	if (!flagExperimentRequest)
 	{
 		flagExperimentRequest = true;
 
-		if (measurementsMade == 0)
-		{
-			localExperimentStartTime = "";
-			localMeasurementsMade = "";
-		}
-		else
-		{
-			localExperimentStartTime = std::to_string(startTime);
-			localMeasurementsMade = std::to_string(measurementsMade);
-		}
+		localExperimentTime = fromTime.c_str();
 
 		auto request = std::bind(&CommHandler::GetData_req, this, std::placeholders::_1);
 		auto callback = std::bind(&CommHandler::GetData_resp, this, std::placeholders::_1);
@@ -404,8 +395,7 @@ unsigned CommHandler::GetData_req(http_request* r) {
 	r->method_ = http::method::get;
 	r->accept_ = http::mimetype::appjson;
 	r->path_ = "/api/experimentdata";
-	r->params_.emplace("start", localExperimentStartTime);
-	r->params_.emplace("measurements", localMeasurementsMade);
+	r->params_.emplace("time", localExperimentTime);
 	return 0;
 }
 

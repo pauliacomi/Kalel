@@ -24,7 +24,7 @@ public:
 	void Sync();
 	void GetMachineSettings();
 	void SetMachineSettings(std::shared_ptr<const MachineSettings> ptr);
-	void GetData(time_t startTime = 0, long int measurementsMade = 0);
+	void GetData(std::string fromTime = R"()");
 	void GetLog(std::wstring fromTime = _T(""));
 	void SetExperimentSettings(std::shared_ptr<const ExperimentSettings> ptr);
 
@@ -53,12 +53,12 @@ private:
 
 	std::string localAddress;								// Address
 
-	bool flagExperimentRequest = false;
-	std::string localExperimentStartTime;					// Start time requested for GetExperimentData 
-	std::string localMeasurementsMade;						// Number of measurements requested for GetExperimentData
+	std::atomic_bool flagExperimentRequest = false;
+	std::string localExperimentTime;						// Start time requested for GetExperimentData 
 
-	bool flagLogsRequest = false;
+	std::atomic_bool flagLogsRequest = false;
 	std::string localLogsTime;
+
 	std::string localInstrumentType;
 	std::string localInstrumentNumber;
 	std::string localShouldBeActivated;

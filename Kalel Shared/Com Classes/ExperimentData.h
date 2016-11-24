@@ -39,6 +39,7 @@ public:
 	time_t timeStart;						// When the experiment started
 	long int measurementsMade;				// Number of measurements recorded since the experiment was started
 	double timeElapsed;						// Time from the experiment start
+	std::string timestamp;					// Timestamp in string
 	double timeToEquilibrate;				// The amount of time that the waiting + recording functionality will run before returning to an active state
 	double timeToEquilibrateCurrent;		// The current time of waiting
 	

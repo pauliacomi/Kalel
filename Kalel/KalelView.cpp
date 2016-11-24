@@ -315,7 +315,7 @@ void CKalelView::OnTimer(UINT_PTR nIDEvent)
 
 		if (pApp->serverConnected)
 		{
-			commHandler.GetData(dataCollection.back()->timeStart, dataCollection.back()->measurementsMade);
+			commHandler.GetData(dataCollection.back()->timestamp);
 			commHandler.GetLog(logCollection.rbegin()->first);
 		}
 	}

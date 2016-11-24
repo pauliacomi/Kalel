@@ -1,4 +1,5 @@
 #include "Automation.h"
+#include "../../../Kalel Shared/timestamp.h"
 
 Automation::Automation(Storage &h)
 	: running(true)
@@ -171,6 +172,7 @@ void Automation::Execution()
 		experimentLocalData.measurementsMade++;										// Save the measurement number
 		experimentLocalData.timeElapsed = timerExperiment.TempsActuel();			// Save the time elapsed from the beginning of the experiment
 		experimentLocalData.timeToEquilibrateCurrent = timerWaiting.TempsActuel();	// Save the waiting time if it exists
+		experimentLocalData.timestamp = NowTime();
 
 		/*
 		*

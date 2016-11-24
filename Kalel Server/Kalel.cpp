@@ -159,46 +159,41 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 		
 		// Figure out which range of data to send by looking at the time requested
 		
-		std::deque<std::shared_ptr<ExperimentData>>::reverse_iterator it;
+		std::deque<std::shared_ptr<ExperimentData>>::iterator it;
 		storageVectors.sharedMutex.lock();
 		auto localCollection = storageVectors.dataCollection;
 		storageVectors.sharedMutex.unlock();
 
 		if (req->params_.empty()			 ||
-			req->params_.at("start").empty() || 
-			req->params_.at("measurements").empty())
+			req->params_.at("time").empty() || 
+			req->params_.at("time") == "start")
 		{
-			it = localCollection.rend();
+			it = localCollection.begin();
 		}
 		else
 		{
-			time_t experimentStartTime = To<time_t>(req->params_.at("start"));
+			std::string reqTimeStamp = req->params_.at("time");
+			it = std::find_if(localCollection.begin(), localCollection.end(),
+				[&reqTimeStamp](std::shared_ptr<ExperimentData> d) -> bool {return d->timestamp == reqTimeStamp; });
 
-			if (experimentStartTime != localCollection.begin()->get()->timeStart) {
-				it = localCollection.rend();
-			}
-			else
-			{
-				long int numberOfMeasurements = To<long int>(req->params_.at("measurements"));
-				it = std::find_if(localCollection.rbegin(), localCollection.rend(),
-					[&numberOfMeasurements](std::shared_ptr<ExperimentData> d) -> bool {return d->measurementsMade == numberOfMeasurements; });
-			}
+			++ it;
 		}
 		
-		if (it != localCollection.rbegin())						// If iterator is valid, send requested logs
+		if (it != localCollection.end())						// If iterator is valid, send requested logs
 		{
 			json j;
 
-			while (it != localCollection.rbegin())
+			while (it != localCollection.end())
 			{
 				json j2;
-				--it;
 				serialization::serializeExperimentDataToJSON(*(*it), j2);
-				j.push_back(json::object_t::value_type({ std::to_string((*it)->measurementsMade), j2 }));
+				j.push_back(json::object_t::value_type({ (*it)->timestamp, j2 }));
+				++it;
 			}
-		resp->answer_ = j.dump();
 
+			resp->answer_ = j.dump();
 		}
+		
 		else
 		{
 			resp->status_ = http::responses::no_content;
@@ -229,7 +224,7 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 		else
 		{
 			it = localCollection.find(req->params_.at("time"));
-			it ++;
+			++ it;
 		}
 
 		if (it != localCollection.end())						// If iterator is valid, send requested logs

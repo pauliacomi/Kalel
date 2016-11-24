@@ -80,6 +80,9 @@ std::string ParseStatusCode(const std::string & statuscode)
 	else if (statuscode == http::responses::unauthorised.substr(0, 3)) {
 		return http::responses::unauthorised;
 	}
+	else if (statuscode == http::responses::no_content.substr(0, 3)) {
+		return http::responses::no_content;
+	}
 	else
 	{
 		return std::string();

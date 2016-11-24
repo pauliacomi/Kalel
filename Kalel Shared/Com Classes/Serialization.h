@@ -116,6 +116,7 @@ namespace serialization {
 		j[	STRINGIFY(e.measurementsMade				)]	= e.measurementsMade						;
 		j[	STRINGIFY(e.timeElapsed						)]	= e.timeElapsed								;
 		j[	STRINGIFY(e.timeStart						)]	= e.timeStart								;
+		j[	STRINGIFY(e.timestamp						)]	= e.timestamp								;
 		j[	STRINGIFY(e.timeToEquilibrate				)]	= e.timeToEquilibrate						;
 		j[	STRINGIFY(e.timeToEquilibrateCurrent		)]	= e.timeToEquilibrateCurrent				;
 		j[	STRINGIFY(e.injectionAttemptCounter			)]	= e.injectionAttemptCounter					;
@@ -148,6 +149,7 @@ namespace serialization {
 		e.measurementsMade									= j[	STRINGIFY(e.measurementsMade				)];
 		e.timeElapsed										= j[	STRINGIFY(e.timeElapsed						)];
 		e.timeStart											= j[	STRINGIFY(e.timeStart						)];
+		e.timestamp											= j[	STRINGIFY(e.timestamp						)];
 		e.timeToEquilibrate									= j[	STRINGIFY(e.timeToEquilibrate				)];
 		e.timeToEquilibrateCurrent							= j[	STRINGIFY(e.timeToEquilibrateCurrent		)];
 		e.injectionAttemptCounter							= j[	STRINGIFY(e.injectionAttemptCounter			)];
