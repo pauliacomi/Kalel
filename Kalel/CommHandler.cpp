@@ -92,25 +92,34 @@ void CommHandler::SetMachineSettings(std::shared_ptr<const MachineSettings> ptr)
 
 void CommHandler::GetData(time_t startTime, long int measurementsMade)
 {
-	if (measurementsMade == 0)
+	if (!flagExperimentRequest)
 	{
-		localExperimentStartTime = "";
-		localMeasurementsMade = "";
+		flagExperimentRequest = true;
+
+		if (measurementsMade == 0)
+		{
+			localExperimentStartTime = "";
+			localMeasurementsMade = "";
+		}
+		else
+		{
+			localExperimentStartTime = std::to_string(startTime);
+			localMeasurementsMade = std::to_string(measurementsMade);
+		}
+
+		auto request = std::bind(&CommHandler::GetData_req, this, std::placeholders::_1);
+		auto callback = std::bind(&CommHandler::GetData_resp, this, std::placeholders::_1);
+
+		try {
+			client.Request(request, callback, localAddress);
+		}
+		catch (const std::exception& e) {
+			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, UnicodeConv::s2ws(e.what()));
+		}
 	}
 	else
 	{
-		localExperimentStartTime = std::to_string(startTime);
-		localMeasurementsMade = std::to_string(measurementsMade);
-	}
-
-	auto request = std::bind(&CommHandler::GetData_req, this, std::placeholders::_1);
-	auto callback = std::bind(&CommHandler::GetData_resp, this, std::placeholders::_1);
-
-	try {
-		client.Request(request, callback, localAddress);
-	}
-	catch (const std::exception& e) {
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, UnicodeConv::s2ws(e.what()));
+		TRACE(_T("lel"));
 	}
 }
 
@@ -118,16 +127,25 @@ void CommHandler::GetData(time_t startTime, long int measurementsMade)
 
 void CommHandler::GetLog(std::wstring fromTime)
 {
-	localLogsTime = UnicodeConv::ws2s(fromTime.c_str());
+	if (!flagLogsRequest)
+	{
+		flagLogsRequest = true;
 
-	auto request = std::bind(&CommHandler::GetLogs_req, this, std::placeholders::_1);
-	auto callback = std::bind(&CommHandler::GetLogs_resp, this, std::placeholders::_1);
+		localLogsTime = UnicodeConv::ws2s(fromTime.c_str());
 
-	try {
-		client.Request(request, callback, localAddress);
+		auto request = std::bind(&CommHandler::GetLogs_req, this, std::placeholders::_1);
+		auto callback = std::bind(&CommHandler::GetLogs_resp, this, std::placeholders::_1);
+
+		try {
+			client.Request(request, callback, localAddress);
+		}
+		catch (const std::exception& e) {
+			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, UnicodeConv::s2ws(e.what()));
+		}
 	}
-	catch (const std::exception& e) {
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, UnicodeConv::s2ws(e.what()));
+	else
+	{
+		TRACE(_T("lel"));
 	}
 }
 
@@ -406,6 +424,7 @@ unsigned CommHandler::GetData_resp(http_response* r) {
 			catch (const std::exception& e)
 			{
 				messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, UnicodeConv::s2ws(e.what()));
+				flagExperimentRequest = false;
 				return 1;
 			}
 
@@ -425,6 +444,7 @@ unsigned CommHandler::GetData_resp(http_response* r) {
 					messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, UnicodeConv::s2ws(e.what()));
 					delete receivedData;
 					delete receivedDataArray;
+					flagExperimentRequest = false;
 					return 1;
 				}
 				receivedDataArray->push_back(receivedData);
@@ -436,15 +456,18 @@ unsigned CommHandler::GetData_resp(http_response* r) {
 		else
 		{
 			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Corrupt response format"));
+			flagExperimentRequest = false;
 			return 1;
 		}
 	}
 	else if (r->status_ == http::responses::not_found)
 	{
 		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Server not found"));
+		flagExperimentRequest = false;
 		return 1;
 	}
 
+	flagExperimentRequest = false;
 	return 0;
 }
 
@@ -477,6 +500,7 @@ unsigned CommHandler::GetLogs_resp(http_response * r)
 			catch (const std::exception& e)
 			{
 				messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, UnicodeConv::s2ws(e.what()));
+				flagLogsRequest = false;
 				return 1;
 			}
 
@@ -492,6 +516,7 @@ unsigned CommHandler::GetLogs_resp(http_response * r)
 				catch (const std::exception& e)	{
 					messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, UnicodeConv::s2ws(e.what()));
 					delete receivedLogArray;
+					flagLogsRequest = false;
 					return 1;
 				}
 				std::wstring receivedLogTime = UnicodeConv::s2ws(i.key().c_str());
@@ -504,14 +529,18 @@ unsigned CommHandler::GetLogs_resp(http_response * r)
 		else
 		{
 			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Corrupt response format"));
+			flagLogsRequest = false;
 			return 1;
 		}
 	}
 	else if (r->status_ == http::responses::not_found)
 	{
 		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Server not found"));
+		flagLogsRequest = false;
 		return 1;
 	}
+
+	flagLogsRequest = false;
 
 	return 0;
 }

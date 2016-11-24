@@ -51,10 +51,13 @@ private:
 	// Local variables: don't like these
 	**********************************************************************************************************************************/
 
-	// don't like these
-	std::string localAddress;
-	std::string localExperimentStartTime;
-	std::string localMeasurementsMade;
+	std::string localAddress;								// Address
+
+	bool flagExperimentRequest = false;
+	std::string localExperimentStartTime;					// Start time requested for GetExperimentData 
+	std::string localMeasurementsMade;						// Number of measurements requested for GetExperimentData
+
+	bool flagLogsRequest = false;
 	std::string localLogsTime;
 	std::string localInstrumentType;
 	std::string localInstrumentNumber;

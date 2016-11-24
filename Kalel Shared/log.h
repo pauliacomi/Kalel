@@ -37,7 +37,7 @@ public:
 	// String stream
 protected:
     std::ostringstream os;
-	std::ostringstream timestamp;
+	std::string timestamp;
 
 private:
     Log(const Log&);
@@ -50,7 +50,7 @@ private:
 template <typename T>
 Log<T>::Log()
 {
-	timestamp << NowTime();
+	timestamp = NowTime();
 }
 
 /*********************************
