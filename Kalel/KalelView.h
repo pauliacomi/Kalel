@@ -114,6 +114,8 @@ private:
 	//*************************************************************************************************************************
 
 private:
+	UINT_PTR graphTimer;
+	UINT_PTR refrashTimer;
 	void OnTimer(UINT_PTR nIDEvent);	//timer for window update
 	void GetExperimentData(ExperimentPropertySheet * dialogExperimentProperties, bool initialRequest);
 

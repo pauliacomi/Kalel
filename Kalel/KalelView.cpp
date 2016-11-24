@@ -209,8 +209,9 @@ void CKalelView::OnInitialUpdate()
 	// Initial button set-up
 	UpdateButtons();
 	
-	// Set the timer for the window update
-	SetTimer(1, 100, NULL);
+	// Set the timers for the window update
+	refrashTimer = SetTimer(1, 100, NULL);
+	graphTimer = SetTimer(1, 1000, NULL);
 }
 
 
@@ -299,24 +300,34 @@ void CKalelView::OnTimer(UINT_PTR nIDEvent)
 {
 	if (!dataCollection.empty()) {
 
-		// Should display only values after the last timestamp
-
-		// Write textbox values
-		DisplayTextboxValues(dataCollection.back());
-
-		// Write the current step
-		DisplayStepProgress(dataCollection.back());
-
-		// Write in measurement box
-		DiplayMeasurements(dataCollection.back());
-
-		// Write graph
-		GetDocument()->UpdateAllViews(this);
-
-		if (pApp->serverConnected)
+		//*****
+		// Refresh data timer
+		//*****
+		if (nIDEvent == refrashTimer)
 		{
-			commHandler.GetData(dataCollection.back()->timestamp);
-			commHandler.GetLog(logCollection.rbegin()->first);
+			// Write textbox values
+			DisplayTextboxValues(dataCollection.back());
+
+			// Write the current step
+			DisplayStepProgress(dataCollection.back());
+
+			if (pApp->serverConnected)
+			{
+				commHandler.GetData(dataCollection.back()->timestamp);
+				commHandler.GetLog(logCollection.rbegin()->first);
+			}
+		}
+		
+		//*****
+		// Refresh graph timer
+		//*****
+		if (nIDEvent == graphTimer)
+		{
+			// Write in measurement box
+			DiplayMeasurements(dataCollection.back());
+
+			// Write graph
+			GetDocument()->UpdateAllViews(this);
 		}
 	}
 

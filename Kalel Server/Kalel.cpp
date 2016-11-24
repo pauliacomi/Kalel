@@ -52,11 +52,20 @@ Kalel::Kalel()
 	auto func = std::bind(&Kalel::ServerProcessing, this, std::placeholders::_1, std::placeholders::_2);
 	server.Accept(func);
 
+	//
+	// Start the measurement and automation threads
+	threadManager.StartThread();
 }
 
 
 Kalel::~Kalel()
 {
+	//
+	// Stop the measurement and automation threads
+	threadManager.ShutdownThread();
+
+	// 
+	// Server functionality is self-contained
 }
 
 

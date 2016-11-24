@@ -26,15 +26,12 @@ ThreadManager::ThreadManager(Storage &h)
 {
 	// 
 	handles = &h;
-
-	// Start the threads
-	StartThread();
 }
 
 ThreadManager::~ThreadManager()
 {
 	// signal the threads to exit
-	ShutdownThread();
+	// ShutdownThread();
 }
 
 
