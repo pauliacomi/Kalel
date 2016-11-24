@@ -4,7 +4,9 @@
 #include "../../Kalel Shared/Com Classes/ExperimentSettings.h"
 #include "../../Kalel Shared/Com Classes/ManualActionParam.h"
 #include "../../Kalel Shared/Resources/DefineInstruments.h"
+
 #include "Class/Automation.h"										// Backend for all the automation
+#include "Measurement.h"											// Backend for measurements
 
 
 // Netcode
@@ -30,8 +32,6 @@ ThreadManager::ThreadManager(Storage &h)
 
 ThreadManager::~ThreadManager()
 {
-	// signal the threads to exit
-	// ShutdownThread();
 }
 
 

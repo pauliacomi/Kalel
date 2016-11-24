@@ -1,5 +1,4 @@
 #include "Automation.h"
-#include "../../../Kalel Shared/timestamp.h"
 
 Automation::Automation(Storage &h)
 	: running(true)
@@ -12,16 +11,9 @@ Automation::Automation(Storage &h)
 	sb_settingsModified = false;
 	sb_userContinue = false;
 
-	// Initialise threads
-	h_MeasurementThread[0] = NULL;
-	h_MeasurementThread[1] = NULL;
-	h_MeasurementThread[2] = NULL;
-	h_MeasurementThread[3] = NULL;
-
 	// Initialise events
 	//   - Non signalled by default
 	//   - With manual reinitiallisation
-	h_MeasurementThreadStartEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
 	h_eventShutdown = CreateEvent(NULL, TRUE, FALSE, NULL);
 	h_eventResume = CreateEvent(NULL, TRUE, FALSE, NULL);
 	h_eventPause = CreateEvent(NULL, TRUE, FALSE, NULL);
@@ -34,22 +26,8 @@ Automation::Automation(Storage &h)
 	events[3] = h_eventReset;
 	events[4] = h_eventUserInput;
 
-	// Initialisation of the critical section
-	InitializeCriticalSection(&criticalSection);
-
 	// Initialise instruments
-	std::string errorInit;
-
 	g_pVanne = new CVannes();
-	g_pTemperature = new CTemperature();
-	g_pSerialInstruments = new SerialInstruments();
-	if (!g_pSerialInstruments->Init(&errorInit))
-	{
-		messageHandler.DisplayMessageBox(MESSAGE_INSTRUMENT_INIT_FAIL, MB_ICONERROR | MB_OK, false, errorInit);
-	}
-
-	// Initialise security
-	InitialisationSecurity();
 
 	// If the shutdown event is called externally, it will default to a cancel
 	// Otherwise the flag will be changed from inside the code
@@ -69,19 +47,13 @@ Automation::~Automation()
 
 	// Delete instruments
 	delete g_pVanne;
-	delete g_pTemperature;
-	delete g_pSerialInstruments;
 
 	// Destroy the events
-	CloseHandle(h_MeasurementThreadStartEvent);
 	CloseHandle(h_eventShutdown);
 	CloseHandle(h_eventResume);
 	CloseHandle(h_eventPause);
 	CloseHandle(h_eventReset);
 	CloseHandle(h_eventUserInput);
-
-	// Destroy the critical sections
-	DeleteCriticalSection(&criticalSection);
 }
 
 ////////////////////////////////////////////////////////
@@ -159,52 +131,6 @@ void Automation::Execution()
 			}
 		}
 
-		/*
-		*
-		*		DEVICE AND TIME READING
-		*
-		*/
-
-		// Start threads and read the data
-		ThreadMeasurement();
-
-		// Record time
-		experimentLocalData.measurementsMade++;										// Save the measurement number
-		experimentLocalData.timeElapsed = timerExperiment.TempsActuel();			// Save the time elapsed from the beginning of the experiment
-		experimentLocalData.timeToEquilibrateCurrent = timerWaiting.TempsActuel();	// Save the waiting time if it exists
-		experimentLocalData.timestamp = NowTime();
-
-		/*
-		*
-		*		SECURITY CHECKS
-		*
-		*/
-
-		// Do the security checks
-		SecuriteTemperatures();
-		SecuriteHautePression();
-
-		/*
-		*
-		*		FILE WRITING AND MEASUREMENT RESET
-		*
-		*/
-
-		// Write data
-		if (timerMeasurement.TempsActuel() > T_BETWEEN_RECORD)						// If enough time between measurements
-		{
-			if(experimentLocalData.experimentRecording)								// If we started recording
-			{
-			// Save the data to the file
-			FileMeasurementRecord();
-			}
-
-			// Restart the timer to record time between measurements
-			timerMeasurement.TopChrono();
-			
-			// Increment the measurement number
-			experimentLocalData.experimentGraphPoints++;
-		}
 
 		/*
 		*
@@ -222,15 +148,6 @@ void Automation::Execution()
 			// Reset the flag
 			experimentLocalData.experimentWaiting = false;
 		}
-
-		/*
-		*
-		*		DATA EXCHANGE WITH GUI
-		*
-		*/
-
-		// Send the data to be displayed to the GUI
-		messageHandler.ExchangeData(experimentLocalData);
 		
 		/*
 		*

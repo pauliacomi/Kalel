@@ -64,9 +64,6 @@
     <Filter Include="Header Files\Automation\Utils">
       <UniqueIdentifier>{9edbb7ce-c543-4c3a-bb25-df258b70a828}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Measurement">
-      <UniqueIdentifier>{0ae70c48-f658-45fc-a459-61d7f9e5c5a1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Common">
       <UniqueIdentifier>{3f1b5b90-a803-40ba-9e9b-28a86c4ff657}</UniqueIdentifier>
     </Filter>
@@ -87,6 +84,12 @@
     </Filter>
     <Filter Include="Source Files\Common\Netcode">
       <UniqueIdentifier>{99fb7fb4-345d-48da-abd7-19163eb011a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Automation\Measurement">
+      <UniqueIdentifier>{0ae70c48-f658-45fc-a459-61d7f9e5c5a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Automation\Measurement">
+      <UniqueIdentifier>{d3bfea0f-53b9-43b0-94a8-15394505fbeb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -255,6 +258,12 @@
     <ClInclude Include="MessageHandler.h">
       <Filter>Header Files\Automation</Filter>
     </ClInclude>
+    <ClInclude Include="Automation\Measurement\Measurement.h">
+      <Filter>Header Files\Automation\Measurement</Filter>
+    </ClInclude>
+    <ClInclude Include="Automation\FileWriter.h">
+      <Filter>Header Files\Automation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Kalel Server.cpp">
@@ -407,15 +416,6 @@
     <ClCompile Include="Automation\Class\Automation.cpp">
       <Filter>Source Files\Automation\Class</Filter>
     </ClCompile>
-    <ClCompile Include="Automation\Class\AutomationFileWriting.cpp">
-      <Filter>Source Files\Automation\Class</Filter>
-    </ClCompile>
-    <ClCompile Include="Automation\Class\AutomationMeasurement.cpp">
-      <Filter>Source Files\Automation\Class</Filter>
-    </ClCompile>
-    <ClCompile Include="Automation\Class\AutomationSecurity.cpp">
-      <Filter>Source Files\Automation\Class</Filter>
-    </ClCompile>
     <ClCompile Include="Automation\Class\AutomationShutdown.cpp">
       <Filter>Source Files\Automation\Class</Filter>
     </ClCompile>
@@ -496,6 +496,18 @@
     </ClCompile>
     <ClCompile Include="..\Kalel Shared\Netcode\http_helpers.cpp">
       <Filter>Source Files\Common\Netcode</Filter>
+    </ClCompile>
+    <ClCompile Include="Automation\Measurement\Measurement.cpp">
+      <Filter>Source Files\Automation\Measurement</Filter>
+    </ClCompile>
+    <ClCompile Include="Automation\Measurement\MeasurementFileWriting.cpp">
+      <Filter>Source Files\Automation\Measurement</Filter>
+    </ClCompile>
+    <ClCompile Include="Automation\Measurement\MeasurementSecurity.cpp">
+      <Filter>Source Files\Automation\Measurement</Filter>
+    </ClCompile>
+    <ClCompile Include="Automation\FileWriter.cpp">
+      <Filter>Source Files\Automation</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

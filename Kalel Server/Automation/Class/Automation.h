@@ -21,16 +21,11 @@
 
 // Measurement and manipulation classes
 #include "../../Backend/Wrapper Classes/Vannes.h"							// Controlling valves
-#include "../../Backend/Wrapper Classes/Temperature.h"						// Temperature recording
-#include "../../Backend/Wrapper Classes/SerialInstruments.h"				// Pressure & Calorimeter recording
 
 #include "../Utils/Chrono.h"												// Time keeping
 
 // std::functionality
-#include <sstream>
 #include <atomic>
-#include <thread>
-#include <fstream>
 
 class Automation
 {
@@ -51,8 +46,6 @@ protected:
 
 	// Instruments
 	CVannes* g_pVanne;											// Pointer to the valve opening class
-	CTemperature* g_pTemperature;								// Pointer to the class that deals with temperature recording
-	SerialInstruments * g_pSerialInstruments;					// Pointer to the class that deals with calorimeter & pressure recording
 	std::shared_ptr<ExperimentSettings> experimentSettings;		// Pointer to the experiment settings from the main class, this is only read, never written
 
 	//------------------------------------------------------------
@@ -67,8 +60,6 @@ protected:
 	// Objects 
 	//------------------------------------------------------------
 	
-	std::ofstream fileStream;							// The file stream is stored in this variable
-
 	MessageHandler messageHandler;						// This class will send all the messages out
 
 	CChrono timerExperiment;							// Class for measuring the time from the experiment start
@@ -80,10 +71,8 @@ protected:
 	// Syncronisation primitives and threads
 	//------------------------------------------------------------
 protected:
-	CRITICAL_SECTION criticalSection;					// Critical section for measurement thread sinchronisation
 
 	// Events
-	HANDLE h_MeasurementThreadStartEvent;				// Handle event doing measurement thread signalling
 	HANDLE events[5];									// Keeps all the events below in one array
 
 	// Case switch int for the experiment states (running/paused/etc)
@@ -99,10 +88,6 @@ public:
 	HANDLE h_eventPause;								// Handle event pausing the thread
 	HANDLE h_eventReset;								// Handle event resetting the thread for a new experiment
 	HANDLE h_eventUserInput;							// Handle event waiting for the user to do something
-
-protected:
-	// Threads
-	HANDLE h_MeasurementThread[4];						// Threads for measurement
 
 
 /**********************************************************************************************************************************
@@ -132,34 +117,6 @@ protected:
 
 
 /**********************************************************************************************************************************
-// Security measures and checks
-***********************************************************************************************************************************/
-
-protected:
-
-	bool securityActivated;
-
-	// Keep limits in memory
-	float security_PressureHigh_HighRange;
-	float security_PressureHigh_LowRange;
-
-	// Bool flags to keep track of security
-	bool security_PressureHigh_flag;
-	bool security_TemperatureHigh_flag;
-	bool security_TemperatureLow_flag;
-
-	void InitialisationSecurity();
-
-	void SecuriteHautePression();
-	void SecuriteHautePressionManuelle();
-	void SecuriteHautePressionAuto();
-
-	void SecuriteTemperatures();
-	void SecuriteTemperaturesManuelle();
-	void SecuriteTemperaturesAuto();
-
-
-/**********************************************************************************************************************************
 // Time keeping
 ***********************************************************************************************************************************/
 
@@ -167,118 +124,6 @@ protected:
 
 	void WaitMinutes(int nbminutes);
 	void WaitSeconds(int nbsecondes);
-
-
-
-/**********************************************************************************************************************************
-*
-// File Writing Functions
-*
-***********************************************************************************************************************************/
-
-protected:
-
-	/**********************************************************************
-	* Write the first section of an entete and save it
-	* Inputs: none
-	***********************************************************************/
-	void EnteteCreate();
-
-	/**********************************************************************
-	* Write the first section of an CSV entete and save it
-	* Inputs: none
-	***********************************************************************/
-	void EnteteCSVCreate();
-
-	/**********************************************************************
-	* Opens the measurement file for the first time and stores its link in the fileStream ofstream
-	* Also writes columns in the CSV
-	* Inputs: none
-	***********************************************************************/
-	void FileMeasurementOpen();
-
-	/**********************************************************************
-	* Closes the measurement file
-	* Inputs: none
-	***********************************************************************/
-	void FileMeasurementClose();
-	
-	/**********************************************************************
-	* Records a measurement
-	* Inputs: none
-	***********************************************************************/
-	void FileMeasurementRecord();
-
-
-
-	/**********************************************************************
-	* Writes the base of the entete
-	* Inputs:
-	*        bool csv: Ask for a comma separated value format if true
-	***********************************************************************/
-	std::wstring EnteteBase(bool csv);
-
-	/**********************************************************************
-	* Writes the settings from the general tab
-	* Inputs:
-	*        bool csv: Ask for a comma separated value format if true
-	***********************************************************************/
-	std::wstring EnteteGeneral(bool csv);
-
-	/**********************************************************************
-	* Writes the settings from the diverse tab
-	* Inputs:
-	*        bool csv: Ask for a comma separated value format if true
-	***********************************************************************/
-	std::wstring EnteteDivers(bool csv);
-	
-	/**********************************************************************
-	* Writes the adsorption steps
-	* Inputs:
-	*        bool csv: Ask for a comma separated value format if true
-	***********************************************************************/
-	std::wstring EnteteAdsorption(bool csv);
-
-	/**********************************************************************
-	* Writes the desorption steps
-	* Inputs:
-	*        bool csv: Ask for a comma separated value format if true
-	***********************************************************************/
-	std::wstring EnteteDesorption(bool csv);
-
-
-	/**********************************************************************
-	* Writes any settings changes into the entete files
-	* Inputs:
-	*        ExperimentSettings newSettings: The settings file to compare to the current one
-	*        bool csv: Ask to write to the comma separated value file if true
-	***********************************************************************/
-	void RecordDataChange(const ExperimentSettings& newSettings, bool csv);
-
-
-	/**********************************************************************
-	* Returns the full path and title of the file to be written
-	* Inputs:
-	*        string extension: Extension you want the file to have
-	*        bool entete: specify true to get the entete string or false for the regular file
-	***********************************************************************/
-	std::wstring BuildFileName(std::wstring extension, bool entete);
-
-/**********************************************************************************************************************************
-// Measurements functions and threads
-***********************************************************************************************************************************/
-		
-	void ThreadMeasurement();
-
-	static DWORD WINAPI ThreadProc_ReadCalorimeter(LPVOID lpParam);
-	static DWORD WINAPI ThreadProc_ReadHighPressure(LPVOID lpParam);
-	static DWORD WINAPI ThreadProc_ReadLowPressure(LPVOID lpParam);
-	static DWORD WINAPI ThreadProc_ReadTemperature(LPVOID lpParam);
-
-	void ReadCalorimeter();
-	void ReadLowPressure();
-	void ReadHighPressure();
-	void ReadTemperatures();
 
 
 /**********************************************************************************************************************************
