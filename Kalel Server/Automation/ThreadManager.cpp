@@ -5,8 +5,9 @@
 #include "../../Kalel Shared/Com Classes/ManualActionParam.h"
 #include "../../Kalel Shared/Resources/DefineInstruments.h"
 
+#include "FileWriter.h"												// Class responsible for writing to files
 #include "Class/Automation.h"										// Backend for all the automation
-#include "Measurement.h"											// Backend for measurements
+#include "Measurement/Measurement.h"								// Backend for measurements
 
 
 // Netcode
