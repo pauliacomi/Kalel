@@ -143,6 +143,16 @@ bool Donnees_Doses::operator!=(const Donnees_Doses &STAGE_DOSES)
 	return false;
 }
 
+bool Donnees_Doses::operator!=(const Donnees_Doses & STAGE_DOSES) const
+{
+	if (delta_pression != STAGE_DOSES.delta_pression ||
+		pression_finale != STAGE_DOSES.pression_finale ||
+		temps_adsorption != STAGE_DOSES.temps_adsorption ||
+		temps_volume != STAGE_DOSES.temps_volume)
+		return true;
+	return false;
+}
+
 
 
 Donnees_Desorption Donnees_Desorption::operator=(const Donnees_Desorption &STAGE_DESORPTION)
@@ -161,6 +171,16 @@ bool Donnees_Desorption::operator!=(const Donnees_Desorption &STAGE_DESORPTION)
 			pression_finale != STAGE_DESORPTION.pression_finale ||
 			temps_desorption != STAGE_DESORPTION.temps_desorption ||
 			temps_volume != STAGE_DESORPTION.temps_volume)
+		return true;
+	return false;
+}
+
+bool Donnees_Desorption::operator!=(const Donnees_Desorption & STAGE_DESORPTION) const
+{
+	if (delta_pression != STAGE_DESORPTION.delta_pression ||
+		pression_finale != STAGE_DESORPTION.pression_finale ||
+		temps_desorption != STAGE_DESORPTION.temps_desorption ||
+		temps_volume != STAGE_DESORPTION.temps_volume)
 		return true;
 	return false;
 }

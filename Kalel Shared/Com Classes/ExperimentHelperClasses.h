@@ -80,6 +80,7 @@ public:
 
 	Donnees_Doses operator=(const Donnees_Doses &petites_doses);
 	bool operator!=(const Donnees_Doses &petites_doses);
+	bool operator!=(const Donnees_Doses &petites_doses) const;
 };
 
 class Donnees_Desorption
@@ -92,6 +93,7 @@ public:
 
 	Donnees_Desorption operator=(const Donnees_Desorption &desorption);
 	bool operator!=(const Donnees_Desorption &desorption);
+	bool operator!=(const Donnees_Desorption &desorption) const;
 };
 
 class Donnees_Adsorption_Continue

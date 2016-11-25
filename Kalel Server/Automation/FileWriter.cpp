@@ -355,27 +355,25 @@ void FileWriter::RecordDataChange(bool csv, const ExperimentSettings& newSetting
 			text << "Step" << divider << data.adsorptionCounter								<< std::endl;
 			text << "Dose" << divider << data.experimentDose								<< std::endl;
 
-			if (oldSettings.dataDesorption[i] != newSettings.dataDesorption[i])
+			
+			if (oldSettings.dataDesorption[i].delta_pression != newSettings.dataDesorption[i].delta_pression)
 			{
-				if (oldSettings.dataDesorption[i].delta_pression != newSettings.dataDesorption[i].delta_pression)
-				{
-					text << "Delta pression par désorption"						<< divider << newSettings.dataDesorption[i].delta_pression		<< divider << "bar" << std::endl;
-				}
+				text << "Delta pression par désorption"						<< divider << newSettings.dataDesorption[i].delta_pression		<< divider << "bar" << std::endl;
+			}
 
-				if (oldSettings.dataDesorption[i].temps_volume != newSettings.dataAdsorption[i].temps_volume)
-				{
-					text << "Temps de l'expérience dans le volume référenciel"	<< divider << newSettings.dataDesorption[i].temps_volume		<< divider << "min" << std::endl;
-				}
+			if (oldSettings.dataDesorption[i].temps_volume != newSettings.dataAdsorption[i].temps_volume)
+			{
+				text << "Temps de l'expérience dans le volume référenciel"	<< divider << newSettings.dataDesorption[i].temps_volume		<< divider << "min" << std::endl;
+			}
 
-				if (oldSettings.dataDesorption[i].temps_desorption != newSettings.dataDesorption[i].temps_desorption)
-				{
-					text << "Temps de l'expérience dans la désorption"			<< divider << newSettings.dataDesorption[i].temps_desorption	<< divider << "min" << std::endl;
-				}
+			if (oldSettings.dataDesorption[i].temps_desorption != newSettings.dataDesorption[i].temps_desorption)
+			{
+				text << "Temps de l'expérience dans la désorption"			<< divider << newSettings.dataDesorption[i].temps_desorption	<< divider << "min" << std::endl;
+			}
 
-				if (oldSettings.dataDesorption[i].pression_finale != newSettings.dataAdsorption[i].pression_finale)
-				{
-					text << "Pression finale"									<< divider << newSettings.dataDesorption[i].pression_finale		<< divider << "bar" << std::endl;
-				}
+			if (oldSettings.dataDesorption[i].pression_finale != newSettings.dataAdsorption[i].pression_finale)
+			{
+				text << "Pression finale"									<< divider << newSettings.dataDesorption[i].pression_finale		<< divider << "bar" << std::endl;
 			}
 		}
 	}
