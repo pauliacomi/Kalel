@@ -210,8 +210,12 @@ bool Automation::ExecutionManual()
 		experimentLocalData.experimentRecording = true;
 
 		// Create open and write the columns in the:
-		EnteteCreate();				// Entete TXT
-		EnteteCSVCreate();			// Entete CSV
+		bool err = false;
+		err = EnteteCreate();				// Entete TXT
+		err = EnteteCSVCreate();			// Entete CSV
+		if (err){
+			messageHandler.DisplayMessageBox(ERROR_PATHUNDEF, MB_ICONERROR | MB_OK, false);
+		}
 		FileMeasurementOpen();		// Measurement file
 
 		// Continue experiment

@@ -25,8 +25,10 @@ protected:
 	* Inputs: 
 	*		const ExperimentSettings &expSettings:	Reference to the experimentSettings which generates the entete
 	*		const MachineSettings &machSettings:	Reference to the MachineSettings which generates the entete
+	* Outputs:
+	*		bool: Path undefined error
 	***********************************************************************/
-	void EnteteCreate(const ExperimentSettings &expSettings, const MachineSettings &machSettings);
+	bool EnteteCreate(const ExperimentSettings &expSettings, const MachineSettings &machSettings);
 
 
 	/**********************************************************************
@@ -34,8 +36,10 @@ protected:
 	* Inputs: 
 	*		const ExperimentSettings &expSettings:	Reference to the experimentSettings which generates the entete
 	*		const MachineSettings &machSettings:	Reference to the MachineSettings which generates the entete
+	* Outputs:
+	*		bool: Path undefined error
 	***********************************************************************/
-	void EnteteCSVCreate(const ExperimentSettings &expSettings, const MachineSettings &machSettings);
+	bool EnteteCSVCreate(const ExperimentSettings &expSettings, const MachineSettings &machSettings);
 
 
 	/**********************************************************************
@@ -43,8 +47,10 @@ protected:
 	* Also writes columns in the CSV
 	* Inputs:
 	*		const Donnees_General &general:		Reference to the general data to be checked
+	* Outputs:
+	*		bool: Path undefined error
 	***********************************************************************/
-	void FileMeasurementOpen(const Donnees_General &general);
+	bool FileMeasurementOpen(const Donnees_General &general);
 
 
 	/**********************************************************************
@@ -126,7 +132,8 @@ protected:
 	*       string extension: Extension you want the file to have
 	*		const Donnees_General &general:		Reference to the general data to be checked
 	*       bool entete: specify true to get the entete string or false for the regular file
+	*       bool entete: error return value for undefined path
 	***********************************************************************/
-	std::wstring BuildFileName(std::wstring extension, const Donnees_General &general, bool entete);
+	std::wstring BuildFileName(std::wstring extension, const Donnees_General &general, bool entete, bool error);
 };
 

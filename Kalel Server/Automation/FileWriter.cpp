@@ -30,11 +30,12 @@ FileWriter::~FileWriter()
 *		const ExperimentSettings &expSettings:	Reference to the experimentSettings which generates the entete
 *		const MachineSettings &machSettings:	Reference to the MachineSettings which generates the entete
 ***********************************************************************/
-void FileWriter::EnteteCreate(const ExperimentSettings &expSettings, const MachineSettings &machSettings)
+bool FileWriter::EnteteCreate(const ExperimentSettings &expSettings, const MachineSettings &machSettings)
 {
 	std::wofstream file;
+	bool ret;
 
-	file.open(FileWriter::BuildFileName(L"txt", expSettings.dataGeneral, true).c_str(), std::ios_base::out);
+	file.open(FileWriter::BuildFileName(L"txt", expSettings.dataGeneral, true, ret).c_str(), std::ios_base::out);
 	file.clear();
 	file << EnteteBase(false, expSettings.experimentType);
 	file << EnteteGeneral(false, expSettings.dataGeneral, machSettings.CaloName);
@@ -46,6 +47,8 @@ void FileWriter::EnteteCreate(const ExperimentSettings &expSettings, const Machi
 	}
 
 	file.close();
+
+	return ret;
 }
 
 
@@ -56,11 +59,12 @@ void FileWriter::EnteteCreate(const ExperimentSettings &expSettings, const Machi
 *		const ExperimentSettings &expSettings:	Reference to the experimentSettings which generates the entete
 *		const MachineSettings &machSettings:	Reference to the MachineSettings which generates the entete
 ***********************************************************************/
-void FileWriter::EnteteCSVCreate(const ExperimentSettings &expSettings, const MachineSettings &machSettings)
+bool FileWriter::EnteteCSVCreate(const ExperimentSettings &expSettings, const MachineSettings &machSettings)
 {
 	std::wofstream file;
+	bool ret;
 
-	file.open(FileWriter::BuildFileName(L"csv", expSettings.dataGeneral, true).c_str(), std::ios_base::out);
+	file.open(FileWriter::BuildFileName(L"csv", expSettings.dataGeneral, true, ret).c_str(), std::ios_base::out);
 	file.clear();
 	file << EnteteBase(true, expSettings.experimentType);
 	file << EnteteGeneral(true, expSettings.dataGeneral, machSettings.CaloName);
@@ -71,6 +75,8 @@ void FileWriter::EnteteCSVCreate(const ExperimentSettings &expSettings, const Ma
 		file << EnteteDesorption(true, expSettings.dataDesorption);
 	}
 	file.close();
+
+	return ret;
 }
 
 
@@ -81,10 +87,12 @@ void FileWriter::EnteteCSVCreate(const ExperimentSettings &expSettings, const Ma
 * Inputs: 
 *		const Donnees_General &general:		Reference to the general data to be checked
 ***********************************************************************/
-void FileWriter::FileMeasurementOpen(const Donnees_General &general)
+bool FileWriter::FileMeasurementOpen(const Donnees_General &general)
 {
+	bool ret;
+	
 	// Create the file
-	fileStream.open(BuildFileName(L"csv", general, false).c_str(), std::ios_base::out /*| ios::trunc*/);
+	fileStream.open(BuildFileName(L"csv", general, false, ret).c_str(), std::ios_base::out /*| ios::trunc*/);
 
 	// Clear the file stream, pas le .csv, et on peut réitérer l'écriture en enlevant le caractère "fin de fichier"
 	fileStream.clear();
@@ -100,6 +108,8 @@ void FileWriter::FileMeasurementOpen(const Donnees_General &general)
 	fileStream << "T°C pièce;";													// Temperature room
 	fileStream << "Vanne 6";													// Valve open
 	fileStream << std::endl;													// Next line
+
+	return ret;
 }
 
 
@@ -380,10 +390,11 @@ void FileWriter::RecordDataChange(bool csv, const ExperimentSettings& newSetting
 
 	// Get title
 	std::wstring title;
+	bool ret;
 	if (csv)
-		title = BuildFileName(L"csv", newSettings.dataGeneral, true).c_str();
+		title = BuildFileName(L"csv", newSettings.dataGeneral, true, ret).c_str();
 	else
-		title = BuildFileName(L"txt", newSettings.dataGeneral, true).c_str();
+		title = BuildFileName(L"txt", newSettings.dataGeneral, true, ret).c_str();
 
 	// Write to file
 	std::ofstream file;
@@ -402,7 +413,7 @@ void FileWriter::RecordDataChange(bool csv, const ExperimentSettings& newSetting
 *		const Donnees_General &general:		Reference to the general data to be checked
 *       bool entete: specify true to get the entete std::string or false for the regular file
 ***********************************************************************/
-std::wstring FileWriter::BuildFileName(std::wstring extension, const Donnees_General &general, bool entete)
+std::wstring FileWriter::BuildFileName(std::wstring extension, const Donnees_General &general, bool entete, bool error)
 {
 	// Create buffer
 	wchar_t fileNameBuffer[255];
@@ -410,10 +421,11 @@ std::wstring FileWriter::BuildFileName(std::wstring extension, const Donnees_Gen
 	// Put path in buffer
 	wprintf_s(fileNameBuffer, "%s", general.chemin.c_str());
 
-	// Check for validity, if not, put the file in the C: drive
+	// Check for validity, if not, put the file in the C: drive and return an error
+	error = false;
 	if (!PathIsDirectory(fileNameBuffer))
 	{
-		messageHandler->DisplayMessageBox(ERROR_PATHUNDEF, MB_ICONERROR | MB_OK, false);
+		error = true;
 		wprintf_s(fileNameBuffer, "C:/");
 	}
 
