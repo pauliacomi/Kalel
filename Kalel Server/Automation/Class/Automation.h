@@ -60,7 +60,6 @@ protected:
 	// Objects 
 	//------------------------------------------------------------
 	
-	MessageHandler messageHandler;						// This class will send all the messages out
 
 	CChrono timerExperiment;							// Class for measuring the time from the experiment start
 	CChrono timerMeasurement;							// Class for measuring the time between each measurement

@@ -500,9 +500,6 @@
     <ClCompile Include="Automation\Measurement\Measurement.cpp">
       <Filter>Source Files\Automation\Measurement</Filter>
     </ClCompile>
-    <ClCompile Include="Automation\Measurement\MeasurementFileWriting.cpp">
-      <Filter>Source Files\Automation\Measurement</Filter>
-    </ClCompile>
     <ClCompile Include="Automation\Measurement\MeasurementSecurity.cpp">
       <Filter>Source Files\Automation\Measurement</Filter>
     </ClCompile>

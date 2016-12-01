@@ -2,7 +2,6 @@
 
 Automation::Automation(Storage &h)
 	: running(true)
-	, messageHandler{ h }
 {
 	// Save pointer to experiment settings
 	experimentSettings = h.experimentSettings;

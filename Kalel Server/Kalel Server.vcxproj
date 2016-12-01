@@ -279,7 +279,6 @@
     <ClCompile Include="Automation\Class\AutomationValves.cpp" />
     <ClCompile Include="Automation\FileWriter.cpp" />
     <ClCompile Include="Automation\Measurement\Measurement.cpp" />
-    <ClCompile Include="Automation\Measurement\MeasurementFileWriting.cpp" />
     <ClCompile Include="Automation\Measurement\MeasurementSecurity.cpp" />
     <ClCompile Include="Automation\Old\Manip.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>

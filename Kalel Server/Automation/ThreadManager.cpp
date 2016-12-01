@@ -26,6 +26,7 @@ ThreadManager::ThreadManager(Storage &h)
 	, experimentSettings(nullptr)
 
 	, automation(nullptr)
+	, messageHandler{ h }
 {
 	// 
 	handles = &h;

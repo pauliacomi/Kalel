@@ -29,8 +29,14 @@ private:
 	Storage * handles;										// pointer to storage class
 	Automation * automation;								// Main class that deals with the automatic functionality
 
+	//------------------------------------------------------------
+	// Objects 
+	//------------------------------------------------------------
 	// Create the required objects
 	CVannes pVanne;
+	MessageHandler messageHandler;						// This class will send all the messages out
+
+
 
 	// Public interface methods
 public:

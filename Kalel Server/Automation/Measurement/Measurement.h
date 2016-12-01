@@ -14,6 +14,7 @@ class CChrono;
 class ExperimentSettings;
 class Storage;
 class CVannes;
+class FileWriter;
 
 class Measurement
 {
@@ -38,6 +39,7 @@ public:
 	CChrono* timerWaiting;											// Class for measuring the time to wait
 	Storage* storageVectors;
 	CVannes* valves;
+	FileWriter *fwrt;												// File writer
 	std::shared_ptr<ExperimentSettings> experimentLocalSettings;	// Pointer to the experiment settings from the main class, this is only read, never written
 
 	//------------------------------------------------------------
