@@ -153,6 +153,14 @@ void Measurement::Execution()
 
 		// Send the data to be displayed to the GUI
 		messageHandler->ExchangeData(*experimentLocalData);
+
+		/*
+		*
+		*		Pause
+		*
+		*/
+
+		std::this_thread::sleep_for(std::chrono::seconds(T_BETWEEN_MEASURE));
 	}
 }
 

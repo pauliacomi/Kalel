@@ -8,6 +8,7 @@
 #include "../Backend/Wrapper Classes/Vannes.h"
 
 class Automation;
+class Measurement;
 class ExperimentSettings;
 class ManualActionParam;
 
@@ -28,6 +29,7 @@ private:
 
 	Storage * handles;										// pointer to storage class
 	Automation * automation;								// Main class that deals with the automatic functionality
+	Measurement * measurement;								// Main class that deals with the measurement functionality
 
 	//------------------------------------------------------------
 	// Objects 
@@ -36,10 +38,13 @@ private:
 	CVannes pVanne;
 	MessageHandler messageHandler;						// This class will send all the messages out
 
+	// Threads
+	std::thread measurementThread;						// c++11 thread for measurement
 
 
 	// Public interface methods
 public:
+	unsigned StartMeasurement();
 	HRESULT StartThread();
 	HRESULT ResumeThread();
 	HRESULT PauseThread();

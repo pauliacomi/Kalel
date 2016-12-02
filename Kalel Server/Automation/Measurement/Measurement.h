@@ -29,7 +29,8 @@ public:
 	//------------------------------------------------------------
 	// Pointers
 	//------------------------------------------------------------
-
+	
+	// Inherited
 	CTemperature* g_pTemperature;									// Pointer to the class that deals with temperature recording
 	SerialInstruments * g_pSerialInstruments;						// Pointer to the class that deals with calorimeter & pressure recording
 	MessageHandler* messageHandler;									// This class will send all the messages out

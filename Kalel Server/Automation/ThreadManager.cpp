@@ -30,6 +30,7 @@ ThreadManager::ThreadManager(Storage &h)
 {
 	// 
 	handles = &h;
+
 }
 
 ThreadManager::~ThreadManager()
@@ -45,6 +46,15 @@ ThreadManager::~ThreadManager()
 // --------- Thread start, pausing, resetting, resuming and shutdown --------
 //
 //---------------------------------------------------------------------------
+
+unsigned ThreadManager::StartMeasurement() {
+
+	measurement = new Measurement();
+
+	measurementThread = std::thread(&Measurement::Execution, measurement);
+
+	return 0;
+}
 
 HRESULT ThreadManager::StartThread() {
 
