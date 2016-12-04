@@ -29,8 +29,8 @@ ThreadManager::ThreadManager(Storage &h)
 {
 	// Create objects from controls class
 	controls.fileWriter = std::make_shared<FileWriter>();
-	controls.messageHandler = std::make_shared<MessageHandler>();
-	controls.valveControls = std::make_shared<ValveController>(h);
+	controls.messageHandler = std::make_shared<MessageHandler>(h);
+	controls.valveControls = std::make_shared<ValveController>(*controls.messageHandler);
 }
 
 ThreadManager::~ThreadManager()
@@ -213,23 +213,23 @@ void ThreadManager::ThreadManualAction()
 	{
 	case INSTRUMENT_VALVE:
 		if (localMP->shouldBeActivated)
-			actionSuccessful = controls.valveControls->Ouvrir(localMP->instrumentNumber);
+			actionSuccessful = controls.valveControls->ValveOpen(localMP->instrumentNumber, false);
 		else
-			actionSuccessful = controls.valveControls->Fermer(localMP->instrumentNumber);
+			actionSuccessful = controls.valveControls->ValveClose(localMP->instrumentNumber, false);
 		break;
 
 	case INSTRUMENT_EV:
 		if (localMP->shouldBeActivated)
-			actionSuccessful = controls.valveControls->ActiverEV(localMP->instrumentNumber);
+			actionSuccessful = controls.valveControls->EVActivate(localMP->instrumentNumber, false);
 		else
-			actionSuccessful = controls.valveControls->DesactiverEV(localMP->instrumentNumber);
+			actionSuccessful = controls.valveControls->EVDeactivate(localMP->instrumentNumber, false);
 		break;
 
 	case INSTRUMENT_PUMP:
 		if (localMP->shouldBeActivated)
-			actionSuccessful = controls.valveControls->ActiverPompe();
+			actionSuccessful = controls.valveControls->PumpActivate(false);
 		else
-			actionSuccessful = controls.valveControls->DesactiverPompe();
+			actionSuccessful = controls.valveControls->PumpDeactivate(false);
 		break;
 
 	default:

@@ -3,121 +3,121 @@
 void Automation::StageVacuum(bool separateFunctionality)
 {
 	
-	if (experimentLocalData.experimentStepStatus == STEP_STATUS_START
-		&& experimentLocalData.experimentWaiting == false)
+	if (storage.currentData->experimentStepStatus == STEP_STATUS_START
+		&& storage.currentData->experimentWaiting == false)
 	{
-		experimentLocalData.experimentStepStatus = STEP_STATUS_INPROGRESS;												// Set next step
-		controls.messageHandler->DisplayMessage(MESSAGE_VACUUM_STAGE_START);														// Let GUI know the step change
+		storage.currentData->experimentStepStatus = STEP_STATUS_INPROGRESS;					// Set next step
+		controls.messageHandler->DisplayMessage(MESSAGE_VACUUM_STAGE_START);				// Let GUI know the step change
 		controls.messageHandler->DisplayMessage(MESSAGE_VACUUM_HIGHPRESSURE_START);
 
-		ControlMechanismsCloseAll();								// Close all valves
-		ActivatePump();											    // Activate the pump
-		ValveOpen(5);												// Open V5
+		controls.valveControls->CloseAll(true);												// Close all valves
+		controls.valveControls->PumpActivate(true);											// Activate the pump
+		controls.valveControls->ValveOpen(5, true);											// Open V5
 		WaitSeconds(TIME_WAIT_PUMP);
 	}
 
 
-	if (experimentLocalData.experimentStepStatus == STEP_STATUS_INPROGRESS
-		&& experimentLocalData.experimentWaiting == false)
+	if (storage.currentData->experimentStepStatus == STEP_STATUS_INPROGRESS
+		&& storage.currentData->experimentWaiting == false)
 	{
-		if (experimentLocalData.pressureHigh > GetPressionSecuriteBassePression()) {
+		if (storage.currentData->pressureHigh > GetPressionSecuriteBassePression()) {
 
 			// Open, then close v8 and v7
-			ValveOpen(8);
+			controls.valveControls->ValveOpen(8, true);
 			WaitSeconds(TIME_WAIT_VALVES_SHORT);
-			experimentLocalData.experimentStepStatus = STEP_STATUS_INPROGRESS + 1;
+			storage.currentData->experimentStepStatus = STEP_STATUS_INPROGRESS + 1;
 		}
 		else
 		{
 			controls.messageHandler->DisplayMessage(MESSAGE_VACUUM_HIGHPRESSURE_END);
 			controls.messageHandler->DisplayMessage(MESSAGE_VACUUM_LOWPRESSURE_START);
-			ValveOpen(6);
+			controls.valveControls->ValveOpen(6, true);
 			WaitSeconds(TIME_WAIT_VALVES_SHORT);
 
-			experimentLocalData.experimentStepStatus = STEP_STATUS_INPROGRESS + 4;
+			storage.currentData->experimentStepStatus = STEP_STATUS_INPROGRESS + 4;
 		}
 	}
 
-	if (experimentLocalData.experimentSubstepStage == STEP_STATUS_INPROGRESS + 1 &&
-		experimentLocalData.experimentWaiting == false)
+	if (storage.currentData->experimentSubstepStage == STEP_STATUS_INPROGRESS + 1 &&
+		storage.currentData->experimentWaiting == false)
 	{
-		ValveClose(8);
+		controls.valveControls->ValveClose(8, true);
 		WaitSeconds(TIME_WAIT_VALVES_SHORT);
-		experimentLocalData.experimentSubstepStage = STEP_STATUS_INPROGRESS + 2;
+		storage.currentData->experimentSubstepStage = STEP_STATUS_INPROGRESS + 2;
 	}
 
-	if (experimentLocalData.experimentSubstepStage == STEP_STATUS_INPROGRESS + 2 &&
-		experimentLocalData.experimentWaiting == false)
+	if (storage.currentData->experimentSubstepStage == STEP_STATUS_INPROGRESS + 2 &&
+		storage.currentData->experimentWaiting == false)
 	{
-		ValveOpen(7);
+		controls.valveControls->ValveOpen(7, true);
 		WaitSeconds(TIME_WAIT_VALVES_SHORT);
-		experimentLocalData.experimentSubstepStage = STEP_STATUS_INPROGRESS + 3;
+		storage.currentData->experimentSubstepStage = STEP_STATUS_INPROGRESS + 3;
 	}
 
-	if (experimentLocalData.experimentSubstepStage == STEP_STATUS_INPROGRESS + 3 &&
-		experimentLocalData.experimentWaiting == false)
+	if (storage.currentData->experimentSubstepStage == STEP_STATUS_INPROGRESS + 3 &&
+		storage.currentData->experimentWaiting == false)
 	{
-		ValveClose(7);
+		controls.valveControls->ValveClose(7, true);
 		WaitSeconds(TIME_WAIT_VALVES_SHORT);
-		experimentLocalData.experimentSubstepStage = STEP_STATUS_INPROGRESS;					// Go back to the start
+		storage.currentData->experimentSubstepStage = STEP_STATUS_INPROGRESS;					// Go back to the start
 	}
 
 
 
 
 
-	if (experimentLocalData.experimentStepStatus == STEP_STATUS_INPROGRESS + 4
-		&& experimentLocalData.experimentWaiting == false)
+	if (storage.currentData->experimentStepStatus == STEP_STATUS_INPROGRESS + 4
+		&& storage.currentData->experimentWaiting == false)
 	{
-		if (experimentLocalData.pressureHigh > pression_pompe) {
+		if (storage.currentData->pressureHigh > pression_pompe) {
 
 			// Open, then close v8 and v7
-			ValveOpen(8);
+			controls.valveControls->ValveOpen(8, true);
 			WaitSeconds(TIME_WAIT_VALVES_SHORT);
-			experimentLocalData.experimentStepStatus = STEP_STATUS_INPROGRESS + 5;
+			storage.currentData->experimentStepStatus = STEP_STATUS_INPROGRESS + 5;
 		}
 		else
 		{
 			controls.messageHandler->DisplayMessage(MESSAGE_VACUUM_LOWPRESSURE_END);
 
-			ValveOpen(8);
-			ValveOpen(7);
+			controls.valveControls->ValveOpen(8, true);
+			controls.valveControls->ValveOpen(7, true);
 			WaitSeconds(TIME_WAIT_VALVES);
 
-			experimentLocalData.experimentStepStatus = STEP_STATUS_INPROGRESS + 8;
+			storage.currentData->experimentStepStatus = STEP_STATUS_INPROGRESS + 8;
 		}
 	}
 
-	if (experimentLocalData.experimentSubstepStage == STEP_STATUS_INPROGRESS + 5 &&
-		experimentLocalData.experimentWaiting == false)
+	if (storage.currentData->experimentSubstepStage == STEP_STATUS_INPROGRESS + 5 &&
+		storage.currentData->experimentWaiting == false)
 	{
-		ValveClose(8);
+		controls.valveControls->ValveClose(8, true);
 		WaitSeconds(TIME_WAIT_VALVES_SHORT);
-		experimentLocalData.experimentSubstepStage = STEP_STATUS_INPROGRESS + 6;
+		storage.currentData->experimentSubstepStage = STEP_STATUS_INPROGRESS + 6;
 	}
 
-	if (experimentLocalData.experimentSubstepStage == STEP_STATUS_INPROGRESS + 6 &&
-		experimentLocalData.experimentWaiting == false)
+	if (storage.currentData->experimentSubstepStage == STEP_STATUS_INPROGRESS + 6 &&
+		storage.currentData->experimentWaiting == false)
 	{
-		ValveOpen(7);
+		controls.valveControls->ValveOpen(7, true);
 		WaitSeconds(TIME_WAIT_VALVES_SHORT);
-		experimentLocalData.experimentSubstepStage = STEP_STATUS_INPROGRESS + 7;
+		storage.currentData->experimentSubstepStage = STEP_STATUS_INPROGRESS + 7;
 	}
 
-	if (experimentLocalData.experimentSubstepStage == STEP_STATUS_INPROGRESS + 7 &&
-		experimentLocalData.experimentWaiting == false)
+	if (storage.currentData->experimentSubstepStage == STEP_STATUS_INPROGRESS + 7 &&
+		storage.currentData->experimentWaiting == false)
 	{
-		ValveClose(7);
+		controls.valveControls->ValveClose(7, true);
 		WaitSeconds(TIME_WAIT_VALVES_SHORT);
-		experimentLocalData.experimentSubstepStage = STEP_STATUS_INPROGRESS + 4;					// Go back to the start
+		storage.currentData->experimentSubstepStage = STEP_STATUS_INPROGRESS + 4;					// Go back to the start
 	}
 
 
 
 
 
-	if (experimentLocalData.experimentStepStatus == STEP_STATUS_INPROGRESS + 8
-		&& experimentLocalData.experimentWaiting == false)
+	if (storage.currentData->experimentStepStatus == STEP_STATUS_INPROGRESS + 8
+		&& storage.currentData->experimentWaiting == false)
 	{
 		controls.messageHandler->DisplayMessage(MESSAGE_VACUUM_FINALOUTGAS_START);
 
@@ -128,27 +128,27 @@ void Automation::StageVacuum(bool separateFunctionality)
 		}
 		else
 		{
-			if (experimentLocalSettings.dataDivers.mise_sous_vide_fin_experience)
-				WaitMinutes(experimentLocalSettings.dataDivers.temps_vide);
+			if (storage.experimentSettings->dataDivers.mise_sous_vide_fin_experience)
+				WaitMinutes(storage.experimentSettings->dataDivers.temps_vide);
 			else
 				WaitMinutes(temps_defaut);
 		}
-		experimentLocalData.experimentStepStatus = STEP_STATUS_END;
+		storage.currentData->experimentStepStatus = STEP_STATUS_END;
 	}
 
 
-	if (experimentLocalData.experimentStepStatus == STEP_STATUS_END
-		&& experimentLocalData.experimentWaiting == false)
+	if (storage.currentData->experimentStepStatus == STEP_STATUS_END
+		&& storage.currentData->experimentWaiting == false)
 	{
 		controls.messageHandler->DisplayMessage(MESSAGE_VACUUM_FINALOUTGAS_END);
 
-		experimentLocalData.experimentStepStatus = STEP_STATUS_START;													// Let GUI know the step change
+		storage.currentData->experimentStepStatus = STEP_STATUS_START;													// Let GUI know the step change
 
-		ControlMechanismsCloseAll();
+		controls.valveControls->CloseAll(true);
 
 		if (separateFunctionality)
 		{
-			experimentLocalData.experimentStage = STAGE_UNDEF;
+			storage.currentData->experimentStage = STAGE_UNDEF;
 			shutdownReason = STOP_NORMAL;								// set a normal shutdown
 			::SetEvent(h_eventReset);									// end then set the event
 		}
@@ -156,7 +156,7 @@ void Automation::StageVacuum(bool separateFunctionality)
 		{
 			controls.messageHandler->DisplayMessage(MESSAGE_VACUUM_STAGE_END);
 
-			experimentLocalData.experimentStepStatus = STAGE_END_AUTOMATIC;
+			storage.currentData->experimentStepStatus = STAGE_END_AUTOMATIC;
 		}
 	}
 }

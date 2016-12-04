@@ -18,7 +18,7 @@
 #include "../../../Kalel Shared/Com Classes/ExperimentSettings.h"	
 
 // Measurement and manipulation classes
-#include "../../Backend/Wrapper Classes/Vannes.h"							// Controlling valves
+#include "../../Backend/Wrapper Classes/ValveController.h"					// Controlling valves
 
 #include "../Utils/Chrono.h"												// Time keeping
 
@@ -46,17 +46,7 @@ protected:
 	// Pointers
 	//------------------------------------------------------------
 	Storage & storage;
-	Controls & controls;
-
-	// Instruments
-
-	//------------------------------------------------------------
-	// Locally stored settings and data
-	//------------------------------------------------------------
-
-	ExperimentSettings experimentLocalSettings;			// Pointer to local storage of settings
-	ExperimentData experimentLocalData;					// 
-	
+	Controls & controls;	
 														
 	//------------------------------------------------------------
 	// Syncronisation primitives and threads

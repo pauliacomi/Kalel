@@ -3,6 +3,11 @@
 
 #include <fstream>
 #include <sstream>
+#include <vector>
+
+#include "../../Kalel Shared/Com Classes/ExperimentSettings.h"	
+#include "../../Kalel Shared/Com Classes/MachineSettings.h"	
+#include "../../Kalel Shared/Com Classes/ExperimentData.h"
 
 class FileWriter
 {

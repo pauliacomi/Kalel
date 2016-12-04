@@ -35,14 +35,14 @@ public:
 
 	// Checks for activation
 
-	bool VanneEstOuvert(int num);
-	bool VanneEstFerme(int num);
-	bool EV1EstActive();
-	bool EV1EstDesactive();
-	bool EV2EstActive();
-	bool EV2EstDesactive();
-	bool PompeEstActive();
-	bool PompeEstDesactive();
+	bool ValveIsOpen(int num);
+	bool ValveIsClosed(int num);
+	bool EV1IsActive();
+	bool EV1IsInactive();
+	bool EV2IsActive();
+	bool EV2IsInactive();
+	bool PumpIsActive();
+	bool PumpIsInactive();
 
 	// Get the USB port
 	int PortUSB();

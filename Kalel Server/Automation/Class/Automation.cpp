@@ -28,7 +28,7 @@ Automation::Automation(Storage &s, Controls &c)
 	shutdownReason = STOP_CANCEL;
 
 	// Time
-	experimentLocalData.timeStart = time(0);
+	storage.currentData->timeStart = time(0);
 	controls.timerExperiment.TopChrono();	// Start global experiment timer	
 	controls.timerMeasurement.TopChrono();	// Start the timer to record time between measurements
 }
@@ -37,7 +37,7 @@ Automation::Automation(Storage &s, Controls &c)
 Automation::~Automation()
 {
 	// Close valves/pump
-	ControlMechanismsCloseAll();
+	controls.valveControls->CloseAll(false);
 
 	// Destroy the events
 	CloseHandle(h_eventShutdown);
@@ -78,14 +78,14 @@ void Automation::Execution()
 		*/
 
 		if (sb_settingsModified) {
-			if (experimentLocalData.experimentInProgress == true) {
-				ExperimentSettings tempSettings = GetSettings();						// We have the two settings coexisting to record any changes
-				controls.fileWriter->RecordDataChange(false, tempSettings, *storage.experimentSettings, *storage.currentData);		// non-CSV
-				controls.fileWriter->RecordDataChange(true, tempSettings, *storage.experimentSettings, *storage.currentData);		// CSV
-				experimentLocalSettings = tempSettings;									// Now save the new settings as the old ones
+			if (storage.currentData->experimentInProgress == true) {
+				ExperimentSettings tempSettings = GetSettings();																// We have the two settings coexisting to record any changes
+				controls.fileWriter->RecordDataChange(false, tempSettings, *storage.experimentSettings, *storage.currentData);	// non-CSV
+				controls.fileWriter->RecordDataChange(true, tempSettings, *storage.experimentSettings, *storage.currentData);	// CSV
+				storage.experimentSettings = std::make_shared<ExperimentSettings>(tempSettings);								// Now save the new settings as the old ones
 			}
 			else
-				experimentLocalSettings = GetSettings();
+				storage.experimentSettings = std::make_shared<ExperimentSettings>(GetSettings());
 		}
 
 		/*
@@ -95,8 +95,8 @@ void Automation::Execution()
 		*/
 
 		// Go through any functionality
-		if (experimentLocalData.experimentCommandsRequested) {
-			switch (experimentLocalSettings.experimentType)		// We look at the type of experiment
+		if (storage.currentData->experimentCommandsRequested) {
+			switch (storage.experimentSettings->experimentType)		// We look at the type of experiment
 			{
 			case EXPERIMENT_TYPE_MANUAL:						// in case it is manual
 				ExecutionManual();								// run the manual loop
@@ -126,14 +126,14 @@ void Automation::Execution()
 		*/
 
 		// If waiting complete
-		if (experimentLocalData.experimentWaiting &&														// If the wait functionality is requested																					
-			experimentLocalData.timeToEquilibrateCurrent > experimentLocalData.timeToEquilibrate) {			//and the time has been completed
+		if (storage.currentData->experimentWaiting &&														// If the wait functionality is requested																					
+			storage.currentData->timeToEquilibrateCurrent > storage.currentData->timeToEquilibrate) {			//and the time has been completed
 
 			// Stop the timer
 			controls.timerWaiting.ArretTemps();
 
 			// Reset the flag
-			experimentLocalData.experimentWaiting = false;
+			storage.currentData->experimentWaiting = false;
 		}
 		
 		/*
@@ -186,7 +186,7 @@ void Automation::Execution()
 
 bool Automation::ExecutionManual()
 {
-	if (experimentLocalData.experimentStepStatus == STEP_STATUS_UNDEF) {
+	if (storage.currentData->experimentStepStatus == STEP_STATUS_UNDEF) {
 
 		// Send start message
 		controls.messageHandler->ExperimentStart();
@@ -194,11 +194,11 @@ bool Automation::ExecutionManual()
 		ResetAutomation();
 
 		// Get data
-		experimentLocalSettings = GetSettings();
+		storage.experimentSettings = std::make_shared<ExperimentSettings>(GetSettings());
 
 		// Record start
-		experimentLocalData.experimentInProgress = true;
-		experimentLocalData.experimentRecording = true;
+		storage.currentData->experimentInProgress = true;
+		storage.currentData->experimentRecording = true;
 
 		// Create open and write the columns in the:
 		bool err = false;
@@ -210,9 +210,9 @@ bool Automation::ExecutionManual()
 		controls.fileWriter->FileMeasurementOpen(storage.experimentSettings->dataGeneral);							// Measurement file
 
 		// Continue experiment
-		experimentLocalData.experimentStage = STAGE_MANUAL;
-		experimentLocalData.experimentStepStatus = STEP_STATUS_INPROGRESS;
-		experimentLocalData.experimentCommandsRequested = false;
+		storage.currentData->experimentStage = STAGE_MANUAL;
+		storage.currentData->experimentStepStatus = STEP_STATUS_INPROGRESS;
+		storage.currentData->experimentCommandsRequested = false;
 
 		return true;
 	}
@@ -225,7 +225,7 @@ bool Automation::ExecutionManual()
 bool Automation::ExecutionAuto()
 {
 	// First time running command
-	if (experimentLocalData.experimentStepStatus == STEP_STATUS_UNDEF){
+	if (storage.currentData->experimentStepStatus == STEP_STATUS_UNDEF){
 
 		// Send start message
 		controls.messageHandler->ExperimentStart();
@@ -233,18 +233,18 @@ bool Automation::ExecutionAuto()
 		ResetAutomation();
 
 		// Get data
-		experimentLocalSettings = GetSettings();
+		storage.experimentSettings = std::make_shared<ExperimentSettings>(GetSettings());
 
 		// Write variables to starting position
-		experimentLocalData.experimentInProgress = true;
-		experimentLocalData.experimentStage = STAGE_VERIFICATIONS;
-		experimentLocalData.experimentStepStatus = STEP_STATUS_START;
-		experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_START;
-		experimentLocalData.verificationStep = STEP_VERIFICATIONS_SECURITY;
+		storage.currentData->experimentInProgress = true;
+		storage.currentData->experimentStage = STAGE_VERIFICATIONS;
+		storage.currentData->experimentStepStatus = STEP_STATUS_START;
+		storage.currentData->experimentSubstepStage = SUBSTEP_STATUS_START;
+		storage.currentData->verificationStep = STEP_VERIFICATIONS_SECURITY;
 	}
 
 	// Stages of automatic experiment
-	switch (experimentLocalData.experimentStage)
+	switch (storage.currentData->experimentStage)
 	{
 	case STAGE_VERIFICATIONS:
 		Verifications();
@@ -284,15 +284,15 @@ bool Automation::ExecutionAuto()
 void Automation::ResetAutomation()
 {
 	// Reset all data from the experiment
-	experimentLocalData.ResetData();
-	experimentLocalSettings.ResetData();
+	storage.currentData->ResetData();
+	storage.experimentSettings->ResetData();
 
 	// If the shutdown event is called externally, it will default to a cancel
 	// Otherwise the flag will be changed from inside the code
 	shutdownReason = STOP_CANCEL;
 
 	// Time
-	experimentLocalData.timeStart = time(0);
+	storage.currentData->timeStart = time(0);
 	controls.timerExperiment.TopChrono();	// Start global experiment timer	
 	controls.timerMeasurement.TopChrono();	// Start the timer to record time between measurements
 }

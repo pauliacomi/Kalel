@@ -19,7 +19,7 @@ public:
 	void SecurityTemperatures(int experimentType, float maxPlow, float maxPhigh, const ExperimentData &expData);
 
 private:
-	ValveController & g_pVanne;
+	ValveController & valveController;
 	MessageHandler & messageHandler;
 
 protected:

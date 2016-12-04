@@ -255,28 +255,28 @@ int ValveController::PortUSB()
 ///////////////////////////////////////////////////////
 // Functions checking for the state of the equipemt
 
-bool ValveController::VanneEstOuvert(int num)
+bool ValveController::ValveIsOpen(int num)
 {return NI_USB_6008::EstOuvertPort0(num-1);}
 
-bool ValveController::VanneEstFerme(int num)
+bool ValveController::ValveIsClosed(int num)
 {return NI_USB_6008::EstFermePort0(num-1);}
 
-bool ValveController::EV1EstActive()
+bool ValveController::EV1IsActive()
 {return NI_USB_6008::EstOuvertPort1(0);}
 
-bool ValveController::EV1EstDesactive()
+bool ValveController::EV1IsInactive()
 {return NI_USB_6008::EstFermePort1(0);}
 
-bool ValveController::EV2EstActive()
+bool ValveController::EV2IsActive()
 {return NI_USB_6008::EstOuvertPort1(1);}
 
-bool ValveController::EV2EstDesactive()
+bool ValveController::EV2IsInactive()
 {return NI_USB_6008::EstFermePort1(1);}
 
-bool ValveController::PompeEstActive()
+bool ValveController::PumpIsActive()
 {return NI_USB_6008::EstOuvertPort1(2);}
 
-bool ValveController::PompeEstDesactive()
+bool ValveController::PumpIsInactive()
 {return NI_USB_6008::EstFermePort1(2);}
 
 

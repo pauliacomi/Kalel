@@ -15,7 +15,7 @@
 // Utilities
 #include "../../../Kalel Shared/timestamp.h"
 #include "../../../Kalel Server/Automation/FileWriter.h"					// Writing file
-#include "../../../Kalel Server/Backend/Wrapper Classes/Vannes.h"			// Valve class
+#include "../../../Kalel Server/Backend/Wrapper Classes/ValveController.h"	// Valve class
 #include "../Utils/Chrono.h"												// Time keeping
 
 
@@ -152,7 +152,7 @@ void Measurement::Execution()
 			if (storage.currentData->experimentRecording)								// If we started recording
 			{
 				// Save the data to the file
-				controls.fileWriter->FileMeasurementRecord(*storage.currentData, controls.valveControls->VanneEstOuvert(6));
+				controls.fileWriter->FileMeasurementRecord(*storage.currentData, controls.valveControls->ValveIsOpen(6));
 			}
 
 			// Restart the timer to record time between measurements

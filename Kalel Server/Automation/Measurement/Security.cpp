@@ -12,12 +12,12 @@
 #include "../../MessageHandler.h"											// Handles all the messages from this class to the client
 
 // Measurement and manipulation classes
-#include "../../Backend/Wrapper Classes/Vannes.h"							// Controlling valves
+#include "../../Backend/Wrapper Classes/ValveController.h"							// Controlling valves
 #include "../../../Kalel Shared/Com Classes/ExperimentData.h"
 
 
 Security::Security(bool activated, float PressureHigh_HighRange, float PressureHigh_LowRange, ValveController & valveControl, MessageHandler & messageHandler)
-	: g_pVanne{ valveControl }
+	: valveController{ valveControl }
 	, messageHandler{ messageHandler }
 {
 	securityActivated = activated;
@@ -54,18 +54,18 @@ void Security::SecurityHighPressureManual(float maxPlow, float maxPhigh, const E
 	if (expData.pressureLow > maxPlow)
 	{
 		// If valve 6 is open and pressure is higher than specified, close valve 6
-		if (g_pVanne.VanneEstOuvert(6))
+		if (valveController.ValveIsOpen(6))
 		{
 			messageHandler.DisplayMessage(MESSAGE_WARNING_PHIGH_V6, expData.pressureHigh, maxPlow);
-			g_pVanne.Fermer(6);
+			valveController.ValveClose(6, false);
 			messageHandler.DisplayMessage(MESSAGE_VALVE_CLOSED, 6);
 		}
 	}
 	else
 	{
-		if (!g_pVanne.VanneEstOuvert(6))
+		if (valveController.ValveIsClosed(6))
 		{
-			g_pVanne.Ouvrir(6);
+			valveController.ValveOpen(6, false);
 			messageHandler.DisplayMessage(MESSAGE_VALVE_OPENED, 6);
 		}
 	}
@@ -105,18 +105,18 @@ void Security::SecurityHighPressureAuto(float maxPlow, float maxPhigh, const Exp
 			if (expData.pressureHigh > maxPlow)
 			{
 				// If valve 6 is open and pressure is higher than specified, close valve 6
-				if (g_pVanne.VanneEstOuvert(6))
+				if (valveController.ValveIsOpen(6))
 				{
 					messageHandler.DisplayMessage(MESSAGE_WARNING_PHIGH_V6, expData.pressureHigh, maxPlow);
-					g_pVanne.Fermer(6);
+					valveController.ValveClose(6, false);
 					messageHandler.DisplayMessage(MESSAGE_VALVE_CLOSED, 6);
 				}
 			}
 			else
 			{
-				if (!g_pVanne.VanneEstOuvert(6))
+				if (valveController.ValveIsClosed(6))
 				{
-					g_pVanne.Ouvrir(6);
+					valveController.ValveOpen(6, false);
 					messageHandler.DisplayMessage(MESSAGE_VALVE_OPENED, 6);
 				}
 			}

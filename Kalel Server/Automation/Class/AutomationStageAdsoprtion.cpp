@@ -11,13 +11,13 @@
 
 void Automation::StageAdsorption()
 {
-	switch (experimentLocalData.experimentStepStatus)
+	switch (storage.currentData->experimentStepStatus)
 	{
 	case STEP_STATUS_START:
-		experimentLocalData.experimentStepStatus = STEP_STATUS_INPROGRESS;												// Set next step
-		controls.messageHandler->DisplayMessage(MESSAGE_ADSORPTION_STAGE_START);													// Let GUI know the step change
+		storage.currentData->experimentStepStatus = STEP_STATUS_INPROGRESS;												// Set next step
+		controls.messageHandler->DisplayMessage(MESSAGE_ADSORPTION_STAGE_START);										// Let GUI know the step change
 
-		ControlMechanismsCloseAll();																					// Close all valves
+		controls.valveControls->CloseAll(true);																			// Close all valves
 		break;
 
 	case STEP_STATUS_INPROGRESS:
@@ -26,23 +26,23 @@ void Automation::StageAdsorption()
 		SubstepsAdsorption();
 
 		// Check if the pressure for this adsorption stage has been reached
-		if (experimentLocalData.pressureFinal > experimentLocalSettings.dataAdsorption[experimentLocalData.adsorptionCounter].pression_finale) {
-			experimentLocalData.experimentStepStatus = STEP_STATUS_END;
+		if (storage.currentData->pressureFinal > storage.experimentSettings->dataAdsorption[storage.currentData->adsorptionCounter].pression_finale) {
+			storage.currentData->experimentStepStatus = STEP_STATUS_END;
 		}
 
 		break;
 
 	case STEP_STATUS_END:
-		experimentLocalData.experimentStepStatus = STEP_STATUS_START;													// Reset substep no matter what
-		controls.messageHandler->DisplayMessage(MESSAGE_ADSORPTION_STAGE_END, experimentLocalData.adsorptionCounter);				// Let GUI know the step change
+		storage.currentData->experimentStepStatus = STEP_STATUS_START;													// Reset substep no matter what
+		controls.messageHandler->DisplayMessage(MESSAGE_ADSORPTION_STAGE_END, storage.currentData->adsorptionCounter);				// Let GUI know the step change
 
-		if (experimentLocalData.adsorptionCounter < experimentLocalSettings.dataAdsorption.size())
+		if (storage.currentData->adsorptionCounter < storage.experimentSettings->dataAdsorption.size())
 		{
-			experimentLocalData.adsorptionCounter++;
+			storage.currentData->adsorptionCounter++;
 		}
 		else
 		{
-			experimentLocalData.experimentStage = STAGE_DESORPTION;														// Set desorption if all adsorption stages have been finished
+			storage.currentData->experimentStage = STAGE_DESORPTION;														// Set desorption if all adsorption stages have been finished
 		}
 		break;
 	}
@@ -52,88 +52,88 @@ void Automation::StageAdsorption()
 void Automation::SubstepsAdsorption()
 {
 
-	if (experimentLocalData.experimentSubstepStage == SUBSTEP_STATUS_START &&
-		experimentLocalData.experimentWaiting == false)
+	if (storage.currentData->experimentSubstepStage == SUBSTEP_STATUS_START &&
+		storage.currentData->experimentWaiting == false)
 	{
-		experimentLocalData.injectionAttemptCounter = 0;																							// Reset adsorption attempt counter
-		experimentLocalData.pressureInitial = experimentLocalData.pressureHigh;																		// Set the initial pressure
-		experimentLocalData.pressureHighOld = experimentLocalData.pressureHigh;																		// Save the injection pressure for later
-		controls.messageHandler->DisplayMessage(MESSAGE_ADSORPTION_DOSE_START, experimentLocalData.adsorptionCounter, experimentLocalData.experimentDose);	// Tell GUI about current dose
-		experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_INJECTION;																		// Move to injection
+		storage.currentData->injectionAttemptCounter = 0;																							// Reset adsorption attempt counter
+		storage.currentData->pressureInitial = storage.currentData->pressureHigh;																		// Set the initial pressure
+		storage.currentData->pressureHighOld = storage.currentData->pressureHigh;																		// Save the injection pressure for later
+		controls.messageHandler->DisplayMessage(MESSAGE_ADSORPTION_DOSE_START, storage.currentData->adsorptionCounter, storage.currentData->experimentDose);	// Tell GUI about current dose
+		storage.currentData->experimentSubstepStage = SUBSTEP_STATUS_INJECTION;																		// Move to injection
 	}
 	
 
 	// Injection
-	if (experimentLocalData.experimentSubstepStage == SUBSTEP_STATUS_INJECTION)
+	if (storage.currentData->experimentSubstepStage == SUBSTEP_STATUS_INJECTION)
 	{
-		controls.messageHandler->DisplayMessage(MESSAGE_INJECTION_ATTEMPT, experimentLocalData.injectionAttemptCounter);			// Tell GUI about current injection
-		ValveOpen(2);
+		controls.messageHandler->DisplayMessage(MESSAGE_INJECTION_ATTEMPT, storage.currentData->injectionAttemptCounter);			// Tell GUI about current injection
+		controls.valveControls->ValveOpen(2, true);
 		WaitSeconds(TIME_WAIT_VALVES_SHORT);																			
-		experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_INJECTION + 1;										
+		storage.currentData->experimentSubstepStage = SUBSTEP_STATUS_INJECTION + 1;										
 	}
 	
-	if (experimentLocalData.experimentSubstepStage == SUBSTEP_STATUS_INJECTION + 1 &&
-		experimentLocalData.experimentWaiting == false)
+	if (storage.currentData->experimentSubstepStage == SUBSTEP_STATUS_INJECTION + 1 &&
+		storage.currentData->experimentWaiting == false)
 	{
-		ValveClose(2);
+		controls.valveControls->ValveClose(2, true);
 		WaitSeconds(TIME_WAIT_VALVES_SHORT);
-		experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_INJECTION + 2;
+		storage.currentData->experimentSubstepStage = SUBSTEP_STATUS_INJECTION + 2;
 	}
 
-	if (experimentLocalData.experimentSubstepStage == SUBSTEP_STATUS_INJECTION + 2 &&
-		experimentLocalData.experimentWaiting == false)
+	if (storage.currentData->experimentSubstepStage == SUBSTEP_STATUS_INJECTION + 2 &&
+		storage.currentData->experimentWaiting == false)
 	{
-		ValveOpen(3);
+		controls.valveControls->ValveOpen(3, true);
 		WaitSeconds(TIME_WAIT_VALVES_SHORT);
-		experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_INJECTION + 3;
+		storage.currentData->experimentSubstepStage = SUBSTEP_STATUS_INJECTION + 3;
 	}
 
-	if (experimentLocalData.experimentSubstepStage == SUBSTEP_STATUS_INJECTION + 3 &&
-		experimentLocalData.experimentWaiting == false)
+	if (storage.currentData->experimentSubstepStage == SUBSTEP_STATUS_INJECTION + 3 &&
+		storage.currentData->experimentWaiting == false)
 	{
-		ValveClose(3);
+		controls.valveControls->ValveClose(3, true);
 		WaitSeconds(TIME_WAIT_VALVES_SHORT);
-		experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_INJECTION + 4;
+		storage.currentData->experimentSubstepStage = SUBSTEP_STATUS_INJECTION + 4;
 	}
 
-	if (experimentLocalData.experimentSubstepStage == SUBSTEP_STATUS_INJECTION + 4 &&
-		experimentLocalData.experimentWaiting == false)
+	if (storage.currentData->experimentSubstepStage == SUBSTEP_STATUS_INJECTION + 4 &&
+		storage.currentData->experimentWaiting == false)
 	{
-		ValveOpen(4);
+		controls.valveControls->ValveOpen(4, true);
 		WaitSeconds(TIME_WAIT_VALVES_SHORT);
-		experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_INJECTION + 5;
+		storage.currentData->experimentSubstepStage = SUBSTEP_STATUS_INJECTION + 5;
 	}
 
-	if (experimentLocalData.experimentSubstepStage == SUBSTEP_STATUS_INJECTION + 5 &&
-		experimentLocalData.experimentWaiting == false)
+	if (storage.currentData->experimentSubstepStage == SUBSTEP_STATUS_INJECTION + 5 &&
+		storage.currentData->experimentWaiting == false)
 	{
-		ValveClose(4);
+		controls.valveControls->ValveClose(4, true);
 		WaitSeconds(TIME_WAIT_VALVES_SHORT);
-		experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_CHECK;								// Move to injection check
+		storage.currentData->experimentSubstepStage = SUBSTEP_STATUS_CHECK;								// Move to injection check
 	}
 
 
 
 	// Injection check
-	if (experimentLocalData.experimentSubstepStage == SUBSTEP_STATUS_CHECK &&
-		experimentLocalData.experimentWaiting == false)
+	if (storage.currentData->experimentSubstepStage == SUBSTEP_STATUS_CHECK &&
+		storage.currentData->experimentWaiting == false)
 	{
 		// Set the final pressure after injection
-		experimentLocalData.pressureFinal = experimentLocalData.pressureHigh;
+		storage.currentData->pressureFinal = storage.currentData->pressureHigh;
 
 		// Display
-		controls.messageHandler->DisplayMessage(MESSAGE_PRESSURE_D_PI, experimentLocalData.pressureInitial);
-		controls.messageHandler->DisplayMessage(MESSAGE_PRESSURE_D_PF, experimentLocalData.pressureFinal);
-		controls.messageHandler->DisplayMessage(MESSAGE_PRESSURE_D_DP, experimentLocalData.pressureFinal - experimentLocalData.pressureInitial);
-		controls.messageHandler->DisplayMessage(MESSAGE_PRESSURE_D_DPREQ, (experimentLocalSettings.dataAdsorption[experimentLocalData.adsorptionCounter].delta_pression));
-		controls.messageHandler->DisplayMessage(MESSAGE_INJECTION_END, experimentLocalData.injectionAttemptCounter);
+		controls.messageHandler->DisplayMessage(MESSAGE_PRESSURE_D_PI, storage.currentData->pressureInitial);
+		controls.messageHandler->DisplayMessage(MESSAGE_PRESSURE_D_PF, storage.currentData->pressureFinal);
+		controls.messageHandler->DisplayMessage(MESSAGE_PRESSURE_D_DP, storage.currentData->pressureFinal - storage.currentData->pressureInitial);
+		controls.messageHandler->DisplayMessage(MESSAGE_PRESSURE_D_DPREQ, (storage.experimentSettings->dataAdsorption[storage.currentData->adsorptionCounter].delta_pression));
+		controls.messageHandler->DisplayMessage(MESSAGE_INJECTION_END, storage.currentData->injectionAttemptCounter);
 
 		// Checks for injection succeess, else increment the injection counter and try again
-		if ((experimentLocalData.pressureHighOld - marge_injection < experimentLocalData.pressureHigh) &&
-			(experimentLocalData.pressureHigh < experimentLocalData.pressureHighOld + marge_injection))
+		if ((storage.currentData->pressureHighOld - marge_injection < storage.currentData->pressureHigh) &&
+			(storage.currentData->pressureHigh < storage.currentData->pressureHighOld + marge_injection))
 		{
 			// If too many injections have been tried and failed
-			if (experimentLocalData.injectionAttemptCounter >= nb_injection)
+			if (storage.currentData->injectionAttemptCounter >= nb_injection)
 			{
 				// Put the thread on stand-by
 				::SetEvent(h_eventPause);
@@ -143,27 +143,27 @@ void Automation::SubstepsAdsorption()
 				controls.messageHandler->DisplayMessageBox(MESSAGE_INJECTION_PROBLEM_BOX, MB_ICONERROR | MB_OK, true);
 
 				// Reset counter
-				experimentLocalData.injectionAttemptCounter = 0;
-				experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_INJECTION;
+				storage.currentData->injectionAttemptCounter = 0;
+				storage.currentData->experimentSubstepStage = SUBSTEP_STATUS_INJECTION;
 			}
 
 			// If not, increment the counter and try again
-			experimentLocalData.injectionAttemptCounter++;
-			experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_INJECTION;
+			storage.currentData->injectionAttemptCounter++;
+			storage.currentData->experimentSubstepStage = SUBSTEP_STATUS_INJECTION;
 		}
 		// If the injection succeeded
 		else
 		{
 			// Check if injection has overshot
-			if (experimentLocalData.pressureFinal - experimentLocalData.pressureInitial > marge_multiplicateur * (experimentLocalSettings.dataAdsorption[experimentLocalData.adsorptionCounter].delta_pression))
+			if (storage.currentData->pressureFinal - storage.currentData->pressureInitial > marge_multiplicateur * (storage.experimentSettings->dataAdsorption[storage.currentData->adsorptionCounter].delta_pression))
 			{
-				experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_ABORT;					// Remove gas
+				storage.currentData->experimentSubstepStage = SUBSTEP_STATUS_ABORT;					// Remove gas
 			}
 			// If completeted successfully go to equilibration
 			else
 			{
-				experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_ADSORPTION;													// Go to adsorption
-				WaitSeconds(experimentLocalSettings.dataAdsorption[experimentLocalData.adsorptionCounter].temps_volume);				// Set the time to wait for equilibration in the reference volume
+				storage.currentData->experimentSubstepStage = SUBSTEP_STATUS_ADSORPTION;													// Go to adsorption
+				WaitSeconds(storage.experimentSettings->dataAdsorption[storage.currentData->adsorptionCounter].temps_volume);				// Set the time to wait for equilibration in the reference volume
 			}
 		}
 	}
@@ -171,101 +171,101 @@ void Automation::SubstepsAdsorption()
 
 
 	// Aborting
-	if (experimentLocalData.experimentSubstepStage == SUBSTEP_STATUS_ABORT &&
-		experimentLocalData.experimentWaiting == false)
+	if (storage.currentData->experimentSubstepStage == SUBSTEP_STATUS_ABORT &&
+		storage.currentData->experimentWaiting == false)
 	{
 		// Turn on pump
-		if (!PompeEstActive()) {
-			EVActivate(1);
-			EVActivate(2);
-			ActivatePump();
+		if (controls.valveControls->PumpIsInactive()) {
+			controls.valveControls->EVActivate(1, true);
+			controls.valveControls->EVActivate(2, true);
+			controls.valveControls->PumpActivate(true);
 			WaitSeconds(TIME_WAIT_PUMP);
 		}
 		controls.messageHandler->DisplayMessage(MESSAGE_OUTGAS_ATTEMPT);
-		experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_ABORT + 1;
+		storage.currentData->experimentSubstepStage = SUBSTEP_STATUS_ABORT + 1;
 	}
 
-	if (experimentLocalData.experimentSubstepStage == SUBSTEP_STATUS_ABORT + 1 &&
-		experimentLocalData.experimentWaiting == false)
+	if (storage.currentData->experimentSubstepStage == SUBSTEP_STATUS_ABORT + 1 &&
+		storage.currentData->experimentWaiting == false)
 	{
-		if (experimentLocalData.pressureFinal - experimentLocalData.pressureInitial > marge_multiplicateur * (experimentLocalSettings.dataAdsorption[experimentLocalData.adsorptionCounter].delta_pression))
+		if (storage.currentData->pressureFinal - storage.currentData->pressureInitial > marge_multiplicateur * (storage.experimentSettings->dataAdsorption[storage.currentData->adsorptionCounter].delta_pression))
 		{
-			ValveOpen(8);
+			controls.valveControls->ValveOpen(8, true);
 			WaitSeconds(TIME_WAIT_VALVES_SHORT);
-			experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_ABORT + 2;
+			storage.currentData->experimentSubstepStage = SUBSTEP_STATUS_ABORT + 2;
 		}
 		else
 		{
 			// Deactivate pump
-			if (PompeEstActive()) {
-				EVDeactivate(1);
-				EVDeactivate(2);
-				DeactivatePump();
+			if (controls.valveControls->PumpIsActive()) {
+				controls.valveControls->EVDeactivate(1, true);
+				controls.valveControls->EVDeactivate(2, true);
+				controls.valveControls->PumpDeactivate(true);
 			}
 
 			controls.messageHandler->DisplayMessage(MESSAGE_OUTGAS_END);
-			experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_INJECTION;				// Go back to injection
+			storage.currentData->experimentSubstepStage = SUBSTEP_STATUS_INJECTION;				// Go back to injection
 		}
 	}
 
 
-	if (experimentLocalData.experimentSubstepStage == SUBSTEP_STATUS_ABORT + 2 &&
-		experimentLocalData.experimentWaiting == false)
+	if (storage.currentData->experimentSubstepStage == SUBSTEP_STATUS_ABORT + 2 &&
+		storage.currentData->experimentWaiting == false)
 	{
-		ValveClose(8);
+		controls.valveControls->ValveClose(8, true);
 		WaitSeconds(TIME_WAIT_VALVES_SHORT);
-		experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_ABORT + 3;
+		storage.currentData->experimentSubstepStage = SUBSTEP_STATUS_ABORT + 3;
 	}
 
-	if (experimentLocalData.experimentSubstepStage == SUBSTEP_STATUS_ABORT + 3 &&
-		experimentLocalData.experimentWaiting == false)
+	if (storage.currentData->experimentSubstepStage == SUBSTEP_STATUS_ABORT + 3 &&
+		storage.currentData->experimentWaiting == false)
 	{
-		ValveOpen(7);
+		controls.valveControls->ValveOpen(7, true);
 		WaitSeconds(TIME_WAIT_VALVES_SHORT);
-		experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_ABORT + 4;
+		storage.currentData->experimentSubstepStage = SUBSTEP_STATUS_ABORT + 4;
 	}
 
-	if (experimentLocalData.experimentSubstepStage == SUBSTEP_STATUS_ABORT + 4 &&
-		experimentLocalData.experimentWaiting == false)
+	if (storage.currentData->experimentSubstepStage == SUBSTEP_STATUS_ABORT + 4 &&
+		storage.currentData->experimentWaiting == false)
 	{
-		ValveClose(7);
+		controls.valveControls->ValveClose(7, true);
 		WaitSeconds(TIME_WAIT_VALVES_SHORT);
 
-		experimentLocalData.pressureFinal = experimentLocalData.pressureHigh;					// Save pressure after open/close
-		experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_ABORT + 1;					// Go back to the start
+		storage.currentData->pressureFinal = storage.currentData->pressureHigh;					// Save pressure after open/close
+		storage.currentData->experimentSubstepStage = SUBSTEP_STATUS_ABORT + 1;					// Go back to the start
 	}
 
 
 
-	if (experimentLocalData.experimentSubstepStage == SUBSTEP_STATUS_ADSORPTION &&
-		experimentLocalData.experimentWaiting == false)
+	if (storage.currentData->experimentSubstepStage == SUBSTEP_STATUS_ADSORPTION &&
+		storage.currentData->experimentWaiting == false)
 	{
 		controls.messageHandler->DisplayMessage(MESSAGE_ADSORPTION_OPENV);
 
 		// Open valve
-		ValveOpen(5);
+		controls.valveControls->ValveOpen(5, true);
 
 		// Wait for adsorption
-		WaitSeconds(experimentLocalSettings.dataAdsorption[experimentLocalData.adsorptionCounter].temps_adsorption);		// Set the time to wait
-		experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_END;													// Go to next step
+		WaitSeconds(storage.experimentSettings->dataAdsorption[storage.currentData->adsorptionCounter].temps_adsorption);		// Set the time to wait
+		storage.currentData->experimentSubstepStage = SUBSTEP_STATUS_END;													// Go to next step
 	}
 
 
 
-	if (experimentLocalData.experimentSubstepStage == SUBSTEP_STATUS_END &&
-		experimentLocalData.experimentWaiting == false)
+	if (storage.currentData->experimentSubstepStage == SUBSTEP_STATUS_END &&
+		storage.currentData->experimentWaiting == false)
 	{
 		// Display sample isolation message
 		controls.messageHandler->DisplayMessage(MESSAGE_ADSORPTION_CLOSEV);
 		
 		// Close valve
-		ValveClose(5);
+		controls.valveControls->ValveClose(5, true);
 
 		// Display message to show end of adsorption
-		controls.messageHandler->DisplayMessage(MESSAGE_ADSORPTION_DOSE_END, experimentLocalData.experimentDose);
+		controls.messageHandler->DisplayMessage(MESSAGE_ADSORPTION_DOSE_END, storage.currentData->experimentDose);
 
 		// Reset things
-		experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_START;
+		storage.currentData->experimentSubstepStage = SUBSTEP_STATUS_START;
 	}
 }
 

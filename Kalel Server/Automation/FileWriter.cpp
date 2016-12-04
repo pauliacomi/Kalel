@@ -3,15 +3,7 @@
 
 // Resources
 #include "../../Kalel Shared/Resources/DefineText.h"						// Definitions for the text in the messages
-#include "../../Kalel Shared/Com Classes/ExperimentSettings.h"	
 #include "../../Kalel Shared/Resources/DefineStages.h"						// All stage, experiment type definitions are here
-
-// Synchronization classes
-#include "../MessageHandler.h"												// Handles all the messages from this class to the client
-#include "../../Kalel Shared/Com Classes/ExperimentData.h"
-
-// FileWriter and manipulation classes
-#include "../Backend/Wrapper Classes/Vannes.h"								// Controlling valves
 
 
 FileWriter::FileWriter()
@@ -33,7 +25,7 @@ FileWriter::~FileWriter()
 bool FileWriter::EnteteCreate(const ExperimentSettings &expSettings, const MachineSettings &machSettings)
 {
 	std::wofstream file;
-	bool ret;
+	bool ret = false;
 
 	file.open(FileWriter::BuildFileName(L"txt", expSettings.dataGeneral, true, ret).c_str(), std::ios_base::out);
 	file.clear();
@@ -62,7 +54,7 @@ bool FileWriter::EnteteCreate(const ExperimentSettings &expSettings, const Machi
 bool FileWriter::EnteteCSVCreate(const ExperimentSettings &expSettings, const MachineSettings &machSettings)
 {
 	std::wofstream file;
-	bool ret;
+	bool ret = false;
 
 	file.open(FileWriter::BuildFileName(L"csv", expSettings.dataGeneral, true, ret).c_str(), std::ios_base::out);
 	file.clear();
@@ -89,7 +81,7 @@ bool FileWriter::EnteteCSVCreate(const ExperimentSettings &expSettings, const Ma
 ***********************************************************************/
 bool FileWriter::FileMeasurementOpen(const Donnees_General &general)
 {
-	bool ret;
+	bool ret = false;
 	
 	// Create the file
 	fileStream.open(BuildFileName(L"csv", general, false, ret).c_str(), std::ios_base::out /*| ios::trunc*/);
@@ -390,7 +382,7 @@ void FileWriter::RecordDataChange(bool csv, const ExperimentSettings& newSetting
 
 	// Get title
 	std::wstring title;
-	bool ret;
+	bool ret = false;
 	if (csv)
 		title = BuildFileName(L"csv", newSettings.dataGeneral, true, ret).c_str();
 	else
@@ -401,7 +393,6 @@ void FileWriter::RecordDataChange(bool csv, const ExperimentSettings& newSetting
 	file.open(title, std::ios::out | std::ios::app);
 	file << text.str() << std::endl;
 	file.close();
-
 }
 
 

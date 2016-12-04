@@ -11,15 +11,15 @@ void Automation::Shutdown()
 		
 		//When thread finishes, let main window know to unlock menu and reset graph
 		controls.messageHandler->DisplayMessage(MESSAGE_EXPCANCEL);		// Experiment has been cancelled
-		controls.messageHandler->controls.messageHandler->ExperimentEnd();
+		controls.messageHandler->ExperimentEnd();
 
 		// Close measurement file
-		FileMeasurementClose();
+		controls.fileWriter->FileMeasurementClose();
 
 		// Stop all timers 
-		timerExperiment.ArretTemps();
-		timerMeasurement.ArretTemps();
-		timerWaiting.ArretTemps();
+		controls.timerExperiment.ArretTemps();
+		controls.timerMeasurement.ArretTemps();
+		controls.timerWaiting.ArretTemps();
 
 		// Reset the event
 		::ResetEvent(h_eventReset);
@@ -37,15 +37,15 @@ void Automation::Shutdown()
 		controls.messageHandler->ExperimentEnd();
 
 		// Close measurement file
-		FileMeasurementClose();
+		controls.fileWriter->FileMeasurementClose();
 
 		// Stop all timers 
-		timerExperiment.ArretTemps();
-		timerMeasurement.ArretTemps();
-		timerWaiting.ArretTemps();
+		controls.timerExperiment.ArretTemps();
+		controls.timerMeasurement.ArretTemps();
+		controls.timerWaiting.ArretTemps();
 
 		// Reset all data from the experiment
-		experimentLocalData.ResetData();
+		storage.currentData->ResetData();
 
 		// Reset the event
 		::ResetEvent(h_eventReset);
@@ -58,8 +58,8 @@ void Automation::Shutdown()
 	case STOP_COMPLETE:		// This option is used if the automation thread is to be closed
 
 		// Close measurement file
-		if (experimentLocalData.experimentRecording) {
-			FileMeasurementClose();
+		if (storage.currentData->experimentRecording) {
+			controls.fileWriter->FileMeasurementClose();
 		}
 
 		// When thread finishes, let main window know to unlock menu
@@ -79,29 +79,29 @@ void Automation::Shutdown()
 
 void Automation::Pause()
 {
-	if (experimentLocalData.experimentInProgress)
+	if (storage.currentData->experimentInProgress)
 	{
-		timerWaiting.ArretTemps();
-		experimentLocalData.experimentRecording = false;
+		controls.timerWaiting.ArretTemps();
+		storage.currentData->experimentRecording = false;
 
 		controls.messageHandler->DisplayMessage(MESSAGE_EXPPAUSE);
 	}
-	timerExperiment.ArretTemps();
-	timerMeasurement.ArretTemps();
-	experimentLocalData.experimentCommandsRequested = false;
+	controls.timerExperiment.ArretTemps();
+	controls.timerMeasurement.ArretTemps();
+	storage.currentData->experimentCommandsRequested = false;
 }
 
 
 void Automation::Resume()
 {
-	if (experimentLocalData.experimentInProgress)
+	if (storage.currentData->experimentInProgress)
 	{
-		timerWaiting.RepriseTemps();
-		experimentLocalData.experimentRecording = true;
+		controls.timerWaiting.RepriseTemps();
+		storage.currentData->experimentRecording = true;
 
 		controls.messageHandler->DisplayMessage(MESSAGE_EXPRESUME);
 	}
-	timerExperiment.RepriseTemps();
-	timerMeasurement.RepriseTemps();
-	experimentLocalData.experimentCommandsRequested = true;
+	controls.timerExperiment.RepriseTemps();
+	controls.timerMeasurement.RepriseTemps();
+	storage.currentData->experimentCommandsRequested = true;
 }
