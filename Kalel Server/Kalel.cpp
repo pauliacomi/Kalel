@@ -54,7 +54,8 @@ Kalel::Kalel()
 
 	//
 	// Start the measurement and automation threads
-	threadManager.StartThread();
+	threadManager.StartMeasurement();
+	threadManager.StartAutomation();
 }
 
 
@@ -62,7 +63,7 @@ Kalel::~Kalel()
 {
 	//
 	// Stop the measurement and automation threads
-	threadManager.ShutdownThread();
+	threadManager.ShutdownAutomation();
 
 	// 
 	// Server functionality is self-contained
@@ -72,7 +73,7 @@ Kalel::~Kalel()
 void Kalel::GetLogs(std::string &logs) {
 	logs.clear();
 
-	auto localCollection = storageVectors.getInfoLogs;
+	auto localCollection = storageVectors.getInfoLogs();
 
 	for (std::map<std::string, std::string>::iterator it = localCollection.begin(); it != localCollection.end(); ++it)
 	{
@@ -220,7 +221,7 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 		// Figure out which range of logs to send by finding the requested timestamp
 
 		std::map<std::string, std::string>::iterator it;
-		auto localCollection = storageVectors.getInfoLogs;
+		auto localCollection = storageVectors.getInfoLogs();
 
 		if (req->params_.empty() ||									// If parameters don't exist, send all the logs
 			req->params_.at("time").empty() ||
@@ -278,22 +279,22 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 			!req->params_.at("action").empty())
 		{
 			if (req->params_.at("action") == "start")			{
-				threadManager.StartThread();
+				threadManager.StartAutomation();
 			}
 			else if (req->params_.at("action") == "shutdown")	{
-				threadManager.ShutdownThread();
+				threadManager.ShutdownAutomation();
 			}
 			else if (req->params_.at("action") == "restart")	{
 				//threadManager.ResetThread();
 			}
 			else if (req->params_.at("action") == "reset")		{
-				threadManager.ResetThread();
+				threadManager.ResetAutomation();
 			}
 			else if (req->params_.at("action") == "pause")		{
-				threadManager.PauseThread();
+				threadManager.PauseAutomation();
 			}
 			else if (req->params_.at("action") == "resume")		{
-				threadManager.ResumeThread();
+				threadManager.ResumeAutomation();
 			}
 
 			resp->status_ = http::responses::ok;

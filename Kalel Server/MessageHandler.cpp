@@ -1,11 +1,10 @@
-#include "stdafx.h"
+#include "../Kalel Shared/Forcelib.h"
 #include "MessageHandler.h"
 
 #include "../Kalel Shared/Resources/DefineText.h"
 #include "../Kalel Shared/timestamp.h"
 #include "../Kalel Shared/stringFormat.h"
 
-#include <utility>
 
 MessageHandler::MessageHandler(Storage &h)
 	: storage{ h }
@@ -75,7 +74,7 @@ bool MessageHandler::DisplayMessage(std::string pParam, std::string m)
 	return true;
 }
 
-bool MessageHandler::DisplayMessageBox(std::string pParam, UINT nType, bool blocksProgram, double pDouble1, double pDouble2)
+bool MessageHandler::DisplayMessageBox(std::string pParam, unsigned nType, bool blocksProgram, double pDouble1, double pDouble2)
 {
 	std::string message;
 
@@ -99,7 +98,7 @@ bool MessageHandler::DisplayMessageBox(std::string pParam, UINT nType, bool bloc
 	return true;
 }
 
-bool MessageHandler::DisplayMessageBox(std::string pParam, UINT nType, bool blocksProgram, std::string pString)
+bool MessageHandler::DisplayMessageBox(std::string pParam, unsigned nType, bool blocksProgram, std::string pString)
 {
 	std::string message;
 	message = string_format(pParam, pString);

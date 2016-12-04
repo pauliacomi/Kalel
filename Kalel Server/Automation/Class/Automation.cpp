@@ -1,11 +1,9 @@
 #include "Automation.h"
 
-Automation::Automation(Storage &h)
-	: running(true)
+Automation::Automation(Storage &s, Controls &c)
+	: storage{ s }
+	, controls{ c }
 {
-	// Save pointer to experiment settings
-	experimentSettings = h.experimentSettings;
-
 	// Initialise class members
 	sb_settingsModified = false;
 	sb_userContinue = false;
@@ -25,17 +23,14 @@ Automation::Automation(Storage &h)
 	events[3] = h_eventReset;
 	events[4] = h_eventUserInput;
 
-	// Initialise instruments
-	g_pVanne = new CVannes();
-
 	// If the shutdown event is called externally, it will default to a cancel
 	// Otherwise the flag will be changed from inside the code
 	shutdownReason = STOP_CANCEL;
 
 	// Time
 	experimentLocalData.timeStart = time(0);
-	timerExperiment.TopChrono();	// Start global experiment timer	
-	timerMeasurement.TopChrono();	// Start the timer to record time between measurements
+	controls.timerExperiment.TopChrono();	// Start global experiment timer	
+	controls.timerMeasurement.TopChrono();	// Start the timer to record time between measurements
 }
 
 
@@ -43,9 +38,6 @@ Automation::~Automation()
 {
 	// Close valves/pump
 	ControlMechanismsCloseAll();
-
-	// Delete instruments
-	delete g_pVanne;
 
 	// Destroy the events
 	CloseHandle(h_eventShutdown);
@@ -91,10 +83,10 @@ void Automation::Execution()
 
 		if (sb_settingsModified) {
 			if (experimentLocalData.experimentInProgress == true) {
-				ExperimentSettings tempSettings = GetSettings();	// We have the two settings coexisting to record any changes
-				RecordDataChange(tempSettings, false);				// non-CSV
-				RecordDataChange(tempSettings, true);				// CSV
-				experimentLocalSettings = tempSettings;				// Now save the new settings as the old ones
+				ExperimentSettings tempSettings = GetSettings();						// We have the two settings coexisting to record any changes
+				controls.fileWriter->RecordDataChange(true, tempSettings false);		// non-CSV
+				controls.fileWriter->RecordDataChange(true, tempSettings, true);		// CSV
+				experimentLocalSettings = tempSettings;									// Now save the new settings as the old ones
 			}
 			else
 				experimentLocalSettings = GetSettings();
@@ -142,7 +134,7 @@ void Automation::Execution()
 			experimentLocalData.timeToEquilibrateCurrent > experimentLocalData.timeToEquilibrate) {			//and the time has been completed
 
 			// Stop the timer
-			timerWaiting.ArretTemps();
+			controls.timerWaiting.ArretTemps();
 
 			// Reset the flag
 			experimentLocalData.experimentWaiting = false;
@@ -197,7 +189,7 @@ bool Automation::ExecutionManual()
 	if (experimentLocalData.experimentStepStatus == STEP_STATUS_UNDEF) {
 
 		// Send start message
-		messageHandler.ExperimentStart();
+		controls.messageHandler->ExperimentStart();
 		
 		ResetAutomation();
 
@@ -210,12 +202,12 @@ bool Automation::ExecutionManual()
 
 		// Create open and write the columns in the:
 		bool err = false;
-		err = EnteteCreate();				// Entete TXT
-		err = EnteteCSVCreate();			// Entete CSV
+		err = controls.fileWriter->EnteteCreate();				// Entete TXT
+		err = controls.fileWriter->EnteteCSVCreate();			// Entete CSV
 		if (err){
-			messageHandler.DisplayMessageBox(ERROR_PATHUNDEF, MB_ICONERROR | MB_OK, false);
+			controls.messageHandler->DisplayMessageBox(ERROR_PATHUNDEF, MB_ICONERROR | MB_OK, false);
 		}
-		FileMeasurementOpen();		// Measurement file
+		controls.fileWriter->FileMeasurementOpen();				// Measurement file
 
 		// Continue experiment
 		experimentLocalData.experimentStage = STAGE_MANUAL;
@@ -236,7 +228,7 @@ bool Automation::ExecutionAuto()
 	if (experimentLocalData.experimentStepStatus == STEP_STATUS_UNDEF){
 
 		// Send start message
-		messageHandler.ExperimentStart();
+		controls.messageHandler->ExperimentStart();
 
 		ResetAutomation();
 
@@ -301,8 +293,8 @@ void Automation::ResetAutomation()
 
 	// Time
 	experimentLocalData.timeStart = time(0);
-	timerExperiment.TopChrono();	// Start global experiment timer	
-	timerMeasurement.TopChrono();	// Start the timer to record time between measurements
+	controls.timerExperiment.TopChrono();	// Start global experiment timer	
+	controls.timerMeasurement.TopChrono();	// Start the timer to record time between measurements
 }
 
 

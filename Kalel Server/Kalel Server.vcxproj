@@ -218,9 +218,11 @@
     <ClInclude Include="..\Kalel Shared\timestamp.h" />
     <ClInclude Include="..\Kalel Shared\unicodeConv.h" />
     <ClInclude Include="Automation\Class\Automation.h" />
+    <ClInclude Include="Automation\CommonControls.h" />
     <ClInclude Include="Automation\CommonPointers.h" />
     <ClInclude Include="Automation\FileWriter.h" />
     <ClInclude Include="Automation\Measurement\Measurement.h" />
+    <ClInclude Include="Automation\Measurement\Security.h" />
     <ClInclude Include="Automation\Old\MainFrm.h" />
     <ClInclude Include="Automation\Old\Manip.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -280,7 +282,7 @@
     <ClCompile Include="Automation\Class\AutomationValves.cpp" />
     <ClCompile Include="Automation\FileWriter.cpp" />
     <ClCompile Include="Automation\Measurement\Measurement.cpp" />
-    <ClCompile Include="Automation\Measurement\MeasurementSecurity.cpp" />
+    <ClCompile Include="Automation\Measurement\Security.cpp" />
     <ClCompile Include="Automation\Old\Manip.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>

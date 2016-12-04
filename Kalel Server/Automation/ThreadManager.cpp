@@ -1,13 +1,11 @@
 #include "../stdafx.h"
 #include "ThreadManager.h"
 
-#include "../../Kalel Shared/Com Classes/ExperimentSettings.h"
-#include "../../Kalel Shared/Com Classes/ManualActionParam.h"
 #include "../../Kalel Shared/Resources/DefineInstruments.h"
 
-#include "FileWriter.h"												// Class responsible for writing to files
 #include "Class/Automation.h"										// Backend for all the automation
 #include "Measurement/Measurement.h"								// Backend for measurements
+#include "../../Kalel Shared/Com Classes/ManualActionParam.h"		// Manual command struct details
 
 
 // Netcode
@@ -24,12 +22,15 @@ ThreadManager::ThreadManager(Storage &h)
 	, m_threadMainControlLoop(nullptr)
 	, m_threadManualAction (nullptr)
 
-	, maParam(nullptr)
-	, experimentSettings(nullptr)
-
 	, automation(nullptr)
-	, messageHandler{ h }
+	, measurement(nullptr)
+	
+	, maParam(nullptr)
 {
+	// Create objects from controls class
+	controls.fileWriter = std::make_shared<FileWriter>();
+	controls.messageHandler = std::make_shared<MessageHandler>();
+	controls.valveControls = std::make_shared<CVannes>(h);
 }
 
 ThreadManager::~ThreadManager()
@@ -46,20 +47,23 @@ ThreadManager::~ThreadManager()
 //
 //---------------------------------------------------------------------------
 
-unsigned ThreadManager::StartMeasurement() {
-
-	measurement = new Measurement(storage, controls);
-
-	measurementThread = std::thread(&Measurement::Execution, measurement);
-
+unsigned ThreadManager::StartMeasurement() 
+{
+	if (measurement != nullptr)
+	{
+		measurement = new Measurement(storage, controls);
+		measurementThread = std::thread(&Measurement::Execution, measurement);
+	}
+	else
+	{
+		return 1;
+	}
 	return 0;
 }
 
-HRESULT ThreadManager::StartThread() {
-
-	HRESULT hr = S_OK;
-	
-	// Close the worker thread
+unsigned ThreadManager::StartAutomation() 
+{
+	// Check existence of the worker thread
 	if (m_threadMainControlLoop == nullptr)
 	{
 
@@ -75,16 +79,13 @@ HRESULT ThreadManager::StartThread() {
 	}
 	else
 	{
-		hr = S_FALSE;
+		return 1;
 	}
-
-	return hr;
+	return 0;
 }
 
-HRESULT ThreadManager::ResumeThread() {
-
-	HRESULT hr = S_OK;
-
+unsigned ThreadManager::ResumeAutomation() 
+{
 	// Check if the thread exists
 	if (m_threadMainControlLoop != nullptr)
 	{
@@ -93,16 +94,13 @@ HRESULT ThreadManager::ResumeThread() {
 	}
 	else
 	{
-		hr = S_FALSE;
+		return 1;
 	}
-
-	return hr;
+	return 0;
 }
 
-HRESULT ThreadManager::PauseThread() {
-
-	HRESULT hr = S_OK;
-
+unsigned ThreadManager::PauseAutomation() 
+{
 	// Check if the thread exists
 	if (m_threadMainControlLoop != nullptr)
 	{
@@ -111,17 +109,14 @@ HRESULT ThreadManager::PauseThread() {
 	}
 	else
 	{
-		hr = S_FALSE;
+		return 1;
 	}
-
-	return hr;
+	return 0;
 }
 
 
-HRESULT ThreadManager::ResetThread()
+unsigned ThreadManager::ResetAutomation()
 {
-	HRESULT hr = S_OK;
-
 	// Check if the thread exists
 	if (m_threadMainControlLoop != nullptr)
 	{
@@ -130,17 +125,14 @@ HRESULT ThreadManager::ResetThread()
 	}
 	else
 	{
-		hr = S_FALSE;
+		return 1;
 	}
-
-	return hr;
+	return 0;
 }
 
 
-HRESULT ThreadManager::SetModifiedData()
+unsigned ThreadManager::SetModifiedData()
 {
-	HRESULT hr = S_OK;
-
 	// Check if the thread exists
 	if (m_threadMainControlLoop != nullptr)
 	{
@@ -149,16 +141,13 @@ HRESULT ThreadManager::SetModifiedData()
 	}
 	else
 	{
-		hr = S_FALSE;
+		return 1;
 	}
-
-	return hr;
+	return 0;
 }
 
-HRESULT ThreadManager::SetUserContinue()
+unsigned ThreadManager::SetUserContinue()
 {
-	HRESULT hr = S_OK;
-
 	// Check if the thread exists
 	if (m_threadMainControlLoop != nullptr)
 	{
@@ -167,17 +156,16 @@ HRESULT ThreadManager::SetUserContinue()
 	}
 	else
 	{
-		hr = S_FALSE;
+		return 1;
 	}
-
-	return hr;
+	return 0;
 }
 
 // ShutdownThread function will check if thread is running and then send it the shutdown command
 // If the thread does not quit in a short time it will be forcefully closed. Check if this is an error when using the function.
-HRESULT ThreadManager::ShutdownThread()
+unsigned ThreadManager::ShutdownAutomation()
 {
-	HRESULT hr = S_FALSE;
+	unsigned hr = 1;
 
 	// Close the worker thread
 	if (m_threadMainControlLoop != nullptr)
@@ -191,7 +179,7 @@ HRESULT ThreadManager::ShutdownThread()
 		// Wait for the thread to exit. If it doesn't shut down on its own, throw an error
 		if (WaitForSingleObject(m_threadMainControlLoop->m_hThread, INFINITE) == WAIT_TIMEOUT)
 		{
-			hr = S_FALSE;
+			hr = 1;
 		}
 
 		// Delete threads
@@ -200,7 +188,7 @@ HRESULT ThreadManager::ShutdownThread()
 		delete m_threadMainControlLoop;
 		m_threadMainControlLoop = nullptr;
 
-		hr = S_OK;
+		hr = 0;
 	}
 
 	return hr;
@@ -208,63 +196,6 @@ HRESULT ThreadManager::ShutdownThread()
 
 
 
-
-
-
-
-//--------------------------------------------------------------------
-//
-// --------- Thread start functions --------
-//
-//--------------------------------------------------------------------
-
-
-
-UINT ThreadManager::ThreadMainWorkerStarter(LPVOID pParam)
-{
-	// Start the function from the main class, then check for validity
-	ThreadManager* maParam = static_cast<ThreadManager*>(pParam);
-
-	// Launch required functionality
-	maParam->ThreadMainWorker();
-
-	// Reset and end thread
-	return 0;
-}
-
-void ThreadManager::ThreadMainWorker()
-{
-	// Create the class to deal with the automatic functionality
-	automation = new Automation(storage);
-
-	// Launch functionality
-	automation->Execution();
-}
-
-
-//
-// Manual actions
-//
-//
-
-void ThreadManager::ManualAction()
-{
-	//start thread
-	m_threadManualAction = AfxBeginThread(ThreadManualActionStarter, this);
-}
-
-
-UINT ThreadManager::ThreadManualActionStarter(LPVOID pParam)
-{
-	// Start the function from the main class, then check for validity
-	ThreadManager* threadManager = static_cast<ThreadManager*>(pParam);
-
-	// Launch required functionality
-	threadManager->ThreadManualAction();
-
-	// End thread
-	return 0;
-}
 
 void ThreadManager::ThreadManualAction()
 {
@@ -282,23 +213,23 @@ void ThreadManager::ThreadManualAction()
 	{
 	case INSTRUMENT_VALVE:
 		if (localMP->shouldBeActivated)
-			actionSuccessful = pVanne.Ouvrir(localMP->instrumentNumber);
+			actionSuccessful = controls.valveControls->Ouvrir(localMP->instrumentNumber);
 		else
-			actionSuccessful = pVanne.Fermer(localMP->instrumentNumber);
+			actionSuccessful = controls.valveControls->Fermer(localMP->instrumentNumber);
 		break;
 
 	case INSTRUMENT_EV:
 		if (localMP->shouldBeActivated)
-			actionSuccessful = pVanne.ActiverEV(localMP->instrumentNumber);
+			actionSuccessful = controls.valveControls->ActiverEV(localMP->instrumentNumber);
 		else
-			actionSuccessful = pVanne.DesactiverEV(localMP->instrumentNumber);
+			actionSuccessful = controls.valveControls->DesactiverEV(localMP->instrumentNumber);
 		break;
 
 	case INSTRUMENT_PUMP:
 		if (localMP->shouldBeActivated)
-			actionSuccessful = pVanne.ActiverPompe();
+			actionSuccessful = controls.valveControls->ActiverPompe();
 		else
-			actionSuccessful = pVanne.DesactiverPompe();
+			actionSuccessful = controls.valveControls->DesactiverPompe();
 		break;
 
 	default:
@@ -308,4 +239,64 @@ void ThreadManager::ThreadManualAction()
 
 	// Ask for the app to show the change, pass the locally created object which must be deleted there
 	// ::PostMessage(localMP->windowHandle, UWM_UPDATEBUTTONS, (WPARAM)localMP, actionSuccessful);
+}
+
+
+
+
+
+//--------------------------------------------------------------------
+//
+// --------- Thread start functions --------
+//
+//--------------------------------------------------------------------
+
+//
+// Automation actions
+//
+
+UINT ThreadManager::ThreadMainWorkerStarter(LPVOID pParam)
+{
+	// Start the function from the main class, then check for validity
+	ThreadManager* maParam = static_cast<ThreadManager*>(pParam);
+
+	// Launch required functionality
+	maParam->ThreadMainWorker();
+
+	// Reset and end thread
+	return 0;
+}
+
+void ThreadManager::ThreadMainWorker()
+{
+	// Create the class to deal with the automatic functionality
+	automation = new Automation(storage, controls);
+
+	// Launch functionality
+	automation->Execution();
+}
+
+
+//
+// Manual actions
+//
+
+UINT ThreadManager::ThreadManualActionStarter(LPVOID pParam)
+{
+	// Start the function from the main class, then check for validity
+	ThreadManager* threadManager = static_cast<ThreadManager*>(pParam);
+
+	// Launch required functionality
+	threadManager->ThreadManualAction();
+
+	// End thread
+	return 0;
+}
+
+unsigned ThreadManager::ManualAction()
+{
+	//start thread
+	m_threadManualAction = AfxBeginThread(ThreadManualActionStarter, this);
+
+	return 0;
 }

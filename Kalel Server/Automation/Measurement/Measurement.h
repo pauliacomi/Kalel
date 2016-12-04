@@ -1,5 +1,8 @@
 #pragma once
 
+#include "../CommonControls.h"
+#include "Security.h"
+
 // std::functionality
 #include <atomic>
 #include <string>
@@ -29,16 +32,14 @@ public:
 	//------------------------------------------------------------
 	
 	// Inherited
+	Storage & storage;
+	Controls & controls;
 	ExperimentData* experimentLocalData;							// Local data
 	
 	// New
 	CTemperature* g_pTemperature;									// Pointer to the class that deals with temperature recording
 	SerialInstruments * g_pSerialInstruments;						// Pointer to the class that deals with calorimeter & pressure recording
-
-	CChrono* timerExperiment;										// Class for measuring the time from the experiment start
-	CChrono* timerMeasurement;										// Class for measuring the time between each measurement
-	CChrono* timerWaiting;											// Class for measuring the time to wait
-	Storage* storageVectors;
+	Security * security;
 
 	//------------------------------------------------------------
 	// Syncronisation primitives and threads
@@ -69,36 +70,5 @@ public:
 	void ReadLowPressure();
 	void ReadHighPressure();
 	void ReadTemperatures();
-
-
-
-	/**********************************************************************************************************************************
-	*
-	// Security measures and checks
-	*
-	***********************************************************************************************************************************/
-
-protected:
-
-	bool securityActivated;
-
-	// Keep limits in memory
-	float security_PressureHigh_HighRange;
-	float security_PressureHigh_LowRange;
-
-	// Bool flags to keep track of security
-	bool security_PressureHigh_flag;
-	bool security_TemperatureHigh_flag;
-	bool security_TemperatureLow_flag;
-
-	void InitialisationSecurity();
-
-	void SecuriteHautePression();
-	void SecuriteHautePressionManuelle();
-	void SecuriteHautePressionAuto();
-
-	void SecuriteTemperatures();
-	void SecuriteTemperaturesManuelle();
-	void SecuriteTemperaturesAuto();
 };
 

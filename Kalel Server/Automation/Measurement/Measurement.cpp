@@ -6,7 +6,6 @@
 #include "../../../Kalel Shared/Resources/DefineAutomationSettings.h"		// All settings for automation are stored here
 
 // Synchronization classes
-#include "../../MessageHandler.h"											// Handles all the messages from this class to the client
 #include "../../../Kalel Shared/Com Classes/ExperimentData.h"
 
 // Measurement classes
@@ -27,6 +26,8 @@
 
 
 Measurement::Measurement(Storage &s, Controls &c)
+	: storage{ s }
+	, controls{ c }
 {
 	// Initialise threads
 	h_MeasurementThread[0] = NULL;
@@ -43,22 +44,28 @@ Measurement::Measurement(Storage &s, Controls &c)
 	InitializeCriticalSection(&criticalSection);
 
 	// Initialise instruments
-	g_pTemperature = new CTemperature();
+	g_pTemperature = new CTemperature(); 
 	g_pSerialInstruments = new SerialInstruments();
 
 	std::string errorInit;
 	if (!g_pSerialInstruments->Init(&errorInit))
 	{
-		messageHandler->DisplayMessageBox(MESSAGE_INSTRUMENT_INIT_FAIL, MB_ICONERROR | MB_OK, false, errorInit);
+		controls.messageHandler->DisplayMessageBox(MESSAGE_INSTRUMENT_INIT_FAIL, MB_ICONERROR | MB_OK, false, errorInit);
 	}
 
 	// Initialise security
-	InitialisationSecurity();
+	security = new Security(
+		storage.machineSettings->ActivationSecurite, 
+		storage.machineSettings->PressionSecuriteHautePression,
+		storage.machineSettings->PressionSecuriteBassePression);
 }
 
 
 Measurement::~Measurement()
 {
+	// Delete security class
+	delete security;
+
 	// Delete instruments
 	delete g_pTemperature;
 	delete g_pSerialInstruments;
@@ -108,9 +115,9 @@ void Measurement::Execution()
 		ThreadMeasurement();
 
 		// Record time
-		experimentLocalData->measurementsMade++;										// Save the measurement number
-		experimentLocalData->timeElapsed = timerExperiment->TempsActuel();				// Save the time elapsed from the beginning of the experiment
-		experimentLocalData->timeToEquilibrateCurrent = timerWaiting->TempsActuel();	// Save the waiting time if it exists
+		experimentLocalData->measurementsMade++;												// Save the measurement number
+		experimentLocalData->timeElapsed = controls.timerExperiment.TempsActuel();				// Save the time elapsed from the beginning of the experiment
+		experimentLocalData->timeToEquilibrateCurrent = controls.timerWaiting.TempsActuel();	// Save the waiting time if it exists
 		experimentLocalData->timestamp = NowTime();
 
 		/*
@@ -130,16 +137,16 @@ void Measurement::Execution()
 		*/
 
 		// Write data
-		if (timerMeasurement->TempsActuel() > T_BETWEEN_RECORD)						// If enough time between measurements
+		if (controls.timerMeasurement.TempsActuel() > T_BETWEEN_RECORD)						// If enough time between measurements
 		{
 			if (experimentLocalData->experimentRecording)								// If we started recording
 			{
 				// Save the data to the file
-				fwrt->FileMeasurementRecord(*experimentLocalData, valves->VanneEstOuvert(6));
+				controls.fileWriter->FileMeasurementRecord(*experimentLocalData, controls.valveControls->VanneEstOuvert(6));
 			}
 
 			// Restart the timer to record time between measurements
-			timerMeasurement->TopChrono();
+			controls.timerMeasurement.TopChrono();
 
 			// Increment the measurement number
 			experimentLocalData->experimentGraphPoints++;
@@ -152,7 +159,7 @@ void Measurement::Execution()
 		*/
 
 		// Send the data to be displayed to the GUI
-		messageHandler->ExchangeData(*experimentLocalData);
+		controls.messageHandler->ExchangeData(*experimentLocalData);
 
 		/*
 		*
@@ -262,7 +269,7 @@ void Measurement::ReadCalorimeter()
 		g_pSerialInstruments->GetErrorCalrimeter(&error);
 
 	if (success == false) {
-		messageHandler->DisplayMessage(error);
+		controls.messageHandler->DisplayMessage(error);
 	}
 
 	// Write it in the shared object
@@ -284,7 +291,7 @@ void Measurement::ReadLowPressure()
 		g_pSerialInstruments->GetErrorLowRange(&error);
 
 	if (success == false) {
-		messageHandler->DisplayMessage(error);
+		controls.messageHandler->DisplayMessage(error);
 	}
 
 	// Write it in the shared object
@@ -306,7 +313,7 @@ void Measurement::ReadHighPressure()
 		g_pSerialInstruments->GetErrorHighRange(&error);
 
 	if (success == false) {
-		messageHandler->DisplayMessage(error);
+		controls.messageHandler->DisplayMessage(error);
 	}
 
 	// Write it in the shared object
@@ -327,7 +334,7 @@ void Measurement::ReadTemperatures()
 		g_pTemperature->GetError(&error);
 
 	if (success == false) {
-		messageHandler->DisplayMessage(error);
+		controls.messageHandler->DisplayMessage(error);
 	}
 
 	// Write it in the shared object

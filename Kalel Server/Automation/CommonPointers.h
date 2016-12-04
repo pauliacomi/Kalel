@@ -7,13 +7,12 @@
 #include "../../Kalel Shared/Com Classes/ExperimentSettings.h"
 #include "../../Kalel Shared/Com Classes/MachineSettings.h"
 
-#include "../../Kalel Server/Automation/FileWriter.h"
-#include "../../Kalel Server/Backend/Wrapper Classes/Vannes.h"
 
 #include <mutex>
 #include <vector>
 #include <map>
 #include <deque>
+#include <memory>
 
 class Storage {
 	//**********
@@ -66,12 +65,5 @@ public:
 };
 
 
-class Controls {
-public:
-
-	std::shared_ptr<MessageHandler> messageHandler;					// The message sender class
-	std::shared_ptr<CVannes> valveControls;							// The valve control/query class
-	std::shared_ptr<FileWriter> fileWriter;							// The file writing class
-};
 
 #endif

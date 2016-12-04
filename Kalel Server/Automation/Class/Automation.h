@@ -1,7 +1,5 @@
 #pragma once
 
-#define finl "\r\n"
-
 #include "../../stdafx.h"
 
 // REQUIRED INCLUDES
@@ -24,13 +22,17 @@
 
 #include "../Utils/Chrono.h"												// Time keeping
 
+
+#include "../CommonControls.h"
+#include "../CommonPointers.h"
+
 // std::functionality
 #include <atomic>
 
 class Automation
 {
 public:
-	Automation(Storage &h);
+	Automation(Storage &s, Controls &c);
 	~Automation();
 
 
@@ -43,10 +45,10 @@ protected:
 	//------------------------------------------------------------
 	// Pointers
 	//------------------------------------------------------------
+	Storage & storage;
+	Controls & controls;
 
 	// Instruments
-	CVannes* g_pVanne;											// Pointer to the valve opening class
-	std::shared_ptr<ExperimentSettings> experimentSettings;		// Pointer to the experiment settings from the main class, this is only read, never written
 
 	//------------------------------------------------------------
 	// Locally stored settings and data
@@ -54,16 +56,6 @@ protected:
 
 	ExperimentSettings experimentLocalSettings;			// Pointer to local storage of settings
 	ExperimentData experimentLocalData;					// 
-	
-	
-	//------------------------------------------------------------
-	// Objects 
-	//------------------------------------------------------------
-	
-
-	CChrono timerExperiment;							// Class for measuring the time from the experiment start
-	CChrono timerMeasurement;							// Class for measuring the time between each measurement
-	CChrono timerWaiting;								// Class for measuring the time to wait
 	
 														
 	//------------------------------------------------------------
@@ -75,8 +67,8 @@ protected:
 	HANDLE events[5];									// Keeps all the events below in one array
 
 	// Case switch int for the experiment states (running/paused/etc)
-	volatile bool running;
 	volatile int shutdownReason;
+	std::atomic_bool running = true;
 
 public:
 	std::atomic_bool sb_settingsModified;				// Atomic variable that can be set to let the thread know that there are new experiment settings 

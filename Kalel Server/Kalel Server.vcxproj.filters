@@ -267,6 +267,12 @@
     <ClInclude Include="Automation\CommonPointers.h">
       <Filter>Header Files\Automation</Filter>
     </ClInclude>
+    <ClInclude Include="Automation\CommonControls.h">
+      <Filter>Header Files\Automation</Filter>
+    </ClInclude>
+    <ClInclude Include="Automation\Measurement\Security.h">
+      <Filter>Header Files\Automation\Measurement</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Kalel Server.cpp">
@@ -503,11 +509,11 @@
     <ClCompile Include="Automation\Measurement\Measurement.cpp">
       <Filter>Source Files\Automation\Measurement</Filter>
     </ClCompile>
-    <ClCompile Include="Automation\Measurement\MeasurementSecurity.cpp">
-      <Filter>Source Files\Automation\Measurement</Filter>
-    </ClCompile>
     <ClCompile Include="Automation\FileWriter.cpp">
       <Filter>Source Files\Automation</Filter>
+    </ClCompile>
+    <ClCompile Include="Automation\Measurement\Security.cpp">
+      <Filter>Source Files\Automation\Measurement</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

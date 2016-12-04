@@ -35,8 +35,8 @@ public:
 	bool DisplayMessage(std::string pParam, std::string m);
 
 	// Messageboxes
-	bool DisplayMessageBox(std::string message, UINT nType, bool blocksProgram, double pDouble1 = default_val, double pDouble2 = default_val);
-	bool DisplayMessageBox(std::string pParam, UINT nType, bool blocksProgram, std::string pString);
+	bool DisplayMessageBox(std::string message, unsigned nType, bool blocksProgram, double pDouble1 = default_val, double pDouble2 = default_val);
+	bool DisplayMessageBox(std::string pParam, unsigned nType, bool blocksProgram, std::string pString);
 };
 
 
