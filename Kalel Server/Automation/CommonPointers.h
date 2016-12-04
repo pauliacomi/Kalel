@@ -46,6 +46,8 @@ private:
 	std::deque<std::shared_ptr<ExperimentData>> dataCollection;			// The collection of data from an experiment
 
 public:
+	std::shared_ptr<ExperimentData> currentData;
+
 	void pushData(std::shared_ptr<ExperimentData> i) {
 		std::unique_lock<std::mutex> lock(sharedMutex);
 		dataCollection.push_back(i);
@@ -62,6 +64,8 @@ public:
 
 	std::shared_ptr<MachineSettings> machineSettings;					// The machine settings are here
 	std::shared_ptr<ExperimentSettings> experimentSettings;				// The experiment settings are here
+
+	
 };
 
 

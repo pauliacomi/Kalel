@@ -30,7 +30,7 @@ ThreadManager::ThreadManager(Storage &h)
 	// Create objects from controls class
 	controls.fileWriter = std::make_shared<FileWriter>();
 	controls.messageHandler = std::make_shared<MessageHandler>();
-	controls.valveControls = std::make_shared<CVannes>(h);
+	controls.valveControls = std::make_shared<ValveController>(h);
 }
 
 ThreadManager::~ThreadManager()

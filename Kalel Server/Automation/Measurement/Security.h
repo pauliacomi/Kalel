@@ -5,20 +5,26 @@
 // Security measures and checks
 *
 ***********************************************************************************************************************************/
+class MessageHandler;
+class ValveController;
+class ExperimentData;
 
 class Security {
 
 public:
-	Security(bool activated, float PressureHigh_HighRange, float PressureHigh_LowRange);
+	Security(bool activated, float PressureHigh_HighRange, float PressureHigh_LowRange, ValveController & valveControl, MessageHandler & messageHandler);
 	~Security();
+
+	void SecurityHighPressure(int experimentType, float maxPlow, float maxPhigh, const ExperimentData &expData);
+	void SecurityTemperatures(int experimentType, float maxPlow, float maxPhigh, const ExperimentData &expData);
+
+private:
+	ValveController & g_pVanne;
+	MessageHandler & messageHandler;
 
 protected:
 
 	bool securityActivated;
-
-	// Keep limits in memory
-	float security_PressureHigh_HighRange;
-	float security_PressureHigh_LowRange;
 
 	// Bool flags to keep track of security
 	bool security_PressureHigh_flag;
@@ -26,11 +32,9 @@ protected:
 	bool security_TemperatureLow_flag;
 
 
-	void SecuriteHautePression();
-	void SecuriteHautePressionManuelle();
-	void SecuriteHautePressionAuto();
+	void SecurityHighPressureManual(float maxPlow, float maxPhigh, const ExperimentData &expData);
+	void SecurityHighPressureAuto(float maxPlow, float maxPhigh, const ExperimentData &expData);
 
-	void SecuriteTemperatures();
-	void SecuriteTemperaturesManuelle();
-	void SecuriteTemperaturesAuto();
+	void SecurityTemperaturesManual(double maximumT, double minimumT, const ExperimentData &expDat);
+	void SecuriteTemperaturesAuto(double maximumT, double minimumT, const ExperimentData &expDat);
 };

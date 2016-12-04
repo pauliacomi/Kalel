@@ -34,7 +34,6 @@ public:
 	// Inherited
 	Storage & storage;
 	Controls & controls;
-	ExperimentData* experimentLocalData;							// Local data
 	
 	// New
 	CTemperature* g_pTemperature;									// Pointer to the class that deals with temperature recording

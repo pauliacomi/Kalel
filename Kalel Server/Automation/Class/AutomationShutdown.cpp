@@ -10,8 +10,8 @@ void Automation::Shutdown()
 	case STOP_CANCEL:		// This cancels an experiment in progress, GUI must ask check for experiment running
 		
 		//When thread finishes, let main window know to unlock menu and reset graph
-		messageHandler.DisplayMessage(MESSAGE_EXPCANCEL);		// Experiment has been cancelled
-		messageHandler.ExperimentEnd();
+		controls.messageHandler->DisplayMessage(MESSAGE_EXPCANCEL);		// Experiment has been cancelled
+		controls.messageHandler->controls.messageHandler->ExperimentEnd();
 
 		// Close measurement file
 		FileMeasurementClose();
@@ -33,8 +33,8 @@ void Automation::Shutdown()
 							// It then resets everything
 
 		//When thread finishes, let main window know to unlock menu
-		messageHandler.DisplayMessage(MESSAGE_EXPFINISH);		// Experiment has been finished normally
-		messageHandler.ExperimentEnd();
+		controls.messageHandler->DisplayMessage(MESSAGE_EXPFINISH);		// Experiment has been finished normally
+		controls.messageHandler->ExperimentEnd();
 
 		// Close measurement file
 		FileMeasurementClose();
@@ -63,7 +63,7 @@ void Automation::Shutdown()
 		}
 
 		// When thread finishes, let main window know to unlock menu
-		messageHandler.ThreadShutdown();
+		controls.messageHandler->ThreadShutdown();
 
 		// Break loop
 		running = false;
@@ -84,7 +84,7 @@ void Automation::Pause()
 		timerWaiting.ArretTemps();
 		experimentLocalData.experimentRecording = false;
 
-		messageHandler.DisplayMessage(MESSAGE_EXPPAUSE);
+		controls.messageHandler->DisplayMessage(MESSAGE_EXPPAUSE);
 	}
 	timerExperiment.ArretTemps();
 	timerMeasurement.ArretTemps();
@@ -99,7 +99,7 @@ void Automation::Resume()
 		timerWaiting.RepriseTemps();
 		experimentLocalData.experimentRecording = true;
 
-		messageHandler.DisplayMessage(MESSAGE_EXPRESUME);
+		controls.messageHandler->DisplayMessage(MESSAGE_EXPRESUME);
 	}
 	timerExperiment.RepriseTemps();
 	timerMeasurement.RepriseTemps();

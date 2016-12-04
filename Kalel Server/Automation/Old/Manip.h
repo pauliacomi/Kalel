@@ -48,7 +48,7 @@ public:
 
 	Keithley* g_pKeithley;								// Pointer to the class that deals with the Keithley
 	Mensor* g_pMensor;									// Pointer to the class that deals with the Mensor
-	CVannes* g_pVanne;									// Pointer to the valve opening class
+	ValveController* g_pVanne;									// Pointer to the valve opening class
 	CInstrument* instrument[NB_OF_INSTRUMENTS];			// Array of pointers that hold CInstrument classes
 	CTemperature* g_pTemperature;						// Pointer to the class that deals with temperature recording
 
@@ -126,7 +126,7 @@ public:
 	~CManip(void);
 	void SetKeithley(Keithley* Keith);
 	void SetMensor(Mensor* Mens);
-	void SetVannes(CVannes* pVannes);
+	void SetVannes(ValveController* pVannes);
 	void SetTemperature(CTemperature* pTemperature);
 
 	void InitialisationInstruments();

@@ -244,7 +244,7 @@
     <ClInclude Include="Backend\USB\NI_USB_9211A.h" />
     <ClInclude Include="Backend\Wrapper Classes\SerialInstruments.h" />
     <ClInclude Include="Backend\Wrapper Classes\Temperature.h" />
-    <ClInclude Include="Backend\Wrapper Classes\Vannes.h" />
+    <ClInclude Include="Backend\Wrapper Classes\ValveController.h" />
     <ClInclude Include="Kalel Server.h" />
     <ClInclude Include="Kalel ServerDlg.h" />
     <ClInclude Include="Kalel.h" />
@@ -279,7 +279,6 @@
     <ClCompile Include="Automation\Class\AutomationStageVacuum.cpp" />
     <ClCompile Include="Automation\Class\AutomationTimeKeeping.cpp" />
     <ClCompile Include="Automation\Class\AutomationVacuum.cpp" />
-    <ClCompile Include="Automation\Class\AutomationValves.cpp" />
     <ClCompile Include="Automation\FileWriter.cpp" />
     <ClCompile Include="Automation\Measurement\Measurement.cpp" />
     <ClCompile Include="Automation\Measurement\Security.cpp" />
@@ -433,7 +432,7 @@
     <ClCompile Include="Backend\USB\NI_USB_9211A.cpp" />
     <ClCompile Include="Backend\Wrapper Classes\SerialInstruments.cpp" />
     <ClCompile Include="Backend\Wrapper Classes\Temperature.cpp" />
-    <ClCompile Include="Backend\Wrapper Classes\Vannes.cpp" />
+    <ClCompile Include="Backend\Wrapper Classes\ValveController.cpp" />
     <ClCompile Include="Kalel Server.cpp" />
     <ClCompile Include="Kalel ServerDlg.cpp" />
     <ClCompile Include="Kalel.cpp" />

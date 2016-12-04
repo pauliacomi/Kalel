@@ -15,7 +15,7 @@ void Automation::StageAdsorption()
 	{
 	case STEP_STATUS_START:
 		experimentLocalData.experimentStepStatus = STEP_STATUS_INPROGRESS;												// Set next step
-		messageHandler.DisplayMessage(MESSAGE_ADSORPTION_STAGE_START);													// Let GUI know the step change
+		controls.messageHandler->DisplayMessage(MESSAGE_ADSORPTION_STAGE_START);													// Let GUI know the step change
 
 		ControlMechanismsCloseAll();																					// Close all valves
 		break;
@@ -34,7 +34,7 @@ void Automation::StageAdsorption()
 
 	case STEP_STATUS_END:
 		experimentLocalData.experimentStepStatus = STEP_STATUS_START;													// Reset substep no matter what
-		messageHandler.DisplayMessage(MESSAGE_ADSORPTION_STAGE_END, experimentLocalData.adsorptionCounter);				// Let GUI know the step change
+		controls.messageHandler->DisplayMessage(MESSAGE_ADSORPTION_STAGE_END, experimentLocalData.adsorptionCounter);				// Let GUI know the step change
 
 		if (experimentLocalData.adsorptionCounter < experimentLocalSettings.dataAdsorption.size())
 		{
@@ -58,7 +58,7 @@ void Automation::SubstepsAdsorption()
 		experimentLocalData.injectionAttemptCounter = 0;																							// Reset adsorption attempt counter
 		experimentLocalData.pressureInitial = experimentLocalData.pressureHigh;																		// Set the initial pressure
 		experimentLocalData.pressureHighOld = experimentLocalData.pressureHigh;																		// Save the injection pressure for later
-		messageHandler.DisplayMessage(MESSAGE_ADSORPTION_DOSE_START, experimentLocalData.adsorptionCounter, experimentLocalData.experimentDose);	// Tell GUI about current dose
+		controls.messageHandler->DisplayMessage(MESSAGE_ADSORPTION_DOSE_START, experimentLocalData.adsorptionCounter, experimentLocalData.experimentDose);	// Tell GUI about current dose
 		experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_INJECTION;																		// Move to injection
 	}
 	
@@ -66,7 +66,7 @@ void Automation::SubstepsAdsorption()
 	// Injection
 	if (experimentLocalData.experimentSubstepStage == SUBSTEP_STATUS_INJECTION)
 	{
-		messageHandler.DisplayMessage(MESSAGE_INJECTION_ATTEMPT, experimentLocalData.injectionAttemptCounter);			// Tell GUI about current injection
+		controls.messageHandler->DisplayMessage(MESSAGE_INJECTION_ATTEMPT, experimentLocalData.injectionAttemptCounter);			// Tell GUI about current injection
 		ValveOpen(2);
 		WaitSeconds(TIME_WAIT_VALVES_SHORT);																			
 		experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_INJECTION + 1;										
@@ -122,11 +122,11 @@ void Automation::SubstepsAdsorption()
 		experimentLocalData.pressureFinal = experimentLocalData.pressureHigh;
 
 		// Display
-		messageHandler.DisplayMessage(MESSAGE_PRESSURE_D_PI, experimentLocalData.pressureInitial);
-		messageHandler.DisplayMessage(MESSAGE_PRESSURE_D_PF, experimentLocalData.pressureFinal);
-		messageHandler.DisplayMessage(MESSAGE_PRESSURE_D_DP, experimentLocalData.pressureFinal - experimentLocalData.pressureInitial);
-		messageHandler.DisplayMessage(MESSAGE_PRESSURE_D_DPREQ, (experimentLocalSettings.dataAdsorption[experimentLocalData.adsorptionCounter].delta_pression));
-		messageHandler.DisplayMessage(MESSAGE_INJECTION_END, experimentLocalData.injectionAttemptCounter);
+		controls.messageHandler->DisplayMessage(MESSAGE_PRESSURE_D_PI, experimentLocalData.pressureInitial);
+		controls.messageHandler->DisplayMessage(MESSAGE_PRESSURE_D_PF, experimentLocalData.pressureFinal);
+		controls.messageHandler->DisplayMessage(MESSAGE_PRESSURE_D_DP, experimentLocalData.pressureFinal - experimentLocalData.pressureInitial);
+		controls.messageHandler->DisplayMessage(MESSAGE_PRESSURE_D_DPREQ, (experimentLocalSettings.dataAdsorption[experimentLocalData.adsorptionCounter].delta_pression));
+		controls.messageHandler->DisplayMessage(MESSAGE_INJECTION_END, experimentLocalData.injectionAttemptCounter);
 
 		// Checks for injection succeess, else increment the injection counter and try again
 		if ((experimentLocalData.pressureHighOld - marge_injection < experimentLocalData.pressureHigh) &&
@@ -139,8 +139,8 @@ void Automation::SubstepsAdsorption()
 				::SetEvent(h_eventPause);
 
 				// Tell GUI
-				messageHandler.DisplayMessage(MESSAGE_INJECTION_PROBLEM);
-				messageHandler.DisplayMessageBox(MESSAGE_INJECTION_PROBLEM_BOX, MB_ICONERROR | MB_OK, true);
+				controls.messageHandler->DisplayMessage(MESSAGE_INJECTION_PROBLEM);
+				controls.messageHandler->DisplayMessageBox(MESSAGE_INJECTION_PROBLEM_BOX, MB_ICONERROR | MB_OK, true);
 
 				// Reset counter
 				experimentLocalData.injectionAttemptCounter = 0;
@@ -181,7 +181,7 @@ void Automation::SubstepsAdsorption()
 			ActivatePump();
 			WaitSeconds(TIME_WAIT_PUMP);
 		}
-		messageHandler.DisplayMessage(MESSAGE_OUTGAS_ATTEMPT);
+		controls.messageHandler->DisplayMessage(MESSAGE_OUTGAS_ATTEMPT);
 		experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_ABORT + 1;
 	}
 
@@ -203,7 +203,7 @@ void Automation::SubstepsAdsorption()
 				DeactivatePump();
 			}
 
-			messageHandler.DisplayMessage(MESSAGE_OUTGAS_END);
+			controls.messageHandler->DisplayMessage(MESSAGE_OUTGAS_END);
 			experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_INJECTION;				// Go back to injection
 		}
 	}
@@ -240,7 +240,7 @@ void Automation::SubstepsAdsorption()
 	if (experimentLocalData.experimentSubstepStage == SUBSTEP_STATUS_ADSORPTION &&
 		experimentLocalData.experimentWaiting == false)
 	{
-		messageHandler.DisplayMessage(MESSAGE_ADSORPTION_OPENV);
+		controls.messageHandler->DisplayMessage(MESSAGE_ADSORPTION_OPENV);
 
 		// Open valve
 		ValveOpen(5);
@@ -256,13 +256,13 @@ void Automation::SubstepsAdsorption()
 		experimentLocalData.experimentWaiting == false)
 	{
 		// Display sample isolation message
-		messageHandler.DisplayMessage(MESSAGE_ADSORPTION_CLOSEV);
+		controls.messageHandler->DisplayMessage(MESSAGE_ADSORPTION_CLOSEV);
 		
 		// Close valve
 		ValveClose(5);
 
 		// Display message to show end of adsorption
-		messageHandler.DisplayMessage(MESSAGE_ADSORPTION_DOSE_END, experimentLocalData.experimentDose);
+		controls.messageHandler->DisplayMessage(MESSAGE_ADSORPTION_DOSE_END, experimentLocalData.experimentDose);
 
 		// Reset things
 		experimentLocalData.experimentSubstepStage = SUBSTEP_STATUS_START;

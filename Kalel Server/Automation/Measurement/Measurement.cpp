@@ -57,7 +57,9 @@ Measurement::Measurement(Storage &s, Controls &c)
 	security = new Security(
 		storage.machineSettings->ActivationSecurite, 
 		storage.machineSettings->PressionSecuriteHautePression,
-		storage.machineSettings->PressionSecuriteBassePression);
+		storage.machineSettings->PressionSecuriteBassePression, 
+		*controls.valveControls,
+		*controls.messageHandler);
 }
 
 
@@ -86,15 +88,12 @@ Measurement::~Measurement()
 //	initialize everything
 //	loop
 //	{
-//		1. Get the experiment settings if they are new
-//		2. Run through the automation algorithm for the chosen program (nothing, manual, automatic, vacuum, etc)
-//		3. Measure values from instruments
-//		4. Do a security and safety check on the values
-//		5. Record the time the measurement was done / the time between measurments
-//		6. IF RECORDING, save the data to the file, restart timer between measurements and increment measurement number
-//		7. IF WAITING, check whether the wait is complete and reset the wait
-//		8. Display the data to the GUI
-//		9. Event-based wait. If any events are triggered in this time, the thread performs the requested action.
+//		1. Measure values from instruments + Record the time the measurement was done / the time between measurments
+//		2. Do a security and safety check on the values
+//		3. IF RECORDING 
+//				save the data to the file, restart timer between measurements and increment measurement number
+//		4. Save data
+//		5. Wait until next measurement
 //	}
 //
 //
@@ -107,7 +106,7 @@ void Measurement::Execution()
 	{
 		/*
 		*
-		*		DEVICE AND TIME READING
+		*		1. Measure values from instruments + Record the time the measurement was done / the time between measurments
 		*
 		*/
 
@@ -115,55 +114,66 @@ void Measurement::Execution()
 		ThreadMeasurement();
 
 		// Record time
-		experimentLocalData->measurementsMade++;												// Save the measurement number
-		experimentLocalData->timeElapsed = controls.timerExperiment.TempsActuel();				// Save the time elapsed from the beginning of the experiment
-		experimentLocalData->timeToEquilibrateCurrent = controls.timerWaiting.TempsActuel();	// Save the waiting time if it exists
-		experimentLocalData->timestamp = NowTime();
+		storage.currentData->measurementsMade++;												// Save the measurement number
+		storage.currentData->timeElapsed = controls.timerExperiment.TempsActuel();				// Save the time elapsed from the beginning of the experiment
+		storage.currentData->timeToEquilibrateCurrent = controls.timerWaiting.TempsActuel();	// Save the waiting time if it exists
+		storage.currentData->timestamp = NowTime();
 
 		/*
 		*
-		*		SECURITY CHECKS
+		*		2. Do a security and safety check on the values
 		*
 		*/
 
 		// Do the security checks
-		SecuriteTemperatures();
-		SecuriteHautePression();
+		security->SecurityTemperatures(
+			storage.experimentSettings->experimentType,											// Experiment type to ensure proper response
+			storage.currentData->temperatureCalo + securite_temperature,						// Maximum temperature limit
+			storage.currentData->temperatureCalo - securite_temperature,						// Minimum temperature limit
+			*storage.currentData																// Current data recorded to do the checks
+			);
+
+		security->SecurityHighPressure(															
+			storage.experimentSettings->experimentType,											// Experiment type to ensure proper response
+			storage.machineSettings->PressionSecuriteBassePression,								// Maximum pressure limit
+			storage.machineSettings->PressionSecuriteHautePression,								// Minimum pressure limit
+			*storage.currentData																// Current data recorded to do the checks
+		);
 
 		/*
 		*
-		*		FILE WRITING AND MEASUREMENT RESET
+		*		3. IF RECORDING save the data to the file, restart timer between measurements and increment measurement number
 		*
 		*/
 
 		// Write data
 		if (controls.timerMeasurement.TempsActuel() > T_BETWEEN_RECORD)						// If enough time between measurements
 		{
-			if (experimentLocalData->experimentRecording)								// If we started recording
+			if (storage.currentData->experimentRecording)								// If we started recording
 			{
 				// Save the data to the file
-				controls.fileWriter->FileMeasurementRecord(*experimentLocalData, controls.valveControls->VanneEstOuvert(6));
+				controls.fileWriter->FileMeasurementRecord(*storage.currentData, controls.valveControls->VanneEstOuvert(6));
 			}
 
 			// Restart the timer to record time between measurements
 			controls.timerMeasurement.TopChrono();
 
 			// Increment the measurement number
-			experimentLocalData->experimentGraphPoints++;
+			storage.currentData->experimentGraphPoints++;
 		}
 
 		/*
 		*
-		*		DATA EXCHANGE
+		*		4. Save data
 		*
 		*/
 
 		// Send the data to be displayed to the GUI
-		controls.messageHandler->ExchangeData(*experimentLocalData);
+		controls.messageHandler->ExchangeData(*storage.currentData);
 
 		/*
 		*
-		*		Pause
+		*		5. Wait until next measurement
 		*
 		*/
 
@@ -274,7 +284,7 @@ void Measurement::ReadCalorimeter()
 
 	// Write it in the shared object
 	EnterCriticalSection(&criticalSection);
-	experimentLocalData->resultCalorimeter = calorimeter;
+	storage.currentData->resultCalorimeter = calorimeter;
 	LeaveCriticalSection(&criticalSection);
 }
 
@@ -296,7 +306,7 @@ void Measurement::ReadLowPressure()
 
 	// Write it in the shared object
 	EnterCriticalSection(&criticalSection);
-	experimentLocalData->pressureLow = pressureLowRange;
+	storage.currentData->pressureLow = pressureLowRange;
 	LeaveCriticalSection(&criticalSection);
 }
 
@@ -318,7 +328,7 @@ void Measurement::ReadHighPressure()
 
 	// Write it in the shared object
 	EnterCriticalSection(&criticalSection);
-	experimentLocalData->pressureHigh = pressureHighRange;
+	storage.currentData->pressureHigh = pressureHighRange;
 	LeaveCriticalSection(&criticalSection);
 }
 
@@ -339,8 +349,8 @@ void Measurement::ReadTemperatures()
 
 	// Write it in the shared object
 	EnterCriticalSection(&criticalSection);
-	experimentLocalData->temperatureCalo = dTemperatureCalo;
-	experimentLocalData->temperatureCage = dTemperatureCage;
-	experimentLocalData->temperatureRoom = dTemperaturePiece;
+	storage.currentData->temperatureCalo = dTemperatureCalo;
+	storage.currentData->temperatureCage = dTemperatureCage;
+	storage.currentData->temperatureRoom = dTemperaturePiece;
 	LeaveCriticalSection(&criticalSection);
 }

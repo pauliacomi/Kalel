@@ -14,11 +14,11 @@ void Automation::StageEquilibration()
 	if (experimentLocalData.experimentStepStatus == STEP_STATUS_START) {
 
 		experimentLocalData.experimentStepStatus = STEP_STATUS_END;											// Set next step
-		messageHandler.DisplayMessage(MESSAGE_EQUILIBRATION_STARTED);										// Let GUI know the step change
+		controls.messageHandler->DisplayMessage(MESSAGE_EQUILIBRATION_STARTED);										// Let GUI know the step change
 
 		// This is where we start recording
 		experimentLocalData.experimentRecording = true;
-		messageHandler.GraphReset();
+		controls.messageHandler->GraphReset();
 
 		// Create, open and write the columns in the:
 		EnteteCreate();				// Entete TXT
@@ -38,7 +38,7 @@ void Automation::StageEquilibration()
 		if (experimentLocalData.experimentWaiting == false) {
 			experimentLocalData.experimentStage = STAGE_ADSORPTION;												// Set next stage
 			experimentLocalData.experimentStepStatus = STEP_STATUS_START;										// Reset next step
-			messageHandler.DisplayMessage(MESSAGE_EQUILIBRATION_COMPLETE);										// Let GUI know the step change
+			controls.messageHandler->DisplayMessage(MESSAGE_EQUILIBRATION_COMPLETE);										// Let GUI know the step change
 		}
 	}
 }

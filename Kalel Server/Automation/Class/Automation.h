@@ -117,34 +117,6 @@ protected:
 	void WaitSeconds(int nbsecondes);
 
 
-/**********************************************************************************************************************************
-// Valve and control mechanism functions
-***********************************************************************************************************************************/
-
-	bool ValveOpen(int num_vanne);
-	bool ValveClose(int num_vanne);
-	bool ValveOpenClose(int num_vanne);
-	bool ValvesCloseAll();
-
-	bool EVActivate(int num_ev);
-	bool EVDeactivate(int num_ev);
-
-	bool ActivatePump();
-	bool DeactivatePump();
-
-	bool ValvesAndPumpClose();
-	bool ControlMechanismsCloseAll();
-
-	bool EstOuvert_Vanne(int num_vanne);
-	bool EstFerme_Vanne(int num_vanne);
-	bool EV1EstActive();
-	bool EV1EstDesactive();
-	bool EV2EstActive();
-	bool EV2EstDesactive();
-	bool PompeEstActive();
-	bool PompeEstDesactive();
-
-
 	/**********************************************************************************************************************************
 	// Checks for automatic functionality
 	***********************************************************************************************************************************/

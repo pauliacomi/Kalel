@@ -141,9 +141,6 @@
     <ClInclude Include="Backend\Wrapper Classes\SerialInstruments.h">
       <Filter>Header Files\Backend\Wrapper Classes</Filter>
     </ClInclude>
-    <ClInclude Include="Backend\Wrapper Classes\Vannes.h">
-      <Filter>Header Files\Backend\Wrapper Classes</Filter>
-    </ClInclude>
     <ClInclude Include="Automation\ThreadManager.h">
       <Filter>Header Files\Automation</Filter>
     </ClInclude>
@@ -272,6 +269,9 @@
     </ClInclude>
     <ClInclude Include="Automation\Measurement\Security.h">
       <Filter>Header Files\Automation\Measurement</Filter>
+    </ClInclude>
+    <ClInclude Include="Backend\Wrapper Classes\ValveController.h">
+      <Filter>Header Files\Backend\Wrapper Classes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -419,9 +419,6 @@
     <ClCompile Include="Backend\Wrapper Classes\Temperature.cpp">
       <Filter>Source Files\Backend\Wrapper Classes</Filter>
     </ClCompile>
-    <ClCompile Include="Backend\Wrapper Classes\Vannes.cpp">
-      <Filter>Source Files\Backend\Wrapper Classes</Filter>
-    </ClCompile>
     <ClCompile Include="Automation\Class\Automation.cpp">
       <Filter>Source Files\Automation\Class</Filter>
     </ClCompile>
@@ -447,9 +444,6 @@
       <Filter>Source Files\Automation\Class</Filter>
     </ClCompile>
     <ClCompile Include="Automation\Class\AutomationVacuum.cpp">
-      <Filter>Source Files\Automation\Class</Filter>
-    </ClCompile>
-    <ClCompile Include="Automation\Class\AutomationValves.cpp">
       <Filter>Source Files\Automation\Class</Filter>
     </ClCompile>
     <ClCompile Include="..\Kalel Shared\Netcode\base64.cpp">
@@ -514,6 +508,9 @@
     </ClCompile>
     <ClCompile Include="Automation\Measurement\Security.cpp">
       <Filter>Source Files\Automation\Measurement</Filter>
+    </ClCompile>
+    <ClCompile Include="Backend\Wrapper Classes\ValveController.cpp">
+      <Filter>Source Files\Backend\Wrapper Classes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

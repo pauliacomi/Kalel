@@ -11,7 +11,7 @@
 class Controls {
 public:
 	std::shared_ptr<MessageHandler> messageHandler;					// The message sender class
-	std::shared_ptr<CVannes> valveControls;							// The valve control/query class
+	std::shared_ptr<ValveController> valveControls;							// The valve control/query class
 	std::shared_ptr<FileWriter> fileWriter;							// The file writing class
 
 	std::shared_ptr<MachineSettings> machineLocalSettings;			// The local machine settings are here

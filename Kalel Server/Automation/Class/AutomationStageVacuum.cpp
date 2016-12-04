@@ -7,8 +7,8 @@ void Automation::StageVacuum(bool separateFunctionality)
 		&& experimentLocalData.experimentWaiting == false)
 	{
 		experimentLocalData.experimentStepStatus = STEP_STATUS_INPROGRESS;												// Set next step
-		messageHandler.DisplayMessage(MESSAGE_VACUUM_STAGE_START);														// Let GUI know the step change
-		messageHandler.DisplayMessage(MESSAGE_VACUUM_HIGHPRESSURE_START);
+		controls.messageHandler->DisplayMessage(MESSAGE_VACUUM_STAGE_START);														// Let GUI know the step change
+		controls.messageHandler->DisplayMessage(MESSAGE_VACUUM_HIGHPRESSURE_START);
 
 		ControlMechanismsCloseAll();								// Close all valves
 		ActivatePump();											    // Activate the pump
@@ -29,8 +29,8 @@ void Automation::StageVacuum(bool separateFunctionality)
 		}
 		else
 		{
-			messageHandler.DisplayMessage(MESSAGE_VACUUM_HIGHPRESSURE_END);
-			messageHandler.DisplayMessage(MESSAGE_VACUUM_LOWPRESSURE_START);
+			controls.messageHandler->DisplayMessage(MESSAGE_VACUUM_HIGHPRESSURE_END);
+			controls.messageHandler->DisplayMessage(MESSAGE_VACUUM_LOWPRESSURE_START);
 			ValveOpen(6);
 			WaitSeconds(TIME_WAIT_VALVES_SHORT);
 
@@ -78,7 +78,7 @@ void Automation::StageVacuum(bool separateFunctionality)
 		}
 		else
 		{
-			messageHandler.DisplayMessage(MESSAGE_VACUUM_LOWPRESSURE_END);
+			controls.messageHandler->DisplayMessage(MESSAGE_VACUUM_LOWPRESSURE_END);
 
 			ValveOpen(8);
 			ValveOpen(7);
@@ -119,11 +119,11 @@ void Automation::StageVacuum(bool separateFunctionality)
 	if (experimentLocalData.experimentStepStatus == STEP_STATUS_INPROGRESS + 8
 		&& experimentLocalData.experimentWaiting == false)
 	{
-		messageHandler.DisplayMessage(MESSAGE_VACUUM_FINALOUTGAS_START);
+		controls.messageHandler->DisplayMessage(MESSAGE_VACUUM_FINALOUTGAS_START);
 
 		if (separateFunctionality)
 		{
-			messageHandler.DisplayMessageBox(MESSAGE_VACUUM_USER_CHOICE, MB_ICONINFORMATION | MB_OK, true);
+			controls.messageHandler->DisplayMessageBox(MESSAGE_VACUUM_USER_CHOICE, MB_ICONINFORMATION | MB_OK, true);
 			SetEvent(h_eventPause);
 		}
 		else
@@ -140,7 +140,7 @@ void Automation::StageVacuum(bool separateFunctionality)
 	if (experimentLocalData.experimentStepStatus == STEP_STATUS_END
 		&& experimentLocalData.experimentWaiting == false)
 	{
-		messageHandler.DisplayMessage(MESSAGE_VACUUM_FINALOUTGAS_END);
+		controls.messageHandler->DisplayMessage(MESSAGE_VACUUM_FINALOUTGAS_END);
 
 		experimentLocalData.experimentStepStatus = STEP_STATUS_START;													// Let GUI know the step change
 
@@ -154,7 +154,7 @@ void Automation::StageVacuum(bool separateFunctionality)
 		}
 		else
 		{
-			messageHandler.DisplayMessage(MESSAGE_VACUUM_STAGE_END);
+			controls.messageHandler->DisplayMessage(MESSAGE_VACUUM_STAGE_END);
 
 			experimentLocalData.experimentStepStatus = STAGE_END_AUTOMATIC;
 		}

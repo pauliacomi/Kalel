@@ -13,13 +13,14 @@
 
 // Measurement and manipulation classes
 #include "../../Backend/Wrapper Classes/Vannes.h"							// Controlling valves
+#include "../../../Kalel Shared/Com Classes/ExperimentData.h"
 
-Security::Security(bool activated, float PressureHigh_HighRange, float PressureHigh_LowRange)
+
+Security::Security(bool activated, float PressureHigh_HighRange, float PressureHigh_LowRange, ValveController & valveControl, MessageHandler & messageHandler)
+	: g_pVanne{ valveControl }
+	, messageHandler{ messageHandler }
 {
 	securityActivated = activated;
-
-	security_PressureHigh_HighRange = PressureHigh_HighRange;
-	security_PressureHigh_LowRange = PressureHigh_LowRange;
 
 	security_PressureHigh_flag = false;
 	security_TemperatureHigh_flag = false;
@@ -30,53 +31,55 @@ Security::~Security()
 {
 }
 
-void Security::SecuriteHautePression()
+void Security::SecurityHighPressure(int experimentType, float maxPlow, float maxPhigh, const ExperimentData &expData)
 {
-	if (experimentLocalSettings->experimentType == EXPERIMENT_TYPE_MANUAL)
-		SecuriteHautePressionManuelle();
-	if (experimentLocalSettings->experimentType == EXPERIMENT_TYPE_AUTO)
-		SecuriteHautePressionAuto();
+	if (experimentType == EXPERIMENT_TYPE_MANUAL)
+		SecurityHighPressureManual(maxPlow,  maxPhigh, expData);
+	if (experimentType == EXPERIMENT_TYPE_AUTO)
+		SecurityHighPressureAuto(maxPlow, maxPhigh, expData);
 }
 
-void Security::SecuriteTemperatures()
+void Security::SecurityTemperatures(int experimentType, float maxPlow, float maxPhigh, const ExperimentData &expData)
 {
-	if (experimentLocalSettings->experimentType == EXPERIMENT_TYPE_MANUAL)
-		SecuriteTemperaturesManuelle();
-	if (experimentLocalSettings->experimentType == EXPERIMENT_TYPE_AUTO)
-		SecuriteTemperaturesAuto();
+	if (experimentType == EXPERIMENT_TYPE_MANUAL)
+		SecurityTemperaturesManual(maxPlow, maxPhigh, expData);
+	if (experimentType == EXPERIMENT_TYPE_AUTO)
+		SecuriteTemperaturesAuto(maxPlow, maxPhigh, expData);
 }
 
 
-void Security::SecuriteHautePressionManuelle()
+void Security::SecurityHighPressureManual(float maxPlow, float maxPhigh, const ExperimentData &expData)
 {
 	// Check for the pressure being higher than low pressure limit
-	if (experimentLocalData->pressureLow > storageVectors->machineSettings->PressionSecuriteBassePression)
+	if (expData.pressureLow > maxPlow)
 	{
 		// If valve 6 is open and pressure is higher than specified, close valve 6
-		if (controls.valveControls->VanneEstOuvert(6))
+		if (g_pVanne.VanneEstOuvert(6))
 		{
-			controls.valveControlmessageHandler->DisplayMessage(MESSAGE_WARNING_PHIGH_V6, experimentLocalData->pressureHigh, storageVectors->machineSettings->PressionSecuriteBassePression);
-			ValveClose(6);
+			messageHandler.DisplayMessage(MESSAGE_WARNING_PHIGH_V6, expData.pressureHigh, maxPlow);
+			g_pVanne.Fermer(6);
+			messageHandler.DisplayMessage(MESSAGE_VALVE_CLOSED, 6);
 		}
 	}
 	else
 	{
-		if (!controls.valveControls->VanneEstOuvert(6))
+		if (!g_pVanne.VanneEstOuvert(6))
 		{
-			ValveOpen(6);
+			g_pVanne.Ouvrir(6);
+			messageHandler.DisplayMessage(MESSAGE_VALVE_OPENED, 6);
 		}
 	}
 
 	// Check the result
-	if (experimentLocalData->pressureHigh >= security_PressureHigh_HighRange)
+	if (expData.pressureHigh >= maxPhigh)
 	{
 		if (!security_PressureHigh_flag) {
 			// Set the flag
 			security_PressureHigh_flag = true;
 
 			// Alert user
-			controls.messageHandler->DisplayMessageBox(MESSAGE_WARNING_PHIGH_BOX, MB_ICONERROR, false, security_PressureHigh_HighRange);
-			controls.messageHandler->DisplayMessage(MESSAGE_WARNING_PHIGH);
+			messageHandler.DisplayMessageBox(MESSAGE_WARNING_PHIGH_BOX, MB_ICONERROR, false, maxPhigh);
+			messageHandler.DisplayMessage(MESSAGE_WARNING_PHIGH);
 
 			// Play a sound
 			MessageBeep(MB_ICONERROR);
@@ -85,26 +88,60 @@ void Security::SecuriteHautePressionManuelle()
 	else
 		if (security_PressureHigh_flag)
 		{
-			controls.messageHandler->DisplayMessage(MESSAGE_WARNING_PHNORMAL);
+			messageHandler.DisplayMessage(MESSAGE_WARNING_PHNORMAL);
 			MessageBeep(MB_ICONINFORMATION);
 			security_PressureHigh_flag = FALSE;
 		}
 }
 
 
+void Security::SecurityHighPressureAuto(float maxPlow, float maxPhigh, const ExperimentData &expData)
+{
+	if (securityActivated)
+	{
+		if (expData.experimentStage != STAGE_VACUUM_SAMPLE)
+		{
+			// Check for the pressure being higher than low pressure limit
+			if (expData.pressureHigh > maxPlow)
+			{
+				// If valve 6 is open and pressure is higher than specified, close valve 6
+				if (g_pVanne.VanneEstOuvert(6))
+				{
+					messageHandler.DisplayMessage(MESSAGE_WARNING_PHIGH_V6, expData.pressureHigh, maxPlow);
+					g_pVanne.Fermer(6);
+					messageHandler.DisplayMessage(MESSAGE_VALVE_CLOSED, 6);
+				}
+			}
+			else
+			{
+				if (!g_pVanne.VanneEstOuvert(6))
+				{
+					g_pVanne.Ouvrir(6);
+					messageHandler.DisplayMessage(MESSAGE_VALVE_OPENED, 6);
+				}
+			}
 
-void Security::SecuriteTemperaturesManuelle()
+			// Check for the pressure being higher than high pressure limit
+			if (expData.pressureHigh >= maxPhigh) {
+				//g_flagState = ARRET_URGENCE_HP;
+			}
+		}
+	}
+}
+
+
+void Security::SecurityTemperaturesManual(double maximumT, double minimumT, const ExperimentData &expData)
 {
 	// Check calorimeter temperature high
-	if (experimentLocalData->temperatureCalo >= experimentLocalSettings->dataGeneral.temperature_experience + securite_temperature)
+	if (expData.temperatureCalo >= maximumT)
 	{
 		if (!security_TemperatureHigh_flag) {
 			// Set the flag
 			security_TemperatureHigh_flag = true;
 
 			// Alert user
-			controls.messageHandler->DisplayMessageBox(MESSAGE_WARNING_THIGH_BOX, MB_ICONERROR, false, experimentLocalSettings->dataGeneral.temperature_experience + securite_temperature);
-			controls.messageHandler->DisplayMessage(MESSAGE_WARNING_CALOT_HIGH);
+			messageHandler.DisplayMessageBox(MESSAGE_WARNING_THIGH_BOX, MB_ICONERROR, false, maximumT);
+			messageHandler.DisplayMessage(MESSAGE_WARNING_CALOT_HIGH);
 
 			// Play a sound
 			MessageBeep(MB_ICONERROR);
@@ -113,21 +150,21 @@ void Security::SecuriteTemperaturesManuelle()
 	else
 		if (security_TemperatureHigh_flag)
 		{
-			controls.messageHandler->DisplayMessage(MESSAGE_WARNING_CALOT_NORMAL);
+			messageHandler.DisplayMessage(MESSAGE_WARNING_CALOT_NORMAL);
 			MessageBeep(MB_ICONINFORMATION);
 			security_TemperatureHigh_flag = FALSE;
 		}
 
 	// Check calorimeter temperature low
-	if (experimentLocalData->temperatureCalo <= experimentLocalSettings->dataGeneral.temperature_experience - securite_temperature)
+	if (expData.temperatureCalo <= minimumT)
 	{
 		if (!security_TemperatureLow_flag) {
 			// Set the flag
 			security_TemperatureLow_flag = true;
 
 			// Alert user
-			controls.messageHandler->DisplayMessageBox(MESSAGE_WARNING_TLOW_BOX, MB_ICONERROR, false, experimentLocalSettings->dataGeneral.temperature_experience - securite_temperature);
-			controls.messageHandler->DisplayMessage(MESSAGE_WARNING_CALOT_LOW);
+			messageHandler.DisplayMessageBox(MESSAGE_WARNING_TLOW_BOX, MB_ICONERROR, false, minimumT);
+			messageHandler.DisplayMessage(MESSAGE_WARNING_CALOT_LOW);
 
 			// Play a sound
 			MessageBeep(MB_ICONERROR);
@@ -136,60 +173,29 @@ void Security::SecuriteTemperaturesManuelle()
 	else
 		if (security_TemperatureLow_flag)
 		{
-			controls.messageHandler->DisplayMessage(MESSAGE_WARNING_CALOT_NORMAL);
+			messageHandler.DisplayMessage(MESSAGE_WARNING_CALOT_NORMAL);
 			MessageBeep(MB_ICONINFORMATION);
 			security_TemperatureLow_flag = FALSE;
 		}
 }
 
 
-void Security::SecuriteHautePressionAuto()
+
+
+void Security::SecuriteTemperaturesAuto(double maximumT, double minimumT, const ExperimentData &expData)
 {
 	if (securityActivated)
 	{
-		if (experimentLocalData->experimentStage != STAGE_VACUUM_SAMPLE)
+		if (expData.experimentStage != STAGE_VACUUM_SAMPLE)
 		{
-			// Check for the pressure being higher than low pressure limit
-			if (experimentLocalData->pressureHigh > storageVectors->machineSettings->PressionSecuriteBassePression)
+			if (expData.temperatureCalo >= maximumT)
 			{
-				// If valve 6 is open and pressure is higher than specified, close valve 6
-				if (controls.valveControls->VanneEstOuvert(6))
-				{
-					controls.messageHandler->DisplayMessage(MESSAGE_WARNING_PHIGH_V6, experimentLocalData->pressureHigh, storageVectors->machineSettings->PressionSecuriteBassePression);
-					ValveClose(6);
-				}
-			}
-			else
-			{
-				if (!controls.valveControls->VanneEstOuvert(6))
-				{
-					ValveOpen(6);
-				}
-			}
-
-			// Check for the pressure being higher than high pressure limit
-			if (experimentLocalData->pressureHigh >= storageVectors->machineSettings->PressionSecuriteHautePression) {
-				//g_flagState = ARRET_URGENCE_HP;
-			}
-		}
-	}
-}
-
-
-void Security::SecuriteTemperaturesAuto()
-{
-	if (securityActivated)
-	{
-		if (experimentLocalData->experimentStage != STAGE_VACUUM_SAMPLE)
-		{
-			if (experimentLocalData->temperatureCalo >= experimentLocalSettings->dataGeneral.temperature_experience + securite_temperature)
-			{
-				controls.messageHandler->DisplayMessage(MESSAGE_WARNING_THIGH_STOP, experimentLocalSettings->dataGeneral.temperature_experience + securite_temperature);
+				messageHandler.DisplayMessage(MESSAGE_WARNING_THIGH_STOP, maximumT);
 				//g_flagState = ARRET_URGENCE_TCH;
 			}
-			if (experimentLocalData->temperatureCalo <= experimentLocalSettings->dataGeneral.temperature_experience - securite_temperature)
+			if (expData.temperatureCalo <= minimumT)
 			{
-				controls.messageHandler->DisplayMessage(MESSAGE_WARNING_TLOW_STOP, experimentLocalSettings->dataGeneral.temperature_experience - securite_temperature);
+				messageHandler.DisplayMessage(MESSAGE_WARNING_TLOW_STOP, minimumT);
 				//g_flagState = ARRET_URGENCE_TCB;
 			}
 		}

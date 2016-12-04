@@ -58,13 +58,9 @@ Automation::~Automation()
 //	{
 //		1. Get the experiment settings if they are new
 //		2. Run through the automation algorithm for the chosen program (nothing, manual, automatic, vacuum, etc)
-//		3. Measure values from instruments
-//		4. Do a security and safety check on the values
-//		5. Record the time the measurement was done / the time between measurments
-//		6. IF RECORDING, save the data to the file, restart timer between measurements and increment measurement number
-//		7. IF WAITING, check whether the wait is complete and reset the wait
-//		8. Display the data to the GUI
-//		9. Event-based wait. If any events are triggered in this time, the thread performs the requested action.
+//		3. IF WAITING
+//				check whether the wait is complete and reset the wait
+//		4. Event-based wait. If any events are triggered in this time, the thread performs the requested action.
 //	}
 //
 //
@@ -77,15 +73,15 @@ void Automation::Execution()
 	{
 		/*
 		*
-		*		SETTINGS RETRIEVAL
+		*		1. Get the experiment settings if they are new
 		*
 		*/
 
 		if (sb_settingsModified) {
 			if (experimentLocalData.experimentInProgress == true) {
 				ExperimentSettings tempSettings = GetSettings();						// We have the two settings coexisting to record any changes
-				controls.fileWriter->RecordDataChange(true, tempSettings false);		// non-CSV
-				controls.fileWriter->RecordDataChange(true, tempSettings, true);		// CSV
+				controls.fileWriter->RecordDataChange(false, tempSettings, *storage.experimentSettings, *storage.currentData);		// non-CSV
+				controls.fileWriter->RecordDataChange(true, tempSettings, *storage.experimentSettings, *storage.currentData);		// CSV
 				experimentLocalSettings = tempSettings;									// Now save the new settings as the old ones
 			}
 			else
@@ -94,7 +90,7 @@ void Automation::Execution()
 
 		/*
 		*
-		*		AUTOMATION
+		*		2. Run through the automation algorithm for the chosen program (nothing, manual, automatic, vacuum, etc)
 		*
 		*/
 
@@ -125,7 +121,7 @@ void Automation::Execution()
 
 		/*
 		*
-		*		NON-BLOCKING WAITING FUNCTIONALITY
+		*		3. IF WAITING check whether the wait is complete and reset the wait
 		*
 		*/
 
@@ -142,8 +138,8 @@ void Automation::Execution()
 		
 		/*
 		*
-		*		EVENT-BASED LOOP TIMING
-		*		// Checks for thread states
+		*		4. Event-based wait. If any events are triggered in this time, the thread performs the requested action.
+		*		
 		*/
 
 		// Now run through the possible events
@@ -184,6 +180,10 @@ void Automation::Execution()
 }
 
 
+
+
+
+
 bool Automation::ExecutionManual()
 {
 	if (experimentLocalData.experimentStepStatus == STEP_STATUS_UNDEF) {
@@ -202,12 +202,12 @@ bool Automation::ExecutionManual()
 
 		// Create open and write the columns in the:
 		bool err = false;
-		err = controls.fileWriter->EnteteCreate();				// Entete TXT
-		err = controls.fileWriter->EnteteCSVCreate();			// Entete CSV
+		err = controls.fileWriter->EnteteCreate(*storage.experimentSettings, *storage.machineSettings);				// Entete TXT
+		err = controls.fileWriter->EnteteCSVCreate(*storage.experimentSettings, *storage.machineSettings);			// Entete CSV
 		if (err){
 			controls.messageHandler->DisplayMessageBox(ERROR_PATHUNDEF, MB_ICONERROR | MB_OK, false);
 		}
-		controls.fileWriter->FileMeasurementOpen();				// Measurement file
+		controls.fileWriter->FileMeasurementOpen(storage.experimentSettings->dataGeneral);							// Measurement file
 
 		// Continue experiment
 		experimentLocalData.experimentStage = STAGE_MANUAL;
@@ -304,7 +304,7 @@ ExperimentSettings Automation::GetSettings()
 	ExperimentSettings tempSettings;
 
 	// Copy the data from the main thread, no need for synchronisation as we are only copying
-	tempSettings = experimentSettings.get();
+	tempSettings = storage.experimentSettings.get();
 
 	sb_settingsModified = false;
 

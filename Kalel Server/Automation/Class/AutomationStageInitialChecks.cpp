@@ -51,7 +51,7 @@ bool Automation::VerificationSecurity()
 	if (!securityActivated)
 	{
 		// Ask user if they want to continue
-		messageHandler.DisplayMessageBox(MESSAGE_NOSECURITY, MB_ICONWARNING | MB_OKCANCEL, true);
+		controls.messageHandler->DisplayMessageBox(MESSAGE_NOSECURITY, MB_ICONWARNING | MB_OKCANCEL, true);
 		::SetEvent(h_eventPause);
 	}
 
@@ -64,8 +64,8 @@ bool Automation::VerificationValves()
 	if (experimentLocalData.experimentStepStatus == STEP_STATUS_START)
 	{
 		// Ask user to check the valves
-		messageHandler.DisplayMessage(MESSAGE_CHECK_INITIAL_STATE);
-		messageHandler.DisplayMessageBox(MESSAGE_CHECK_VALVES_OPEN, MB_ICONQUESTION | MB_OKCANCEL, true);
+		controls.messageHandler->DisplayMessage(MESSAGE_CHECK_INITIAL_STATE);
+		controls.messageHandler->DisplayMessageBox(MESSAGE_CHECK_VALVES_OPEN, MB_ICONQUESTION | MB_OKCANCEL, true);
 
 		// Pause
 		::SetEvent(h_eventPause);
@@ -90,18 +90,18 @@ bool Automation::VerificationResidualPressure()
 	if (experimentLocalData.experimentStepStatus == STEP_STATUS_START)
 	{
 		// Display initial message
-		messageHandler.DisplayMessage(MESSAGE_CHECK_INITIAL_PRESSURE);
+		controls.messageHandler->DisplayMessage(MESSAGE_CHECK_INITIAL_PRESSURE);
 
 		if (experimentLocalData.pressureHigh < GetPressionSecuriteBassePression() && GetMesureBassePression() && GetMesureHautePression())
 		{
 			// Tell GUI we are opening valve 6
-			messageHandler.DisplayMessage(MESSAGE_CHECK_OPENV6_POSSIB, experimentLocalData.pressureHigh);
+			controls.messageHandler->DisplayMessage(MESSAGE_CHECK_OPENV6_POSSIB, experimentLocalData.pressureHigh);
 
 			// Open valve 6
 			ValveOpen(6);
 
 			// Tell GUI we are waiting
-			messageHandler.DisplayMessage(MESSAGE_WAIT_TIME, TIME_WAIT_VALVES);
+			controls.messageHandler->DisplayMessage(MESSAGE_WAIT_TIME, TIME_WAIT_VALVES);
 
 			// Set the time to wait
 			WaitSeconds(TIME_WAIT_VALVES);
@@ -117,7 +117,7 @@ bool Automation::VerificationResidualPressure()
 		ValveOpen(5);
 
 		// Tell GUI we are waiting
-		messageHandler.DisplayMessage(MESSAGE_WAIT_TIME, TIME_WAIT_VALVES);
+		controls.messageHandler->DisplayMessage(MESSAGE_WAIT_TIME, TIME_WAIT_VALVES);
 
 		// Set the time to wait
 		WaitSeconds(TIME_WAIT_VALVES);
@@ -132,7 +132,7 @@ bool Automation::VerificationResidualPressure()
 		// Check residual pressure
 		if (experimentLocalData.pressureHigh >= GetPressionLimiteVide())
 		{
-			messageHandler.DisplayMessageBox(MESSAGE_WARNING_INITIAL_PRESSURE, MB_ICONQUESTION | MB_OKCANCEL, true, experimentLocalData.pressureHigh, GetPressionLimiteVide());
+			controls.messageHandler->DisplayMessageBox(MESSAGE_WARNING_INITIAL_PRESSURE, MB_ICONQUESTION | MB_OKCANCEL, true, experimentLocalData.pressureHigh, GetPressionLimiteVide());
 			::SetEvent(h_eventPause);
 		}
 		experimentLocalData.experimentStepStatus = STEP_STATUS_START;
@@ -148,14 +148,14 @@ bool Automation::VerificationTemperature()
 	if (experimentLocalData.experimentStepStatus == STEP_STATUS_START)
 	{
 		// Display initial message
-		messageHandler.DisplayMessage(MESSAGE_CHECK_INITIAL_TEMPERATURE);
+		controls.messageHandler->DisplayMessage(MESSAGE_CHECK_INITIAL_TEMPERATURE);
 
 		if ((experimentLocalData.temperatureCalo < experimentLocalSettings.dataGeneral.temperature_experience - security_temperature_initial) || (experimentLocalData.temperatureCalo > experimentLocalSettings.dataGeneral.temperature_experience + security_temperature_initial) ||
 			(experimentLocalData.temperatureCage < experimentLocalSettings.dataGeneral.temperature_experience - security_temperature_initial) || (experimentLocalData.temperatureCage > experimentLocalSettings.dataGeneral.temperature_experience + security_temperature_initial))
 		{
 			// Tell GUI we are waiting
-			messageHandler.DisplayMessage(MESSAGE_WAIT_TEMP_EQUILIBRATION);
-			messageHandler.DisplayMessageBox(MESSAGE_CHECK_TEMPERATURE_DIFF, MB_ICONQUESTION | MB_YESNOCANCEL, true, experimentLocalData.temperatureCalo, experimentLocalSettings.dataGeneral.temperature_experience - security_temperature_initial);
+			controls.messageHandler->DisplayMessage(MESSAGE_WAIT_TEMP_EQUILIBRATION);
+			controls.messageHandler->DisplayMessageBox(MESSAGE_CHECK_TEMPERATURE_DIFF, MB_ICONQUESTION | MB_YESNOCANCEL, true, experimentLocalData.temperatureCalo, experimentLocalSettings.dataGeneral.temperature_experience - security_temperature_initial);
 
 			::SetEvent(h_eventPause);
 			experimentLocalData.experimentStepStatus = STEP_STATUS_INPROGRESS;
