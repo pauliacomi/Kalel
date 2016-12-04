@@ -26,7 +26,7 @@
 
 
 
-Measurement::Measurement()
+Measurement::Measurement(Storage &s, Controls &c)
 {
 	// Initialise threads
 	h_MeasurementThread[0] = NULL;

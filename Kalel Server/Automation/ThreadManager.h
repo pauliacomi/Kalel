@@ -27,7 +27,8 @@ private:
 	std::thread * m_threadMeasurement;						// Reference for main thread
 	CWinThread * m_threadManualAction;						// Reference for manual thread
 
-	Storage * handles;										// pointer to storage class
+	Storage & storage;										// reference to storage class
+	Controls controls;
 	Automation * automation;								// Main class that deals with the automatic functionality
 	Measurement * measurement;								// Main class that deals with the measurement functionality
 

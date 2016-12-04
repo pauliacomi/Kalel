@@ -8,7 +8,7 @@
 #include <utility>
 
 MessageHandler::MessageHandler(Storage &h)
-	: handles(&h)
+	: storage{ h }
 {
 }
 
@@ -27,9 +27,7 @@ bool MessageHandler::ExchangeData(const ExperimentData &pParam)
 	std::shared_ptr<ExperimentData> newData = std::make_shared<ExperimentData>(pParam);
 
 	// Lock to prevent any synchronisation errors
-	handles->sharedMutex.lock();
-	handles->dataCollection.push_back(newData);
-	handles->sharedMutex.unlock();
+	storage.pushData(newData);
 
 	return true;
 }
@@ -62,9 +60,7 @@ bool MessageHandler::DisplayMessage(std::string pParam, int pInt1, int pInt2, do
 		}
 	}
 	
-	handles->autoInfoLogsMutex.lock();
-	handles->automationInfoLogs.insert(std::make_pair(NowTime(), message));
-	handles->autoInfoLogsMutex.unlock();
+	storage.pushInfoLogs(NowTime(), message);
 
 	return true;
 }
@@ -74,9 +70,7 @@ bool MessageHandler::DisplayMessage(std::string pParam, std::string m)
 	std::string message;
 	message = string_format(pParam, m);
 
-	handles->autoInfoLogsMutex.lock();
-	handles->automationInfoLogs.insert (std::make_pair(NowTime(), message));
-	handles->autoInfoLogsMutex.unlock();
+	storage.pushInfoLogs(NowTime(), message);
 
 	return true;
 }
@@ -100,7 +94,7 @@ bool MessageHandler::DisplayMessageBox(std::string pParam, UINT nType, bool bloc
 		message = string_format(pParam);
 	}
 
-	//handles->automationErrorLogs.insert(std::make_pair(NowTime(), message));
+	//storage.automationErrorLogs.insert(std::make_pair(NowTime(), message));
 
 	return true;
 }
@@ -110,7 +104,7 @@ bool MessageHandler::DisplayMessageBox(std::string pParam, UINT nType, bool bloc
 	std::string message;
 	message = string_format(pParam, pString);
 
-	//handles->automationErrorLogs.insert(std::make_pair(NowTime(), message));
+	//storage.automationErrorLogs.insert(std::make_pair(NowTime(), message));
 
 	//// Check if the message box is supposed to alert the user or ask for input
 	//// Other thread is now responsible for deleting this object

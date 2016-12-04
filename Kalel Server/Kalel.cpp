@@ -72,7 +72,9 @@ Kalel::~Kalel()
 void Kalel::GetLogs(std::string &logs) {
 	logs.clear();
 
-	for (std::map<std::string, std::string>::iterator it = storageVectors.automationInfoLogs.begin(); it != storageVectors.automationInfoLogs.end(); ++it)
+	auto localCollection = storageVectors.getInfoLogs;
+
+	for (std::map<std::string, std::string>::iterator it = localCollection.begin(); it != localCollection.end(); ++it)
 	{
 		logs += it->first;
 		logs += "   ";
@@ -169,9 +171,7 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 		// Figure out which range of data to send by looking at the time requested
 		
 		std::deque<std::shared_ptr<ExperimentData>>::iterator it;
-		storageVectors.sharedMutex.lock();
-		auto localCollection = storageVectors.dataCollection;
-		storageVectors.sharedMutex.unlock();
+		auto localCollection = storageVectors.getData();
 
 		if (req->params_.empty()			 ||
 			req->params_.at("time").empty() || 
@@ -220,9 +220,7 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 		// Figure out which range of logs to send by finding the requested timestamp
 
 		std::map<std::string, std::string>::iterator it;
-		storageVectors.autoInfoLogsMutex.lock();
-		auto localCollection = storageVectors.automationInfoLogs;
-		storageVectors.autoInfoLogsMutex.unlock();
+		auto localCollection = storageVectors.getInfoLogs;
 
 		if (req->params_.empty() ||									// If parameters don't exist, send all the logs
 			req->params_.at("time").empty() ||

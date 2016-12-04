@@ -264,6 +264,9 @@
     <ClInclude Include="Automation\FileWriter.h">
       <Filter>Header Files\Automation</Filter>
     </ClInclude>
+    <ClInclude Include="Automation\CommonPointers.h">
+      <Filter>Header Files\Automation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Kalel Server.cpp">

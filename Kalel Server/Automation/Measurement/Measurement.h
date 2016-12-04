@@ -8,18 +8,16 @@
 // forward declarations
 class CTemperature;
 class SerialInstruments;
-class MessageHandler;
 class ExperimentData;
 class CChrono;
 class ExperimentSettings;
 class Storage;
-class CVannes;
 class FileWriter;
 
 class Measurement
 {
 public:
-	Measurement();
+	Measurement(Storage &s, Controls &c);
 	~Measurement();
 
 	/**********************************************************************************************************************************
@@ -31,17 +29,16 @@ public:
 	//------------------------------------------------------------
 	
 	// Inherited
+	ExperimentData* experimentLocalData;							// Local data
+	
+	// New
 	CTemperature* g_pTemperature;									// Pointer to the class that deals with temperature recording
 	SerialInstruments * g_pSerialInstruments;						// Pointer to the class that deals with calorimeter & pressure recording
-	MessageHandler* messageHandler;									// This class will send all the messages out
-	ExperimentData* experimentLocalData;							// Local data
+
 	CChrono* timerExperiment;										// Class for measuring the time from the experiment start
 	CChrono* timerMeasurement;										// Class for measuring the time between each measurement
 	CChrono* timerWaiting;											// Class for measuring the time to wait
 	Storage* storageVectors;
-	CVannes* valves;
-	FileWriter *fwrt;												// File writer
-	std::shared_ptr<ExperimentSettings> experimentLocalSettings;	// Pointer to the experiment settings from the main class, this is only read, never written
 
 	//------------------------------------------------------------
 	// Syncronisation primitives and threads

@@ -19,7 +19,9 @@
 // --------- Initialisation and destruction -------
 
 ThreadManager::ThreadManager(Storage &h)
-	: m_threadMainControlLoop(nullptr)
+	: storage{ h }
+
+	, m_threadMainControlLoop(nullptr)
 	, m_threadManualAction (nullptr)
 
 	, maParam(nullptr)
@@ -28,9 +30,6 @@ ThreadManager::ThreadManager(Storage &h)
 	, automation(nullptr)
 	, messageHandler{ h }
 {
-	// 
-	handles = &h;
-
 }
 
 ThreadManager::~ThreadManager()
@@ -49,7 +48,7 @@ ThreadManager::~ThreadManager()
 
 unsigned ThreadManager::StartMeasurement() {
 
-	measurement = new Measurement();
+	measurement = new Measurement(storage, controls);
 
 	measurementThread = std::thread(&Measurement::Execution, measurement);
 
@@ -236,7 +235,7 @@ UINT ThreadManager::ThreadMainWorkerStarter(LPVOID pParam)
 void ThreadManager::ThreadMainWorker()
 {
 	// Create the class to deal with the automatic functionality
-	automation = new Automation(*handles);
+	automation = new Automation(storage);
 
 	// Launch functionality
 	automation->Execution();
