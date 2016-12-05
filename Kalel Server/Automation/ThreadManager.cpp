@@ -31,6 +31,8 @@ ThreadManager::ThreadManager(Storage &h)
 	controls.fileWriter = std::make_shared<FileWriter>();
 	controls.messageHandler = std::make_shared<MessageHandler>(h);
 	controls.valveControls = std::make_shared<ValveController>(*controls.messageHandler);
+
+	storage.currentData = std::make_shared<ExperimentData>();
 }
 
 ThreadManager::~ThreadManager()
@@ -49,7 +51,7 @@ ThreadManager::~ThreadManager()
 
 unsigned ThreadManager::StartMeasurement() 
 {
-	if (measurement != nullptr)
+	if (measurement == nullptr)
 	{
 		measurement = new Measurement(storage, controls);
 		measurementThread = std::thread(&Measurement::Execution, measurement);
