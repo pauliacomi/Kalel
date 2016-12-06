@@ -63,9 +63,16 @@ public:
 	//**********
 
 	std::shared_ptr<MachineSettings> machineSettings;					// The machine settings are here
+
+
+	std::mutex experimentSettingsMutex;									// Synchronisation class, should be used whenever there are writes to the deque
 	std::shared_ptr<ExperimentSettings> experimentSettings;				// The experiment settings are here
 
-	
+public:
+	void setexperimentSettings(std::shared_ptr<ExperimentSettings> i) {
+		std::unique_lock<std::mutex> lock(experimentSettingsMutex);
+		experimentSettings = i;
+	}
 };
 
 

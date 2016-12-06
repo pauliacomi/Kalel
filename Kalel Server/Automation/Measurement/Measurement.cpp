@@ -177,7 +177,7 @@ void Measurement::Execution()
 		*
 		*/
 
-		std::this_thread::sleep_for(std::chrono::seconds(T_BETWEEN_MEASURE));
+		std::this_thread::sleep_for(std::chrono::milliseconds(T_BETWEEN_MEASURE));
 	}
 }
 

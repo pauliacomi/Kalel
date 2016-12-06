@@ -257,12 +257,17 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 	/*********************************
 	// Set ExperimentSettings
 	*********************************/
-	else if (req->path_ == "/api/experimentdata" && req->method_ == http::method::post) {
+	else if (req->path_ == "/api/experimentsettings" && req->method_ == http::method::post) {
 		if (req->content_type_ == http::mimetype::appjson) {
 			resp->status_ = http::responses::ok;
 
 			auto j = json::parse(req->entity_);
-			serialization::deserializeJSONtoExperimentSettings(j, *storageVectors.experimentSettings);
+
+			std::shared_ptr<ExperimentSettings> newExpSettings = std::make_shared<ExperimentSettings>();
+			serialization::deserializeJSONtoExperimentSettings(j, *newExpSettings);
+			storageVectors.setexperimentSettings(newExpSettings);
+
+			threadManager.SetModifiedData();
 		}
 		else {
 			resp->status_ = http::responses::bad_request;

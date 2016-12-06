@@ -23,9 +23,9 @@ public:
 	void GetLogs(std::string &logs);
 
 protected:
-	ThreadManager threadManager;
 	Storage storageVectors;
 	Server server;
+	ThreadManager threadManager;
 	
 	void ServerProcessing(http_request * req, http_response * resp);
 };

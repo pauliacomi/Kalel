@@ -33,6 +33,7 @@ ThreadManager::ThreadManager(Storage &h)
 	controls.valveControls = std::make_shared<ValveController>(*controls.messageHandler);
 
 	storage.currentData = std::make_shared<ExperimentData>();
+	storage.experimentSettings = std::make_shared<ExperimentSettings>();
 }
 
 ThreadManager::~ThreadManager()

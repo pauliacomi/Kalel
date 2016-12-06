@@ -143,7 +143,7 @@ void Automation::Execution()
 		*/
 
 		// Now run through the possible events
-		switch (::WaitForMultipleObjects(5, events, FALSE, T_BETWEEN_MEASURE)) // (ms) Poll time
+		switch (::WaitForMultipleObjects(5, events, FALSE, T_BETWEEN_AUTOMATION)) // (ms) Poll time
 		{
 
 		case WAIT_OBJECT_0:												// Complete stop of thread
