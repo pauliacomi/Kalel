@@ -13,7 +13,10 @@ Kalel::Kalel()
 {
 	//
 	// Check to see whether the parameters file has been created
-	VerifParametres();
+	if (!ParametersCheck())
+	{
+		ParametersInit();		// If not, create it
+	}
 
 	//
 	// Create and populate Machine Settings
@@ -125,6 +128,7 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 			resp->status_ = http::responses::ok;
 
 			auto j = json::parse(req->entity_);
+			
 			serialization::deserializeJSONtoMachineSettings(j, *storageVectors.machineSettings);	
 
 			// Write everything to file

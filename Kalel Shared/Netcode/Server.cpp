@@ -251,7 +251,18 @@ unsigned Server::Process(std::unique_ptr<Socket> sock)
 	// Construct it
 
 	http_response response;
-	proc_func_(&request, &response);
+	try {
+		proc_func_(&request, &response);
+	}
+	catch (const std::exception& e){
+
+		response.status_ = http::responses::bad_request;
+
+		STREAM_LOG(logDEBUG2) << e.what();
+#ifdef FILE_LOGGING
+		FILE_LOG(logDEBUG2) << e.what();
+#endif // FILE_LOGGING
+	}
 
 	// Fill remaining headers
 	response.server_			= "Kalel Server";
