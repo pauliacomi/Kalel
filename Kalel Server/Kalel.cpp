@@ -241,7 +241,7 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 			++ it;
 		}
 
-		if (it != localCollection.end())						// If iterator is valid, send requested logs
+		if (it != localCollection.end())							// If iterator is valid, send requested logs
 		{
 			json j;
 

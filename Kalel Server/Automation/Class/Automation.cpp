@@ -78,14 +78,16 @@ void Automation::Execution()
 		*/
 
 		if (sb_settingsModified) {
+			
+			sb_settingsModified = false;
+
 			if (storage.currentData->experimentInProgress == true) {
-				ExperimentSettings tempSettings = GetSettings();																// We have the two settings coexisting to record any changes
-				controls.fileWriter->RecordDataChange(false, tempSettings, *storage.experimentSettings, *storage.currentData);	// non-CSV
-				controls.fileWriter->RecordDataChange(true, tempSettings, *storage.experimentSettings, *storage.currentData);	// CSV
-				storage.experimentSettings = std::make_shared<ExperimentSettings>(tempSettings);								// Now save the new settings as the old ones
+				controls.fileWriter->RecordDataChange(false, *storage.newExperimentSettings, *storage.experimentSettings, *storage.currentData);	// non-CSV
+				controls.fileWriter->RecordDataChange(true, *storage.newExperimentSettings, *storage.experimentSettings, *storage.currentData);		// CSV
 			}
-			else
-				storage.experimentSettings = std::make_shared<ExperimentSettings>(GetSettings());
+
+			storage.experimentSettings = std::make_shared<ExperimentSettings>(*storage.newExperimentSettings);
+			storage.newExperimentSettings.reset();
 		}
 
 		/*
@@ -118,10 +120,9 @@ void Automation::Execution()
 			}
 		}
 
-
 		/*
 		*
-		*		3. IF WAITING check whether the wait is complete and reset the wait
+		*		3. IF WAITING check whether the wait is complete and reset it
 		*
 		*/
 
@@ -194,7 +195,7 @@ bool Automation::ExecutionManual()
 		ResetAutomation();
 
 		// Get data
-		storage.experimentSettings = std::make_shared<ExperimentSettings>(GetSettings());
+		storage.experimentSettings = std::make_shared<ExperimentSettings>(*storage.newExperimentSettings);
 
 		// Record start
 		storage.currentData->experimentInProgress = true;
@@ -233,7 +234,7 @@ bool Automation::ExecutionAuto()
 		ResetAutomation();
 
 		// Get data
-		storage.experimentSettings = std::make_shared<ExperimentSettings>(GetSettings());
+		storage.experimentSettings = std::make_shared<ExperimentSettings>(*storage.newExperimentSettings);
 
 		// Write variables to starting position
 		storage.currentData->experimentInProgress = true;
@@ -295,18 +296,4 @@ void Automation::ResetAutomation()
 	storage.currentData->timeStart = time(0);
 	controls.timerExperiment.TopChrono();	// Start global experiment timer	
 	controls.timerMeasurement.TopChrono();	// Start the timer to record time between measurements
-}
-
-
-
-ExperimentSettings Automation::GetSettings()
-{
-	ExperimentSettings tempSettings;
-
-	// Copy the data from the main thread, no need for synchronisation as we are only copying
-	tempSettings = storage.experimentSettings.get();
-
-	sb_settingsModified = false;
-
-	return tempSettings;
 }

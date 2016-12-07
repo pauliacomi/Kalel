@@ -67,11 +67,12 @@ public:
 
 	std::mutex experimentSettingsMutex;									// Synchronisation class, should be used whenever there are writes to the deque
 	std::shared_ptr<ExperimentSettings> experimentSettings;				// The experiment settings are here
+	std::shared_ptr<ExperimentSettings> newExperimentSettings;			// The new experiment settings
 
 public:
 	void setexperimentSettings(std::shared_ptr<ExperimentSettings> i) {
 		std::unique_lock<std::mutex> lock(experimentSettingsMutex);
-		experimentSettings = i;
+		newExperimentSettings = i;
 	}
 };
 

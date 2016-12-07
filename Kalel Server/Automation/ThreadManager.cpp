@@ -34,6 +34,7 @@ ThreadManager::ThreadManager(Storage &h)
 
 	storage.currentData = std::make_shared<ExperimentData>();
 	storage.experimentSettings = std::make_shared<ExperimentSettings>();
+	storage.newExperimentSettings = std::make_shared<ExperimentSettings>();
 }
 
 ThreadManager::~ThreadManager()
