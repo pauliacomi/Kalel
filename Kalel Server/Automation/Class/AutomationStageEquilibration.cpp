@@ -27,7 +27,7 @@ void Automation::StageEquilibration()
 		if (err) {
 			controls.messageHandler->DisplayMessageBox(ERROR_PATHUNDEF, MB_ICONERROR | MB_OK, false);
 		}
-		controls.fileWriter->FileMeasurementOpen(storage.experimentSettings->dataGeneral);							// Measurement file
+		controls.fileWriter->FileMeasurementCreate(storage.experimentSettings->dataGeneral);						// Measurement file
 
 
 		storage.currentData->timeStart = time(0);		// Record experiment start time

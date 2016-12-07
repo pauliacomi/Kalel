@@ -4,6 +4,7 @@
 #include <fstream>
 #include <sstream>
 #include <vector>
+#include <mutex>
 
 #include "../../Kalel Shared/Com Classes/ExperimentSettings.h"	
 #include "../../Kalel Shared/Com Classes/MachineSettings.h"	
@@ -15,13 +16,23 @@ public:
 	FileWriter();
 	~FileWriter();
 
-	std::ofstream fileStream;							// The file stream is stored in this variable
-
 	/**********************************************************************************************************************************
 	*
 	// File Writing Functions
 	*
 	***********************************************************************************************************************************/
+private:
+					
+	std::mutex fileLock;	// Mutex used for synchronisation
+	FILE* f;				// File pointer
+
+	/**********************************************************************
+	* Private function that allows for thread safe file writing
+	* Inputs:
+	*		const wstring &filename:	Filename to write to
+	*		const wstring &stream:		What to write
+	***********************************************************************/
+	void writeFile(const std::wstring &filename, const std::wstring & stream);
 
 public:
 
@@ -55,14 +66,8 @@ public:
 	* Outputs:
 	*		bool: Path undefined error
 	***********************************************************************/
-	bool FileMeasurementOpen(const Donnees_General &general);
+	bool FileMeasurementCreate(const Donnees_General &general);
 
-
-	/**********************************************************************
-	* Closes the measurement file
-	* Inputs: none
-	***********************************************************************/
-	void FileMeasurementClose();
 
 
 	/**********************************************************************
@@ -71,7 +76,7 @@ public:
 	*		Reference to the experimentSettings which generates the entete
 	*		bool valveOpen6: records if valve number 6 is open or not
 	***********************************************************************/
-	void FileMeasurementRecord(const ExperimentData &data, bool valveOpen6);
+	void FileMeasurementRecord(const Donnees_General &general, const ExperimentData &data, bool valveOpen6);
 
 
 	/**********************************************************************

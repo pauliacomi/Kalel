@@ -16,6 +16,24 @@ FileWriter::~FileWriter()
 }
 
 
+
+/**********************************************************************
+* Private function that allows for thread safe file writing
+* Inputs:
+*		const wstring &filename:	Filename to write to
+*		const wstring &stream:		What to write
+***********************************************************************/
+void FileWriter::writeFile(const std::wstring &filename, const std::wstring & stream)
+{	
+	std::unique_lock<std::mutex> lock(fileLock);			// get mutex
+	_wfopen_s(&f, filename.c_str(), L"w");
+	if (!f)
+		return;
+	fprintf(f, "%s", stream.c_str());
+	fflush(f);
+}
+
+
 /**********************************************************************
 * Write the first section of an entete and save it
 * Inputs:
@@ -24,22 +42,19 @@ FileWriter::~FileWriter()
 ***********************************************************************/
 bool FileWriter::EnteteCreate(const ExperimentSettings &expSettings, const MachineSettings &machSettings)
 {
-	std::wofstream file;
-	bool ret = false;
+	std::wostringstream stream;
 
-	file.open(FileWriter::BuildFileName(L"txt", expSettings.dataGeneral, true, ret).c_str(), std::ios_base::out);
-	file.clear();
-	file << EnteteBase(false, expSettings.experimentType);
-	file << EnteteGeneral(false, expSettings.dataGeneral, machSettings.CaloName);
+	stream << EnteteBase(false, expSettings.experimentType);
+	stream << EnteteGeneral(false, expSettings.dataGeneral, machSettings.CaloName);
 
 	if (expSettings.experimentType == EXPERIMENT_TYPE_AUTO) {
-		file << EnteteDivers(false, expSettings.dataDivers);
-		file << EnteteAdsorption(false, expSettings.dataAdsorption);
-		file << EnteteDesorption(false, expSettings.dataDesorption);
+		stream << EnteteDivers(false, expSettings.dataDivers);
+		stream << EnteteAdsorption(false, expSettings.dataAdsorption);
+		stream << EnteteDesorption(false, expSettings.dataDesorption);
 	}
 
-	file.close();
-
+	bool ret = false;
+	writeFile(FileWriter::BuildFileName(L"txt", expSettings.dataGeneral, true, ret), stream.str());
 	return ret;
 }
 
@@ -53,21 +68,19 @@ bool FileWriter::EnteteCreate(const ExperimentSettings &expSettings, const Machi
 ***********************************************************************/
 bool FileWriter::EnteteCSVCreate(const ExperimentSettings &expSettings, const MachineSettings &machSettings)
 {
-	std::wofstream file;
-	bool ret = false;
+	std::wostringstream stream;
 
-	file.open(FileWriter::BuildFileName(L"csv", expSettings.dataGeneral, true, ret).c_str(), std::ios_base::out);
-	file.clear();
-	file << EnteteBase(true, expSettings.experimentType);
-	file << EnteteGeneral(true, expSettings.dataGeneral, machSettings.CaloName);
+	stream << EnteteBase(true, expSettings.experimentType);
+	stream << EnteteGeneral(true, expSettings.dataGeneral, machSettings.CaloName);
 
 	if (expSettings.experimentType == EXPERIMENT_TYPE_AUTO) {
-		file << EnteteDivers(true, expSettings.dataDivers);
-		file << EnteteAdsorption(true, expSettings.dataAdsorption);
-		file << EnteteDesorption(true, expSettings.dataDesorption);
+		stream << EnteteDivers(true, expSettings.dataDivers);
+		stream << EnteteAdsorption(true, expSettings.dataAdsorption);
+		stream << EnteteDesorption(true, expSettings.dataDesorption);
 	}
-	file.close();
 
+	bool ret = false;
+	writeFile(FileWriter::BuildFileName(L"csv", expSettings.dataGeneral, true, ret), stream.str());
 	return ret;
 }
 
@@ -79,40 +92,25 @@ bool FileWriter::EnteteCSVCreate(const ExperimentSettings &expSettings, const Ma
 * Inputs: 
 *		const Donnees_General &general:		Reference to the general data to be checked
 ***********************************************************************/
-bool FileWriter::FileMeasurementOpen(const Donnees_General &general)
+bool FileWriter::FileMeasurementCreate(const Donnees_General &general)
 {
-	bool ret = false;
-	
-	// Create the file
-	fileStream.open(BuildFileName(L"csv", general, false, ret).c_str(), std::ios_base::out /*| ios::trunc*/);
-
-	// Clear the file stream, pas le .csv, et on peut réitérer l'écriture en enlevant le caractère "fin de fichier"
-	fileStream.clear();
+	std::wostringstream stream;
 
 	// Write column names
-	fileStream << "N°mesure;";													// Experiment dose
-	fileStream << "Temps(s);";													// Experiment time
-	fileStream << "Calorimètre(W);";											// Calorimeter value
-	fileStream << "Basse Pression(Bar);";										// Pressure low range
-	fileStream << "Haute Pression(Bar);";										// Pressure high range
-	fileStream << "T°C Calo;";													// Temperature calorimeter
-	fileStream << "T°C Cage;";													// Temperature enclosure
-	fileStream << "T°C pièce;";													// Temperature room
-	fileStream << "Vanne 6";													// Valve open
-	fileStream << std::endl;													// Next line
+	stream << "N°mesure;";												// Experiment dose
+	stream << "Temps(s);";												// Experiment time
+	stream << "Calorimètre(W);";										// Calorimeter value
+	stream << "Basse Pression(Bar);";									// Pressure low range
+	stream << "Haute Pression(Bar);";									// Pressure high range
+	stream << "T°C Calo;";												// Temperature calorimeter
+	stream << "T°C Cage;";												// Temperature enclosure
+	stream << "T°C pièce;";												// Temperature room
+	stream << "Vanne 6";												// Valve open
+	stream << std::endl;												// Next line
 
+	bool ret = false;
+	writeFile(FileWriter::BuildFileName(L"csv", general, false, ret), stream.str());
 	return ret;
-}
-
-
-
-/**********************************************************************
-* Closes the FileWriter file
-* Inputs: none
-***********************************************************************/
-void FileWriter::FileMeasurementClose()
-{
-	fileStream.close();
 }
 
 
@@ -123,24 +121,29 @@ void FileWriter::FileMeasurementClose()
 *		Reference to the experimentSettings which generates the entete
 *		bool valveOpen6: records if valve number 6 is open or not
 ***********************************************************************/
-void FileWriter::FileMeasurementRecord(const ExperimentData &data, bool valveOpen6)
+void FileWriter::FileMeasurementRecord(const Donnees_General &general, const ExperimentData &data, bool valveOpen6)
 {
+	std::wostringstream stream;
 	char char_resultat_calo[20];
 	sprintf_s(char_resultat_calo, "%.8E", data.GetresultCalorimeter());
 
-	if (fileStream)
+	if (stream)
 	{
-		fileStream << data.experimentDose						<< ";";				// Experiment dose
-		fileStream << data.timeElapsed							<< ";";				// Experiment time
-		fileStream << char_resultat_calo						<< ";";				// Calorimeter value
-		fileStream << data.pressureLow							<< ";";				// Pressure low range
-		fileStream << data.pressureHigh							<< ";";				// Pressure high range
-		fileStream << data.temperatureCalo						<< ";";				// Temperature calorimeter
-		fileStream << data.temperatureCage						<< ";";				// Temperature enclosure
-		fileStream << data.temperatureRoom						<< ";";				// Temperature room
-		fileStream << valveOpen6								<< ";";				// Valve open
-		fileStream << std::endl;													// Next line
+		stream << data.experimentDose					<< ";";				// Experiment dose
+		stream << data.timeElapsed						<< ";";				// Experiment time
+		stream << char_resultat_calo					<< ";";				// Calorimeter value
+		stream << data.pressureLow						<< ";";				// Pressure low range
+		stream << data.pressureHigh						<< ";";				// Pressure high range
+		stream << data.temperatureCalo					<< ";";				// Temperature calorimeter
+		stream << data.temperatureCage					<< ";";				// Temperature enclosure
+		stream << data.temperatureRoom					<< ";";				// Temperature room
+		stream << valveOpen6							<< ";";				// Valve open
+		stream << std::endl;												// Next line
 	}
+
+	bool ret = false;
+	writeFile(FileWriter::BuildFileName(L"csv", general, false, ret), stream.str());
+	return;
 }
 
 
@@ -185,7 +188,7 @@ std::wstring FileWriter::EnteteGeneral(bool csv, const Donnees_General &general,
 	else
 		divider = L" : ";
 
-	std::wostringstream text(L"", std::ios_base::app);
+	std::wostringstream text;
 
 	text << L"Experimentateur"				<< divider		<< general.experimentateur.nom								<< std::endl;
 	text << L"Date"							<< divider		<< general.date_experience									<< std::endl;
@@ -216,7 +219,7 @@ std::wstring FileWriter::EnteteDivers(bool csv, const Donnees_Divers &divers)
 	else
 		divider = L" : ";
 
-	std::wostringstream text(L"", std::ios_base::app);
+	std::wostringstream text;
 
 	text << L"Numéro de Cellule"			<< divider		<< divers.cellule.numero									<< std::endl;
 	text << L"Volume du calo"				<< divider		<< divers.cellule.volume_calo		<< divider << "cm3"		<< std::endl;
@@ -245,7 +248,7 @@ std::wstring FileWriter::EnteteAdsorption(bool csv, const std::vector<Donnees_Do
 	else
 		divider = L" : ";
 
-	std::wostringstream text(L"", std::ios_base::app);
+	std::wostringstream text;
 
 	for (size_t i = 0; i < doses.size(); i++)
 	{	
@@ -277,7 +280,7 @@ std::wstring FileWriter::EnteteDesorption(bool csv, const std::vector<Donnees_De
 	else
 		divider = L" : ";
 
-	std::wostringstream text(L"", std::ios_base::app);
+	std::wostringstream text;
 
 	for (size_t i = 0; i < desorption.size(); i++)
 	{	
@@ -305,14 +308,14 @@ std::wstring FileWriter::EnteteDesorption(bool csv, const std::vector<Donnees_De
 void FileWriter::RecordDataChange(bool csv, const ExperimentSettings& newSettings, const ExperimentSettings& oldSettings, const ExperimentData& data)
 {
 	// Check if csv file is requested
-	std::string divider;
+	std::wstring divider;
 	if (csv)
-		divider = ";";
+		divider = L";";
 	else
-		divider = " : ";
+		divider = L" : ";
 
 	// Create std::string stream
-	std::ostringstream text("", std::ios_base::app);
+	std::wostringstream text;
 
 	// Check for changes in adsorption
 	for (size_t i = 0; i < oldSettings.dataAdsorption.size(); i++)
@@ -389,10 +392,7 @@ void FileWriter::RecordDataChange(bool csv, const ExperimentSettings& newSetting
 		title = BuildFileName(L"txt", newSettings.dataGeneral, true, ret).c_str();
 
 	// Write to file
-	std::ofstream file;
-	file.open(title, std::ios::out | std::ios::app);
-	file << text.str() << std::endl;
-	file.close();
+	writeFile(title, text.str());
 }
 
 
@@ -460,7 +460,7 @@ std::wstring FileWriter::BuildFileName(std::wstring extension, const Donnees_Gen
 
 //std::string CManip_AutoGaz::EnteteAdsorptionContinue()
 //{
-//	std::ostringstream chaine_char("", std::ios_base::app);
+//	std::wostringstream chaine_char("", std::ios_base::app);
 //
 //	chaine_char << std::endl << "-----------------------------------------------------" << std::endl;
 //	chaine_char << "Application de l'adsorption continue" << std::endl;
@@ -475,7 +475,7 @@ std::wstring FileWriter::BuildFileName(std::wstring extension, const Donnees_Gen
 //
 //std::string CManip_AutoGaz::EnteteAdsorptionContinueCSV()
 //{
-//	std::ostringstream chaine_char("", std::ios_base::app);
+//	std::wostringstream chaine_char("", std::ios_base::app);
 //
 //	chaine_char << std::endl << "-----------------------------------------------------" << std::endl;
 //	chaine_char << "Application de l'adsorption continue" << std::endl;

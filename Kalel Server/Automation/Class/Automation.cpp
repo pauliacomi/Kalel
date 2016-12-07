@@ -207,7 +207,7 @@ bool Automation::ExecutionManual()
 		if (err){
 			controls.messageHandler->DisplayMessageBox(ERROR_PATHUNDEF, MB_ICONERROR | MB_OK, false);
 		}
-		controls.fileWriter->FileMeasurementOpen(storage.experimentSettings->dataGeneral);							// Measurement file
+		controls.fileWriter->FileMeasurementCreate(storage.experimentSettings->dataGeneral);							// Measurement file
 
 		// Continue experiment
 		storage.currentData->experimentStage = STAGE_MANUAL;

@@ -13,9 +13,6 @@ void Automation::Shutdown()
 		controls.messageHandler->DisplayMessage(MESSAGE_EXPCANCEL);		// Experiment has been cancelled
 		controls.messageHandler->ExperimentEnd();
 
-		// Close measurement file
-		controls.fileWriter->FileMeasurementClose();
-
 		// Stop all timers 
 		controls.timerExperiment.ArretTemps();
 		controls.timerMeasurement.ArretTemps();
@@ -36,9 +33,6 @@ void Automation::Shutdown()
 		controls.messageHandler->DisplayMessage(MESSAGE_EXPFINISH);		// Experiment has been finished normally
 		controls.messageHandler->ExperimentEnd();
 
-		// Close measurement file
-		controls.fileWriter->FileMeasurementClose();
-
 		// Stop all timers 
 		controls.timerExperiment.ArretTemps();
 		controls.timerMeasurement.ArretTemps();
@@ -56,11 +50,6 @@ void Automation::Shutdown()
 		break;
 
 	case STOP_COMPLETE:		// This option is used if the automation thread is to be closed
-
-		// Close measurement file
-		if (storage.currentData->experimentRecording) {
-			controls.fileWriter->FileMeasurementClose();
-		}
 
 		// When thread finishes, let main window know to unlock menu
 		controls.messageHandler->ThreadShutdown();
