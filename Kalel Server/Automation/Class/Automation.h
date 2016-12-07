@@ -13,18 +13,13 @@
 #include "../../../Kalel Shared/Resources/DefineStages.h"					// All stage, experiment type definitions are here
 
 // Synchronization classes
-#include "../../MessageHandler.h"											// Handles all the messages from this class to the client
-#include "../../../Kalel Shared/Com Classes/ExperimentData.h"
-#include "../../../Kalel Shared/Com Classes/ExperimentSettings.h"	
+#include "../CommonControls.h"
+#include "../CommonPointers.h"
 
 // Measurement and manipulation classes
-#include "../../Backend/Wrapper Classes/ValveController.h"					// Controlling valves
-
 #include "../Utils/Chrono.h"												// Time keeping
 
 
-#include "../CommonControls.h"
-#include "../CommonPointers.h"
 
 // std::functionality
 #include <atomic>

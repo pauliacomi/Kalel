@@ -57,8 +57,8 @@ void Automation::SubstepsDesorption()
 		storage.currentData->experimentWaiting == false)
 	{
 		storage.currentData->injectionAttemptCounter = 0;																							// Reset desorption attempt counter
-		storage.currentData->pressureInitial = storage.currentData->pressureHigh;																		// Set the initial pressure
-		storage.currentData->pressureHighOld = storage.currentData->pressureHigh;																		// Save the injection pressure for later
+		storage.currentData->SetpressureInitial (storage.currentData->GetpressureHigh());															// Set the initial pressure
+		storage.currentData->SetpressureHighOld (storage.currentData->GetpressureHigh());															// Save the injection pressure for later
 		
 		controls.messageHandler->DisplayMessage(MESSAGE_DESORPTION_DOSE_START, storage.currentData->desorptionCounter, storage.currentData->experimentDose);	// Tell GUI about current dose
 		
@@ -117,7 +117,7 @@ void Automation::SubstepsDesorption()
 		storage.currentData->experimentWaiting == false)
 	{
 		// Set the final pressure after gas removal
-		storage.currentData->pressureFinal = storage.currentData->pressureHigh;
+		storage.currentData->SetpressureFinal( storage.currentData->GetpressureHigh());
 
 		// Display
 		controls.messageHandler->DisplayMessage(MESSAGE_PRESSURE_D_PI, storage.currentData->pressureInitial);
@@ -229,7 +229,7 @@ void Automation::SubstepsDesorption()
 		controls.valveControls->ValveClose(4, true);
 		WaitSeconds(TIME_WAIT_VALVES_SHORT);
 
-		storage.currentData->pressureFinal = storage.currentData->pressureHigh;							// Save pressure after open/close
+		storage.currentData->SetpressureFinal( storage.currentData->GetpressureHigh());					// Save pressure after open/close
 		storage.currentData->experimentSubstepStage = SUBSTEP_STATUS_ABORT;								// Move back to the start
 	}
 

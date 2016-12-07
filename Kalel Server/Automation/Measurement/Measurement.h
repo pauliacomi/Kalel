@@ -46,8 +46,6 @@ public:
 	
 	std::atomic_bool measuring = true;
 
-	CRITICAL_SECTION criticalSection;					// Critical section for measurement thread sinchronisation
-
 	HANDLE h_MeasurementThreadStartEvent;				// Handle event doing measurement thread signalling
 	HANDLE h_MeasurementThread[4];						// Threads for measurement
 

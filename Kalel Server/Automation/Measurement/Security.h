@@ -12,7 +12,7 @@ class ExperimentData;
 class Security {
 
 public:
-	Security(bool activated, float PressureHigh_HighRange, float PressureHigh_LowRange, ValveController & valveControl, MessageHandler & messageHandler);
+	Security(bool activated, ValveController & valveControl, MessageHandler & messageHandler);
 	~Security();
 
 	void SecurityHighPressure(int experimentType, float maxPlow, float maxPhigh, const ExperimentData &expData);

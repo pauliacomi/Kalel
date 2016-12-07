@@ -2,6 +2,7 @@
 #include "MessageHandler.h"
 
 #include "../Kalel Shared/Resources/DefineText.h"
+#include "../Kalel Shared/Com Classes/ExperimentData.h"
 #include "../Kalel Shared/timestamp.h"
 #include "../Kalel Shared/stringFormat.h"
 

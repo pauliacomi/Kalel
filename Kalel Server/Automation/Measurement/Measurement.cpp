@@ -40,9 +40,6 @@ Measurement::Measurement(Storage &s, Controls &c)
 	//   - With manual reinitiallisation
 	h_MeasurementThreadStartEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
 
-	// Initialisation of the critical section
-	InitializeCriticalSection(&criticalSection);
-
 	// Initialise instruments
 	g_pTemperature = new CTemperature(); 
 	g_pSerialInstruments = new SerialInstruments();
@@ -53,12 +50,10 @@ Measurement::Measurement(Storage &s, Controls &c)
 		controls.messageHandler->DisplayMessageBox(MESSAGE_INSTRUMENT_INIT_FAIL, MB_ICONERROR | MB_OK, false, errorInit);
 	}
 
-	// Initialise security
+	// Initialise security;
 	security = new Security(
 		storage.machineSettings->ActivationSecurite, 
-		storage.machineSettings->PressionSecuriteHautePression,
-		storage.machineSettings->PressionSecuriteBassePression, 
-		*controls.valveControls,
+		*controls.valveControls,								
 		*controls.messageHandler);
 }
 
@@ -74,9 +69,6 @@ Measurement::~Measurement()
 
 	// Destroy the events
 	CloseHandle(h_MeasurementThreadStartEvent);
-
-	// Destroy the critical sections
-	DeleteCriticalSection(&criticalSection);
 }
 
 ////////////////////////////////////////////////////////
@@ -147,9 +139,9 @@ void Measurement::Execution()
 		*/
 
 		// Write data
-		if (controls.timerMeasurement.TempsActuel() > T_BETWEEN_RECORD)						// If enough time between measurements
+		if (controls.timerMeasurement.TempsActuel() > T_BETWEEN_RECORD)							// If enough time between measurements
 		{
-			if (storage.currentData->experimentRecording)								// If we started recording
+			if (storage.currentData->experimentRecording)										// If we started recording
 			{
 				// Save the data to the file
 				controls.fileWriter->FileMeasurementRecord(*storage.currentData, controls.valveControls->ValveIsOpen(6));
@@ -282,10 +274,8 @@ void Measurement::ReadCalorimeter()
 		controls.messageHandler->DisplayMessage(error);
 	}
 
-	// Write it in the shared object
-	EnterCriticalSection(&criticalSection);
+	// Write it in the shared object - NO need for mutex
 	storage.currentData->resultCalorimeter = calorimeter;
-	LeaveCriticalSection(&criticalSection);
 }
 
 
@@ -304,10 +294,8 @@ void Measurement::ReadLowPressure()
 		controls.messageHandler->DisplayMessage(error);
 	}
 
-	// Write it in the shared object
-	EnterCriticalSection(&criticalSection);
+	// Write it in the shared object - NO need for mutex
 	storage.currentData->pressureLow = pressureLowRange;
-	LeaveCriticalSection(&criticalSection);
 }
 
 
@@ -326,10 +314,8 @@ void Measurement::ReadHighPressure()
 		controls.messageHandler->DisplayMessage(error);
 	}
 
-	// Write it in the shared object
-	EnterCriticalSection(&criticalSection);
+	// Write it in the shared object - NO need for mutex
 	storage.currentData->pressureHigh = pressureHighRange;
-	LeaveCriticalSection(&criticalSection);
 }
 
 void Measurement::ReadTemperatures()
@@ -347,10 +333,8 @@ void Measurement::ReadTemperatures()
 		controls.messageHandler->DisplayMessage(error);
 	}
 
-	// Write it in the shared object
-	EnterCriticalSection(&criticalSection);
+	// Write it in the shared object - NO need for mutex
 	storage.currentData->temperatureCalo = dTemperatureCalo;
 	storage.currentData->temperatureCage = dTemperatureCage;
 	storage.currentData->temperatureRoom = dTemperaturePiece;
-	LeaveCriticalSection(&criticalSection);
 }

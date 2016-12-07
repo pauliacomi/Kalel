@@ -11,7 +11,7 @@
 
 class Controls {
 public:
-	std::shared_ptr<MessageHandler> messageHandler;					// The message sender class
+	std::shared_ptr<MessageHandler> messageHandler;					// The message sender class. Thread Safe!
 	std::shared_ptr<ValveController> valveControls;					// The valve control/query class
 	std::shared_ptr<FileWriter> fileWriter;							// The file writing class
 

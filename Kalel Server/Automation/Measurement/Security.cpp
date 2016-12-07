@@ -16,7 +16,7 @@
 #include "../../../Kalel Shared/Com Classes/ExperimentData.h"
 
 
-Security::Security(bool activated, float PressureHigh_HighRange, float PressureHigh_LowRange, ValveController & valveControl, MessageHandler & messageHandler)
+Security::Security(bool activated, ValveController & valveControl, MessageHandler & messageHandler)
 	: valveController{ valveControl }
 	, messageHandler{ messageHandler }
 {

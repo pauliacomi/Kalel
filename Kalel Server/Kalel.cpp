@@ -101,9 +101,9 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 	// Ping
 	*********************************/
 	if (req->path_		== "/api/handshake" && req->method_ == http::method::get) {
-		resp->status_ = http::responses::ok;
 		resp->content_type_ = http::mimetype::texthtml;
 		resp->answer_ = R"(<!DOCTYPE html PUBLIC " -//IETF//DTD HTML 2.0//EN"><html><head><title>Hello</title></head><body><h1>Hello</h1></body></html>)";
+		resp->status_ = http::responses::ok;
 	}
 
 
@@ -111,12 +111,13 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 	// Get MachineSettings
 	*********************************/
 	else if (req->path_ == "/api/machinesettings" && req->method_ == http::method::get) {
-		resp->status_ = http::responses::ok;
 		resp->content_type_ = http::mimetype::appjson;
 		
 		json j;
 		serialization::serializeMachineSettingsToJSON(*storageVectors.machineSettings, j);
 		resp->answer_ = j.dump();
+
+		resp->status_ = http::responses::ok;
 	}
 
 
@@ -125,7 +126,6 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 	*********************************/
 	else if (req->path_ == "/api/machinesettings" && req->method_ == http::method::post) {
 		if (req->content_type_ == http::mimetype::appjson) {
-			resp->status_ = http::responses::ok;
 
 			auto j = json::parse(req->entity_);
 			
@@ -159,6 +159,7 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 				SetTypeInstrument(i,				storageVectors.machineSettings->typeInstruments[i]				);
 			}
 
+			resp->status_ = http::responses::ok;
 		}
 		else {
 			resp->status_ = http::responses::bad_request;
@@ -170,7 +171,7 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 	// Get Data
 	*********************************/
 	else if (req->path_ == "/api/experimentdata" && req->method_ == http::method::get) {
-		resp->status_ = http::responses::ok;
+
 		resp->content_type_ = http::mimetype::appjson;
 		
 		// Figure out which range of data to send by looking at the time requested
@@ -206,8 +207,9 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 			}
 
 			resp->answer_ = j.dump();
-		}
-		
+
+			resp->status_ = http::responses::ok;
+		}		
 		else
 		{
 			resp->status_ = http::responses::no_content;
@@ -219,7 +221,7 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 	// Get Logs
 	*********************************/
 	else if (req->path_ == "/api/experimentlogs" && req->method_ == http::method::get) {
-		resp->status_ = http::responses::ok;
+
 		resp->content_type_ = http::mimetype::appjson;
 
 		// Figure out which range of logs to send by finding the requested timestamp
@@ -250,6 +252,8 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 			}
 
 			resp->answer_ = j.dump();
+			
+			resp->status_ = http::responses::ok;
 		}
 		else
 		{
@@ -263,7 +267,6 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 	*********************************/
 	else if (req->path_ == "/api/experimentsettings" && req->method_ == http::method::post) {
 		if (req->content_type_ == http::mimetype::appjson) {
-			resp->status_ = http::responses::ok;
 
 			auto j = json::parse(req->entity_);
 
@@ -272,6 +275,8 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 			storageVectors.setexperimentSettings(newExpSettings);
 
 			threadManager.SetModifiedData();
+
+			resp->status_ = http::responses::ok;
 		}
 		else {
 			resp->status_ = http::responses::bad_request;

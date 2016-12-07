@@ -126,7 +126,7 @@ void FileWriter::FileMeasurementClose()
 void FileWriter::FileMeasurementRecord(const ExperimentData &data, bool valveOpen6)
 {
 	char char_resultat_calo[20];
-	sprintf_s(char_resultat_calo, "%.8E", data.resultCalorimeter);
+	sprintf_s(char_resultat_calo, "%.8E", data.GetresultCalorimeter());
 
 	if (fileStream)
 	{

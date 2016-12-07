@@ -56,8 +56,8 @@ void Automation::SubstepsAdsorption()
 		storage.currentData->experimentWaiting == false)
 	{
 		storage.currentData->injectionAttemptCounter = 0;																							// Reset adsorption attempt counter
-		storage.currentData->pressureInitial = storage.currentData->pressureHigh;																		// Set the initial pressure
-		storage.currentData->pressureHighOld = storage.currentData->pressureHigh;																		// Save the injection pressure for later
+		storage.currentData->SetpressureInitial( storage.currentData->GetpressureHigh());																		// Set the initial pressure
+		storage.currentData->SetpressureHighOld( storage.currentData->GetpressureHigh());																		// Save the injection pressure for later
 		controls.messageHandler->DisplayMessage(MESSAGE_ADSORPTION_DOSE_START, storage.currentData->adsorptionCounter, storage.currentData->experimentDose);	// Tell GUI about current dose
 		storage.currentData->experimentSubstepStage = SUBSTEP_STATUS_INJECTION;																		// Move to injection
 	}
@@ -119,7 +119,7 @@ void Automation::SubstepsAdsorption()
 		storage.currentData->experimentWaiting == false)
 	{
 		// Set the final pressure after injection
-		storage.currentData->pressureFinal = storage.currentData->pressureHigh;
+		storage.currentData->SetpressureFinal( storage.currentData->GetpressureHigh());
 
 		// Display
 		controls.messageHandler->DisplayMessage(MESSAGE_PRESSURE_D_PI, storage.currentData->pressureInitial);
@@ -231,7 +231,7 @@ void Automation::SubstepsAdsorption()
 		controls.valveControls->ValveClose(7, true);
 		WaitSeconds(TIME_WAIT_VALVES_SHORT);
 
-		storage.currentData->pressureFinal = storage.currentData->pressureHigh;					// Save pressure after open/close
+		storage.currentData->SetpressureFinal( storage.currentData->GetpressureHigh());					// Save pressure after open/close
 		storage.currentData->experimentSubstepStage = SUBSTEP_STATUS_ABORT + 1;					// Go back to the start
 	}
 
