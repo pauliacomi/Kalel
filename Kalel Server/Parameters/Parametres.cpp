@@ -21,7 +21,7 @@
 #define Fichier_parametres _T(Fichier_parametres_char)
 
 
-void VerifParametres()
+bool ParametersCheck()
 {
 	std::ifstream file_stream(Fichier_parametres_char, std::ifstream::in);
 	bool ans = file_stream.is_open();
@@ -29,16 +29,14 @@ void VerifParametres()
 
 	// si ans=TRUE , alors le fichier existe, pas besoin de le créer
 	// si ans=FALSE, alors le fichier n'existe pas, on le crée et on initialise les parametres
-	if(!ans)
-	{
-		Initialisation_parametres();
-	}
+
+	return ans;
 }
 
 
 
 
-void Initialisation_parametres()
+void ParametersInit()
 {
 	/*
 		BOOL WritePrivateProfileString(
@@ -108,7 +106,6 @@ void Initialisation_parametres()
 	nSize [in] : Taille du buffer lpReturnedString
 	lpFileName [in] : le nom du fichier d'initialisation
 */
-
 
 long double GetSensibiliteCalo()
 {

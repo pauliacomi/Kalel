@@ -39,15 +39,15 @@ LRESULT CKalelView::DisplayTextboxValues(ExperimentData * data)
 {
 
 	// Convert to strings
-	m_StrCalo.Format(_T("%.9e"), data->resultCalorimeter);
-	m_StrBassePression.Format(_T("%.6f"), data->pressureLow);
-	m_StrHautePression.Format(_T("%.6f"), data->pressureHigh);
-	m_StrTemperatureCalo.Format(_T("%.2f"), data->temperatureCalo);
-	m_StrTemperatureCage.Format(_T("%.2f"), data->temperatureCage);
-	m_StrTemperaturePiece.Format(_T("%.2f"), data->temperatureRoom);
-	m_StrTemps.Format(_T("%.1f"), data->timeElapsed);
-	m_StrPressionInitiale.Format(_T("%.6f"), data->pressureInitial);
-	m_StrPressionFinale.Format(_T("%.6f"), data->pressureFinal);
+	m_StrCalo.Format(_T("%.9e"), data->GetresultCalorimeter());
+	m_StrBassePression.Format(_T("%.6f"), data->GetpressureLow());
+	m_StrHautePression.Format(_T("%.6f"), data->GetpressureHigh());
+	m_StrTemperatureCalo.Format(_T("%.2f"), data->GettemperatureCalo());
+	m_StrTemperatureCage.Format(_T("%.2f"), data->GettemperatureCage());
+	m_StrTemperaturePiece.Format(_T("%.2f"), data->GettemperatureRoom());
+	m_StrTemps.Format(_T("%.1f"), data->GettimeElapsed());
+	m_StrPressionInitiale.Format(_T("%.6f"), data->GetpressureInitial());
+	m_StrPressionFinale.Format(_T("%.6f"), data->GetpressureFinal());
 
 	// Refresh textboxes
 	SetDlgItemText(IDC_CALO, m_StrCalo);
@@ -68,7 +68,7 @@ LRESULT CKalelView::DiplayMeasurements(ExperimentData * data)
 {
 	CString mesure;
 
-	mesure.Format(_T("Time=%.2f  Calo=%.2f  LP=%.2f  HP=%.2f"), data->timeElapsed, data->resultCalorimeter, data->pressureLow, data->pressureHigh);
+	mesure.Format(_T("Time=%.2f  Calo=%.2f  LP=%.2f  HP=%.2f"), data->GettimeElapsed(), data->GetresultCalorimeter(), data->GetpressureLow(), data->GetpressureHigh());
 
 	m_StrEditMesures += mesure;
 	m_StrEditMesures += "\r\n";
@@ -104,7 +104,7 @@ LRESULT CKalelView::DisplayStepProgress(ExperimentData * data)
 		}
 		else
 		{
-			temp.Format(_T(" *** Waiting: %.0f s /  %.0f s"), data->timeToEquilibrateCurrent, data->timeToEquilibrate);
+			temp.Format(_T(" *** Waiting: %.0f s /  %.0f s"), data->GettimeToEquilibrateCurrent(), data->GettimeToEquilibrate());
 		}
 		m_StrEtape += temp;
 	}

@@ -5,6 +5,7 @@
 // Time values
 #define T_BETWEEN_RECORD				4		//seconds
 #define T_BETWEEN_MEASURE				500		//miliseconds
+#define T_BETWEEN_AUTOMATION			10		//miliseconds
 
 #define ERROR_MESURE					-300000
 

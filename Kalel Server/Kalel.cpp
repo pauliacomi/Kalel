@@ -13,7 +13,10 @@ Kalel::Kalel()
 {
 	//
 	// Check to see whether the parameters file has been created
-	VerifParametres();
+	if (!ParametersCheck())
+	{
+		ParametersInit();		// If not, create it
+	}
 
 	//
 	// Create and populate Machine Settings
@@ -54,7 +57,8 @@ Kalel::Kalel()
 
 	//
 	// Start the measurement and automation threads
-	threadManager.StartThread();
+	threadManager.StartMeasurement();
+	threadManager.StartAutomation();
 }
 
 
@@ -62,7 +66,7 @@ Kalel::~Kalel()
 {
 	//
 	// Stop the measurement and automation threads
-	threadManager.ShutdownThread();
+	threadManager.ShutdownAutomation();
 
 	// 
 	// Server functionality is self-contained
@@ -72,7 +76,9 @@ Kalel::~Kalel()
 void Kalel::GetLogs(std::string &logs) {
 	logs.clear();
 
-	for (std::map<std::string, std::string>::iterator it = storageVectors.automationInfoLogs.begin(); it != storageVectors.automationInfoLogs.end(); ++it)
+	auto localCollection = storageVectors.getInfoLogs();
+
+	for (std::map<std::string, std::string>::iterator it = localCollection.begin(); it != localCollection.end(); ++it)
 	{
 		logs += it->first;
 		logs += "   ";
@@ -95,9 +101,9 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 	// Ping
 	*********************************/
 	if (req->path_		== "/api/handshake" && req->method_ == http::method::get) {
-		resp->status_ = http::responses::ok;
 		resp->content_type_ = http::mimetype::texthtml;
 		resp->answer_ = R"(<!DOCTYPE html PUBLIC " -//IETF//DTD HTML 2.0//EN"><html><head><title>Hello</title></head><body><h1>Hello</h1></body></html>)";
+		resp->status_ = http::responses::ok;
 	}
 
 
@@ -105,12 +111,13 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 	// Get MachineSettings
 	*********************************/
 	else if (req->path_ == "/api/machinesettings" && req->method_ == http::method::get) {
-		resp->status_ = http::responses::ok;
 		resp->content_type_ = http::mimetype::appjson;
 		
 		json j;
 		serialization::serializeMachineSettingsToJSON(*storageVectors.machineSettings, j);
 		resp->answer_ = j.dump();
+
+		resp->status_ = http::responses::ok;
 	}
 
 
@@ -119,9 +126,9 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 	*********************************/
 	else if (req->path_ == "/api/machinesettings" && req->method_ == http::method::post) {
 		if (req->content_type_ == http::mimetype::appjson) {
-			resp->status_ = http::responses::ok;
 
 			auto j = json::parse(req->entity_);
+			
 			serialization::deserializeJSONtoMachineSettings(j, *storageVectors.machineSettings);	
 
 			// Write everything to file
@@ -152,6 +159,7 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 				SetTypeInstrument(i,				storageVectors.machineSettings->typeInstruments[i]				);
 			}
 
+			resp->status_ = http::responses::ok;
 		}
 		else {
 			resp->status_ = http::responses::bad_request;
@@ -163,15 +171,13 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 	// Get Data
 	*********************************/
 	else if (req->path_ == "/api/experimentdata" && req->method_ == http::method::get) {
-		resp->status_ = http::responses::ok;
+
 		resp->content_type_ = http::mimetype::appjson;
 		
 		// Figure out which range of data to send by looking at the time requested
 		
 		std::deque<std::shared_ptr<ExperimentData>>::iterator it;
-		storageVectors.sharedMutex.lock();
-		auto localCollection = storageVectors.dataCollection;
-		storageVectors.sharedMutex.unlock();
+		auto localCollection = storageVectors.getData();
 
 		if (req->params_.empty()			 ||
 			req->params_.at("time").empty() || 
@@ -201,8 +207,9 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 			}
 
 			resp->answer_ = j.dump();
-		}
-		
+
+			resp->status_ = http::responses::ok;
+		}		
 		else
 		{
 			resp->status_ = http::responses::no_content;
@@ -214,15 +221,13 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 	// Get Logs
 	*********************************/
 	else if (req->path_ == "/api/experimentlogs" && req->method_ == http::method::get) {
-		resp->status_ = http::responses::ok;
+
 		resp->content_type_ = http::mimetype::appjson;
 
 		// Figure out which range of logs to send by finding the requested timestamp
 
 		std::map<std::string, std::string>::iterator it;
-		storageVectors.autoInfoLogsMutex.lock();
-		auto localCollection = storageVectors.automationInfoLogs;
-		storageVectors.autoInfoLogsMutex.unlock();
+		auto localCollection = storageVectors.getInfoLogs();
 
 		if (req->params_.empty() ||									// If parameters don't exist, send all the logs
 			req->params_.at("time").empty() ||
@@ -236,7 +241,7 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 			++ it;
 		}
 
-		if (it != localCollection.end())						// If iterator is valid, send requested logs
+		if (it != localCollection.end())							// If iterator is valid, send requested logs
 		{
 			json j;
 
@@ -247,6 +252,8 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 			}
 
 			resp->answer_ = j.dump();
+			
+			resp->status_ = http::responses::ok;
 		}
 		else
 		{
@@ -258,12 +265,18 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 	/*********************************
 	// Set ExperimentSettings
 	*********************************/
-	else if (req->path_ == "/api/experimentdata" && req->method_ == http::method::post) {
+	else if (req->path_ == "/api/experimentsettings" && req->method_ == http::method::post) {
 		if (req->content_type_ == http::mimetype::appjson) {
-			resp->status_ = http::responses::ok;
 
 			auto j = json::parse(req->entity_);
-			serialization::deserializeJSONtoExperimentSettings(j, *storageVectors.experimentSettings);
+
+			std::shared_ptr<ExperimentSettings> newExpSettings = std::make_shared<ExperimentSettings>();
+			serialization::deserializeJSONtoExperimentSettings(j, *newExpSettings);
+			storageVectors.setexperimentSettings(newExpSettings);
+
+			threadManager.SetModifiedData();
+
+			resp->status_ = http::responses::ok;
 		}
 		else {
 			resp->status_ = http::responses::bad_request;
@@ -280,22 +293,22 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 			!req->params_.at("action").empty())
 		{
 			if (req->params_.at("action") == "start")			{
-				threadManager.StartThread();
+				threadManager.StartAutomation();
 			}
 			else if (req->params_.at("action") == "shutdown")	{
-				threadManager.ShutdownThread();
+				threadManager.ShutdownAutomation();
 			}
 			else if (req->params_.at("action") == "restart")	{
 				//threadManager.ResetThread();
 			}
 			else if (req->params_.at("action") == "reset")		{
-				threadManager.ResetThread();
+				threadManager.ResetAutomation();
 			}
 			else if (req->params_.at("action") == "pause")		{
-				threadManager.PauseThread();
+				threadManager.PauseAutomation();
 			}
 			else if (req->params_.at("action") == "resume")		{
-				threadManager.ResumeThread();
+				threadManager.ResumeAutomation();
 			}
 
 			resp->status_ = http::responses::ok;

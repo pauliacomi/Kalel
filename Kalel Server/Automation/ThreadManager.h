@@ -2,13 +2,12 @@
 #define THREADS_H
 #pragma once
 
-#include <thread>
-#include "../MessageHandler.h"
+#include "CommonControls.h"
 
-#include "../Backend/Wrapper Classes/Vannes.h"
+#include <thread>
 
 class Automation;
-class ExperimentSettings;
+class Measurement;
 class ManualActionParam;
 
 class ThreadManager
@@ -18,33 +17,39 @@ public:
 	~ThreadManager();
 
 private:
-	// Pointer to settings storage
-	ManualActionParam * maParam;							// Storage for manual parameters
-	std::shared_ptr<ExperimentSettings> experimentSettings;	// Storage for automatic parameters
-
+	// Threads
 	CWinThread * m_threadMainControlLoop;					// Reference for main thread
-	std::thread * m_threadMeasurement;						// Reference for main thread
 	CWinThread * m_threadManualAction;						// Reference for manual thread
+	std::thread measurementThread;							// c++11 thread for measurement
 
-	Storage * handles;										// pointer to storage class
+	// Thread object pointers
 	Automation * automation;								// Main class that deals with the automatic functionality
+	Measurement * measurement;								// Main class that deals with the measurement functionality
 
-	// Create the required objects
-	CVannes pVanne;
+	// Storage/controls
+	Storage & storage;										// reference to storage class
+	Controls controls;
+	ManualActionParam * maParam;							// Storage for manual parameters
+
+
 
 	// Public interface methods
 public:
-	HRESULT StartThread();
-	HRESULT ResumeThread();
-	HRESULT PauseThread();
-	HRESULT ResetThread();
-	HRESULT SetModifiedData();
-	HRESULT SetUserContinue();
-	HRESULT ShutdownThread();
+	unsigned StartMeasurement();
 
-	void ManualAction();									// When a manual command is issued
 
-	// Private fields
+	unsigned StartAutomation();
+	unsigned ResumeAutomation();
+	unsigned PauseAutomation();
+	unsigned ResetAutomation();
+	unsigned SetModifiedData();
+	unsigned SetUserContinue();
+	unsigned ShutdownAutomation();
+
+	unsigned ManualAction();									// When a manual command is issued
+
+
+	// Private functions
 private:
 	static UINT ThreadMainWorkerStarter(LPVOID pParam);		// Main worker thread starter
 	void ThreadMainWorker();								// Main worker thread function

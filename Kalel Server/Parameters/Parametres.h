@@ -7,8 +7,8 @@
 #define Dev_USB_Temp 2
 #define Dev_USB_Vannes 1
 
-void VerifParametres();
-void Initialisation_parametres();
+bool ParametersCheck();
+void ParametersInit();
 
 // Get
 

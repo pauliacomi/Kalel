@@ -218,6 +218,11 @@
     <ClInclude Include="..\Kalel Shared\timestamp.h" />
     <ClInclude Include="..\Kalel Shared\unicodeConv.h" />
     <ClInclude Include="Automation\Class\Automation.h" />
+    <ClInclude Include="Automation\CommonControls.h" />
+    <ClInclude Include="Automation\CommonPointers.h" />
+    <ClInclude Include="Automation\FileWriter.h" />
+    <ClInclude Include="Automation\Measurement\Measurement.h" />
+    <ClInclude Include="Automation\Measurement\Security.h" />
     <ClInclude Include="Automation\Old\MainFrm.h" />
     <ClInclude Include="Automation\Old\Manip.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -239,7 +244,7 @@
     <ClInclude Include="Backend\USB\NI_USB_9211A.h" />
     <ClInclude Include="Backend\Wrapper Classes\SerialInstruments.h" />
     <ClInclude Include="Backend\Wrapper Classes\Temperature.h" />
-    <ClInclude Include="Backend\Wrapper Classes\Vannes.h" />
+    <ClInclude Include="Backend\Wrapper Classes\ValveController.h" />
     <ClInclude Include="Kalel Server.h" />
     <ClInclude Include="Kalel ServerDlg.h" />
     <ClInclude Include="Kalel.h" />
@@ -266,9 +271,6 @@
     <ClCompile Include="..\Kalel Shared\Netcode\URLHelper.cpp" />
     <ClCompile Include="..\Kalel Shared\unicodeConv.cpp" />
     <ClCompile Include="Automation\Class\Automation.cpp" />
-    <ClCompile Include="Automation\Class\AutomationFileWriting.cpp" />
-    <ClCompile Include="Automation\Class\AutomationMeasurement.cpp" />
-    <ClCompile Include="Automation\Class\AutomationSecurity.cpp" />
     <ClCompile Include="Automation\Class\AutomationShutdown.cpp" />
     <ClCompile Include="Automation\Class\AutomationStageAdsoprtion.cpp" />
     <ClCompile Include="Automation\Class\AutomationStageDesorption.cpp" />
@@ -277,7 +279,9 @@
     <ClCompile Include="Automation\Class\AutomationStageVacuum.cpp" />
     <ClCompile Include="Automation\Class\AutomationTimeKeeping.cpp" />
     <ClCompile Include="Automation\Class\AutomationVacuum.cpp" />
-    <ClCompile Include="Automation\Class\AutomationValves.cpp" />
+    <ClCompile Include="Automation\FileWriter.cpp" />
+    <ClCompile Include="Automation\Measurement\Measurement.cpp" />
+    <ClCompile Include="Automation\Measurement\Security.cpp" />
     <ClCompile Include="Automation\Old\Manip.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -428,7 +432,7 @@
     <ClCompile Include="Backend\USB\NI_USB_9211A.cpp" />
     <ClCompile Include="Backend\Wrapper Classes\SerialInstruments.cpp" />
     <ClCompile Include="Backend\Wrapper Classes\Temperature.cpp" />
-    <ClCompile Include="Backend\Wrapper Classes\Vannes.cpp" />
+    <ClCompile Include="Backend\Wrapper Classes\ValveController.cpp" />
     <ClCompile Include="Kalel Server.cpp" />
     <ClCompile Include="Kalel ServerDlg.cpp" />
     <ClCompile Include="Kalel.cpp" />

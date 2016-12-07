@@ -42,7 +42,7 @@ void CManip::SetMensor(Mensor* Mens)
 	g_pMensor = Mens;
 }
 
-void CManip::SetVannes(CVannes* pVannes)
+void CManip::SetVannes(ValveController* pVannes)
 {
 	g_pVanne = pVannes;
 }
