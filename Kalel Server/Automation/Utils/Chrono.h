@@ -2,6 +2,8 @@
 #define CHRONO_H
 #pragma once
 
+#include <atomic>
+
 class CChrono
 {
 public:
@@ -12,8 +14,8 @@ private:
 	LARGE_INTEGER start, end, freq;
 	LARGE_INTEGER pause, reprise;
 	double temps;
-	bool started;
-	bool paused;
+	std::atomic_bool started;
+	std::atomic_bool paused;
 	
 public:
 	void TopChrono();

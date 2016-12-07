@@ -144,7 +144,7 @@ void Measurement::Execution()
 			if (storage.currentData->experimentRecording)										// If we started recording
 			{
 				// Save the data to the file
-				controls.fileWriter->FileMeasurementRecord(*storage.currentData, controls.valveControls->ValveIsOpen(6));
+				controls.fileWriter->FileMeasurementRecord(storage.experimentSettings->dataGeneral ,*storage.currentData, controls.valveControls->ValveIsOpen(6));
 			}
 
 			// Restart the timer to record time between measurements
