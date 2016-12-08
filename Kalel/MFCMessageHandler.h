@@ -12,6 +12,7 @@
 // Required to pass the experimental data to the main GUI
 #include "../Kalel Shared/Com Classes/ExperimentData.h"	
 #include "../Kalel Shared/Com Classes/MachineSettings.h"
+#include "../Kalel Shared/Com Classes/ControlInstrumentState.h"
 
 #include <string>
 #include <map>
@@ -34,6 +35,7 @@ public:
 	bool OnSetMachineSettings();
 	bool ExchangeData(std::deque<ExperimentData*> * pParam);
 	bool ExchangeLogs(std::map<std::wstring, std::wstring> * pParam);
+	bool ExchangeControlState(ControlInstrumentState* pParam);
 	bool ExperimentStart();
 	bool ExperimentEnd();
 	bool ThreadShutdown();

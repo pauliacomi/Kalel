@@ -328,7 +328,8 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 			!req->params_.at("number").empty() ||
 			!req->params_.at("active").empty())
 		{
-			// threadManager.ManualAction();
+			threadManager.ThreadManualAction(To<int>(req->params_.at("type")), To<int>(req->params_.at("number")), To<bool>(req->params_.at("active")));
+			resp->status_ = http::responses::ok;
 		}
 		else
 		{

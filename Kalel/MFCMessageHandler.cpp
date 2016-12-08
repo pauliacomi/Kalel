@@ -79,6 +79,16 @@ bool MFCMessageHandler::ExchangeLogs(std::map<std::wstring, std::wstring>* pPara
 	return true;
 }
 
+bool MFCMessageHandler::ExchangeControlState(ControlInstrumentState * pParam)
+{
+	// Post the required message, now the main thread is responsible for deleting the new class
+	if (::PostMessage(windowHandle, UWM_EXCHANGESTATE, NULL, (LPARAM)pParam) == 0)
+	{
+		delete pParam;
+		return false;
+	}
+	return true;
+}
 
 bool MFCMessageHandler::DisplayMessage(int pParam, int pInt1, int pInt2, double pDouble)
 {

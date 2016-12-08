@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "CommHandler.h"
 
-#include "../Kalel Shared/Com Classes/ManualActionParam.h"
 #include "../Kalel Shared/Netcode/http_request.h"
 #include "../Kalel Shared/Netcode/json.hpp"
 #include "../Kalel Shared/Resources/StringTable.h"
@@ -658,6 +657,7 @@ unsigned CommHandler::InstrumentCommand_resp(http_response * r)
 	if (r->status_ == http::responses::ok)
 	{
 		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Server not found"));
+
 		return 1;
 	}
 	else if (r->status_ == http::responses::conflict)
@@ -667,7 +667,7 @@ unsigned CommHandler::InstrumentCommand_resp(http_response * r)
 	}
 	else if (r->status_ == http::responses::bad_request)
 	{
-
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Bad request"));
 		return 1;
 	}
 	else if (r->status_ == http::responses::not_found) {

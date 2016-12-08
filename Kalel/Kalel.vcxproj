@@ -201,6 +201,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Kalel Shared\Com Classes\ControlInstrumentState.h" />
     <ClInclude Include="..\Kalel Shared\Com Classes\ExperimentHelperClasses.h" />
     <ClInclude Include="..\Kalel Shared\Com Classes\CommonFunctions.h" />
     <ClInclude Include="..\Kalel Shared\Com Classes\ExperimentData.h" />

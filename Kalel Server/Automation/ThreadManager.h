@@ -8,7 +8,6 @@
 
 class Automation;
 class Measurement;
-class ManualActionParam;
 
 class ThreadManager
 {
@@ -19,7 +18,7 @@ public:
 private:
 	// Threads
 	CWinThread * m_threadMainControlLoop;					// Reference for main thread
-	CWinThread * m_threadManualAction;						// Reference for manual thread
+	std::thread manualActionThread;							// c++11 thread for manual actions
 	std::thread measurementThread;							// c++11 thread for measurement
 
 	// Thread object pointers
@@ -29,9 +28,6 @@ private:
 	// Storage/controls
 	Storage & storage;										// reference to storage class
 	Controls controls;
-	ManualActionParam * maParam;							// Storage for manual parameters
-
-
 
 	// Public interface methods
 public:
@@ -46,17 +42,14 @@ public:
 	unsigned SetUserContinue();
 	unsigned ShutdownAutomation();
 
-	unsigned ManualAction();									// When a manual command is issued
-
+	unsigned ThreadManualAction(int instrumentType, int instrumentNumber, bool state);		// When a manual command is issued
+	void ManualAction(int instrumentType, int instrumentNumber, bool state);
+	
 
 	// Private functions
 private:
 	static UINT ThreadMainWorkerStarter(LPVOID pParam);		// Main worker thread starter
 	void ThreadMainWorker();								// Main worker thread function
-
-	static UINT ThreadManualActionStarter(LPVOID pParam);	// Manual command thread starter
-	void ThreadManualAction();								// Manual command thread worker
-	
 };
 
 #endif

@@ -5,7 +5,6 @@
 
 #include "Class/Automation.h"										// Backend for all the automation
 #include "Measurement/Measurement.h"								// Backend for measurements
-#include "../../Kalel Shared/Com Classes/ManualActionParam.h"		// Manual command struct details
 
 
 // Netcode
@@ -20,12 +19,10 @@ ThreadManager::ThreadManager(Storage &h)
 	: storage{ h }
 
 	, m_threadMainControlLoop(nullptr)
-	, m_threadManualAction (nullptr)
 
 	, automation(nullptr)
 	, measurement(nullptr)
 	
-	, maParam(nullptr)
 {
 	// Create objects from controls class
 	controls.fileWriter = std::make_shared<FileWriter>();
@@ -201,36 +198,38 @@ unsigned ThreadManager::ShutdownAutomation()
 
 
 
-void ThreadManager::ThreadManualAction()
+unsigned ThreadManager::ThreadManualAction(int instrumentType, int instrumentNumber, bool state)
+{
+	//start thread
+	manualActionThread = std::thread(&ThreadManager::ManualAction, this, instrumentType, instrumentNumber, state);
+
+	return 0;
+}
+
+
+void ThreadManager::ManualAction(int instrumentType, int instrumentNumber, bool state)
 {
 	bool actionSuccessful = false;
 
-	// Check for validity
-	ASSERT(maParam != NULL);
-
-	// Create local copy so we don't have to depend on main one which can get deleted
-	ManualActionParam * localMP = new ManualActionParam(maParam);
-
-
 	// Launch required functionality
-	switch (localMP->instrumentType)
+	switch (instrumentType)
 	{
 	case INSTRUMENT_VALVE:
-		if (localMP->shouldBeActivated)
-			actionSuccessful = controls.valveControls->ValveOpen(localMP->instrumentNumber, false);
+		if (state)
+			actionSuccessful = controls.valveControls->ValveOpen(instrumentNumber, false);
 		else
-			actionSuccessful = controls.valveControls->ValveClose(localMP->instrumentNumber, false);
+			actionSuccessful = controls.valveControls->ValveClose(instrumentNumber, false);
 		break;
 
 	case INSTRUMENT_EV:
-		if (localMP->shouldBeActivated)
-			actionSuccessful = controls.valveControls->EVActivate(localMP->instrumentNumber, false);
+		if (state)
+			actionSuccessful = controls.valveControls->EVActivate(instrumentNumber, false);
 		else
-			actionSuccessful = controls.valveControls->EVDeactivate(localMP->instrumentNumber, false);
+			actionSuccessful = controls.valveControls->EVDeactivate(instrumentNumber, false);
 		break;
 
 	case INSTRUMENT_PUMP:
-		if (localMP->shouldBeActivated)
+		if (state)
 			actionSuccessful = controls.valveControls->PumpActivate(false);
 		else
 			actionSuccessful = controls.valveControls->PumpDeactivate(false);
@@ -241,8 +240,12 @@ void ThreadManager::ThreadManualAction()
 		break;
 	}
 
-	// Ask for the app to show the change, pass the locally created object which must be deleted there
-	// ::PostMessage(localMP->windowHandle, UWM_UPDATEBUTTONS, (WPARAM)localMP, actionSuccessful);
+	// return
+	if (actionSuccessful)
+	{
+		return;
+	}
+	else return;
 }
 
 
@@ -278,29 +281,4 @@ void ThreadManager::ThreadMainWorker()
 
 	// Launch functionality
 	automation->Execution();
-}
-
-
-//
-// Manual actions
-//
-
-UINT ThreadManager::ThreadManualActionStarter(LPVOID pParam)
-{
-	// Start the function from the main class, then check for validity
-	ThreadManager* threadManager = static_cast<ThreadManager*>(pParam);
-
-	// Launch required functionality
-	threadManager->ThreadManualAction();
-
-	// End thread
-	return 0;
-}
-
-unsigned ThreadManager::ManualAction()
-{
-	//start thread
-	m_threadManualAction = AfxBeginThread(ThreadManualActionStarter, this);
-
-	return 0;
 }

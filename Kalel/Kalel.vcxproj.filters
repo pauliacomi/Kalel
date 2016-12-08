@@ -324,6 +324,9 @@
     <ClInclude Include="..\Kalel Shared\log.h">
       <Filter>Header Files\Commmon</Filter>
     </ClInclude>
+    <ClInclude Include="..\Kalel Shared\Com Classes\ControlInstrumentState.h">
+      <Filter>Source Files\Commmon</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainFrm.cpp">
