@@ -79,12 +79,15 @@ bool MFCMessageHandler::ExchangeLogs(std::map<std::wstring, std::wstring>* pPara
 	return true;
 }
 
-bool MFCMessageHandler::ExchangeControlState(ControlInstrumentState * pParam)
+bool MFCMessageHandler::ExchangeControlState(const ControlInstrumentState &pParam)
 {
+	// Create a new instance of the storage class and equate it to the local class
+	ControlInstrumentState * newData = new ControlInstrumentState(pParam);
+
 	// Post the required message, now the main thread is responsible for deleting the new class
-	if (::PostMessage(windowHandle, UWM_EXCHANGESTATE, NULL, (LPARAM)pParam) == 0)
+	if (::PostMessage(windowHandle, UWM_EXCHANGESTATE, NULL, (LPARAM)newData) == 0)
 	{
-		delete pParam;
+		delete newData;
 		return false;
 	}
 	return true;

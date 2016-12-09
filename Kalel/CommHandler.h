@@ -2,9 +2,9 @@
 #define COMMHANDLER_H
 #pragma once
 
-#include "../Kalel Shared/Netcode/Client.h"
 #include "MFCMessageHandler.h"
 
+#include "../Kalel Shared/Netcode/Client.h"
 #include "../Kalel Shared/Com Classes/MachineSettings.h"
 #include "../Kalel Shared/Com Classes/ExperimentSettings.h"
 
@@ -26,6 +26,7 @@ public:
 	void SetMachineSettings(std::shared_ptr<const MachineSettings> ptr);
 	void GetData(std::string fromTime = R"()");
 	void GetLog(std::wstring fromTime = _T(""));
+	void GetControlInstrumentState();
 	void SetExperimentSettings(std::shared_ptr<const ExperimentSettings> ptr);
 
 	void StartClient();

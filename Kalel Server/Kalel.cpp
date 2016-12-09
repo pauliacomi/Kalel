@@ -4,6 +4,7 @@
 #include "Parameters/Parametres.h"
 #include "../Kalel Shared/Netcode/json.hpp"
 #include "../Kalel Shared/Com Classes/Serialization.h"
+#include "../Kalel Shared/Com Classes/ControlInstrumentState.h"
 #include "../Kalel Shared/Netcode/stdHelpers.h"
 
 using json = nlohmann::json;
@@ -320,20 +321,40 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 	}
 
 	/*********************************
-	// Instrument Commands
+	// Instrument State Sync & Commands
 	*********************************/
 	else if (req->path_ == "/api/instrument"  && req->method_ == http::method::post) {
-		if (!req->params_.empty() ||
-			!req->params_.at("type").empty() ||
-			!req->params_.at("number").empty() ||
-			!req->params_.at("active").empty())
-		{
-			threadManager.ThreadManualAction(To<int>(req->params_.at("type")), To<int>(req->params_.at("number")), To<bool>(req->params_.at("active")));
-			resp->status_ = http::responses::ok;
+
+		if (!req->params_.empty()) {
+			if (!req->params_.at("type").empty() ||
+				!req->params_.at("number").empty() ||
+				!req->params_.at("active").empty())
+			{
+				threadManager.ThreadManualAction(To<int>(req->params_.at("type")), To<int>(req->params_.at("number")), To<bool>(req->params_.at("active")));
+				resp->status_ = http::responses::ok;
+			}
+			else
+			{
+				resp->status_ = http::responses::conflict;
+			}
 		}
 		else
 		{
-			resp->status_ = http::responses::conflict;
+			ControlInstrumentState instrumentStates(threadManager.GetInstrumentStates());
+		
+			json j;
+
+			try
+			{
+				serialization::serializeControlInstrumentStatetoJSON(instrumentStates, j);
+			}
+			catch (const std::exception&)
+			{
+
+			}
+
+			resp->answer_ = j.dump();
+			resp->status_ = http::responses::ok;
 		}
 	}
 

@@ -35,7 +35,7 @@ public:
 	bool OnSetMachineSettings();
 	bool ExchangeData(std::deque<ExperimentData*> * pParam);
 	bool ExchangeLogs(std::map<std::wstring, std::wstring> * pParam);
-	bool ExchangeControlState(ControlInstrumentState* pParam);
+	bool ExchangeControlState(const ControlInstrumentState &pParam);
 	bool ExperimentStart();
 	bool ExperimentEnd();
 	bool ThreadShutdown();

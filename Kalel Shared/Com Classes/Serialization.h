@@ -38,7 +38,7 @@ namespace serialization {
 	static void deserializeJSONToCell(const nlohmann::json &j, cellule &m);
 	static void deserializeJSONToUser(const nlohmann::json &j, experimentateur &m);
 
-	static void serializeJSONtoControlInstrumentState(const ControlInstrumentState &e, nlohmann::json &j);
+	static void serializeControlInstrumentStatetoJSON(const ControlInstrumentState &e, nlohmann::json &j);
 	static void deserializeJSONtoControlInstrumentState(const nlohmann::json &j, ControlInstrumentState &e);
 
 	//*************************************************************************************************************************
@@ -368,30 +368,39 @@ namespace serialization {
 //*************************************************************************************************************************
 
 
-void serializeJSONtoControlInstrumentState(const ControlInstrumentState & e, nlohmann::json & j)
+void serializeControlInstrumentStatetoJSON(const ControlInstrumentState & e, nlohmann::json & j)
 {
 	for (size_t i = 0; i < e.valves.size(); i++)
 	{
-		j["valve"			][i]			=					e.valves[i]					;
+		j["valve"			][i]			=	e.valves[i]	;
 	}
 	for (size_t i = 0; i < e.valves.size(); i++)
 	{
-		j["ev"				][i]			=					e.EVs[i]					;
+		j["ev"				][std::to_string(i)]			=	e.EVs[i]	;
 	}
 	for (size_t i = 0; i < e.valves.size(); i++)
 	{
-		j["pump"			][i]			=					e.pumps[i]					;
+		j["pump"			][std::to_string(i)]			=	e.pumps[i]	;
 	}
 }
 
 void deserializeJSONtoControlInstrumentState(const nlohmann::json & j, ControlInstrumentState & e)
 {
-	auto j1 = j["valve"];
-	m.chemin								= UnicodeConv::s2ws(j["path"					]);
-	m.commentaires							= UnicodeConv::s2ws(j["comments"				]);
-	m.date_experience						= UnicodeConv::s2ws(j["experimentDate"			]);
-	m.fichier								= UnicodeConv::s2ws(j["file"					]);
-	m.masse_echantillon						=					j["sampleMass"				];		 
-	m.nom_echantillon						= UnicodeConv::s2ws(j["sampleName"				]);
-	m.temperature_experience				=					j["temperature"				];	
+	//auto j1 = j["valve"];
+	//for (json::iterator i = j1.begin(); i < j1.end(); i++)
+	//{
+	//	e.valves[i]											=	i	;
+	//}
+	//
+	//j1 = j["ev"];
+	//for (json::iterator i = j1.begin(); i < j1.end(); i++)
+	//{
+	//	e.valves[i]											=	i	;
+	//}
+
+	//j1 = j["pump"];
+	//for (json::iterator i = j1.begin(); i < j1.end(); i++)
+	//{
+	//	e.valves[i]											=	i	;
+	//}
 }
