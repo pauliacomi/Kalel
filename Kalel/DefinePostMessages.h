@@ -36,7 +36,6 @@
 #define UWM_EXCHANGELOGS							(WM_USER + 28)
 #define UWM_EXCHANGESTATE							(WM_USER + 29)
 #define UWM_SYNCED									(WM_USER + 42)
-#define UWM_UPDATEBUTTONS							(WM_USER + 100)
 
 #define UWM_CANCELEXPERIMENT						(WM_USER + 24)
 

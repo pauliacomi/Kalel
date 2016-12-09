@@ -6,6 +6,7 @@
 #include "../Com Classes/ExperimentData.h"
 #include "../Com Classes/ExperimentSettings.h"
 #include "../Com Classes/MachineSettings.h"
+#include "../Com Classes/ControlInstrumentState.h"
 #include "../unicodeConv.h"
 
 namespace serialization {
@@ -37,6 +38,8 @@ namespace serialization {
 	static void deserializeJSONToCell(const nlohmann::json &j, cellule &m);
 	static void deserializeJSONToUser(const nlohmann::json &j, experimentateur &m);
 
+	static void serializeJSONtoControlInstrumentState(const ControlInstrumentState &e, nlohmann::json &j);
+	static void deserializeJSONtoControlInstrumentState(const nlohmann::json &j, ControlInstrumentState &e);
 
 	//*************************************************************************************************************************
 	//						MachineSettings <> JSON
@@ -357,4 +360,38 @@ namespace serialization {
 		m.volume_calo							=					j["caloVolume"	];
 		m.volume_total							=					j["totalVolume"	];
 	}
+}
+
+
+//*************************************************************************************************************************
+//						ControlInstrumentState <> JSON
+//*************************************************************************************************************************
+
+
+void serializeJSONtoControlInstrumentState(const ControlInstrumentState & e, nlohmann::json & j)
+{
+	for (size_t i = 0; i < e.valves.size(); i++)
+	{
+		j["valve"			][i]			=					e.valves[i]					;
+	}
+	for (size_t i = 0; i < e.valves.size(); i++)
+	{
+		j["ev"				][i]			=					e.EVs[i]					;
+	}
+	for (size_t i = 0; i < e.valves.size(); i++)
+	{
+		j["pump"			][i]			=					e.pumps[i]					;
+	}
+}
+
+void deserializeJSONtoControlInstrumentState(const nlohmann::json & j, ControlInstrumentState & e)
+{
+	auto j1 = j["valve"];
+	m.chemin								= UnicodeConv::s2ws(j["path"					]);
+	m.commentaires							= UnicodeConv::s2ws(j["comments"				]);
+	m.date_experience						= UnicodeConv::s2ws(j["experimentDate"			]);
+	m.fichier								= UnicodeConv::s2ws(j["file"					]);
+	m.masse_echantillon						=					j["sampleMass"				];		 
+	m.nom_echantillon						= UnicodeConv::s2ws(j["sampleName"				]);
+	m.temperature_experience				=					j["temperature"				];	
 }

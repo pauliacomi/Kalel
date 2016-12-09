@@ -12,10 +12,10 @@ public:
 	~ListOfInstrumentButtons();
 
 private:
-	int cButtonID;
-	int cOppositeButtonID;
-	int cTextboxID;
-	CString tempTextboxMessage;
+	int cButtonID;								// Id of open button
+	int cOppositeButtonID;						// Id of close button
+	int cTextboxID;								// Id of associated textbox
+	CString tempTextboxMessage;					// String of the textbox
 	CString textboxMessage;
 	CString errorMessage;;
 

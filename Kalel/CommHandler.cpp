@@ -6,6 +6,8 @@
 #include "../Kalel Shared/Resources/StringTable.h"
 #include "../Kalel Shared/Resources/DefineInstruments.h"
 #include "../Kalel Shared/Com Classes/Serialization.h"
+#include "../Kalel Shared/Com Classes/ControlInstrumentState.h"
+#include "../Kalel Shared/Netcode/stdHelpers.h"
 #include "../Kalel Shared/unicodeConv.h"
 
 #include <functional>
@@ -615,7 +617,7 @@ unsigned CommHandler::ThreadCommand_resp(http_response * r)
 {
 	if (r->status_ == http::responses::ok)
 	{
-		//messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Server not found"));
+		
 		return 1;
 	}
 	else if (r->status_ == http::responses::conflict)
@@ -656,7 +658,22 @@ unsigned CommHandler::InstrumentCommand_resp(http_response * r)
 {
 	if (r->status_ == http::responses::ok)
 	{
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Server not found"));
+		ControlInstrumentState * instrumentState = new ControlInstrumentState();
+
+		if (localInstrumentType == "valve")
+		{
+			instrumentState->valves[To<int>(localInstrumentNumber)] = To<bool>(localShouldBeActivated);
+		}
+		else if (localInstrumentType == "ev")
+		{
+			instrumentState->EVs[To<int>(localInstrumentNumber)] = To<bool>(localShouldBeActivated);
+		}
+		else if (localInstrumentType == "pump")
+		{
+			instrumentState->pumps[To<int>(localInstrumentNumber)] = To<bool>(localShouldBeActivated);
+		}
+
+		messageHandler.ExchangeControlState(instrumentState);
 
 		return 1;
 	}
@@ -668,6 +685,58 @@ unsigned CommHandler::InstrumentCommand_resp(http_response * r)
 	else if (r->status_ == http::responses::bad_request)
 	{
 		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Bad request"));
+		return 1;
+	}
+	else if (r->status_ == http::responses::not_found) {
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Server not found"));
+		return 1;
+	}
+	return 0;
+}
+
+
+/*********************************
+// Control istrument state sync
+*********************************/
+unsigned CommHandler::InstrumentState_req(http_request * r)
+{
+	r->method_ = http::method::post;
+	r->path_ = "/api/instrumentstate";
+
+	return 0;
+}
+
+unsigned CommHandler::InstrumentState_resp(http_response * r)
+{
+	if (r->status_ == http::responses::ok)
+	{
+		json j;
+
+		try
+		{
+			j = json::parse(r->answer_);
+		}
+		catch (const std::exception& e)
+		{
+			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, UnicodeConv::s2ws(e.what()));
+			return 1;
+		}
+
+		ControlInstrumentState * instrumentState = new ControlInstrumentState();
+
+		try
+		{
+			serialization::deserializeJSONtoControlInstrumentState(j, *instrumentState);
+		}
+		catch (const std::exception& e)
+		{
+			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, UnicodeConv::s2ws(e.what()));
+			delete instrumentState;
+			return 1;
+		}
+
+		messageHandler.ExchangeControlState(instrumentState);
+
 		return 1;
 	}
 	else if (r->status_ == http::responses::not_found) {

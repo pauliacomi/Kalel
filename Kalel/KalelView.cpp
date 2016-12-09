@@ -22,7 +22,6 @@
 #include "DefineMenuMessages.h"										// Definition of messages received from the menu
 
 #include "ExperimentPropertySheet.h"								// The dialog asking the user to input the experiment parameters
-#include "../Kalel Shared/Com Classes/ManualActionParam.h"
 #include "ListOfInstrumentButtons.h"								// The class containing a list of the instruments' buttons ID's
 
 #ifdef _DEBUG
@@ -56,12 +55,12 @@ BEGIN_MESSAGE_MAP(CKalelView, CFormView)
 	ON_MESSAGE(UWM_GOT_MACHINE_SETTINGS, &CKalelView::OnGetMachineSettings)					// Callback to notify of received MachineSettings
 	ON_MESSAGE(UWM_EXCHANGEDATA, &CKalelView::OnExchangeData)								// Callback to notify of incoming ExperimentData array
 	ON_MESSAGE(UWM_EXCHANGELOGS, &CKalelView::OnExchangeLogs)
+	ON_MESSAGE(UWM_EXCHANGESTATE, &CKalelView::OnThreadRequestButtonUpdate)					// Calls to update a specific button pair and associated display on a manual message
 	ON_MESSAGE(UWM_THREADFINISHEDREG, &CKalelView::OnAutoExperimentFinished)				// Calls when manual functionality ends
 	ON_MESSAGE(UWM_DISPLAYMESSAGE, &CKalelView::AffichageMessages)							// Callback to display a message from the automation thread
 	ON_MESSAGE(UWM_DISPLAYMESSAGEBOX, &CKalelView::MessageBoxAlert)							// Displays an messageBox to alert user of something
 	ON_MESSAGE(UWM_DISPLAYMESSAGEBOXCONF, &CKalelView::MessageBoxConfirmation)				// Displays an messageBox to or ask user for confirmation
 	ON_MESSAGE(UWM_CANCELEXPERIMENT, &CKalelView::CancelBeforeStarting)						
-	ON_MESSAGE(UWM_UPDATEBUTTONS, &CKalelView::OnThreadRequestButtonUpdate)					// Calls to update a specific button pair and associated display on a manual message
 																							
 	// Menu messages:
 	ON_MESSAGE(UWM_DISP_CONNECTS_DIALOG, &CKalelView::DisplayConnectDialog)					// Display dialog connection
@@ -742,12 +741,11 @@ LRESULT CKalelView::CancelBeforeStarting(WPARAM, LPARAM)
 }
 
 
-
 // Single function to update UI when receiving the command that the thread posted before finishing
 LRESULT CKalelView::OnThreadRequestButtonUpdate(WPARAM wParam, LPARAM lParam) {
 
 	// Cast the parameters object and take ownership
-	std::auto_ptr<ManualActionParam> maParam(reinterpret_cast<ManualActionParam*>(wParam));
+	std::auto_ptr<ControlInstrumentState> maParam(reinterpret_cast<ControlInstrumentState*>(wParam));
 
 	// Create a new list object
 	ListOfInstrumentButtons list(maParam->instrumentType, maParam->instrumentNumber, maParam->shouldBeActivated);

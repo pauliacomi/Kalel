@@ -90,6 +90,10 @@ private:
 	unsigned InstrumentCommand_req(http_request * r);
 	unsigned InstrumentCommand_resp(http_response * r);
 
+	// Control istrument state sync
+	unsigned InstrumentState_req(http_request * r);
+	unsigned InstrumentState_resp(http_response * r);
+
 	// Debugging
 	unsigned TestConn_req(http_request * r);
 	unsigned TestConn_resp(http_response * r);
