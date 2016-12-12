@@ -2,10 +2,22 @@
 #include "Kalel.h"
 
 #include "Parameters/Parametres.h"
+#include "MessageHandler.h"
+
 #include "../Kalel Shared/Netcode/json.hpp"
+#include "../Kalel Shared/Netcode/stdHelpers.h"
 #include "../Kalel Shared/Com Classes/Serialization.h"
 #include "../Kalel Shared/Com Classes/ControlInstrumentState.h"
-#include "../Kalel Shared/Netcode/stdHelpers.h"
+
+#include "../Kalel Shared/Com Classes/ExperimentData.h"
+#include "../Kalel Shared/Com Classes/ExperimentSettings.h"
+#include "../Kalel Shared/Com Classes/MachineSettings.h"
+#include "../Kalel Shared/unicodeConv.h"
+
+
+// Std
+#include <vector>
+#include <string>
 
 using json = nlohmann::json;
 
@@ -323,10 +335,12 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 	/*********************************
 	// Instrument State Sync & Commands
 	*********************************/
-	else if (req->path_ == "/api/instrument"  && req->method_ == http::method::post) {
+	else if (req->path_ == "/api/instrument") {
 
-		if (!req->params_.empty()) {
-			if (!req->params_.at("type").empty() ||
+		if (req->method_ == http::method::post)
+		{
+			if (!req->params_.empty() ||
+				!req->params_.at("type").empty() ||
 				!req->params_.at("number").empty() ||
 				!req->params_.at("active").empty())
 			{
@@ -338,10 +352,11 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 				resp->status_ = http::responses::conflict;
 			}
 		}
-		else
+
+		else if (req->method_ == http::method::get)
 		{
 			ControlInstrumentState instrumentStates(threadManager.GetInstrumentStates());
-		
+
 			json j;
 
 			try

@@ -20,7 +20,7 @@ public:
 };
 
 
-ControlInstrumentState::ControlInstrumentState() {
+inline ControlInstrumentState::ControlInstrumentState() {
 	for (size_t i = 0; i < no_valves; i++)
 	{
 		valves.push_back(false);
@@ -35,6 +35,6 @@ ControlInstrumentState::ControlInstrumentState() {
 	}
 }
 
-ControlInstrumentState::~ControlInstrumentState()
+inline ControlInstrumentState::~ControlInstrumentState()
 {
 }

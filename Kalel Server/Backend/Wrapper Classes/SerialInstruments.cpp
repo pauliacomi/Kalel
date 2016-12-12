@@ -8,10 +8,10 @@
 
 
 SerialInstruments::SerialInstruments()
-	:keithley(NULL)
-	,mens_HighRange(NULL)
-	,mens_LowRange(NULL)
-	,keithleyInitiated(false)
+	:keithleyInitiated(false)
+	,keithley(nullptr)
+	,mens_LowRange(nullptr)
+	,mens_HighRange(nullptr)
 {
 	// This loop goes through all the instruments in the Parameters file
 	// Depending on the type of instruments it will output parameters for
@@ -127,11 +127,11 @@ SerialInstruments::SerialInstruments()
 
 SerialInstruments::~SerialInstruments()
 {
-	if (keithley != NULL)
+	if (keithley != nullptr)
 		delete keithley;
-	if (mens_LowRange != NULL)
+	if (mens_LowRange != nullptr)
 		delete mens_LowRange;
-	if (mens_HighRange != NULL)
+	if (mens_HighRange != nullptr)
 		delete mens_HighRange;
 }
 

@@ -1,18 +1,7 @@
 #pragma once
 
 #include "Automation/ThreadManager.h"
-
 #include "../Kalel Shared/Netcode/Server.h"
-#include "../Kalel Shared/Com Classes/ExperimentData.h"
-#include "../Kalel Shared/Com Classes/ExperimentSettings.h"
-#include "../Kalel Shared/Com Classes/MachineSettings.h"
-#include "../Kalel Shared/unicodeConv.h"
-
-#include "Parameters/Parametres.h"
-#include "MessageHandler.h"
-
-#include <vector>
-#include <string>
 
 class Kalel
 {

@@ -6,23 +6,17 @@
 #include "Class/Automation.h"										// Backend for all the automation
 #include "Measurement/Measurement.h"								// Backend for measurements
 
-
-// Netcode
-#include "../../Kalel Shared/Netcode/Server.h"
-
 // STD
 #include <atomic>
 
 // --------- Initialisation and destruction -------
 
 ThreadManager::ThreadManager(Storage &h)
-	: storage{ h }
-
-	, m_threadMainControlLoop(nullptr)
-
+	: m_threadMainControlLoop(nullptr)
 	, automation(nullptr)
 	, measurement(nullptr)
-	
+
+	, storage{ h }	
 {
 	// Create objects from controls class
 	controls.fileWriter = std::make_shared<FileWriter>();
@@ -248,8 +242,21 @@ void ThreadManager::ManualAction(int instrumentType, int instrumentNumber, bool 
 	else return;
 }
 
+ControlInstrumentState ThreadManager::GetInstrumentStates()
+{
+	ControlInstrumentState state;
 
+	for (size_t i = 0; i < state.valves.size(); i++)
+	{
+		state.valves[i] = controls.valveControls->ValveIsOpen(i);
+	}
 
+	state.EVs[0] = controls.valveControls->EV1IsActive();
+	state.EVs[1] = controls.valveControls->EV2IsActive();
+	state.pumps[0] = controls.valveControls->PumpIsActive();
+
+	return state;
+}
 
 
 //--------------------------------------------------------------------

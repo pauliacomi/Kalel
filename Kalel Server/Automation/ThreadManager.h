@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CommonControls.h"
+#include "../../Kalel Shared/Com Classes/ControlInstrumentState.h"
 
 #include <thread>
 
@@ -44,7 +45,7 @@ public:
 
 	unsigned ThreadManualAction(int instrumentType, int instrumentNumber, bool state);		// When a manual command is issued
 	void ManualAction(int instrumentType, int instrumentNumber, bool state);
-	
+	ControlInstrumentState GetInstrumentStates();
 
 	// Private functions
 private:

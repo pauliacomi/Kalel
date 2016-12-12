@@ -270,6 +270,9 @@
     <ClInclude Include="Backend\Wrapper Classes\ValveController.h">
       <Filter>Header Files\Backend\Wrapper Classes</Filter>
     </ClInclude>
+    <ClInclude Include="..\Kalel Shared\Com Classes\ControlInstrumentState.h">
+      <Filter>Header Files\Common\Com Classes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Kalel Server.cpp">
