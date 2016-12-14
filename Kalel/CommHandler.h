@@ -65,7 +65,7 @@ private:
 	std::string localShouldBeActivated;
 	std::shared_ptr<const MachineSettings> localMachineSettings;
 	std::shared_ptr<const ExperimentSettings> localExperimentSettings;
-	int localThreadCommand;
+	int localThreadCommand = 0;
 
 	// Debugging
 	int debug_success = 0;

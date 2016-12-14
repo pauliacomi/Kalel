@@ -344,7 +344,25 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 				!req->params_.at("number").empty() ||
 				!req->params_.at("active").empty())
 			{
-				threadManager.ThreadManualAction(To<int>(req->params_.at("type")), To<int>(req->params_.at("number")), To<bool>(req->params_.at("active")));
+				int instrumentType;
+				if(req->params_.at("type") == "valve"){
+					instrumentType = 1;
+				}
+				else if (req->params_.at("type") == "ev") {
+					instrumentType = 2;
+				} 
+				else if (req->params_.at("type") == "pump") {
+					instrumentType = 3;
+				} 
+				else {
+					instrumentType = To<int>(req->params_.at("type"));
+				}
+
+				auto instrumentNumber = To<int>(req->params_.at("number"));
+				auto instrumentState = To<bool>(req->params_.at("active"));
+			
+
+				threadManager.ThreadManualAction(instrumentType, instrumentNumber, instrumentState);
 				resp->status_ = http::responses::ok;
 			}
 			else

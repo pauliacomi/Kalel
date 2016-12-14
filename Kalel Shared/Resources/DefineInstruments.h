@@ -42,9 +42,9 @@
 
 // Controlled instruments
 
-#define INSTRUMENT_VALVE	1001
-#define INSTRUMENT_EV		1002
-#define INSTRUMENT_PUMP		1003
+#define INSTRUMENT_VALVE				1
+#define INSTRUMENT_EV					2
+#define INSTRUMENT_PUMP					3
 
 // Some other stuff
 #define PassageNul						0
