@@ -22,7 +22,6 @@
 #include "DefineMenuMessages.h"										// Definition of messages received from the menu
 
 #include "ExperimentPropertySheet.h"								// The dialog asking the user to input the experiment parameters
-#include "ListOfInstrumentButtons.h"								// The class containing a list of the instruments' buttons ID's
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -116,6 +115,7 @@ END_MESSAGE_MAP()
 
 CKalelView::CKalelView()
 	: CFormView(CKalelView::IDD)
+	, buttonStates(*this)
 
 	, experimentSettings{ new ExperimentSettings(INITIAL_ADSORPTION, INITIAL_DESORPTIONS) }
 	, machineSettings{ new MachineSettings() }
@@ -747,26 +747,8 @@ LRESULT CKalelView::OnThreadRequestButtonUpdate(WPARAM wParam, LPARAM lParam) {
 	// Cast the parameters object and take ownership
 	std::auto_ptr<ControlInstrumentState> maParam(reinterpret_cast<ControlInstrumentState*>(wParam));
 
-	// Create a new list object
-	ListOfInstrumentButtons list(maParam->instrumentType, maParam->instrumentNumber, maParam->shouldBeActivated);
-
-	CString message;
-
-	if (lParam) {
-		// Disable required button
-		GetDlgItem(list.GetButtonID())->EnableWindow(FALSE);
-
-		// Enable required button
-		GetDlgItem(list.GetOppositeButtonID())->EnableWindow(TRUE);
-
-		// Write message in the textbox
-		SetDlgItemText(list.GetTextboxID(), list.GetTextboxMessage());
-	}
-	else
-	{
-		CString * temp = new CString(list.GetTempTextboxMessage());
-		AffichageMessages(0, (LPARAM)temp);
-	}
+	// Update buttons
+	buttonStates.Update(*maParam);
 
 	// unlock the menu
 	pApp->menuIsAvailable = true;

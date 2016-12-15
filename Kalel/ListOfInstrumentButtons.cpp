@@ -19,9 +19,157 @@ const int idcPumpClose = IDC_DESACTIVER_POMPE;
 const int idcPumpTextBox = IDC_TEMOIN_POMPE;
 
 
-ListOfInstrumentButtons::ListOfInstrumentButtons(int instrumentType, int instrumentNumber, bool shouldBeActivated)
+ListOfInstrumentButtons::ListOfInstrumentButtons(CKalelView &h)
+	: handle{ h }
 {
-	CString eM, tbM, ttbM;
+}
+
+ListOfInstrumentButtons::~ListOfInstrumentButtons()
+{
+}
+
+void ListOfInstrumentButtons::StartCommand(int instrumentType, int instrumentNumber, bool shouldBeActivated)
+{
+	CString texboxText;
+
+	switch (instrumentType)
+	{
+	case INSTRUMENT_VALVE:
+	{
+		cTextboxID = idcValveTextBox[instrumentNumber - 1];
+
+		if (shouldBeActivated) {
+			cButtonID = idcValveOpen[instrumentNumber - 1];
+			cOppositeButtonID = idcValveClose[instrumentNumber - 1];
+			texboxText.Format(TEXT_OPENING);
+		}
+		else {
+			cButtonID = idcValveClose[instrumentNumber - 1];
+			cOppositeButtonID = idcValveOpen[instrumentNumber - 1];
+			texboxText.Format(TEXT_CLOSING);
+		}
+		break;
+	}
+
+	case INSTRUMENT_EV:
+	{
+		cTextboxID = idcEVTextBox[instrumentNumber - 1];
+
+		if (shouldBeActivated) {
+			cButtonID = idcEVOpen[instrumentNumber - 1];
+			cOppositeButtonID = idcEVClose[instrumentNumber - 1];
+			texboxText.Format(TEXT_OPENING);
+		}
+		else {
+			cButtonID = idcEVClose[instrumentNumber - 1];
+			cOppositeButtonID = idcEVOpen[instrumentNumber - 1];
+			texboxText.Format(TEXT_CLOSING);
+		}
+		break;
+	}
+
+	case INSTRUMENT_PUMP:
+	{
+		cTextboxID = idcPumpTextBox;
+
+		if (shouldBeActivated) {
+			cButtonID = idcPumpOpen;
+			cOppositeButtonID = idcPumpClose;
+			texboxText.Format(TEXT_ACTIVATING);
+		}
+		else {
+			cButtonID = idcPumpClose;
+			cOppositeButtonID = idcPumpOpen;
+			texboxText.Format(TEXT_DEACTIVATING);
+		}
+		break;
+	}
+
+	default:
+		break;
+	}
+
+	// Block the required buttons
+	handle.GetDlgItem(cButtonID)->EnableWindow(FALSE);
+	handle.GetDlgItem(cOppositeButtonID)->EnableWindow(FALSE);
+	
+	// Show that the action has started
+	handle.SetDlgItemText(cTextboxID, texboxText);
+}
+
+void ListOfInstrumentButtons::EndCommand(int instrumentType, int instrumentNumber, bool shouldBeActivated)
+{
+	CString texboxText;
+
+	switch (instrumentType)
+	{
+	case INSTRUMENT_VALVE:
+	{
+		cTextboxID = idcValveTextBox[instrumentNumber - 1];
+
+		if (shouldBeActivated) {
+			cButtonID = idcValveOpen[instrumentNumber - 1];
+			cOppositeButtonID = idcValveClose[instrumentNumber - 1];
+			texboxText.Format(TEXT_OPENED);
+		}
+		else {
+			cButtonID = idcValveClose[instrumentNumber - 1];
+			cOppositeButtonID = idcValveOpen[instrumentNumber - 1];
+			texboxText.Format(TEXT_CLOSED);
+		}
+		break;
+	}
+
+	case INSTRUMENT_EV:
+	{
+		cTextboxID = idcEVTextBox[instrumentNumber - 1];
+
+		if (shouldBeActivated) {
+			cButtonID = idcEVOpen[instrumentNumber - 1];
+			cOppositeButtonID = idcEVClose[instrumentNumber - 1];
+			texboxText.Format(TEXT_OPENED);
+		}
+		else {
+			cButtonID = idcEVClose[instrumentNumber - 1];
+			cOppositeButtonID = idcEVOpen[instrumentNumber - 1];
+			texboxText.Format(TEXT_CLOSED);
+		}
+		break;
+	}
+
+	case INSTRUMENT_PUMP:
+	{
+		cTextboxID = idcPumpTextBox;
+
+		if (shouldBeActivated) {
+			cButtonID = idcPumpOpen;
+			cOppositeButtonID = idcPumpClose;
+			texboxText.Format(TEXT_ACTIVATED);
+		}
+		else {
+			cButtonID = idcPumpClose;
+			cOppositeButtonID = idcPumpOpen;
+			texboxText.Format(TEXT_DEACTIVATED);
+		}
+		break;
+	}
+
+	default:
+		break;
+	}
+
+	// Block the required buttons
+	handle.GetDlgItem(cButtonID)->EnableWindow(FALSE);
+	handle.GetDlgItem(cOppositeButtonID)->EnableWindow(FALSE);
+
+	// Show that the action has started
+	handle.SetDlgItemText(cTextboxID, texboxText);
+}
+
+
+
+void ListOfInstrumentButtons::Update(const ControlInstrumentState& state)
+{
 
 	switch (instrumentType)
 	{
@@ -86,47 +234,27 @@ ListOfInstrumentButtons::ListOfInstrumentButtons(int instrumentType, int instrum
 		}
 		break;
 	}
-		
+
 	default:
 		break;
 	}
 
-	// Save strings in class
-	errorMessage = eM;
-	tempTextboxMessage = ttbM;
-	textboxMessage = tbM;
-}
 
-ListOfInstrumentButtons::~ListOfInstrumentButtons()
-{
-}
+	CString message;
 
+	if (lParam) {
+		// Disable required button
+		GetDlgItem(list.GetButtonID())->EnableWindow(FALSE);
 
-int ListOfInstrumentButtons::GetButtonID()
-{
-	return cButtonID;
-}
+		// Enable required button
+		GetDlgItem(list.GetOppositeButtonID())->EnableWindow(TRUE);
 
-int ListOfInstrumentButtons::GetOppositeButtonID()
-{
-	return cOppositeButtonID;
-}
-
-int ListOfInstrumentButtons::GetTextboxID()
-{
-	return cTextboxID;
-}
-CString ListOfInstrumentButtons::GetTextboxMessage()
-{
-	return textboxMessage;
-}
-
-CString ListOfInstrumentButtons::GetTempTextboxMessage()
-{
-	return tempTextboxMessage;
-}
-
-CString ListOfInstrumentButtons::GetErrorMessage()
-{
-	return errorMessage;
+		// Write message in the textbox
+		SetDlgItemText(list.GetTextboxID(), list.GetTextboxMessage());
+	}
+	else
+	{
+		CString * temp = new CString(list.GetTempTextboxMessage());
+		AffichageMessages(0, (LPARAM)temp);
+	}
 }

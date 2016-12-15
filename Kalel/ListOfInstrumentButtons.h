@@ -4,11 +4,14 @@
 #define LISTOFINTRUMENTBUTTONS_H
 #pragma once
 
+#include "../Kalel Shared/Com Classes/ControlInstrumentState.h"
+#include "KalelView.h"
+
 class ListOfInstrumentButtons
 {
 
 public:
-	ListOfInstrumentButtons(int instrumentType, int instrumentNumber, bool shouldBeActivated);
+	ListOfInstrumentButtons(CKalelView & h);
 	~ListOfInstrumentButtons();
 
 private:
@@ -19,13 +22,22 @@ private:
 	CString textboxMessage;
 	CString errorMessage;;
 
+
+	CKalelView & handle;
+
+	ControlInstrumentState localState;
+
+	std::vector<CString> valveText;
+	std::vector<CString> evText;
+	CString pumpText;
+
+
 public:
-	int GetButtonID();
-	int GetOppositeButtonID();
-	int GetTextboxID();
-	CString GetTextboxMessage();
-	CString GetTempTextboxMessage();
-	CString GetErrorMessage();
+
+	void StartCommand(int instrumentType, int instrumentNumber, bool shouldBeActivated);
+	void EndCommand(int instrumentType, int instrumentNumber, bool shouldBeActivated);
+	void Update(int instrumentType, int instrumentNumber, bool shouldBeActivated);
+	void Update(const ControlInstrumentState &state);
 };
 
 #endif // !LISTOFINTRUMENTS_H

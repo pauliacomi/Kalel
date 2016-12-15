@@ -4,12 +4,9 @@
 
 #include "stdafx.h"
 #include "Kalel.h"
-
-#include "KalelDoc.h"
 #include "KalelView.h"
 
 #include "../Kalel Shared/Resources/DefineInstruments.h"			// Definitions for instruments
-#include "ListOfInstrumentButtons.h"								// The class containing a list of the instruments' buttons ID's
 
 
 
@@ -18,14 +15,8 @@ void CKalelView::AskThreadForManualCommand(int instrumentType, int instrumentNum
 
 	if (pApp->serverConnected)
 	{
-		// Create a new list object
-		ListOfInstrumentButtons list(instrumentType, instrumentNumber, shouldBeActivated);
-
-		// Block the required button
-		GetDlgItem(list.GetButtonID())->EnableWindow(FALSE);
-
-		// Show that the action has started
-		SetDlgItemText(list.GetTextboxID(), list.GetTempTextboxMessage());
+		// Update buttons
+		buttonStates.Update(instrumentType, instrumentNumber, shouldBeActivated);
 
 		// lock the menu
 		pApp->menuIsAvailable = false;

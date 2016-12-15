@@ -14,6 +14,7 @@
 
 #include "Parametres.h"												// Parameters file read/write
 #include "CommHandler.h"											// Responsible for all communication to/from client
+#include "ListOfInstrumentButtons.h"
 
 
 // Forward declarations
@@ -60,16 +61,18 @@ protected:
 
 	// Classes and pointers
 private:
-	CKalelApp* pApp;				// pointer to the main app
-	CKalelDoc* m_mainDocument;		// pointer to the main document
-	Parameters savedParams;			// Class for saving the parameters file
-	CommHandler commHandler;		// Class dealing with all communication between frontend and backend
+	CKalelApp* pApp = nullptr;				// pointer to the main app
+	CKalelDoc* m_mainDocument = nullptr;	// pointer to the main document
+
+	Parameters savedParams;					// Class for saving the parameters file
+	CommHandler commHandler;				// Class dealing with all communication between frontend and backend
 
 	// Storage
 private:
+	ListOfInstrumentButtons buttonStates;						// The class which deals which keeps all the state of the buttons, for displaying them 
 	MeasurementsArray dataCollection;							// Measurement points for an experiment are stored here
 	std::wstring lastLog;
-	std::map<std::wstring, std::wstring> 	logCollection;			// Log points for an experiment are stored here
+	std::map<std::wstring, std::wstring> 	logCollection;		// Log points for an experiment are stored here
 	std::shared_ptr<MachineSettings>	machineSettings;		// Pointer to a machineSettings object
 	std::shared_ptr<MachineSettings>	tempSettings;			// Temporary machineSettings stored here between sending change request to server and server acknowledgement
 	std::shared_ptr<ExperimentSettings> experimentSettings;		// Local storage of experimentSettings
@@ -114,8 +117,8 @@ private:
 	//*************************************************************************************************************************
 
 private:
-	UINT_PTR graphTimer;
-	UINT_PTR refrashTimer;
+	UINT_PTR graphTimer = 0;
+	UINT_PTR refrashTimer = 0;
 	void OnTimer(UINT_PTR nIDEvent);	//timer for window update
 	void GetExperimentData(ExperimentPropertySheet * dialogExperimentProperties, bool initialRequest);
 
