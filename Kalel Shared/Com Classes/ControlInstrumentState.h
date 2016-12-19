@@ -8,6 +8,13 @@
 #define no_EVs		2
 #define no_pumps	1
 
+struct ControlInstrumentStateData
+{
+	int instrumentType;
+	int instrumentNumber;
+	bool instrumentState;
+};
+
 class ControlInstrumentState {
 
 public:

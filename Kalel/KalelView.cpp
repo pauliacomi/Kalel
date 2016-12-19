@@ -54,7 +54,8 @@ BEGIN_MESSAGE_MAP(CKalelView, CFormView)
 	ON_MESSAGE(UWM_GOT_MACHINE_SETTINGS, &CKalelView::OnGetMachineSettings)					// Callback to notify of received MachineSettings
 	ON_MESSAGE(UWM_EXCHANGEDATA, &CKalelView::OnExchangeData)								// Callback to notify of incoming ExperimentData array
 	ON_MESSAGE(UWM_EXCHANGELOGS, &CKalelView::OnExchangeLogs)
-	ON_MESSAGE(UWM_EXCHANGESTATE, &CKalelView::OnThreadRequestButtonUpdate)					// Calls to update a specific button pair and associated display on a manual message
+	ON_MESSAGE(UWM_EXCHANGESTATE, &CKalelView::OnThreadRequestButtonUpdate)					// Calls to update all button pairs and associated display on a manual message
+	ON_MESSAGE(UWM_EXCHANGESTATESPECIFIC, &CKalelView::OnInstrumentButtonConfirmed)			// Calls to update a specific button pair and associated display on a manual message
 	ON_MESSAGE(UWM_THREADFINISHEDREG, &CKalelView::OnAutoExperimentFinished)				// Calls when manual functionality ends
 	ON_MESSAGE(UWM_DISPLAYMESSAGE, &CKalelView::AffichageMessages)							// Callback to display a message from the automation thread
 	ON_MESSAGE(UWM_DISPLAYMESSAGEBOX, &CKalelView::MessageBoxAlert)							// Displays an messageBox to alert user of something
@@ -740,7 +741,6 @@ LRESULT CKalelView::CancelBeforeStarting(WPARAM, LPARAM)
 	return 0;
 }
 
-
 // Single function to update UI when receiving the command that the thread posted before finishing
 LRESULT CKalelView::OnThreadRequestButtonUpdate(WPARAM wParam, LPARAM lParam) {
 
@@ -749,6 +749,21 @@ LRESULT CKalelView::OnThreadRequestButtonUpdate(WPARAM wParam, LPARAM lParam) {
 
 	// Update buttons
 	buttonStates.Update(*maParam);
+
+	// unlock the menu
+	pApp->menuIsAvailable = true;
+
+	return 0;
+}
+
+// Single function to update UI when receiving the command that the thread posted before finishing
+LRESULT CKalelView::OnInstrumentButtonConfirmed(WPARAM wParam, LPARAM lParam) {
+
+	// Cast the parameters object and take ownership
+	std::auto_ptr<ControlInstrumentStateData> maParam(reinterpret_cast<ControlInstrumentStateData*>(wParam));
+
+	// Update buttons
+	buttonStates.EndCommand(*maParam);
 
 	// unlock the menu
 	pApp->menuIsAvailable = true;

@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "ListOfInstrumentButtons.h"
 
+#include "KalelView.h"
+
 #include "resource.h"											// For the MFC button id's
 #include "../Kalel Shared/Resources/DefineInstruments.h"		// For the instrument definitions
 #include "../Kalel Shared/Resources/StringTable.h"				// For the error message definitions
@@ -97,24 +99,26 @@ void ListOfInstrumentButtons::StartCommand(int instrumentType, int instrumentNum
 	handle.SetDlgItemText(cTextboxID, texboxText);
 }
 
-void ListOfInstrumentButtons::EndCommand(int instrumentType, int instrumentNumber, bool shouldBeActivated)
+void ListOfInstrumentButtons::EndCommand(ControlInstrumentStateData data)
 {
 	CString texboxText;
 
-	switch (instrumentType)
+	switch (data.instrumentType)
 	{
 	case INSTRUMENT_VALVE:
 	{
-		cTextboxID = idcValveTextBox[instrumentNumber - 1];
+		localState.valves[data.instrumentNumber - 1] = data.instrumentState;
 
-		if (shouldBeActivated) {
-			cButtonID = idcValveOpen[instrumentNumber - 1];
-			cOppositeButtonID = idcValveClose[instrumentNumber - 1];
+		cTextboxID = idcValveTextBox[data.instrumentNumber - 1];
+
+		if (data.instrumentState) {
+			cButtonID = idcValveOpen[data.instrumentNumber - 1];
+			cOppositeButtonID = idcValveClose[data.instrumentNumber - 1];
 			texboxText.Format(TEXT_OPENED);
 		}
 		else {
-			cButtonID = idcValveClose[instrumentNumber - 1];
-			cOppositeButtonID = idcValveOpen[instrumentNumber - 1];
+			cButtonID = idcValveClose[data.instrumentNumber - 1];
+			cOppositeButtonID = idcValveOpen[data.instrumentNumber - 1];
 			texboxText.Format(TEXT_CLOSED);
 		}
 		break;
@@ -122,16 +126,18 @@ void ListOfInstrumentButtons::EndCommand(int instrumentType, int instrumentNumbe
 
 	case INSTRUMENT_EV:
 	{
-		cTextboxID = idcEVTextBox[instrumentNumber - 1];
+		localState.EVs[data.instrumentNumber - 1] = data.instrumentState;
 
-		if (shouldBeActivated) {
-			cButtonID = idcEVOpen[instrumentNumber - 1];
-			cOppositeButtonID = idcEVClose[instrumentNumber - 1];
+		cTextboxID = idcEVTextBox[data.instrumentNumber - 1];
+
+		if (data.instrumentState) {
+			cButtonID = idcEVOpen[data.instrumentNumber - 1];
+			cOppositeButtonID = idcEVClose[data.instrumentNumber - 1];
 			texboxText.Format(TEXT_OPENED);
 		}
 		else {
-			cButtonID = idcEVClose[instrumentNumber - 1];
-			cOppositeButtonID = idcEVOpen[instrumentNumber - 1];
+			cButtonID = idcEVClose[data.instrumentNumber - 1];
+			cOppositeButtonID = idcEVOpen[data.instrumentNumber - 1];
 			texboxText.Format(TEXT_CLOSED);
 		}
 		break;
@@ -139,9 +145,11 @@ void ListOfInstrumentButtons::EndCommand(int instrumentType, int instrumentNumbe
 
 	case INSTRUMENT_PUMP:
 	{
+		localState.pumps[data.instrumentNumber - 1] = data.instrumentState;
+
 		cTextboxID = idcPumpTextBox;
 
-		if (shouldBeActivated) {
+		if (data.instrumentState) {
 			cButtonID = idcPumpOpen;
 			cOppositeButtonID = idcPumpClose;
 			texboxText.Format(TEXT_ACTIVATED);
@@ -160,7 +168,7 @@ void ListOfInstrumentButtons::EndCommand(int instrumentType, int instrumentNumbe
 
 	// Block the required buttons
 	handle.GetDlgItem(cButtonID)->EnableWindow(FALSE);
-	handle.GetDlgItem(cOppositeButtonID)->EnableWindow(FALSE);
+	handle.GetDlgItem(cOppositeButtonID)->EnableWindow(TRUE);
 
 	// Show that the action has started
 	handle.SetDlgItemText(cTextboxID, texboxText);
@@ -170,91 +178,71 @@ void ListOfInstrumentButtons::EndCommand(int instrumentType, int instrumentNumbe
 
 void ListOfInstrumentButtons::Update(const ControlInstrumentState& state)
 {
+	CString texboxText;
 
-	switch (instrumentType)
+	for (auto i = 0; i < state.valves.size(); i++)
 	{
-	case INSTRUMENT_VALVE:
-	{
-		cTextboxID = idcValveTextBox[instrumentNumber - 1];
-		if (shouldBeActivated) {
-			cButtonID = idcValveOpen[instrumentNumber - 1];
-			cOppositeButtonID = idcValveClose[instrumentNumber - 1];
-			eM.Format(ERROR_OPENVALVE, instrumentNumber);
-			ttbM.Format(TEXT_OPENING);
-			tbM.Format(TEXT_OPENED);
+		if(localState.valves[i] != state.valves[i])
+		{
+			// Save the state
+			localState.valves[i] = state.valves[i];
+
+			// Do the GUI changes
+			if (state.valves[i])
+			{
+				texboxText.Format(TEXT_OPENED);
+			}
+			else
+			{
+				texboxText.Format(TEXT_CLOSED);
+			}
+			handle.GetDlgItem(idcValveOpen[i])->EnableWindow(state.valves[i]);
+			handle.GetDlgItem(idcValveClose[i])->EnableWindow(state.valves[i]);
+			handle.SetDlgItemText(idcValveTextBox[i], texboxText);
 		}
-		else {
-			cButtonID = idcValveClose[instrumentNumber - 1];
-			cOppositeButtonID = idcValveOpen[instrumentNumber - 1];
-			eM.Format(ERROR_CLOSEVALVE, instrumentNumber);
-			ttbM.Format(TEXT_CLOSING);
-			tbM.Format(TEXT_CLOSED);
-		}
-		break;
 	}
 
-	case INSTRUMENT_EV:
+	for (auto i = 0; i < state.EVs.size(); i++)
 	{
-		cTextboxID = idcEVTextBox[instrumentNumber - 1];
+		if (localState.EVs[i] != state.EVs[i])
+		{
+			// Save the state
+			localState.EVs[i] = state.EVs[i];
 
-		if (shouldBeActivated) {
-			cButtonID = idcEVOpen[instrumentNumber - 1];
-			cOppositeButtonID = idcEVClose[instrumentNumber - 1];
-			eM.Format(ERROR_OPENEV, instrumentNumber);
-			ttbM.Format(TEXT_OPENING);
-			tbM.Format(TEXT_OPENED);
+			// Do the GUI changes
+			if (state.EVs[i])
+			{
+				texboxText.Format(TEXT_OPENED);
+			}
+			else
+			{
+				texboxText.Format(TEXT_CLOSED);
+			}
+			handle.GetDlgItem(idcEVOpen[i])->EnableWindow(state.EVs[i]);
+			handle.GetDlgItem(idcEVClose[i])->EnableWindow(state.EVs[i]);
+			handle.SetDlgItemText(idcEVTextBox[i], texboxText);
 		}
-		else {
-			cButtonID = idcEVClose[instrumentNumber - 1];
-			cOppositeButtonID = idcEVOpen[instrumentNumber - 1];
-			eM.Format(ERROR_OPENEV, instrumentNumber);
-			ttbM.Format(TEXT_CLOSING);
-			tbM.Format(TEXT_CLOSED);
-		}
-		break;
 	}
 
-	case INSTRUMENT_PUMP:
+	for (auto i = 0; i < state.pumps.size(); i++)
 	{
-		cTextboxID = idcPumpTextBox;
+		if (localState.pumps[i] != state.pumps[i])
+		{
+			// Save the state
+			localState.pumps[i] = state.pumps[i];
 
-		if (shouldBeActivated) {
-			cButtonID = idcPumpOpen;
-			cOppositeButtonID = idcPumpClose;
-			eM.Format(ERROR_ACTIVATEPUMP, instrumentNumber);
-			ttbM.Format(TEXT_ACTIVATING);
-			tbM.Format(TEXT_ACTIVATED);
+			// Do the GUI changes
+			if (state.pumps[i])
+			{
+				texboxText.Format(TEXT_ACTIVATED);
+			}
+			else
+			{
+				texboxText.Format(TEXT_DEACTIVATED);
+			}
+			handle.GetDlgItem(idcPumpOpen)->EnableWindow(state.pumps[i]);
+			handle.GetDlgItem(idcPumpClose)->EnableWindow(state.pumps[i]);
+			handle.SetDlgItemText(idcPumpTextBox, texboxText);
 		}
-		else {
-			cButtonID = idcPumpClose;
-			cOppositeButtonID = idcPumpOpen;
-			eM.Format(ERROR_DEACTIVATEPUMP, instrumentNumber);
-			ttbM.Format(TEXT_DEACTIVATING);
-			tbM.Format(TEXT_DEACTIVATED);
-		}
-		break;
-	}
-
-	default:
-		break;
-	}
-
-
-	CString message;
-
-	if (lParam) {
-		// Disable required button
-		GetDlgItem(list.GetButtonID())->EnableWindow(FALSE);
-
-		// Enable required button
-		GetDlgItem(list.GetOppositeButtonID())->EnableWindow(TRUE);
-
-		// Write message in the textbox
-		SetDlgItemText(list.GetTextboxID(), list.GetTextboxMessage());
-	}
-	else
-	{
-		CString * temp = new CString(list.GetTempTextboxMessage());
-		AffichageMessages(0, (LPARAM)temp);
 	}
 }

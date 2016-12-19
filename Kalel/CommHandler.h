@@ -63,6 +63,8 @@ private:
 	std::string localInstrumentType;
 	std::string localInstrumentNumber;
 	std::string localShouldBeActivated;
+	ControlInstrumentStateData localInstrumentState;
+
 	std::shared_ptr<const MachineSettings> localMachineSettings;
 	std::shared_ptr<const ExperimentSettings> localExperimentSettings;
 	int localThreadCommand = 0;
@@ -76,25 +78,37 @@ private:
 	**********************************************************************************************************************************/
 	unsigned Handshake_req(http_request* r);
 	unsigned Handshake_resp(http_response * r);
+	
+	// Machine settings setting
 	unsigned GetMachineSettings_req(http_request * r);
 	unsigned GetMachineSettings_resp(http_response * r);
+
+	// Machine settings getting
 	unsigned SetMachineSettings_req(http_request * r);
 	unsigned SetMachineSettings_resp(http_response * r);
+
+	// Data sync
 	unsigned GetData_req(http_request * r);
 	unsigned GetData_resp(http_response * r);
+
+	// Logs sync
 	unsigned GetLogs_req(http_request * r);
 	unsigned GetLogs_resp(http_response * r);
+	
+	// Experiment Settings Setting
 	unsigned SetExperimentSettings_req(http_request * r);
 	unsigned SetExperimentSettings_resp(http_response * r);
+
 	unsigned ThreadCommand_req(http_request * r);
 	unsigned ThreadCommand_resp(http_response * r);
+	
 	unsigned InstrumentCommand_req(http_request * r);
 	unsigned InstrumentCommand_resp(http_response * r);
 
 	// Control istrument state sync
-	unsigned InstrumentState_req(http_request * r);
-	unsigned InstrumentState_resp(http_response * r);
-
+	unsigned GetInstrumentState_req(http_request * r);
+	unsigned GetInstrumentState_resp(http_response * r);
+	
 	// Debugging
 	unsigned TestConn_req(http_request * r);
 	unsigned TestConn_resp(http_response * r);

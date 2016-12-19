@@ -181,7 +181,7 @@ private:
 private:
 	void AskThreadForManualCommand(int instrument, int i, bool askToActivate);
 	LRESULT OnThreadRequestButtonUpdate(WPARAM wParam, LPARAM lParam);
-
+	LRESULT OnInstrumentButtonConfirmed(WPARAM wParam, LPARAM lParam);
 	void OnBnClickedOuvrir1();
 	void OnBnClickedOuvrir2();
 	void OnBnClickedOuvrir3();

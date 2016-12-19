@@ -16,7 +16,7 @@ void CKalelView::AskThreadForManualCommand(int instrumentType, int instrumentNum
 	if (pApp->serverConnected)
 	{
 		// Update buttons
-		buttonStates.Update(instrumentType, instrumentNumber, shouldBeActivated);
+		buttonStates.StartCommand(instrumentType, instrumentNumber, shouldBeActivated);
 
 		// lock the menu
 		pApp->menuIsAvailable = false;

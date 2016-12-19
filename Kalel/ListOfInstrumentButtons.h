@@ -5,7 +5,8 @@
 #pragma once
 
 #include "../Kalel Shared/Com Classes/ControlInstrumentState.h"
-#include "KalelView.h"
+
+class CKalelView;
 
 class ListOfInstrumentButtons
 {
@@ -15,10 +16,10 @@ public:
 	~ListOfInstrumentButtons();
 
 private:
-	int cButtonID;								// Id of open button
-	int cOppositeButtonID;						// Id of close button
-	int cTextboxID;								// Id of associated textbox
-	CString tempTextboxMessage;					// String of the textbox
+	int cButtonID = 0;								// Id of open button
+	int cOppositeButtonID = 0;						// Id of close button
+	int cTextboxID = 0;								// Id of associated textbox
+	CString tempTextboxMessage;						// String of the textbox
 	CString textboxMessage;
 	CString errorMessage;;
 
@@ -35,9 +36,9 @@ private:
 public:
 
 	void StartCommand(int instrumentType, int instrumentNumber, bool shouldBeActivated);
-	void EndCommand(int instrumentType, int instrumentNumber, bool shouldBeActivated);
-	void Update(int instrumentType, int instrumentNumber, bool shouldBeActivated);
+	void EndCommand(ControlInstrumentStateData data);
 	void Update(const ControlInstrumentState &state);
+	void Update(int instrumentType, int instrumentNumber, bool shouldBeActivated);
 };
 
 #endif // !LISTOFINTRUMENTS_H

@@ -270,9 +270,6 @@
     <ClInclude Include="..\Kalel Shared\Com Classes\ExperimentHelperClasses.h">
       <Filter>Header Files\Commmon\Com Classes</Filter>
     </ClInclude>
-    <ClInclude Include="..\Kalel Shared\Com Classes\ManualActionParam.h">
-      <Filter>Header Files\Commmon\Com Classes</Filter>
-    </ClInclude>
     <ClInclude Include="CommHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -450,9 +447,6 @@
       <Filter>Source Files\Commmon\Com Classes</Filter>
     </ClCompile>
     <ClCompile Include="..\Kalel Shared\Com Classes\ExperimentHelperClasses.cpp">
-      <Filter>Source Files\Commmon\Com Classes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Kalel Shared\Com Classes\ManualActionParam.cpp">
       <Filter>Source Files\Commmon\Com Classes</Filter>
     </ClCompile>
     <ClCompile Include="CommHandler.cpp">

@@ -35,6 +35,8 @@
 #define UWM_EXCHANGEDATA							(WM_USER + 27)
 #define UWM_EXCHANGELOGS							(WM_USER + 28)
 #define UWM_EXCHANGESTATE							(WM_USER + 29)
+#define UWM_EXCHANGESTATESPECIFIC					(WM_USER + 30)
+
 #define UWM_SYNCED									(WM_USER + 42)
 
 #define UWM_CANCELEXPERIMENT						(WM_USER + 24)

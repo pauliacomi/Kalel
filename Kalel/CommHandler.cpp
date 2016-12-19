@@ -144,8 +144,8 @@ void CommHandler::GetLog(std::wstring fromTime)
 
 void CommHandler::GetControlInstrumentState()
 {
-	auto request = std::bind(&CommHandler::InstrumentState_req, this, std::placeholders::_1);
-	auto callback = std::bind(&CommHandler::InstrumentState_resp, this, std::placeholders::_1);
+	auto request = std::bind(&CommHandler::GetInstrumentState_req, this, std::placeholders::_1);
+	auto callback = std::bind(&CommHandler::GetInstrumentState_resp, this, std::placeholders::_1);
 
 	try {
 		client.Request(request, callback, localAddress);
@@ -173,6 +173,10 @@ void CommHandler::SetExperimentSettings(std::shared_ptr<const ExperimentSettings
 
 void CommHandler::ManualCommand(int instrumentType, int instrumentNumber, bool shouldBeActivated)
 {
+	localInstrumentState.instrumentType = instrumentType;
+	localInstrumentState.instrumentNumber = instrumentNumber;
+	localInstrumentState.instrumentState = shouldBeActivated;
+
 	switch (instrumentType)
 	{
 	case INSTRUMENT_VALVE:
@@ -193,8 +197,8 @@ void CommHandler::ManualCommand(int instrumentType, int instrumentNumber, bool s
 	localInstrumentNumber = instrumentNumber;
 	localShouldBeActivated = shouldBeActivated;
 	
-	auto request = std::bind(&CommHandler::GetLogs_req, this, std::placeholders::_1);
-	auto callback = std::bind(&CommHandler::GetLogs_resp, this, std::placeholders::_1);
+	auto request = std::bind(&CommHandler::InstrumentCommand_req, this, std::placeholders::_1);
+	auto callback = std::bind(&CommHandler::InstrumentCommand_resp, this, std::placeholders::_1);
 
 	try {
 		client.Request(request, callback, localAddress);
@@ -671,31 +675,7 @@ unsigned CommHandler::InstrumentCommand_resp(http_response * r)
 {
 	if (r->status_ == http::responses::ok)
 	{
-		json j;
-
-		try
-		{
-			j = json::parse(r->answer_);
-		}
-		catch (const std::exception& e)
-		{
-			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, UnicodeConv::s2ws(e.what()));
-			return 1;
-		}
-
-		ControlInstrumentState instrumentState;
-
-		try
-		{
-			serialization::deserializeJSONtoControlInstrumentState(j, instrumentState);
-		}
-		catch (const std::exception& e)
-		{
-			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, UnicodeConv::s2ws(e.what()));
-			return 1;
-		}
-
-		messageHandler.ExchangeControlState(instrumentState);
+		messageHandler.ExchangeControlStateSpecific(localInstrumentState);
 
 		return 1;
 	}
@@ -720,7 +700,7 @@ unsigned CommHandler::InstrumentCommand_resp(http_response * r)
 /*********************************
 // Control istrument state sync
 *********************************/
-unsigned CommHandler::InstrumentState_req(http_request * r)
+unsigned CommHandler::GetInstrumentState_req(http_request * r)
 {
 	r->method_ = http::method::get;
 	r->path_ = "/api/instrument";
@@ -728,7 +708,7 @@ unsigned CommHandler::InstrumentState_req(http_request * r)
 	return 0;
 }
 
-unsigned CommHandler::InstrumentState_resp(http_response * r)
+unsigned CommHandler::GetInstrumentState_resp(http_response * r)
 {
 	if (r->status_ == http::responses::ok)
 	{

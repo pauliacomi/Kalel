@@ -93,6 +93,20 @@ bool MFCMessageHandler::ExchangeControlState(const ControlInstrumentState &pPara
 	return true;
 }
 
+bool MFCMessageHandler::ExchangeControlStateSpecific(const ControlInstrumentStateData &pParam)
+{
+	// Create a new instance of the storage class and equate it to the local class
+	ControlInstrumentStateData * newData = new ControlInstrumentStateData(pParam);
+
+	// Post the required message, now the main thread is responsible for deleting the new class
+	if (::PostMessage(windowHandle, UWM_EXCHANGESTATESPECIFIC, NULL, (LPARAM)newData) == 0)
+	{
+		delete newData;
+		return false;
+	}
+	return true;
+}
+
 bool MFCMessageHandler::DisplayMessage(int pParam, int pInt1, int pInt2, double pDouble)
 {
 	// Create a new pointer 
