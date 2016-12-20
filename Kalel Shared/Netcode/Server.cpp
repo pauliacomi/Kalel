@@ -234,6 +234,10 @@ unsigned Server::Process(std::unique_ptr<Socket> sock)
 		}
 		else if (line.substr(0, http::header::content_length.size()) == http::header::content_length) {
 			request.content_length_ = line.substr(http::header::content_length.size());
+			if (request.content_length_ == "0")
+			{
+				continue;
+			}
 			messageToReceive = true;
 		}
 	}
