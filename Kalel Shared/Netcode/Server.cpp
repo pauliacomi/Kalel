@@ -54,11 +54,15 @@ void Server::SetLogs(std::vector<std::string> & vct, std::mutex & mtx)
 }
 
 
-
-void Server::Accept(std::function<void(http_request*, http_response*)> r)
+void Server::AddMethod(std::function<void(http_request*, http_response*)> r, std::string url)
 {
-	proc_func_ = r;
+	funcMap.emplace(std::make_pair(url, r));
+}
 
+
+
+void Server::Start()
+{
 	if (accepting == false)
 	{
 		accepting = true;
@@ -255,7 +259,7 @@ unsigned Server::Process(std::unique_ptr<Socket> sock)
 
 	http_response response;
 	try {
-		proc_func_(&request, &response);
+		funcMap[request.path_](&request, &response);
 	}
 	catch (const std::exception& e){
 

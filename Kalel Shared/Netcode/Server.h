@@ -12,6 +12,7 @@
 #include <thread>
 #include <mutex>
 #include <functional>
+#include <unordered_map>
 
 class Server
 {
@@ -21,8 +22,8 @@ public:
 	~Server();
 
 	void SetLogs(std::vector<std::string>& vct, std::mutex & mtx);
-
-	void Accept(std::function<void(http_request*, http_response*)> r);
+	void AddMethod(std::function<void(http_request*, http_response*)> r, std::string url);
+	void Start();
 
 protected:
 	Socket listeningSocket;
@@ -31,7 +32,8 @@ protected:
 	unsigned AcceptLoop();								// Function started as a thread to listen to incoming connections
 	unsigned Process(std::unique_ptr<Socket> sock);		// Function started when a socket connects
 	std::thread acceptThread;
-	std::function<void(http_request*, http_response*)> proc_func_;
+
+	std::unordered_map<std::string, std::function<void(http_request*, http_response*)>> funcMap;
 };
 
 #endif
