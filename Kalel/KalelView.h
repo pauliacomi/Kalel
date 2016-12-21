@@ -136,9 +136,12 @@ private:
 
 	// Thread callbacks
 
-	LRESULT OnServerConnected(WPARAM wParam, LPARAM lParam);
-	LRESULT OnGetMachineSettings(WPARAM wParam, LPARAM lParam);
-	LRESULT OnSetMachineSettings(WPARAM wParam, LPARAM lParam);
+	LRESULT OnServerConnected(WPARAM , LPARAM );
+	LRESULT OnSync(WPARAM , LPARAM );
+	LRESULT OnExchangeMachineSettings(WPARAM wParam, LPARAM incomingMachineSettings);
+	LRESULT OnExchangeExperimentSettings(WPARAM wParam, LPARAM incomingExperimentSettings);
+	LRESULT OnExchangeInstrumentState(WPARAM wParam, LPARAM lParam);
+	LRESULT OnInstrumentButtonConfirmed(WPARAM wParam, LPARAM lParam);
 	LRESULT OnExchangeData(WPARAM, LPARAM incomingExperimentData);
 	LRESULT OnExchangeLogs(WPARAM, LPARAM incomingLogs);
 	LRESULT OnAutoExperimentFinished(WPARAM wParam, LPARAM);
@@ -180,8 +183,6 @@ private:
 
 private:
 	void AskThreadForManualCommand(int instrument, int i, bool askToActivate);
-	LRESULT OnThreadRequestButtonUpdate(WPARAM wParam, LPARAM lParam);
-	LRESULT OnInstrumentButtonConfirmed(WPARAM wParam, LPARAM lParam);
 	void OnBnClickedOuvrir1();
 	void OnBnClickedOuvrir2();
 	void OnBnClickedOuvrir3();

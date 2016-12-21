@@ -40,7 +40,7 @@ BEGIN_MESSAGE_MAP(CKalelView, CFormView)
 	// Custom messages
 	//************************************
 
-	// Server requests
+	// Server requests from other views
 	ON_MESSAGE(UWM_FUNC_VACUUM_SAMPLE, &CKalelView::OnMsvAmpoule)							// Request sample under vacuum
 	ON_MESSAGE(UWM_FUNC_VACUUM_BOTTLE, &CKalelView::OnMsvBouteille)							// Request bottle under vacuum
 	ON_MESSAGE(UWM_FUNC_CHANGE_BOTTLE, &CKalelView::OnChangementBouteille)					// Request bottle change procedure
@@ -48,14 +48,15 @@ BEGIN_MESSAGE_MAP(CKalelView, CFormView)
 	ON_MESSAGE(UWM_THREAD_STOP, &CKalelView::BackgroundThreadStop)							// Request thread stop
 	ON_MESSAGE(UWM_THREAD_RESTART, &CKalelView::BackgroundThreadRestart)					// Request thread restart
 
-	// Server callbacks:
+	// Server callbacks
 	ON_MESSAGE(UWM_SIGNAL_SERVER_CONNECTED, &CKalelView::OnServerConnected)					// Callback to notify of successful server connection
-	ON_MESSAGE(UWM_SYNCED, &CKalelView::OnSetMachineSettings)												// Modifies the global ??????????????
-	ON_MESSAGE(UWM_EXCHANGE_MACHINESETTINGS, &CKalelView::OnGetMachineSettings)				// Callback to notify of received MachineSettings
-	ON_MESSAGE(UWM_EXCHANGEDATA, &CKalelView::OnExchangeData)								// Callback to notify of incoming ExperimentData array
-	ON_MESSAGE(UWM_EXCHANGELOGS, &CKalelView::OnExchangeLogs)
-	ON_MESSAGE(UWM_EXCHANGESTATE, &CKalelView::OnThreadRequestButtonUpdate)					// Calls to update all button pairs and associated display on a manual message
+	ON_MESSAGE(UWM_SYNCED, &CKalelView::OnSync)												// Callback on initial instrument sync
+	ON_MESSAGE(UWM_EXCHANGE_MACHINESETTINGS, &CKalelView::OnExchangeMachineSettings)		// Callback to notify of received MachineSettings
+	ON_MESSAGE(UWM_EXCHANGESTATE, &CKalelView::OnExchangeInstrumentState)					// Calls to update all button pairs and associated display on a manual message
 	ON_MESSAGE(UWM_EXCHANGESTATESPECIFIC, &CKalelView::OnInstrumentButtonConfirmed)			// Calls to update a specific button pair and associated display on a manual message
+	ON_MESSAGE(UWM_EXCHANGE_EXPERIMENTSETTINGS, &CKalelView::OnExchangeExperimentSettings)	// Callback to notify of received ExperimetnSettings
+	ON_MESSAGE(UWM_EXCHANGEDATA, &CKalelView::OnExchangeData)								// Callback to notify of incoming ExperimentData array
+	ON_MESSAGE(UWM_EXCHANGELOGS, &CKalelView::OnExchangeLogs)								// Callback to notify of incoming ExperimentData array
 	ON_MESSAGE(UWM_THREADFINISHEDREG, &CKalelView::OnAutoExperimentFinished)				// Calls when manual functionality ends
 	ON_MESSAGE(UWM_DISPLAYMESSAGE, &CKalelView::AffichageMessages)							// Callback to display a message from the automation thread
 	ON_MESSAGE(UWM_DISPLAYMESSAGEBOX, &CKalelView::MessageBoxAlert)							// Displays an messageBox to alert user of something
@@ -656,7 +657,18 @@ LRESULT CKalelView::OnServerConnected(WPARAM, LPARAM)
 	return 0;
 }
 
-LRESULT CKalelView::OnGetMachineSettings(WPARAM, LPARAM incomingMachineSettings)
+LRESULT CKalelView::OnSync(WPARAM, LPARAM)
+{
+	if (machineSettings->synced != true) {
+		machineSettings = tempSettings;
+		tempSettings.reset();
+		machineSettings->synced = true;
+	}
+
+	return 0;
+}
+
+LRESULT CKalelView::OnExchangeMachineSettings(WPARAM, LPARAM incomingMachineSettings)
 {
 	// Get the incoming pointer
 	machineSettings.reset(reinterpret_cast<MachineSettings*>(incomingMachineSettings));
@@ -664,13 +676,40 @@ LRESULT CKalelView::OnGetMachineSettings(WPARAM, LPARAM incomingMachineSettings)
 	return 0;
 }
 
-LRESULT CKalelView::OnSetMachineSettings(WPARAM, LPARAM)
+LRESULT CKalelView::OnExchangeExperimentSettings(WPARAM wParam, LPARAM incomingExperimentSettings)
 {
-	if (machineSettings->synced != true) {
-		machineSettings = tempSettings;
-		tempSettings.reset();
-		machineSettings->synced = true;
-	}
+	// Get the incoming pointer
+	experimentSettings.reset(reinterpret_cast<ExperimentSettings*>(incomingExperimentSettings));
+
+	return 0;
+}
+
+// Single function to update UI when receiving the command that the thread posted before finishing
+LRESULT CKalelView::OnExchangeInstrumentState(WPARAM wParam, LPARAM lParam) {
+
+	// Cast the parameters object and take ownership
+	std::auto_ptr<ControlInstrumentState> maParam(reinterpret_cast<ControlInstrumentState*>(wParam));
+
+	// Update buttons
+	buttonStates.Update(*maParam);
+
+	// unlock the menu
+	pApp->menuIsAvailable = true;
+
+	return 0;
+}
+
+// Single function to update UI when receiving the command that the thread posted before finishing
+LRESULT CKalelView::OnInstrumentButtonConfirmed(WPARAM wParam, LPARAM lParam) {
+
+	// Cast the parameters object and take ownership
+	std::auto_ptr<ControlInstrumentStateData> maParam(reinterpret_cast<ControlInstrumentStateData*>(wParam));
+
+	// Update buttons
+	buttonStates.EndCommand(*maParam);
+
+	// unlock the menu
+	pApp->menuIsAvailable = true;
 
 	return 0;
 }
@@ -740,37 +779,6 @@ LRESULT CKalelView::CancelBeforeStarting(WPARAM, LPARAM)
 
 	return 0;
 }
-
-// Single function to update UI when receiving the command that the thread posted before finishing
-LRESULT CKalelView::OnThreadRequestButtonUpdate(WPARAM wParam, LPARAM lParam) {
-
-	// Cast the parameters object and take ownership
-	std::auto_ptr<ControlInstrumentState> maParam(reinterpret_cast<ControlInstrumentState*>(wParam));
-
-	// Update buttons
-	buttonStates.Update(*maParam);
-
-	// unlock the menu
-	pApp->menuIsAvailable = true;
-
-	return 0;
-}
-
-// Single function to update UI when receiving the command that the thread posted before finishing
-LRESULT CKalelView::OnInstrumentButtonConfirmed(WPARAM wParam, LPARAM lParam) {
-
-	// Cast the parameters object and take ownership
-	std::auto_ptr<ControlInstrumentStateData> maParam(reinterpret_cast<ControlInstrumentStateData*>(wParam));
-
-	// Update buttons
-	buttonStates.EndCommand(*maParam);
-
-	// unlock the menu
-	pApp->menuIsAvailable = true;
-
-	return 0;
-}
-
 
 LRESULT CKalelView::MessageBoxAlert(WPARAM wParam, LPARAM lParam)
 {
