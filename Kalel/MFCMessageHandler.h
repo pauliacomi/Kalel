@@ -13,6 +13,7 @@
 #include "../Kalel Shared/Com Classes/ExperimentData.h"	
 #include "../Kalel Shared/Com Classes/MachineSettings.h"
 #include "../Kalel Shared/Com Classes/ControlInstrumentState.h"
+#include "../Kalel Shared/Com Classes/ExperimentSettings.h"
 
 #include <string>
 #include <map>
@@ -31,7 +32,8 @@ public:
 	bool setHandle(HWND h);
 	// PostMessage functions
 	bool ConnectionComplete();
-	bool GotMachineSettings(const MachineSettings &pParam);
+	bool ExchangeMachineSettings(const MachineSettings &pParam);
+	bool ExchangeExperimentSettings(const ExperimentSettings &pParam);
 	bool OnSetMachineSettings();
 	bool ExchangeData(std::deque<ExperimentData*> * pParam);
 	bool ExchangeLogs(std::map<std::wstring, std::wstring> * pParam);

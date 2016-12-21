@@ -113,7 +113,8 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 	/*********************************
 	// Ping
 	*********************************/
-	if (req->path_		== "/api/handshake" && req->method_ == http::method::get) {
+	if (req->path_		== "/api/handshake" && req->method_ == http::method::get) 
+	{
 		resp->content_type_ = http::mimetype::texthtml;
 		resp->answer_ = R"(<!DOCTYPE html PUBLIC " -//IETF//DTD HTML 2.0//EN"><html><head><title>Hello</title></head><body><h1>Hello</h1></body></html>)";
 		resp->status_ = http::responses::ok;
@@ -123,7 +124,8 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 	/*********************************
 	// Get MachineSettings
 	*********************************/
-	else if (req->path_ == "/api/machinesettings" && req->method_ == http::method::get) {
+	else if (req->path_ == "/api/machinesettings" && req->method_ == http::method::get) 
+	{
 		resp->content_type_ = http::mimetype::appjson;
 		
 		json j;
@@ -137,7 +139,8 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 	/*********************************
 	// Set MachineSettings
 	*********************************/
-	else if (req->path_ == "/api/machinesettings" && req->method_ == http::method::post) {
+	else if (req->path_ == "/api/machinesettings" && req->method_ == http::method::post) 
+	{
 		if (req->content_type_ == http::mimetype::appjson) {
 
 			auto j = json::parse(req->entity_);
@@ -165,7 +168,7 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 			SetSensibiliteCapteurHautePression(		storageVectors.machineSettings->SensibiliteCapteurHautePression	); 
 			SetVolumeP6(							storageVectors.machineSettings->VolumeP6						); 
 			SetVolumeRef(							storageVectors.machineSettings->VolumeRef						);
-			for (int i = 0; i < storageVectors.machineSettings->NumberInstruments; i++)
+			for (auto i = 0; i < storageVectors.machineSettings->NumberInstruments; i++)
 			{
 				SetCOMInstrument(i,					storageVectors.machineSettings->COMInstruments[i]				);
 				SetFonctionInstrument(i,			storageVectors.machineSettings->FunctionInstruments[i]			);
@@ -181,19 +184,112 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 
 
 	/*********************************
+	// Get ExperimentSettings
+	*********************************/
+	else if (req->path_ == "/api/experimentsettings" && req->method_ == http::method::get)
+	{
+		resp->content_type_ = http::mimetype::appjson;
+
+		json j;
+		serialization::serializeExperimentSettingsToJSON(*storageVectors.experimentSettings, j);
+		resp->answer_ = j.dump();
+
+		resp->status_ = http::responses::ok;
+	}
+
+
+	/*********************************
+	// Set ExperimentSettings
+	*********************************/
+	else if (req->path_ == "/api/experimentsettings" && req->method_ == http::method::post) 
+	{
+		if (req->content_type_ == http::mimetype::appjson) {
+
+			auto j = json::parse(req->entity_);
+
+			std::shared_ptr<ExperimentSettings> newExpSettings = std::make_shared<ExperimentSettings>();
+			serialization::deserializeJSONtoExperimentSettings(j, *newExpSettings);
+			storageVectors.setexperimentSettings(newExpSettings);
+
+			threadManager.SetModifiedData();
+
+			resp->status_ = http::responses::ok;
+		}
+		else {
+			resp->status_ = http::responses::bad_request;
+		}
+	}
+
+
+	/*********************************
+	// Get Instrument State Sync (instrument command)
+	*********************************/
+	else if (req->path_ == "/api/instrument" && req->method_ == http::method::get)
+	{
+		resp->content_type_ = http::mimetype::appjson;
+
+		ControlInstrumentState instrumentStates(threadManager.GetInstrumentStates());
+
+		json j;
+		serialization::serializeControlInstrumentStatetoJSON(instrumentStates, j);
+		resp->answer_ = j.dump();
+
+		resp->status_ = http::responses::ok;
+	}
+
+
+	/*********************************
+	// Set Instrument State Sync
+	*********************************/
+	else if (req->path_ == "/api/instrument" && req->method_ == http::method::post)
+	{
+		if (!req->params_.empty() ||
+			!req->params_.at("type").empty() ||
+			!req->params_.at("number").empty() ||
+			!req->params_.at("active").empty())
+		{
+			int instrumentType;
+			if (req->params_.at("type") == "valve") {
+				instrumentType = 1;
+			}
+			else if (req->params_.at("type") == "ev") {
+				instrumentType = 2;
+			}
+			else if (req->params_.at("type") == "pump") {
+				instrumentType = 3;
+			}
+			else {
+				instrumentType = To<int>(req->params_.at("type"));
+			}
+
+			auto instrumentNumber = To<int>(req->params_.at("number"));
+			auto instrumentState = To<bool>(req->params_.at("active"));
+
+
+			threadManager.ThreadManualAction(instrumentType, instrumentNumber, instrumentState);
+			resp->status_ = http::responses::ok;
+		}
+		else
+		{
+			resp->status_ = http::responses::conflict;
+		}
+	}
+
+
+	/*********************************
 	// Get Data
 	*********************************/
-	else if (req->path_ == "/api/experimentdata" && req->method_ == http::method::get) {
-
+	else if (req->path_ == "/api/experimentdata" && req->method_ == http::method::get)
+	{
 		resp->content_type_ = http::mimetype::appjson;
-		
+
 		// Figure out which range of data to send by looking at the time requested
-		
+
 		std::deque<std::shared_ptr<ExperimentData>>::iterator it;
 		auto localCollection = storageVectors.getData();
 
-		if (req->params_.empty()			 ||
-			req->params_.at("time").empty() || 
+		if (req->params_.empty() ||
+			req->params_.at("time").empty() ||
 			req->params_.at("time") == "start")
 		{
 			it = localCollection.begin();
@@ -204,9 +300,9 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 			it = std::find_if(localCollection.begin(), localCollection.end(),
 				[&reqTimeStamp](std::shared_ptr<ExperimentData> d) -> bool {return d->timestamp == reqTimeStamp; });
 
-			++ it;
+			++it;
 		}
-		
+
 		if (it != localCollection.end())						// If iterator is valid, send requested logs
 		{
 			json j;
@@ -222,7 +318,7 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 			resp->answer_ = j.dump();
 
 			resp->status_ = http::responses::ok;
-		}		
+		}
 		else
 		{
 			resp->status_ = http::responses::no_content;
@@ -233,8 +329,8 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 	/*********************************
 	// Get Logs
 	*********************************/
-	else if (req->path_ == "/api/experimentlogs" && req->method_ == http::method::get) {
-
+	else if (req->path_ == "/api/experimentlogs" && req->method_ == http::method::get)
+	{
 		resp->content_type_ = http::mimetype::appjson;
 
 		// Figure out which range of logs to send by finding the requested timestamp
@@ -251,7 +347,7 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 		else
 		{
 			it = localCollection.find(req->params_.at("time"));
-			++ it;
+			++it;
 		}
 
 		if (it != localCollection.end())							// If iterator is valid, send requested logs
@@ -265,34 +361,12 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 			}
 
 			resp->answer_ = j.dump();
-			
+
 			resp->status_ = http::responses::ok;
 		}
 		else
 		{
 			resp->status_ = http::responses::no_content;
-		}
-	}
-
-
-	/*********************************
-	// Set ExperimentSettings
-	*********************************/
-	else if (req->path_ == "/api/experimentsettings" && req->method_ == http::method::post) {
-		if (req->content_type_ == http::mimetype::appjson) {
-
-			auto j = json::parse(req->entity_);
-
-			std::shared_ptr<ExperimentSettings> newExpSettings = std::make_shared<ExperimentSettings>();
-			serialization::deserializeJSONtoExperimentSettings(j, *newExpSettings);
-			storageVectors.setexperimentSettings(newExpSettings);
-
-			threadManager.SetModifiedData();
-
-			resp->status_ = http::responses::ok;
-		}
-		else {
-			resp->status_ = http::responses::bad_request;
 		}
 	}
 
@@ -332,64 +406,6 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 		}
 	}
 
-	/*********************************
-	// Instrument State Sync & Commands
-	*********************************/
-	else if (req->path_ == "/api/instrument") {
-
-		if (req->method_ == http::method::post)
-		{
-			if (!req->params_.empty() ||
-				!req->params_.at("type").empty() ||
-				!req->params_.at("number").empty() ||
-				!req->params_.at("active").empty())
-			{
-				int instrumentType;
-				if(req->params_.at("type") == "valve"){
-					instrumentType = 1;
-				}
-				else if (req->params_.at("type") == "ev") {
-					instrumentType = 2;
-				} 
-				else if (req->params_.at("type") == "pump") {
-					instrumentType = 3;
-				} 
-				else {
-					instrumentType = To<int>(req->params_.at("type"));
-				}
-
-				auto instrumentNumber = To<int>(req->params_.at("number"));
-				auto instrumentState = To<bool>(req->params_.at("active"));
-			
-
-				threadManager.ThreadManualAction(instrumentType, instrumentNumber, instrumentState);
-				resp->status_ = http::responses::ok;
-			}
-			else
-			{
-				resp->status_ = http::responses::conflict;
-			}
-		}
-
-		else if (req->method_ == http::method::get)
-		{
-			ControlInstrumentState instrumentStates(threadManager.GetInstrumentStates());
-
-			json j;
-
-			try
-			{
-				serialization::serializeControlInstrumentStatetoJSON(instrumentStates, j);
-			}
-			catch (const std::exception&)
-			{
-
-			}
-
-			resp->answer_ = j.dump();
-			resp->status_ = http::responses::ok;
-		}
-	}
 
 	/*********************************
 	// Debug
@@ -407,6 +423,7 @@ void Kalel::ServerProcessing(http_request* req, http_response* resp) {
 			}
 		}
 	}
+
 
 	/*********************************
 	// Default

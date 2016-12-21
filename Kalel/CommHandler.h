@@ -79,14 +79,30 @@ private:
 	unsigned Handshake_req(http_request* r);
 	unsigned Handshake_resp(http_response * r);
 	
-	// Machine settings setting
+	// Machine settings set
 	unsigned GetMachineSettings_req(http_request * r);
 	unsigned GetMachineSettings_resp(http_response * r);
 
-	// Machine settings getting
+	// Machine settings get
 	unsigned SetMachineSettings_req(http_request * r);
 	unsigned SetMachineSettings_resp(http_response * r);
 
+	// Experiment Settings Gets
+	unsigned GetExperimentSettings_req(http_request * r);
+	unsigned GetExperimentSettings_resp(http_response * r);
+
+	// Experiment Settings Set
+	unsigned SetExperimentSettings_req(http_request * r);
+	unsigned SetExperimentSettings_resp(http_response * r);
+
+	// Instrument state get
+	unsigned GetInstrumentState_req(http_request * r);
+	unsigned GetInstrumentState_resp(http_response * r);
+
+	// Instrument state set
+	unsigned SetInstrumentState_req(http_request * r);
+	unsigned SetInstrumentState_resp(http_response * r);
+	
 	// Data sync
 	unsigned GetData_req(http_request * r);
 	unsigned GetData_resp(http_response * r);
@@ -95,19 +111,9 @@ private:
 	unsigned GetLogs_req(http_request * r);
 	unsigned GetLogs_resp(http_response * r);
 	
-	// Experiment Settings Setting
-	unsigned SetExperimentSettings_req(http_request * r);
-	unsigned SetExperimentSettings_resp(http_response * r);
-
+	// Automation/experiment commands
 	unsigned ThreadCommand_req(http_request * r);
 	unsigned ThreadCommand_resp(http_response * r);
-	
-	unsigned InstrumentCommand_req(http_request * r);
-	unsigned InstrumentCommand_resp(http_response * r);
-
-	// Control istrument state sync
-	unsigned GetInstrumentState_req(http_request * r);
-	unsigned GetInstrumentState_resp(http_response * r);
 	
 	// Debugging
 	unsigned TestConn_req(http_request * r);

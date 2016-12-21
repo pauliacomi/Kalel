@@ -25,7 +25,6 @@ CommHandler::CommHandler()
 {
 }
 
-
 CommHandler::~CommHandler()
 {
 }
@@ -91,7 +90,6 @@ void CommHandler::SetMachineSettings(std::shared_ptr<const MachineSettings> ptr)
 	}
 }
 
-
 void CommHandler::GetData(std::string fromTime)
 {
 	if (!flagExperimentRequest)
@@ -115,8 +113,6 @@ void CommHandler::GetData(std::string fromTime)
 		TRACE(_T("lel"));
 	}
 }
-
-
 
 void CommHandler::GetLog(std::wstring fromTime)
 {
@@ -170,7 +166,6 @@ void CommHandler::SetExperimentSettings(std::shared_ptr<const ExperimentSettings
 	}
 }
 
-
 void CommHandler::ManualCommand(int instrumentType, int instrumentNumber, bool shouldBeActivated)
 {
 	localInstrumentState.instrumentType = instrumentType;
@@ -197,8 +192,8 @@ void CommHandler::ManualCommand(int instrumentType, int instrumentNumber, bool s
 	localInstrumentNumber = instrumentNumber;
 	localShouldBeActivated = shouldBeActivated;
 	
-	auto request = std::bind(&CommHandler::InstrumentCommand_req, this, std::placeholders::_1);
-	auto callback = std::bind(&CommHandler::InstrumentCommand_resp, this, std::placeholders::_1);
+	auto request = std::bind(&CommHandler::GetInstrumentState_req, this, std::placeholders::_1);
+	auto callback = std::bind(&CommHandler::GetInstrumentState_resp, this, std::placeholders::_1);
 
 	try {
 		client.Request(request, callback, localAddress);
@@ -248,7 +243,6 @@ void CommHandler::SetUserContinue()
 {
 }
 
-
 void CommHandler::ThreadCommand()
 {
 	auto request = std::bind(&CommHandler::ThreadCommand_req, this, std::placeholders::_1);
@@ -261,7 +255,6 @@ void CommHandler::ThreadCommand()
 		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, UnicodeConv::s2ws(e.what()));
 	}
 }
-
 
 void CommHandler::TestConn()
 {
@@ -276,8 +269,13 @@ void CommHandler::TestConn()
 	}
 }
 
+
 /**********************************************************************************************************************************
+//
+//
 // Request and response functions
+//
+//
 **********************************************************************************************************************************/
 
 /*********************************
@@ -348,7 +346,7 @@ unsigned CommHandler::GetMachineSettings_resp(http_response* r) {
 			}
 
 			receivedSettings.synced	= true;
-			messageHandler.GotMachineSettings(receivedSettings);
+			messageHandler.ExchangeMachineSettings(receivedSettings);
 		}
 		else
 		{
@@ -364,6 +362,7 @@ unsigned CommHandler::GetMachineSettings_resp(http_response* r) {
 
 	return 0;
 }
+
 
 /*********************************
 // Set MachineSettings
@@ -405,6 +404,199 @@ unsigned CommHandler::SetMachineSettings_resp(http_response* r) {
 
 	return 0;
 }
+
+
+/*********************************
+// Get ExperimentSettings
+*********************************/
+unsigned CommHandler::GetExperimentSettings_req(http_request* r) {
+	r->method_ = http::method::get;
+	r->accept_ = http::mimetype::appjson;
+	r->path_ = "/api/experimentsettings";
+	return 0;
+}
+
+unsigned CommHandler::GetExperimentSettings_resp(http_response* r) {
+
+	if (r->status_ == http::responses::ok)
+	{
+		if (r->content_type_ == http::mimetype::appjson) {
+
+			// Parse JSON
+			//////////////////////////////////////////////
+			json j;
+			try
+			{
+				j = json::parse(r->answer_);
+			}
+			catch (const std::exception& e)
+			{
+				messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, UnicodeConv::s2ws(e.what()));
+				return 1;
+			}
+
+			// Deserisalise data
+			//////////////////////////////////////////////
+			ExperimentSettings receivedSettings;
+
+			try
+			{
+				serialization::deserializeJSONtoExperimentSettings(j, receivedSettings);
+			}
+			catch (const std::exception& e)
+			{
+				messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, UnicodeConv::s2ws(e.what()));
+				return 1;
+			}
+
+			messageHandler.ExchangeExperimentSettings(receivedSettings);
+		}
+		else
+		{
+			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Corrupt response format"));
+			return 1;
+		}
+	}
+	else if (r->status_ == http::responses::not_found)
+	{
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Server not found"));
+		return 1;
+	}
+
+	return 0;
+}
+
+
+/*********************************
+// Set ExperimentSettings
+*********************************/
+unsigned CommHandler::SetExperimentSettings_req(http_request* r) {
+	r->method_ = http::method::post;
+	r->content_type_ = http::mimetype::appjson;
+	r->path_ = "/api/experimentsettings";
+
+	json j;
+	try
+	{
+		serialization::serializeExperimentSettingsToJSON(*localExperimentSettings, j);
+	}
+	catch (const std::exception& e)
+	{
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, UnicodeConv::s2ws(e.what()));
+		return 1;
+	}
+
+	r->entity_ = j.dump();
+
+	return 0;
+}
+
+unsigned CommHandler::SetExperimentSettings_resp(http_response* r) {
+
+	if (r->status_ == http::responses::ok)
+	{
+	}
+	else if (r->status_ == http::responses::internal_err)
+	{
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Server error, could not start a new experiment"));
+		return 1;
+	}
+
+	return 0;
+}
+
+
+/*********************************
+// Get machine Instrument State
+*********************************/
+unsigned CommHandler::GetInstrumentState_req(http_request * r)
+{
+	r->method_ = http::method::get;
+	r->path_ = "/api/instrument";
+
+	return 0;
+}
+
+unsigned CommHandler::GetInstrumentState_resp(http_response * r)
+{
+	if (r->status_ == http::responses::ok)
+	{
+		json j;
+
+		try
+		{
+			j = json::parse(r->answer_);
+		}
+		catch (const std::exception& e)
+		{
+			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, UnicodeConv::s2ws(e.what()));
+			return 1;
+		}
+
+		ControlInstrumentState instrumentState;
+
+		try
+		{
+			serialization::deserializeJSONtoControlInstrumentState(j, instrumentState);
+		}
+		catch (const std::exception& e)
+		{
+			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, UnicodeConv::s2ws(e.what()));
+			return 1;
+		}
+
+		messageHandler.ExchangeControlState(instrumentState);
+
+		return 1;
+	}
+	else if (r->status_ == http::responses::not_found) {
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Server not found"));
+		return 1;
+	}
+	return 0;
+}
+
+
+/*********************************
+// Set machine Instrument State
+*********************************/
+unsigned CommHandler::SetInstrumentState_req(http_request * r)
+{
+	r->method_ = http::method::post;
+	r->path_ = "/api/instrument";
+
+	r->params_.emplace("type", localInstrumentType);
+	r->params_.emplace("number", localInstrumentNumber);
+	r->params_.emplace("active", localShouldBeActivated);
+
+	return 0;
+}
+
+unsigned CommHandler::SetInstrumentState_resp(http_response * r)
+{
+	if (r->status_ == http::responses::ok)
+	{
+		messageHandler.ExchangeControlStateSpecific(localInstrumentState);
+
+		return 1;
+	}
+	else if (r->status_ == http::responses::conflict)
+	{
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Server cannot process thread command"));
+		return 1;
+	}
+	else if (r->status_ == http::responses::bad_request)
+	{
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Bad request"));
+		return 1;
+	}
+	else if (r->status_ == http::responses::not_found) {
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Server not found"));
+		return 1;
+	}
+	return 0;
+}
+
 
 /*********************************
 // Get Data
@@ -478,7 +670,6 @@ unsigned CommHandler::GetData_resp(http_response* r) {
 	flagExperimentRequest = false;
 	return 0;
 }
-
 
 
 /*********************************
@@ -555,45 +746,6 @@ unsigned CommHandler::GetLogs_resp(http_response * r)
 
 
 /*********************************
-// Set ExperimentSettings
-*********************************/
-unsigned CommHandler::SetExperimentSettings_req(http_request* r) {
-	r->method_ = http::method::post;
-	r->content_type_ = http::mimetype::appjson;
-	r->path_ = "/api/experimentsettings";
-
-	json j;
-	try
-	{
-		serialization::serializeExperimentSettingsToJSON(*localExperimentSettings, j);
-	}
-	catch (const std::exception& e)
-	{
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, UnicodeConv::s2ws(e.what()));
-		return 1;
-	}
-
-	r->entity_ = j.dump();
-
-	return 0;
-}
-
-unsigned CommHandler::SetExperimentSettings_resp(http_response* r) {
-
-	if (r->status_ == http::responses::ok)
-	{
-	}
-	else if (r->status_ == http::responses::internal_err)
-	{
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Server error, could not start a new experiment"));
-		return 1;
-	}
-
-	return 0;
-}
-
-
-/*********************************
 // Thread Commands
 *********************************/
 unsigned CommHandler::ThreadCommand_req(http_request * r)
@@ -634,48 +786,6 @@ unsigned CommHandler::ThreadCommand_resp(http_response * r)
 {
 	if (r->status_ == http::responses::ok)
 	{
-		
-		return 1;
-	}
-	else if (r->status_ == http::responses::conflict)
-	{
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Server cannot process thread command"));
-		return 1;
-	}
-	else if (r->status_ == http::responses::bad_request)
-	{
-
-		return 1;
-	}
-	else if (r->status_ == http::responses::not_found) {
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Server not found"));
-		return 1;
-	}
-	return 0;
-}
-
-
-
-/*********************************
-// Instrument Commands
-*********************************/
-unsigned CommHandler::InstrumentCommand_req(http_request * r)
-{
-	r->method_ = http::method::post;
-	r->path_ = "/api/instrument";
-
-	r->params_.emplace("type", localInstrumentType);
-	r->params_.emplace("number", localInstrumentNumber);
-	r->params_.emplace("active", localShouldBeActivated);
-
-	return 0;
-}
-
-unsigned CommHandler::InstrumentCommand_resp(http_response * r)
-{
-	if (r->status_ == http::responses::ok)
-	{
-		messageHandler.ExchangeControlStateSpecific(localInstrumentState);
 
 		return 1;
 	}
@@ -686,57 +796,6 @@ unsigned CommHandler::InstrumentCommand_resp(http_response * r)
 	}
 	else if (r->status_ == http::responses::bad_request)
 	{
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Bad request"));
-		return 1;
-	}
-	else if (r->status_ == http::responses::not_found) {
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Server not found"));
-		return 1;
-	}
-	return 0;
-}
-
-
-/*********************************
-// Control istrument state sync
-*********************************/
-unsigned CommHandler::GetInstrumentState_req(http_request * r)
-{
-	r->method_ = http::method::get;
-	r->path_ = "/api/instrument";
-
-	return 0;
-}
-
-unsigned CommHandler::GetInstrumentState_resp(http_response * r)
-{
-	if (r->status_ == http::responses::ok)
-	{
-		json j;
-
-		try
-		{
-			j = json::parse(r->answer_);
-		}
-		catch (const std::exception& e)
-		{
-			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, UnicodeConv::s2ws(e.what()));
-			return 1;
-		}
-
-		ControlInstrumentState instrumentState;
-
-		try
-		{
-			serialization::deserializeJSONtoControlInstrumentState(j, instrumentState);
-		}
-		catch (const std::exception& e)
-		{
-			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, UnicodeConv::s2ws(e.what()));
-			return 1;
-		}
-
-		messageHandler.ExchangeControlState(instrumentState);
 
 		return 1;
 	}
@@ -746,7 +805,6 @@ unsigned CommHandler::GetInstrumentState_resp(http_response * r)
 	}
 	return 0;
 }
-
 
 
 /*********************************

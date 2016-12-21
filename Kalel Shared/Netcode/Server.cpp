@@ -12,7 +12,6 @@
 #define FILE_LOGGING	"server.log"		// Comment this line to disable file logging
 #define LOG_LEVEL		logDEBUG4			// Change the level of logging here
 
-#include <sstream>
 
 Server::Server(PCSTR port)
 	: accepting{ false }
@@ -168,7 +167,7 @@ unsigned Server::Process(std::unique_ptr<Socket> sock)
 	std::string line;										// Start receiving the rest of the request
 	bool messageToReceive = false;							// not expecting a message body
 
-	while (1) {
+	while (true) {
 		try
 		{			
 			line = sock->ReceiveLine();				// not attempting to receive message body, regular line-based receive 
