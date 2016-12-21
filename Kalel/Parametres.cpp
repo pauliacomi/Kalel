@@ -54,6 +54,9 @@ void Parameters::Initialisation()
 
 	WritePrivateProfileString(_T("server"),_T("address"),_T(""), fileLocation);
 	WritePrivateProfileString(_T("server"), _T("port"), _T(""), fileLocation);
+
+	WritePrivateProfileString(_T("refreshinterval"), _T("data"), _T("100"), fileLocation);
+	WritePrivateProfileString(_T("refreshinterval"), _T("graph"), _T("1000"), fileLocation);
 }
 
 
@@ -81,12 +84,18 @@ void Parameters::Initialisation()
 	lpFileName [in] : le nom du fichier d'initialisation
 */
 
+
 std::wstring Parameters::GetServerAddress()
 {
 	TCHAR ch[nSizeString];
 	GetPrivateProfileString(__T("server"), _T("address"), _T(""), ch, nSizeString, fileLocation);
 	std::wstring convertStr(ch);
 	return convertStr;
+}
+
+void Parameters::SetServerAddress(std::wstring address)
+{
+	WritePrivateProfileString(_T("server"), _T("address"), address.c_str(), fileLocation);
 }
 
 
@@ -98,12 +107,33 @@ std::wstring Parameters::GetServerPort()
 	return convertStr;
 }
 
-void Parameters::SetServerAddress(std::wstring address)
-{
-	WritePrivateProfileString(_T("server"), _T("address"), address.c_str(), fileLocation);
-}
-
 void Parameters::SetServerPort(std::wstring port)
 {
-	WritePrivateProfileString(_T("server"), _T("address"), port.c_str(), fileLocation);
+	WritePrivateProfileString(_T("server"), _T("port"), port.c_str(), fileLocation);
+}
+
+
+int Parameters::GetDataRefreshInterval()
+{
+	TCHAR ch[nSizeString];
+	GetPrivateProfileString(__T("refreshinterval"), _T("data"), _T(""), ch, nSizeString, fileLocation);
+	return _ttoi(ch);
+}
+
+void Parameters::SetDataRefreshInterval(int interval)
+{
+	WritePrivateProfileString(_T("refreshinterval"), _T("data"), std::to_wstring(interval).c_str(), fileLocation);
+}
+
+
+int Parameters::GetGraphRefreshInterval()
+{
+	TCHAR ch[nSizeString];
+	GetPrivateProfileString(__T("refreshinterval"), _T("graph"), _T(""), ch, nSizeString, fileLocation);
+	return _ttoi(ch);
+}
+
+void Parameters::SetGraphRefreshInterval(int interval)
+{
+	WritePrivateProfileString(_T("refreshinterval"), _T("graph"), std::to_wstring(interval).c_str(), fileLocation);
 }

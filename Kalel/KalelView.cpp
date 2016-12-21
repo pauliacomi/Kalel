@@ -51,7 +51,7 @@ BEGIN_MESSAGE_MAP(CKalelView, CFormView)
 	// Server callbacks:
 	ON_MESSAGE(UWM_SIGNAL_SERVER_CONNECTED, &CKalelView::OnServerConnected)					// Callback to notify of successful server connection
 	ON_MESSAGE(UWM_SYNCED, &CKalelView::OnSetMachineSettings)												// Modifies the global ??????????????
-	ON_MESSAGE(UWM_GOT_MACHINE_SETTINGS, &CKalelView::OnGetMachineSettings)					// Callback to notify of received MachineSettings
+	ON_MESSAGE(UWM_EXCHANGE_MACHINESETTINGS, &CKalelView::OnGetMachineSettings)				// Callback to notify of received MachineSettings
 	ON_MESSAGE(UWM_EXCHANGEDATA, &CKalelView::OnExchangeData)								// Callback to notify of incoming ExperimentData array
 	ON_MESSAGE(UWM_EXCHANGELOGS, &CKalelView::OnExchangeLogs)
 	ON_MESSAGE(UWM_EXCHANGESTATE, &CKalelView::OnThreadRequestButtonUpdate)					// Calls to update all button pairs and associated display on a manual message
@@ -210,8 +210,8 @@ void CKalelView::OnInitialUpdate()
 	UpdateButtons();
 	
 	// Set the timers for the window update
-	refrashTimer = SetTimer(1, 100, NULL);
-	graphTimer = SetTimer(1, 1000, NULL);
+	refrashTimer = SetTimer(1, savedParams.GetDataRefreshInterval(), NULL);
+	graphTimer = SetTimer(1, savedParams.GetGraphRefreshInterval(), NULL);
 }
 
 
