@@ -3,12 +3,16 @@
 #define PARAMETRES_H
 
 #include <string>
+#include "../../Kalel Shared/Com Classes/MachineSettings.h"
 
 #define Dev_USB_Temp 2
 #define Dev_USB_Vannes 1
 
 bool ParametersCheck();
 void ParametersInit();
+
+void ParametersGet(MachineSettings & settings);
+void ParametersReplace(const MachineSettings & settings);
 
 // Get
 

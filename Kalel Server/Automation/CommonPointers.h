@@ -62,6 +62,7 @@ public:
 	// Settings
 	//**********
 
+	std::mutex machineSettingsMutex;
 	std::shared_ptr<MachineSettings> machineSettings;					// The machine settings are here
 
 

@@ -82,7 +82,65 @@ void ParametersInit()
 	SetMesureHautePression(						false				);
 }
 
+void ParametersGet(MachineSettings& settings)
+{
+	settings.CaloName								= GetNomCalo();
+	settings.CaloEntete								= GetEnteteCalo();
+	settings.ActivationSecurite						= GetActivationSecurite();
+	settings.CheminFichierGeneral					= GetCheminFichierGeneral();
+	settings.HighPressureToMeasure					= GetMesureHautePression();
+	settings.LowPressureToMeasure					= GetMesureBassePression();
+	settings.NumberInstruments						= GetNumberInstruments();
+	settings.PortKeithley							= GetPortKeithley();
+	settings.PortMensor								= GetPortMensor();
+	settings.PortTemperatures						= GetPortTemperatures();
+	settings.PortVannes								= GetPortVannes();
+	settings.PresenceTuyereSonique					= GetPresenceTuyereSonique();
+	settings.PressionLimiteVide						= GetPressionLimiteVide();
+	settings.PressionSecuriteBassePression			= GetPressionSecuriteBassePression();
+	settings.PressionSecuriteHautePression			= GetPressionSecuriteHautePression();
+	settings.SensibiliteCalo						= GetSensibiliteCalo();
+	settings.SensibiliteCapteurBassePression		= GetSensibiliteCapteurBassePression();
+	settings.SensibiliteCapteurHautePression		= GetSensibiliteCapteurHautePression();
+	settings.VolumeP6								= GetVolumeP6();
+	settings.VolumeRef								= GetVolumeRef();
+	for (int i = 0; i < settings.NumberInstruments; i++)
+	{
+		settings.COMInstruments.push_back(GetCOMInstrument(i));
+		settings.FunctionInstruments.push_back(GetFonctionInstrument(i));
+		settings.typeInstruments.push_back(GetTypeInstrument(i));
+	}
+}
 
+void ParametersReplace(const MachineSettings& settings)
+{
+	SetNomCalo(								settings.CaloName						); 
+	SetEnteteCalo(							settings.CaloEntete						); 
+	SetActivationSecurite(					settings.ActivationSecurite				); 
+	SetCheminFichierGeneral(				settings.CheminFichierGeneral			); 
+	SetMesureHautePression(					settings.HighPressureToMeasure			); 
+	SetMesureBassePression(					settings.LowPressureToMeasure			); 
+	SetNumberInstruments(					settings.NumberInstruments				); 
+	SetPortKeithley(						settings.PortKeithley					); 
+	SetPortMensor(							settings.PortMensor						); 
+	SetPortTemperatures(					settings.PortTemperatures				); 
+	SetPortVannes(							settings.PortVannes						); 
+	SetPresenceTuyereSonique(				settings.PresenceTuyereSonique			); 
+	SetPressionLimiteVide(					settings.PressionLimiteVide				); 
+	SetPressionSecuriteBassePression(		settings.PressionSecuriteBassePression	); 
+	SetPressionSecuriteHautePression(		settings.PressionSecuriteHautePression	); 
+	SetSensibiliteCalo(						settings.SensibiliteCalo					); 
+	SetSensibiliteCapteurBassePression(		settings.SensibiliteCapteurBassePression	); 
+	SetSensibiliteCapteurHautePression(		settings.SensibiliteCapteurHautePression	); 
+	SetVolumeP6(							settings.VolumeP6						); 
+	SetVolumeRef(							settings.VolumeRef						);
+	for (auto i = 0; i < settings.NumberInstruments; i++)
+	{
+		SetCOMInstrument(i,					settings.COMInstruments[i]				);
+		SetFonctionInstrument(i,			settings.FunctionInstruments[i]			);
+		SetTypeInstrument(i,				settings.typeInstruments[i]				);
+	}
+}
 
 // Lecture des paramètres de l'appareil
 

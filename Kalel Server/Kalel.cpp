@@ -34,33 +34,7 @@ Kalel::Kalel()
 	//
 	// Create and populate Machine Settings
 	storageVectors.machineSettings = std::make_shared<MachineSettings>();
-
-	storageVectors.machineSettings->CaloName								= GetNomCalo();
-	storageVectors.machineSettings->CaloEntete								= GetEnteteCalo();
-	storageVectors.machineSettings->ActivationSecurite						= GetActivationSecurite();
-	storageVectors.machineSettings->CheminFichierGeneral					= GetCheminFichierGeneral();
-	storageVectors.machineSettings->HighPressureToMeasure					= GetMesureHautePression();
-	storageVectors.machineSettings->LowPressureToMeasure					= GetMesureBassePression();
-	storageVectors.machineSettings->NumberInstruments						= GetNumberInstruments();
-	storageVectors.machineSettings->PortKeithley							= GetPortKeithley();
-	storageVectors.machineSettings->PortMensor								= GetPortMensor();
-	storageVectors.machineSettings->PortTemperatures						= GetPortTemperatures();
-	storageVectors.machineSettings->PortVannes								= GetPortVannes();
-	storageVectors.machineSettings->PresenceTuyereSonique					= GetPresenceTuyereSonique();
-	storageVectors.machineSettings->PressionLimiteVide						= GetPressionLimiteVide();
-	storageVectors.machineSettings->PressionSecuriteBassePression			= GetPressionSecuriteBassePression();
-	storageVectors.machineSettings->PressionSecuriteHautePression			= GetPressionSecuriteHautePression();
-	storageVectors.machineSettings->SensibiliteCalo							= GetSensibiliteCalo();
-	storageVectors.machineSettings->SensibiliteCapteurBassePression			= GetSensibiliteCapteurBassePression();
-	storageVectors.machineSettings->SensibiliteCapteurHautePression			= GetSensibiliteCapteurHautePression();
-	storageVectors.machineSettings->VolumeP6								= GetVolumeP6();
-	storageVectors.machineSettings->VolumeRef								= GetVolumeRef();
-	for (int i = 0; i < storageVectors.machineSettings->NumberInstruments; i++)
-	{
-		storageVectors.machineSettings->COMInstruments.push_back(GetCOMInstrument(i));
-		storageVectors.machineSettings->FunctionInstruments.push_back(GetFonctionInstrument(i));
-		storageVectors.machineSettings->typeInstruments.push_back(GetTypeInstrument(i));
-	}
+	ParametersGet(*storageVectors.machineSettings);
 
 	//
 	// Start server functionality
@@ -132,9 +106,9 @@ void Kalel::Ping(http_request* req, http_response* resp)
 {
 	if (req->method_ == http::method::get)
 	{
+		resp->status_ = http::responses::ok;
 		resp->content_type_ = http::mimetype::texthtml;
 		resp->answer_ = R"(<!DOCTYPE html PUBLIC " -//IETF//DTD HTML 2.0//EN"><html><head><title>Hello</title></head><body><h1>Hello</h1></body></html>)";
-		resp->status_ = http::responses::ok;
 	}
 }
 
@@ -147,13 +121,12 @@ void Kalel::MachineSettingsSync(http_request* req, http_response* resp)
 	// GET
 	if (req->method_ == http::method::get)
 	{
-		resp->content_type_ = http::mimetype::appjson;
-
 		json j;
 		serialization::serializeMachineSettingsToJSON(*storageVectors.machineSettings, j);
-		resp->answer_ = j.dump();
-
+		
 		resp->status_ = http::responses::ok;
+		resp->content_type_ = http::mimetype::appjson;
+		resp->answer_ = j.dump();
 	}
 
 	// SET
@@ -161,37 +134,14 @@ void Kalel::MachineSettingsSync(http_request* req, http_response* resp)
 	{
 		if (req->content_type_ == http::mimetype::appjson) {
 
+			// Parse the input
 			auto j = json::parse(req->entity_);
 			
+			// Save to memory
 			serialization::deserializeJSONtoMachineSettings(j, *storageVectors.machineSettings);	
 
-			// Write everything to file
-			SetNomCalo(								storageVectors.machineSettings->CaloName						); 
-			SetEnteteCalo(							storageVectors.machineSettings->CaloEntete						); 
-			SetActivationSecurite(					storageVectors.machineSettings->ActivationSecurite				); 
-			SetCheminFichierGeneral(				storageVectors.machineSettings->CheminFichierGeneral			); 
-			SetMesureHautePression(					storageVectors.machineSettings->HighPressureToMeasure			); 
-			SetMesureBassePression(					storageVectors.machineSettings->LowPressureToMeasure			); 
-			SetNumberInstruments(					storageVectors.machineSettings->NumberInstruments				); 
-			SetPortKeithley(						storageVectors.machineSettings->PortKeithley					); 
-			SetPortMensor(							storageVectors.machineSettings->PortMensor						); 
-			SetPortTemperatures(					storageVectors.machineSettings->PortTemperatures				); 
-			SetPortVannes(							storageVectors.machineSettings->PortVannes						); 
-			SetPresenceTuyereSonique(				storageVectors.machineSettings->PresenceTuyereSonique			); 
-			SetPressionLimiteVide(					storageVectors.machineSettings->PressionLimiteVide				); 
-			SetPressionSecuriteBassePression(		storageVectors.machineSettings->PressionSecuriteBassePression	); 
-			SetPressionSecuriteHautePression(		storageVectors.machineSettings->PressionSecuriteHautePression	); 
-			SetSensibiliteCalo(						storageVectors.machineSettings->SensibiliteCalo					); 
-			SetSensibiliteCapteurBassePression(		storageVectors.machineSettings->SensibiliteCapteurBassePression	); 
-			SetSensibiliteCapteurHautePression(		storageVectors.machineSettings->SensibiliteCapteurHautePression	); 
-			SetVolumeP6(							storageVectors.machineSettings->VolumeP6						); 
-			SetVolumeRef(							storageVectors.machineSettings->VolumeRef						);
-			for (auto i = 0; i < storageVectors.machineSettings->NumberInstruments; i++)
-			{
-				SetCOMInstrument(i,					storageVectors.machineSettings->COMInstruments[i]				);
-				SetFonctionInstrument(i,			storageVectors.machineSettings->FunctionInstruments[i]			);
-				SetTypeInstrument(i,				storageVectors.machineSettings->typeInstruments[i]				);
-			}
+			// Save to file
+			ParametersReplace(*storageVectors.machineSettings);
 
 			resp->status_ = http::responses::ok;
 		}
@@ -210,13 +160,12 @@ void Kalel::ExperimentSettingsSync(http_request* req, http_response* resp)
 	// GET
 	if (req->method_ == http::method::get)
 	{
-		resp->content_type_ = http::mimetype::appjson;
-
 		json j;
 		serialization::serializeExperimentSettingsToJSON(*storageVectors.experimentSettings, j);
-		resp->answer_ = j.dump();
 
 		resp->status_ = http::responses::ok;
+		resp->content_type_ = http::mimetype::appjson;
+		resp->answer_ = j.dump();
 	}
 
 	// SET
@@ -224,6 +173,7 @@ void Kalel::ExperimentSettingsSync(http_request* req, http_response* resp)
 	{
 		if (req->content_type_ == http::mimetype::appjson) {
 
+			// Parse the input
 			auto j = json::parse(req->entity_);
 
 			std::shared_ptr<ExperimentSettings> newExpSettings = std::make_shared<ExperimentSettings>();
@@ -249,15 +199,14 @@ void Kalel::InstrumentStateSync(http_request* req, http_response* resp)
 	// GET
 	if (req->method_ == http::method::get)
 	{
-		resp->content_type_ = http::mimetype::appjson;
-
 		ControlInstrumentState instrumentStates(threadManager.GetInstrumentStates());
 
 		json j;
 		serialization::serializeControlInstrumentStatetoJSON(instrumentStates, j);
-		resp->answer_ = j.dump();
 
 		resp->status_ = http::responses::ok;
+		resp->content_type_ = http::mimetype::appjson;
+		resp->answer_ = j.dump();
 	}
 
 	// SET
@@ -270,13 +219,13 @@ void Kalel::InstrumentStateSync(http_request* req, http_response* resp)
 		{
 			int instrumentType;
 			if (req->params_.at("type") == "valve") {
-				instrumentType = 1;
+				instrumentType = INSTRUMENT_VALVE;
 			}
 			else if (req->params_.at("type") == "ev") {
-				instrumentType = 2;
+				instrumentType = INSTRUMENT_EV;
 			}
 			else if (req->params_.at("type") == "pump") {
-				instrumentType = 3;
+				instrumentType = INSTRUMENT_PUMP;
 			}
 			else {
 				instrumentType = To<int>(req->params_.at("type"));
