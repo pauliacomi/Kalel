@@ -169,7 +169,7 @@ void Kalel::ExperimentSettingsSync(http_request* req, http_response* resp)
 	}
 
 	// SET
-	if (req->method_ == http::method::get)
+	if (req->method_ == http::method::post)
 	{
 		if (req->content_type_ == http::mimetype::appjson) {
 
@@ -210,7 +210,7 @@ void Kalel::InstrumentStateSync(http_request* req, http_response* resp)
 	}
 
 	// SET
-	if (req->method_ == http::method::get)
+	if (req->method_ == http::method::post)
 	{
 		if (!req->params_.empty() ||
 			!req->params_.at("type").empty() ||
@@ -235,8 +235,16 @@ void Kalel::InstrumentStateSync(http_request* req, http_response* resp)
 			auto instrumentState = To<bool>(req->params_.at("active"));
 
 
-			threadManager.ThreadManualAction(instrumentType, instrumentNumber, instrumentState);
+			threadManager.ThreadManualAction(instrumentType, instrumentNumber, instrumentState);		// Should have a future/promise here
+
+			ControlInstrumentState instrumentStates(threadManager.GetInstrumentStates());
+
+			json j;
+			serialization::serializeControlInstrumentStatetoJSON(instrumentStates, j); 
+			
 			resp->status_ = http::responses::ok;
+			resp->content_type_ = http::mimetype::appjson;
+			resp->answer_ = j.dump();
 		}
 		else
 		{
@@ -253,8 +261,6 @@ void Kalel::DataSync(http_request* req, http_response* resp)
 {
 	if (req->method_ == http::method::get)
 	{
-		resp->content_type_ = http::mimetype::appjson;
-
 		// Figure out which range of data to send by looking at the time requested
 
 		std::deque<std::shared_ptr<ExperimentData>>::iterator it;
@@ -287,9 +293,9 @@ void Kalel::DataSync(http_request* req, http_response* resp)
 				++it;
 			}
 
-			resp->answer_ = j.dump();
-
 			resp->status_ = http::responses::ok;
+			resp->content_type_ = http::mimetype::appjson;
+			resp->answer_ = j.dump();
 		}
 		else
 		{
@@ -306,8 +312,6 @@ void Kalel::LogSync(http_request* req, http_response* resp)
 {
 	if (req->method_ == http::method::get)
 	{
-		resp->content_type_ = http::mimetype::appjson;
-
 		// Figure out which range of logs to send by finding the requested timestamp
 
 		std::map<std::string, std::string>::iterator it;
@@ -335,9 +339,9 @@ void Kalel::LogSync(http_request* req, http_response* resp)
 				++it;
 			}
 
-			resp->answer_ = j.dump();
-
 			resp->status_ = http::responses::ok;
+			resp->content_type_ = http::mimetype::appjson;
+			resp->answer_ = j.dump();
 		}
 		else
 		{

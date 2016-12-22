@@ -41,71 +41,71 @@ BEGIN_MESSAGE_MAP(CKalelView, CFormView)
 	//************************************
 
 	// Server requests from other views
-	ON_MESSAGE(UWM_FUNC_VACUUM_SAMPLE, &CKalelView::OnMsvAmpoule)							// Request sample under vacuum
-	ON_MESSAGE(UWM_FUNC_VACUUM_BOTTLE, &CKalelView::OnMsvBouteille)							// Request bottle under vacuum
-	ON_MESSAGE(UWM_FUNC_CHANGE_BOTTLE, &CKalelView::OnChangementBouteille)					// Request bottle change procedure
-	ON_MESSAGE(UWM_THREAD_START, &CKalelView::BackgroundThreadStart)						// Request thread shutdown
-	ON_MESSAGE(UWM_THREAD_STOP, &CKalelView::BackgroundThreadStop)							// Request thread stop
-	ON_MESSAGE(UWM_THREAD_RESTART, &CKalelView::BackgroundThreadRestart)					// Request thread restart
+	ON_MESSAGE(UWM_FUNC_VACUUM_SAMPLE,				&CKalelView::OnMsvAmpoule)						// Request sample under vacuum
+	ON_MESSAGE(UWM_FUNC_VACUUM_BOTTLE,				&CKalelView::OnMsvBouteille)					// Request bottle under vacuum
+	ON_MESSAGE(UWM_FUNC_CHANGE_BOTTLE,				&CKalelView::OnChangementBouteille)				// Request bottle change procedure
+	ON_MESSAGE(UWM_THREAD_START,					&CKalelView::BackgroundThreadStart)				// Request thread shutdown
+	ON_MESSAGE(UWM_THREAD_STOP,						&CKalelView::BackgroundThreadStop)				// Request thread stop
+	ON_MESSAGE(UWM_THREAD_RESTART,					&CKalelView::BackgroundThreadRestart)			// Request thread restart
 
 	// Server callbacks
-	ON_MESSAGE(UWM_SIGNAL_SERVER_CONNECTED, &CKalelView::OnServerConnected)					// Callback to notify of successful server connection
-	ON_MESSAGE(UWM_SYNCED, &CKalelView::OnSync)												// Callback on initial instrument sync
-	ON_MESSAGE(UWM_EXCHANGE_MACHINESETTINGS, &CKalelView::OnExchangeMachineSettings)		// Callback to notify of received MachineSettings
-	ON_MESSAGE(UWM_EXCHANGESTATE, &CKalelView::OnExchangeInstrumentState)					// Calls to update all button pairs and associated display on a manual message
-	ON_MESSAGE(UWM_EXCHANGESTATESPECIFIC, &CKalelView::OnInstrumentButtonConfirmed)			// Calls to update a specific button pair and associated display on a manual message
-	ON_MESSAGE(UWM_EXCHANGE_EXPERIMENTSETTINGS, &CKalelView::OnExchangeExperimentSettings)	// Callback to notify of received ExperimetnSettings
-	ON_MESSAGE(UWM_EXCHANGEDATA, &CKalelView::OnExchangeData)								// Callback to notify of incoming ExperimentData array
-	ON_MESSAGE(UWM_EXCHANGELOGS, &CKalelView::OnExchangeLogs)								// Callback to notify of incoming ExperimentData array
-	ON_MESSAGE(UWM_THREADFINISHEDREG, &CKalelView::OnAutoExperimentFinished)				// Calls when manual functionality ends
-	ON_MESSAGE(UWM_DISPLAYMESSAGE, &CKalelView::AffichageMessages)							// Callback to display a message from the automation thread
-	ON_MESSAGE(UWM_DISPLAYMESSAGEBOX, &CKalelView::MessageBoxAlert)							// Displays an messageBox to alert user of something
-	ON_MESSAGE(UWM_DISPLAYMESSAGEBOXCONF, &CKalelView::MessageBoxConfirmation)				// Displays an messageBox to or ask user for confirmation
-	ON_MESSAGE(UWM_CANCELEXPERIMENT, &CKalelView::CancelBeforeStarting)						
+	ON_MESSAGE(UWM_SIGNAL_SERVER_CONNECTED,			&CKalelView::OnServerConnected)					// Callback to notify of successful server connection
+	ON_MESSAGE(UWM_SYNCED,							&CKalelView::OnSync)							// Callback on initial instrument sync
+	ON_MESSAGE(UWM_EXCHANGE_MACHINESETTINGS,		&CKalelView::OnExchangeMachineSettings)			// Callback to notify of received MachineSettings
+	ON_MESSAGE(UWM_EXCHANGESTATE,					&CKalelView::OnExchangeInstrumentState)			// Calls to update all button pairs and associated display on a manual message
+	ON_MESSAGE(UWM_EXCHANGESTATESPECIFIC,			&CKalelView::OnInstrumentButtonConfirmed)		// Calls to update a specific button pair and associated display on a manual message
+	ON_MESSAGE(UWM_EXCHANGE_EXPERIMENTSETTINGS,		&CKalelView::OnExchangeExperimentSettings)		// Callback to notify of received ExperimetnSettings
+	ON_MESSAGE(UWM_EXCHANGEDATA,					&CKalelView::OnExchangeData)					// Callback to notify of incoming ExperimentData array
+	ON_MESSAGE(UWM_EXCHANGELOGS,					&CKalelView::OnExchangeLogs)					// Callback to notify of incoming ExperimentData array
+	ON_MESSAGE(UWM_THREADFINISHEDREG,				&CKalelView::OnAutoExperimentFinished)			// Calls when manual functionality ends
+	ON_MESSAGE(UWM_DISPLAYMESSAGE,					&CKalelView::AffichageMessages)					// Callback to display a message from the automation thread
+	ON_MESSAGE(UWM_DISPLAYMESSAGEBOX,				&CKalelView::MessageBoxAlert)					// Displays an messageBox to alert user of something
+	ON_MESSAGE(UWM_DISPLAYMESSAGEBOXCONF,			&CKalelView::MessageBoxConfirmation)			// Displays an messageBox to or ask user for confirmation
+	ON_MESSAGE(UWM_CANCELEXPERIMENT,				&CKalelView::CancelBeforeStarting)						
 																							
 	// Menu messages:
-	ON_MESSAGE(UWM_DISP_CONNECTS_DIALOG, &CKalelView::DisplayConnectDialog)					// Display dialog connection
-	ON_MESSAGE(UWM_DISP_PORT_DIALOG, &CKalelView::DisplayPortDialog)						// Display dialog ports
-	ON_MESSAGE(UWM_DISP_DEVSETTINGS_DIALOG, &CKalelView::DisplayApparatusSettingsDialog)	// Display dialog machine parameters
+	ON_MESSAGE(UWM_DISP_CONNECTS_DIALOG,			&CKalelView::DisplayConnectDialog)				// Display dialog connection
+	ON_MESSAGE(UWM_DISP_PORT_DIALOG,				&CKalelView::DisplayPortDialog)					// Display dialog ports
+	ON_MESSAGE(UWM_DISP_DEVSETTINGS_DIALOG,			&CKalelView::DisplayApparatusSettingsDialog)	// Display dialog machine parameters
 	
 	//************************************
 	// Standard messages
 	//************************************
 
 	// Buttons which are used for automatic/advanced functionality
-	ON_BN_CLICKED(IDC_LANCER, &CKalelView::OnBnClickedLancer)
-	ON_BN_CLICKED(IDC_ARRETER, &CKalelView::OnBnClickedArreter)
-	ON_BN_CLICKED(IDC_REPRISE, &CKalelView::OnBnClickedReprise)
-	ON_BN_CLICKED(IDC_ARRET_SOUS_VIDE, &CKalelView::OnBnClickedArretSousVide)
-	ON_BN_CLICKED(IDC_PAUSE, &CKalelView::OnBnClickedPause)
-	ON_BN_CLICKED(IDC_PROCHAINE_COMMANDE, &CKalelView::OnBnClickedProchaineCommande)
-	ON_BN_CLICKED(IDC_PROCHAINE_DOSE, &CKalelView::OnBnClickedProchaineDose)
-	ON_BN_CLICKED(IDC_PROCHAINE_ETAPE, &CKalelView::OnBnClickedProchaineEtape)
-	ON_BN_CLICKED(IDC_BUTTON_PARAMETRES_EXPERIENCE, &CKalelView::OnBnClickedButtonParametresExperience)
+	ON_BN_CLICKED(IDC_LANCER,								&CKalelView::OnBnClickedLancer)
+	ON_BN_CLICKED(IDC_ARRETER,								&CKalelView::OnBnClickedArreter)
+	ON_BN_CLICKED(IDC_REPRISE,								&CKalelView::OnBnClickedReprise)
+	ON_BN_CLICKED(IDC_ARRET_SOUS_VIDE,						&CKalelView::OnBnClickedArretSousVide)
+	ON_BN_CLICKED(IDC_PAUSE,								&CKalelView::OnBnClickedPause)
+	ON_BN_CLICKED(IDC_PROCHAINE_COMMANDE,					&CKalelView::OnBnClickedProchaineCommande)
+	ON_BN_CLICKED(IDC_PROCHAINE_DOSE,						&CKalelView::OnBnClickedProchaineDose)
+	ON_BN_CLICKED(IDC_PROCHAINE_ETAPE,						&CKalelView::OnBnClickedProchaineEtape)
+	ON_BN_CLICKED(IDC_BUTTON_PARAMETRES_EXPERIENCE,			&CKalelView::OnBnClickedButtonParametresExperience)
 	
 	// Messages for UI buttons used for simple instrument manipulation
-	ON_BN_CLICKED(IDC_OUVRIR1, &CKalelView::OnBnClickedOuvrir1)
-	ON_BN_CLICKED(IDC_OUVRIR2, &CKalelView::OnBnClickedOuvrir2)
-	ON_BN_CLICKED(IDC_OUVRIR3, &CKalelView::OnBnClickedOuvrir3)
-	ON_BN_CLICKED(IDC_OUVRIR4, &CKalelView::OnBnClickedOuvrir4)
-	ON_BN_CLICKED(IDC_OUVRIR5, &CKalelView::OnBnClickedOuvrir5)
-	ON_BN_CLICKED(IDC_OUVRIR6, &CKalelView::OnBnClickedOuvrir6)
-	ON_BN_CLICKED(IDC_OUVRIR7, &CKalelView::OnBnClickedOuvrir7)
-	ON_BN_CLICKED(IDC_OUVRIR8, &CKalelView::OnBnClickedOuvrir8)
-	ON_BN_CLICKED(IDC_FERMER1, &CKalelView::OnBnClickedFermer1)
-	ON_BN_CLICKED(IDC_FERMER2, &CKalelView::OnBnClickedFermer2)
-	ON_BN_CLICKED(IDC_FERMER3, &CKalelView::OnBnClickedFermer3)
-	ON_BN_CLICKED(IDC_FERMER4, &CKalelView::OnBnClickedFermer4)
-	ON_BN_CLICKED(IDC_FERMER5, &CKalelView::OnBnClickedFermer5)
-	ON_BN_CLICKED(IDC_FERMER6, &CKalelView::OnBnClickedFermer6)
-	ON_BN_CLICKED(IDC_FERMER7, &CKalelView::OnBnClickedFermer7)
-	ON_BN_CLICKED(IDC_FERMER8, &CKalelView::OnBnClickedFermer8)
-	ON_BN_CLICKED(IDC_ACTIVER_EV1, &CKalelView::OnBnClickedActiverEV1)
-	ON_BN_CLICKED(IDC_DESACTIVER_EV1, &CKalelView::OnBnClickedDesactiverEV1)
-	ON_BN_CLICKED(IDC_ACTIVER_EV2, &CKalelView::OnBnClickedActiverEV2)
-	ON_BN_CLICKED(IDC_DESACTIVER_EV2, &CKalelView::OnBnClickedDesactiverEV2)
-	ON_BN_CLICKED(IDC_ACTIVER_POMPE, &CKalelView::OnBnClickedActiverPompe)
-	ON_BN_CLICKED(IDC_DESACTIVER_POMPE, &CKalelView::OnBnClickedDesactiverPompe)
+	ON_BN_CLICKED(IDC_OUVRIR1,								&CKalelView::OnBnClickedOuvrir1)
+	ON_BN_CLICKED(IDC_OUVRIR2,								&CKalelView::OnBnClickedOuvrir2)
+	ON_BN_CLICKED(IDC_OUVRIR3,								&CKalelView::OnBnClickedOuvrir3)
+	ON_BN_CLICKED(IDC_OUVRIR4,								&CKalelView::OnBnClickedOuvrir4)
+	ON_BN_CLICKED(IDC_OUVRIR5,								&CKalelView::OnBnClickedOuvrir5)
+	ON_BN_CLICKED(IDC_OUVRIR6,								&CKalelView::OnBnClickedOuvrir6)
+	ON_BN_CLICKED(IDC_OUVRIR7,								&CKalelView::OnBnClickedOuvrir7)
+	ON_BN_CLICKED(IDC_OUVRIR8,								&CKalelView::OnBnClickedOuvrir8)
+	ON_BN_CLICKED(IDC_FERMER1,								&CKalelView::OnBnClickedFermer1)
+	ON_BN_CLICKED(IDC_FERMER2,								&CKalelView::OnBnClickedFermer2)
+	ON_BN_CLICKED(IDC_FERMER3,								&CKalelView::OnBnClickedFermer3)
+	ON_BN_CLICKED(IDC_FERMER4,								&CKalelView::OnBnClickedFermer4)
+	ON_BN_CLICKED(IDC_FERMER5,								&CKalelView::OnBnClickedFermer5)
+	ON_BN_CLICKED(IDC_FERMER6,								&CKalelView::OnBnClickedFermer6)
+	ON_BN_CLICKED(IDC_FERMER7,								&CKalelView::OnBnClickedFermer7)
+	ON_BN_CLICKED(IDC_FERMER8,								&CKalelView::OnBnClickedFermer8)
+	ON_BN_CLICKED(IDC_ACTIVER_EV1,							&CKalelView::OnBnClickedActiverEV1)
+	ON_BN_CLICKED(IDC_DESACTIVER_EV1,						&CKalelView::OnBnClickedDesactiverEV1)
+	ON_BN_CLICKED(IDC_ACTIVER_EV2,							&CKalelView::OnBnClickedActiverEV2)
+	ON_BN_CLICKED(IDC_DESACTIVER_EV2,						&CKalelView::OnBnClickedDesactiverEV2)
+	ON_BN_CLICKED(IDC_ACTIVER_POMPE,						&CKalelView::OnBnClickedActiverPompe)
+	ON_BN_CLICKED(IDC_DESACTIVER_POMPE,						&CKalelView::OnBnClickedDesactiverPompe)
 
 
 	// timer for update of the values

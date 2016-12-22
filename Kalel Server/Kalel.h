@@ -23,5 +23,4 @@ protected:
 	void LogSync(http_request* req, http_response* resp);
 	void AutomationControl(http_request* req, http_response* resp);
 	void Debug(http_request* req, http_response* resp);
-	void ServerProcessing(http_request * req, http_response * resp);
 };
