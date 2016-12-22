@@ -3,7 +3,6 @@
 
 
 MachineSettings::MachineSettings()
-	:synced{ false }
 {
 }
 

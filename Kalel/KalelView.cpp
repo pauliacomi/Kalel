@@ -51,6 +51,7 @@ BEGIN_MESSAGE_MAP(CKalelView, CFormView)
 	// Server callbacks
 	ON_MESSAGE(UWM_SIGNAL_SERVER_CONNECTED,			&CKalelView::OnServerConnected)					// Callback to notify of successful server connection
 	ON_MESSAGE(UWM_SYNCED,							&CKalelView::OnSync)							// Callback on initial instrument sync
+	ON_MESSAGE(UWM_SET_MACHINESETTINGS,				&CKalelView::OnSetMachineSettings)				// Callback on notify of server-side changed MachineSettings
 	ON_MESSAGE(UWM_EXCHANGE_MACHINESETTINGS,		&CKalelView::OnExchangeMachineSettings)			// Callback to notify of received MachineSettings
 	ON_MESSAGE(UWM_EXCHANGESTATE,					&CKalelView::OnExchangeInstrumentState)			// Calls to update all button pairs and associated display on a manual message
 	ON_MESSAGE(UWM_EXCHANGESTATESPECIFIC,			&CKalelView::OnInstrumentButtonConfirmed)		// Calls to update a specific button pair and associated display on a manual message
@@ -565,7 +566,6 @@ LRESULT CKalelView::DisplayPortDialog(WPARAM, LPARAM)
 		if (apparatusParameters.DoModal() == IDOK) {
 			if (apparatusParameters.Changed())
 			{
-				machineSettings->synced = false;
 				tempSettings = apparatusParameters.GetSettings();
 				commHandler.SetMachineSettings(tempSettings);
 			}
@@ -588,7 +588,6 @@ LRESULT CKalelView::DisplayApparatusSettingsDialog(WPARAM, LPARAM)
 		if (m_connection_ports.DoModal() == IDOK) {
 			if (m_connection_ports.Changed())
 			{
-				machineSettings->synced = false;
 				tempSettings = m_connection_ports.GetSettings();
 				commHandler.SetMachineSettings(tempSettings);
 			}
@@ -659,11 +658,16 @@ LRESULT CKalelView::OnServerConnected(WPARAM, LPARAM)
 
 LRESULT CKalelView::OnSync(WPARAM, LPARAM)
 {
-	if (machineSettings->synced != true) {
-		machineSettings = tempSettings;
-		tempSettings.reset();
-		machineSettings->synced = true;
-	}
+
+
+	return 0;
+}
+
+LRESULT CKalelView::OnSetMachineSettings(WPARAM, LPARAM)
+{
+	// Make the local version official
+	machineSettings = tempSettings;
+	tempSettings.reset();
 
 	return 0;
 }

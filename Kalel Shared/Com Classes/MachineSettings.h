@@ -11,8 +11,6 @@ public:
 	MachineSettings();
 	~MachineSettings();
 
-	bool synced;
-
 	long double SensibiliteCalo;
 	float SensibiliteCapteurBassePression;
 	float SensibiliteCapteurHautePression;

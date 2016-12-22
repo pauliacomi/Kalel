@@ -37,6 +37,7 @@
 #define UWM_EXCHANGELOGS							(WM_USER + 28)
 #define UWM_EXCHANGESTATE							(WM_USER + 29)
 #define UWM_EXCHANGESTATESPECIFIC					(WM_USER + 30)
+#define UWM_SET_MACHINESETTINGS						(WM_USER + 44)
 
 #define UWM_SYNCED									(WM_USER + 42)
 

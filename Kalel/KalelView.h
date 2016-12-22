@@ -138,6 +138,7 @@ private:
 
 	LRESULT OnServerConnected(WPARAM , LPARAM );
 	LRESULT OnSync(WPARAM , LPARAM );
+	LRESULT OnSetMachineSettings(WPARAM, LPARAM);
 	LRESULT OnExchangeMachineSettings(WPARAM wParam, LPARAM incomingMachineSettings);
 	LRESULT OnExchangeExperimentSettings(WPARAM wParam, LPARAM incomingExperimentSettings);
 	LRESULT OnExchangeInstrumentState(WPARAM wParam, LPARAM lParam);

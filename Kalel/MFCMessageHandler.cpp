@@ -34,6 +34,16 @@ bool MFCMessageHandler::ConnectionComplete()
 	return true;
 }
 
+
+bool MFCMessageHandler::OnSetMachineSettings()
+{
+	// Post the required message, now the main thread is responsible for deleting the new class
+	if (::PostMessage(windowHandle, UWM_SET_MACHINESETTINGS, NULL, NULL) == 0) {
+		return false;
+	}
+	return true;
+}
+
 bool MFCMessageHandler::ExchangeMachineSettings(const MachineSettings &pParam)
 {
 	// Create a new instance of the storage class and equate it to the local class
@@ -57,15 +67,6 @@ bool MFCMessageHandler::ExchangeExperimentSettings(const ExperimentSettings &pPa
 	if (::PostMessage(windowHandle, UWM_EXCHANGE_EXPERIMENTSETTINGS, NULL, (LPARAM)newData) == 0)
 	{
 		delete newData;
-		return false;
-	}
-	return true;
-}
-
-bool MFCMessageHandler::OnSetMachineSettings()
-{
-	// Post the required message, now the main thread is responsible for deleting the new class
-	if (::PostMessage(windowHandle, UWM_SYNCED, NULL, NULL) == 0) {
 		return false;
 	}
 	return true;

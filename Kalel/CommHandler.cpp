@@ -381,7 +381,6 @@ unsigned CommHandler::GetMachineSettings_resp(http_response* r) {
 				return 1;
 			}
 
-			receivedSettings.synced	= true;
 			messageHandler.ExchangeMachineSettings(receivedSettings);
 		}
 		else
