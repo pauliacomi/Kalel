@@ -164,26 +164,6 @@ void CommHandler::ManualCommand(int instrumentType, int instrumentNumber, bool s
 	localInstrumentState.instrumentNumber = instrumentNumber;
 	localInstrumentState.instrumentState = shouldBeActivated;
 
-	switch (instrumentType)
-	{
-	case INSTRUMENT_VALVE:
-		localInstrumentType = "valve";
-		break;
-
-	case INSTRUMENT_EV:
-		localInstrumentType = "ev";
-		break;
-
-	case INSTRUMENT_PUMP:
-		localInstrumentType = "pump";
-		break;
-	default:
-		break;
-	}
-
-	localInstrumentNumber = instrumentNumber;
-	localShouldBeActivated = shouldBeActivated;
-
 	auto request = std::bind(&CommHandler::SetInstrumentState_req, this, std::placeholders::_1);
 	auto callback = std::bind(&CommHandler::SetInstrumentState_resp, this, std::placeholders::_1);
 
@@ -620,6 +600,30 @@ unsigned CommHandler::SetInstrumentState_req(http_request * r)
 {
 	r->method_ = http::method::post;
 	r->path_ = "/api/instrument";
+
+	std::string localInstrumentType;
+	std::string localInstrumentNumber;
+	std::string localShouldBeActivated;
+
+	switch (localInstrumentState.instrumentType)
+	{
+	case INSTRUMENT_VALVE:
+		localInstrumentType = "valve";
+		break;
+
+	case INSTRUMENT_EV:
+		localInstrumentType = "ev";
+		break;
+
+	case INSTRUMENT_PUMP:
+		localInstrumentType = "pump";
+		break;
+	default:
+		break;
+	}
+
+	localInstrumentNumber = std::to_string(localInstrumentState.instrumentNumber);
+	localShouldBeActivated = std::to_string(localInstrumentState.instrumentState);
 
 	r->params_.emplace("type", localInstrumentType);
 	r->params_.emplace("number", localInstrumentNumber);

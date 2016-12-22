@@ -63,9 +63,6 @@ private:
 	std::atomic_bool flagLogsRequest = false;
 	std::string localLogsTime;
 
-	std::string localInstrumentType;
-	std::string localInstrumentNumber;
-	std::string localShouldBeActivated;
 	ControlInstrumentStateData localInstrumentState;
 
 	std::shared_ptr<const MachineSettings> localMachineSettings;
