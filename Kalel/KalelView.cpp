@@ -685,10 +685,10 @@ LRESULT CKalelView::OnExchangeExperimentSettings(WPARAM wParam, LPARAM incomingE
 }
 
 // Single function to update UI when receiving the command that the thread posted before finishing
-LRESULT CKalelView::OnExchangeInstrumentState(WPARAM wParam, LPARAM lParam) {
+LRESULT CKalelView::OnExchangeInstrumentState(WPARAM wParam, LPARAM incomingInstrumentState) {
 
 	// Cast the parameters object and take ownership
-	std::auto_ptr<ControlInstrumentState> maParam(reinterpret_cast<ControlInstrumentState*>(wParam));
+	std::auto_ptr<ControlInstrumentState> maParam(reinterpret_cast<ControlInstrumentState*>(incomingInstrumentState));
 
 	// Update buttons
 	buttonStates.Update(*maParam);
@@ -700,10 +700,10 @@ LRESULT CKalelView::OnExchangeInstrumentState(WPARAM wParam, LPARAM lParam) {
 }
 
 // Single function to update UI when receiving the command that the thread posted before finishing
-LRESULT CKalelView::OnInstrumentButtonConfirmed(WPARAM wParam, LPARAM lParam) {
+LRESULT CKalelView::OnInstrumentButtonConfirmed(WPARAM wParam, LPARAM incomingInstrumentState) {
 
 	// Cast the parameters object and take ownership
-	std::auto_ptr<ControlInstrumentStateData> maParam(reinterpret_cast<ControlInstrumentStateData*>(wParam));
+	std::auto_ptr<ControlInstrumentStateData> maParam(reinterpret_cast<ControlInstrumentStateData*>(incomingInstrumentState));
 
 	// Update buttons
 	buttonStates.EndCommand(*maParam);

@@ -7,85 +7,97 @@ ExperimentData::ExperimentData()
 	ResetData();
 }
 
-ExperimentData::ExperimentData(const ExperimentData & p)
-{
-	experimentDose = p.GetexperimentDose();
-
-	resultCalorimeter = p.GetresultCalorimeter();
-	pressureHigh = p.GetpressureHigh();
-	pressureLow = p.GetpressureLow();
-	pressureInitial = p.GetpressureInitial();
-	pressureFinal = p.GetpressureFinal();
-	pressureLow = p.GetpressureLow();
-	temperatureCalo = p.GettemperatureCalo();
-	temperatureCage = p.GettemperatureCage();
-	temperatureRoom = p.GettemperatureRoom();
-
-	timeElapsed = p.GettimeElapsed();
-}
-
-
 ExperimentData::~ExperimentData()
 {
 }
 
-void ExperimentData::ResetData()
+ExperimentData::ExperimentData(const ExperimentData & p)
 {
-	experimentInProgress = false;
-	experimentRecording = false;
-	experimentWaiting = false;
-	experimentCommandsRequested = true;
+	experimentInProgress			= p.GetexperimentInProgress();
+	experimentRecording				= p.GetexperimentRecording();
+	experimentWaiting				= p.GetexperimentWaiting();
+	experimentCommandsRequested		= p.GetexperimentCommandsRequested();
 
-	experimentStage = STAGE_UNDEF;
-	experimentPreviousStage = STAGE_UNDEF;
-	experimentDose = 0;
-	experimentStepStatus = STEP_STATUS_UNDEF;
-	experimentSubstepStage = STEP_STATUS_START;
-	experimentGraphPoints = 0;
-	verificationStep = STEP_VERIFICATIONS_UNDEF;
+	///*******************
+	///		Parameters for storing where program has reached
+	///*******************
 
-	timeStart = NULL;
-	measurementsMade = 0;
-	timeElapsed = 0.f;
-	timeToEquilibrate = 0.f;
-	timeToEquilibrateCurrent = 0.f;
+	experimentStage					= p.GetexperimentStage();
+	experimentPreviousStage			= p.GetexperimentPreviousStage();
+	experimentDose					= p.GetexperimentDose();
+	experimentStepStatus			= p.GetexperimentStepStatus();
+	experimentSubstepStage			= p.GetexperimentSubstepStage();
+	experimentGraphPoints			= p.GetexperimentGraphPoints();
+	verificationStep				= p.GetverificationStep();
 
-	injectionAttemptCounter = 0;
-	adsorptionCounter = 0;
-	desorptionCounter = 0;
+	timeStart						= p.GettimeStart();
+	measurementsMade				= p.GetmeasurementsMade();
+	timeElapsed						= p.GettimeElapsed();
+	timestamp						= p.timestamp;
+	timeToEquilibrate				= p.GettimeToEquilibrate();
+	timeToEquilibrateCurrent		= p.GettimeToEquilibrateCurrent();
 
-	resultCalorimeter = 0.f;
+	injectionAttemptCounter			= p.GetinjectionAttemptCounter();
+	adsorptionCounter				= p.GetadsorptionCounter();
+	desorptionCounter				= p.GetdesorptionCounter();
 
-	pressureHigh = 0.f;
-	pressureLow = 0.f;
-	pressureInitial = 0.f;
-	pressureFinal = 0.f;
-	pressureHighOld = 0.f;
+	pressureInitial					= p.GetpressureInitial();
+	pressureFinal					= p.GetpressureFinal();
+	pressureHighOld					= p.GetpressureHighOld();
 
-	temperatureCalo = 0.f;
-	temperatureCage = 0.f;
-	temperatureRoom = 0.f;
+	///*******************
+	///		Recorded Data
+	///*******************
+
+	resultCalorimeter				= p.GetresultCalorimeter();
+
+	pressureHigh					= p.GetpressureHigh();
+	pressureLow						= p.GetpressureLow();
+
+	temperatureCalo					= p.GettemperatureCalo();
+	temperatureCage					= p.GettemperatureCage();
+	temperatureRoom					= p.GettemperatureRoom();
+
 }
 
-ExperimentData & ExperimentData::operator=(const ExperimentData * p) {
-	if (this != p) {  // make sure not same object
+void ExperimentData::ResetData()
+{
+	experimentInProgress		= false;
+	experimentRecording			= false;
+	experimentWaiting			= false;
+	experimentCommandsRequested = true;
 
-		experimentDose		= p->GetexperimentDose()	;
+	experimentStage				= STAGE_UNDEF;
+	experimentPreviousStage		= STAGE_UNDEF;
+	experimentDose				= 0;
+	experimentStepStatus		= STEP_STATUS_UNDEF;
+	experimentSubstepStage		= STEP_STATUS_START;
+	experimentGraphPoints		= 0;
+	verificationStep			= STEP_VERIFICATIONS_UNDEF;
 
-		resultCalorimeter	= p->GetresultCalorimeter	();
-		pressureHigh		= p->GetpressureHigh		();
-		pressureLow			= p->GetpressureLow			();
-		pressureInitial		= p->GetpressureInitial		();
-		pressureFinal		= p->GetpressureFinal		();
-		pressureLow			= p->GetpressureLow			();
-		temperatureCalo		= p->GettemperatureCalo		();
-		temperatureCage		= p->GettemperatureCage		();
-		temperatureRoom		= p->GettemperatureRoom		();
+	timeStart					= NULL;
+	measurementsMade			= 0;
+	timeElapsed					= 0.f;
+	timestamp.clear();
+	timeToEquilibrate			= 0.f;
+	timeToEquilibrateCurrent	= 0.f;
 
-		timeElapsed			= p->GettimeElapsed			();
+	injectionAttemptCounter		= 0;
+	adsorptionCounter			= 0;
+	desorptionCounter			= 0;
 
-	}
-	return *this;    // Return ref for multiple assignment
+	pressureInitial				= 0.f;
+	pressureFinal				= 0.f;
+	pressureHighOld				= 0.f;
+
+	resultCalorimeter			= 0.f;
+
+	pressureHigh				= 0.f;
+	pressureLow					= 0.f;
+
+	temperatureCalo				= 0.f;
+	temperatureCage				= 0.f;
+	temperatureRoom				= 0.f;
 }
 
 

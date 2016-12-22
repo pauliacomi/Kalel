@@ -22,12 +22,18 @@ public:
 	void Connect(std::wstring address);
 	void SaveAddress(std::wstring address);
 	void Sync();
+
 	void GetMachineSettings();
 	void SetMachineSettings(std::shared_ptr<const MachineSettings> ptr);
+	
+	void GetExperimentSettings();
+	void SetExperimentSettings(std::shared_ptr<const ExperimentSettings> ptr);
+	
+	void GetControlInstrumentState();
+	void ManualCommand(int instrumentType, int instrumentNumber, bool shouldBeActivated);
+	
 	void GetData(std::string fromTime = R"()");
 	void GetLog(std::wstring fromTime = _T(""));
-	void GetControlInstrumentState();
-	void SetExperimentSettings(std::shared_ptr<const ExperimentSettings> ptr);
 
 	void StartClient();
 	void ShutdownClient();
@@ -35,10 +41,7 @@ public:
 	void ResetClient();
 	void PauseClient();
 	void ResumeClient();
-
 	void SetUserContinue();
-
-	void ManualCommand(int instrumentType, int instrumentNumber, bool shouldBeActivated);
 
 	void TestConn();
 

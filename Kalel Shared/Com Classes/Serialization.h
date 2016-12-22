@@ -389,19 +389,19 @@ static void serializeMachineSettingsToJSON(const MachineSettings &m, nlohmann::j
 
 	static void deserializeJSONtoControlInstrumentState(const nlohmann::json & j, ControlInstrumentState & e)
 	{
-		auto j1 = j["valve"].get<std::vector<int>>();
+		auto j1 = j["valve"].get<std::vector<bool>>();
 		for (auto i = 0; i < j1.size(); ++i)
 		{
 			e.valves[i]											=	j1[i]	;
 		}
 		
-		j1 = j["ev"].get<std::vector<int>>();
+		j1 = j["ev"].get<std::vector<bool>>();
 		for (auto i = 0; i < j1.size(); ++i)
 		{
 			e.EVs[i]											=	j1[i]	;
 		}
 
-		j1 = j["pump"].get<std::vector<int>>();
+		j1 = j["pump"].get<std::vector<bool>>();
 		for (auto i = 0; i < j1.size(); ++i)
 		{
 			e.pumps[i]											=	j1[i]	;

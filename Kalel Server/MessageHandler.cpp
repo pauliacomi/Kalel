@@ -23,7 +23,7 @@ MessageHandler::~MessageHandler()
 
 bool MessageHandler::ExchangeData(const ExperimentData &pParam)
 {
-	// Create a new instance of the storage class and equate it to the local class
+	// Create a new instance of the storage cla	ss and equate it to the local class
 	std::shared_ptr<ExperimentData> newData = std::make_shared<ExperimentData>(pParam);
 
 	// Lock to prevent any synchronisation errors

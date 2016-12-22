@@ -11,27 +11,21 @@ const int nSizeString{ 100 };
 Parameters::Parameters()
 	: fileLocation { L"./ParametresClient.ini" }
 {
-}
-
-Parameters::~Parameters()
-{
-}
-
-void Parameters::VerifParametres()
-{
 	std::ifstream file_stream(fileLocation, std::ifstream::in);
 	bool ans = file_stream.is_open();
 	file_stream.close();
 
 	// si ans=TRUE , alors le fichier existe, pas besoin de le créer
 	// si ans=FALSE, alors le fichier n'existe pas, on le crée et on initialise les parametres
-	if(!ans)
+	if (!ans)
 	{
 		Initialisation();
 	}
 }
 
-
+Parameters::~Parameters()
+{
+}
 
 
 void Parameters::Initialisation()

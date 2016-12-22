@@ -29,7 +29,7 @@ void FileWriter::writeFile(const std::wstring &filename, const std::wstring & st
 	_wfopen_s(&f, filename.c_str(), L"w");
 	if (!f)
 		return;
-	fprintf(f, "%s", stream.c_str());
+	fprintf(f, "%ws", stream.c_str());
 	fflush(f);
 }
 

@@ -51,9 +51,9 @@ public:
 	std::atomic_int desorptionCounter;					// Counter for the number of desorption settings (small, medium, large etc) inputted by the user, starts at 0
 	
 	// Pressures used as benchmarks
-	std::atomic<double> pressureInitial;					// Pressure set as an initial pressure in injections
+	std::atomic<double> pressureInitial;				// Pressure set as an initial pressure in injections
 	std::atomic<double> pressureFinal;					// Pressure set as the final pressure in injections
-	std::atomic<double> pressureHighOld;					// Previous pressure stored for injection checks
+	std::atomic<double> pressureHighOld;				// Previous pressure stored for injection checks
 
 
 	///*******************
@@ -85,10 +85,6 @@ public:
 
 	// Function to reset
 	void ResetData();
-
-	// Overload equals function
-	ExperimentData & ExperimentData::operator=(const ExperimentData * p);
-
 
 
 	bool GetexperimentInProgress()			const;			// Boolean stating whether the experiment is started or not

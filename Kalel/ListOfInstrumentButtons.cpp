@@ -21,6 +21,7 @@ const int idcPumpClose = IDC_DESACTIVER_POMPE;
 const int idcPumpTextBox = IDC_TEMOIN_POMPE;
 
 
+
 ListOfInstrumentButtons::ListOfInstrumentButtons(CKalelView &h)
 	: handle{ h }
 {
@@ -28,6 +29,59 @@ ListOfInstrumentButtons::ListOfInstrumentButtons(CKalelView &h)
 
 ListOfInstrumentButtons::~ListOfInstrumentButtons()
 {
+}
+
+void ListOfInstrumentButtons::Init()
+{
+	CString texboxText;
+
+	for (auto i = 0; i < localState.valves.size(); i++)
+	{
+		if (localState.valves[i])
+		{
+			texboxText.Format(TEXT_OPENED);
+		}
+		else
+		{
+			texboxText.Format(TEXT_CLOSED);
+		}
+		handle.GetDlgItem(idcValveOpen[i])->EnableWindow(localState.valves[i]);
+		handle.GetDlgItem(idcValveClose[i])->EnableWindow(!localState.valves[i]);
+		handle.SetDlgItemText(idcValveTextBox[i], texboxText);
+	}
+
+	for (auto i = 0; i < localState.EVs.size(); i++)
+	{
+		// Do the GUI changes
+		if (localState.EVs[i])
+		{
+			texboxText.Format(TEXT_OPENED);
+		}
+		else
+		{
+			texboxText.Format(TEXT_CLOSED);
+		}
+		handle.GetDlgItem(idcEVOpen[i])->EnableWindow(localState.EVs[i]);
+		handle.GetDlgItem(idcEVClose[i])->EnableWindow(!localState.EVs[i]);
+		handle.SetDlgItemText(idcEVTextBox[i], texboxText);
+	}
+
+
+	for (auto i = 0; i < localState.pumps.size(); i++)
+	{
+		// Do the GUI changes
+		if (localState.pumps[i])
+		{
+			texboxText.Format(TEXT_ACTIVATED);
+		}
+		else
+		{
+			texboxText.Format(TEXT_DEACTIVATED);
+		}
+		handle.GetDlgItem(idcPumpOpen)->EnableWindow(localState.pumps[i]);
+		handle.GetDlgItem(idcPumpClose)->EnableWindow(!localState.pumps[i]);
+		handle.SetDlgItemText(idcPumpTextBox, texboxText);
+	}
 }
 
 void ListOfInstrumentButtons::StartCommand(int instrumentType, int instrumentNumber, bool shouldBeActivated)
@@ -99,7 +153,7 @@ void ListOfInstrumentButtons::StartCommand(int instrumentType, int instrumentNum
 	handle.SetDlgItemText(cTextboxID, texboxText);
 }
 
-void ListOfInstrumentButtons::EndCommand(ControlInstrumentStateData data)
+void ListOfInstrumentButtons::EndCommand(const ControlInstrumentStateData &data)
 {
 	CString texboxText;
 
@@ -197,7 +251,7 @@ void ListOfInstrumentButtons::Update(const ControlInstrumentState& state)
 				texboxText.Format(TEXT_CLOSED);
 			}
 			handle.GetDlgItem(idcValveOpen[i])->EnableWindow(state.valves[i]);
-			handle.GetDlgItem(idcValveClose[i])->EnableWindow(state.valves[i]);
+			handle.GetDlgItem(idcValveClose[i])->EnableWindow(!state.valves[i]);
 			handle.SetDlgItemText(idcValveTextBox[i], texboxText);
 		}
 	}
@@ -219,7 +273,7 @@ void ListOfInstrumentButtons::Update(const ControlInstrumentState& state)
 				texboxText.Format(TEXT_CLOSED);
 			}
 			handle.GetDlgItem(idcEVOpen[i])->EnableWindow(state.EVs[i]);
-			handle.GetDlgItem(idcEVClose[i])->EnableWindow(state.EVs[i]);
+			handle.GetDlgItem(idcEVClose[i])->EnableWindow(!state.EVs[i]);
 			handle.SetDlgItemText(idcEVTextBox[i], texboxText);
 		}
 	}
@@ -241,7 +295,7 @@ void ListOfInstrumentButtons::Update(const ControlInstrumentState& state)
 				texboxText.Format(TEXT_DEACTIVATED);
 			}
 			handle.GetDlgItem(idcPumpOpen)->EnableWindow(state.pumps[i]);
-			handle.GetDlgItem(idcPumpClose)->EnableWindow(state.pumps[i]);
+			handle.GetDlgItem(idcPumpClose)->EnableWindow(!state.pumps[i]);
 			handle.SetDlgItemText(idcPumpTextBox, texboxText);
 		}
 	}

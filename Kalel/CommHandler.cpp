@@ -33,6 +33,15 @@ void CommHandler::SetHandle(HWND h){
 	messageHandler.setHandle(h);
 }
 
+/*********************************
+//
+//  Requests
+//
+*********************************/
+
+/*********************************
+// Ping
+*********************************/
 void CommHandler::Connect(std::wstring address)
 {
 	if (!address.empty())
@@ -54,14 +63,22 @@ void CommHandler::SaveAddress(std::wstring address)
 	localAddress = UnicodeConv::ws2s(address.c_str());
 }
 
+/*********************************
+// Sync
+*********************************/
 void CommHandler::Sync()
 {
 	GetMachineSettings();
+	GetControlInstrumentState();
+	GetExperimentSettings();
 	GetData();
 	GetLog();
-	GetControlInstrumentState();
 }
 
+
+/*********************************
+// MachineSettings
+*********************************/
 void CommHandler::GetMachineSettings()
 {
 	auto request = std::bind(&CommHandler::GetMachineSettings_req, this, std::placeholders::_1);
@@ -90,58 +107,14 @@ void CommHandler::SetMachineSettings(std::shared_ptr<const MachineSettings> ptr)
 	}
 }
 
-void CommHandler::GetData(std::string fromTime)
+
+/*********************************
+// ExperimentSettings
+*********************************/
+void CommHandler::GetExperimentSettings()
 {
-	if (!flagExperimentRequest)
-	{
-		flagExperimentRequest = true;
-
-		localExperimentTime = fromTime.c_str();
-
-		auto request = std::bind(&CommHandler::GetData_req, this, std::placeholders::_1);
-		auto callback = std::bind(&CommHandler::GetData_resp, this, std::placeholders::_1);
-
-		try {
-			client.Request(request, callback, localAddress);
-		}
-		catch (const std::exception& e) {
-			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, UnicodeConv::s2ws(e.what()));
-		}
-	}
-	else
-	{
-		TRACE(_T("lel"));
-	}
-}
-
-void CommHandler::GetLog(std::wstring fromTime)
-{
-	if (!flagLogsRequest)
-	{
-		flagLogsRequest = true;
-
-		localLogsTime = UnicodeConv::ws2s(fromTime.c_str());
-
-		auto request = std::bind(&CommHandler::GetLogs_req, this, std::placeholders::_1);
-		auto callback = std::bind(&CommHandler::GetLogs_resp, this, std::placeholders::_1);
-
-		try {
-			client.Request(request, callback, localAddress);
-		}
-		catch (const std::exception& e) {
-			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, UnicodeConv::s2ws(e.what()));
-		}
-	}
-	else
-	{
-		TRACE(_T("lel"));
-	}
-}
-
-void CommHandler::GetControlInstrumentState()
-{
-	auto request = std::bind(&CommHandler::GetInstrumentState_req, this, std::placeholders::_1);
-	auto callback = std::bind(&CommHandler::GetInstrumentState_resp, this, std::placeholders::_1);
+	auto request = std::bind(&CommHandler::GetExperimentSettings_req, this, std::placeholders::_1);
+	auto callback = std::bind(&CommHandler::GetExperimentSettings_resp, this, std::placeholders::_1);
 
 	try {
 		client.Request(request, callback, localAddress);
@@ -166,6 +139,25 @@ void CommHandler::SetExperimentSettings(std::shared_ptr<const ExperimentSettings
 	}
 }
 
+
+/*********************************
+// Instrument State / Instrument control
+*********************************/
+void CommHandler::GetControlInstrumentState()
+{
+	auto request = std::bind(&CommHandler::GetInstrumentState_req, this, std::placeholders::_1);
+	auto callback = std::bind(&CommHandler::GetInstrumentState_resp, this, std::placeholders::_1);
+
+	try {
+		client.Request(request, callback, localAddress);
+	}
+	catch (const std::exception& e) {
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, UnicodeConv::s2ws(e.what()));
+	}
+}
+
+
+
 void CommHandler::ManualCommand(int instrumentType, int instrumentNumber, bool shouldBeActivated)
 {
 	localInstrumentState.instrumentType = instrumentType;
@@ -188,12 +180,12 @@ void CommHandler::ManualCommand(int instrumentType, int instrumentNumber, bool s
 	default:
 		break;
 	}
-	
+
 	localInstrumentNumber = instrumentNumber;
 	localShouldBeActivated = shouldBeActivated;
-	
-	auto request = std::bind(&CommHandler::GetInstrumentState_req, this, std::placeholders::_1);
-	auto callback = std::bind(&CommHandler::GetInstrumentState_resp, this, std::placeholders::_1);
+
+	auto request = std::bind(&CommHandler::SetInstrumentState_req, this, std::placeholders::_1);
+	auto callback = std::bind(&CommHandler::SetInstrumentState_resp, this, std::placeholders::_1);
 
 	try {
 		client.Request(request, callback, localAddress);
@@ -203,6 +195,66 @@ void CommHandler::ManualCommand(int instrumentType, int instrumentNumber, bool s
 	}
 }
 
+
+/*********************************
+// Data
+*********************************/
+void CommHandler::GetData(std::string fromTime)
+{
+	if (!flagExperimentRequest)
+	{
+		flagExperimentRequest = true;
+
+		localExperimentTime = fromTime.c_str();
+
+		auto request = std::bind(&CommHandler::GetData_req, this, std::placeholders::_1);
+		auto callback = std::bind(&CommHandler::GetData_resp, this, std::placeholders::_1);
+
+		try {
+			client.Request(request, callback, localAddress);
+		}
+		catch (const std::exception& e) {
+			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, UnicodeConv::s2ws(e.what()));
+		}
+	}
+	else
+	{
+		TRACE(_T("lel"));
+	}
+}
+
+
+/*********************************
+// Logs
+*********************************/
+void CommHandler::GetLog(std::wstring fromTime)
+{
+	if (!flagLogsRequest)
+	{
+		flagLogsRequest = true;
+
+		localLogsTime = UnicodeConv::ws2s(fromTime.c_str());
+
+		auto request = std::bind(&CommHandler::GetLogs_req, this, std::placeholders::_1);
+		auto callback = std::bind(&CommHandler::GetLogs_resp, this, std::placeholders::_1);
+
+		try {
+			client.Request(request, callback, localAddress);
+		}
+		catch (const std::exception& e) {
+			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, UnicodeConv::s2ws(e.what()));
+		}
+	}
+	else
+	{
+		TRACE(_T("lel"));
+	}
+}
+
+
+/*********************************
+// Automation control
+*********************************/
 void CommHandler::StartClient()
 {
 	localThreadCommand = START;
@@ -256,6 +308,10 @@ void CommHandler::ThreadCommand()
 	}
 }
 
+
+/*********************************
+// Debugging
+*********************************/
 void CommHandler::TestConn()
 {
 	auto request = std::bind(&CommHandler::TestConn_req, this, std::placeholders::_1);

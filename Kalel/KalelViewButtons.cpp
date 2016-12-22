@@ -11,10 +11,6 @@
 #include "DialogTypeExperiment.h"		// The dialog asking the user for the experiment type
 #include "ExperimentPropertySheet.h"	// The dialog asking the user to input the experiment parameters
 
-#include "TabDoses.h"					// For manipulating the settings object
-#include "TabDesorption.h"				// For manipulating the settings object
-
-
 
 // When clicking on the Launch button
 void CKalelView::OnBnClickedLancer()
@@ -225,4 +221,6 @@ void CKalelView::UpdateButtons() {
 	GetDlgItem(IDC_BUTTON_PARAMETRES_EXPERIENCE)->EnableWindow(eRun);
 	GetDlgItem(IDC_REPRISE)->EnableWindow(eRun);
 	GetDlgItem(IDC_PAUSE)->EnableWindow(eRun);
+
+	buttonStates.Init();
 }

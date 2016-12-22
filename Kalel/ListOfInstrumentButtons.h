@@ -14,6 +14,7 @@ class ListOfInstrumentButtons
 public:
 	ListOfInstrumentButtons(CKalelView & h);
 	~ListOfInstrumentButtons();
+	void Init();
 
 private:
 	int cButtonID = 0;								// Id of open button
@@ -36,7 +37,7 @@ private:
 public:
 
 	void StartCommand(int instrumentType, int instrumentNumber, bool shouldBeActivated);
-	void EndCommand(ControlInstrumentStateData data);
+	void EndCommand(const ControlInstrumentStateData &data);
 	void Update(const ControlInstrumentState &state);
 	void Update(int instrumentType, int instrumentNumber, bool shouldBeActivated);
 };
