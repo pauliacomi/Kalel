@@ -687,12 +687,12 @@ unsigned CommHandler::GetData_resp(http_response* r) {
 				return 1;
 			}
 
-			ExperimentData * receivedData = nullptr;
-			MeasurementsArray * receivedDataArray = new MeasurementsArray();
+			std::shared_ptr<ExperimentData> receivedData = nullptr;
+			std::deque<std::shared_ptr<ExperimentData>> * receivedDataArray = new std::deque<std::shared_ptr<ExperimentData>>();
 
 			for (json::iterator i = j.begin(); i != j.end(); ++i)
 			{
-				receivedData = new ExperimentData();
+				receivedData = std::make_shared<ExperimentData>();
 				json j2 = j[i.key()];
 				try
 				{
@@ -701,7 +701,6 @@ unsigned CommHandler::GetData_resp(http_response* r) {
 				catch (const std::exception& e)
 				{
 					messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, UnicodeConv::s2ws(e.what()));
-					delete receivedData;
 					delete receivedDataArray;
 					flagExperimentRequest = false;
 					return 1;

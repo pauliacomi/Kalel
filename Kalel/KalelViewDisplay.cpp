@@ -35,7 +35,7 @@ LRESULT CKalelView::AffichageMessages(WPARAM, LPARAM lParam)
 
 
 // Write the 
-LRESULT CKalelView::DisplayTextboxValues(ExperimentData * data)
+LRESULT CKalelView::DisplayTextboxValues(std::shared_ptr<ExperimentData> data)
 {
 
 	// Convert to strings
@@ -64,7 +64,7 @@ LRESULT CKalelView::DisplayTextboxValues(ExperimentData * data)
 }
 
 // Write on the dialog box reserved for new measurements
-LRESULT CKalelView::DiplayMeasurements(ExperimentData * data)
+LRESULT CKalelView::DiplayMeasurements(std::shared_ptr<ExperimentData> data)
 {
 	CString mesure;
 
@@ -81,7 +81,7 @@ LRESULT CKalelView::DiplayMeasurements(ExperimentData * data)
 }
 
 // Display the step
-LRESULT CKalelView::DisplayStepProgress(ExperimentData * data)
+LRESULT CKalelView::DisplayStepProgress(std::shared_ptr<ExperimentData> data)
 {
 
 	CString temp;

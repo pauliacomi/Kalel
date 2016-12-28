@@ -33,7 +33,7 @@ public:
 	int NbrIntervalles(double max);
 
 private:
-	MeasurementsArray * measurementArray;
+	std::deque<std::shared_ptr<ExperimentData>> * measurementArray;
 	double maxPressure, minPressure, maxCalo, minCalo;
 	CString titleGrapheEtape;
 	float timeMinimum;

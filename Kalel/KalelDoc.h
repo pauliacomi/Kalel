@@ -4,6 +4,8 @@
 #pragma once
 
 #include "../Kalel Shared/Com Classes/ExperimentData.h"				// Where data about the experimental parameters, results and current status is stored. REQUIRED FOR CARRAYMEASUREMENTS
+#include <memory>
+#include <deque>
 
 class CKalelDoc : public CDocument
 {
@@ -13,7 +15,7 @@ protected: // create from serialization only
 
 // Attributes
 public:	
-	MeasurementsArray * m_TableauMesures;
+	std::deque<std::shared_ptr<ExperimentData>>* m_TableauMesures;
 
 // Operations
 public:
@@ -43,7 +45,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 public:
-	void GraphSetArray(MeasurementsArray & expData);
+	void GraphSetArray(std::deque<std::shared_ptr<ExperimentData>> & expData);
 	
 
 #ifdef SHARED_HANDLERS

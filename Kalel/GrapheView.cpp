@@ -81,25 +81,25 @@ void CGrapheView::OnDraw(CDC* pDC)
 		{
 
 			// Acquisition des données 
-			ExperimentData * experimentData = (*measurementArray).back();
+			ExperimentData experimentData = *((*measurementArray).back());
 
 			// Valeurs utilisées pour les échelles et les axes d'abscisses et d'ordonnées
 			// Set the maximums and minimums
-			maxPressure = max(maxPressure, experimentData->pressureLow);
-			maxPressure = max(maxPressure, experimentData->pressureHigh);
+			maxPressure = max(maxPressure, experimentData.pressureLow);
+			maxPressure = max(maxPressure, experimentData.pressureHigh);
 			maxPressure = MaxPressionEchelle(maxPressure);
 
-			minPressure = min(minPressure, experimentData->pressureLow);
-			minPressure = min(minPressure, experimentData->pressureHigh);
+			minPressure = min(minPressure, experimentData.pressureLow);
+			minPressure = min(minPressure, experimentData.pressureHigh);
 			minPressure = 0;
 
-			maxCalo = max(maxCalo, experimentData->resultCalorimeter);
-			minCalo = min(minCalo, experimentData->resultCalorimeter);
+			maxCalo = max(maxCalo, experimentData.resultCalorimeter);
+			minCalo = min(minCalo, experimentData.resultCalorimeter);
 
 			double displayedSeconds = RECENT_HOURS * 3600;
-			timeMinimum = experimentData->timeElapsed - displayedSeconds;
-			double partialCoefficient = (experimentData->timeElapsed / experimentData->experimentGraphPoints);
-			measurementMinimum  = (int)(experimentData->experimentGraphPoints - displayedSeconds / partialCoefficient);
+			timeMinimum = experimentData.timeElapsed - displayedSeconds;
+			double partialCoefficient = (experimentData.timeElapsed / experimentData.experimentGraphPoints);
+			measurementMinimum  = (int)(experimentData.experimentGraphPoints - displayedSeconds / partialCoefficient);
 			if (measurementMinimum < 0)
 				measurementMinimum = 0;
 

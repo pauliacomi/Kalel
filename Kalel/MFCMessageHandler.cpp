@@ -72,7 +72,7 @@ bool MFCMessageHandler::ExchangeExperimentSettings(const ExperimentSettings &pPa
 	return true;
 }
 
-bool MFCMessageHandler::ExchangeData(std::deque<ExperimentData*> * pParam)
+bool MFCMessageHandler::ExchangeData(std::deque<std::shared_ptr<ExperimentData>> * pParam)
 {
 	// Post the required message, now the main thread is responsible for deleting the new class
 	if (::PostMessage(windowHandle, UWM_EXCHANGEDATA, NULL, (LPARAM)pParam) == 0 ) 

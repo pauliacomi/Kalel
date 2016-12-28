@@ -119,9 +119,6 @@ END_MESSAGE_MAP()
 CKalelView::CKalelView()
 	: CFormView(CKalelView::IDD)
 	, buttonStates(*this)
-
-	, experimentSettings{ new ExperimentSettings(INITIAL_ADSORPTION, INITIAL_DESORPTIONS) }
-	, machineSettings{ new MachineSettings() }
 {
 }
 
@@ -721,7 +718,7 @@ LRESULT CKalelView::OnInstrumentButtonConfirmed(WPARAM wParam, LPARAM incomingIn
 LRESULT CKalelView::OnExchangeData(WPARAM, LPARAM incomingExperimentData)
 {
 	// Get the incoming vector and add it to the local data
-	MeasurementsArray * newData = reinterpret_cast<MeasurementsArray*>(incomingExperimentData);
+	auto newData = reinterpret_cast<std::deque<std::shared_ptr<ExperimentData>>*>(incomingExperimentData);
 	dataCollection.insert(dataCollection.end(), newData->begin(), newData->end());
 
 	// Delete the useless vector now

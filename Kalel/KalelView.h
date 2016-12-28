@@ -15,6 +15,7 @@
 #include "Parametres.h"												// Parameters file read/write
 #include "CommHandler.h"											// Responsible for all communication to/from client
 #include "ListOfInstrumentButtons.h"
+#include <deque>
 
 
 // Forward declarations
@@ -69,13 +70,13 @@ private:
 
 	// Storage
 private:
-	ListOfInstrumentButtons buttonStates;						// The class which deals which keeps all the state of the buttons, for displaying them 
-	MeasurementsArray dataCollection;							// Measurement points for an experiment are stored here
-	std::wstring lastLog;
-	std::map<std::wstring, std::wstring> 	logCollection;		// Log points for an experiment are stored here
-	std::shared_ptr<MachineSettings>	machineSettings;		// Pointer to a machineSettings object
-	std::shared_ptr<MachineSettings>	tempSettings;			// Temporary machineSettings stored here between sending change request to server and server acknowledgement
-	std::shared_ptr<ExperimentSettings> experimentSettings;		// Local storage of experimentSettings
+	ListOfInstrumentButtons								buttonStates;			// The class which deals which keeps all the state of the buttons, for displaying them 
+	
+	std::map<std::wstring, std::wstring> 				logCollection;			// Log points for an experiment are stored here
+	std::deque<std::shared_ptr<ExperimentData>>			dataCollection;			// Measurement points for an experiment are stored here
+	std::shared_ptr<MachineSettings>					machineSettings;		// Pointer to a machineSettings object
+	std::shared_ptr<MachineSettings>					tempSettings;			// Temporary machineSettings stored here between sending change request to server and server acknowledgement
+	std::shared_ptr<ExperimentSettings>					experimentSettings;		// Local storage of experimentSettings
 	
 	
 	// Some storage variables for each MFC control
@@ -155,9 +156,9 @@ private:
 private:
 
 	LRESULT AffichageMessages(WPARAM wParam, LPARAM lParam);
-	LRESULT DisplayTextboxValues(ExperimentData * data);
-	LRESULT DiplayMeasurements(ExperimentData * data);
-	LRESULT DisplayStepProgress(ExperimentData * data);
+	LRESULT DisplayTextboxValues(std::shared_ptr<ExperimentData> data);
+	LRESULT DiplayMeasurements(std::shared_ptr<ExperimentData> data);
+	LRESULT DisplayStepProgress(std::shared_ptr<ExperimentData> data);
 	LRESULT MessageBoxAlert(WPARAM wParam, LPARAM lParam);
 	LRESULT MessageBoxConfirmation(WPARAM wParam, LPARAM);
 

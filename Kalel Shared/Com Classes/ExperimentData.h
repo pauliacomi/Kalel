@@ -2,10 +2,11 @@
 #define EXPERIMENT_DATA
 #pragma once
 
-#include <deque>
 #include <ctime>
 #include <atomic>
-
+#include <string>
+#include <memory>
+#include <deque>
 
 class ExperimentData
 {
@@ -147,7 +148,5 @@ public:
 	void SettemperatureRoom(double a)			;
 
 };
-
-typedef std::deque<ExperimentData*> MeasurementsArray;
 
 #endif
