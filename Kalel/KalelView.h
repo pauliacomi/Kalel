@@ -125,10 +125,10 @@ private:
 
 	// Menu messages
 
+	LRESULT DisplayConnectDialog(WPARAM, LPARAM);
 	LRESULT OnMsvAmpoule(WPARAM wParam, LPARAM lParam);
 	LRESULT OnMsvBouteille(WPARAM wParam, LPARAM lParam);
 	LRESULT OnChangementBouteille(WPARAM wParam, LPARAM lParam);
-	LRESULT DisplayConnectDialog(WPARAM, LPARAM);
 	LRESULT DisplayPortDialog(WPARAM wParam, LPARAM lParam);
 	LRESULT DisplayApparatusSettingsDialog(WPARAM wParam, LPARAM lParam);
 	LRESULT BackgroundThreadStart(WPARAM wParam, LPARAM lParam);

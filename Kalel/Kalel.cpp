@@ -25,32 +25,32 @@
 BEGIN_MESSAGE_MAP(CKalelApp, CWinAppEx)
 
 	// Standard document commands
-	ON_COMMAND(ID_APP_ABOUT, &CKalelApp::OnAppAbout)
-	ON_COMMAND(ID_FILE_NEW, &CWinAppEx::OnFileNew)
-	ON_COMMAND(ID_FILE_OPEN, &CWinAppEx::OnFileOpen)
+	ON_COMMAND(ID_APP_ABOUT,							&CKalelApp::OnAppAbout)
+	ON_COMMAND(ID_FILE_NEW,								&CWinAppEx::OnFileNew)
+	ON_COMMAND(ID_FILE_OPEN,							&CWinAppEx::OnFileOpen)
 
 	// New menu based commands to main view
-	ON_COMMAND(ID_PARAMATRES_SERVERCONNECT, &CKalelApp::DisplayServerConnect)
-	ON_COMMAND(ID_PARAMATRES_APPAREIL, &CKalelApp::DisplayPortDialog)
-	ON_COMMAND(ID_CONNECTION_PORTS, &CKalelApp::DisplayApparatusSettingsDialog)
-	ON_COMMAND(ID_MSV_AMPOULE, &CKalelApp::OnMsvAmpoule)
-	ON_COMMAND(ID_MSV_BOUTEILLE, &CKalelApp::OnMsvBouteille)
-	ON_COMMAND(ID_CHANGEMENT_BOUTEILLE, &CKalelApp::OnChangementBouteille)
-	ON_COMMAND(ID_BACKGROUNDTHREAD_START, &CKalelApp::OnBackgroundthreadStart)
-	ON_COMMAND(ID_BACKGROUNDTHREAD_STOP, &CKalelApp::OnBackgroundthreadStop)
-	ON_COMMAND(ID_BACKGROUNDTHREAD_RESTART, &CKalelApp::OnBackgroundthreadRestart)
+	ON_COMMAND(ID_PARAMATRES_SERVERCONNECT,				&CKalelApp::DisplayServerConnect)
+	ON_COMMAND(ID_PARAMATRES_APPAREIL,					&CKalelApp::DisplayPortDialog)
+	ON_COMMAND(ID_CONNECTION_PORTS,						&CKalelApp::DisplayApparatusSettingsDialog)
+	ON_COMMAND(ID_MSV_AMPOULE,							&CKalelApp::OnMsvAmpoule)
+	ON_COMMAND(ID_MSV_BOUTEILLE,						&CKalelApp::OnMsvBouteille)
+	ON_COMMAND(ID_CHANGEMENT_BOUTEILLE,					&CKalelApp::OnChangementBouteille)
+	ON_COMMAND(ID_BACKGROUNDTHREAD_START,				&CKalelApp::OnBackgroundthreadStart)
+	ON_COMMAND(ID_BACKGROUNDTHREAD_STOP,				&CKalelApp::OnBackgroundthreadStop)
+	ON_COMMAND(ID_BACKGROUNDTHREAD_RESTART,				&CKalelApp::OnBackgroundthreadRestart)
 
 	// New update based commands
-	ON_UPDATE_COMMAND_UI(ID_PARAMATRES_SERVERCONNECT, &CKalelApp::OnUpdateServerConnect)
-	ON_UPDATE_COMMAND_UI(ID_PARAMATRES_APPAREIL, &CKalelApp::OnUpdateParamatresAppareil)
-	ON_UPDATE_COMMAND_UI(ID_CONNECTION_PORTS, &CKalelApp::OnUpdateConnectionPorts)
-	ON_UPDATE_COMMAND_UI(ID_MSV_AMPOULE, &CKalelApp::OnUpdateMsvAmpoule)
-	ON_UPDATE_COMMAND_UI(ID_MSV_BOUTEILLE, &CKalelApp::OnUpdateMsvBouteille)
-	ON_UPDATE_COMMAND_UI(ID_CHANGEMENT_BOUTEILLE, &CKalelApp::OnUpdateChangementBouteille)
-	ON_UPDATE_COMMAND_UI(ID_DONNEES_EXPERIENCE, &CKalelApp::OnUpdateDonneesExperience)
-	ON_UPDATE_COMMAND_UI(ID_BACKGROUNDTHREAD_START, &CKalelApp::OnUpdateBackgroundthreadStart)
-	ON_UPDATE_COMMAND_UI(ID_BACKGROUNDTHREAD_STOP, &CKalelApp::OnUpdateBackgroundthreadStop)
-	ON_UPDATE_COMMAND_UI(ID_BACKGROUNDTHREAD_RESTART, &CKalelApp::OnUpdateBackgroundthreadRestart)
+	ON_UPDATE_COMMAND_UI(ID_PARAMATRES_SERVERCONNECT,	&CKalelApp::OnUpdateServerConnect)
+	ON_UPDATE_COMMAND_UI(ID_PARAMATRES_APPAREIL,		&CKalelApp::OnUpdateParamatresAppareil)
+	ON_UPDATE_COMMAND_UI(ID_CONNECTION_PORTS,			&CKalelApp::OnUpdateConnectionPorts)
+	ON_UPDATE_COMMAND_UI(ID_MSV_AMPOULE,				&CKalelApp::OnUpdateMsvAmpoule)
+	ON_UPDATE_COMMAND_UI(ID_MSV_BOUTEILLE,				&CKalelApp::OnUpdateMsvBouteille)
+	ON_UPDATE_COMMAND_UI(ID_CHANGEMENT_BOUTEILLE,		&CKalelApp::OnUpdateChangementBouteille)
+	ON_UPDATE_COMMAND_UI(ID_DONNEES_EXPERIENCE,			&CKalelApp::OnUpdateDonneesExperience)
+	ON_UPDATE_COMMAND_UI(ID_BACKGROUNDTHREAD_START,		&CKalelApp::OnUpdateBackgroundthreadStart)
+	ON_UPDATE_COMMAND_UI(ID_BACKGROUNDTHREAD_STOP,		&CKalelApp::OnUpdateBackgroundthreadStop)
+	ON_UPDATE_COMMAND_UI(ID_BACKGROUNDTHREAD_RESTART,	&CKalelApp::OnUpdateBackgroundthreadRestart)
 END_MESSAGE_MAP()
 
 
@@ -256,45 +256,54 @@ void CKalelApp::OnUpdateServerConnect(CCmdUI *pCmdUI)
 
 void CKalelApp::OnUpdateParamatresAppareil(CCmdUI *pCmdUI)
 {
-	pCmdUI->Enable(menuIsAvailable);
+	bool available = menuIsAvailable & serverConnected;
+	pCmdUI->Enable(available);
 }
 
 void CKalelApp::OnUpdateConnectionPorts(CCmdUI *pCmdUI)
 {
-	pCmdUI->Enable(menuIsAvailable);
+	bool available = menuIsAvailable & serverConnected;
+	pCmdUI->Enable(available);
 }
 
 void CKalelApp::OnUpdateDonneesExperience(CCmdUI *pCmdUI)
 {
-	pCmdUI->Enable(!menuIsAvailable);
+	bool available = !menuIsAvailable & serverConnected;
+	pCmdUI->Enable(available);
 }
 
 void CKalelApp::OnUpdateMsvAmpoule(CCmdUI *pCmdUI)
 {
-	pCmdUI->Enable(menuIsAvailable);
+	bool available = menuIsAvailable & serverConnected;
+	pCmdUI->Enable(available);
 }
 
 void CKalelApp::OnUpdateMsvBouteille(CCmdUI *pCmdUI)
 {
-	pCmdUI->Enable(menuIsAvailable);
+	bool available = menuIsAvailable & serverConnected;
+	pCmdUI->Enable(available);
 }
 
 void CKalelApp::OnUpdateChangementBouteille(CCmdUI *pCmdUI)
 {
-	pCmdUI->Enable(menuIsAvailable);
+	bool available = menuIsAvailable & serverConnected;
+	pCmdUI->Enable(available);
 }
 
 void CKalelApp::OnUpdateBackgroundthreadStart(CCmdUI *pCmdUI)
 {
-	pCmdUI->Enable(!menuIsAvailable);
+	bool available = menuIsAvailable & serverConnected & !experimentRunning;
+	pCmdUI->Enable(available);
 }
 
 void CKalelApp::OnUpdateBackgroundthreadStop(CCmdUI *pCmdUI)
 {
-	pCmdUI->Enable(menuIsAvailable);
+	bool available = menuIsAvailable & serverConnected & !experimentRunning;
+	pCmdUI->Enable(available);
 }
 
 void CKalelApp::OnUpdateBackgroundthreadRestart(CCmdUI *pCmdUI)
 {
-	pCmdUI->Enable(menuIsAvailable);
+	bool available = menuIsAvailable & serverConnected & !experimentRunning;
+	pCmdUI->Enable(available);
 }

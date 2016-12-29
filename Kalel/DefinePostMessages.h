@@ -38,25 +38,12 @@
 #define UWM_EXCHANGESTATE							(WM_USER + 29)
 #define UWM_EXCHANGESTATESPECIFIC					(WM_USER + 30)
 #define UWM_SET_MACHINESETTINGS						(WM_USER + 44)
-
 #define UWM_SYNCED									(WM_USER + 42)
-
 #define UWM_CANCELEXPERIMENT						(WM_USER + 24)
-
 #define UWM_DISPLAYMESSAGE							(WM_USER + 11)
 #define UWM_DISPLAYMESSAGEBOX						(WM_USER + 17)
 #define UWM_DISPLAYMESSAGEBOXCONF					(WM_USER + 18)
-#define UWM_THREADFINISHEDREG						(WM_USER + 7)
+#define UWM_AUTOEXPFINISHED							(WM_USER + 7)
 
 
-//*************************************************************************************************************************
-//						SERVER CALLBACKS
-//*************************************************************************************************************************
-
-
-
-
-#define UWM_THREADSHUTDOWN							(WM_USER + 8)
-#endif // !DEFINEPOSTMESSAGES_H
-
-
+#endif

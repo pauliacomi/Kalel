@@ -252,16 +252,8 @@ bool MFCMessageHandler::ExperimentStart()
 
 bool MFCMessageHandler::ExperimentEnd()
 {
-	::PostMessage(windowHandle, UWM_THREADFINISHEDREG, NULL, NULL);
+	::PostMessage(windowHandle, UWM_AUTOEXPFINISHED, NULL, NULL);
 	DisplayMessage(MESSAGE_FILLLINE);
-
-	return true;
-}
-
-bool MFCMessageHandler::ThreadShutdown()
-{
-	::PostMessage(windowHandle, UWM_THREADSHUTDOWN, NULL, NULL);
-	DisplayMessage(MESSAGE_THREAD_SHUTTINGDOWN);
 
 	return true;
 }

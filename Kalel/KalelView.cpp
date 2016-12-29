@@ -58,7 +58,7 @@ BEGIN_MESSAGE_MAP(CKalelView, CFormView)
 	ON_MESSAGE(UWM_EXCHANGE_EXPERIMENTSETTINGS,		&CKalelView::OnExchangeExperimentSettings)		// Callback to notify of received ExperimetnSettings
 	ON_MESSAGE(UWM_EXCHANGEDATA,					&CKalelView::OnExchangeData)					// Callback to notify of incoming ExperimentData array
 	ON_MESSAGE(UWM_EXCHANGELOGS,					&CKalelView::OnExchangeLogs)					// Callback to notify of incoming ExperimentData array
-	ON_MESSAGE(UWM_THREADFINISHEDREG,				&CKalelView::OnAutoExperimentFinished)			// Calls when manual functionality ends
+	ON_MESSAGE(UWM_AUTOEXPFINISHED,					&CKalelView::OnAutoExperimentFinished)			// Calls when an experiment ends
 	ON_MESSAGE(UWM_DISPLAYMESSAGE,					&CKalelView::AffichageMessages)					// Callback to display a message from the automation thread
 	ON_MESSAGE(UWM_DISPLAYMESSAGEBOX,				&CKalelView::MessageBoxAlert)					// Displays an messageBox to alert user of something
 	ON_MESSAGE(UWM_DISPLAYMESSAGEBOXCONF,			&CKalelView::MessageBoxConfirmation)			// Displays an messageBox to or ask user for confirmation
@@ -132,36 +132,36 @@ CKalelView::~CKalelView()
 void CKalelView::DoDataExchange(CDataExchange* pDX)
 {
 	CFormView::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_LANCER, m_ButtonLancer);
-	DDX_Control(pDX, IDC_ARRETER, m_ButtonArreter);
+	DDX_Control(pDX,		IDC_LANCER,				m_ButtonLancer			);
+	DDX_Control(pDX,		IDC_ARRETER,			m_ButtonArreter			);
 
-	DDX_Control(pDX, IDC_EDIT_MESSAGES, pEditMessages);
-	DDX_Text(pDX, IDC_EDIT_MESSAGES, m_StrEditMessages);
+	DDX_Control(pDX,		IDC_EDIT_MESSAGES,		pEditMessages			);
+	DDX_Text(pDX,			IDC_EDIT_MESSAGES,		m_StrEditMessages		);
 
-	DDX_Control(pDX, IDC_EDIT_MESURES, pEditMesures);
-	DDX_Text(pDX, IDC_EDIT_MESURES, m_StrEditMesures);
+	DDX_Control(pDX,		IDC_EDIT_MESURES,		pEditMesures			);
+	DDX_Text(pDX,			IDC_EDIT_MESURES,		m_StrEditMesures		);
 
-	DDX_Text(pDX, IDC_CALO, m_StrCalo);
-	DDX_Text(pDX, IDC_BASSE_PRESSION, m_StrBassePression);
-	DDX_Text(pDX, IDC_HAUTE_PRESSION, m_StrHautePression);
-	DDX_Text(pDX, IDC_TEMPERATURE_CALO, m_StrTemperatureCalo);
-	DDX_Text(pDX, IDC_TEMPERATURE_CAGE, m_StrTemperatureCage);
-	DDX_Text(pDX, IDC_TEMPERATURE_PIECE, m_StrTemperaturePiece);
-	DDX_Text(pDX, IDC_TEMPS, m_StrTemps);
-	DDX_Text(pDX, IDC_PRESSION_INITIALE, m_StrPressionInitiale);
-	DDX_Text(pDX, IDC_PRESSION_FINALE, m_StrPressionFinale);
-	DDX_Text(pDX, IDC_EDIT_ETAPE, m_StrEtape);
-	DDX_Text(pDX, IDC_TEMOIN_VANNE1, m_StrTemoinVanne1);
-	DDX_Text(pDX, IDC_TEMOIN_VANNE2, m_StrTemoinVanne2);
-	DDX_Text(pDX, IDC_TEMOIN_VANNE3, m_StrTemoinVanne3);
-	DDX_Text(pDX, IDC_TEMOIN_VANNE4, m_StrTemoinVanne4);
-	DDX_Text(pDX, IDC_TEMOIN_VANNE5, m_StrTemoinVanne5);
-	DDX_Text(pDX, IDC_TEMOIN_VANNE6, m_StrTemoinVanne6);
-	DDX_Text(pDX, IDC_TEMOIN_VANNE7, m_StrTemoinVanne7);
-	DDX_Text(pDX, IDC_TEMOIN_VANNE8, m_StrTemoinVanne8);
-	DDX_Text(pDX, IDC_TEMOIN_EV1, m_StrTemoinEV1);
-	DDX_Text(pDX, IDC_TEMOIN_EV2, m_StrTemoinEV2);
-	DDX_Text(pDX, IDC_TEMOIN_POMPE, m_StrTemoinPompe);
+	DDX_Text(pDX,			IDC_CALO,				m_StrCalo				);
+	DDX_Text(pDX,			IDC_BASSE_PRESSION,		m_StrBassePression		);
+	DDX_Text(pDX,			IDC_HAUTE_PRESSION,		m_StrHautePression		);
+	DDX_Text(pDX,			IDC_TEMPERATURE_CALO,	m_StrTemperatureCalo	);
+	DDX_Text(pDX,			IDC_TEMPERATURE_CAGE,	m_StrTemperatureCage	);
+	DDX_Text(pDX,			IDC_TEMPERATURE_PIECE,	m_StrTemperaturePiece	);
+	DDX_Text(pDX,			IDC_TEMPS,				m_StrTemps				);
+	DDX_Text(pDX,			IDC_PRESSION_INITIALE,	m_StrPressionInitiale	);
+	DDX_Text(pDX,			IDC_PRESSION_FINALE,	m_StrPressionFinale		);
+	DDX_Text(pDX,			IDC_EDIT_ETAPE,			m_StrEtape				);
+	DDX_Text(pDX,			IDC_TEMOIN_VANNE1,		m_StrTemoinVanne1		);
+	DDX_Text(pDX,			IDC_TEMOIN_VANNE2,		m_StrTemoinVanne2		);
+	DDX_Text(pDX,			IDC_TEMOIN_VANNE3,		m_StrTemoinVanne3		);
+	DDX_Text(pDX,			IDC_TEMOIN_VANNE4,		m_StrTemoinVanne4		);
+	DDX_Text(pDX,			IDC_TEMOIN_VANNE5,		m_StrTemoinVanne5		);
+	DDX_Text(pDX,			IDC_TEMOIN_VANNE6,		m_StrTemoinVanne6		);
+	DDX_Text(pDX,			IDC_TEMOIN_VANNE7,		m_StrTemoinVanne7		);
+	DDX_Text(pDX,			IDC_TEMOIN_VANNE8,		m_StrTemoinVanne8		);
+	DDX_Text(pDX,			IDC_TEMOIN_EV1,			m_StrTemoinEV1			);
+	DDX_Text(pDX,			IDC_TEMOIN_EV2,			m_StrTemoinEV2			);
+	DDX_Text(pDX,			IDC_TEMOIN_POMPE,		m_StrTemoinPompe		);
 }
 
 
@@ -190,20 +190,6 @@ void CKalelView::OnInitialUpdate()
 
 	// Pass stored array to graph
 	GetDocument()->GraphSetArray(dataCollection);
-
-	// Deactivate the buttons that should not be available
-	GetDlgItem(IDC_ARRETER)->EnableWindow(FALSE);
-	GetDlgItem(IDC_FERMER1)->EnableWindow(FALSE);
-	GetDlgItem(IDC_FERMER2)->EnableWindow(FALSE);
-	GetDlgItem(IDC_FERMER3)->EnableWindow(FALSE);
-	GetDlgItem(IDC_FERMER4)->EnableWindow(FALSE);
-	GetDlgItem(IDC_FERMER5)->EnableWindow(FALSE);
-	GetDlgItem(IDC_FERMER6)->EnableWindow(FALSE);
-	GetDlgItem(IDC_FERMER7)->EnableWindow(FALSE);
-	GetDlgItem(IDC_FERMER8)->EnableWindow(FALSE);
-	GetDlgItem(IDC_DESACTIVER_EV1)->EnableWindow(FALSE);
-	GetDlgItem(IDC_DESACTIVER_EV2)->EnableWindow(FALSE);
-	GetDlgItem(IDC_DESACTIVER_POMPE)->EnableWindow(FALSE);
 	
 	// Initial button set-up
 	UpdateButtons();
@@ -431,6 +417,23 @@ void CKalelView::GetExperimentData(ExperimentPropertySheet * pDialogExperimentPr
 // Menu functionality
 **********************************************************************************************************************************/
 
+LRESULT CKalelView::DisplayConnectDialog(WPARAM, LPARAM)
+{
+	DialogConnectServer connectServer;
+	if (connectServer.DoModal() == IDOK)
+	{
+		std::wstring address{ connectServer.GetAddress() };
+		
+		// First save the address
+		savedParams.SetServerAddress(address);
+
+		// Then connect to the server
+		commHandler.Connect(address);
+	}
+
+	return 0;
+}
+
 LRESULT CKalelView::OnMsvAmpoule(WPARAM, LPARAM)
 {
 	if (pApp->serverConnected)
@@ -537,23 +540,6 @@ LRESULT CKalelView::OnChangementBouteille(WPARAM, LPARAM)
 	return 0;
 }
 
-LRESULT CKalelView::DisplayConnectDialog(WPARAM, LPARAM)
-{
-	DialogConnectServer connectServer;
-	if (connectServer.DoModal() == IDOK)
-	{
-		std::wstring address{ connectServer.GetAddress() };
-		
-		// First set the address
-		savedParams.SetServerAddress(address);
-
-		// Then connect to the server
-		commHandler.Connect(address);
-	}
-
-	return 0;
-}
-
 LRESULT CKalelView::DisplayPortDialog(WPARAM, LPARAM)
 {
 	if (pApp->serverConnected)
@@ -655,7 +641,8 @@ LRESULT CKalelView::OnServerConnected(WPARAM, LPARAM)
 
 LRESULT CKalelView::OnSync(WPARAM, LPARAM)
 {
-
+	// unlock the menu
+	pApp->menuIsAvailable = true;
 
 	return 0;
 }
@@ -693,9 +680,6 @@ LRESULT CKalelView::OnExchangeInstrumentState(WPARAM wParam, LPARAM incomingInst
 
 	// Update buttons
 	buttonStates.Update(*maParam);
-
-	// unlock the menu
-	pApp->menuIsAvailable = true;
 
 	return 0;
 }
