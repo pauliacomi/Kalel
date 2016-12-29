@@ -43,6 +43,10 @@ public:
 	void ResumeClient();
 	void SetUserContinue();
 
+	void FunctionSampleVacuum();
+	void FunctionBottleVacuum();
+	void FunctionChangeBottle();
+
 	void TestConn();
 
 private:
@@ -50,6 +54,7 @@ private:
 	MFCMessageHandler messageHandler;
 	
 	void ThreadCommand();
+	void FunctionalityCommand();
 
 	/**********************************************************************************************************************************
 	// Local variables: don't like these
@@ -68,6 +73,7 @@ private:
 	std::shared_ptr<const MachineSettings> localMachineSettings;
 	std::shared_ptr<const ExperimentSettings> localExperimentSettings;
 	int localThreadCommand = 0;
+	int localFunctionalityCommand = 0;
 
 	// Debugging
 	int debug_success = 0;
@@ -115,6 +121,10 @@ private:
 	unsigned ThreadCommand_req(http_request * r);
 	unsigned ThreadCommand_resp(http_response * r);
 	
+	// Functionality commands
+	unsigned FunctionalityCommand_req(http_request * r);
+	unsigned FunctionalityCommand_resp(http_response * r);
+
 	// Debugging
 	unsigned TestConn_req(http_request * r);
 	unsigned TestConn_resp(http_response * r);

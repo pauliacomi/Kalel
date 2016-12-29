@@ -121,6 +121,7 @@ private:
 	UINT_PTR graphTimer = 0;
 	UINT_PTR refrashTimer = 0;
 	void OnTimer(UINT_PTR nIDEvent);	//timer for window update
+	void ReplaceExperimentSettings(ExperimentPropertySheet* pDialogExperimentProperties);
 	void GetExperimentData(ExperimentPropertySheet * dialogExperimentProperties, bool initialRequest);
 
 	// Menu messages

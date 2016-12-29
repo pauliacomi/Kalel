@@ -319,30 +319,13 @@ void CKalelView::OnTimer(UINT_PTR nIDEvent)
 	CFormView::OnTimer(nIDEvent);	// Call base class handler.
 }
 
-
 // Copy all data from a property sheet dialog to the local object
 void CKalelView::GetExperimentData(ExperimentPropertySheet * pDialogExperimentProperties, bool initialRequest) {
 
 	if (initialRequest)
 	{
 		// Copy data across
-		experimentSettings->dataGeneral = pDialogExperimentProperties->m_general.allSettings;
-
-		if (experimentSettings->experimentType == EXPERIMENT_TYPE_AUTO)
-		{
-			experimentSettings->dataDivers = pDialogExperimentProperties->m_divers.allSettings;
-
-			experimentSettings->dataAdsorption.clear();
-			for (size_t i = 0; i < pDialogExperimentProperties->adsorptionTabs.size(); i++)
-			{
-				experimentSettings->dataAdsorption.push_back(pDialogExperimentProperties->adsorptionTabs[i]->allSettings);
-			}
-			experimentSettings->dataDesorption.clear();
-			for (size_t i = 0; i < pDialogExperimentProperties->desorptionTabs.size(); i++)
-			{
-				experimentSettings->dataDesorption.push_back(pDialogExperimentProperties->desorptionTabs[i]->allSettings);
-			}
-		}
+		ReplaceExperimentSettings(pDialogExperimentProperties);
 	}
 
 	else
@@ -386,30 +369,34 @@ void CKalelView::GetExperimentData(ExperimentPropertySheet * pDialogExperimentPr
 
 		if (modified)
 		{
+			// Copy data across
+			ReplaceExperimentSettings(pDialogExperimentProperties);
+
 			// Raise the flag for data modified
 			commHandler.SetExperimentSettings(experimentSettings);
-
-			// Copy data across
-			experimentSettings->dataGeneral = pDialogExperimentProperties->m_general.allSettings;
-
-			if (experimentSettings->experimentType == EXPERIMENT_TYPE_AUTO)
-			{
-				experimentSettings->dataDivers = pDialogExperimentProperties->m_divers.allSettings;
-
-				experimentSettings->dataAdsorption.clear();
-				for (size_t i = 0; i < pDialogExperimentProperties->adsorptionTabs.size(); i++)
-				{
-					experimentSettings->dataAdsorption.push_back(pDialogExperimentProperties->adsorptionTabs[i]->allSettings);
-				}
-				experimentSettings->dataDesorption.clear();
-				for (size_t i = 0; i < pDialogExperimentProperties->desorptionTabs.size(); i++)
-				{
-					experimentSettings->dataDesorption.push_back(pDialogExperimentProperties->desorptionTabs[i]->allSettings);
-				}
-			}
 		}
 	}
+}
 
+void CKalelView::ReplaceExperimentSettings(ExperimentPropertySheet* pDialogExperimentProperties)
+{
+	experimentSettings->dataGeneral = pDialogExperimentProperties->m_general.allSettings;
+
+	if (experimentSettings->experimentType == EXPERIMENT_TYPE_AUTO)
+	{
+		experimentSettings->dataDivers = pDialogExperimentProperties->m_divers.allSettings;
+
+		experimentSettings->dataAdsorption.clear();
+		for (size_t i = 0; i < pDialogExperimentProperties->adsorptionTabs.size(); i++)
+		{
+			experimentSettings->dataAdsorption.push_back(pDialogExperimentProperties->adsorptionTabs[i]->allSettings);
+		}
+		experimentSettings->dataDesorption.clear();
+		for (size_t i = 0; i < pDialogExperimentProperties->desorptionTabs.size(); i++)
+		{
+			experimentSettings->dataDesorption.push_back(pDialogExperimentProperties->desorptionTabs[i]->allSettings);
+		}
+	}
 }
 
 
@@ -434,112 +421,6 @@ LRESULT CKalelView::DisplayConnectDialog(WPARAM, LPARAM)
 	return 0;
 }
 
-LRESULT CKalelView::OnMsvAmpoule(WPARAM, LPARAM)
-{
-	if (pApp->serverConnected)
-	{
-		if (pApp->experimentRunning) {
-			AfxMessageBox(ERROR_EXP_INPROGRESS, MB_ICONEXCLAMATION | MB_OK);
-		}
-		else {
-			if (AfxMessageBox(PROMPT_VACUUM_SAMPLE, MB_YESNO | MB_ICONQUESTION) == IDYES)
-			{
-				experimentSettings->experimentType = EXPERIMENT_TYPE_SAMPLE_VACUUM;
-
-				// the start button is blocked
-				GetDlgItem(IDC_LANCER)->EnableWindow(FALSE);
-				// the stop button is activated
-				GetDlgItem(IDC_ARRETER)->EnableWindow(TRUE);
-
-				// Block menu and set running flag
-				pApp->experimentRunning = true;
-				pApp->menuIsAvailable = false;
-				UpdateButtons();
-
-				// Raise the flag for data modified
-				// commHandler.SetExperimentSettings();
-			}
-		}
-	}
-	else
-	{
-		AfxMessageBox(ERROR_CONNECTION_STATUS, MB_OK);
-	}
-
-	return 0;
-}
-
-LRESULT CKalelView::OnMsvBouteille(WPARAM, LPARAM)
-{
-	if (pApp->serverConnected)
-	{
-		if (pApp->experimentRunning) {
-			AfxMessageBox(ERROR_EXP_INPROGRESS, MB_ICONEXCLAMATION | MB_OK);
-		}
-		else {
-			if (AfxMessageBox(PROMPT_VACUUM_BOTTLE, MB_YESNO | MB_ICONQUESTION) == IDYES)
-			{
-				experimentSettings->experimentType = EXPERIMENT_TYPE_BOTTLE_VACUUM;
-
-				// the start button is blocked
-				GetDlgItem(IDC_LANCER)->EnableWindow(FALSE);
-				// the stop button is activated
-				GetDlgItem(IDC_ARRETER)->EnableWindow(TRUE);
-
-				// Block menu and set running flag
-				pApp->experimentRunning = true;
-				pApp->menuIsAvailable = false;
-				UpdateButtons();
-
-				// Raise the flag for data modified
-				//commHandler.SetExperimentSettings();
-			}
-		}
-	}
-	else
-	{
-		AfxMessageBox(ERROR_CONNECTION_STATUS, MB_OK);
-	}
-
-	return 0;
-}
-
-LRESULT CKalelView::OnChangementBouteille(WPARAM, LPARAM)
-{
-	if (pApp->serverConnected)
-	{
-		if (pApp->experimentRunning) {
-			AfxMessageBox(ERROR_EXP_INPROGRESS, MB_ICONEXCLAMATION | MB_OK);
-		}
-		else {
-			if (AfxMessageBox(PROMPT_CHANGE_BOTTLE, MB_YESNO | MB_ICONQUESTION) == IDYES)
-			{
-				ASSERT(0);
-				experimentSettings->experimentType = EXPERIMENT_TYPE_BOTTLE_VACUUM;
-
-				// the start button is blocked
-				GetDlgItem(IDC_LANCER)->EnableWindow(FALSE);
-				// the stop button is activated
-				GetDlgItem(IDC_ARRETER)->EnableWindow(TRUE);
-
-				// Block menu and set running flag
-				pApp->experimentRunning = true;
-				pApp->menuIsAvailable = false;
-				UpdateButtons();
-
-				// Raise the flag for data modified
-				//commHandler.SetExperimentSettings();
-			}
-		}
-	}
-	else
-	{
-		AfxMessageBox(ERROR_CONNECTION_STATUS, MB_OK);
-	}
-
-	return 0;
-}
-
 LRESULT CKalelView::DisplayPortDialog(WPARAM, LPARAM)
 {
 	if (pApp->serverConnected)
@@ -549,7 +430,7 @@ LRESULT CKalelView::DisplayPortDialog(WPARAM, LPARAM)
 		if (apparatusParameters.DoModal() == IDOK) {
 			if (apparatusParameters.Changed())
 			{
-				tempSettings = apparatusParameters.GetSettings();
+				tempSettings = apparatusParameters.GetSettings();			// Save it separately to prevent extra communication
 				commHandler.SetMachineSettings(tempSettings);
 			}
 		}
@@ -571,7 +452,7 @@ LRESULT CKalelView::DisplayApparatusSettingsDialog(WPARAM, LPARAM)
 		if (m_connection_ports.DoModal() == IDOK) {
 			if (m_connection_ports.Changed())
 			{
-				tempSettings = m_connection_ports.GetSettings();
+				tempSettings = m_connection_ports.GetSettings();			// Save it separately to prevent extra communication
 				commHandler.SetMachineSettings(tempSettings);
 			}
 		}
@@ -626,6 +507,111 @@ LRESULT CKalelView::BackgroundThreadRestart(WPARAM, LPARAM)
 }
 
 
+LRESULT CKalelView::OnMsvAmpoule(WPARAM, LPARAM)
+{
+	if (pApp->serverConnected)
+	{
+		if (pApp->experimentRunning) {
+			AfxMessageBox(ERROR_EXP_INPROGRESS, MB_ICONEXCLAMATION | MB_OK);
+		}
+		else {
+			if (AfxMessageBox(PROMPT_VACUUM_SAMPLE, MB_YESNO | MB_ICONQUESTION) == IDYES)
+			{
+				experimentSettings->experimentType = EXPERIMENT_TYPE_SAMPLE_VACUUM;
+
+				// the start button is blocked
+				GetDlgItem(IDC_LANCER)->EnableWindow(FALSE);
+				// the stop button is activated
+				GetDlgItem(IDC_ARRETER)->EnableWindow(TRUE);
+
+				// Block menu and set running flag
+				pApp->experimentRunning = true;
+				pApp->menuIsAvailable = false;
+				UpdateButtons();
+
+				// Give command
+				commHandler.FunctionSampleVacuum();
+			}
+		}
+	}
+	else
+	{
+		AfxMessageBox(ERROR_CONNECTION_STATUS, MB_OK);
+	}
+
+	return 0;
+}
+
+LRESULT CKalelView::OnMsvBouteille(WPARAM, LPARAM)
+{
+	if (pApp->serverConnected)
+	{
+		if (pApp->experimentRunning) {
+			AfxMessageBox(ERROR_EXP_INPROGRESS, MB_ICONEXCLAMATION | MB_OK);
+		}
+		else {
+			if (AfxMessageBox(PROMPT_VACUUM_BOTTLE, MB_YESNO | MB_ICONQUESTION) == IDYES)
+			{
+				experimentSettings->experimentType = EXPERIMENT_TYPE_BOTTLE_VACUUM;
+
+				// the start button is blocked
+				GetDlgItem(IDC_LANCER)->EnableWindow(FALSE);
+				// the stop button is activated
+				GetDlgItem(IDC_ARRETER)->EnableWindow(TRUE);
+
+				// Block menu and set running flag
+				pApp->experimentRunning = true;
+				pApp->menuIsAvailable = false;
+				UpdateButtons();
+
+				// Raise the flag for data modified
+				commHandler.FunctionBottleVacuum();
+			}
+		}
+	}
+	else
+	{
+		AfxMessageBox(ERROR_CONNECTION_STATUS, MB_OK);
+	}
+
+	return 0;
+}
+
+LRESULT CKalelView::OnChangementBouteille(WPARAM, LPARAM)
+{
+	if (pApp->serverConnected)
+	{
+		if (pApp->experimentRunning) {
+			AfxMessageBox(ERROR_EXP_INPROGRESS, MB_ICONEXCLAMATION | MB_OK);
+		}
+		else {
+			if (AfxMessageBox(PROMPT_CHANGE_BOTTLE, MB_YESNO | MB_ICONQUESTION) == IDYES)
+			{
+				ASSERT(0);
+				experimentSettings->experimentType = EXPERIMENT_TYPE_BOTTLE_VACUUM;
+
+				// the start button is blocked
+				GetDlgItem(IDC_LANCER)->EnableWindow(FALSE);
+				// the stop button is activated
+				GetDlgItem(IDC_ARRETER)->EnableWindow(TRUE);
+
+				// Block menu and set running flag
+				pApp->experimentRunning = true;
+				pApp->menuIsAvailable = false;
+				UpdateButtons();
+
+				// Raise the flag for data modified
+				commHandler.FunctionChangeBottle();
+			}
+		}
+	}
+	else
+	{
+		AfxMessageBox(ERROR_CONNECTION_STATUS, MB_OK);
+	}
+
+	return 0;
+}
 
 /**********************************************************************************************************************************
 // Server callback commands
@@ -672,7 +658,6 @@ LRESULT CKalelView::OnExchangeExperimentSettings(WPARAM wParam, LPARAM incomingE
 	return 0;
 }
 
-// Single function to update UI when receiving the command that the thread posted before finishing
 LRESULT CKalelView::OnExchangeInstrumentState(WPARAM wParam, LPARAM incomingInstrumentState) {
 
 	// Cast the parameters object and take ownership
@@ -684,7 +669,6 @@ LRESULT CKalelView::OnExchangeInstrumentState(WPARAM wParam, LPARAM incomingInst
 	return 0;
 }
 
-// Single function to update UI when receiving the command that the thread posted before finishing
 LRESULT CKalelView::OnInstrumentButtonConfirmed(WPARAM wParam, LPARAM incomingInstrumentState) {
 
 	// Cast the parameters object and take ownership

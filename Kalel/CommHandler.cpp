@@ -21,6 +21,10 @@ using json = nlohmann::json;
 #define PAUSE		5
 #define RESUME		6
 
+#define SAMPLEVACUUM		1
+#define BOTTLEVACUUM		2
+#define BOTTLECHANGE		3
+
 CommHandler::CommHandler()
 {
 }
@@ -288,6 +292,37 @@ void CommHandler::ThreadCommand()
 	}
 }
 
+void CommHandler::FunctionSampleVacuum()
+{
+	localFunctionalityCommand = SAMPLEVACUUM;
+	FunctionalityCommand();
+}
+
+void CommHandler::FunctionBottleVacuum()
+{
+	localFunctionalityCommand = BOTTLEVACUUM;
+	FunctionalityCommand();
+}
+
+void CommHandler::FunctionChangeBottle()
+{
+	localFunctionalityCommand = BOTTLECHANGE;
+	FunctionalityCommand();
+}
+
+
+void CommHandler::FunctionalityCommand()
+{
+	auto request = std::bind(&CommHandler::FunctionalityCommand_req, this, std::placeholders::_1);
+	auto callback = std::bind(&CommHandler::FunctionalityCommand_resp, this, std::placeholders::_1);
+
+	try {
+		client.Request(request, callback, localAddress);
+	}
+	catch (const std::exception& e) {
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, UnicodeConv::s2ws(e.what()));
+	}
+}
 
 /*********************************
 // Debugging
@@ -864,6 +899,54 @@ unsigned CommHandler::ThreadCommand_resp(http_response * r)
 	return 0;
 }
 
+unsigned CommHandler::FunctionalityCommand_req(http_request* r)
+{
+	r->method_ = http::method::post;
+	r->path_ = "/api/functionality";
+
+	std::string action;
+	switch (localFunctionalityCommand)
+	{
+	case SAMPLEVACUUM:
+		action = "cell_vacuum";
+		break;
+	case BOTTLEVACUUM:
+		action = "bottle_vacuum";
+		break;
+	case BOTTLECHANGE:
+		action = "bottle_change";
+		break;
+	default:
+		break;
+	}
+		
+	r->params_.emplace("action", action);
+	return 0;
+}
+
+unsigned CommHandler::FunctionalityCommand_resp(http_response* r)
+{
+	if (r->status_ == http::responses::ok)
+	{
+
+		return 1;
+	}
+	else if (r->status_ == http::responses::conflict)
+	{
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Server cannot process functionality"));
+		return 1;
+	}
+	else if (r->status_ == http::responses::bad_request)
+	{
+
+		return 1;
+	}
+	else if (r->status_ == http::responses::not_found) {
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Server not found"));
+		return 1;
+	}
+	return 0;
+}
 
 /*********************************
 // Debugging
