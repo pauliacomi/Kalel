@@ -369,6 +369,12 @@ unsigned CommHandler::Handshake_resp(http_response* r) {
 		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Server not found"));
 		return 1;
 	}
+	else if(r->disconnected_)
+	{
+		messageHandler.Disconnection();
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Server disconnected"));
+	}
+
 	return 0;
 }
 
@@ -759,6 +765,12 @@ unsigned CommHandler::GetData_resp(http_response* r) {
 		flagExperimentRequest = false;
 		return 1;
 	}
+	else if (r->disconnected_)
+	{
+		messageHandler.Disconnection();
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Server disconnected"));
+	}
+
 
 	flagExperimentRequest = false;
 	return 0;

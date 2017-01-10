@@ -34,6 +34,15 @@ bool MFCMessageHandler::ConnectionComplete()
 	return true;
 }
 
+bool MFCMessageHandler::Disconnection()
+{
+	// Post the required message, now the main thread is responsible for deleting the new class
+	if (::PostMessage(windowHandle, UWM_SIGNAL_SERVER_DISCONNECTED, NULL, NULL) == 0) {
+		return false;
+	}
+	return true;
+}
+
 
 bool MFCMessageHandler::OnSetMachineSettings()
 {

@@ -8,7 +8,7 @@
 
 struct http_response {
 
-	http_response() : authentication_given_(false) {}
+	http_response() : authentication_given_(false), disconnected_(false) {}
 
 	std::string                        http_version_;
 
@@ -37,6 +37,9 @@ struct http_response {
 	/*   authentication_given_ is true when the user has entered a username and password.
 	These can then be read from username_ and password_ */
 	bool authentication_given_;
+
+	/*   disconnected_ is true when the client cannot process a request and terminates early. */
+	bool disconnected_;
 };
 
 #endif

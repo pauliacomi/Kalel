@@ -68,10 +68,7 @@ unsigned Client::Process(std::string ip, std::string port, std::function<void(ht
 	}
 	catch (const std::exception& e)
 	{
-		STREAM_LOG(logERROR) << e.what();
-#ifdef FILE_LOGGING
-		FILE_LOG(logERROR) << e.what();
-#endif // FILE_LOGGING
+		ErrorCaught(e.what(), response_func_);
 		return 1;
 	}
 
@@ -80,10 +77,7 @@ unsigned Client::Process(std::string ip, std::string port, std::function<void(ht
 	}
 	catch (const std::exception& e)
 	{
-		STREAM_LOG(logERROR) << e.what();
-#ifdef FILE_LOGGING
-		FILE_LOG(logERROR) << e.what();
-#endif // FILE_LOGGING
+		ErrorCaught(e.what(), response_func_);
 		return 1;
 	}
 
@@ -116,10 +110,7 @@ unsigned Client::Process(std::string ip, std::string port, std::function<void(ht
 	}
 	catch (const std::exception& e)
 	{
-		STREAM_LOG(logERROR) << e.what();
-#ifdef FILE_LOGGING
-		FILE_LOG(logERROR) << e.what();
-#endif // FILE_LOGGING
+		ErrorCaught(e.what(), response_func_);
 		return 1;
 	}
 
@@ -139,10 +130,7 @@ unsigned Client::Process(std::string ip, std::string port, std::function<void(ht
 		responseString = l_sock.ReceiveLine();
 	}
 	catch (const std::exception& e)	{
-		STREAM_LOG(logERROR) << e.what();
-#ifdef FILE_LOGGING
-		FILE_LOG(logERROR) << e.what();
-#endif // FILE_LOGGING
+		ErrorCaught(e.what(), response_func_);
 		return 1;
 	}
 
@@ -158,27 +146,21 @@ unsigned Client::Process(std::string ip, std::string port, std::function<void(ht
 	response.status_		= ParseStatusCode(responseString.substr(posSpace + 1, 3));
 
 	if (response.status_.empty()){
-		STREAM_LOG(logERROR) << ERR_HTTP_CODE;
-#ifdef FILE_LOGGING
-		FILE_LOG(logERROR) << ERR_HTTP_CODE;
-#endif // FILE_LOGGING
+		ErrorCaught(ERR_HTTP_CODE, response_func_);
 		return 1;
 	}
 
 	std::string line;
 	bool messageToReceive = true;		// expecting a message
 
-	while (1) {
+	while (true) {
 		try	
 		{
 			line = l_sock.ReceiveLine();	// no message body is to be received, regular line-based receive 
 		}
 		catch (const std::exception& e)
 		{
-			STREAM_LOG(logERROR) << e.what();
-#ifdef FILE_LOGGING
-			FILE_LOG(logERROR) << e.what();
-#endif // FILE_LOGGING
+			ErrorCaught(e.what(), response_func_);
 		}
 
 		if (line.empty())
@@ -197,10 +179,7 @@ unsigned Client::Process(std::string ip, std::string port, std::function<void(ht
 				}
 				catch (const std::exception& e)
 				{
-					STREAM_LOG(logERROR) << e.what();
-#ifdef FILE_LOGGING
-					FILE_LOG(logERROR) << e.what();
-#endif // FILE_LOGGING
+					ErrorCaught(e.what(), response_func_);
 				}
 
 				if (line.empty()) {
@@ -260,4 +239,18 @@ unsigned Client::Process(std::string ip, std::string port, std::function<void(ht
 #endif // FILE_LOGGING
 
 	return 0;
+}
+
+
+inline void Client::ErrorCaught(std::string err_str, std::function<void(http_response*)> response_func_)
+{
+	STREAM_LOG(logERROR) << err_str;
+#ifdef FILE_LOGGING
+	FILE_LOG(logERROR) << err_str;
+#endif // FILE_LOGGING
+
+	http_response response;
+	response.disconnected_ = true;
+	response.status_ = err_str;
+	response_func_(&response);
 }

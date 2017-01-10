@@ -33,6 +33,7 @@ public:
 	bool setHandle(HWND h);
 	// PostMessage functions
 	bool ConnectionComplete();
+	bool Disconnection();
 	bool ExchangeMachineSettings(const MachineSettings &pParam);
 	bool ExchangeExperimentSettings(const ExperimentSettings &pParam);
 	bool OnSetMachineSettings();

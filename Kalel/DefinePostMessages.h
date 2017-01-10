@@ -31,6 +31,7 @@
 //*************************************************************************************************************************
 
 #define UWM_SIGNAL_SERVER_CONNECTED					(WM_USER + 40)
+#define UWM_SIGNAL_SERVER_DISCONNECTED				(WM_USER + 45)
 #define UWM_EXCHANGE_MACHINESETTINGS				(WM_USER + 41)
 #define UWM_EXCHANGE_EXPERIMENTSETTINGS				(WM_USER + 43)
 #define UWM_EXCHANGEDATA							(WM_USER + 27)

@@ -139,6 +139,7 @@ private:
 	// Thread callbacks
 
 	LRESULT OnServerConnected(WPARAM , LPARAM );
+	LRESULT OnServerDisconnected(WPARAM, LPARAM);
 	LRESULT OnSync(WPARAM , LPARAM );
 	LRESULT OnSetMachineSettings(WPARAM, LPARAM);
 	LRESULT OnExchangeMachineSettings(WPARAM wParam, LPARAM incomingMachineSettings);

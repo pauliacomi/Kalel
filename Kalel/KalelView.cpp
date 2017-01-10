@@ -50,6 +50,7 @@ BEGIN_MESSAGE_MAP(CKalelView, CFormView)
 
 	// Server callbacks
 	ON_MESSAGE(UWM_SIGNAL_SERVER_CONNECTED,			&CKalelView::OnServerConnected)					// Callback to notify of successful server connection
+	ON_MESSAGE(UWM_SIGNAL_SERVER_DISCONNECTED,		&CKalelView::OnServerDisconnected)				// Callback to notify of server disconnect
 	ON_MESSAGE(UWM_SYNCED,							&CKalelView::OnSync)							// Callback on initial instrument sync
 	ON_MESSAGE(UWM_SET_MACHINESETTINGS,				&CKalelView::OnSetMachineSettings)				// Callback on notify of server-side changed MachineSettings
 	ON_MESSAGE(UWM_EXCHANGE_MACHINESETTINGS,		&CKalelView::OnExchangeMachineSettings)			// Callback to notify of received MachineSettings
@@ -624,6 +625,13 @@ LRESULT CKalelView::OnServerConnected(WPARAM, LPARAM)
 	commHandler.Sync();
 	return 0;
 }
+
+LRESULT CKalelView::OnServerDisconnected(WPARAM, LPARAM)
+{
+	pApp->serverConnected = false;
+	return 0;
+}
+
 
 LRESULT CKalelView::OnSync(WPARAM, LPARAM)
 {
