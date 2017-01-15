@@ -40,6 +40,11 @@ BEGIN_MESSAGE_MAP(CKalelView, CFormView)
 	// Custom messages
 	//************************************
 
+	// Menu messages:
+	ON_MESSAGE(UWM_DISP_CONNECTS_DIALOG,			&CKalelView::DisplayConnectDialog)				// Display dialog connection
+	ON_MESSAGE(UWM_DISP_PORT_DIALOG,				&CKalelView::DisplayPortDialog)					// Display dialog ports
+	ON_MESSAGE(UWM_DISP_DEVSETTINGS_DIALOG,			&CKalelView::DisplayApparatusSettingsDialog)	// Display dialog machine parameters
+
 	// Server requests from other views
 	ON_MESSAGE(UWM_FUNC_VACUUM_SAMPLE,				&CKalelView::OnMsvAmpoule)						// Request sample under vacuum
 	ON_MESSAGE(UWM_FUNC_VACUUM_BOTTLE,				&CKalelView::OnMsvBouteille)					// Request bottle under vacuum
@@ -65,10 +70,6 @@ BEGIN_MESSAGE_MAP(CKalelView, CFormView)
 	ON_MESSAGE(UWM_DISPLAYMESSAGEBOXCONF,			&CKalelView::MessageBoxConfirmation)			// Displays an messageBox to or ask user for confirmation
 	ON_MESSAGE(UWM_CANCELEXPERIMENT,				&CKalelView::CancelBeforeStarting)						
 																							
-	// Menu messages:
-	ON_MESSAGE(UWM_DISP_CONNECTS_DIALOG,			&CKalelView::DisplayConnectDialog)				// Display dialog connection
-	ON_MESSAGE(UWM_DISP_PORT_DIALOG,				&CKalelView::DisplayPortDialog)					// Display dialog ports
-	ON_MESSAGE(UWM_DISP_DEVSETTINGS_DIALOG,			&CKalelView::DisplayApparatusSettingsDialog)	// Display dialog machine parameters
 	
 	//************************************
 	// Standard messages
@@ -183,7 +184,7 @@ void CKalelView::OnInitialUpdate()
 	// Get a pointer to the app itself for access to the menu availability
 	pApp = static_cast<CKalelApp *>(AfxGetApp());
 
-	// Pass window handle
+	// Pass window handle to comm handler
 	commHandler.SetHandle(GetSafeHwnd());
 
 	// Then connect to the server if the address exists

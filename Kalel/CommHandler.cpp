@@ -77,6 +77,7 @@ void CommHandler::Sync()
 	GetExperimentSettings();
 	GetData();
 	GetLog();
+	GetRequests();
 }
 
 
@@ -201,10 +202,6 @@ void CommHandler::GetData(std::string fromTime)
 			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, UnicodeConv::s2ws(e.what()));
 		}
 	}
-	else
-	{
-		TRACE(_T("lel"));
-	}
 }
 
 
@@ -229,9 +226,29 @@ void CommHandler::GetLog(std::wstring fromTime)
 			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, UnicodeConv::s2ws(e.what()));
 		}
 	}
-	else
+}
+
+
+/*********************************
+// Errors/requests
+*********************************/
+void CommHandler::GetRequests(std::wstring fromTime)
+{
+	if (!flagReqRequest)
 	{
-		TRACE(_T("lel"));
+		flagReqRequest = true;
+
+		localReqTime = UnicodeConv::ws2s(fromTime.c_str());
+
+		auto request = std::bind(&CommHandler::GetRequest_req, this, std::placeholders::_1);
+		auto callback = std::bind(&CommHandler::GetRequest_resp, this, std::placeholders::_1);
+
+		try {
+			client.Request(request, callback, localAddress);
+		}
+		catch (const std::exception& e) {
+			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, UnicodeConv::s2ws(e.what()));
+		}
 	}
 }
 
@@ -849,6 +866,78 @@ unsigned CommHandler::GetLogs_resp(http_response * r)
 	return 0;
 }
 
+/*********************************
+// Get Requests / Errors
+*********************************/
+
+unsigned CommHandler::GetRequest_req(http_request * r)
+{
+	r->method_ = http::method::get;
+	r->accept_ = http::mimetype::appjson;
+	r->path_ = "/api/experimentrequests";
+	r->params_.emplace("time", localReqTime);
+	return 0;
+}
+
+unsigned CommHandler::GetRequest_resp(http_response * r)
+{
+	if (r->status_ == http::responses::ok)
+	{
+		if (r->content_type_ == http::mimetype::appjson) {
+
+			json j;
+
+			try
+			{
+				j = json::parse(r->answer_);
+			}
+			catch (const std::exception& e)
+			{
+				messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, UnicodeConv::s2ws(e.what()));
+				flagReqRequest = false;
+				return 1;
+			}
+
+			auto receivedReqArray = new std::map<std::wstring, std::wstring>();
+
+			for (json::iterator i = j.begin(); i != j.end(); ++i)
+			{
+				std::wstring receivedReq;
+				try
+				{
+					receivedReq = UnicodeConv::s2ws(j[i.key()].get<std::string>().c_str());
+				}
+				catch (const std::exception& e) {
+					messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, UnicodeConv::s2ws(e.what()));
+					delete receivedReqArray;
+					flagReqRequest = false;
+					return 1;
+				}
+				std::wstring receivedLogTime = UnicodeConv::s2ws(i.key().c_str());
+				receivedReqArray->insert(std::make_pair(receivedLogTime, receivedReq));
+			}
+
+			messageHandler.ExchangeRequests(receivedReqArray);
+
+		}
+		else
+		{
+			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Corrupt response format"));
+			flagReqRequest = false;
+			return 1;
+		}
+	}
+	else if (r->status_ == http::responses::not_found)
+	{
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Server not found"));
+		flagReqRequest = false;
+		return 1;
+	}
+
+	flagReqRequest = false;
+
+	return 0;
+}
 
 /*********************************
 // Thread Commands

@@ -34,6 +34,7 @@ public:
 	
 	void GetData(std::string fromTime = R"()");
 	void GetLog(std::wstring fromTime = _T(""));
+	void GetRequests(std::wstring fromTime = _T(""));;
 
 	void StartClient();
 	void ShutdownClient();
@@ -68,6 +69,9 @@ private:
 	std::atomic_bool flagLogsRequest = false;
 	std::string localLogsTime;
 
+	std::atomic_bool flagReqRequest = false;
+	std::string localReqTime;
+
 	ControlInstrumentStateData localInstrumentState;
 
 	std::shared_ptr<const MachineSettings> localMachineSettings;
@@ -82,6 +86,7 @@ private:
 	/**********************************************************************************************************************************
 	// Request and response functions
 	**********************************************************************************************************************************/
+	// Handshake/ping
 	unsigned Handshake_req(http_request* r);
 	unsigned Handshake_resp(http_response * r);
 	
@@ -116,6 +121,10 @@ private:
 	// Logs sync
 	unsigned GetLogs_req(http_request * r);
 	unsigned GetLogs_resp(http_response * r);
+
+	// Request/Error sync
+	unsigned GetRequest_req(http_request * r);
+	unsigned GetRequest_resp(http_response * r);
 	
 	// Automation/experiment commands
 	unsigned ThreadCommand_req(http_request * r);

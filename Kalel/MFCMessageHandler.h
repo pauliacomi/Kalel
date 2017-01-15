@@ -39,6 +39,7 @@ public:
 	bool OnSetMachineSettings();
 	bool ExchangeData(std::deque<std::shared_ptr<ExperimentData>> * pParam);
 	bool ExchangeLogs(std::map<std::wstring, std::wstring> * pParam);
+	bool ExchangeRequests(std::map<std::wstring, std::wstring>* pParam);
 	bool ExchangeControlState(const ControlInstrumentState &pParam);
 	bool ExchangeControlStateSpecific(const ControlInstrumentStateData& pParam);
 	bool ExperimentStart();
