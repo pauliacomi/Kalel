@@ -1,6 +1,8 @@
 #pragma once
 
 #include <string>
+#include <chrono>
+
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__)
 

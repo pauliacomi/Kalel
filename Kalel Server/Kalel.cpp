@@ -40,22 +40,38 @@ Kalel::Kalel()
 	// Start server functionality
 	server.SetLogs(storageVectors.serverLogs, storageVectors.serverLogsMtx);
 
-	server.AddMethod(std::bind(&Kalel::Ping, this, std::placeholders::_1, std::placeholders::_2), 
-		"/api/handshake");
-	server.AddMethod(std::bind(&Kalel::MachineSettingsSync, this, std::placeholders::_1, std::placeholders::_2), 
-		"/api/machinesettings");
-	server.AddMethod(std::bind(&Kalel::ExperimentSettingsSync, this, std::placeholders::_1, std::placeholders::_2), 
-		"/api/experimentsettings"); 
-	server.AddMethod(std::bind(&Kalel::InstrumentStateSync, this, std::placeholders::_1, std::placeholders::_2), 
-		"/api/instrument");
-	server.AddMethod(std::bind(&Kalel::DataSync, this, std::placeholders::_1, std::placeholders::_2), 
-		"/api/experimentdata");
-	server.AddMethod(std::bind(&Kalel::LogSync, this, std::placeholders::_1, std::placeholders::_2), 
-		"/api/experimentlogs");
-	server.AddMethod(std::bind(&Kalel::AutomationControl, this, std::placeholders::_1, std::placeholders::_2),
-		"/api/thread");
-	server.AddMethod(std::bind(&Kalel::Debug, this, std::placeholders::_1, std::placeholders::_2), 
-		"/api/debug/testconnection");
+	server.AddMethod(
+		std::bind(&Kalel::Ping, this, std::placeholders::_1, std::placeholders::_2), 
+		"/api/handshake"
+	);
+	server.AddMethod(
+		std::bind(&Kalel::MachineSettingsSync, this, std::placeholders::_1, std::placeholders::_2), 
+		"/api/machinesettings"
+	);
+	server.AddMethod(
+		std::bind(&Kalel::ExperimentSettingsSync, this, std::placeholders::_1, std::placeholders::_2), 
+		"/api/experimentsettings"
+	); 
+	server.AddMethod(
+		std::bind(&Kalel::InstrumentStateSync, this, std::placeholders::_1, std::placeholders::_2), 
+		"/api/instrument"
+	);
+	server.AddMethod(
+		std::bind(&Kalel::DataSync, this, std::placeholders::_1, std::placeholders::_2), 
+		"/api/experimentdata"
+	);
+	server.AddMethod(
+		std::bind(&Kalel::LogSync, this, std::placeholders::_1, std::placeholders::_2), 
+		"/api/experimentlogs"
+	);
+	server.AddMethod(
+		std::bind(&Kalel::AutomationControl, this, std::placeholders::_1, std::placeholders::_2),
+		"/api/thread"
+	);
+	server.AddMethod(
+		std::bind(&Kalel::Debug, this, std::placeholders::_1, std::placeholders::_2), 
+		"/api/debug/testconnection"
+	);
 
 	server.Start();
 

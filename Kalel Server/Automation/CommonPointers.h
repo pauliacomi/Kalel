@@ -13,47 +13,70 @@
 #include <map>
 #include <deque>
 #include <memory>
+#include <chrono>
 
 class Storage {
+	
 	//**********
-	// Logs
+	// Server logs
 	//**********
-public:
-	std::mutex serverLogsMtx;											// Mutex for the server logs					
-	std::vector<std::string> serverLogs;								// Logs from the server are stored here
 
+public:
+	std::mutex serverLogsMtx;																					// Mutex for the server logs					
+	std::vector<std::string> serverLogs;																		// Logs from the server are stored here
+
+	//**********
+	// Automation logs
+	//**********
 private:
-	std::mutex autoInfoLogsMutex;										// Synchronisation class, should be used whenever there are writes to the logs
-	std::map<std::string, std::string> automationInfoLogs;				// All non-error logs are stored here
-	std::map<std::string, std::string> automationErrorLogs;				// All error logs are stored here
+	std::mutex autoInfoLogsMutex;																				// Synchronisation class, should be used whenever there are writes to the logs
+	std::map<std::chrono::high_resolution_clock::time_point, std::string> automationInfoLogs;					// All non-error logs are stored here
 
 public:
-	void pushInfoLogs(std::string one, std::string two) {
+	void pushInfoLogs(std::chrono::high_resolution_clock::time_point time, std::string value) {
 		std::unique_lock<std::mutex> lock(autoInfoLogsMutex);
-		automationInfoLogs.insert(std::make_pair(one, two));
+		automationInfoLogs.insert(std::make_pair(time, value));
 	}
 
-	std::map<std::string, std::string> getInfoLogs() {
+	std::map<std::chrono::high_resolution_clock::time_point, std::string> getInfoLogs() {
 		std::unique_lock<std::mutex> lock(autoInfoLogsMutex);
 		return automationInfoLogs;
+	}
+
+	//**********
+	// Requests and error interactions
+	//**********
+private:
+	std::mutex autoReqMutex;																					// Synchronisation class, should be used whenever there are writes to the logs
+	std::map<std::chrono::high_resolution_clock::time_point, std::string> automationErrorLogs;					// All error logs are stored here
+
+public:
+	void pushErrLogs(std::chrono::high_resolution_clock::time_point time, std::string value) {
+		std::unique_lock<std::mutex> lock(autoReqMutex);
+		automationErrorLogs.insert(std::make_pair(time, value));
+	}
+
+	std::map<std::chrono::high_resolution_clock::time_point, std::string> getErrLogs() {
+		std::unique_lock<std::mutex> lock(autoReqMutex);
+		return automationErrorLogs;
 	}
 
 	//**********
 	// Data
 	//**********
 private:
-	std::mutex sharedMutex;												// Synchronisation class, should be used whenever there are writes to the deque
-	std::deque<std::shared_ptr<ExperimentData>> dataCollection;			// The collection of data from an experiment
+	std::mutex sharedMutex;																						// Synchronisation class, should be used whenever there are writes to the deque
+	std::map<std::chrono::high_resolution_clock::time_point, std::shared_ptr<ExperimentData>> dataCollection;	// The collection of data from an experiment
 
 public:
 	std::shared_ptr<ExperimentData> currentData;
 
-	void pushData(std::shared_ptr<ExperimentData> i) {
+	void pushData(std::chrono::high_resolution_clock::time_point time, std::shared_ptr<ExperimentData> value) {
 		std::unique_lock<std::mutex> lock(sharedMutex);
-		dataCollection.push_back(i);
+		dataCollection.insert(std::make_pair(time, value));
 	}
 
-	std::deque<std::shared_ptr<ExperimentData>> getData() {
+	std::map<std::chrono::high_resolution_clock::time_point, std::shared_ptr<ExperimentData>> getData() {
 		std::unique_lock<std::mutex> lock(sharedMutex);
 		return dataCollection;
 	}
@@ -63,12 +86,12 @@ public:
 	//**********
 
 	std::mutex machineSettingsMutex;
-	std::shared_ptr<MachineSettings> machineSettings;					// The machine settings are here
+	std::shared_ptr<MachineSettings> machineSettings;															// The machine settings are here
 
 
-	std::mutex experimentSettingsMutex;									// Synchronisation class, should be used whenever there are writes to the deque
-	std::shared_ptr<ExperimentSettings> experimentSettings;				// The experiment settings are here
-	std::shared_ptr<ExperimentSettings> newExperimentSettings;			// The new experiment settings
+	std::mutex experimentSettingsMutex;																			// Synchronisation class, should be used whenever there are writes to the deque
+	std::shared_ptr<ExperimentSettings> experimentSettings;														// The experiment settings are here
+	std::shared_ptr<ExperimentSettings> newExperimentSettings;													// The new experiment settings
 
 public:
 	void setexperimentSettings(std::shared_ptr<ExperimentSettings> i) {
