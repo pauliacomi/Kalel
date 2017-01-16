@@ -6,6 +6,7 @@
 #include "stdHelpers.h"
 #include "base64.h"
 #include "Netcode Resources.h"
+#include "../timeHelpers.h"
 
 // Logging functionality
 #include "../log.h"	

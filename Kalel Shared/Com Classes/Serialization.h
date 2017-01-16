@@ -8,6 +8,7 @@
 #include "../Com Classes/MachineSettings.h"
 #include "../Com Classes/ControlInstrumentState.h"
 #include "../unicodeConv.h"
+#include "../timeHelpers.h"
 
 
 namespace serialization {
@@ -121,7 +122,7 @@ static void serializeMachineSettingsToJSON(const MachineSettings &m, nlohmann::j
 		j[	STRINGIFY(e.measurementsMade				)]	= e.GetmeasurementsMade						();
 		j[	STRINGIFY(e.timeElapsed						)]	= e.GettimeElapsed							();
 		j[	STRINGIFY(e.timeStart						)]	= e.GettimeStart							();
-		j[	STRINGIFY(e.timestamp						)]	= e.timestamp								;
+		j[	STRINGIFY(e.timestamp						)]	= TimePointToString(e.timestamp)			;
 		j[	STRINGIFY(e.timeToEquilibrate				)]	= e.GettimeToEquilibrate					();
 		j[	STRINGIFY(e.timeToEquilibrateCurrent		)]	= e.GettimeToEquilibrateCurrent				();
 		j[	STRINGIFY(e.injectionAttemptCounter			)]	= e.GetinjectionAttemptCounter				();
@@ -154,7 +155,7 @@ static void serializeMachineSettingsToJSON(const MachineSettings &m, nlohmann::j
 		e.SetmeasurementsMade									( j[	STRINGIFY(e.measurementsMade				)]);
 		e.SettimeElapsed										( j[	STRINGIFY(e.timeElapsed						)]);
 		e.timeStart												= j[	STRINGIFY(e.timeStart						)].get<time_t>();
-		e.timestamp												= j[	STRINGIFY(e.timestamp						)].get<std::string>();
+		e.timestamp							= StringToTimePoint ( j[	STRINGIFY(e.timestamp						)].get<std::string>());
 		e.SettimeToEquilibrate									( j[	STRINGIFY(e.timeToEquilibrate				)]);
 		e.SettimeToEquilibrateCurrent							( j[	STRINGIFY(e.timeToEquilibrateCurrent		)]);
 		e.SetinjectionAttemptCounter							( j[	STRINGIFY(e.injectionAttemptCounter			)]);

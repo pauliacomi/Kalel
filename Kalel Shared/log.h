@@ -7,7 +7,7 @@
 #include <mutex>
 #include <stdio.h>
 
-#include "timestamp.h"
+#include "timeHelpers.h"
 
 
 /**********************************************************************************************************************************
@@ -50,7 +50,7 @@ private:
 template <typename T>
 Log<T>::Log()
 {
-	timestamp = NowTime();
+	timestamp = TimePointToString(NowTime());
 }
 
 /*********************************
@@ -81,7 +81,8 @@ std::ostringstream& Log<T>::GetTimeStamped(TLogLevel level)
 template <typename T>
 std::ostringstream& Log<T>::GetTimeStamp()
 {
-	return timestamp;
+	os << timestamp;
+	return os;
 }
 
 /*********************************

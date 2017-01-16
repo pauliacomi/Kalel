@@ -215,7 +215,7 @@
     <ClInclude Include="..\Kalel Shared\Resources\DefineText.h" />
     <ClInclude Include="..\Kalel Shared\Resources\StringTable.h" />
     <ClInclude Include="..\Kalel Shared\stringFormat.h" />
-    <ClInclude Include="..\Kalel Shared\timestamp.h" />
+    <ClInclude Include="..\Kalel Shared\timeHelpers.h" />
     <ClInclude Include="..\Kalel Shared\unicodeConv.h" />
     <ClInclude Include="Automation\Class\Automation.h" />
     <ClInclude Include="Automation\CommonControls.h" />
@@ -268,6 +268,7 @@
     <ClCompile Include="..\Kalel Shared\Netcode\Socket.cpp" />
     <ClCompile Include="..\Kalel Shared\Netcode\stdHelpers.cpp" />
     <ClCompile Include="..\Kalel Shared\Netcode\URLHelper.cpp" />
+    <ClCompile Include="..\Kalel Shared\timeHelpers.cpp" />
     <ClCompile Include="..\Kalel Shared\unicodeConv.cpp" />
     <ClCompile Include="Automation\Class\Automation.cpp" />
     <ClCompile Include="Automation\Class\AutomationShutdown.cpp" />

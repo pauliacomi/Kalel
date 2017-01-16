@@ -13,7 +13,7 @@
 #include "../../Backend/Wrapper Classes/SerialInstruments.h"				// Pressure & Calorimeter recording
 
 // Utilities
-#include "../../../Kalel Shared/timestamp.h"
+#include "../../../Kalel Shared/timeHelpers.h"
 #include "../../../Kalel Server/Automation/FileWriter.h"					// Writing file
 #include "../../../Kalel Server/Backend/Wrapper Classes/ValveController.h"	// Valve class
 #include "../Utils/Chrono.h"												// Time keeping
@@ -106,7 +106,7 @@ void Measurement::Execution()
 		ThreadMeasurement();
 
 		// Record time
-		storage.currentData->measurementsMade++;												// Save the measurement number
+		++storage.currentData->measurementsMade;												// Save the measurement number
 		storage.currentData->timeElapsed = controls.timerExperiment.TempsActuel();				// Save the time elapsed from the beginning of the experiment
 		storage.currentData->timeToEquilibrateCurrent = controls.timerWaiting.TempsActuel();	// Save the waiting time if it exists
 		storage.currentData->timestamp = NowTime();

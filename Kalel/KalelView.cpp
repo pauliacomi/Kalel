@@ -22,6 +22,7 @@
 #include "DefineMenuMessages.h"										// Definition of messages received from the menu
 
 #include "ExperimentPropertySheet.h"								// The dialog asking the user to input the experiment parameters
+#include "../Kalel Shared/timeHelpers.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -300,7 +301,7 @@ void CKalelView::OnTimer(UINT_PTR nIDEvent)
 
 			if (pApp->serverConnected)
 			{
-				commHandler.GetData(dataCollection.back()->timestamp);
+				commHandler.GetData(TimePointToString(dataCollection.back()->timestamp));
 				commHandler.GetLog(logCollection.rbegin()->first);
 			}
 		}

@@ -3,7 +3,7 @@
 
 #include "../Kalel Shared/Resources/DefineText.h"
 #include "../Kalel Shared/Com Classes/ExperimentData.h"
-#include "../Kalel Shared/timestamp.h"
+#include "../Kalel Shared/timeHelpers.h"
 #include "../Kalel Shared/stringFormat.h"
 
 
@@ -27,7 +27,7 @@ bool MessageHandler::ExchangeData(const ExperimentData &pParam)
 	std::shared_ptr<ExperimentData> newData = std::make_shared<ExperimentData>(pParam);
 
 	// Lock to prevent any synchronisation errors
-	storage.pushData(newData);
+	storage.pushData(NowTime(), newData);
 
 	return true;
 }
