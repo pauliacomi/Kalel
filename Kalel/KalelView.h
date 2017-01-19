@@ -70,13 +70,13 @@ private:
 
 	// Storage
 private:
-	ListOfInstrumentButtons								buttonStates;			// The class which deals which keeps all the state of the buttons, for displaying them 
+	ListOfInstrumentButtons																buttonStates;			// The class which deals which keeps all the state of the buttons, for displaying them 
 	
-	std::map<std::wstring, std::wstring> 				logCollection;			// Log points for an experiment are stored here
-	std::deque<std::shared_ptr<ExperimentData>>			dataCollection;			// Measurement points for an experiment are stored here
-	std::shared_ptr<MachineSettings>					machineSettings;		// Pointer to a machineSettings object
-	std::shared_ptr<MachineSettings>					tempSettings;			// Temporary machineSettings stored here between sending change request to server and server acknowledgement
-	std::shared_ptr<ExperimentSettings>					experimentSettings;		// Local storage of experimentSettings
+	std::map<std::chrono::system_clock::time_point, std::wstring> 						logCollection;			// Log points for an experiment are stored here
+	std::map<std::chrono::system_clock::time_point, std::shared_ptr<ExperimentData>>	dataCollection;			// Measurement points for an experiment are stored here
+	std::shared_ptr<MachineSettings>													machineSettings;		// Pointer to a machineSettings object
+	std::shared_ptr<MachineSettings>													tempSettings;			// Temporary machineSettings stored here between sending change request to server and server acknowledgement
+	std::shared_ptr<ExperimentSettings>													experimentSettings;		// Local storage of experimentSettings
 	
 	
 	// Some storage variables for each MFC control

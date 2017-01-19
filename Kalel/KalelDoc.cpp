@@ -141,6 +141,6 @@ CKalelDoc * CKalelDoc::GetDocument()
 
 //-------------------- CKalelDoc custom functions
 
-void CKalelDoc::GraphSetArray(std::deque<std::shared_ptr<ExperimentData>> &expData) {
+void CKalelDoc::GraphSetArray(std::map<std::chrono::system_clock::time_point, std::shared_ptr<ExperimentData>> &expData) {
 	m_TableauMesures = &expData;
 }

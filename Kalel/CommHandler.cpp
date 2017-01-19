@@ -208,13 +208,13 @@ void CommHandler::GetData(std::string fromTime)
 /*********************************
 // Logs
 *********************************/
-void CommHandler::GetLog(std::wstring fromTime)
+void CommHandler::GetLog(std::string fromTime)
 {
 	if (!flagLogsRequest)
 	{
 		flagLogsRequest = true;
 
-		localLogsTime = UnicodeConv::ws2s(fromTime.c_str());
+		localLogsTime = fromTime;
 
 		auto request = std::bind(&CommHandler::GetLogs_req, this, std::placeholders::_1);
 		auto callback = std::bind(&CommHandler::GetLogs_resp, this, std::placeholders::_1);
@@ -232,13 +232,13 @@ void CommHandler::GetLog(std::wstring fromTime)
 /*********************************
 // Errors/requests
 *********************************/
-void CommHandler::GetRequests(std::wstring fromTime)
+void CommHandler::GetRequests(std::string fromTime)
 {
 	if (!flagReqRequest)
 	{
 		flagReqRequest = true;
 
-		localReqTime = UnicodeConv::ws2s(fromTime.c_str());
+		localReqTime = fromTime;
 
 		auto request = std::bind(&CommHandler::GetRequest_req, this, std::placeholders::_1);
 		auto callback = std::bind(&CommHandler::GetRequest_resp, this, std::placeholders::_1);

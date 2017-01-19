@@ -294,15 +294,15 @@ void CKalelView::OnTimer(UINT_PTR nIDEvent)
 		if (nIDEvent == refrashTimer)
 		{
 			// Write textbox values
-			DisplayTextboxValues(dataCollection.back());
+			DisplayTextboxValues(dataCollection.rbegin()->second);
 
 			// Write the current step
-			DisplayStepProgress(dataCollection.back());
+			DisplayStepProgress(dataCollection.rbegin()->second);
 
 			if (pApp->serverConnected)
 			{
-				commHandler.GetData(TimePointToString(dataCollection.back()->timestamp));
-				commHandler.GetLog(logCollection.rbegin()->first);
+				commHandler.GetData(TimePointToString(dataCollection.rbegin()->first));
+				commHandler.GetLog(TimePointToString(logCollection.rbegin()->first));
 			}
 		}
 		
@@ -312,7 +312,7 @@ void CKalelView::OnTimer(UINT_PTR nIDEvent)
 		if (nIDEvent == graphTimer)
 		{
 			// Write in measurement box
-			DiplayMeasurements(dataCollection.back());
+			DiplayMeasurements(dataCollection.rbegin()->second);
 
 			// Write graph
 			GetDocument()->UpdateAllViews(this);
@@ -696,8 +696,8 @@ LRESULT CKalelView::OnInstrumentButtonConfirmed(WPARAM wParam, LPARAM incomingIn
 LRESULT CKalelView::OnExchangeData(WPARAM, LPARAM incomingExperimentData)
 {
 	// Get the incoming vector and add it to the local data
-	auto newData = reinterpret_cast<std::deque<std::shared_ptr<ExperimentData>>*>(incomingExperimentData);
-	dataCollection.insert(dataCollection.end(), newData->begin(), newData->end());
+	auto newData = reinterpret_cast<std::map<std::chrono::system_clock::time_point, std::wstring>*>(incomingExperimentData);
+	dataCollection.insert(newData->begin(), newData->end());
 
 	// Delete the useless vector now
 	delete newData;
@@ -708,21 +708,18 @@ LRESULT CKalelView::OnExchangeData(WPARAM, LPARAM incomingExperimentData)
 LRESULT CKalelView::OnExchangeLogs(WPARAM, LPARAM incomingLogs)
 {
 	// Get the incoming vector and add it to the local logs
-	std::map<std::wstring, std::wstring> * newLogs = reinterpret_cast<std::map<std::wstring, std::wstring>*>(incomingLogs);
+	auto newLogs = reinterpret_cast<std::map<std::chrono::system_clock::time_point, std::wstring>*>(incomingLogs);
 	logCollection.insert(newLogs->begin(), newLogs->end());
 
 	// Display logs
-	for (std::map<std::wstring, std::wstring>::iterator i = newLogs->begin(); i != newLogs->end(); i++)
+	for (auto i = newLogs->begin(); i != newLogs->end(); ++i)
 	{
-		CString time = CString(i->first.c_str());
-		CString log = CString(i->second.c_str());
-		CString * temp = new CString();
-		*temp = time + log;
+		CString time(TimePointToString(i->first).c_str());
+		CString log(i->second.c_str());
+		CString * temp = new CString(time + " " + log);
 		AffichageMessages(NULL, (LPARAM)temp);
 	}
 	
-	//lastLog = newLogs->end()->first;
-
 	// Delete the useless vector now
 	delete newLogs;
 

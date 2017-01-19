@@ -59,6 +59,34 @@ std::chrono::system_clock::time_point StringToTimePoint(std::string str_time)
 	return tp;
 }
 
+unsigned long long TimePointToULLong(std::chrono::system_clock::time_point tp)
+{
+	auto tt = std::chrono::system_clock::to_time_t(tp);
+	auto str_time = TimeTToString(tt);
+
+	auto epoch = tp.time_since_epoch();
+	auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(epoch);
+	auto fractional_seconds = ms.count() % 1000;
+	str_time += ".";
+	str_time += fractional_seconds;
+
+	return str_time;
+}
+
+
+std::chrono::system_clock::time_point ULLongToTimePoint(unsigned long long start, unsigned long long duration)
+{
+	auto fractional_seconds = To<int>(str_time.substr(str_time.size() - 3));
+
+	std::tm tm = {};
+	std::stringstream ss(str_time.substr(str_time.size() - 20));
+	ss >> std::get_time(&tm, "%w, %b %d %Y %H:%M:%S");
+	auto tp = std::chrono::system_clock::from_time_t(std::mktime(&tm));
+
+	tp += std::chrono::milliseconds(fractional_seconds);
+
+	return tp;
+}
 
 std::string GMTtime(int format)
 {

@@ -120,9 +120,8 @@ static void serializeMachineSettingsToJSON(const MachineSettings &m, nlohmann::j
 		j[	STRINGIFY(e.experimentGraphPoints			)]	= e.GetexperimentGraphPoints				();
 		j[	STRINGIFY(e.experimentPreviousStage			)]	= e.GetexperimentPreviousStage				();
 		j[	STRINGIFY(e.measurementsMade				)]	= e.GetmeasurementsMade						();
-		j[	STRINGIFY(e.timeElapsed						)]	= e.GettimeElapsed							();
 		j[	STRINGIFY(e.timeStart						)]	= e.GettimeStart							();
-		j[	STRINGIFY(e.timestamp						)]	= TimePointToString(e.timestamp)			;
+		j[	STRINGIFY(e.timeElapsed						)]	= e.GettimeElapsed							();
 		j[	STRINGIFY(e.timeToEquilibrate				)]	= e.GettimeToEquilibrate					();
 		j[	STRINGIFY(e.timeToEquilibrateCurrent		)]	= e.GettimeToEquilibrateCurrent				();
 		j[	STRINGIFY(e.injectionAttemptCounter			)]	= e.GetinjectionAttemptCounter				();
@@ -153,9 +152,8 @@ static void serializeMachineSettingsToJSON(const MachineSettings &m, nlohmann::j
 		e.SetexperimentGraphPoints								( j[	STRINGIFY(e.experimentGraphPoints			)]);
 		e.SetexperimentPreviousStage							( j[	STRINGIFY(e.experimentPreviousStage			)]);
 		e.SetmeasurementsMade									( j[	STRINGIFY(e.measurementsMade				)]);
+		e.SettimeStart											( j[	STRINGIFY(e.timeStart						)]);
 		e.SettimeElapsed										( j[	STRINGIFY(e.timeElapsed						)]);
-		e.timeStart												= j[	STRINGIFY(e.timeStart						)].get<time_t>();
-		e.timestamp							= StringToTimePoint ( j[	STRINGIFY(e.timestamp						)].get<std::string>());
 		e.SettimeToEquilibrate									( j[	STRINGIFY(e.timeToEquilibrate				)]);
 		e.SettimeToEquilibrateCurrent							( j[	STRINGIFY(e.timeToEquilibrateCurrent		)]);
 		e.SetinjectionAttemptCounter							( j[	STRINGIFY(e.injectionAttemptCounter			)]);

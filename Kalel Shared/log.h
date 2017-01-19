@@ -137,7 +137,7 @@ TLogLevel Log<T>::FromString(const std::string& level)
         return logWARNING;
     if (level == "ERROR")
         return logERROR;
-    Log<T>().Get(logWARNING) << "Unknown logging level '" << level << "'. Using INFO level as default.";
+    Log<T>().GetTimeStamped(logWARNING) << "Unknown logging level '" << level << "'. Using INFO level as default.";
     return logINFO;
 }
 
@@ -216,7 +216,7 @@ inline void Output2map::Output(const std::string& msg)
 		return;
 
 	pMutex->lock();
-	pStream->emplace(std::make_pair(NowTime(), msg));
+	pStream->emplace(std::make_pair(TimePointToString(NowTime()), msg));
 	pMutex->unlock();
 }
 

@@ -40,10 +40,9 @@ public:
 	std::atomic_int experimentPreviousStage;						// Previous experiment stage
 
 	// Time
-	std::atomic<time_t> timeStart;									// When the experiment started
+	std::atomic_ullong timeStart;									// When the experiment started
+	std::atomic_ullong timeElapsed;									// Time from the experiment start, in miliseconds
 	std::atomic_long measurementsMade;								// Number of measurements recorded since the experiment was started
-	std::atomic<double> timeElapsed;								// Time from the experiment start
-	std::atomic<std::chrono::system_clock::time_point> timestamp;	// Timestamp
 	std::atomic<double> timeToEquilibrate;							// The amount of time that the waiting + recording functionality will run before returning to an active state
 	std::atomic<double> timeToEquilibrateCurrent;					// The current time of waiting
 	
@@ -100,10 +99,9 @@ public:
 	int GetexperimentDose()					const;					// Current experiment dose that is currently underway (ex: 2nd dose of adsorption step 1)
 	int GetexperimentGraphPoints()			const;					// Number of measurmements made, happen every T_BETWEEN_MEASUREMENT
 	int GetexperimentPreviousStage()		const;					// Previous experiment stage
-	time_t GettimeStart()					const;					// When the experiment started
+	unsigned long long GettimeStart()		const;					// When the experiment started
+	unsigned long long GettimeElapsed()		const;					// Time from the experiment start
 	long GetmeasurementsMade()				const;					// Number of measurements recorded since the experiment was started
-	double GettimeElapsed()					const;					// Time from the experiment start
-	std::chrono::system_clock::time_point Gettimestamp()	const;	// Timestamp in string
 	double GettimeToEquilibrate()			const;					// The amount of time that the waiting + recording functionality will run before returning to an active state
 	double GettimeToEquilibrateCurrent()	const;					// The current time of waiting
 	int GetinjectionAttemptCounter()		const;					// Counter for the injections
@@ -132,8 +130,8 @@ public:
 	void SetexperimentGraphPoints(int a)						;
 	void SetexperimentPreviousStage(int a)						;
 	void SetmeasurementsMade(long a)							;
-	void SettimeElapsed(double a)								;
-	void Settimestamp(std::chrono::system_clock::time_point a)	;
+	void SettimeStart(unsigned long long  a)					;
+	void SettimeElapsed(unsigned long long  a)					;
 	void SettimeToEquilibrate(double a)							;
 	void SettimeToEquilibrateCurrent(double a)					;
 	void SetinjectionAttemptCounter(int a)						;

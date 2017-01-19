@@ -33,8 +33,8 @@ public:
 	void ManualCommand(int instrumentType, int instrumentNumber, bool shouldBeActivated);
 	
 	void GetData(std::string fromTime = R"()");
-	void GetLog(std::wstring fromTime = _T(""));
-	void GetRequests(std::wstring fromTime = _T(""));;
+	void GetLog(std::string fromTime = R"()");
+	void GetRequests(std::string fromTime = R"()");;
 
 	void StartClient();
 	void ShutdownClient();

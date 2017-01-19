@@ -32,9 +32,8 @@ ExperimentData::ExperimentData(const ExperimentData & p)
 	verificationStep				= p.GetverificationStep();
 
 	timeStart						= p.GettimeStart();
-	measurementsMade				= p.GetmeasurementsMade();
 	timeElapsed						= p.GettimeElapsed();
-	timestamp						= p.Gettimestamp();
+	measurementsMade				= p.GetmeasurementsMade();
 	timeToEquilibrate				= p.GettimeToEquilibrate();
 	timeToEquilibrateCurrent		= p.GettimeToEquilibrateCurrent();
 
@@ -76,10 +75,9 @@ void ExperimentData::ResetData()
 	experimentGraphPoints		= 0;
 	verificationStep			= STEP_VERIFICATIONS_UNDEF;
 
-	timeStart					= NULL;
-	measurementsMade			= 0;
+	timeStart					= 0;
 	timeElapsed					= 0.f;
-	//timestamp					= ;
+	measurementsMade			= 0;
 	timeToEquilibrate			= 0.f;
 	timeToEquilibrateCurrent	= 0.f;
 
@@ -113,11 +111,10 @@ int ExperimentData::GetexperimentSubstepStage()							const { return experimentS
 int ExperimentData::GetexperimentDose()									const { return experimentDose				; }
 int ExperimentData::GetexperimentGraphPoints()							const { return experimentGraphPoints		; }
 int ExperimentData::GetexperimentPreviousStage()						const { return experimentPreviousStage		; }
-time_t ExperimentData::GettimeStart()									const { return timeStart					; }
+unsigned long long ExperimentData::GettimeStart()						const { return timeStart					; }
+unsigned long long ExperimentData::GettimeElapsed()						const { return timeElapsed					; }
 long ExperimentData::GetmeasurementsMade()								const { return measurementsMade				; }
-double ExperimentData::GettimeElapsed()									const { return timeElapsed					; }
 double ExperimentData::GettimeToEquilibrate()							const { return timeToEquilibrate			; }
-std::chrono::system_clock::time_point ExperimentData::Gettimestamp()	const { return timestamp					; }
 double ExperimentData::GettimeToEquilibrateCurrent()					const { return timeToEquilibrateCurrent		; }
 int ExperimentData::GetinjectionAttemptCounter()						const { return injectionAttemptCounter		; }
 int ExperimentData::GetadsorptionCounter()								const { return adsorptionCounter			; }
@@ -145,9 +142,9 @@ void ExperimentData::SetexperimentDose(int a)								{ experimentDose				= a ; }
 void ExperimentData::SetexperimentGraphPoints(int a)						{ experimentGraphPoints			= a ; }
 void ExperimentData::SetexperimentPreviousStage(int a)						{ experimentPreviousStage		= a ; }
 void ExperimentData::SetmeasurementsMade(long a)							{ measurementsMade				= a ; }
-void ExperimentData::SettimeElapsed(double a)								{ timeElapsed					= a ; }
+void ExperimentData::SettimeStart(unsigned long long  a)					{ timeStart						= a ; }
+void ExperimentData::SettimeElapsed(unsigned long long  a)					{ timeElapsed					= a ; }
 void ExperimentData::SettimeToEquilibrate(double a)							{ timeToEquilibrate				= a ; }
-void ExperimentData::Settimestamp(std::chrono::system_clock::time_point a)	{ timestamp						= a ; }
 void ExperimentData::SettimeToEquilibrateCurrent(double a)					{ timeToEquilibrateCurrent		= a ; }
 void ExperimentData::SetinjectionAttemptCounter(int a)						{ injectionAttemptCounter		= a ; }
 void ExperimentData::SetadsorptionCounter(int a)							{ adsorptionCounter				= a ; }
