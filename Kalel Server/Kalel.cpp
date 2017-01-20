@@ -98,9 +98,9 @@ void Kalel::GetLogs(std::string &logs) {
 
 	auto localCollection = storageVectors.getInfoLogs();
 
-	for (std::map<std::string, std::string>::iterator it = localCollection.begin(); it != localCollection.end(); ++it)
+	for (auto it = localCollection.begin(); it != localCollection.end(); ++it)
 	{
-		logs += it->first;
+		logs += TimePointToString(it->first);
 		logs += "   ";
 		logs += it->second;
 		logs += "\r\n";
@@ -279,7 +279,7 @@ void Kalel::DataSync(http_request* req, http_response* resp)
 	{
 		// Figure out which range of data to send by looking at the time requested
 
-		std::deque<std::shared_ptr<ExperimentData>>::iterator it;
+		std::map<std::chrono::system_clock::time_point, std::shared_ptr<ExperimentData>>::iterator it;
 		auto localCollection = storageVectors.getData();
 
 		if (req->params_.empty() ||
@@ -290,11 +290,7 @@ void Kalel::DataSync(http_request* req, http_response* resp)
 		}
 		else
 		{
-			std::string reqTimeStamp = req->params_.at("time");
-			it = std::find_if(localCollection.begin(), localCollection.end(),
-				[&reqTimeStamp](std::shared_ptr<ExperimentData> d) -> bool {return d->timestamp == reqTimeStamp; });
-
-			++it;
+			it = localCollection.upper_bound(StringToTimePoint(req->params_.at("time")));
 		}
 
 		if (it != localCollection.end())						// If iterator is valid, send requested logs
@@ -304,8 +300,8 @@ void Kalel::DataSync(http_request* req, http_response* resp)
 			while (it != localCollection.end())
 			{
 				json j2;
-				serialization::serializeExperimentDataToJSON(*(*it), j2);
-				j.push_back(json::object_t::value_type({ (*it)->timestamp, j2 }));
+				serialization::serializeExperimentDataToJSON(*(it->second), j2);
+				j.push_back(json::object_t::value_type({ TimePointToString(it->first), j2 }));
 				++it;
 			}
 
@@ -330,7 +326,7 @@ void Kalel::LogSync(http_request* req, http_response* resp)
 	{
 		// Figure out which range of logs to send by finding the requested timestamp
 
-		std::map<std::string, std::string>::iterator it;
+		std::map<std::chrono::system_clock::time_point, std::string>::iterator it;
 		auto localCollection = storageVectors.getInfoLogs();
 
 		if (req->params_.empty() ||									// If parameters don't exist, send all the logs
@@ -341,8 +337,7 @@ void Kalel::LogSync(http_request* req, http_response* resp)
 		}
 		else
 		{
-			it = localCollection.find(req->params_.at("time"));
-			++it;
+			it = localCollection.upper_bound(StringToTimePoint(req->params_.at("time")));
 		}
 
 		if (it != localCollection.end())							// If iterator is valid, send requested logs
@@ -351,7 +346,7 @@ void Kalel::LogSync(http_request* req, http_response* resp)
 
 			while (it != localCollection.end())
 			{
-				j[it->first] = it->second;
+				j[TimePointToString(it->first)] = it->second;
 				++it;
 			}
 

@@ -81,7 +81,7 @@ void CGrapheView::OnDraw(CDC* pDC)
 		{
 
 			// Acquisition des données 
-			ExperimentData experimentData = *((*measurementArray).back());
+			ExperimentData experimentData = *((*measurementArray).begin()->second);
 
 			// Valeurs utilisées pour les échelles et les axes d'abscisses et d'ordonnées
 			// Set the maximums and minimums
@@ -380,7 +380,7 @@ void CGrapheView::TraceScale(CRect graphe,CRect axe_graphe,int max_pression,int 
 
 	// ----- marquage du temps ----------------------------------------------
 	int nb_trait_abs=4;
-	int temps = (int)(*measurementArray).back()->timeElapsed;
+	int temps = (int)(*measurementArray).end()->second->timeElapsed;
 
 	for (int i=0;i<=nb_trait_abs;i++)
 	{
@@ -426,7 +426,7 @@ void CGrapheView::TraceGraph(CRect graphe,int max_pression,int min_pression,doub
 	// rapport = hauteur du graphe / (max_calo - min_calo)
 	// rapport = valeur (bar ou µV) par pixel
 	float rapport_calo, rapport_pression, rapport_temps;
-	float max_temps = (*measurementArray).back()->timeElapsed;
+	float max_temps = (*measurementArray).end()->second->timeElapsed;
 	float ecart_temps = max_temps - min_temps;
 	float ecart_calo = max_calo - min_calo;
 	float ecart_pression = max_pression - min_pression;

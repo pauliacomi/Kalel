@@ -18,16 +18,34 @@ std::chrono::system_clock::time_point NowTime()
 }
 
 
-std::string TimeTToString(time_t t)
+std::string TimeTToANSIString(time_t t)
 {
 	time(&t);
 	tm gmt;
-	gmtime_s(&gmt, &t);
+	gmtime_s(&gmt, &t);			///??
 	char asctime_remove_nl[26];
 	asctime_s(asctime_remove_nl, 26, &gmt);
 	asctime_remove_nl[24] = 0;
 
 	return asctime_remove_nl;
+}
+
+std::string TimeTToRFC1123String(time_t t)
+{
+	auto RFC1123_TIME_LEN = 29;
+	struct tm tm;
+	char * buf = new char[RFC1123_TIME_LEN + 1];
+
+	time(&t);
+	gmtime_s(&tm, &t);
+
+	strftime(buf, sizeof(buf), "---, %d --- %Y %H:%M:%S", &tm);
+	memcpy(buf, DAY_NAMES[tm.tm_wday], 3);
+	memcpy(buf + 8, MONTH_NAMES[tm.tm_mon], 3);
+
+	std::string time(buf);
+
+	return time;
 }
 
 std::string TimePointToString(std::chrono::system_clock::time_point tp)
@@ -39,7 +57,7 @@ std::string TimePointToString(std::chrono::system_clock::time_point tp)
 	auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(epoch);
 	auto fractional_seconds = ms.count() % 1000;
 	str_time += ".";
-	str_time += fractional_seconds;
+	str_time += std::to_string(fractional_seconds);
 
 	return str_time;
 }
@@ -59,34 +77,34 @@ std::chrono::system_clock::time_point StringToTimePoint(std::string str_time)
 	return tp;
 }
 
-unsigned long long TimePointToULLong(std::chrono::system_clock::time_point tp)
-{
-	auto tt = std::chrono::system_clock::to_time_t(tp);
-	auto str_time = TimeTToString(tt);
+//unsigned long long TimePointToULLong(std::chrono::system_clock::time_point tp)
+//{
+//	auto tt = std::chrono::system_clock::to_time_t(tp);
+//	auto str_time = TimeTToString(tt);
+//
+//	auto epoch = tp.time_since_epoch();
+//	auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(epoch);
+//	auto fractional_seconds = ms.count() % 1000;
+//	str_time += ".";
+//	str_time += fractional_seconds;
+//
+//	return str_time;
+//}
 
-	auto epoch = tp.time_since_epoch();
-	auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(epoch);
-	auto fractional_seconds = ms.count() % 1000;
-	str_time += ".";
-	str_time += fractional_seconds;
 
-	return str_time;
-}
-
-
-std::chrono::system_clock::time_point ULLongToTimePoint(unsigned long long start, unsigned long long duration)
-{
-	auto fractional_seconds = To<int>(str_time.substr(str_time.size() - 3));
-
-	std::tm tm = {};
-	std::stringstream ss(str_time.substr(str_time.size() - 20));
-	ss >> std::get_time(&tm, "%w, %b %d %Y %H:%M:%S");
-	auto tp = std::chrono::system_clock::from_time_t(std::mktime(&tm));
-
-	tp += std::chrono::milliseconds(fractional_seconds);
-
-	return tp;
-}
+//std::chrono::system_clock::time_point ULLongToTimePoint(unsigned long long start, unsigned long long duration)
+//{
+//	auto fractional_seconds = To<int>(str_time.substr(str_time.size() - 3));
+//
+//	std::tm tm = {};
+//	std::stringstream ss(str_time.substr(str_time.size() - 20));
+//	ss >> std::get_time(&tm, "%w, %b %d %Y %H:%M:%S");
+//	auto tp = std::chrono::system_clock::from_time_t(std::mktime(&tm));
+//
+//	tp += std::chrono::milliseconds(fractional_seconds);
+//
+//	return tp;
+//}
 
 std::string GMTtime(int format)
 {

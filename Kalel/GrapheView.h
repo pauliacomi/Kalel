@@ -6,6 +6,7 @@
 
 // Vue CGrapheView
 #include "../Kalel Shared/Com Classes/ExperimentData.h"								// Where data about the experimental parameters, results and current status is stored. REQUIRED FOR CARRAYMEASUREMENTS
+#include <map>
 
 class CKalelDoc;
 
@@ -33,7 +34,7 @@ public:
 	int NbrIntervalles(double max);
 
 private:
-	std::deque<std::shared_ptr<ExperimentData>> * measurementArray;
+	std::map<std::chrono::system_clock::time_point, std::shared_ptr<ExperimentData>> * measurementArray;
 	double maxPressure, minPressure, maxCalo, minCalo;
 	CString titleGrapheEtape;
 	float timeMinimum;
