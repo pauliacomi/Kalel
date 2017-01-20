@@ -10,11 +10,11 @@
 
 std::chrono::system_clock::time_point NowTime();
 
-std::string TimeTToGMTString(time_t t);
+std::string TimeTToStringLocal(const time_t & t);
 
-std::string TimeTToTimestampString(time_t t);
+std::string TimeTToStringGMT(const time_t & t);
 
-std::string TimePointToString(std::chrono::system_clock::time_point tp);
+std::string TimePointToString(const std::chrono::system_clock::time_point & tp);
 
 std::chrono::system_clock::time_point StringToTimePoint(std::string str_time);
 
