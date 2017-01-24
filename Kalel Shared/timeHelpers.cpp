@@ -10,6 +10,7 @@ static const char *MONTH_NAMES[] =
 { "Jan", "Feb", "Mar", "Apr", "May", "Jun",
 "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
 
+static const char *DATE_FORMAT = "%d-%m-%Y %H:%M:%S";
 
 std::chrono::system_clock::time_point NowTime()
 {
@@ -56,7 +57,7 @@ std::string TimeTToStringLocal(const time_t & t)
 
 	std::string time;
 	std::stringstream str;
-	str << std::put_time(&gmt, "%d/%m/%Y %H:%M:%S");
+	str << std::put_time(&gmt, DATE_FORMAT);
 	time = str.str();
 
 	return time;
@@ -111,7 +112,7 @@ std::chrono::system_clock::time_point StringToTimePoint(std::string str_time)
 	// Generate the regular timepoint
 	struct std::tm tm_time;
 	std::stringstream ss(str_time);
-	ss >> std::get_time(&tm_time, "%d/%m/%Y %H:%M:%S");
+	ss >> std::get_time(&tm_time, DATE_FORMAT);
 	auto tp = std::chrono::system_clock::from_time_t(std::mktime(&tm_time));
 	
 	// Add the remaining miliseconds
