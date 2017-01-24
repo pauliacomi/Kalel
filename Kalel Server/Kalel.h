@@ -21,6 +21,7 @@ protected:
 	void InstrumentStateSync(http_request* req, http_response* resp);
 	void DataSync(http_request* req, http_response* resp);
 	void LogSync(http_request* req, http_response* resp);
+	void RequestSync(http_request* req, http_response* resp);
 	void AutomationControl(http_request* req, http_response* resp);
 	void Debug(http_request* req, http_response* resp);
 };

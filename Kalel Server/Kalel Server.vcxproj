@@ -189,12 +189,12 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Kalel Shared\Com Classes\CommonFunctions.h" />
     <ClInclude Include="..\Kalel Shared\Com Classes\ControlInstrumentState.h" />
     <ClInclude Include="..\Kalel Shared\Com Classes\ExperimentData.h" />
     <ClInclude Include="..\Kalel Shared\Com Classes\ExperimentHelperClasses.h" />
     <ClInclude Include="..\Kalel Shared\Com Classes\ExperimentSettings.h" />
     <ClInclude Include="..\Kalel Shared\Com Classes\MachineSettings.h" />
+    <ClInclude Include="..\Kalel Shared\lockedMap.h" />
     <ClInclude Include="..\Kalel Shared\Forcelib.h" />
     <ClInclude Include="..\Kalel Shared\log.h" />
     <ClInclude Include="..\Kalel Shared\Netcode\base64.h" />
@@ -256,11 +256,11 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Kalel Shared\Com Classes\CommonFunctions.cpp" />
     <ClCompile Include="..\Kalel Shared\Com Classes\ExperimentData.cpp" />
     <ClCompile Include="..\Kalel Shared\Com Classes\ExperimentHelperClasses.cpp" />
     <ClCompile Include="..\Kalel Shared\Com Classes\ExperimentSettings.cpp" />
     <ClCompile Include="..\Kalel Shared\Com Classes\MachineSettings.cpp" />
+    <ClCompile Include="..\Kalel Shared\lockedMap.cpp" />
     <ClCompile Include="..\Kalel Shared\Netcode\base64.cpp" />
     <ClCompile Include="..\Kalel Shared\Netcode\Client.cpp" />
     <ClCompile Include="..\Kalel Shared\Netcode\http_helpers.cpp" />

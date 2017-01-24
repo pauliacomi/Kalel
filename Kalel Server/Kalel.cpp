@@ -363,6 +363,51 @@ void Kalel::LogSync(http_request* req, http_response* resp)
 
 
 /*********************************
+// Logs sync
+*********************************/
+void Kalel::RequestSync(http_request* req, http_response* resp)
+{
+	if (req->method_ == http::method::get)
+	{
+		// Figure out which range of logs to send by finding the requested timestamp
+
+		std::map<std::chrono::system_clock::time_point, std::string>::iterator it;
+		auto localCollection = storageVectors.getInfoLogs();
+
+		if (req->params_.empty() ||									// If parameters don't exist, send all the logs
+			req->params_.at("time").empty() ||
+			req->params_.at("time") == "start")
+		{
+			it = localCollection.begin();
+		}
+		else
+		{
+			it = localCollection.upper_bound(StringToTimePoint(req->params_.at("time")));
+		}
+
+		if (it != localCollection.end())							// If iterator is valid, send requested logs
+		{
+			json j;
+
+			while (it != localCollection.end())
+			{
+				j[TimePointToString(it->first)] = it->second;
+				++it;
+			}
+
+			resp->status_ = http::responses::ok;
+			resp->content_type_ = http::mimetype::appjson;
+			resp->answer_ = j.dump();
+		}
+		else
+		{
+			resp->status_ = http::responses::no_content;
+		}
+	}
+}
+
+
+/*********************************
 // Automation control
 *********************************/
 void Kalel::AutomationControl(http_request* req, http_response* resp)
@@ -399,6 +444,7 @@ void Kalel::AutomationControl(http_request* req, http_response* resp)
 		}
 	}
 }
+
 
 /*********************************
 // Debugging

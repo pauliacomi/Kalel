@@ -204,9 +204,6 @@
     <ClInclude Include="..\Kalel Shared\Resources\StringTable.h">
       <Filter>Header Files\Common\Resources</Filter>
     </ClInclude>
-    <ClInclude Include="..\Kalel Shared\Com Classes\CommonFunctions.h">
-      <Filter>Header Files\Common\Com Classes</Filter>
-    </ClInclude>
     <ClInclude Include="..\Kalel Shared\Com Classes\ExperimentHelperClasses.h">
       <Filter>Header Files\Common\Com Classes</Filter>
     </ClInclude>
@@ -271,6 +268,9 @@
       <Filter>Header Files\Common\Com Classes</Filter>
     </ClInclude>
     <ClInclude Include="..\Kalel Shared\timeHelpers.h">
+      <Filter>Header Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Kalel Shared\lockedMap.h">
       <Filter>Header Files\Common</Filter>
     </ClInclude>
   </ItemGroup>
@@ -485,9 +485,6 @@
     <ClCompile Include="..\Kalel Shared\Com Classes\ExperimentHelperClasses.cpp">
       <Filter>Source Files\Common\Com Classes</Filter>
     </ClCompile>
-    <ClCompile Include="..\Kalel Shared\Com Classes\CommonFunctions.cpp">
-      <Filter>Source Files\Common\Com Classes</Filter>
-    </ClCompile>
     <ClCompile Include="MessageHandler.cpp">
       <Filter>Source Files\Automation</Filter>
     </ClCompile>
@@ -510,6 +507,9 @@
       <Filter>Source Files\Backend\Wrapper Classes</Filter>
     </ClCompile>
     <ClCompile Include="..\Kalel Shared\timeHelpers.cpp">
+      <Filter>Source Files\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Kalel Shared\lockedMap.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
   </ItemGroup>

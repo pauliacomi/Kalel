@@ -1,7 +1,6 @@
 #include "../Forcelib.h"
 #include "ExperimentSettings.h"
 
-#include "CommonFunctions.h"
 #include "../Resources/DefineStages.h"
 #include "../Resources/DefineText.h"
 
@@ -30,14 +29,11 @@ void ExperimentSettings::ResetData(int initialAdsorptions, int initialDesorption
 {
 	//GUIhandle = NULL;
 	experimentType = EXPERIMENT_TYPE_UNDEF;
-	
-	// Initialisation of settings
-	CommonFunctions cF;
 
 	// General
 	dataGeneral.chemin = L"";
 	dataGeneral.commentaires = L"";
-	dataGeneral.date_experience = cF.getDate();
+	dataGeneral.date_experience = L"";
 	dataGeneral.experimentateur.nom = L"";
 	dataGeneral.experimentateur.surnom = L"";
 	dataGeneral.fichier =									L"";		//std::to_wstring(TEXT_NEWFILETEXT) + cF.getDateUnderline();
