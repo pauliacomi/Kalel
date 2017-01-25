@@ -81,7 +81,7 @@ bool MFCMessageHandler::ExchangeExperimentSettings(const ExperimentSettings &pPa
 	return true;
 }
 
-bool MFCMessageHandler::ExchangeData(std::deque<std::shared_ptr<ExperimentData>> * pParam)
+bool MFCMessageHandler::ExchangeData(std::map<std::chrono::system_clock::time_point, std::shared_ptr<ExperimentData>> * pParam)
 {
 	// Post the required message, now the main thread is responsible for deleting the new class
 	if (::PostMessage(windowHandle, UWM_EXCHANGEDATA, NULL, (LPARAM)pParam) == 0 ) 
@@ -92,7 +92,7 @@ bool MFCMessageHandler::ExchangeData(std::deque<std::shared_ptr<ExperimentData>>
 	return true;
 }
 
-bool MFCMessageHandler::ExchangeLogs(std::map<std::wstring, std::wstring>* pParam)
+bool MFCMessageHandler::ExchangeLogs(std::map<std::chrono::system_clock::time_point, std::wstring>* pParam)
 {
 	// Post the required message, now the main thread is responsible for deleting the new class
 	if (::PostMessage(windowHandle, UWM_EXCHANGELOGS, NULL, (LPARAM)pParam) == 0)
@@ -103,7 +103,7 @@ bool MFCMessageHandler::ExchangeLogs(std::map<std::wstring, std::wstring>* pPara
 	return true;
 }
 
-bool MFCMessageHandler::ExchangeRequests(std::map<std::wstring, std::wstring>* pParam)
+bool MFCMessageHandler::ExchangeRequests(std::map<std::chrono::system_clock::time_point, std::wstring>* pParam)
 {
 	// Post the required message, now the main thread is responsible for deleting the new class
 	if (::PostMessage(windowHandle, UWM_EXCHANGEREQUESTS, NULL, (LPARAM)pParam) == 0)

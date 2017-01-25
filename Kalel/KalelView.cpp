@@ -64,7 +64,8 @@ BEGIN_MESSAGE_MAP(CKalelView, CFormView)
 	ON_MESSAGE(UWM_EXCHANGESTATESPECIFIC,			&CKalelView::OnInstrumentButtonConfirmed)		// Calls to update a specific button pair and associated display on a manual message
 	ON_MESSAGE(UWM_EXCHANGE_EXPERIMENTSETTINGS,		&CKalelView::OnExchangeExperimentSettings)		// Callback to notify of received ExperimetnSettings
 	ON_MESSAGE(UWM_EXCHANGEDATA,					&CKalelView::OnExchangeData)					// Callback to notify of incoming ExperimentData array
-	ON_MESSAGE(UWM_EXCHANGELOGS,					&CKalelView::OnExchangeLogs)					// Callback to notify of incoming ExperimentData array
+	ON_MESSAGE(UWM_EXCHANGELOGS,					&CKalelView::OnExchangeLogs)					// Callback to notify of incoming log array
+	ON_MESSAGE(UWM_EXCHANGEREQUESTS,				&CKalelView::OnExchangeRequests)				// Callback to notify of incoming request array
 	ON_MESSAGE(UWM_AUTOEXPFINISHED,					&CKalelView::OnAutoExperimentFinished)			// Calls when an experiment ends
 	ON_MESSAGE(UWM_DISPLAYMESSAGE,					&CKalelView::AffichageMessages)					// Callback to display a message from the automation thread
 	ON_MESSAGE(UWM_DISPLAYMESSAGEBOX,				&CKalelView::MessageBoxAlert)					// Displays an messageBox to alert user of something
@@ -303,6 +304,7 @@ void CKalelView::OnTimer(UINT_PTR nIDEvent)
 			{
 				commHandler.GetData(TimePointToString(dataCollection.rbegin()->first));
 				commHandler.GetLog(TimePointToString(logCollection.rbegin()->first));
+				commHandler.GetRequests(TimePointToString(requestCollection.rbegin()->first));
 			}
 		}
 		
@@ -696,7 +698,7 @@ LRESULT CKalelView::OnInstrumentButtonConfirmed(WPARAM wParam, LPARAM incomingIn
 LRESULT CKalelView::OnExchangeData(WPARAM, LPARAM incomingExperimentData)
 {
 	// Get the incoming vector and add it to the local data
-	auto newData = reinterpret_cast<std::map<std::chrono::system_clock::time_point, std::wstring>*>(incomingExperimentData);
+	auto newData = reinterpret_cast<std::map<std::chrono::system_clock::time_point, std::shared_ptr<ExperimentData>>*>(incomingExperimentData);
 	dataCollection.insert(newData->begin(), newData->end());
 
 	// Delete the useless vector now
@@ -726,6 +728,20 @@ LRESULT CKalelView::OnExchangeLogs(WPARAM, LPARAM incomingLogs)
 	return 0;
 }
 
+
+LRESULT CKalelView::OnExchangeRequests(WPARAM, LPARAM incomingRequests)
+{
+	// Get the incoming vector and add it to the local logs
+	auto newRequests = reinterpret_cast<std::map<std::chrono::system_clock::time_point, std::wstring>*>(incomingRequests);
+	requestCollection.insert(newRequests->begin(), newRequests->end());
+
+	// Display requests
+
+	// Delete the useless vector now
+	delete newRequests;
+
+	return 0;
+}
 
 LRESULT CKalelView::OnAutoExperimentFinished(WPARAM, LPARAM) {
 

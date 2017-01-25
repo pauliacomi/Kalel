@@ -10,7 +10,7 @@ static const char *MONTH_NAMES[] =
 { "Jan", "Feb", "Mar", "Apr", "May", "Jun",
 "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
 
-static const char *DATE_FORMAT = "%d-%m-%Y %H:%M:%S";
+static const char *DATE_FORMAT = "%Y-%m-%d- %H:%M:%S";
 
 std::chrono::system_clock::time_point NowTime()
 {
@@ -103,15 +103,15 @@ std::string TimePointToString(const std::chrono::system_clock::time_point & tp)
 }
 
 
-std::chrono::system_clock::time_point StringToTimePoint(std::string str_time)
+std::chrono::system_clock::time_point StringToTimePoint(const std::string & str_time)
 {
 	// Cut the fractional seconds part
 	auto fractional_seconds = To<int>(str_time.substr(str_time.size() - 3, 3));
-	str_time.erase(str_time.size() - 4, 4);
+	auto str_time_nofrac = str_time.substr(str_time.size() - 4, 4);
 
 	// Generate the regular timepoint
 	struct std::tm tm_time;
-	std::stringstream ss(str_time);
+	std::stringstream ss(str_time_nofrac);
 	ss >> std::get_time(&tm_time, DATE_FORMAT);
 	auto tp = std::chrono::system_clock::from_time_t(std::mktime(&tm_time));
 	
@@ -123,32 +123,19 @@ std::chrono::system_clock::time_point StringToTimePoint(std::string str_time)
 
 
 
-//unsigned long long TimePointToULLong(std::chrono::system_clock::time_point tp)
-//{
-//	auto tt = std::chrono::system_clock::to_time_t(tp);
-//	auto str_time = TimeTToString(tt);
-//
-//	auto epoch = tp.time_since_epoch();
-//	auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(epoch);
-//	auto fractional_seconds = ms.count() % 1000;
-//	str_time += ".";
-//	str_time += fractional_seconds;
-//
-//	return str_time;
-//}
+unsigned long long TimePointToULLong(const std::chrono::system_clock::time_point & tp)
+{
+	auto ms = std::chrono::time_point_cast<std::chrono::milliseconds>(tp);
+	auto value = tp.time_since_epoch();
+	return value.count();
+}
 
 
-//std::chrono::system_clock::time_point ULLongToTimePoint(unsigned long long start, unsigned long long duration)
-//{
-//	auto fractional_seconds = To<int>(str_time.substr(str_time.size() - 3));
-//
-//	std::tm tm = {};
-//	std::stringstream ss(str_time.substr(str_time.size() - 20));
-//	ss >> std::get_time(&tm, "%w, %b %d %Y %H:%M:%S");
-//	auto tp = std::chrono::system_clock::from_time_t(std::mktime(&tm));
-//
-//	tp += std::chrono::milliseconds(fractional_seconds);
-//
-//	return tp;
-//}
+std::chrono::system_clock::time_point ULLongToTimePoint(unsigned long long tp)
+{
+	std::chrono::milliseconds dur(tp);
+	std::chrono::system_clock::time_point dt(dur);
+
+	return dt;
+}
 

@@ -9,6 +9,7 @@
 #include "../Kalel Shared/Com Classes/ControlInstrumentState.h"
 #include "../Kalel Shared/Netcode/stdHelpers.h"
 #include "../Kalel Shared/unicodeConv.h"
+#include "../Kalel Shared/timeHelpers.h"
 
 #include <functional>
 
@@ -746,7 +747,7 @@ unsigned CommHandler::GetData_resp(http_response* r) {
 			}
 
 			std::shared_ptr<ExperimentData> receivedData = nullptr;
-			std::deque<std::shared_ptr<ExperimentData>> * receivedDataArray = new std::deque<std::shared_ptr<ExperimentData>>();
+			auto receivedDataArray = new std::map<std::chrono::system_clock::time_point, std::shared_ptr<ExperimentData>>();
 
 			for (json::iterator i = j.begin(); i != j.end(); ++i)
 			{
@@ -763,7 +764,7 @@ unsigned CommHandler::GetData_resp(http_response* r) {
 					flagExperimentRequest = false;
 					return 1;
 				}
-				receivedDataArray->push_back(receivedData);
+				receivedDataArray->insert(std::make_pair(StringToTimePoint(i.key()), receivedData));
 			}																													 
 
 			messageHandler.ExchangeData(receivedDataArray);
@@ -825,7 +826,7 @@ unsigned CommHandler::GetLogs_resp(http_response * r)
 				return 1;
 			}
 
-			auto receivedLogArray = new std::map<std::wstring, std::wstring>();
+			auto receivedLogArray = new std::map<std::chrono::system_clock::time_point, std::wstring>();
 
 			for (json::iterator i = j.begin(); i != j.end(); ++i)
 			{
@@ -840,8 +841,7 @@ unsigned CommHandler::GetLogs_resp(http_response * r)
 					flagLogsRequest = false;
 					return 1;
 				}
-				std::wstring receivedLogTime = UnicodeConv::s2ws(i.key().c_str());
-				receivedLogArray->insert(std::make_pair( receivedLogTime, receivedLog));
+				receivedLogArray->insert(std::make_pair(StringToTimePoint(i.key()), receivedLog));
 			}
 
 			messageHandler.ExchangeLogs(receivedLogArray);
@@ -898,7 +898,7 @@ unsigned CommHandler::GetRequest_resp(http_response * r)
 				return 1;
 			}
 
-			auto receivedReqArray = new std::map<std::wstring, std::wstring>();
+			auto receivedReqArray = new std::map<std::chrono::system_clock::time_point, std::wstring>();
 
 			for (json::iterator i = j.begin(); i != j.end(); ++i)
 			{
@@ -913,10 +913,8 @@ unsigned CommHandler::GetRequest_resp(http_response * r)
 					flagReqRequest = false;
 					return 1;
 				}
-				std::wstring receivedLogTime = UnicodeConv::s2ws(i.key().c_str());
-				receivedReqArray->insert(std::make_pair(receivedLogTime, receivedReq));
+				receivedReqArray->insert(std::make_pair(StringToTimePoint(i.key()), receivedReq));
 			}
-
 			messageHandler.ExchangeRequests(receivedReqArray);
 
 		}

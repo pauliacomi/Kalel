@@ -65,6 +65,10 @@ Kalel::Kalel()
 		"/api/experimentlogs"
 	);
 	server.AddMethod(
+		std::bind(&Kalel::RequestSync, this, std::placeholders::_1, std::placeholders::_2),
+		"/api/experimentrequests"
+	);
+	server.AddMethod(
 		std::bind(&Kalel::AutomationControl, this, std::placeholders::_1, std::placeholders::_2),
 		"/api/thread"
 	);

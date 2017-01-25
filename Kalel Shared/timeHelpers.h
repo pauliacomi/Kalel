@@ -18,4 +18,8 @@ std::string TimeTToStringGMT(const time_t & t);
 
 std::string TimePointToString(const std::chrono::system_clock::time_point & tp);
 
-std::chrono::system_clock::time_point StringToTimePoint(std::string str_time);
+std::chrono::system_clock::time_point StringToTimePoint(const std::string & str_time);
+
+unsigned long long TimePointToULLong(const std::chrono::system_clock::time_point & tp);
+
+std::chrono::system_clock::time_point ULLongToTimePoint(unsigned long long tp);
