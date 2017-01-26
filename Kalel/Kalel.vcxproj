@@ -203,7 +203,6 @@
   <ItemGroup>
     <ClInclude Include="..\Kalel Shared\Com Classes\ControlInstrumentState.h" />
     <ClInclude Include="..\Kalel Shared\Com Classes\ExperimentHelperClasses.h" />
-    <ClInclude Include="..\Kalel Shared\Com Classes\CommonFunctions.h" />
     <ClInclude Include="..\Kalel Shared\Com Classes\ExperimentData.h" />
     <ClInclude Include="..\Kalel Shared\Com Classes\ExperimentSettings.h" />
     <ClInclude Include="..\Kalel Shared\Com Classes\MachineSettings.h" />
@@ -225,6 +224,7 @@
     <ClInclude Include="..\Kalel Shared\Resources\DefineInstruments.h" />
     <ClInclude Include="..\Kalel Shared\Resources\DefineStages.h" />
     <ClInclude Include="..\Kalel Shared\Resources\StringTable.h" />
+    <ClInclude Include="..\Kalel Shared\timeHelpers.h" />
     <ClInclude Include="..\Kalel Shared\timestamp.h" />
     <ClInclude Include="..\Kalel Shared\unicodeConv.h" />
     <ClInclude Include="CommHandler.h" />
@@ -272,7 +272,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Kalel Shared\Com Classes\ExperimentHelperClasses.cpp" />
-    <ClCompile Include="..\Kalel Shared\Com Classes\CommonFunctions.cpp" />
     <ClCompile Include="..\Kalel Shared\Com Classes\ExperimentData.cpp" />
     <ClCompile Include="..\Kalel Shared\Com Classes\ExperimentSettings.cpp" />
     <ClCompile Include="..\Kalel Shared\Com Classes\MachineSettings.cpp" />
@@ -283,6 +282,7 @@
     <ClCompile Include="..\Kalel Shared\Netcode\Socket.cpp" />
     <ClCompile Include="..\Kalel Shared\Netcode\stdHelpers.cpp" />
     <ClCompile Include="..\Kalel Shared\Netcode\URLHelper.cpp" />
+    <ClCompile Include="..\Kalel Shared\timeHelpers.cpp" />
     <ClCompile Include="..\Kalel Shared\unicodeConv.cpp" />
     <ClCompile Include="CommHandler.cpp" />
     <ClCompile Include="DialogConnectServer.cpp" />
