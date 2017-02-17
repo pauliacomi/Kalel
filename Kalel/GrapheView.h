@@ -7,6 +7,7 @@
 // Vue CGrapheView
 #include "../Kalel Shared/Com Classes/ExperimentData.h"								// Where data about the experimental parameters, results and current status is stored. REQUIRED FOR CARRAYMEASUREMENTS
 #include <map>
+#include <forward_list>
 
 class CKalelDoc;
 
@@ -26,19 +27,23 @@ public:
 	void TraceAxis(CRect place_graphe, CRect axe_graphe, CDC *pDC,CString);
 	void TraceScale(CRect graphe,CRect axe_graphe,int max_pression,int min_pression,double max_calo,double min_calo,
 					   CDC *pDC,float min_temps = 0.0);
+	void TraceSeries(CDC* pDC, CRect graphe, std::forward_list<POINT> points, COLORREF colour, float min_x, float min_y, float scale_x, float scale_y);
 	void TraceGraph(CRect graphe,int max_pression,int min_pression,double max_calo,double min_calo,
 					  CDC *pDC,float min_temps=0.0,int PremiereMesure=0);
 	void TraceLegend(CRect rect, COLORREF color, CString texte, CDC* pDC);
 	void TraceContour(CRect rect, CDC *pDC);
-	double MaxPressionEchelle(double max_p);
 	int NbrIntervalles(double max);
 
 private:
 	std::map<std::chrono::system_clock::time_point, std::shared_ptr<ExperimentData>> * measurementArray;
-	double maxPressure, minPressure, maxCalo, minCalo;
-	CString titleGrapheEtape;
+
+	double maxPressure = 0;
+	double minPressure = 0;
+	double maxCalo = 0;
+	double minCalo = 0;
 	float timeMinimum;
-	int measurementMinimum, stageName;
+	int measurementMinimum = 0;
+	int stageName = 0;
 
 public:
 	virtual void OnDraw(CDC* pDC);      // substitué pour dessiner cette vue
