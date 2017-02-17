@@ -7,7 +7,6 @@
 #include "KalelDoc.h"															// For the document pointer
 #include "../Kalel Shared/Resources/StringTable.h"								// Error message strings
 
-
 static const int	BORDER_WIDTH		= 15;
 static const int	LEGEND_HEIGHT		= 30;
 static const int	TAILLE_POINT		= 15000;
@@ -75,6 +74,9 @@ void CGrapheView::OnDraw(CDC* pDC)
 			// Acquisition des données 
 			ExperimentData experimentData = *((*measurementArray).end()->second);
 
+			PLIST points_calo, points_lp, points_hp;
+			PLIST points_calo_step, points_lp_step, points_hp_step;
+
 			std::forward_list<POINT> list_;
 
 			// Valeurs utilisées pour les échelles et les axes d'abscisses et d'ordonnées
@@ -98,6 +100,8 @@ void CGrapheView::OnDraw(CDC* pDC)
 			{
 				measurementMinimum = 0;
 			}
+
+			float timeMaximum = (*measurementArray).end()->second->timeElapsed;
 
 			// Les graphes
 
@@ -142,7 +146,7 @@ void CGrapheView::OnDraw(CDC* pDC)
 
 			TraceAxis(place_grapheComplet,axe_grapheComplet,pDC,titreComplet);
 			TraceScale(grapheComplet, axe_grapheComplet, maxPressure, minPressure, maxCalo, minCalo, pDC);
-			TraceGraph(grapheComplet, maxPressure, minPressure, maxCalo, minCalo, pDC);
+			TraceGraph(pDC, grapheComplet, points_calo, points_lp, points_hp, maxPressure, minPressure, maxCalo, minCalo, timeMaximum);
 
 
 
@@ -167,7 +171,7 @@ void CGrapheView::OnDraw(CDC* pDC)
 
 			TraceAxis(place_grapheEtape, axe_grapheEtape, pDC, titleGrapheEtape);
 			TraceScale(grapheEtape, axe_grapheEtape, maxPressure, minPressure, maxCalo, minCalo, pDC, timeMinimum);
-			TraceGraph(grapheEtape, maxPressure, minPressure, maxCalo, minCalo, pDC, timeMinimum, measurementMinimum);
+			TraceGraph(pDC, grapheEtape, points_calo_step, points_lp_step, points_hp_step, maxPressure, minPressure, maxCalo, minCalo, timeMaximum, timeMinimum);
 		
 
 			// ------------------------------------------------------------
@@ -369,18 +373,16 @@ void CGrapheView::TraceScale(CRect graphe,CRect axe_graphe,int max_pression,int 
 // --------------- Graphe --------------------------
 // -------------------------------------------------
 
-void CGrapheView::TraceGraph(CRect graphe,int max_pression,int min_pression,double max_calo,double min_calo,
-							   CDC *pDC,float min_temps,int firstMeasurement)
+void CGrapheView::TraceGraph(CDC *pDC, CRect graphe, const PLIST& points_calo, const PLIST& points_lp, const PLIST& points_hp,
+                             int max_p, int min_p, double max_calo, double min_calo, float max_time, float min_time)
 {
 	// rapport = hauteur du graphe / (max_calo - min_calo)
 	// rapport = valeur (bar ou µV) par pixel
 
-	std::forward_list<POINT> points_calo, points_lp, points_hp;
 	float rapport_calo, rapport_pression, rapport_temps;
-	float max_temps = (*measurementArray).end()->second->timeElapsed;
-	float ecart_temps = max_temps - min_temps;
+	float ecart_temps = max_time - min_time;
 	float ecart_calo = max_calo - min_calo;
-	float ecart_pression = max_pression - min_pression;
+	float ecart_pression = max_p - min_p;
 		
 	if (ecart_calo!=0)
 		rapport_calo = graphe.Height() / ecart_calo;
@@ -403,13 +405,13 @@ void CGrapheView::TraceGraph(CRect graphe,int max_pression,int min_pression,doub
 	// traçage des courbes
 
 	// ------------ Calo en rouge -------------------------
-	TraceSeries(pDC, graphe, points_calo, RGB(255, 0, 0), min_temps, min_calo, rapport_temps, rapport_calo);
+	TraceSeries(pDC, graphe, points_calo, RGB(255, 0, 0), min_time, min_calo, rapport_temps, rapport_calo);
 
 	// ------------ Basse pression en vert ----------------
-	TraceSeries(pDC, graphe, points_lp, RGB(0, 185, 0), min_temps, min_pression, rapport_temps, rapport_pression);
+	TraceSeries(pDC, graphe, points_lp, RGB(0, 185, 0), min_time, min_p, rapport_temps, rapport_pression);
 
 	// ------------ Haute pression en bleu ----------------
-	TraceSeries(pDC, graphe, points_hp, RGB(0, 0, 255), min_temps, min_pression, rapport_temps, rapport_pression);
+	TraceSeries(pDC, graphe, points_hp, RGB(0, 0, 255), min_time, min_p, rapport_temps, rapport_pression);
 }
 
 
@@ -417,7 +419,7 @@ void CGrapheView::TraceGraph(CRect graphe,int max_pression,int min_pression,doub
 // --------------- Series --------------------------
 // -------------------------------------------------
 
-void CGrapheView::TraceSeries(CDC* pDC, CRect graphe, std::forward_list<POINT> points, COLORREF colour, float min_x, float min_y, float scale_x, float scale_y)
+void CGrapheView::TraceSeries(CDC* pDC, CRect graphe, const PLIST& points, COLORREF colour, float min_x, float min_y, float scale_x, float scale_y)
 {
 	// Changement de 'pen' pour tracer les courbes avec une couleur différente
 	// On sélectionne ce 'Pen' dans ce device context

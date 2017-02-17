@@ -21,15 +21,16 @@ protected:
 	
 	void OnInitialUpdate();
 
+	typedef std::forward_list<POINT> PLIST;
 public:
 	CKalelDoc* GetDocument() const;
 
 	void TraceAxis(CRect place_graphe, CRect axe_graphe, CDC *pDC,CString);
 	void TraceScale(CRect graphe,CRect axe_graphe,int max_pression,int min_pression,double max_calo,double min_calo,
 					   CDC *pDC,float min_temps = 0.0);
-	void TraceSeries(CDC* pDC, CRect graphe, std::forward_list<POINT> points, COLORREF colour, float min_x, float min_y, float scale_x, float scale_y);
-	void TraceGraph(CRect graphe,int max_pression,int min_pression,double max_calo,double min_calo,
-					  CDC *pDC,float min_temps=0.0,int PremiereMesure=0);
+	void TraceGraph(CDC *pDC, CRect graphe, const PLIST& points_calo, const PLIST& points_lp, const PLIST& points_hp,
+	                int max_p, int min_p, double max_calo, double min_calo, float max_time, float min_time = 0.0);
+	void TraceSeries(CDC* pDC, CRect graphe, const PLIST& points, COLORREF colour, float min_x, float min_y, float scale_x, float scale_y);
 	void TraceLegend(CRect rect, COLORREF color, CString texte, CDC* pDC);
 	void TraceContour(CRect rect, CDC *pDC);
 	int NbrIntervalles(double max);
@@ -44,6 +45,7 @@ private:
 	float timeMinimum;
 	int measurementMinimum = 0;
 	int stageName = 0;
+
 
 public:
 	virtual void OnDraw(CDC* pDC);      // substitué pour dessiner cette vue
