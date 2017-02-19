@@ -37,7 +37,7 @@ public:
 	bool ExchangeMachineSettings(const MachineSettings &pParam);
 	bool ExchangeExperimentSettings(const ExperimentSettings &pParam);
 	bool OnSetMachineSettings();
-	bool ExchangeData(std::map<std::chrono::system_clock::time_point, std::shared_ptr<ExperimentData>> * pParam);
+	bool ExchangeData(ExperimentDataStorageArray* pParam);
 	bool ExchangeLogs(std::map<std::chrono::system_clock::time_point, std::wstring> * pParam);
 	bool ExchangeRequests(std::map<std::chrono::system_clock::time_point, std::wstring> * pParam);
 	bool ExchangeControlState(const ControlInstrumentState &pParam);

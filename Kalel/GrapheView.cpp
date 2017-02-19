@@ -6,6 +6,7 @@
 
 #include "KalelDoc.h"															// For the document pointer
 #include "../Kalel Shared/Resources/StringTable.h"								// Error message strings
+#include <algorithm>
 
 static const int	BORDER_WIDTH		= 15;
 static const int	LEGEND_HEIGHT		= 30;
@@ -72,33 +73,40 @@ void CGrapheView::OnDraw(CDC* pDC)
 		{
 
 			// Acquisition des données 
-			ExperimentData experimentData = *((*measurementArray).end()->second);
+			PLIST all_points;
 
-			PLIST points_calo, points_lp, points_hp;
-			PLIST points_calo_step, points_lp_step, points_hp_step;
+			std::for_each(measurementArray->begin(), measurementArray->end(),
+				[&all_points](const std::pair<std::chrono::system_clock::time_point, std::shared_ptr<ExperimentData>>& p){
+				
+				all_points.nb_points.push_back(p.second->GetexperimentGraphPoints());
+				all_points.time_elapsed.push_back(p.second->GettimeElapsed());
+				all_points.high_pressure.push_back(p.second->GetpressureHigh());
+				all_points.low_pressure.push_back(p.second->GetpressureLow());
+				all_points.calorimeter.push_back(p.second->GetresultCalorimeter());
 
-			std::forward_list<POINT> list_;
+				});
+						
 
 			// Valeurs utilisées pour les échelles et les axes d'abscisses et d'ordonnées
 			// Set the maximums and minimums
-			maxPressure = max(maxPressure, experimentData.pressureLow);
-			maxPressure = max(maxPressure, experimentData.pressureHigh);
+			maxPressure = max(maxPressure, *all_points.low_pressure.end());
+			maxPressure = max(maxPressure, *all_points.high_pressure.end());
 			maxPressure = ceil(1.1 * maxPressure);
 
-			minPressure = min(minPressure, experimentData.pressureLow);
-			minPressure = min(minPressure, experimentData.pressureHigh);
+			minPressure = min(minPressure, *all_points.low_pressure.end());
+			minPressure = min(minPressure, *all_points.high_pressure.end());
 			minPressure = floor(1.1 * minPressure);
 
-			maxCalo = max(maxCalo, experimentData.resultCalorimeter);
-			minCalo = min(minCalo, experimentData.resultCalorimeter);
+			maxCalo = max(maxCalo, *all_points.calorimeter.end());
+			minCalo = min(minCalo, *all_points.calorimeter.end());
 
 			double displayedSeconds = RECENT_HOURS * 3600;
-			timeMinimum = experimentData.timeElapsed - displayedSeconds;
-			double partialCoefficient = (experimentData.timeElapsed / experimentData.experimentGraphPoints);
-			measurementMinimum  = static_cast<int>(experimentData.experimentGraphPoints - displayedSeconds / partialCoefficient);
+			timeMinimum = *all_points.time_elapsed.end() - displayedSeconds;
+			double partialCoefficient = (*all_points.time_elapsed.end() / *all_points.nb_points.end());
+			measurementMinimum  = static_cast<int>(*all_points.nb_points.end() - displayedSeconds / partialCoefficient);
 			if (measurementMinimum < 0)
 			{
-				measurementMinimum = 0;
+				measurementMinimum = 0;         //????????//
 			}
 
 			float timeMaximum = (*measurementArray).end()->second->timeElapsed;
@@ -146,7 +154,7 @@ void CGrapheView::OnDraw(CDC* pDC)
 
 			TraceAxis(place_grapheComplet,axe_grapheComplet,pDC,titreComplet);
 			TraceScale(grapheComplet, axe_grapheComplet, maxPressure, minPressure, maxCalo, minCalo, pDC);
-			TraceGraph(pDC, grapheComplet, points_calo, points_lp, points_hp, maxPressure, minPressure, maxCalo, minCalo, timeMaximum);
+			TraceGraph(pDC, grapheComplet, all_points, maxPressure, minPressure, maxCalo, minCalo, timeMaximum);
 
 
 
@@ -171,7 +179,7 @@ void CGrapheView::OnDraw(CDC* pDC)
 
 			TraceAxis(place_grapheEtape, axe_grapheEtape, pDC, titleGrapheEtape);
 			TraceScale(grapheEtape, axe_grapheEtape, maxPressure, minPressure, maxCalo, minCalo, pDC, timeMinimum);
-			TraceGraph(pDC, grapheEtape, points_calo_step, points_lp_step, points_hp_step, maxPressure, minPressure, maxCalo, minCalo, timeMaximum, timeMinimum);
+			TraceGraph(pDC, grapheEtape, all_points, maxPressure, minPressure, maxCalo, minCalo, timeMaximum, timeMinimum);
 		
 
 			// ------------------------------------------------------------
@@ -373,7 +381,7 @@ void CGrapheView::TraceScale(CRect graphe,CRect axe_graphe,int max_pression,int 
 // --------------- Graphe --------------------------
 // -------------------------------------------------
 
-void CGrapheView::TraceGraph(CDC *pDC, CRect graphe, const PLIST& points_calo, const PLIST& points_lp, const PLIST& points_hp,
+void CGrapheView::TraceGraph(CDC *pDC, CRect graphe, const PLIST& all_points,
                              int max_p, int min_p, double max_calo, double min_calo, float max_time, float min_time)
 {
 	// rapport = hauteur du graphe / (max_calo - min_calo)
@@ -405,13 +413,13 @@ void CGrapheView::TraceGraph(CDC *pDC, CRect graphe, const PLIST& points_calo, c
 	// traçage des courbes
 
 	// ------------ Calo en rouge -------------------------
-	TraceSeries(pDC, graphe, points_calo, RGB(255, 0, 0), min_time, min_calo, rapport_temps, rapport_calo);
+	TraceSeries(pDC, graphe, all_points.time_elapsed, all_points.calorimeter, RGB(255, 0, 0), min_time, min_calo, rapport_temps, rapport_calo);
 
 	// ------------ Basse pression en vert ----------------
-	TraceSeries(pDC, graphe, points_lp, RGB(0, 185, 0), min_time, min_p, rapport_temps, rapport_pression);
+	TraceSeries(pDC, graphe, all_points.time_elapsed, all_points.low_pressure, RGB(0, 185, 0), min_time, min_p, rapport_temps, rapport_pression);
 
 	// ------------ Haute pression en bleu ----------------
-	TraceSeries(pDC, graphe, points_hp, RGB(0, 0, 255), min_time, min_p, rapport_temps, rapport_pression);
+	TraceSeries(pDC, graphe, all_points.time_elapsed, all_points.high_pressure, RGB(0, 0, 255), min_time, min_p, rapport_temps, rapport_pression);
 }
 
 
@@ -419,7 +427,8 @@ void CGrapheView::TraceGraph(CDC *pDC, CRect graphe, const PLIST& points_calo, c
 // --------------- Series --------------------------
 // -------------------------------------------------
 
-void CGrapheView::TraceSeries(CDC* pDC, CRect graphe, const PLIST& points, COLORREF colour, float min_x, float min_y, float scale_x, float scale_y)
+void CGrapheView::TraceSeries(CDC* pDC, CRect graphe, const std::vector<float>& points_x, const std::vector<float>& points_y, 
+	COLORREF colour, float min_x, float min_y, float scale_x, float scale_y)
 {
 	// Changement de 'pen' pour tracer les courbes avec une couleur différente
 	// On sélectionne ce 'Pen' dans ce device context
@@ -427,13 +436,18 @@ void CGrapheView::TraceSeries(CDC* pDC, CRect graphe, const PLIST& points, COLOR
 	CPen newPen(PS_SOLID, 1, colour);
 	CPen * pOldPen = pDC->SelectObject(&newPen);
 
-	for (auto it = points.begin(); it != points.end(); it++)
+	if (points_x.size() != points_y.size())
+	{
+		ASSERT(FALSE);
+	}
+
+	for (auto it = 0; it < points_x.size(); ++it)
 	{
 		POINT PCalo;
-		PCalo.x = graphe.left + scale_x * (it->x - min_x);
-		PCalo.y = graphe.bottom - scale_y * (it->y - min_y);
+		PCalo.x = graphe.left + scale_x * (points_x[it] - min_x);
+		PCalo.y = graphe.bottom - scale_y * (points_y[it] - min_y);
 
-		if (it == points.begin())
+		if (it == 0)
 			pDC->MoveTo(PCalo);
 		else
 			pDC->LineTo(PCalo);

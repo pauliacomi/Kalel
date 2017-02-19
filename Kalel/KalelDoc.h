@@ -15,7 +15,7 @@ protected: // create from serialization only
 
 // Attributes
 public:	
-	std::map<std::chrono::system_clock::time_point, std::shared_ptr<ExperimentData>>* m_TableauMesures;
+	ExperimentDataStorageArray* m_TableauMesures;
 
 // Operations
 public:
@@ -45,7 +45,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 public:
-	void GraphSetArray(std::map<std::chrono::system_clock::time_point, std::shared_ptr<ExperimentData>> & expData);
+	void GraphSetArray(ExperimentDataStorageArray & expData);
 	
 
 #ifdef SHARED_HANDLERS

@@ -698,7 +698,7 @@ LRESULT CKalelView::OnInstrumentButtonConfirmed(WPARAM wParam, LPARAM incomingIn
 LRESULT CKalelView::OnExchangeData(WPARAM, LPARAM incomingExperimentData)
 {
 	// Get the incoming vector and add it to the local data
-	auto newData = reinterpret_cast<std::map<std::chrono::system_clock::time_point, std::shared_ptr<ExperimentData>>*>(incomingExperimentData);
+	auto newData = reinterpret_cast<ExperimentDataStorageArray*>(incomingExperimentData);
 	dataCollection.insert(newData->begin(), newData->end());
 
 	// Delete the useless vector now

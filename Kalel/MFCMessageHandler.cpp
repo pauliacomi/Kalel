@@ -81,7 +81,7 @@ bool MFCMessageHandler::ExchangeExperimentSettings(const ExperimentSettings &pPa
 	return true;
 }
 
-bool MFCMessageHandler::ExchangeData(std::map<std::chrono::system_clock::time_point, std::shared_ptr<ExperimentData>> * pParam)
+bool MFCMessageHandler::ExchangeData(ExperimentDataStorageArray * pParam)
 {
 	// Post the required message, now the main thread is responsible for deleting the new class
 	if (::PostMessage(windowHandle, UWM_EXCHANGEDATA, NULL, (LPARAM)pParam) == 0 ) 

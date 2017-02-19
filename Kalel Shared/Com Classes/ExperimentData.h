@@ -8,6 +8,7 @@
 #include <memory>
 #include <deque>
 #include <chrono>
+#include <map>
 
 class ExperimentData
 {
@@ -148,5 +149,7 @@ public:
 	void SettemperatureRoom(double a)							;
 
 };
+
+typedef std::map<std::chrono::system_clock::time_point, std::shared_ptr<ExperimentData>> ExperimentDataStorageArray;
 
 #endif

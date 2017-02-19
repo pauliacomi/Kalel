@@ -47,8 +47,8 @@ public:
 	// Requests and error interactions
 	//**********
 private:
-	std::mutex autoReqMutex;																					// Synchronisation class, should be used whenever there are writes to the logs
-	std::map<std::chrono::system_clock::time_point, std::string> automationErrorLogs;					// All error logs are stored here
+	std::mutex autoReqMutex;																				// Synchronisation class, should be used whenever there are writes to the logs
+	std::map<std::chrono::system_clock::time_point, std::string> automationErrorLogs;						// All error logs are stored here
 
 public:
 	void pushErrLogs(std::chrono::system_clock::time_point time, std::string value) {
@@ -65,8 +65,8 @@ public:
 	// Data
 	//**********
 private:
-	std::mutex sharedMutex;																						// Synchronisation class, should be used whenever there are writes to the deque
-	std::map<std::chrono::system_clock::time_point, std::shared_ptr<ExperimentData>> dataCollection;	// The collection of data from an experiment
+	std::mutex sharedMutex;																					// Synchronisation class, should be used whenever there are writes to the deque
+	ExperimentDataStorageArray dataCollection;																// The collection of data from an experiment
 
 public:
 	std::shared_ptr<ExperimentData> currentData;
@@ -76,7 +76,7 @@ public:
 		dataCollection.insert(std::make_pair(time, value));
 	}
 
-	std::map<std::chrono::system_clock::time_point, std::shared_ptr<ExperimentData>> getData() {
+	ExperimentDataStorageArray getData() {
 		std::unique_lock<std::mutex> lock(sharedMutex);
 		return dataCollection;
 	}

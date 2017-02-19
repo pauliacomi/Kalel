@@ -283,7 +283,7 @@ void Kalel::DataSync(http_request* req, http_response* resp)
 	{
 		// Figure out which range of data to send by looking at the time requested
 
-		std::map<std::chrono::system_clock::time_point, std::shared_ptr<ExperimentData>>::iterator it;
+		ExperimentDataStorageArray::iterator it;
 		auto localCollection = storageVectors.getData();
 
 		if (req->params_.empty() ||

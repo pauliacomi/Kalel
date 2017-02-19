@@ -747,7 +747,7 @@ unsigned CommHandler::GetData_resp(http_response* r) {
 			}
 
 			std::shared_ptr<ExperimentData> receivedData = nullptr;
-			auto receivedDataArray = new std::map<std::chrono::system_clock::time_point, std::shared_ptr<ExperimentData>>();
+			auto receivedDataArray = new ExperimentDataStorageArray();
 
 			for (json::iterator i = j.begin(); i != j.end(); ++i)
 			{
