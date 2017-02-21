@@ -100,8 +100,9 @@ void CGrapheView::OnDraw(CDC* pDC)
 			maxCalo = max(maxCalo, *all_points.calorimeter.end());
 			minCalo = min(minCalo, *all_points.calorimeter.end());
 
+			float timeMaximum = *all_points.time_elapsed.end();
 			double displayedSeconds = RECENT_HOURS * 3600;
-			timeMinimum = *all_points.time_elapsed.end() - displayedSeconds;
+			timeMinimum = timeMaximum - displayedSeconds;
 			double partialCoefficient = (*all_points.time_elapsed.end() / *all_points.nb_points.end());
 			measurementMinimum  = static_cast<int>(*all_points.nb_points.end() - displayedSeconds / partialCoefficient);
 			if (measurementMinimum < 0)
@@ -109,7 +110,6 @@ void CGrapheView::OnDraw(CDC* pDC)
 				measurementMinimum = 0;         //????????//
 			}
 
-			float timeMaximum = (*measurementArray).end()->second->timeElapsed;
 
 			// Les graphes
 
