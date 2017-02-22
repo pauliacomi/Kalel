@@ -29,8 +29,8 @@ Automation::Automation(Storage &s, Controls &c)
 
 	// Time
 	storage.currentData->timeStart = time(0);
-	controls.timerExperiment.TopChrono();	// Start global experiment timer	
-	controls.timerMeasurement.TopChrono();	// Start the timer to record time between measurements
+	controls.timerExperiment.Start();				// Start global experiment timer	
+	controls.timerMeasurement.Start();				// Start the timer to record time between measurements
 }
 
 
@@ -131,7 +131,7 @@ void Automation::Execution()
 			storage.currentData->timeToEquilibrateCurrent > storage.currentData->timeToEquilibrate) {			//and the time has been completed
 
 			// Stop the timer
-			controls.timerWaiting.ArretTemps();
+			controls.timerWaiting.Pause();
 
 			// Reset the flag
 			storage.currentData->experimentWaiting = false;
@@ -294,6 +294,6 @@ void Automation::ResetAutomation()
 
 	// Time
 	storage.currentData->timeStart = time(0);
-	controls.timerExperiment.TopChrono();	// Start global experiment timer	
-	controls.timerMeasurement.TopChrono();	// Start the timer to record time between measurements
+	controls.timerExperiment.Start();	// Start global experiment timer	
+	controls.timerMeasurement.Start();	// Start the timer to record time between measurements
 }
