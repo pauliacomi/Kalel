@@ -23,8 +23,8 @@ public:
 	***********************************************************************************************************************************/
 private:
 					
-	std::mutex fileLock;	// Mutex used for synchronisation
-	FILE* f;				// File pointer
+	std::mutex fileLock;			// Mutex used for synchronisation
+	FILE* f = nullptr;				// File pointer
 
 	/**********************************************************************
 	* Private function that allows for thread safe file writing

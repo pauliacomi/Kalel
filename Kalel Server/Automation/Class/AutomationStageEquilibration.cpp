@@ -30,9 +30,9 @@ void Automation::StageEquilibration()
 		controls.fileWriter->FileMeasurementCreate(storage.experimentSettings->dataGeneral);						// Measurement file
 
 
-		storage.currentData->timeStart = time(0);		// Record experiment start time
-		controls.timerExperiment.TopChrono();							// Start global experiment timer	
-		controls.timerMeasurement.TopChrono();							// Start the timer to record time between measurements
+		storage.currentData->timeStart = time(0);																	// Record experiment start time
+		controls.timerExperiment.Start();																			// Start global experiment timer	
+		controls.timerMeasurement.Start();																			// Start the timer to record time between measurements
 
 		// Set the time to wait
 		WaitMinutes(storage.currentData->timeToEquilibrate = storage.experimentSettings->dataDivers.temps_ligne_base);

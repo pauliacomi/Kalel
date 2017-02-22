@@ -30,10 +30,10 @@ Measurement::Measurement(Storage &s, Controls &c)
 	, controls{ c }
 {
 	// Initialise threads
-	h_MeasurementThread[0] = NULL;
-	h_MeasurementThread[1] = NULL;
-	h_MeasurementThread[2] = NULL;
-	h_MeasurementThread[3] = NULL;
+	h_MeasurementThread[0] = nullptr;
+	h_MeasurementThread[1] = nullptr;
+	h_MeasurementThread[2] = nullptr;
+	h_MeasurementThread[3] = nullptr;
 
 	// Initialise events
 	//   - Non signalled by default
@@ -41,8 +41,8 @@ Measurement::Measurement(Storage &s, Controls &c)
 	h_MeasurementThreadStartEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
 
 	// Initialise instruments
-	g_pTemperature = new CTemperature(); 
-	g_pSerialInstruments = new SerialInstruments();
+	g_pTemperature.reset(new CTemperature()); 
+	g_pSerialInstruments.reset(new SerialInstruments());
 
 	std::string errorInit;
 	if (!g_pSerialInstruments->Init(&errorInit))
@@ -51,22 +51,16 @@ Measurement::Measurement(Storage &s, Controls &c)
 	}
 
 	// Initialise security;
-	security = new Security(
+	security.reset(new Security(
 		storage.machineSettings->ActivationSecurite, 
 		*controls.valveControls,								
-		*controls.messageHandler);
+		*controls.messageHandler)
+			);
 }
 
 
 Measurement::~Measurement()
 {
-	// Delete security class
-	delete security;
-
-	// Delete instruments
-	delete g_pTemperature;
-	delete g_pSerialInstruments;
-
 	// Destroy the events
 	CloseHandle(h_MeasurementThreadStartEvent);
 }
@@ -107,8 +101,8 @@ void Measurement::Execution()
 
 		// Record time
 		++storage.currentData->measurementsMade;												// Save the measurement number
-		storage.currentData->timeElapsed = controls.timerExperiment.TempsActuel();				// Save the time elapsed from the beginning of the experiment
-		storage.currentData->timeToEquilibrateCurrent = controls.timerWaiting.TempsActuel();	// Save the waiting time if it exists
+		storage.currentData->timeElapsed = controls.timerExperiment.TimeSeconds();				// Save the time elapsed from the beginning of the experiment
+		storage.currentData->timeToEquilibrateCurrent = controls.timerWaiting.TimeSeconds();	// Save the waiting time if it exists
 
 		/*
 		*
@@ -138,7 +132,7 @@ void Measurement::Execution()
 		*/
 
 		// Write data
-		if (controls.timerMeasurement.TempsActuel() > T_BETWEEN_RECORD)							// If enough time between measurements
+		if (controls.timerMeasurement.TimeSeconds() > T_BETWEEN_RECORD)							// If enough time between measurements
 		{
 			if (storage.currentData->experimentRecording)										// If we started recording
 			{
@@ -147,10 +141,10 @@ void Measurement::Execution()
 			}
 
 			// Restart the timer to record time between measurements
-			controls.timerMeasurement.TopChrono();
+			controls.timerMeasurement.Start();
 
 			// Increment the measurement number
-			storage.currentData->experimentGraphPoints++;
+			++storage.currentData->experimentGraphPoints;
 		}
 
 		/*

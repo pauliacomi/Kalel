@@ -12,5 +12,5 @@ void Automation::WaitSeconds(int nbsecondes)
 {
 	storage.currentData->timeToEquilibrate = nbsecondes;
 	storage.currentData->experimentWaiting = true;
-	controls.timerWaiting.TopChrono();
+	controls.timerWaiting.Start();
 }

@@ -12,7 +12,6 @@
 class CTemperature;
 class SerialInstruments;
 class ExperimentData;
-class CChrono;
 class ExperimentSettings;
 class Storage;
 class FileWriter;
@@ -36,9 +35,9 @@ public:
 	Controls & controls;
 	
 	// New
-	CTemperature* g_pTemperature;									// Pointer to the class that deals with temperature recording
-	SerialInstruments * g_pSerialInstruments;						// Pointer to the class that deals with calorimeter & pressure recording
-	Security * security;
+	std::unique_ptr<CTemperature> g_pTemperature;									// Pointer to the class that deals with temperature recording
+	std::unique_ptr<SerialInstruments> g_pSerialInstruments;						// Pointer to the class that deals with calorimeter & pressure recording
+	std::unique_ptr<Security> security;
 
 	//------------------------------------------------------------
 	// Syncronisation primitives and threads
