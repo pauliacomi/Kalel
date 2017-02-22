@@ -1,4 +1,3 @@
-#include "../../stdafx.h"
 #include "Measurement.h"
 
 // Resources
@@ -16,30 +15,16 @@
 #include "../../../Kalel Shared/timeHelpers.h"
 #include "../../../Kalel Server/Automation/FileWriter.h"					// Writing file
 #include "../../../Kalel Server/Backend/Wrapper Classes/ValveController.h"	// Valve class
-#include "../Utils/Chrono.h"												// Time keeping
-
 
 // std::functionality
 #include <string>
 #include <thread>
 
 
-
 Measurement::Measurement(Storage &s, Controls &c)
 	: storage{ s }
 	, controls{ c }
 {
-	// Initialise threads
-	h_MeasurementThread[0] = nullptr;
-	h_MeasurementThread[1] = nullptr;
-	h_MeasurementThread[2] = nullptr;
-	h_MeasurementThread[3] = nullptr;
-
-	// Initialise events
-	//   - Non signalled by default
-	//   - With manual reinitiallisation
-	h_MeasurementThreadStartEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
-
 	// Initialise instruments
 	g_pTemperature.reset(new CTemperature()); 
 	g_pSerialInstruments.reset(new SerialInstruments());
@@ -61,8 +46,6 @@ Measurement::Measurement(Storage &s, Controls &c)
 
 Measurement::~Measurement()
 {
-	// Destroy the events
-	CloseHandle(h_MeasurementThreadStartEvent);
 }
 
 ////////////////////////////////////////////////////////
@@ -172,81 +155,27 @@ void Measurement::Execution()
 
 void Measurement::ThreadMeasurement()
 {
-	// Start the 4 threads and get their handles
-	// The functions wait for the hEvent
-	h_MeasurementThread[0] = CreateThread(NULL, NULL, ThreadProc_ReadCalorimeter, this, NULL, NULL);
-	h_MeasurementThread[1] = CreateThread(NULL, NULL, ThreadProc_ReadLowPressure, this, NULL, NULL);
-	h_MeasurementThread[2] = CreateThread(NULL, NULL, ThreadProc_ReadHighPressure, this, NULL, NULL);
-	h_MeasurementThread[3] = CreateThread(NULL, NULL, ThreadProc_ReadTemperature, this, NULL, NULL);
+	// Start the 4 threads
+	measurementThreads.push_back(std::thread(&Measurement::ReadCalorimeter, this));
+	measurementThreads.push_back(std::thread(&Measurement::ReadHighPressure, this));
+	measurementThreads.push_back(std::thread(&Measurement::ReadLowPressure, this));
+	measurementThreads.push_back(std::thread(&Measurement::ReadTemperatures, this));
 
-	// Set the event to start the threads
-	SetEvent(h_MeasurementThreadStartEvent);
+	// Give the threads the start signal
+	std::unique_lock<std::mutex> lk(lockingMutex);
+	ready = true;
+	syncThreadStart.notify_all();
+	lk.unlock();
 
-	// Wait for the threads to finish
-	WaitForMultipleObjects(4, h_MeasurementThread, TRUE, INFINITE);
-
-	// Clean-up
-	for (size_t i = 0; i < 4; i++)
+	// Wait for all threads to complete
+	for (auto& th : measurementThreads)
 	{
-		CloseHandle(h_MeasurementThread[i]);
-		h_MeasurementThread[i] = NULL;
+		th.join();
 	}
-	ResetEvent(h_MeasurementThreadStartEvent);
-}
 
-
-///------------------- Threads
-
-DWORD WINAPI Measurement::ThreadProc_ReadCalorimeter(LPVOID lpParam)
-{
-	Measurement *manipulation = static_cast<Measurement *>(lpParam);
-
-	// Wait for the activation of the hEvent
-	WaitForSingleObject(manipulation->h_MeasurementThreadStartEvent, INFINITE);
-
-	// Execute the function
-	manipulation->ReadCalorimeter();
-
-	return 0;
-}
-
-DWORD WINAPI Measurement::ThreadProc_ReadHighPressure(LPVOID lpParam)
-{
-	Measurement *manipulation = static_cast<Measurement *>(lpParam);
-
-	// Wait for the activation of the hEvent
-	WaitForSingleObject(manipulation->h_MeasurementThreadStartEvent, INFINITE);
-
-	// Execute the function
-	manipulation->ReadHighPressure();
-
-	return 0;
-}
-
-DWORD WINAPI Measurement::ThreadProc_ReadLowPressure(LPVOID lpParam)
-{
-	Measurement *manipulation = static_cast<Measurement *>(lpParam);
-
-	// Wait for the activation of the hEvent
-	WaitForSingleObject(manipulation->h_MeasurementThreadStartEvent, INFINITE);
-
-	// Execute the function
-	manipulation->ReadLowPressure();
-
-	return 0;
-}
-
-DWORD WINAPI Measurement::ThreadProc_ReadTemperature(LPVOID lpParam)
-{
-	Measurement *manipulation = static_cast<Measurement *>(lpParam);
-
-	// Wait for the activation of the hEvent
-	WaitForSingleObject(manipulation->h_MeasurementThreadStartEvent, INFINITE);
-
-	// Execute the function
-	manipulation->ReadTemperatures();
-
-	return 0;
+	// Reset bool
+	measurementThreads.clear();
+	ready = false;
 }
 
 
@@ -254,8 +183,12 @@ DWORD WINAPI Measurement::ThreadProc_ReadTemperature(LPVOID lpParam)
 
 void Measurement::ReadCalorimeter()
 {
+	// Wait until called
+	std::unique_lock<std::mutex> lock(lockingMutex);
+	syncThreadStart.wait(lock, [this] {return ready; });
+
 	// Read the value from the calorimeter
-	double calorimeter = NULL;
+	double calorimeter = 0;
 	bool success;
 	std::string error;
 
@@ -274,8 +207,12 @@ void Measurement::ReadCalorimeter()
 
 void Measurement::ReadLowPressure()
 {
+	// Wait until called
+	std::unique_lock<std::mutex> lock(lockingMutex);
+	syncThreadStart.wait(lock, [this] {return ready; });
+
 	// Read the value from the calorimeter
-	double pressureLowRange = NULL;
+	double pressureLowRange = 0;
 	bool success;
 	std::string error;
 
@@ -294,8 +231,12 @@ void Measurement::ReadLowPressure()
 
 void Measurement::ReadHighPressure()
 {
+	// Wait until called
+	std::unique_lock<std::mutex> lock(lockingMutex);
+	syncThreadStart.wait(lock, [this] {return ready; });
+
 	// Read the value from the calorimeter
-	double pressureHighRange = NULL;
+	double pressureHighRange = 0;
 	bool success;
 	std::string error;
 
@@ -313,8 +254,12 @@ void Measurement::ReadHighPressure()
 
 void Measurement::ReadTemperatures()
 {
+	// Wait until called
+	std::unique_lock<std::mutex> lock(lockingMutex);
+	syncThreadStart.wait(lock, [this] {return ready; });
+
 	// Read the value from the calorimeter
-	double dTemperatureCalo = NULL, dTemperatureCage = NULL, dTemperaturePiece = NULL;
+	double dTemperatureCalo = 0, dTemperatureCage = 0, dTemperaturePiece = 0;
 	bool success;
 	std::string error;
 

@@ -13,9 +13,6 @@
 
 ThreadManager::ThreadManager(Storage &h)
 	: m_threadMainControlLoop(nullptr)
-	, automation(nullptr)
-	, measurement(nullptr)
-
 	, storage{ h }	
 {
 	// Create objects from controls class
@@ -46,8 +43,8 @@ unsigned ThreadManager::StartMeasurement()
 {
 	if (measurement == nullptr)
 	{
-		measurement = new Measurement(storage, controls);
-		measurementThread = std::thread(&Measurement::Execution, measurement);
+		measurement.reset(new Measurement(storage, controls));
+		measurementThread = std::thread(&Measurement::Execution, measurement.get());
 	}
 	else
 	{
@@ -178,8 +175,7 @@ unsigned ThreadManager::ShutdownAutomation()
 		}
 
 		// Delete threads
-		delete automation;
-		automation = nullptr;
+		automation.reset(nullptr);
 		delete m_threadMainControlLoop;
 		m_threadMainControlLoop = nullptr;
 
@@ -284,7 +280,7 @@ UINT ThreadManager::ThreadMainWorkerStarter(LPVOID pParam)
 void ThreadManager::ThreadMainWorker()
 {
 	// Create the class to deal with the automatic functionality
-	automation = new Automation(storage, controls);
+	automation.reset(new Automation(storage, controls));
 
 	// Launch functionality
 	automation->Execution();

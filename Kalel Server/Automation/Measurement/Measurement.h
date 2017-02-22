@@ -11,10 +11,7 @@
 // forward declarations
 class CTemperature;
 class SerialInstruments;
-class ExperimentData;
-class ExperimentSettings;
 class Storage;
-class FileWriter;
 
 class Measurement
 {
@@ -45,8 +42,10 @@ public:
 	
 	std::atomic_bool measuring = true;
 
-	HANDLE h_MeasurementThreadStartEvent;				// Handle event doing measurement thread signalling
-	HANDLE h_MeasurementThread[4];						// Threads for measurement
+	std::vector<std::thread> measurementThreads;									// Threads for measurement
+	std::mutex lockingMutex;														// Thread sync mutex
+	std::condition_variable syncThreadStart;										// Thread sync condition var
+	bool ready = false;																// Thread sync bool
 
 	/**********************************************************************************************************************************
 	*
@@ -57,11 +56,6 @@ public:
 	void Execution();
 
 	void ThreadMeasurement();
-	static DWORD WINAPI  ThreadProc_ReadCalorimeter(LPVOID lpParam);
-	static DWORD WINAPI  ThreadProc_ReadHighPressure(LPVOID lpParam);
-	static DWORD WINAPI  ThreadProc_ReadLowPressure(LPVOID lpParam);
-	static DWORD WINAPI  ThreadProc_ReadTemperature(LPVOID lpParam);
-
 	void ReadCalorimeter();
 	void ReadLowPressure();
 	void ReadHighPressure();

@@ -23,8 +23,8 @@ private:
 	std::thread measurementThread;							// c++11 thread for measurement
 
 	// Thread object pointers
-	Automation * automation;								// Main class that deals with the automatic functionality
-	Measurement * measurement;								// Main class that deals with the measurement functionality
+	std::unique_ptr<Automation> automation;					// Main class that deals with the automatic functionality
+	std::unique_ptr<Measurement> measurement;				// Main class that deals with the measurement functionality
 
 	// Storage/controls
 	Storage & storage;										// reference to storage class
