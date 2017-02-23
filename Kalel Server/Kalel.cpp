@@ -91,6 +91,7 @@ Kalel::~Kalel()
 	//
 	// Stop the measurement and automation threads
 	threadManager.ShutdownAutomation();
+	threadManager.ShutdownMeasurement();
 
 	// 
 	// Server functionality is self-contained

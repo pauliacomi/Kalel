@@ -1,4 +1,3 @@
-#include "../stdafx.h"
 #include "ThreadManager.h"
 
 #include "../../Kalel Shared/Resources/DefineInstruments.h"
@@ -12,8 +11,7 @@
 // --------- Initialisation and destruction -------
 
 ThreadManager::ThreadManager(Storage &h)
-	: m_threadMainControlLoop(nullptr)
-	, storage{ h }	
+	: storage{ h }	
 {
 	// Create objects from controls class
 	controls.fileWriter = std::make_shared<FileWriter>();
@@ -27,6 +25,9 @@ ThreadManager::ThreadManager(Storage &h)
 
 ThreadManager::~ThreadManager()
 {
+	// Can be done externally, but double check
+	ShutdownAutomation();
+	ShutdownMeasurement();
 }
 
 
@@ -35,7 +36,7 @@ ThreadManager::~ThreadManager()
 
 //---------------------------------------------------------------------------
 //
-// --------- Thread start, pausing, resetting, resuming and shutdown --------
+// --------- Measurement thread start and shutdown --------------------------
 //
 //---------------------------------------------------------------------------
 
@@ -43,7 +44,10 @@ unsigned ThreadManager::StartMeasurement()
 {
 	if (measurement == nullptr)
 	{
+		// Create the class to deal with the manual functionality
 		measurement.reset(new Measurement(storage, controls));
+
+		// Launch measurement
 		measurementThread = std::thread(&Measurement::Execution, measurement.get());
 	}
 	else
@@ -53,21 +57,42 @@ unsigned ThreadManager::StartMeasurement()
 	return 0;
 }
 
+
+unsigned ThreadManager::ShutdownMeasurement()
+{
+	// Close the worker thread
+	if (measurement != nullptr)
+	{
+		// Signal the thread to exit
+		measurement->measuring = false;
+
+		// Join thread
+		measurementThread.join();
+
+		// Delete threads
+		measurement.reset(nullptr);
+	}
+	return 0;
+}
+
+
+//--------------------------------------------------------------------------------------
+//
+// --------- Automation thread start, pausing, resetting, resuming and shutdown --------
+//
+//--------------------------------------------------------------------------------------
+
+
 unsigned ThreadManager::StartAutomation() 
 {
 	// Check existence of the worker thread
-	if (m_threadMainControlLoop == nullptr)
+	if (automation == nullptr)
 	{
+		// Create the class to deal with the automatic functionality
+		automation.reset(new Automation(storage, controls));
 
-		// Create the thread in a suspended state
-		m_threadMainControlLoop = AfxBeginThread(ThreadMainWorkerStarter, this, NULL, NULL, CREATE_SUSPENDED, NULL);
-
-		// Make sure thread is not accidentally deleted
-		m_threadMainControlLoop->m_bAutoDelete = FALSE;
-
-		// Now resume the thread
-		m_threadMainControlLoop->ResumeThread();
-
+		// Launch functionality
+		automationThread = std::thread(&Automation::Execution, automation.get());
 	}
 	else
 	{
@@ -78,11 +103,12 @@ unsigned ThreadManager::StartAutomation()
 
 unsigned ThreadManager::ResumeAutomation() 
 {
-	// Check if the thread exists
-	if (m_threadMainControlLoop != nullptr)
+	if (automation != nullptr)
 	{
-		// Signal the thread to start
-		::SetEvent(automation->h_eventResume);
+		// Give the threads the start signal
+		std::unique_lock<std::mutex> lk(storage.automationMutex);
+		automation->h_eventResume = true;
+		storage.automationControl.notify_all();
 	}
 	else
 	{
@@ -93,11 +119,12 @@ unsigned ThreadManager::ResumeAutomation()
 
 unsigned ThreadManager::PauseAutomation() 
 {
-	// Check if the thread exists
-	if (m_threadMainControlLoop != nullptr)
+	if (automation != nullptr)
 	{
 		// Signal the thread to resume
-		::SetEvent(automation->h_eventPause);
+		std::unique_lock<std::mutex> lk(storage.automationMutex);
+		automation->h_eventPause = true;
+		storage.automationControl.notify_all();
 	}
 	else
 	{
@@ -109,11 +136,12 @@ unsigned ThreadManager::PauseAutomation()
 
 unsigned ThreadManager::ResetAutomation()
 {
-	// Check if the thread exists
-	if (m_threadMainControlLoop != nullptr)
+	if (automation != nullptr)
 	{
 		// Signal the thread to reset
-		::SetEvent(automation->h_eventReset);
+		std::unique_lock<std::mutex> lk(storage.automationMutex);
+		automation->h_eventReset = true;
+		storage.automationControl.notify_all();
 	}
 	else
 	{
@@ -125,11 +153,12 @@ unsigned ThreadManager::ResetAutomation()
 
 unsigned ThreadManager::SetModifiedData()
 {
-	// Check if the thread exists
-	if (m_threadMainControlLoop != nullptr)
+	if (automation != nullptr)
 	{
-		// Set the atomic bool as modified
+		// Signal the atomic bool as modified
+		std::unique_lock<std::mutex> lk(storage.automationMutex);
 		automation->sb_settingsModified = true;
+		storage.automationControl.notify_all();
 	}
 	else
 	{
@@ -140,11 +169,12 @@ unsigned ThreadManager::SetModifiedData()
 
 unsigned ThreadManager::SetUserContinue()
 {
-	// Check if the thread exists
-	if (m_threadMainControlLoop != nullptr)
+	if (automation != nullptr)
 	{
-		// Set the atomic bool as modified
+		// Signal the atomic bool as modified
+		std::unique_lock<std::mutex> lk(storage.automationMutex);
 		automation->sb_userContinue = true;
+		storage.automationControl.notify_all();
 	}
 	else
 	{
@@ -157,32 +187,23 @@ unsigned ThreadManager::SetUserContinue()
 // If the thread does not quit in a short time it will be forcefully closed. Check if this is an error when using the function.
 unsigned ThreadManager::ShutdownAutomation()
 {
-	unsigned hr = 1;
-
 	// Close the worker thread
-	if (m_threadMainControlLoop != nullptr)
+	if (automation != nullptr)
 	{
 		// Signal the thread to exit
-		::SetEvent(automation->h_eventShutdown);
+		std::unique_lock<std::mutex> lk(storage.automationMutex);
+		automation->h_eventShutdown = true;
+		storage.automationControl.notify_all();
+		lk.unlock();
 
-		// thread may be suspended, so resume before shutting down
-		::ResumeThread(m_threadMainControlLoop);
-
-		// Wait for the thread to exit. If it doesn't shut down on its own, throw an error
-		if (WaitForSingleObject(m_threadMainControlLoop->m_hThread, INFINITE) == WAIT_TIMEOUT)
-		{
-			hr = 1;
-		}
+		// Join thread
+		automationThread.join();
 
 		// Delete threads
 		automation.reset(nullptr);
-		delete m_threadMainControlLoop;
-		m_threadMainControlLoop = nullptr;
 
-		hr = 0;
 	}
-
-	return hr;
+	return 0;
 }
 
 
@@ -226,7 +247,7 @@ void ThreadManager::ManualAction(int instrumentType, int instrumentNumber, bool 
 		break;
 
 	default:
-		ASSERT(0); // Should never reach this
+		throw;
 		break;
 	}
 
@@ -252,36 +273,4 @@ ControlInstrumentState ThreadManager::GetInstrumentStates()
 	state.pumps[0] = controls.valveControls->PumpIsActive();
 
 	return state;
-}
-
-
-//--------------------------------------------------------------------
-//
-// --------- Thread start functions --------
-//
-//--------------------------------------------------------------------
-
-//
-// Automation actions
-//
-
-UINT ThreadManager::ThreadMainWorkerStarter(LPVOID pParam)
-{
-	// Start the function from the main class, then check for validity
-	ThreadManager* maParam = static_cast<ThreadManager*>(pParam);
-
-	// Launch required functionality
-	maParam->ThreadMainWorker();
-
-	// Reset and end thread
-	return 0;
-}
-
-void ThreadManager::ThreadMainWorker()
-{
-	// Create the class to deal with the automatic functionality
-	automation.reset(new Automation(storage, controls));
-
-	// Launch functionality
-	automation->Execution();
 }

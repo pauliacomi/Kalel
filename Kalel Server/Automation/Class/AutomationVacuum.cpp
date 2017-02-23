@@ -21,7 +21,10 @@ void Automation::BottleVacuum()
 		storage.currentData->experimentStepStatus = STEP_STATUS_START;
 		storage.currentData->experimentInProgress = true;
 		controls.messageHandler->DisplayMessageBox(MESSAGE_VACUUM_BOTTLE_CLOSE, MB_OK | MB_ICONQUESTION, true);
-		::SetEvent(h_eventPause);
+		
+		// Pause
+		h_eventPause = true;
+		storage.automationControl.notify_all();
 	}
 
 
@@ -168,6 +171,7 @@ void Automation::BottleVacuum()
 		controls.valveControls->CloseAll(true);										// Close everything
 
 		shutdownReason = STOP_NORMAL;												// set a normal shutdown
-		::SetEvent(h_eventReset);													// end then set the event
+		h_eventReset = true;														// end then set the event
+		storage.automationControl.notify_all();
 	}
 }

@@ -23,6 +23,8 @@
 #define MB_ICONASTERISK             0x00000040L
 #define MB_ICONWARNING              MB_ICONEXCLAMATION
 #define MB_ICONERROR                MB_ICONHAND
+#define MB_ICONINFORMATION          0x00000040L
+
 
 class ExperimentData;
 

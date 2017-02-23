@@ -52,7 +52,8 @@ bool Automation::VerificationSecurity()
 	{
 		// Ask user if they want to continue
 		controls.messageHandler->DisplayMessageBox(MESSAGE_NOSECURITY, MB_ICONWARNING | MB_OKCANCEL, true);
-		::SetEvent(h_eventPause);
+		h_eventPause = true;
+		storage.automationControl.notify_all();
 	}
 
 	return true;
@@ -68,7 +69,8 @@ bool Automation::VerificationValves()
 		controls.messageHandler->DisplayMessageBox(MESSAGE_CHECK_VALVES_OPEN, MB_ICONQUESTION | MB_OKCANCEL, true);
 
 		// Pause
-		::SetEvent(h_eventPause);
+		h_eventPause = true;
+		storage.automationControl.notify_all();
 
 		// Continue to next step
 		storage.currentData->experimentStepStatus = STEP_STATUS_END;
@@ -133,7 +135,8 @@ bool Automation::VerificationResidualPressure()
 		if (storage.currentData->pressureHigh >= GetPressionLimiteVide())
 		{
 			controls.messageHandler->DisplayMessageBox(MESSAGE_WARNING_INITIAL_PRESSURE, MB_ICONQUESTION | MB_OKCANCEL, true, storage.currentData->pressureHigh, GetPressionLimiteVide());
-			::SetEvent(h_eventPause);
+			h_eventPause = true;
+			storage.automationControl.notify_all();
 		}
 		storage.currentData->experimentStepStatus = STEP_STATUS_START;
 		return true;
@@ -157,7 +160,9 @@ bool Automation::VerificationTemperature()
 			controls.messageHandler->DisplayMessage(MESSAGE_WAIT_TEMP_EQUILIBRATION);
 			controls.messageHandler->DisplayMessageBox(MESSAGE_CHECK_TEMPERATURE_DIFF, MB_ICONQUESTION | MB_YESNOCANCEL, true, storage.currentData->temperatureCalo, storage.experimentSettings->dataGeneral.temperature_experience - security_temperature_initial);
 
-			::SetEvent(h_eventPause);
+			// Pause
+			h_eventPause = true;
+			storage.automationControl.notify_all();
 			storage.currentData->experimentStepStatus = STEP_STATUS_INPROGRESS;
 		}
 		else

@@ -136,7 +136,8 @@ void Automation::SubstepsAdsorption()
 			if (storage.currentData->injectionAttemptCounter >= nb_injection)
 			{
 				// Put the thread on stand-by
-				::SetEvent(h_eventPause);
+				h_eventPause = true;
+				storage.automationControl.notify_all();
 
 				// Tell GUI
 				controls.messageHandler->DisplayMessage(MESSAGE_INJECTION_PROBLEM);
