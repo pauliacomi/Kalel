@@ -98,6 +98,14 @@ public:
 		std::unique_lock<std::mutex> lock(experimentSettingsMutex);
 		newExperimentSettings = i;
 	}
+
+
+	//**********
+	// Automation control
+	//**********
+
+	std::mutex automationMutex;
+	std::condition_variable automationControl;
 };
 
 

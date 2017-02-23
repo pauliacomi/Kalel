@@ -10,7 +10,7 @@ static const char *MONTH_NAMES[] =
 { "Jan", "Feb", "Mar", "Apr", "May", "Jun",
 "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
 
-static const char *DATE_FORMAT = "%Y-%m-%d- %H:%M:%S";
+static const char *DATE_FORMAT = "%Y-%m-%d %H:%M:%S";
 
 std::chrono::system_clock::time_point NowTime()
 {
@@ -107,7 +107,7 @@ std::chrono::system_clock::time_point StringToTimePoint(const std::string & str_
 {
 	// Cut the fractional seconds part
 	auto fractional_seconds = To<int>(str_time.substr(str_time.size() - 3, 3));
-	auto str_time_nofrac = str_time.substr(str_time.size() - 4, 4);
+	auto str_time_nofrac = str_time.substr(0, str_time.size() - 4);
 
 	// Generate the regular timepoint
 	struct std::tm tm_time;
@@ -138,4 +138,49 @@ std::chrono::system_clock::time_point ULLongToTimePoint(unsigned long long tp)
 
 	return dt;
 }
+
+
+timer::timer(void)
+{
+}
+
+timer::~timer(void)
+{
+}
+
+// Start the timer object
+void timer::Start()
+{
+	timeElapsed.zero();
+	startTP = std::chrono::high_resolution_clock::now();
+}
+
+// Pause the timer object
+void timer::Pause()
+{
+	auto endTP = std::chrono::high_resolution_clock::now();
+	timeElapsed = std::chrono::duration_cast<std::chrono::milliseconds>(endTP - startTP);
+}
+
+// Resume timer
+void timer::Resume()
+{
+	startTP = std::chrono::high_resolution_clock::now();
+}
+
+int timer::TimeMilliseconds() const
+{
+	return timeElapsed.count();
+}
+
+int timer::TimeSeconds() const
+{
+	return std::chrono::duration_cast<std::chrono::seconds>(timeElapsed).count();
+}
+
+int timer::TimeMinutes() const
+{
+	return std::chrono::duration_cast<std::chrono::minutes>(timeElapsed).count();
+}
+
 

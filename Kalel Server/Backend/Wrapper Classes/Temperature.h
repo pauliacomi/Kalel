@@ -3,22 +3,17 @@
 #define _TEMPERATURE_H_
 
 
-#define WIN32_LEAN_AND_MEAN		// Exclude rarely-used stuff from Windows headers, useless, because automatically defined in MFC
-#include <stdio.h>
-#include <tchar.h>
-
 #include "../USB/NI_USB_9211A.h"
 #include "../../Parameters/Parametres.h"
 
-
-class CTemperature :
+class TemperatureInstruments :
 	public NI_USB_9211A
 {
 protected:
 
 public:
-	CTemperature(void);
-	~CTemperature(void);
+	TemperatureInstruments(void);
+	~TemperatureInstruments(void);
 
 	// Pass in the references to double variables to get the three temperatures
 	bool Read(double* Temperature_Calo, double* Temperature_Cage, double* Temperature_Piece);

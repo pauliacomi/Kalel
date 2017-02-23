@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "Kalel.h"
 
 #include "Parameters/Parametres.h"
@@ -91,6 +90,7 @@ Kalel::~Kalel()
 	//
 	// Stop the measurement and automation threads
 	threadManager.ShutdownAutomation();
+	threadManager.ShutdownMeasurement();
 
 	// 
 	// Server functionality is self-contained

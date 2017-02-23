@@ -6,6 +6,7 @@
 #include <ctime>
 #include <chrono>
 #include <string>
+#include <atomic>
 
 
 std::chrono::system_clock::time_point NowTime();
@@ -23,3 +24,25 @@ std::chrono::system_clock::time_point StringToTimePoint(const std::string & str_
 unsigned long long TimePointToULLong(const std::chrono::system_clock::time_point & tp);
 
 std::chrono::system_clock::time_point ULLongToTimePoint(unsigned long long tp);
+
+
+class timer
+{
+public:
+	timer(void);
+	~timer(void);
+
+private:
+	std::chrono::milliseconds timeElapsed;
+	
+	std::chrono::high_resolution_clock::time_point startTP;
+
+public:
+	void Start();
+	void Pause();
+	void Resume();
+
+	int TimeMilliseconds() const;
+	int TimeSeconds() const;
+	int TimeMinutes() const;
+};

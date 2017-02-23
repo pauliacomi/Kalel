@@ -1,7 +1,5 @@
 #pragma once
 
-#include "../../stdafx.h"
-
 // REQUIRED INCLUDES
 
 #include "../../../Kalel Shared/Com Classes/ExperimentHelperClasses.h"		// Resource where templates for all the data are stored
@@ -15,10 +13,6 @@
 // Synchronization classes
 #include "../CommonControls.h"
 #include "../CommonPointers.h"
-
-// Measurement and manipulation classes
-#include "../Utils/Chrono.h"												// Time keeping
-
 
 
 // std::functionality
@@ -41,15 +35,12 @@ protected:
 	// References
 	//------------------------------------------------------------
 	Storage & storage;
-	Controls & controls;	
+	Controls & controls;
 														
 	//------------------------------------------------------------
 	// Syncronisation primitives and threads
 	//------------------------------------------------------------
 protected:
-
-	// Events
-	HANDLE events[5];									// Keeps all the events below in one array
 
 	// Case switch int for the experiment states (running/paused/etc)
 	volatile int shutdownReason;
@@ -57,13 +48,13 @@ protected:
 
 public:
 	std::atomic_bool sb_settingsModified;				// Atomic variable that can be set to let the thread know that there are new experiment settings 
-	std::atomic_bool sb_userContinue;						
+	std::atomic_bool sb_userContinue;					// Atomic variable 
 
-	HANDLE h_eventShutdown;								// Handle event shutting down the thread
-	HANDLE h_eventResume;								// Handle event resuming the thread
-	HANDLE h_eventPause;								// Handle event pausing the thread
-	HANDLE h_eventReset;								// Handle event resetting the thread for a new experiment
-	HANDLE h_eventUserInput;							// Handle event waiting for the user to do something
+	std::atomic_bool h_eventShutdown = false;					// Handle event shutting down the thread
+	std::atomic_bool h_eventResume = false;						// Handle event resuming the thread
+	std::atomic_bool h_eventPause = false;						// Handle event pausing the thread
+	std::atomic_bool h_eventReset = false;						// Handle event resetting the thread for a new experiment
+	std::atomic_bool h_eventUserInput = false;					// Handle event waiting for the user to do something
 
 
 /**********************************************************************************************************************************

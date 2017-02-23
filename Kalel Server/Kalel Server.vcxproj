@@ -214,6 +214,7 @@
     <ClInclude Include="..\Kalel Shared\Resources\DefineStages.h" />
     <ClInclude Include="..\Kalel Shared\Resources\DefineText.h" />
     <ClInclude Include="..\Kalel Shared\Resources\StringTable.h" />
+    <ClInclude Include="..\Kalel Shared\soundHelpers.h" />
     <ClInclude Include="..\Kalel Shared\stringFormat.h" />
     <ClInclude Include="..\Kalel Shared\timeHelpers.h" />
     <ClInclude Include="..\Kalel Shared\unicodeConv.h" />
@@ -234,8 +235,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="Automation\ThreadManager.h" />
-    <ClInclude Include="Automation\Utils\Chrono.h" />
-    <ClInclude Include="Automation\Utils\InfoEtape.h" />
     <ClInclude Include="Backend\RS232\Keithley.h" />
     <ClInclude Include="Backend\RS232\LiaisonRS232.h" />
     <ClInclude Include="Backend\RS232\Mensor.h" />
@@ -268,6 +267,7 @@
     <ClCompile Include="..\Kalel Shared\Netcode\Socket.cpp" />
     <ClCompile Include="..\Kalel Shared\Netcode\stdHelpers.cpp" />
     <ClCompile Include="..\Kalel Shared\Netcode\URLHelper.cpp" />
+    <ClCompile Include="..\Kalel Shared\soundHelpers.cpp" />
     <ClCompile Include="..\Kalel Shared\timeHelpers.cpp" />
     <ClCompile Include="..\Kalel Shared\unicodeConv.cpp" />
     <ClCompile Include="Automation\Class\Automation.cpp" />
@@ -423,8 +423,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Automation\ThreadManager.cpp" />
-    <ClCompile Include="Automation\Utils\Chrono.cpp" />
-    <ClCompile Include="Automation\Utils\InfoEtape.cpp" />
     <ClCompile Include="Backend\RS232\Keithley.cpp" />
     <ClCompile Include="Backend\RS232\LiaisonRS232.cpp" />
     <ClCompile Include="Backend\RS232\Mensor.cpp" />

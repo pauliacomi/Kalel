@@ -9,13 +9,9 @@
 #include <memory>
 
 // forward declarations
-class CTemperature;
+class TemperatureInstruments;
 class SerialInstruments;
-class ExperimentData;
-class CChrono;
-class ExperimentSettings;
 class Storage;
-class FileWriter;
 
 class Measurement
 {
@@ -36,9 +32,9 @@ public:
 	Controls & controls;
 	
 	// New
-	CTemperature* g_pTemperature;									// Pointer to the class that deals with temperature recording
-	SerialInstruments * g_pSerialInstruments;						// Pointer to the class that deals with calorimeter & pressure recording
-	Security * security;
+	std::unique_ptr<TemperatureInstruments> temperatureReaders;									// Pointer to the class that deals with temperature recording
+	std::unique_ptr<SerialInstruments> serialReaders;						// Pointer to the class that deals with calorimeter & pressure recording
+	std::unique_ptr<Security> security;
 
 	//------------------------------------------------------------
 	// Syncronisation primitives and threads
@@ -46,8 +42,10 @@ public:
 	
 	std::atomic_bool measuring = true;
 
-	HANDLE h_MeasurementThreadStartEvent;				// Handle event doing measurement thread signalling
-	HANDLE h_MeasurementThread[4];						// Threads for measurement
+	std::vector<std::thread> measurementThreads;									// Threads for measurement
+	std::mutex lockingMutex;														// Thread sync mutex
+	std::condition_variable syncThreadStart;										// Thread sync condition var
+	bool ready = false;																// Thread sync bool
 
 	/**********************************************************************************************************************************
 	*
@@ -58,11 +56,6 @@ public:
 	void Execution();
 
 	void ThreadMeasurement();
-	static DWORD WINAPI  ThreadProc_ReadCalorimeter(LPVOID lpParam);
-	static DWORD WINAPI  ThreadProc_ReadHighPressure(LPVOID lpParam);
-	static DWORD WINAPI  ThreadProc_ReadLowPressure(LPVOID lpParam);
-	static DWORD WINAPI  ThreadProc_ReadTemperature(LPVOID lpParam);
-
 	void ReadCalorimeter();
 	void ReadLowPressure();
 	void ReadHighPressure();

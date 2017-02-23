@@ -6,22 +6,6 @@ Automation::Automation(Storage &s, Controls &c)
 {
 	// Initialise class members
 	sb_settingsModified = false;
-	sb_userContinue = false;
-
-	// Initialise events
-	//   - Non signalled by default
-	//   - With manual reinitiallisation
-	h_eventShutdown = CreateEvent(NULL, TRUE, FALSE, NULL);
-	h_eventResume = CreateEvent(NULL, TRUE, FALSE, NULL);
-	h_eventPause = CreateEvent(NULL, TRUE, FALSE, NULL);
-	h_eventReset = CreateEvent(NULL, TRUE, FALSE, NULL);
-	h_eventUserInput = CreateEvent(NULL, TRUE, FALSE, NULL);
-
-	events[0] = h_eventShutdown;
-	events[1] = h_eventPause;
-	events[2] = h_eventResume;
-	events[3] = h_eventReset;
-	events[4] = h_eventUserInput;
 
 	// If the shutdown event is called externally, it will default to a cancel
 	// Otherwise the flag will be changed from inside the code
@@ -38,13 +22,6 @@ Automation::~Automation()
 {
 	// Close valves/pump
 	controls.valveControls->CloseAll(false);
-
-	// Destroy the events
-	CloseHandle(h_eventShutdown);
-	CloseHandle(h_eventResume);
-	CloseHandle(h_eventPause);
-	CloseHandle(h_eventReset);
-	CloseHandle(h_eventUserInput);
 }
 
 ////////////////////////////////////////////////////////
@@ -115,7 +92,6 @@ void Automation::Execution()
 			case EXPERIMENT_TYPE_UNDEF:							// in case no experiment has been set yet
 				break;											// just continue
 			default:
-				ASSERT(0); // Error
 				break;
 			}
 		}
@@ -144,38 +120,51 @@ void Automation::Execution()
 		*/
 
 		// Now run through the possible events
-		switch (::WaitForMultipleObjects(5, events, FALSE, T_BETWEEN_AUTOMATION)) // (ms) Poll time
+		// Wait until called
+		std::unique_lock<std::mutex> lock(storage.automationMutex);
+		auto timeout = storage.automationControl.wait_for(lock, std::chrono::milliseconds(T_BETWEEN_AUTOMATION), [&] () 
 		{
+			return (h_eventShutdown || h_eventPause || h_eventResume || h_eventReset || h_eventUserInput);
+		});
 
-		case WAIT_OBJECT_0:												// Complete stop of thread
-			shutdownReason = STOP_COMPLETE;
-			Shutdown();
-			::ResetEvent(h_eventShutdown);	// Reset the event
-			break;
+		if (!timeout)
+		{
+			continue;
+		}
+		else
+		{
+			if (h_eventShutdown)							// Complete stop of thread
+			{
+				shutdownReason = STOP_COMPLETE;
+				Shutdown();
+				h_eventShutdown = false;
+				continue;
+			}
 
-		case WAIT_OBJECT_0 + 1:											// Pause thread
-			Pause();
-			::ResetEvent(h_eventPause);		// Reset the event
-			break;
+			if (h_eventPause)								// Pause thread
+			{
+				Pause();
+				h_eventPause = false;
+				continue;
+			}
+			
+			if (h_eventResume)								// Resume thread
+			{
+				Resume();
+				h_eventResume = false;
+				continue;
+			}												
 
-		case WAIT_OBJECT_0 + 2:											// Resume thread
-			Resume();
-			::ResetEvent(h_eventResume);	// Reset the event
-			break;
+			if (h_eventReset)								// Reset thread
+			{
+				Shutdown();
+				continue;
+			}
 
-		case WAIT_OBJECT_0 + 3:											// Reset thread
-			Shutdown();
-			break;
-
-		case WAIT_OBJECT_0 + 4:											// Wait for user input
-			break;
-
-		case WAIT_TIMEOUT:
-			break;
-
-		default:
-			ASSERT(FALSE); // unknown error
-			break;
+			if (h_eventUserInput)							// Wait for user input
+			{
+				continue;
+			}
 		}
 	}
 }
@@ -266,14 +255,15 @@ bool Automation::ExecutionAuto()
 
 		// If the experiment has finished
 		shutdownReason = STOP_NORMAL;	// set a normal shutdown
-		::SetEvent(h_eventReset);	// end then set the event
+
+		h_eventReset = true;			// end then set the event
+		storage.automationControl.notify_all();
 
 		break;
 
 	case STAGE_CONTINUOUS_ADSORPTION:
 		break;
 	default:
-		ASSERT(0); // Error
 		break;
 	}
 

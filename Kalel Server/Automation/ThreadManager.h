@@ -18,13 +18,13 @@ public:
 
 private:
 	// Threads
-	CWinThread * m_threadMainControlLoop;					// Reference for main thread
 	std::thread manualActionThread;							// c++11 thread for manual actions
 	std::thread measurementThread;							// c++11 thread for measurement
+	std::thread automationThread;							// c++11 thread for automation
 
 	// Thread object pointers
-	Automation * automation;								// Main class that deals with the automatic functionality
-	Measurement * measurement;								// Main class that deals with the measurement functionality
+	std::unique_ptr<Automation> automation;					// Main class that deals with the automatic functionality
+	std::unique_ptr<Measurement> measurement;				// Main class that deals with the measurement functionality
 
 	// Storage/controls
 	Storage & storage;										// reference to storage class
@@ -33,7 +33,7 @@ private:
 	// Public interface methods
 public:
 	unsigned StartMeasurement();
-
+	unsigned ShutdownMeasurement();
 
 	unsigned StartAutomation();
 	unsigned ResumeAutomation();
@@ -46,11 +46,6 @@ public:
 	unsigned ThreadManualAction(int instrumentType, int instrumentNumber, bool state);		// When a manual command is issued
 	void ManualAction(int instrumentType, int instrumentNumber, bool state);
 	ControlInstrumentState GetInstrumentStates();
-
-	// Private functions
-private:
-	static UINT ThreadMainWorkerStarter(LPVOID pParam);		// Main worker thread starter
-	void ThreadMainWorker();								// Main worker thread function
 };
 
 #endif

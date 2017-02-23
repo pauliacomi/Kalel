@@ -18,9 +18,6 @@ void Automation::Shutdown()
 		controls.timerMeasurement.Pause();
 		controls.timerWaiting.Pause();
 
-		// Reset the event
-		::ResetEvent(h_eventReset);
-
 		// Run reset funtion
 		ResetAutomation();
 
@@ -41,9 +38,6 @@ void Automation::Shutdown()
 		// Reset all data from the experiment
 		storage.currentData->ResetData();
 
-		// Reset the event
-		::ResetEvent(h_eventReset);
-
 		// Run reset funtion
 		ResetAutomation();
 
@@ -60,7 +54,7 @@ void Automation::Shutdown()
 		break;
 
 	default:
-		ASSERT(0);		// Error, should never be reached
+		throw;		// Error, should never be reached
 		break;
 	}
 }
