@@ -9,7 +9,7 @@
 #include <memory>
 
 // forward declarations
-class CTemperature;
+class TemperatureInstruments;
 class SerialInstruments;
 class Storage;
 
@@ -32,8 +32,8 @@ public:
 	Controls & controls;
 	
 	// New
-	std::unique_ptr<CTemperature> g_pTemperature;									// Pointer to the class that deals with temperature recording
-	std::unique_ptr<SerialInstruments> g_pSerialInstruments;						// Pointer to the class that deals with calorimeter & pressure recording
+	std::unique_ptr<TemperatureInstruments> temperatureReaders;									// Pointer to the class that deals with temperature recording
+	std::unique_ptr<SerialInstruments> serialReaders;						// Pointer to the class that deals with calorimeter & pressure recording
 	std::unique_ptr<Security> security;
 
 	//------------------------------------------------------------

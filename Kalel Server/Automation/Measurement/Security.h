@@ -27,9 +27,9 @@ protected:
 	bool securityActivated;
 
 	// Bool flags to keep track of security
-	bool security_PressureHigh_flag;
-	bool security_TemperatureHigh_flag;
-	bool security_TemperatureLow_flag;
+	bool security_PressureHigh_flag = false;
+	bool security_TemperatureHigh_flag = false;
+	bool security_TemperatureLow_flag = false;
 
 
 	void SecurityHighPressureManual(float maxPlow, float maxPhigh, const ExperimentData &expData);

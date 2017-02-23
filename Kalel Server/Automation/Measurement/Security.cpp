@@ -1,5 +1,4 @@
 // This function contains checks for high pressure and other security related checks
-#include "../../stdafx.h"
 #include "Security.h"
 
 // Resources
@@ -10,21 +9,18 @@
 
 // Synchronization classes
 #include "../../MessageHandler.h"											// Handles all the messages from this class to the client
+#include "../../../Kalel Shared/soundHelpers.h"								// Sound handling for beeps
 
 // Measurement and manipulation classes
-#include "../../Backend/Wrapper Classes/ValveController.h"							// Controlling valves
+#include "../../Backend/Wrapper Classes/ValveController.h"					// Controlling valves
 #include "../../../Kalel Shared/Com Classes/ExperimentData.h"
 
 
 Security::Security(bool activated, ValveController & valveControl, MessageHandler & messageHandler)
-	: valveController{ valveControl }
+	: securityActivated{ activated }
+	, valveController{ valveControl }
 	, messageHandler{ messageHandler }
 {
-	securityActivated = activated;
-
-	security_PressureHigh_flag = false;
-	security_TemperatureHigh_flag = false;
-	security_TemperatureLow_flag = false;
 }
 
 Security::~Security()
@@ -82,14 +78,16 @@ void Security::SecurityHighPressureManual(float maxPlow, float maxPhigh, const E
 			messageHandler.DisplayMessage(MESSAGE_WARNING_PHIGH);
 
 			// Play a sound
-			MessageBeep(MB_ICONERROR);
+			beep newBeep;
+			newBeep.error();
 		}
 	}
 	else
 		if (security_PressureHigh_flag)
 		{
 			messageHandler.DisplayMessage(MESSAGE_WARNING_PHNORMAL);
-			MessageBeep(MB_ICONINFORMATION);
+			beep newBeep;
+			newBeep.allgood();
 			security_PressureHigh_flag = FALSE;
 		}
 }
@@ -144,14 +142,16 @@ void Security::SecurityTemperaturesManual(double maximumT, double minimumT, cons
 			messageHandler.DisplayMessage(MESSAGE_WARNING_CALOT_HIGH);
 
 			// Play a sound
-			MessageBeep(MB_ICONERROR);
+			beep newBeep;
+			newBeep.error();
 		}
 	}
 	else
 		if (security_TemperatureHigh_flag)
 		{
 			messageHandler.DisplayMessage(MESSAGE_WARNING_CALOT_NORMAL);
-			MessageBeep(MB_ICONINFORMATION);
+			beep newBeep;
+			newBeep.allgood();
 			security_TemperatureHigh_flag = FALSE;
 		}
 
@@ -167,14 +167,16 @@ void Security::SecurityTemperaturesManual(double maximumT, double minimumT, cons
 			messageHandler.DisplayMessage(MESSAGE_WARNING_CALOT_LOW);
 
 			// Play a sound
-			MessageBeep(MB_ICONERROR);
+			beep newBeep;
+			newBeep.error();
 		}
 	}
 	else
 		if (security_TemperatureLow_flag)
 		{
 			messageHandler.DisplayMessage(MESSAGE_WARNING_CALOT_NORMAL);
-			MessageBeep(MB_ICONINFORMATION);
+			beep newBeep;
+			newBeep.allgood();
 			security_TemperatureLow_flag = FALSE;
 		}
 }

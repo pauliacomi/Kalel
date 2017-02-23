@@ -273,6 +273,9 @@
     <ClInclude Include="..\Kalel Shared\lockedMap.h">
       <Filter>Header Files\Common</Filter>
     </ClInclude>
+    <ClInclude Include="..\Kalel Shared\soundHelpers.h">
+      <Filter>Header Files\Common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Kalel Server.cpp">
@@ -510,6 +513,9 @@
       <Filter>Source Files\Common</Filter>
     </ClCompile>
     <ClCompile Include="..\Kalel Shared\lockedMap.cpp">
+      <Filter>Source Files\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Kalel Shared\soundHelpers.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
   </ItemGroup>

@@ -26,11 +26,11 @@ Measurement::Measurement(Storage &s, Controls &c)
 	, controls{ c }
 {
 	// Initialise instruments
-	g_pTemperature.reset(new CTemperature()); 
-	g_pSerialInstruments.reset(new SerialInstruments());
+	temperatureReaders.reset(new TemperatureInstruments()); 
+	serialReaders.reset(new SerialInstruments());
 
 	std::string errorInit;
-	if (!g_pSerialInstruments->Init(&errorInit))
+	if (!serialReaders->Init(&errorInit))
 	{
 		controls.messageHandler->DisplayMessageBox(MESSAGE_INSTRUMENT_INIT_FAIL, MB_ICONERROR | MB_OK, false, errorInit);
 	}
@@ -192,9 +192,9 @@ void Measurement::ReadCalorimeter()
 	bool success;
 	std::string error;
 
-	success = g_pSerialInstruments->ReadCalorimeter(&calorimeter);
+	success = serialReaders->ReadCalorimeter(&calorimeter);
 	if (!success)
-		g_pSerialInstruments->GetErrorCalrimeter(&error);
+		serialReaders->GetErrorCalrimeter(&error);
 
 	if (success == false) {
 		controls.messageHandler->DisplayMessage(error);
@@ -216,9 +216,9 @@ void Measurement::ReadLowPressure()
 	bool success;
 	std::string error;
 
-	success = g_pSerialInstruments->ReadPressureLowRange(&pressureLowRange);
+	success = serialReaders->ReadPressureLowRange(&pressureLowRange);
 	if (!success)
-		g_pSerialInstruments->GetErrorLowRange(&error);
+		serialReaders->GetErrorLowRange(&error);
 
 	if (success == false) {
 		controls.messageHandler->DisplayMessage(error);
@@ -240,9 +240,9 @@ void Measurement::ReadHighPressure()
 	bool success;
 	std::string error;
 
-	success = g_pSerialInstruments->ReadPressureHighRange(&pressureHighRange);
+	success = serialReaders->ReadPressureHighRange(&pressureHighRange);
 	if (!success)
-		g_pSerialInstruments->GetErrorHighRange(&error);
+		serialReaders->GetErrorHighRange(&error);
 
 	if (success == false) {
 		controls.messageHandler->DisplayMessage(error);
@@ -263,9 +263,9 @@ void Measurement::ReadTemperatures()
 	bool success;
 	std::string error;
 
-	success = g_pTemperature->Read(&dTemperatureCalo, &dTemperatureCage, &dTemperaturePiece);
+	success = temperatureReaders->Read(&dTemperatureCalo, &dTemperatureCage, &dTemperaturePiece);
 	if (!success)
-		g_pTemperature->GetError(&error);
+		temperatureReaders->GetError(&error);
 
 	if (success == false) {
 		controls.messageHandler->DisplayMessage(error);
