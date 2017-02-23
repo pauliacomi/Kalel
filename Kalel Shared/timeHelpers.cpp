@@ -107,7 +107,7 @@ std::chrono::system_clock::time_point StringToTimePoint(const std::string & str_
 {
 	// Cut the fractional seconds part
 	auto fractional_seconds = To<int>(str_time.substr(str_time.size() - 3, 3));
-	auto str_time_nofrac = str_time.substr(str_time.size() - 4, 4);
+	auto str_time_nofrac = str_time.substr(0, str_time.size() - 4);
 
 	// Generate the regular timepoint
 	struct std::tm tm_time;
