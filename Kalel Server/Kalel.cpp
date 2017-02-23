@@ -196,7 +196,7 @@ void Kalel::ExperimentSettingsSync(http_request* req, http_response* resp)
 			// Parse the input
 			auto j = json::parse(req->entity_);
 
-			std::shared_ptr<ExperimentSettings> newExpSettings = std::make_shared<ExperimentSettings>();
+			auto newExpSettings = std::make_shared<ExperimentSettings>();
 			serialization::deserializeJSONtoExperimentSettings(j, *newExpSettings);
 			storageVectors.setexperimentSettings(newExpSettings);
 

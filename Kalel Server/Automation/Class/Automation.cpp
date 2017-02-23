@@ -64,7 +64,6 @@ void Automation::Execution()
 			}
 
 			storage.experimentSettings = std::make_shared<ExperimentSettings>(*storage.newExperimentSettings);
-			storage.newExperimentSettings.reset();
 		}
 
 		/*
