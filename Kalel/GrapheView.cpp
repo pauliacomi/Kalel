@@ -78,7 +78,7 @@ void CGrapheView::OnDraw(CDC* pDC)
 			std::for_each(measurementArray->begin(), measurementArray->end(),
 				[&all_points](const std::pair<std::chrono::system_clock::time_point, std::shared_ptr<ExperimentData>>& p){
 				
-				all_points.nb_points.push_back(p.second->GetexperimentGraphPoints());
+				all_points.nb_points.push_back(p.second->GetmeasurementsMade());
 				all_points.time_elapsed.push_back(p.second->GettimeElapsed());
 				all_points.high_pressure.push_back(p.second->GetpressureHigh());
 				all_points.low_pressure.push_back(p.second->GetpressureLow());
@@ -89,22 +89,22 @@ void CGrapheView::OnDraw(CDC* pDC)
 
 			// Valeurs utilisées pour les échelles et les axes d'abscisses et d'ordonnées
 			// Set the maximums and minimums
-			maxPressure = max(maxPressure, *all_points.low_pressure.end());
-			maxPressure = max(maxPressure, *all_points.high_pressure.end());
+			maxPressure = max(maxPressure, all_points.low_pressure.back());
+			maxPressure = max(maxPressure, all_points.high_pressure.back());
 			maxPressure = ceil(1.1 * maxPressure);
 
-			minPressure = min(minPressure, *all_points.low_pressure.end());
-			minPressure = min(minPressure, *all_points.high_pressure.end());
+			minPressure = min(minPressure, all_points.low_pressure.back());
+			minPressure = min(minPressure, all_points.high_pressure.back());
 			minPressure = floor(1.1 * minPressure);
 
-			maxCalo = max(maxCalo, *all_points.calorimeter.end());
-			minCalo = min(minCalo, *all_points.calorimeter.end());
+			maxCalo = max(maxCalo, all_points.calorimeter.back());
+			minCalo = min(minCalo, all_points.calorimeter.back());
 
-			float timeMaximum = *all_points.time_elapsed.end();
+			float timeMaximum = all_points.time_elapsed.back();
 			double displayedSeconds = RECENT_HOURS * 3600;
 			timeMinimum = timeMaximum - displayedSeconds;
-			double partialCoefficient = (*all_points.time_elapsed.end() / *all_points.nb_points.end());
-			measurementMinimum  = static_cast<int>(*all_points.nb_points.end() - displayedSeconds / partialCoefficient);
+			double partialCoefficient = (all_points.time_elapsed.back() / all_points.nb_points.back());
+			measurementMinimum  = static_cast<int>(all_points.nb_points.back() - displayedSeconds / partialCoefficient);
 			if (measurementMinimum < 0)
 			{
 				measurementMinimum = 0;         //????????//
@@ -153,7 +153,7 @@ void CGrapheView::OnDraw(CDC* pDC)
 			titreComplet.Format(GRAPH_COMPLETE);
 
 			TraceAxis(place_grapheComplet,axe_grapheComplet,pDC,titreComplet);
-			TraceScale(grapheComplet, axe_grapheComplet, maxPressure, minPressure, maxCalo, minCalo, pDC);
+			TraceScale(grapheComplet, axe_grapheComplet, maxPressure, minPressure, maxCalo, minCalo, pDC, timeMaximum);
 			TraceGraph(pDC, grapheComplet, all_points, maxPressure, minPressure, maxCalo, minCalo, timeMaximum);
 
 
@@ -282,7 +282,7 @@ void CGrapheView::TraceAxis(CRect place_graphe, CRect axe_graphe, CDC *pDC, CStr
 
 
 void CGrapheView::TraceScale(CRect graphe,CRect axe_graphe,int max_pression,int min_pression,double max_calo,double min_calo,
-								CDC *pDC, float min_temps)
+								CDC *pDC, float max_time, float min_temps)
 {
 	// intervalle : entre 2 traits
 	// il y aura donc (nb_intervalle + 1) traits
@@ -343,7 +343,7 @@ void CGrapheView::TraceScale(CRect graphe,CRect axe_graphe,int max_pression,int 
 
 	// ----- marquage du temps ----------------------------------------------
 	int nb_trait_abs=4;
-	int temps = (int)(*measurementArray).end()->second->timeElapsed;
+	int temps = (int)max_time;
 
 	for (int i=0;i<=nb_trait_abs;i++)
 	{
