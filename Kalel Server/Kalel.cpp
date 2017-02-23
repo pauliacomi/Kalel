@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "Kalel.h"
 
 #include "Parameters/Parametres.h"
