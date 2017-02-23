@@ -235,8 +235,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="Automation\ThreadManager.h" />
-    <ClInclude Include="Automation\Utils\Chrono.h" />
-    <ClInclude Include="Automation\Utils\InfoEtape.h" />
     <ClInclude Include="Backend\RS232\Keithley.h" />
     <ClInclude Include="Backend\RS232\LiaisonRS232.h" />
     <ClInclude Include="Backend\RS232\Mensor.h" />
@@ -425,8 +423,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Automation\ThreadManager.cpp" />
-    <ClCompile Include="Automation\Utils\Chrono.cpp" />
-    <ClCompile Include="Automation\Utils\InfoEtape.cpp" />
     <ClCompile Include="Backend\RS232\Keithley.cpp" />
     <ClCompile Include="Backend\RS232\LiaisonRS232.cpp" />
     <ClCompile Include="Backend\RS232\Mensor.cpp" />

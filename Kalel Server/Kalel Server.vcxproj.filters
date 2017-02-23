@@ -52,17 +52,11 @@
     <Filter Include="Source Files\Automation\Class">
       <UniqueIdentifier>{b4376b8b-4c5a-4536-bf49-7e7d47bf1cd9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Automation\Utils">
-      <UniqueIdentifier>{2f93dc81-58ca-435c-ab56-c644beee219b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Automation\Old">
       <UniqueIdentifier>{75357d3e-1be3-42b0-83c0-213371a6ba42}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\Automation\Manip Old">
       <UniqueIdentifier>{fc6dd5e4-cc46-4cad-a9da-75dd0e56063a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Automation\Utils">
-      <UniqueIdentifier>{9edbb7ce-c543-4c3a-bb25-df258b70a828}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\Common">
       <UniqueIdentifier>{3f1b5b90-a803-40ba-9e9b-28a86c4ff657}</UniqueIdentifier>
@@ -182,12 +176,6 @@
     </ClInclude>
     <ClInclude Include="..\Kalel Shared\Com Classes\ExperimentSettings.h">
       <Filter>Header Files\Common\Com Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="Automation\Utils\Chrono.h">
-      <Filter>Header Files\Automation\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="Automation\Utils\InfoEtape.h">
-      <Filter>Header Files\Automation\Utils</Filter>
     </ClInclude>
     <ClInclude Include="Kalel.h">
       <Filter>Header Files</Filter>
@@ -472,12 +460,6 @@
     </ClCompile>
     <ClCompile Include="..\Kalel Shared\Com Classes\ExperimentSettings.cpp">
       <Filter>Source Files\Common\Com Classes</Filter>
-    </ClCompile>
-    <ClCompile Include="Automation\Utils\Chrono.cpp">
-      <Filter>Source Files\Automation\Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="Automation\Utils\InfoEtape.cpp">
-      <Filter>Source Files\Automation\Utils</Filter>
     </ClCompile>
     <ClCompile Include="Kalel.cpp">
       <Filter>Source Files</Filter>
