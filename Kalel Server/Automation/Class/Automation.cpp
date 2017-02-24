@@ -50,25 +50,7 @@ void Automation::Execution()
 	{
 		/*
 		*
-		*		1. Get the experiment settings if they are new
-		*
-		*/
-
-		if (sb_settingsModified) {
-			
-			sb_settingsModified = false;
-
-			if (storage.currentData->experimentInProgress == true) {
-				controls.fileWriter->RecordDataChange(false, *storage.newExperimentSettings, *storage.experimentSettings, *storage.currentData);	// non-CSV
-				controls.fileWriter->RecordDataChange(true, *storage.newExperimentSettings, *storage.experimentSettings, *storage.currentData);		// CSV
-			}
-
-			storage.experimentSettings = std::make_shared<ExperimentSettings>(*storage.newExperimentSettings);
-		}
-
-		/*
-		*
-		*		2. Run through the automation algorithm for the chosen program (nothing, manual, automatic, vacuum, etc)
+		*		1. Run through the automation algorithm for the chosen program (nothing, manual, automatic, vacuum, etc)
 		*
 		*/
 
@@ -97,7 +79,7 @@ void Automation::Execution()
 
 		/*
 		*
-		*		3. IF WAITING check whether the wait is complete and reset it
+		*		2. IF WAITING check whether the wait is complete and reset it
 		*
 		*/
 
@@ -114,24 +96,33 @@ void Automation::Execution()
 		
 		/*
 		*
-		*		4. Event-based wait. If any events are triggered in this time, the thread performs the requested action.
+		*		3. Event-based wait. If any events are triggered in this time, the thread performs the requested action.
 		*		
 		*/
 
 		// Now run through the possible events
 		// Wait until called
 		std::unique_lock<std::mutex> lock(storage.automationMutex);
-		auto timeout = storage.automationControl.wait_for(lock, std::chrono::milliseconds(T_BETWEEN_AUTOMATION), [&] () 
+		auto notified = storage.automationControl.wait_for(lock, std::chrono::milliseconds(T_BETWEEN_AUTOMATION), [&] () 
 		{
 			return (h_eventShutdown || h_eventPause || h_eventResume || h_eventReset || h_eventUserInput);
 		});
 
-		if (!timeout)
+		if (notified)
 		{
-			continue;
-		}
-		else
-		{
+			if (sb_settingsModified)						// Get the expermient settings if they are modified
+			{
+				sb_settingsModified = false;
+
+				if (storage.currentData->experimentInProgress == true) {
+					controls.fileWriter->RecordDataChange(false, *storage.newExperimentSettings, *storage.experimentSettings, *storage.currentData);	// non-CSV
+					controls.fileWriter->RecordDataChange(true, *storage.newExperimentSettings, *storage.experimentSettings, *storage.currentData);		// CSV
+				}
+
+				storage.experimentSettings = std::make_shared<ExperimentSettings>(*storage.newExperimentSettings);
+			}
+
+
 			if (h_eventShutdown)							// Complete stop of thread
 			{
 				shutdownReason = STOP_COMPLETE;
@@ -162,7 +153,6 @@ void Automation::Execution()
 
 			if (h_eventUserInput)							// Wait for user input
 			{
-				continue;
 			}
 		}
 	}
