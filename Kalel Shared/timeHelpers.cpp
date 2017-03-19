@@ -151,36 +151,53 @@ timer::~timer(void)
 // Start the timer object
 void timer::Start()
 {
-	timeElapsed.zero();
+	running = true;
+	timeElapsedPrevious.zero();
 	startTP = std::chrono::high_resolution_clock::now();
 }
 
 // Pause the timer object
 void timer::Pause()
 {
+	running = false;
 	auto endTP = std::chrono::high_resolution_clock::now();
-	timeElapsed = std::chrono::duration_cast<std::chrono::milliseconds>(endTP - startTP);
+	timeElapsedPrevious += GenerateTE();
 }
 
 // Resume timer
 void timer::Resume()
 {
+	running = true;
 	startTP = std::chrono::high_resolution_clock::now();
 }
 
-int timer::TimeMilliseconds() const
+int timer::TimeMilliseconds()
 {
-	return timeElapsed.count();
+	auto totalTE = timeElapsedPrevious + GenerateTE();
+	return totalTE.count();
 }
 
-int timer::TimeSeconds() const
+int timer::TimeSeconds()
 {
-	return std::chrono::duration_cast<std::chrono::seconds>(timeElapsed).count();
+	auto totalTE = timeElapsedPrevious + GenerateTE();
+	return std::chrono::duration_cast<std::chrono::seconds>(totalTE).count();
 }
 
-int timer::TimeMinutes() const
+int timer::TimeMinutes()
 {
-	return std::chrono::duration_cast<std::chrono::minutes>(timeElapsed).count();
+	auto totalTE = timeElapsedPrevious + GenerateTE();
+	return std::chrono::duration_cast<std::chrono::minutes>(totalTE).count();
+}
+
+std::chrono::milliseconds timer::GenerateTE()
+{
+	if (running) {
+		auto endTP = std::chrono::high_resolution_clock::now();
+		std::chrono::milliseconds timeElapsed = std::chrono::duration_cast<std::chrono::milliseconds>(endTP - startTP);
+		return timeElapsed;
+	}
+	else
+		return timeElapsedPrevious;
 }
 
 

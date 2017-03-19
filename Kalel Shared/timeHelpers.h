@@ -33,16 +33,22 @@ public:
 	~timer(void);
 
 private:
-	std::chrono::milliseconds timeElapsed;
-	
+	// Time elapsed since the start of the clock. Is not actually generated until called
+	std::chrono::milliseconds timeElapsedPrevious;
+	// Timepoint when the clock started
 	std::chrono::high_resolution_clock::time_point startTP;
+	// check if running
+	bool running = false;
 
 public:
 	void Start();
 	void Pause();
 	void Resume();
 
-	int TimeMilliseconds() const;
-	int TimeSeconds() const;
-	int TimeMinutes() const;
+	int TimeMilliseconds();
+	int TimeSeconds();
+	int TimeMinutes();
+
+private:
+	std::chrono::milliseconds GenerateTE();
 };
