@@ -84,7 +84,7 @@ void Measurement::Execution()
 
 		// Record time
 		++storage.currentData->measurementsMade;												// Save the measurement number
-		storage.currentData->timeElapsed = controls.timerExperiment.TimeSeconds();				// Save the time elapsed from the beginning of the experiment
+		storage.currentData->timeElapsed = controls.timerExperiment.TimeMilliseconds();			// Save the time elapsed from the beginning of the experiment
 		storage.currentData->timeToEquilibrateCurrent = controls.timerWaiting.TimeSeconds();	// Save the waiting time if it exists
 
 		/*

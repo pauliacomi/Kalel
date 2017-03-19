@@ -102,6 +102,7 @@ public:
 	int GetexperimentPreviousStage()		const;					// Previous experiment stage
 	unsigned long long GettimeStart()		const;					// When the experiment started
 	unsigned long long GettimeElapsed()		const;					// Time from the experiment start
+	double GettimeElapsedSec()				const;					// Time from the experiment start, in seconds
 	long GetmeasurementsMade()				const;					// Number of measurements recorded since the experiment was started
 	double GettimeToEquilibrate()			const;					// The amount of time that the waiting + recording functionality will run before returning to an active state
 	double GettimeToEquilibrateCurrent()	const;					// The current time of waiting

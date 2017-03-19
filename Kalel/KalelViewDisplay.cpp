@@ -19,7 +19,6 @@ LRESULT CKalelView::AffichageMessages(WPARAM, LPARAM lParam)
 
 	// Add the new message
 	m_StrEditMessages += *message;
-	m_StrEditMessages += "\r\n";
 	SetDlgItemText(IDC_EDIT_MESSAGES,m_StrEditMessages);
 
 	// pEditMessages : le CEdit lié à m_StrEditMessages
@@ -45,7 +44,7 @@ LRESULT CKalelView::DisplayTextboxValues(std::shared_ptr<ExperimentData> data)
 	m_StrTemperatureCalo.Format(_T("%.2f"), data->GettemperatureCalo());
 	m_StrTemperatureCage.Format(_T("%.2f"), data->GettemperatureCage());
 	m_StrTemperaturePiece.Format(_T("%.2f"), data->GettemperatureRoom());
-	m_StrTemps.Format(_T("%.1f"), data->GettimeElapsed());
+	m_StrTemps.Format(_T("%.1f"), data->GettimeElapsedSec());
 	m_StrPressionInitiale.Format(_T("%.6f"), data->GetpressureInitial());
 	m_StrPressionFinale.Format(_T("%.6f"), data->GetpressureFinal());
 

@@ -714,13 +714,14 @@ LRESULT CKalelView::OnExchangeLogs(WPARAM, LPARAM incomingLogs)
 	logCollection.insert(newLogs->begin(), newLogs->end());
 
 	// Display logs
+	CString * temp = new CString();
 	for (auto i = newLogs->begin(); i != newLogs->end(); ++i)
 	{
 		CString time(TimePointToString(i->first).c_str());
 		CString log(i->second.c_str());
-		CString * temp = new CString(time + " " + log);
-		AffichageMessages(NULL, (LPARAM)temp);
+		temp->Append(time + " " + log + _T("\r\n"));
 	}
+	AffichageMessages(NULL, (LPARAM)temp);
 	
 	// Delete the useless vector now
 	delete newLogs;

@@ -100,34 +100,35 @@ void ExperimentData::ResetData()
 }
 
 
-bool ExperimentData::GetexperimentInProgress()							const { return experimentInProgress			; }
-bool ExperimentData::GetexperimentRecording()							const { return experimentRecording			; }
-bool ExperimentData::GetexperimentWaiting()								const { return experimentWaiting			; }
-bool ExperimentData::GetexperimentCommandsRequested()					const { return experimentCommandsRequested	; }
-int ExperimentData::GetexperimentStage()								const { return experimentStage				; }
-int ExperimentData::GetverificationStep()								const { return verificationStep				; }
-int ExperimentData::GetexperimentStepStatus()							const { return experimentStepStatus			; }
-int ExperimentData::GetexperimentSubstepStage()							const { return experimentSubstepStage		; }
-int ExperimentData::GetexperimentDose()									const { return experimentDose				; }
-int ExperimentData::GetexperimentGraphPoints()							const { return experimentGraphPoints		; }
-int ExperimentData::GetexperimentPreviousStage()						const { return experimentPreviousStage		; }
-unsigned long long ExperimentData::GettimeStart()						const { return timeStart					; }
-unsigned long long ExperimentData::GettimeElapsed()						const { return timeElapsed					; }
-long ExperimentData::GetmeasurementsMade()								const { return measurementsMade				; }
-double ExperimentData::GettimeToEquilibrate()							const { return timeToEquilibrate			; }
-double ExperimentData::GettimeToEquilibrateCurrent()					const { return timeToEquilibrateCurrent		; }
-int ExperimentData::GetinjectionAttemptCounter()						const { return injectionAttemptCounter		; }
-int ExperimentData::GetadsorptionCounter()								const { return adsorptionCounter			; }
-int ExperimentData::GetdesorptionCounter()								const { return desorptionCounter			; }
-double ExperimentData::GetpressureInitial()								const { return pressureInitial				; }
-double ExperimentData::GetpressureFinal()								const { return pressureFinal				; }
-double ExperimentData::GetpressureHighOld()								const { return pressureHighOld				; }
-double ExperimentData::GetresultCalorimeter()							const { return resultCalorimeter			; }
-double ExperimentData::GetpressureHigh()								const { return pressureHigh					; }
-double ExperimentData::GetpressureLow()									const { return pressureLow					; }
-double ExperimentData::GettemperatureCalo()								const { return temperatureCalo				; }
-double ExperimentData::GettemperatureCage()								const { return temperatureCage				; }
-double ExperimentData::GettemperatureRoom()								const { return temperatureRoom				; }
+bool ExperimentData::GetexperimentInProgress()							const { return experimentInProgress					; }
+bool ExperimentData::GetexperimentRecording()							const { return experimentRecording					; }
+bool ExperimentData::GetexperimentWaiting()								const { return experimentWaiting					; }
+bool ExperimentData::GetexperimentCommandsRequested()					const { return experimentCommandsRequested			; }
+int ExperimentData::GetexperimentStage()								const { return experimentStage						; }
+int ExperimentData::GetverificationStep()								const { return verificationStep						; }
+int ExperimentData::GetexperimentStepStatus()							const { return experimentStepStatus					; }
+int ExperimentData::GetexperimentSubstepStage()							const { return experimentSubstepStage				; }
+int ExperimentData::GetexperimentDose()									const { return experimentDose						; }
+int ExperimentData::GetexperimentGraphPoints()							const { return experimentGraphPoints				; }
+int ExperimentData::GetexperimentPreviousStage()						const { return experimentPreviousStage				; }
+unsigned long long ExperimentData::GettimeStart()						const { return timeStart							; }
+unsigned long long ExperimentData::GettimeElapsed()						const { return timeElapsed							; }
+double ExperimentData::GettimeElapsedSec()								const { return static_cast<float>(timeElapsed)/1000	; }
+long ExperimentData::GetmeasurementsMade()								const { return measurementsMade						; }
+double ExperimentData::GettimeToEquilibrate()							const { return timeToEquilibrate					; }
+double ExperimentData::GettimeToEquilibrateCurrent()					const { return timeToEquilibrateCurrent				; }
+int ExperimentData::GetinjectionAttemptCounter()						const { return injectionAttemptCounter				; }
+int ExperimentData::GetadsorptionCounter()								const { return adsorptionCounter					; }
+int ExperimentData::GetdesorptionCounter()								const { return desorptionCounter					; }
+double ExperimentData::GetpressureInitial()								const { return pressureInitial						; }
+double ExperimentData::GetpressureFinal()								const { return pressureFinal						; }
+double ExperimentData::GetpressureHighOld()								const { return pressureHighOld						; }
+double ExperimentData::GetresultCalorimeter()							const { return resultCalorimeter					; }
+double ExperimentData::GetpressureHigh()								const { return pressureHigh							; }
+double ExperimentData::GetpressureLow()									const { return pressureLow							; }
+double ExperimentData::GettemperatureCalo()								const { return temperatureCalo						; }
+double ExperimentData::GettemperatureCage()								const { return temperatureCage						; }
+double ExperimentData::GettemperatureRoom()								const { return temperatureRoom						; }
 
 
 void ExperimentData::SetexperimentInProgress(bool a)						{ experimentInProgress			= a ; }
