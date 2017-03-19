@@ -23,7 +23,7 @@ void Automation::BottleVacuum()
 		controls.messageHandler->DisplayMessageBox(MESSAGE_VACUUM_BOTTLE_CLOSE, MB_OK | MB_ICONQUESTION, true);
 		
 		// Pause
-		h_eventPause = true;
+		eventPause = true;
 		storage.automationControl.notify_all();
 	}
 
@@ -171,7 +171,7 @@ void Automation::BottleVacuum()
 		controls.valveControls->CloseAll(true);										// Close everything
 
 		shutdownReason = STOP_NORMAL;												// set a normal shutdown
-		h_eventReset = true;														// end then set the event
+		eventReset = true;														// end then set the event
 		storage.automationControl.notify_all();
 	}
 }

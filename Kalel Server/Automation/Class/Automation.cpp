@@ -4,13 +4,6 @@ Automation::Automation(Storage &s, Controls &c)
 	: storage{ s }
 	, controls{ c }
 {
-	// Initialise class members
-	sb_settingsModified = false;
-
-	// If the shutdown event is called externally, it will default to a cancel
-	// Otherwise the flag will be changed from inside the code
-	shutdownReason = STOP_CANCEL;
-
 	// Time
 	storage.currentData->timeStart = time(0);
 	controls.timerExperiment.Start();				// Start global experiment timer	
@@ -105,7 +98,7 @@ void Automation::Execution()
 		std::unique_lock<std::mutex> lock(storage.automationMutex);
 		auto notified = storage.automationControl.wait_for(lock, std::chrono::milliseconds(T_BETWEEN_AUTOMATION), [&] () 
 		{
-			return (h_eventShutdown || h_eventPause || h_eventResume || h_eventReset || h_eventUserInput);
+			return (eventShutdown || eventPause || eventResume || eventReset || eventUserInput);
 		});
 
 		if (notified)
@@ -123,35 +116,35 @@ void Automation::Execution()
 			}
 
 
-			if (h_eventShutdown)							// Complete stop of thread
+			if (eventShutdown)							// Complete stop of thread
 			{
 				shutdownReason = STOP_COMPLETE;
 				Shutdown();
-				h_eventShutdown = false;
+				eventShutdown = false;
 				continue;
 			}
 
-			if (h_eventPause)								// Pause thread
+			if (eventPause)								// Pause thread
 			{
 				Pause();
-				h_eventPause = false;
+				eventPause = false;
 				continue;
 			}
 			
-			if (h_eventResume)								// Resume thread
+			if (eventResume)								// Resume thread
 			{
 				Resume();
-				h_eventResume = false;
+				eventResume = false;
 				continue;
 			}												
 
-			if (h_eventReset)								// Reset thread
+			if (eventReset)								// Reset thread
 			{
 				Shutdown();
 				continue;
 			}
 
-			if (h_eventUserInput)							// Wait for user input
+			if (eventUserInput)							// Wait for user input
 			{
 			}
 		}
@@ -245,7 +238,7 @@ bool Automation::ExecutionAuto()
 		// If the experiment has finished
 		shutdownReason = STOP_NORMAL;	// set a normal shutdown
 
-		h_eventReset = true;			// end then set the event
+		eventReset = true;			// end then set the event
 		storage.automationControl.notify_all();
 
 		break;

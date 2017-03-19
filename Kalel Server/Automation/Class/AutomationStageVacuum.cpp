@@ -124,7 +124,7 @@ void Automation::StageVacuum(bool separateFunctionality)
 		if (separateFunctionality)
 		{
 			controls.messageHandler->DisplayMessageBox(MESSAGE_VACUUM_USER_CHOICE, MB_ICONINFORMATION | MB_OK, true);
-			h_eventPause = true;
+			eventPause = true;
 			storage.automationControl.notify_all();
 		}
 		else
@@ -151,7 +151,7 @@ void Automation::StageVacuum(bool separateFunctionality)
 		{
 			storage.currentData->experimentStage = STAGE_UNDEF;
 			shutdownReason = STOP_NORMAL;								// set a normal shutdown
-			h_eventReset = true;										// end then set the event
+			eventReset = true;										// end then set the event
 			storage.automationControl.notify_all();									
 		}
 		else

@@ -43,18 +43,20 @@ protected:
 protected:
 
 	// Case switch int for the experiment states (running/paused/etc)
-	volatile int shutdownReason;
+	// If the shutdown event is called externally, it will default to a cancel
+	// Otherwise the flag will be changed from inside the code
+	volatile int shutdownReason = STOP_CANCEL;
 	std::atomic_bool running = true;
 
 public:
-	std::atomic_bool sb_settingsModified;				// Atomic variable that can be set to let the thread know that there are new experiment settings 
-	std::atomic_bool sb_userContinue;					// Atomic variable 
+	std::atomic_bool sb_settingsModified = false;			// Atomic variable that can be set to let the thread know that there are new experiment settings 
+	std::atomic_bool sb_userContinue;						// Atomic variable 
 
-	std::atomic_bool h_eventShutdown = false;					// Handle event shutting down the thread
-	std::atomic_bool h_eventResume = false;						// Handle event resuming the thread
-	std::atomic_bool h_eventPause = false;						// Handle event pausing the thread
-	std::atomic_bool h_eventReset = false;						// Handle event resetting the thread for a new experiment
-	std::atomic_bool h_eventUserInput = false;					// Handle event waiting for the user to do something
+	std::atomic_bool eventShutdown = false;					// Bool for shutting down the thread
+	std::atomic_bool eventResume = false;					// Bool for resuming the thread
+	std::atomic_bool eventPause = false;					// Bool for pausing the thread
+	std::atomic_bool eventReset = false;					// Bool for resetting the thread for a new experiment
+	std::atomic_bool eventUserInput = false;				// Bool for waiting for the user to do something
 
 
 /**********************************************************************************************************************************

@@ -16,7 +16,10 @@
 #include <chrono>
 
 class Storage {
-	
+public:
+	Storage(void);
+	~Storage(void);
+
 	//**********
 	// Server logs
 	//**********
@@ -109,5 +112,15 @@ public:
 };
 
 
+inline Storage::Storage(void)
+{
+	currentData = std::make_shared<ExperimentData>();
+	experimentSettings = std::make_shared<ExperimentSettings>();
+	newExperimentSettings = std::make_shared<ExperimentSettings>();
+}
+
+inline Storage::~Storage(void)
+{
+}
 
 #endif

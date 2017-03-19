@@ -11,16 +11,9 @@
 // --------- Initialisation and destruction -------
 
 ThreadManager::ThreadManager(Storage &h)
-	: storage{ h }	
+	: storage{ h }
+	, controls { h }
 {
-	// Create objects from controls class
-	controls.fileWriter = std::make_shared<FileWriter>();
-	controls.messageHandler = std::make_shared<MessageHandler>(h);
-	controls.valveControls = std::make_shared<ValveController>(*controls.messageHandler);
-
-	storage.currentData = std::make_shared<ExperimentData>();
-	storage.experimentSettings = std::make_shared<ExperimentSettings>();
-	storage.newExperimentSettings = std::make_shared<ExperimentSettings>();
 }
 
 ThreadManager::~ThreadManager()
@@ -107,7 +100,7 @@ unsigned ThreadManager::ResumeAutomation()
 	{
 		// Give the threads the start signal
 		std::unique_lock<std::mutex> lk(storage.automationMutex);
-		automation->h_eventResume = true;
+		automation->eventResume = true;
 		storage.automationControl.notify_all();
 	}
 	else
@@ -123,7 +116,7 @@ unsigned ThreadManager::PauseAutomation()
 	{
 		// Signal the thread to resume
 		std::unique_lock<std::mutex> lk(storage.automationMutex);
-		automation->h_eventPause = true;
+		automation->eventPause = true;
 		storage.automationControl.notify_all();
 	}
 	else
@@ -140,7 +133,7 @@ unsigned ThreadManager::ResetAutomation()
 	{
 		// Signal the thread to reset
 		std::unique_lock<std::mutex> lk(storage.automationMutex);
-		automation->h_eventReset = true;
+		automation->eventReset = true;
 		storage.automationControl.notify_all();
 	}
 	else
@@ -183,8 +176,7 @@ unsigned ThreadManager::SetUserContinue()
 	return 0;
 }
 
-// ShutdownThread function will check if thread is running and then send it the shutdown command
-// If the thread does not quit in a short time it will be forcefully closed. Check if this is an error when using the function.
+// Shutdownfunction will check if thread is running and then send it the shutdown command
 unsigned ThreadManager::ShutdownAutomation()
 {
 	// Close the worker thread
@@ -192,8 +184,9 @@ unsigned ThreadManager::ShutdownAutomation()
 	{
 		// Signal the thread to exit
 		std::unique_lock<std::mutex> lk(storage.automationMutex);
-		automation->h_eventShutdown = true;
+		automation->eventShutdown = true;
 		storage.automationControl.notify_all();
+		// Unlock to continue function
 		lk.unlock();
 
 		// Join thread
@@ -207,7 +200,11 @@ unsigned ThreadManager::ShutdownAutomation()
 }
 
 
-
+//--------------------------------------------------------------------------------------
+//
+// --------- Manual actions start, pausing, resetting, resuming and shutdown --------
+//
+//--------------------------------------------------------------------------------------
 
 unsigned ThreadManager::ThreadManualAction(int instrumentType, int instrumentNumber, bool state)
 {
