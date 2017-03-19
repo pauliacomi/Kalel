@@ -150,7 +150,7 @@ unsigned ThreadManager::SetModifiedData()
 	{
 		// Signal the atomic bool as modified
 		std::unique_lock<std::mutex> lk(storage.automationMutex);
-		automation->sb_settingsModified = true;
+		automation->eventSettingsModified = true;
 		storage.automationControl.notify_all();
 	}
 	else

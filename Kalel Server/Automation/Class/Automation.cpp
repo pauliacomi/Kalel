@@ -98,14 +98,15 @@ void Automation::Execution()
 		std::unique_lock<std::mutex> lock(storage.automationMutex);
 		auto notified = storage.automationControl.wait_for(lock, std::chrono::milliseconds(T_BETWEEN_AUTOMATION), [&] () 
 		{
-			return (eventShutdown || eventPause || eventResume || eventReset || eventUserInput);
+			return (eventShutdown || eventPause || eventResume || eventReset || eventUserInput || eventSettingsModified);
 		});
 
 		if (notified)
 		{
-			if (sb_settingsModified)						// Get the expermient settings if they are modified
+			// Get the expermient settings if they are modified
+			if (eventSettingsModified)						
 			{
-				sb_settingsModified = false;
+				eventSettingsModified = false;
 
 				if (storage.currentData->experimentInProgress == true) {
 					controls.fileWriter->RecordDataChange(false, *storage.newExperimentSettings, *storage.experimentSettings, *storage.currentData);	// non-CSV
@@ -131,7 +132,7 @@ void Automation::Execution()
 				continue;
 			}
 			
-			if (eventResume)								// Resume thread
+			if (eventResume)							// Resume thread
 			{
 				Resume();
 				eventResume = false;
@@ -165,9 +166,6 @@ bool Automation::ExecutionManual()
 		
 		ResetAutomation();
 
-		// Get data
-		storage.experimentSettings = std::make_shared<ExperimentSettings>(*storage.newExperimentSettings);
-
 		// Record start
 		storage.currentData->experimentInProgress = true;
 		storage.currentData->experimentRecording = true;
@@ -179,12 +177,11 @@ bool Automation::ExecutionManual()
 		if (err){
 			controls.messageHandler->DisplayMessageBox(ERROR_PATHUNDEF, MB_ICONERROR | MB_OK, false);
 		}
-		controls.fileWriter->FileMeasurementCreate(storage.experimentSettings->dataGeneral);							// Measurement file
+		controls.fileWriter->FileMeasurementCreate(storage.experimentSettings->dataGeneral);						// Measurement file
 
 		// Continue experiment
 		storage.currentData->experimentStage = STAGE_MANUAL;
 		storage.currentData->experimentStepStatus = STEP_STATUS_INPROGRESS;
-		storage.currentData->experimentCommandsRequested = false;
 
 		return true;
 	}
@@ -203,9 +200,6 @@ bool Automation::ExecutionAuto()
 		controls.messageHandler->ExperimentStart();
 
 		ResetAutomation();
-
-		// Get data
-		storage.experimentSettings = std::make_shared<ExperimentSettings>(*storage.newExperimentSettings);
 
 		// Write variables to starting position
 		storage.currentData->experimentInProgress = true;
@@ -231,14 +225,15 @@ bool Automation::ExecutionAuto()
 		StageDesorption();
 		break;
 	case STAGE_VACUUM_SAMPLE:
-		StageDesorption();
+		StageVacuum();
 		break;
 	case STAGE_END_AUTOMATIC:
 
 		// If the experiment has finished
 		shutdownReason = STOP_NORMAL;	// set a normal shutdown
 
-		eventReset = true;			// end then set the event
+		eventReset = true;				// end then set the event
+		// TODO: check if this notification works in advance
 		storage.automationControl.notify_all();
 
 		break;
@@ -258,7 +253,6 @@ void Automation::ResetAutomation()
 {
 	// Reset all data from the experiment
 	storage.currentData->ResetData();
-	storage.experimentSettings->ResetData();
 
 	// If the shutdown event is called externally, it will default to a cancel
 	// Otherwise the flag will be changed from inside the code
