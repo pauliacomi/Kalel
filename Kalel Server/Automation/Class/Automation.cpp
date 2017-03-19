@@ -27,7 +27,7 @@ Automation::~Automation()
 ////////////////////////////////////////////////////////
 //	Main execution function
 //
-//	This is an infinite loop which has to be broken form inside
+//	This is an infinite loop which has to be broken from inside
 //	The general flowchart goes as follows:
 //	
 //	initialize everything

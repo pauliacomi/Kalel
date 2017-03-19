@@ -163,7 +163,7 @@ void Measurement::ThreadMeasurement()
 
 	// Give the threads the start signal
 	std::unique_lock<std::mutex> lk(lockingMutex);
-	ready = true;
+	ready = true;											// Use bool to prevent accidental wake-up of threads
 	syncThreadStart.notify_all();
 	lk.unlock();
 
@@ -173,7 +173,7 @@ void Measurement::ThreadMeasurement()
 		th.join();
 	}
 
-	// Reset bool
+	// Reset
 	measurementThreads.clear();
 	ready = false;
 }
