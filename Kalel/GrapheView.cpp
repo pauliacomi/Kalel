@@ -75,10 +75,11 @@ void CGrapheView::OnDraw(CDC* pDC)
 			// Acquisition des données 
 			PLIST all_points;
 
+			all_points.nb_points = measurementArray->size();
+
 			std::for_each(measurementArray->begin(), measurementArray->end(),
 				[&all_points](const std::pair<std::chrono::system_clock::time_point, std::shared_ptr<ExperimentData>>& p){
 				
-				all_points.nb_points.push_back(p.second->GetmeasurementsMade());
 				all_points.time_elapsed.push_back(p.second->GettimeElapsedSec());
 				all_points.high_pressure.push_back(p.second->GetpressureHigh());
 				all_points.low_pressure.push_back(p.second->GetpressureLow());
@@ -91,25 +92,19 @@ void CGrapheView::OnDraw(CDC* pDC)
 			// Set the maximums and minimums
 			maxPressure = max(maxPressure, all_points.low_pressure.back());
 			maxPressure = max(maxPressure, all_points.high_pressure.back());
-			maxPressure = ceil(1.1 * maxPressure);
 
 			minPressure = min(minPressure, all_points.low_pressure.back());
 			minPressure = min(minPressure, all_points.high_pressure.back());
-			minPressure = floor(1.1 * minPressure);
 
 			maxCalo = max(maxCalo, all_points.calorimeter.back());
 			minCalo = min(minCalo, all_points.calorimeter.back());
 
+			auto pmax_ceil = ceil(1.1 * maxPressure);
+			auto pmin_floor = floor(1.1 * minPressure);
+
 			float timeMaximum = all_points.time_elapsed.back();
 			double displayedSeconds = RECENT_HOURS * 3600;
 			timeMinimum = timeMaximum - displayedSeconds;
-			double partialCoefficient = (all_points.time_elapsed.back() / all_points.nb_points.back());
-			measurementMinimum  = static_cast<int>(all_points.nb_points.back() - displayedSeconds / partialCoefficient);
-			if (measurementMinimum < 0)
-			{
-				measurementMinimum = 0;         //????????//
-			}
-
 
 			// Les graphes
 
@@ -152,9 +147,9 @@ void CGrapheView::OnDraw(CDC* pDC)
 			CString titreComplet;
 			titreComplet.Format(GRAPH_COMPLETE);
 
-			TraceAxis(place_grapheComplet,axe_grapheComplet,pDC,titreComplet);
-			TraceScale(grapheComplet, axe_grapheComplet, maxPressure, minPressure, maxCalo, minCalo, pDC, timeMaximum);
-			TraceGraph(pDC, grapheComplet, all_points, maxPressure, minPressure, maxCalo, minCalo, timeMaximum);
+			TraceAxis(place_grapheComplet, axe_grapheComplet, pDC, titreComplet, pmax_ceil);
+			TraceScale(grapheComplet, axe_grapheComplet, pmax_ceil, pmin_floor, maxCalo, minCalo, pDC, timeMaximum);
+			TraceGraph(pDC, grapheComplet, all_points, pmax_ceil, pmin_floor, maxCalo, minCalo, timeMaximum);
 
 
 
@@ -177,9 +172,9 @@ void CGrapheView::OnDraw(CDC* pDC)
 			CString titleGrapheEtape;
 			titleGrapheEtape.Format(GRAPH_PART, RECENT_HOURS);
 
-			TraceAxis(place_grapheEtape, axe_grapheEtape, pDC, titleGrapheEtape);
-			TraceScale(grapheEtape, axe_grapheEtape, maxPressure, minPressure, maxCalo, minCalo, pDC, timeMinimum);
-			TraceGraph(pDC, grapheEtape, all_points, maxPressure, minPressure, maxCalo, minCalo, timeMaximum, timeMinimum);
+			TraceAxis(place_grapheEtape, axe_grapheEtape, pDC, titleGrapheEtape, pmax_ceil);
+			TraceScale(grapheEtape, axe_grapheEtape, pmax_ceil, pmin_floor, maxCalo, minCalo, pDC, timeMaximum, timeMinimum);
+			TraceGraph(pDC, grapheEtape, all_points, pmax_ceil, pmin_floor, maxCalo, minCalo, timeMaximum, timeMinimum);
 		
 
 			// ------------------------------------------------------------
@@ -229,7 +224,7 @@ void CGrapheView::OnDraw(CDC* pDC)
 // ------------------------------------------------
 
 
-void CGrapheView::TraceAxis(CRect place_graphe, CRect axe_graphe, CDC *pDC, CString titre)
+void CGrapheView::TraceAxis(CRect place_graphe, CRect axe_graphe, CDC *pDC, CString titre, float pressure_max)
 {
 	// ----------- Traçage des axes -------------------------
 	pDC->SetTextColor(RGB(255,255,255));
@@ -254,7 +249,7 @@ void CGrapheView::TraceAxis(CRect place_graphe, CRect axe_graphe, CDC *pDC, CStr
 							  place_graphe.bottom);
 
 	CString texte_max_pression;
-	texte_max_pression.Format(_T("Max : %0.2f Bar"), maxPressure);
+	texte_max_pression.Format(_T("Max : %0.2f Bar"), pressure_max);
 	pDC->SetTextColor(RGB(0,0,0));
 	pDC->DrawText(texte_max_pression,enteteComplet,DT_LEFT);
 
@@ -282,7 +277,7 @@ void CGrapheView::TraceAxis(CRect place_graphe, CRect axe_graphe, CDC *pDC, CStr
 
 
 void CGrapheView::TraceScale(CRect graphe,CRect axe_graphe,int max_pression,int min_pression,double max_calo,double min_calo,
-								CDC *pDC, float max_time, float min_temps)
+								CDC *pDC, float max_time, float min_time)
 {
 	// intervalle : entre 2 traits
 	// il y aura donc (nb_intervalle + 1) traits
@@ -302,9 +297,9 @@ void CGrapheView::TraceScale(CRect graphe,CRect axe_graphe,int max_pression,int 
 	{
 		CRect rect_text;
 		// traçage du trait
-		int pt_trait1=graphe.left-5; // abs de l'extrémité gauche
-		int pt_trait2=graphe.left+5; // abs de l'extrémité droit
-		int ord= i*graphe.Height()/nb_intervalles + graphe.top;
+		int pt_trait1 = graphe.left - 5; // abs de l'extrémité gauche
+		int pt_trait2 = graphe.left + 5; // abs de l'extrémité droit
+		int ord = i*graphe.Height() / nb_intervalles + graphe.top;
 		pDC->MoveTo(pt_trait1,ord);
 		pDC->LineTo(pt_trait2,ord);
 			
@@ -342,17 +337,16 @@ void CGrapheView::TraceScale(CRect graphe,CRect axe_graphe,int max_pression,int 
 
 
 	// ----- marquage du temps ----------------------------------------------
-	int nb_trait_abs=4;
-	int temps = (int)max_time;
+	int nb_labels = 4;
+	int max_time_int = static_cast<int>(ceil(max_time));
 
-	for (int i=0;i<=nb_trait_abs;i++)
+	for (int i=0;i<= nb_labels;i++)
 	{
 		CRect rect_text;
 
-		int abs= i*axe_graphe.Width()/nb_trait_abs + 2*BORDER_WIDTH;
+		int abs = i*axe_graphe.Width() / nb_labels + 2 * BORDER_WIDTH;
 			
 		int pt_trait1=axe_graphe.bottom-5;
-		//int pt_trait2=axe_graphe.bottom+5;
 		int pt_trait2=axe_graphe.bottom;
 
 		pDC->MoveTo(abs,pt_trait1);
@@ -360,19 +354,19 @@ void CGrapheView::TraceScale(CRect graphe,CRect axe_graphe,int max_pression,int 
 
 
 		//Valeur pour 'exterieur' axe
-		int l=abs - 2*BORDER_WIDTH;
-		int t=axe_graphe.bottom;// + BORDER_WIDTH;
-		int r=abs + 2*BORDER_WIDTH;
-		int b=axe_graphe.bottom + 20;//+ BORDER_WIDTH;
+		int l = abs - 2 * BORDER_WIDTH;
+		int t = axe_graphe.bottom;
+		int r = abs + 2 * BORDER_WIDTH;
+		int b = axe_graphe.bottom + 20;
 
-		rect_text= CRect(l,t,r,b);
+		rect_text = CRect(l, t, r, b);
 
 
 		CString texte;
-		int texte_int = (int)(min_temps + i*(temps-min_temps)/nb_trait_abs);
-		texte.Format(_T("%d"),texte_int);
+		int texte_int = static_cast<int>(min_time + i*(max_time_int - min_time) / nb_labels);
+		texte.Format(_T("%d"), texte_int);
 		pDC->SetBkMode(TRANSPARENT);
-		pDC->DrawText(texte,rect_text,DT_BOTTOM|DT_CENTER);
+		pDC->DrawText(texte, rect_text, DT_BOTTOM | DT_CENTER);
 	}
 }
 
@@ -441,16 +435,22 @@ void CGrapheView::TraceSeries(CDC* pDC, CRect graphe, const std::vector<float>& 
 		ASSERT(FALSE);
 	}
 
+	bool first_point = true;
+
 	for (auto it = 0; it < points_x.size(); ++it)
 	{
-		POINT PCalo;
-		PCalo.x = graphe.left + scale_x * (points_x[it] - min_x);
-		PCalo.y = graphe.bottom - scale_y * (points_y[it] - min_y);
+		POINT P;
+		P.x = graphe.left + scale_x * (points_x[it] - min_x);
+		if (P.x < graphe.left)
+			continue;
+		P.y = graphe.bottom - scale_y * (points_y[it] - min_y);
 
-		if (it == 0)
-			pDC->MoveTo(PCalo);
+		if (first_point) {
+			pDC->MoveTo(P);
+			first_point = false;
+		}
 		else
-			pDC->LineTo(PCalo);
+			pDC->LineTo(P);
 	}
 
 	// restaure l'ancien 'pen' dans le device context

@@ -14,7 +14,7 @@ class CKalelDoc;
 
 struct PLIST
 {
-	std::vector<int> nb_points;
+	int nb_points;
 	std::vector<float> time_elapsed;
 	std::vector<float> calorimeter;
 	std::vector<float> low_pressure;
@@ -34,7 +34,7 @@ protected:
 public:
 	CKalelDoc* GetDocument() const;
 
-	void TraceAxis(CRect place_graphe, CRect axe_graphe, CDC *pDC,CString);
+	void TraceAxis(CRect place_graphe, CRect axe_graphe, CDC *pDC,CString, float pressure_max);
 	void TraceScale(CRect graphe, CRect axe_graphe, int max_pression, int min_pression, double max_calo, double min_calo,
 		CDC *pDC, float max_time, float min_time = 0.0);
 	void TraceGraph(CDC *pDC, CRect graphe, const PLIST& all_points, int max_p, int min_p, double max_calo, double min_calo, float max_time, float min_time = 0.0);

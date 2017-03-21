@@ -201,6 +201,11 @@ void CKalelView::OnInitialUpdate()
 	// Set the timers for the window update
 	refrashTimer = SetTimer(1, savedParams.GetDataRefreshInterval(), NULL);
 	graphTimer = SetTimer(1, savedParams.GetGraphRefreshInterval(), NULL);
+
+	//// TODO: Remove this
+	//auto dt2 = std::make_shared<ExperimentData>();
+	//auto time_now = NowTime();
+	//dataCollection.insert(std::make_pair(time_now, dt2));
 }
 
 
@@ -214,7 +219,6 @@ void CKalelView::OnDraw(CDC* /*pDC*/)
 	if (!pDoc)
 		return;
 
-	// TODO: add draw code for native data here
 }
 
 
@@ -318,11 +322,21 @@ void CKalelView::OnTimer(UINT_PTR nIDEvent)
 
 			// Write graph
 			GetDocument()->UpdateAllViews(this);
+
+			// TODO: Remove this
+			/*auto dt2 = std::make_shared<ExperimentData>();
+			dt2->pressureHigh = 5 + 3 * rand();
+			dt2->pressureLow = 5 + 3 * rand();
+			dt2->resultCalorimeter = 5 + 3 * rand();
+			dt2->timeElapsed = 1000*(++sstime);
+			auto time_now = NowTime();
+			dataCollection.insert(std::make_pair(time_now, dt2));*/
 		}
 	}
 
 	CFormView::OnTimer(nIDEvent);	// Call base class handler.
 }
+
 
 // Copy all data from a property sheet dialog to the local object
 void CKalelView::GetExperimentData(ExperimentPropertySheet * pDialogExperimentProperties, bool initialRequest) {
