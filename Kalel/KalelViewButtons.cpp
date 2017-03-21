@@ -69,7 +69,7 @@ void CKalelView::OnBnClickedArreter()
 {
 	if (pApp->serverConnected)
 	{
-		if (dataCollection.end()->second->experimentInProgress) {
+		if (pApp->experimentRunning) {
 			int result = AfxMessageBox(PROMPT_CANCELEXP, MB_ICONQUESTION | MB_YESNO);
 			switch (result)
 			{

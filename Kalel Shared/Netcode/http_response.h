@@ -40,6 +40,12 @@ struct http_response {
 
 	/*   disconnected_ is true when the client cannot process a request and terminates early. */
 	bool disconnected_;
+
+	/*   error_ is true when there's an error on the line. */
+	bool error_;
+
+	/*   error_str is set when the an error is seen.. */
+	std::string error_str_;
 };
 
 #endif

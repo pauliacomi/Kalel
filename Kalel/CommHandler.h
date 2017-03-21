@@ -61,16 +61,11 @@ private:
 	// Local variables: don't like these
 	**********************************************************************************************************************************/
 
-	std::string localAddress;								// Address
+	std::string localAddress;								// Server address
 
-	std::atomic_bool flagExperimentRequest = false;
-	std::string localExperimentTime;						// Start time requested for GetExperimentData 
-
-	std::atomic_bool flagLogsRequest = false;
-	std::string localLogsTime;
-
-	std::atomic_bool flagReqRequest = false;
-	std::string localReqTime;
+	std::string localExperimentTime;						// Start time requested for experiment data 
+	std::string localLogsTime;								// Start time requested for logs 
+	std::string localReqTime;								// Start time requested for requests 
 
 	ControlInstrumentStateData localInstrumentState;
 
@@ -78,6 +73,15 @@ private:
 	std::shared_ptr<const ExperimentSettings> localExperimentSettings;
 	int localThreadCommand = 0;
 	int localFunctionalityCommand = 0;
+
+	std::atomic_bool flagReqRequest = false;
+	std::atomic_bool flagLogsRequest = false;
+	std::atomic_bool flagExperimentRequest = false;
+	std::atomic_bool flagMachineSettingsRequest = false;
+	std::atomic_bool flagExperimentSettingsRequest = false;
+	std::atomic_bool flagInstrumentStateRequest = false;
+
+	std::atomic_int sync = 0;
 
 	// Debugging
 	int debug_success = 0;
@@ -109,6 +113,8 @@ private:
 	// Instrument state get
 	unsigned GetInstrumentState_req(http_request * r);
 	unsigned GetInstrumentState_resp(http_response * r);
+
+	unsigned int CheckSync();
 
 	// Instrument state set
 	unsigned SetInstrumentState_req(http_request * r);

@@ -34,6 +34,7 @@ public:
 	// PostMessage functions
 	bool ConnectionComplete();
 	bool Disconnection();
+	bool SyncComplete();
 	bool ExchangeMachineSettings(const MachineSettings &pParam);
 	bool ExchangeExperimentSettings(const ExperimentSettings &pParam);
 	bool OnSetMachineSettings();

@@ -73,6 +73,8 @@ void CommHandler::SaveAddress(std::wstring address)
 *********************************/
 void CommHandler::Sync()
 {
+	sync = 6;
+
 	GetMachineSettings();
 	GetControlInstrumentState();
 	GetExperimentSettings();
@@ -81,12 +83,28 @@ void CommHandler::Sync()
 	GetRequests();
 }
 
+unsigned int CommHandler::CheckSync()
+{
+	// Confirm sync
+	if (sync < 0) {
+		return 0;
+	}
+	else if (sync == 0) {
+		messageHandler.SyncComplete();
+	}
+	else
+		--sync;
+
+	return 1;
+}
 
 /*********************************
 // MachineSettings
 *********************************/
 void CommHandler::GetMachineSettings()
 {
+	flagMachineSettingsRequest = true;
+
 	auto request = std::bind(&CommHandler::GetMachineSettings_req, this, std::placeholders::_1);
 	auto callback = std::bind(&CommHandler::GetMachineSettings_resp, this, std::placeholders::_1);
 
@@ -441,6 +459,9 @@ unsigned CommHandler::GetMachineSettings_resp(http_response* r) {
 			}
 
 			messageHandler.ExchangeMachineSettings(receivedSettings);
+
+			// Confirm sync
+			CheckSync();
 		}
 		else
 		{
@@ -544,6 +565,9 @@ unsigned CommHandler::GetExperimentSettings_resp(http_response* r) {
 			}
 
 			messageHandler.ExchangeExperimentSettings(receivedSettings);
+
+			// Confirm sync
+			CheckSync();
 		}
 		else
 		{
@@ -641,7 +665,8 @@ unsigned CommHandler::GetInstrumentState_resp(http_response * r)
 
 		messageHandler.ExchangeControlState(instrumentState);
 
-		return 1;
+		// Confirm sync
+		CheckSync();
 	}
 	else if (r->status_ == http::responses::not_found) {
 		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Server not found"));
@@ -769,6 +794,8 @@ unsigned CommHandler::GetData_resp(http_response* r) {
 
 			messageHandler.ExchangeData(receivedDataArray);
 
+			// Confirm sync
+			CheckSync();
 		}
 		else
 		{
@@ -846,6 +873,8 @@ unsigned CommHandler::GetLogs_resp(http_response * r)
 
 			messageHandler.ExchangeLogs(receivedLogArray);
 
+			// Confirm sync
+			CheckSync();
 		}
 		else
 		{
@@ -917,6 +946,8 @@ unsigned CommHandler::GetRequest_resp(http_response * r)
 			}
 			messageHandler.ExchangeRequests(receivedReqArray);
 
+			// Confirm sync
+			CheckSync();
 		}
 		else
 		{

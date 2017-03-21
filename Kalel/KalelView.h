@@ -76,8 +76,9 @@ private:
 	std::map<std::chrono::system_clock::time_point, std::wstring> 						requestCollection;		// Log points for an all errors or requests are stored here
 	ExperimentDataStorageArray															dataCollection;			// Measurement points for an experiment are stored here
 	std::shared_ptr<MachineSettings>													machineSettings;		// Pointer to a machineSettings object
-	std::shared_ptr<MachineSettings>													tempSettings;			// Temporary machineSettings stored here between sending change request to server and server acknowledgement
+	std::shared_ptr<MachineSettings>													tempMchSettings;		// Temporary machineSettings stored here between sending change request to server and server acknowledgement
 	std::shared_ptr<ExperimentSettings>													experimentSettings;		// Local storage of experimentSettings
+	std::shared_ptr<ExperimentSettings>													tempExpSettings;		// Temporary experimentSettings stored here between sending change request to server and server acknowledgement
 
 	
 	// Some storage variables for each MFC control
@@ -119,11 +120,12 @@ private:
 	//*************************************************************************************************************************
 
 private:
-	UINT_PTR graphTimer = 0;
-	UINT_PTR refrashTimer = 0;
-	void OnTimer(UINT_PTR nIDEvent);	//timer for window update
-	void ReplaceExperimentSettings(ExperimentPropertySheet* pDialogExperimentProperties);
+	UINT_PTR graphTimer = 0;			// Timer for graph refresh
+	UINT_PTR dataTimer = 0;				// Timer for data refresh, faster than graph refresh
+	void OnTimer(UINT_PTR nIDEvent);	// Timer function for all timers
+
 	void GetExperimentData(ExperimentPropertySheet * dialogExperimentProperties, bool initialRequest);
+	void ReplaceExperimentSettings(ExperimentPropertySheet* pDialogExperimentProperties);
 
 	// Menu messages
 

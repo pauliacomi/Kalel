@@ -28,9 +28,6 @@
 #define new DEBUG_NEW
 #endif
 
-#define INITIAL_ADSORPTION		3
-#define INITIAL_DESORPTIONS		1
-
 // CKalelView
 
 IMPLEMENT_DYNCREATE(CKalelView, CFormView)
@@ -199,7 +196,7 @@ void CKalelView::OnInitialUpdate()
 	UpdateButtons();
 	
 	// Set the timers for the window update
-	refrashTimer = SetTimer(1, savedParams.GetDataRefreshInterval(), NULL);
+	dataTimer = SetTimer(1, savedParams.GetDataRefreshInterval(), NULL);
 	graphTimer = SetTimer(1, savedParams.GetGraphRefreshInterval(), NULL);
 
 	//// TODO: Remove this
@@ -296,7 +293,7 @@ void CKalelView::OnTimer(UINT_PTR nIDEvent)
 		//*****
 		// Refresh data timer
 		//*****
-		if (nIDEvent == refrashTimer)
+		if (nIDEvent == dataTimer)
 		{
 			// Write textbox values
 			DisplayTextboxValues(dataCollection.rbegin()->second);
@@ -449,8 +446,8 @@ LRESULT CKalelView::DisplayPortDialog(WPARAM, LPARAM)
 		if (apparatusParameters.DoModal() == IDOK) {
 			if (apparatusParameters.Changed())
 			{
-				tempSettings = apparatusParameters.GetSettings();			// Save it separately to prevent extra communication
-				commHandler.SetMachineSettings(tempSettings);
+				tempMchSettings = apparatusParameters.GetSettings();			// Save it separately to prevent extra communication
+				commHandler.SetMachineSettings(tempMchSettings);
 			}
 		}
 	}
@@ -471,8 +468,8 @@ LRESULT CKalelView::DisplayApparatusSettingsDialog(WPARAM, LPARAM)
 		if (m_connection_ports.DoModal() == IDOK) {
 			if (m_connection_ports.Changed())
 			{
-				tempSettings = m_connection_ports.GetSettings();			// Save it separately to prevent extra communication
-				commHandler.SetMachineSettings(tempSettings);
+				tempMchSettings = m_connection_ports.GetSettings();			// Save it separately to prevent extra communication
+				commHandler.SetMachineSettings(tempMchSettings);
 			}
 		}
 	}
@@ -655,6 +652,7 @@ LRESULT CKalelView::OnSync(WPARAM, LPARAM)
 {
 	// unlock the menu
 	pApp->menuIsAvailable = true;
+	pApp->experimentRunning = dataCollection.rbegin()->second->experimentInProgress;
 
 	return 0;
 }
@@ -662,8 +660,8 @@ LRESULT CKalelView::OnSync(WPARAM, LPARAM)
 LRESULT CKalelView::OnSetMachineSettings(WPARAM, LPARAM)
 {
 	// Make the local version official
-	machineSettings = tempSettings;
-	tempSettings.reset();
+	machineSettings = tempMchSettings;
+	tempMchSettings.reset();
 
 	return 0;
 }
