@@ -142,6 +142,7 @@ void Automation::Execution()
 			if (eventReset)								// Reset thread
 			{
 				Shutdown();
+				eventReset = false;
 				continue;
 			}
 
@@ -257,6 +258,7 @@ void Automation::ResetAutomation()
 	// If the shutdown event is called externally, it will default to a cancel
 	// Otherwise the flag will be changed from inside the code
 	shutdownReason = STOP_CANCEL;
+	storage.experimentSettings->experimentType = EXPERIMENT_TYPE_UNDEF;
 
 	// Time
 	storage.currentData->timeStart = time(0);
