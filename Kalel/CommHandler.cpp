@@ -103,8 +103,6 @@ unsigned int CommHandler::CheckSync()
 *********************************/
 void CommHandler::GetMachineSettings()
 {
-	flagMachineSettingsRequest = true;
-
 	auto request = std::bind(&CommHandler::GetMachineSettings_req, this, std::placeholders::_1);
 	auto callback = std::bind(&CommHandler::GetMachineSettings_resp, this, std::placeholders::_1);
 
@@ -181,7 +179,6 @@ void CommHandler::GetControlInstrumentState()
 }
 
 
-
 void CommHandler::ManualCommand(int instrumentType, int instrumentNumber, bool shouldBeActivated)
 {
 	localInstrumentState.instrumentType = instrumentType;
@@ -209,7 +206,7 @@ void CommHandler::GetData(std::string fromTime)
 	{
 		flagExperimentRequest = true;
 
-		localExperimentTime = fromTime.c_str();
+		localExperimentTime = fromTime;
 
 		auto request = std::bind(&CommHandler::GetData_req, this, std::placeholders::_1);
 		auto callback = std::bind(&CommHandler::GetData_resp, this, std::placeholders::_1);
@@ -641,6 +638,8 @@ unsigned CommHandler::GetInstrumentState_resp(http_response * r)
 	{
 		json j;
 
+		// Parse JSON
+		//////////////////////////////////////////////
 		try
 		{
 			j = json::parse(r->answer_);
@@ -653,6 +652,8 @@ unsigned CommHandler::GetInstrumentState_resp(http_response * r)
 
 		ControlInstrumentState instrumentState;
 
+		// Deserialise Data
+		//////////////////////////////////////////////
 		try
 		{
 			serialization::deserializeJSONtoControlInstrumentState(j, instrumentState);
@@ -760,6 +761,8 @@ unsigned CommHandler::GetData_resp(http_response* r) {
 			
 			json j;
 
+			// Parse JSON
+			//////////////////////////////////////////////
 			try
 			{
 				j = json::parse(r->answer_);
@@ -771,6 +774,8 @@ unsigned CommHandler::GetData_resp(http_response* r) {
 				return 1;
 			}
 
+			// Deserialise Data
+			//////////////////////////////////////////////
 			std::shared_ptr<ExperimentData> receivedData = nullptr;
 			auto receivedDataArray = new ExperimentDataStorageArray();
 
@@ -842,6 +847,8 @@ unsigned CommHandler::GetLogs_resp(http_response * r)
 
 			json j;
 
+			// Parse JSON
+			//////////////////////////////////////////////
 			try
 			{
 				j = json::parse(r->answer_);
@@ -853,6 +860,8 @@ unsigned CommHandler::GetLogs_resp(http_response * r)
 				return 1;
 			}
 
+			// Deserialise data
+			//////////////////////////////////////////////
 			auto receivedLogArray = new std::map<std::chrono::system_clock::time_point, std::wstring>();
 
 			for (json::iterator i = j.begin(); i != j.end(); ++i)
@@ -916,6 +925,8 @@ unsigned CommHandler::GetRequest_resp(http_response * r)
 
 			json j;
 
+			// Parse JSON
+			//////////////////////////////////////////////
 			try
 			{
 				j = json::parse(r->answer_);
@@ -927,6 +938,8 @@ unsigned CommHandler::GetRequest_resp(http_response * r)
 				return 1;
 			}
 
+			// Deserialise data
+			//////////////////////////////////////////////
 			auto receivedReqArray = new std::map<std::chrono::system_clock::time_point, std::wstring>();
 
 			for (json::iterator i = j.begin(); i != j.end(); ++i)
