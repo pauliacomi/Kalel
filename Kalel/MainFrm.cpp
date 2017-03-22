@@ -138,7 +138,6 @@ void CMainFrame::OnSysCommand(UINT nID, LPARAM lParam)
 	if (nID == SC_CLOSE)
 	{
 		CKalelApp* pApp = static_cast<CKalelApp *>(AfxGetApp());
-		// CKalelView* pView = CKalelView::GetView();
 
 		if (pApp->experimentRunning)
 		{

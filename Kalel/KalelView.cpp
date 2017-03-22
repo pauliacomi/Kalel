@@ -60,6 +60,7 @@ BEGIN_MESSAGE_MAP(CKalelView, CFormView)
 	ON_MESSAGE(UWM_EXCHANGE_MACHINESETTINGS,		&CKalelView::OnExchangeMachineSettings)			// Callback to notify of received MachineSettings
 	ON_MESSAGE(UWM_EXCHANGESTATE,					&CKalelView::OnExchangeInstrumentState)			// Calls to update all button pairs and associated display on a manual message
 	ON_MESSAGE(UWM_EXCHANGESTATESPECIFIC,			&CKalelView::OnInstrumentButtonConfirmed)		// Calls to update a specific button pair and associated display on a manual message
+	ON_MESSAGE(UWM_SET_EXPERIMENTSETTINGS,			&CKalelView::OnSetExperimentSettings)			// Callback on notify of server-side changed MachineSettings
 	ON_MESSAGE(UWM_EXCHANGE_EXPERIMENTSETTINGS,		&CKalelView::OnExchangeExperimentSettings)		// Callback to notify of received ExperimetnSettings
 	ON_MESSAGE(UWM_EXCHANGEDATA,					&CKalelView::OnExchangeData)					// Callback to notify of incoming ExperimentData array
 	ON_MESSAGE(UWM_EXCHANGELOGS,					&CKalelView::OnExchangeLogs)					// Callback to notify of incoming log array
@@ -304,13 +305,13 @@ void CKalelView::OnTimer(UINT_PTR nIDEvent)
 			commHandler.GetData(TimePointToString(dataCollection.rbegin()->first));
 
 			// Send the request for logs
-			if (!dataCollection.empty())
+			if (!logCollection.empty())
 				commHandler.GetLog(TimePointToString(logCollection.rbegin()->first));
 			else
 				commHandler.GetLog();
 
 			// Send the request for user input
-			if (!dataCollection.empty())
+			if (!requestCollection.empty())
 				commHandler.GetRequests(TimePointToString(requestCollection.rbegin()->first));
 			else
 				commHandler.GetRequests();
