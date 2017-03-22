@@ -32,6 +32,8 @@ ExperimentPropertySheet::ExperimentPropertySheet(LPCTSTR pszCaption, MachineSett
 	:ExperimentPropertySheet(pszCaption, pParentWnd, iSelectPage)
 {
 	m_general.PassSettings(machineSettings);
+	// Choose the view of the property page
+	SetLook(CMFCPropertySheet::PropSheetLook_List, 150);
 }
 
 ExperimentPropertySheet::~ExperimentPropertySheet()

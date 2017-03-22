@@ -111,9 +111,10 @@ public:
 	std::condition_variable automationControl;
 };
 
-
+// Initializer for class
 inline Storage::Storage(void)
 {
+	machineSettings = std::make_shared<MachineSettings>();
 	currentData = std::make_shared<ExperimentData>();
 	experimentSettings = std::make_shared<ExperimentSettings>();
 	newExperimentSettings = std::make_shared<ExperimentSettings>();

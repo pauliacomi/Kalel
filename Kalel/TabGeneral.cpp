@@ -144,6 +144,11 @@ BOOL TabGeneral::OnInitDialog()
 
 	ToggleGreyOut();
 
+	// Fill in intial filename:
+	UpdateDate();
+	m_FileName = StrCalo + _T("_") + StrSurnom + _T("_") + m_SampleName + _T("_") + StrGaz + _T("_") + StrDate;
+
+	// Finish
 	UpdateData(FALSE);
 
 	if (!PathIsDirectory(m_Path))

@@ -31,9 +31,11 @@ Kalel::Kalel()
 	}
 
 	//
-	// Create and populate Machine Settings
-	storageVectors.machineSettings = std::make_shared<MachineSettings>();
+	// Populate Machine Settings
+	// Set path
 	ParametersGet(*storageVectors.machineSettings);
+	storageVectors.experimentSettings->dataGeneral.chemin = storageVectors.machineSettings->CheminFichierGeneral;
+	storageVectors.newExperimentSettings->dataGeneral.chemin = storageVectors.machineSettings->CheminFichierGeneral;
 
 	//
 	// Start server functionality

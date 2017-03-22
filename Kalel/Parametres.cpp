@@ -51,6 +51,8 @@ void Parameters::Initialisation()
 
 	WritePrivateProfileString(_T("refreshinterval"), _T("data"), _T("100"), fileLocation);
 	WritePrivateProfileString(_T("refreshinterval"), _T("graph"), _T("1000"), fileLocation);
+
+	WritePrivateProfileString(_T("location"), _T("remotefolder"), _T("C:\\"), fileLocation);
 }
 
 
@@ -130,4 +132,17 @@ int Parameters::GetGraphRefreshInterval()
 void Parameters::SetGraphRefreshInterval(int interval)
 {
 	WritePrivateProfileString(_T("refreshinterval"), _T("graph"), std::to_wstring(interval).c_str(), fileLocation);
+}
+
+
+int Parameters::GetRemoteFolderLocation()
+{
+	TCHAR ch[nSizeString];
+	GetPrivateProfileString(__T("location"), _T("remotefolder"), _T(""), ch, nSizeString, fileLocation);
+	return _ttoi(ch);
+}
+
+void Parameters::SetRemoteFolderLocation(std::wstring location)
+{
+	WritePrivateProfileString(_T("location"), _T("remotefolder"), location.c_str(), fileLocation);
 }

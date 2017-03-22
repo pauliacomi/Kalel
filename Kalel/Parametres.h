@@ -27,6 +27,8 @@ public:
 	void SetServerPort(std::wstring port);
 	void SetDataRefreshInterval(int interval);
 	void SetGraphRefreshInterval(int interval);
+	int GetRemoteFolderLocation();
+	void SetRemoteFolderLocation(std::wstring location);
 protected:
 	const wchar_t * fileLocation;
 };
