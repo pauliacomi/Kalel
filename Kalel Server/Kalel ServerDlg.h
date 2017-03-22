@@ -38,6 +38,7 @@ protected:
 
 	Kalel mainBackend;
 
+	CEdit pEditMessages;
 	CString displayText;
 	int logSize;
 };

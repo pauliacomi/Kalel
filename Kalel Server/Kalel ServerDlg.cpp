@@ -31,6 +31,8 @@ CKalelServerDlg::CKalelServerDlg(CWnd* pParent /*=NULL*/)
 void CKalelServerDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDHtmlDialog::DoDataExchange(pDX);
+	
+	DDX_Control(pDX, IDC_EDIT1, pEditMessages);
 
 	DDX_Text(pDX, IDC_EDIT1, displayText);
 }
@@ -105,6 +107,7 @@ void CKalelServerDlg::OnTimer(UINT_PTR nIDEvent)
 		logSize = logString.size();
 		displayText = logString.c_str();
 		UpdateData(FALSE);
+		pEditMessages.SetSel((int)logString.length(), (int)-1);
 	}
 }
 
