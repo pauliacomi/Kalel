@@ -75,6 +75,15 @@ bool MFCMessageHandler::ExchangeMachineSettings(const MachineSettings &pParam)
 	return true;
 }
 
+bool MFCMessageHandler::OnSetExperimentSettings()
+{
+	// Post the required message, now the main thread is responsible for deleting the new class
+	if (::PostMessage(windowHandle, UWM_SET_EXPERIMENTSETTINGS, NULL, NULL) == 0) {
+		return false;
+	}
+	return true;
+}
+
 bool MFCMessageHandler::ExchangeExperimentSettings(const ExperimentSettings &pParam)
 {
 	// Create a new instance of the storage class and equate it to the local class

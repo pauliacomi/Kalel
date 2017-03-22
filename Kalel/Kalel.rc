@@ -551,6 +551,7 @@ BEGIN
     POPUP "&Kalel"
     BEGIN
         MENUITEM "Connect to Server",           ID_PARAMATRES_SERVERCONNECT
+        MENUITEM "Force Sync",                  ID_MANUAL_CONNECT
         MENUITEM "&About",                      ID_APP_ABOUT
         MENUITEM "&Quit",                       ID_APP_EXIT
     END

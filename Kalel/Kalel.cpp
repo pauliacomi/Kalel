@@ -31,6 +31,7 @@ BEGIN_MESSAGE_MAP(CKalelApp, CWinAppEx)
 
 	// New menu based commands to main view
 	ON_COMMAND(ID_PARAMATRES_SERVERCONNECT,				&CKalelApp::DisplayServerConnect)
+	ON_COMMAND(ID_MANUAL_CONNECT,						&CKalelApp::ManualSync)
 	ON_COMMAND(ID_PARAMATRES_APPAREIL,					&CKalelApp::DisplayPortDialog)
 	ON_COMMAND(ID_CONNECTION_PORTS,						&CKalelApp::DisplayApparatusSettingsDialog)
 	ON_COMMAND(ID_MSV_AMPOULE,							&CKalelApp::OnMsvAmpoule)
@@ -42,6 +43,7 @@ BEGIN_MESSAGE_MAP(CKalelApp, CWinAppEx)
 
 	// New update based commands
 	ON_UPDATE_COMMAND_UI(ID_PARAMATRES_SERVERCONNECT,	&CKalelApp::OnUpdateServerConnect)
+	ON_UPDATE_COMMAND_UI(ID_MANUAL_CONNECT,				&CKalelApp::OnUpdateManualSync)
 	ON_UPDATE_COMMAND_UI(ID_PARAMATRES_APPAREIL,		&CKalelApp::OnUpdateParamatresAppareil)
 	ON_UPDATE_COMMAND_UI(ID_CONNECTION_PORTS,			&CKalelApp::OnUpdateConnectionPorts)
 	ON_UPDATE_COMMAND_UI(ID_MSV_AMPOULE,				&CKalelApp::OnUpdateMsvAmpoule)
@@ -210,6 +212,10 @@ void CKalelApp::DisplayServerConnect() {
 	PostMessage(CKalelView::GetView()->GetSafeHwnd(), UWM_DISP_CONNECTS_DIALOG, 0, 0);
 }
 
+void CKalelApp::ManualSync() {
+	PostMessage(CKalelView::GetView()->GetSafeHwnd(), UWM_DISP_MANUAL_SYNC, 0, 0);
+}
+
 void CKalelApp::DisplayPortDialog(){
 	PostMessage(CKalelView::GetView()->GetSafeHwnd(), UWM_DISP_PORT_DIALOG, 0, 0);
 }
@@ -252,6 +258,12 @@ void CKalelApp::OnBackgroundthreadRestart(){
 void CKalelApp::OnUpdateServerConnect(CCmdUI *pCmdUI)
 {
 	pCmdUI->Enable(menuIsAvailable);
+}
+
+void CKalelApp::OnUpdateManualSync(CCmdUI *pCmdUI)
+{
+	bool available = menuIsAvailable & serverConnected;
+	pCmdUI->Enable(available);
 }
 
 void CKalelApp::OnUpdateParamatresAppareil(CCmdUI *pCmdUI)

@@ -40,6 +40,7 @@ BEGIN_MESSAGE_MAP(CKalelView, CFormView)
 
 	// Menu messages:
 	ON_MESSAGE(UWM_DISP_CONNECTS_DIALOG,			&CKalelView::DisplayConnectDialog)				// Display dialog connection
+	ON_MESSAGE(UWM_DISP_MANUAL_SYNC,				&CKalelView::ManualSync)						// Force a complete sync
 	ON_MESSAGE(UWM_DISP_PORT_DIALOG,				&CKalelView::DisplayPortDialog)					// Display dialog ports
 	ON_MESSAGE(UWM_DISP_DEVSETTINGS_DIALOG,			&CKalelView::DisplayApparatusSettingsDialog)	// Display dialog machine parameters
 
@@ -168,8 +169,6 @@ void CKalelView::DoDataExchange(CDataExchange* pDX)
 
 BOOL CKalelView::PreCreateWindow(CREATESTRUCT& cs)
 {
-	// TODO: Modify the Window class or styles here by modifying
-	//  the CREATESTRUCT cs
 
 	return CFormView::PreCreateWindow(cs);
 }
@@ -288,7 +287,7 @@ CKalelView * CKalelView::GetView()
 
 void CKalelView::OnTimer(UINT_PTR nIDEvent)
 {
-	if (!dataCollection.empty()) {
+	if (pApp->serverConnected && !dataCollection.empty()) {
 
 		//*****
 		// Refresh data timer
@@ -301,12 +300,10 @@ void CKalelView::OnTimer(UINT_PTR nIDEvent)
 			// Write the current step
 			DisplayStepProgress(dataCollection.rbegin()->second);
 
-			if (pApp->serverConnected)
-			{
-				commHandler.GetData(TimePointToString(dataCollection.rbegin()->first));
-				commHandler.GetLog(TimePointToString(logCollection.rbegin()->first));
-				commHandler.GetRequests(TimePointToString(requestCollection.rbegin()->first));
-			}
+			// Send the request for data
+			commHandler.GetData(TimePointToString(dataCollection.rbegin()->first));
+			commHandler.GetLog(TimePointToString(logCollection.rbegin()->first));
+			commHandler.GetRequests(TimePointToString(requestCollection.rbegin()->first));
 		}
 		
 		//*****
@@ -335,87 +332,6 @@ void CKalelView::OnTimer(UINT_PTR nIDEvent)
 }
 
 
-// Copy all data from a property sheet dialog to the local object
-void CKalelView::GetExperimentData(ExperimentPropertySheet * pDialogExperimentProperties, bool initialRequest) {
-
-	if (initialRequest)
-	{
-		// Copy data across
-		ReplaceExperimentSettings(pDialogExperimentProperties);
-	}
-
-	else
-	{
-		// Must check if everything is the same
-
-		bool modified = false;
-
-		if (pDialogExperimentProperties->adsorptionTabs.size() != experimentSettings->dataAdsorption.size()
-			&& pDialogExperimentProperties->desorptionTabs.size() != experimentSettings->dataDesorption.size())
-		{
-			modified = true;
-		}
-		else
-		{
-			if (pDialogExperimentProperties->m_general.allSettings != experimentSettings->dataGeneral)
-			{
-				modified = true;
-			}
-
-			if (pDialogExperimentProperties->m_divers.allSettings != experimentSettings->dataDivers)
-			{
-				modified = true;
-			}
-
-			for (size_t i = 0; i < pDialogExperimentProperties->adsorptionTabs.size(); i++)
-			{
-				if (pDialogExperimentProperties->adsorptionTabs[i]->allSettings != experimentSettings->dataAdsorption[i])
-				{
-					modified = true;
-				}
-			}
-			for (size_t i = 0; i < pDialogExperimentProperties->desorptionTabs.size(); i++)
-			{
-				if (pDialogExperimentProperties->desorptionTabs[i]->allSettings != experimentSettings->dataDesorption[i])
-				{
-					modified = true;
-				}
-			}
-		}
-
-		if (modified)
-		{
-			// Copy data across
-			ReplaceExperimentSettings(pDialogExperimentProperties);
-
-			// Raise the flag for data modified
-			commHandler.SetExperimentSettings(experimentSettings);
-		}
-	}
-}
-
-void CKalelView::ReplaceExperimentSettings(ExperimentPropertySheet* pDialogExperimentProperties)
-{
-	experimentSettings->dataGeneral = pDialogExperimentProperties->m_general.allSettings;
-
-	if (experimentSettings->experimentType == EXPERIMENT_TYPE_AUTO)
-	{
-		experimentSettings->dataDivers = pDialogExperimentProperties->m_divers.allSettings;
-
-		experimentSettings->dataAdsorption.clear();
-		for (size_t i = 0; i < pDialogExperimentProperties->adsorptionTabs.size(); i++)
-		{
-			experimentSettings->dataAdsorption.push_back(pDialogExperimentProperties->adsorptionTabs[i]->allSettings);
-		}
-		experimentSettings->dataDesorption.clear();
-		for (size_t i = 0; i < pDialogExperimentProperties->desorptionTabs.size(); i++)
-		{
-			experimentSettings->dataDesorption.push_back(pDialogExperimentProperties->desorptionTabs[i]->allSettings);
-		}
-	}
-}
-
-
 /**********************************************************************************************************************************
 // Menu functionality
 **********************************************************************************************************************************/
@@ -436,6 +352,13 @@ LRESULT CKalelView::DisplayConnectDialog(WPARAM, LPARAM)
 
 	return 0;
 }
+
+LRESULT CKalelView::ManualSync(WPARAM, LPARAM)
+{
+	commHandler.Sync();
+	return 0;
+}
+
 
 LRESULT CKalelView::DisplayPortDialog(WPARAM, LPARAM)
 {
@@ -644,6 +567,7 @@ LRESULT CKalelView::OnServerConnected(WPARAM, LPARAM)
 LRESULT CKalelView::OnServerDisconnected(WPARAM, LPARAM)
 {
 	pApp->serverConnected = false;
+	dataCollection.clear();
 	return 0;
 }
 
@@ -659,7 +583,7 @@ LRESULT CKalelView::OnSync(WPARAM, LPARAM)
 
 LRESULT CKalelView::OnSetMachineSettings(WPARAM, LPARAM)
 {
-	// Make the local version official
+	// Make the temporary local version official
 	machineSettings = tempMchSettings;
 	tempMchSettings.reset();
 
@@ -670,6 +594,15 @@ LRESULT CKalelView::OnExchangeMachineSettings(WPARAM, LPARAM incomingMachineSett
 {
 	// Get the incoming pointer
 	machineSettings.reset(reinterpret_cast<MachineSettings*>(incomingMachineSettings));
+
+	return 0;
+}
+
+LRESULT CKalelView::OnSetExperimentSettings(WPARAM, LPARAM)
+{
+	// Make the temporary local version official
+	experimentSettings = tempExpSettings;
+	tempExpSettings.reset();
 
 	return 0;
 }

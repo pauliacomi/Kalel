@@ -23,12 +23,15 @@ void CKalelView::OnBnClickedLancer()
 
 		if (dialogExperimentType.DoModal() == IDOK)
 		{
-			// Save user choice
-			experimentSettings->experimentType = dialogExperimentType.TypeExperience;
+			// Create temp settings and save user choice
+			if (!tempExpSettings || tempExpSettings->experimentType != dialogExperimentType.TypeExperience) {
+				tempExpSettings = std::make_shared<ExperimentSettings>(*experimentSettings);
+			}
+			tempExpSettings->experimentType = dialogExperimentType.TypeExperience;
 
 			// Create dialog
 			ExperimentPropertySheet dialogExperimentProperties(_T(""), machineSettings.get());
-			dialogExperimentProperties.Initiate(*experimentSettings);
+			dialogExperimentProperties.Initiate(*tempExpSettings);
 
 			if (dialogExperimentProperties.DoModal() == IDOK)
 			{
@@ -43,15 +46,15 @@ void CKalelView::OnBnClickedLancer()
 				UpdateButtons();
 
 				// Get the data from the dialog
-				GetExperimentData(&dialogExperimentProperties, true);
+				GetExperimentData(dialogExperimentProperties, *tempExpSettings, true);
 
-				// Raise the flag for data modified
-				commHandler.SetExperimentSettings(experimentSettings);
+				// Send changed settings
+				commHandler.SetExperimentSettings(tempExpSettings);
 			}
 			else
 			{
 				// Save the data from the dialog
-				GetExperimentData(&dialogExperimentProperties, true);
+				GetExperimentData(dialogExperimentProperties, *tempExpSettings, true);
 
 				// Roll back by calling stop function
 				CancelBeforeStarting(NULL, NULL);
@@ -100,10 +103,14 @@ void CKalelView::OnBnClickedButtonParametresExperience()
 	{
 		if (pApp->experimentRunning) {
 
+			// Initialise temporary experiment settings
+			tempExpSettings = std::make_shared<ExperimentSettings>(*experimentSettings);
+
 			// Create dialog
 			ExperimentPropertySheet dialogExperimentProperties(_T(""), machineSettings.get());
-			dialogExperimentProperties.Initiate(*experimentSettings);
+			dialogExperimentProperties.Initiate(*tempExpSettings);
 
+			// Set the dialog to only display the ongoing stages
 			int counter = 0;
 			if (dataCollection.end()->second->experimentStage == STAGE_ADSORPTION)
 			{
@@ -116,11 +123,19 @@ void CKalelView::OnBnClickedButtonParametresExperience()
 
 			dialogExperimentProperties.SetProprietiesModif(dataCollection.end()->second->experimentStage, counter);
 
+			// If ok has been clicked
 			if (dialogExperimentProperties.DoModal() == IDOK)
 			{
 				// Get the data from the dialog
-				GetExperimentData(&dialogExperimentProperties, false);
+				if (GetExperimentData(dialogExperimentProperties, *tempExpSettings, false)) {
+					// IF MODIFIED
+					// Send changed settings
+					commHandler.SetExperimentSettings(tempExpSettings);
+					return;
+				}
 			}
+			// Reset temp settings if we get here
+			tempExpSettings.reset();
 		}
 	}
 	else
@@ -224,3 +239,86 @@ void CKalelView::UpdateButtons() {
 
 	buttonStates.Init();
 }
+
+
+// Copy all data from a property sheet dialog to the local object
+bool CKalelView::GetExperimentData(ExperimentPropertySheet & pDialogExperimentProperties, ExperimentSettings & expS, bool initialRequest) {
+
+	if (initialRequest)
+	{
+		// Copy data across
+		ReplaceExperimentSettings(pDialogExperimentProperties, expS);
+	}
+
+	else
+	{
+		// Must check if everything is the same
+
+		bool modified = false;
+
+		if (pDialogExperimentProperties.adsorptionTabs.size() != expS.dataAdsorption.size()
+			&& pDialogExperimentProperties.desorptionTabs.size() != expS.dataDesorption.size())
+		{
+			modified = true;
+		}
+		else
+		{
+			if (pDialogExperimentProperties.m_general.allSettings != expS.dataGeneral)
+			{
+				modified = true;
+			}
+
+			if (pDialogExperimentProperties.m_divers.allSettings != expS.dataDivers)
+			{
+				modified = true;
+			}
+
+			for (size_t i = 0; i < pDialogExperimentProperties.adsorptionTabs.size(); i++)
+			{
+				if (pDialogExperimentProperties.adsorptionTabs[i]->allSettings != expS.dataAdsorption[i])
+				{
+					modified = true;
+				}
+			}
+			for (size_t i = 0; i < pDialogExperimentProperties.desorptionTabs.size(); i++)
+			{
+				if (pDialogExperimentProperties.desorptionTabs[i]->allSettings != expS.dataDesorption[i])
+				{
+					modified = true;
+				}
+			}
+		}
+
+		if (modified)
+		{
+			// Copy data across
+			ReplaceExperimentSettings(pDialogExperimentProperties, expS);
+		}
+
+		return modified;
+	}
+
+	return true;
+}
+
+void CKalelView::ReplaceExperimentSettings(const ExperimentPropertySheet & pDialogExperimentProperties, ExperimentSettings & expS)
+{
+	expS.dataGeneral = pDialogExperimentProperties.m_general.allSettings;
+
+	if (expS.experimentType == EXPERIMENT_TYPE_AUTO)
+	{
+		expS.dataDivers = pDialogExperimentProperties.m_divers.allSettings;
+
+		expS.dataAdsorption.clear();
+		for (size_t i = 0; i < pDialogExperimentProperties.adsorptionTabs.size(); i++)
+		{
+			expS.dataAdsorption.push_back(pDialogExperimentProperties.adsorptionTabs[i]->allSettings);
+		}
+		expS.dataDesorption.clear();
+		for (size_t i = 0; i < pDialogExperimentProperties.desorptionTabs.size(); i++)
+		{
+			expS.dataDesorption.push_back(pDialogExperimentProperties.desorptionTabs[i]->allSettings);
+		}
+	}
+}
+

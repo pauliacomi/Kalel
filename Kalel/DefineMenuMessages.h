@@ -20,5 +20,6 @@
 #define UWM_DISP_PORT_DIALOG						(WM_USER + 37)
 #define UWM_DISP_DEVSETTINGS_DIALOG					(WM_USER + 38)
 #define UWM_DISP_CONNECTS_DIALOG					(WM_USER + 39)
+#define UWM_DISP_MANUAL_SYNC						(WM_USER + 139)
 
 #endif

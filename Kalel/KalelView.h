@@ -124,12 +124,10 @@ private:
 	UINT_PTR dataTimer = 0;				// Timer for data refresh, faster than graph refresh
 	void OnTimer(UINT_PTR nIDEvent);	// Timer function for all timers
 
-	void GetExperimentData(ExperimentPropertySheet * dialogExperimentProperties, bool initialRequest);
-	void ReplaceExperimentSettings(ExperimentPropertySheet* pDialogExperimentProperties);
-
 	// Menu messages
 
 	LRESULT DisplayConnectDialog(WPARAM, LPARAM);
+	LRESULT ManualSync(WPARAM, LPARAM);
 	LRESULT OnMsvAmpoule(WPARAM wParam, LPARAM lParam);
 	LRESULT OnMsvBouteille(WPARAM wParam, LPARAM lParam);
 	LRESULT OnChangementBouteille(WPARAM wParam, LPARAM lParam);
@@ -144,14 +142,20 @@ private:
 	LRESULT OnServerConnected(WPARAM , LPARAM );
 	LRESULT OnServerDisconnected(WPARAM, LPARAM);
 	LRESULT OnSync(WPARAM , LPARAM );
+
 	LRESULT OnSetMachineSettings(WPARAM, LPARAM);
 	LRESULT OnExchangeMachineSettings(WPARAM wParam, LPARAM incomingMachineSettings);
+
+	LRESULT OnSetExperimentSettings(WPARAM, LPARAM);
 	LRESULT OnExchangeExperimentSettings(WPARAM wParam, LPARAM incomingExperimentSettings);
+
 	LRESULT OnExchangeInstrumentState(WPARAM wParam, LPARAM lParam);
 	LRESULT OnInstrumentButtonConfirmed(WPARAM wParam, LPARAM lParam);
+
 	LRESULT OnExchangeData(WPARAM, LPARAM incomingExperimentData);
 	LRESULT OnExchangeLogs(WPARAM, LPARAM incomingLogs);
 	LRESULT OnExchangeRequests(WPARAM, LPARAM incomingRequests);
+
 	LRESULT OnAutoExperimentFinished(WPARAM wParam, LPARAM);
 	LRESULT CancelBeforeStarting(WPARAM wParam, LPARAM lParam);
 
@@ -184,6 +188,9 @@ private:
 	void OnBnClickedReprise();
 
 	void UpdateButtons();
+
+	bool GetExperimentData(ExperimentPropertySheet & pDialogExperimentProperties, ExperimentSettings & expS, bool initialRequest);
+	void ReplaceExperimentSettings(const ExperimentPropertySheet & pDialogExperimentProperties, ExperimentSettings & expS);
 
 	//*************************************************************************************************************************
 	//						KalelView_Boutons_Vannes

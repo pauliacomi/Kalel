@@ -36,6 +36,7 @@ public:
 // Implementation
 	void OnAppAbout();
 	void DisplayServerConnect();
+	void ManualSync();
 	void DisplayPortDialog();
 	void DisplayApparatusSettingsDialog();
 	void OnMsvAmpoule();
@@ -50,6 +51,7 @@ public:
 
 	// update commands
 	void OnUpdateServerConnect(CCmdUI * pCmdUI);
+	void OnUpdateManualSync(CCmdUI * pCmdUI);
 	void OnUpdateDonneesExperience(CCmdUI *pCmdUI);
 	void OnUpdateMsvAmpoule(CCmdUI *pCmdUI);
 	void OnUpdateMsvBouteille(CCmdUI *pCmdUI);

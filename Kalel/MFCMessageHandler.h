@@ -35,18 +35,26 @@ public:
 	bool ConnectionComplete();
 	bool Disconnection();
 	bool SyncComplete();
-	bool ExchangeMachineSettings(const MachineSettings &pParam);
-	bool ExchangeExperimentSettings(const ExperimentSettings &pParam);
+
 	bool OnSetMachineSettings();
+	bool ExchangeMachineSettings(const MachineSettings &pParam);
+
+	bool OnSetExperimentSettings();
+	bool ExchangeExperimentSettings(const ExperimentSettings &pParam);
+
 	bool ExchangeData(ExperimentDataStorageArray* pParam);
 	bool ExchangeLogs(std::map<std::chrono::system_clock::time_point, std::wstring> * pParam);
 	bool ExchangeRequests(std::map<std::chrono::system_clock::time_point, std::wstring> * pParam);
+
 	bool ExchangeControlState(const ControlInstrumentState &pParam);
 	bool ExchangeControlStateSpecific(const ControlInstrumentStateData& pParam);
+
 	bool ExperimentStart();
 	bool ExperimentEnd();
-	bool DisplayMessage(int pParam, int pInt1 = default_val, int pInt2 = default_val, double pDouble = default_val);								// Simple display message which takes an int
 
+	// Messages to display
+
+	bool DisplayMessage(int pParam, int pInt1 = default_val, int pInt2 = default_val, double pDouble = default_val);								// Simple display message which takes an int
 	bool DisplayMessage(int pParam, std::wstring m);
 
 	// Messageboxes

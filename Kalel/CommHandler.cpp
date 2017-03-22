@@ -610,6 +610,8 @@ unsigned CommHandler::SetExperimentSettings_resp(http_response* r) {
 
 	if (r->status_ == http::responses::ok)
 	{
+		messageHandler.OnSetExperimentSettings();
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Experiment settings updated"));
 	}
 	else if (r->status_ == http::responses::internal_err)
 	{

@@ -100,13 +100,15 @@
 #define ID_BACKGROUNDTHREAD_RESTART     32791
 #define ID_PARAM32792                   32792
 #define ID_PARAMATRES_SERVERCONNECT     32793
+#define ID_Menu                         32794
+#define ID_MANUAL_CONNECT               32795
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        314
-#define _APS_NEXT_COMMAND_VALUE         32794
+#define _APS_NEXT_COMMAND_VALUE         32796
 #define _APS_NEXT_CONTROL_VALUE         1006
 #define _APS_NEXT_SYMED_VALUE           313
 #endif
