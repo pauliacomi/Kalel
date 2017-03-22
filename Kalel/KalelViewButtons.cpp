@@ -35,11 +35,6 @@ void CKalelView::OnBnClickedLancer()
 
 			if (dialogExperimentProperties.DoModal() == IDOK)
 			{
-				// the start button is blocked
-				GetDlgItem(IDC_LANCER)->EnableWindow(FALSE);
-				// the stop button is activated
-				GetDlgItem(IDC_ARRETER)->EnableWindow(TRUE);
-
 				// Block menu and set running flag
 				pApp->experimentRunning = true;
 				pApp->menuIsAvailable = false;
@@ -238,6 +233,11 @@ void CKalelView::UpdateButtons() {
 	GetDlgItem(IDC_PAUSE)->EnableWindow(eRun);
 
 	buttonStates.Init();
+
+	// the start button is blocked
+	GetDlgItem(IDC_LANCER)->EnableWindow(!pApp->experimentRunning);
+	// the stop button is activated
+	GetDlgItem(IDC_ARRETER)->EnableWindow(pApp->experimentRunning);
 }
 
 

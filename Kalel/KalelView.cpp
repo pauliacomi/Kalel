@@ -302,8 +302,18 @@ void CKalelView::OnTimer(UINT_PTR nIDEvent)
 
 			// Send the request for data
 			commHandler.GetData(TimePointToString(dataCollection.rbegin()->first));
-			commHandler.GetLog(TimePointToString(logCollection.rbegin()->first));
-			commHandler.GetRequests(TimePointToString(requestCollection.rbegin()->first));
+
+			// Send the request for logs
+			if (!dataCollection.empty())
+				commHandler.GetLog(TimePointToString(logCollection.rbegin()->first));
+			else
+				commHandler.GetLog();
+
+			// Send the request for user input
+			if (!dataCollection.empty())
+				commHandler.GetRequests(TimePointToString(requestCollection.rbegin()->first));
+			else
+				commHandler.GetRequests();
 		}
 		
 		//*****
@@ -458,11 +468,6 @@ LRESULT CKalelView::OnMsvAmpoule(WPARAM, LPARAM)
 			{
 				experimentSettings->experimentType = EXPERIMENT_TYPE_SAMPLE_VACUUM;
 
-				// the start button is blocked
-				GetDlgItem(IDC_LANCER)->EnableWindow(FALSE);
-				// the stop button is activated
-				GetDlgItem(IDC_ARRETER)->EnableWindow(TRUE);
-
 				// Block menu and set running flag
 				pApp->experimentRunning = true;
 				pApp->menuIsAvailable = false;
@@ -492,11 +497,6 @@ LRESULT CKalelView::OnMsvBouteille(WPARAM, LPARAM)
 			if (AfxMessageBox(PROMPT_VACUUM_BOTTLE, MB_YESNO | MB_ICONQUESTION) == IDYES)
 			{
 				experimentSettings->experimentType = EXPERIMENT_TYPE_BOTTLE_VACUUM;
-
-				// the start button is blocked
-				GetDlgItem(IDC_LANCER)->EnableWindow(FALSE);
-				// the stop button is activated
-				GetDlgItem(IDC_ARRETER)->EnableWindow(TRUE);
 
 				// Block menu and set running flag
 				pApp->experimentRunning = true;
@@ -528,11 +528,6 @@ LRESULT CKalelView::OnChangementBouteille(WPARAM, LPARAM)
 			{
 				ASSERT(0);
 				experimentSettings->experimentType = EXPERIMENT_TYPE_BOTTLE_VACUUM;
-
-				// the start button is blocked
-				GetDlgItem(IDC_LANCER)->EnableWindow(FALSE);
-				// the stop button is activated
-				GetDlgItem(IDC_ARRETER)->EnableWindow(TRUE);
 
 				// Block menu and set running flag
 				pApp->experimentRunning = true;
@@ -568,6 +563,7 @@ LRESULT CKalelView::OnServerDisconnected(WPARAM, LPARAM)
 {
 	pApp->serverConnected = false;
 	dataCollection.clear();
+	UpdateButtons();
 	return 0;
 }
 
@@ -611,6 +607,19 @@ LRESULT CKalelView::OnExchangeExperimentSettings(WPARAM wParam, LPARAM incomingE
 {
 	// Get the incoming pointer
 	experimentSettings.reset(reinterpret_cast<ExperimentSettings*>(incomingExperimentSettings));
+
+	// Block menu and set running flag
+	if (experimentSettings->experimentType != EXPERIMENT_TYPE_UNDEF) {
+		pApp->experimentRunning = true;
+		pApp->menuIsAvailable = false;
+	}
+	else
+	{
+		pApp->experimentRunning = false;
+		pApp->menuIsAvailable = true;
+	}
+
+	UpdateButtons();
 
 	return 0;
 }
@@ -697,9 +706,6 @@ LRESULT CKalelView::OnAutoExperimentFinished(WPARAM, LPARAM) {
 	pApp->experimentRunning = false;
 	pApp->menuIsAvailable = true;
 	UpdateButtons();
-
-	GetDlgItem(IDC_LANCER)->EnableWindow(TRUE);
-	GetDlgItem(IDC_ARRETER)->EnableWindow(FALSE);
 	
 	return 0;
 }
@@ -711,9 +717,6 @@ LRESULT CKalelView::CancelBeforeStarting(WPARAM, LPARAM)
 	pApp->experimentRunning = false;
 	pApp->menuIsAvailable = true;
 	UpdateButtons();
-
-	GetDlgItem(IDC_LANCER)->EnableWindow(TRUE);
-	GetDlgItem(IDC_ARRETER)->EnableWindow(FALSE);
 
 	return 0;
 }

@@ -55,7 +55,7 @@ BOOL CKalelServerDlg::OnInitDialog()
 	// TODO: Add extra initialization here
 
 	// Set the timer for the window update
-	SetTimer(1, 1000, NULL);
+	//SetTimer(1, 1000, NULL);
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
