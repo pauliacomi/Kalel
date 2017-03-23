@@ -32,8 +32,10 @@ Kalel::Kalel()
 
 	//
 	// Populate Machine Settings
+	auto newMachineSettings = std::make_shared<MachineSettings>();
+	ParametersGet(*newMachineSettings);
+	storageVectors.setmachineSettings(newMachineSettings);
 	// Set path
-	ParametersGet(*storageVectors.machineSettings);
 	storageVectors.experimentSettings->dataGeneral.chemin = storageVectors.machineSettings->CheminFichierGeneral;
 	storageVectors.newExperimentSettings->dataGeneral.chemin = storageVectors.machineSettings->CheminFichierGeneral;
 
@@ -44,6 +46,10 @@ Kalel::Kalel()
 	server.AddMethod(
 		std::bind(&Kalel::Ping, this, std::placeholders::_1, std::placeholders::_2), 
 		"/api/handshake"
+	);
+	server.AddMethod(
+		std::bind(&Kalel::Sync, this, std::placeholders::_1, std::placeholders::_2),
+		"/api/sync"
 	);
 	server.AddMethod(
 		std::bind(&Kalel::MachineSettingsSync, this, std::placeholders::_1, std::placeholders::_2), 
@@ -130,9 +136,48 @@ void Kalel::Ping(http_request* req, http_response* resp)
 	{
 		resp->status_ = http::responses::ok;
 		resp->content_type_ = http::mimetype::texthtml;
-		resp->answer_ = R"(<!DOCTYPE html PUBLIC " -//IETF//DTD HTML 2.0//EN"><html><head><title>Hello</title></head><body><h1>Hello</h1></body></html>)";
+		resp->answer_ = R"(<!DOCTYPE html PUBLIC " -//IETF//DTD HTML 2.0//EN"><html><head><title>Hello</title></head><body><h1>Ping OK</h1></body></html>)";
 	}
 }
+
+
+/*********************************
+// Sync
+*********************************/
+void Kalel::Sync(http_request* req, http_response* resp)
+{
+	if (req->method_ == http::method::get)
+	{
+		auto j1 = json::parse(req->entity_);
+
+		auto timeMS = StringToTimePoint(j1["MS"]);
+		auto timeES = StringToTimePoint(j1["ES"]);
+		auto timeCS = StringToTimePoint(j1["CS"]);
+
+		json j2;
+
+		if (timeMS > storageVectors.machineSettingsChanged)
+			j2["MS"] = false;
+		else
+			j2["MS"] = true;
+
+		if (timeES > storageVectors.experimentSettingsChanged)
+			j2["ES"] = false;
+		else
+			j2["ES"] = true;
+
+		// TODO: fill this with the actual value
+		if (timeCS > storageVectors.experimentSettingsChanged)
+			j2["CS"] = false;
+		else
+			j2["CS"] = true;
+
+		resp->status_ = http::responses::ok;
+		resp->content_type_ = http::mimetype::appjson;
+		resp->answer_ = j2.dump();
+	}
+}
+
 
 
 /*********************************
@@ -160,10 +205,12 @@ void Kalel::MachineSettingsSync(http_request* req, http_response* resp)
 			auto j = json::parse(req->entity_);
 			
 			// Save to memory
-			serialization::deserializeJSONtoMachineSettings(j, *storageVectors.machineSettings);	
+			auto newMachineSettings = std::make_shared<MachineSettings>();
+			serialization::deserializeJSONtoMachineSettings(j, *newMachineSettings);
+			storageVectors.setmachineSettings(newMachineSettings);
 
 			// Save to file
-			ParametersReplace(*storageVectors.machineSettings);
+			ParametersReplace(*newMachineSettings);
 
 			resp->status_ = http::responses::ok;
 		}

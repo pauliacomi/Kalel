@@ -6,6 +6,7 @@
 #include "../../Kalel Shared/Com Classes/ExperimentData.h"
 #include "../../Kalel Shared/Com Classes/ExperimentSettings.h"
 #include "../../Kalel Shared/Com Classes/MachineSettings.h"
+#include "../../Kalel Shared/timeHelpers.h"
 
 
 #include <mutex>
@@ -68,7 +69,7 @@ public:
 	// Data
 	//**********
 private:
-	std::mutex sharedMutex;																					// Synchronisation class, should be used whenever there are writes to the deque
+	std::mutex sharedMutex;																					// Synchronisation class, should be used whenever there are writes
 	ExperimentDataStorageArray dataCollection;																// The collection of data from an experiment
 
 public:
@@ -90,20 +91,45 @@ public:
 	}
 
 	//**********
-	// Settings
+	// Machine Settings
 	//**********
 
+	std::chrono::system_clock::time_point machineSettingsChanged;												// Time when machine settings changed
 	std::mutex machineSettingsMutex;
 	std::shared_ptr<MachineSettings> machineSettings;															// The machine settings are here
 
+public:
+	void setmachineSettings(std::shared_ptr<MachineSettings> i) {
+		std::unique_lock<std::mutex> lock(machineSettingsMutex);
+		machineSettings = i;
+		machineSettingsChanged = NowTime();
+	}
 
-	std::mutex experimentSettingsMutex;																			// Synchronisation class, should be used whenever there are writes to the deque
+	//**********
+	// Experiment Settings
+	//**********
+
+	std::chrono::system_clock::time_point experimentSettingsChanged;											// Time when experiment settings changed
+	std::mutex experimentSettingsMutex;																			// Synchronisation class, should be used whenever there are writes
 	std::shared_ptr<ExperimentSettings> experimentSettings;														// The experiment settings are here
+	std::mutex newexperimentSettingsMutex;																		// Synchronisation class, should be used whenever there are writes
 	std::shared_ptr<ExperimentSettings> newExperimentSettings;													// The new experiment settings
 
 public:
-	void setnewExperimentSettings(std::shared_ptr<ExperimentSettings> i) {
+	void setExperimentSettings(std::shared_ptr<ExperimentSettings> i) {
 		std::unique_lock<std::mutex> lock(experimentSettingsMutex);
+		experimentSettings = i;
+		experimentSettingsChanged = NowTime();
+	}
+
+	void resetExperimentSettings() {
+		std::unique_lock<std::mutex> lock(experimentSettingsMutex);
+		experimentSettings->ResetData();
+		experimentSettingsChanged = NowTime();
+	}
+
+	void setnewExperimentSettings(std::shared_ptr<ExperimentSettings> i) {
+		std::unique_lock<std::mutex> lock(newexperimentSettingsMutex);
 		newExperimentSettings = i;
 	}
 
@@ -123,6 +149,9 @@ inline Storage::Storage(void)
 	currentData = std::make_shared<ExperimentData>();
 	experimentSettings = std::make_shared<ExperimentSettings>();
 	newExperimentSettings = std::make_shared<ExperimentSettings>();
+
+	machineSettingsChanged = NowTime();
+	experimentSettingsChanged = NowTime();
 }
 
 inline Storage::~Storage(void)

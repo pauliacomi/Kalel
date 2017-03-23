@@ -20,7 +20,7 @@ void Automation::Shutdown()
 
 		// Run reset funtion
 		ResetAutomation();
-		storage.experimentSettings->ResetData();
+		storage.resetExperimentSettings();
 
 		break;
 
@@ -41,7 +41,7 @@ void Automation::Shutdown()
 
 		// Run reset funtion
 		ResetAutomation();
-		storage.experimentSettings->ResetData();
+		storage.resetExperimentSettings();
 
 		break;
 

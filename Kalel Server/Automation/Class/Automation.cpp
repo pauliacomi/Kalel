@@ -113,7 +113,7 @@ void Automation::Execution()
 					controls.fileWriter->RecordDataChange(true, *storage.newExperimentSettings, *storage.experimentSettings, *storage.currentData);		// CSV
 				}
 
-				storage.experimentSettings = storage.newExperimentSettings;
+				storage.setExperimentSettings(storage.newExperimentSettings);
 			}
 
 
