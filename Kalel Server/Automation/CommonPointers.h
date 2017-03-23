@@ -84,6 +84,11 @@ public:
 		return dataCollection;
 	}
 
+	void deleteData() {
+		std::unique_lock<std::mutex> lock(sharedMutex);
+		dataCollection.clear();
+	}
+
 	//**********
 	// Settings
 	//**********
@@ -97,7 +102,7 @@ public:
 	std::shared_ptr<ExperimentSettings> newExperimentSettings;													// The new experiment settings
 
 public:
-	void setexperimentSettings(std::shared_ptr<ExperimentSettings> i) {
+	void setnewExperimentSettings(std::shared_ptr<ExperimentSettings> i) {
 		std::unique_lock<std::mutex> lock(experimentSettingsMutex);
 		newExperimentSettings = i;
 	}

@@ -113,8 +113,7 @@ void Automation::Execution()
 					controls.fileWriter->RecordDataChange(true, *storage.newExperimentSettings, *storage.experimentSettings, *storage.currentData);		// CSV
 				}
 
-				// TODO !! what is this below?
-				storage.setexperimentSettings(std::make_shared<ExperimentSettings>(*storage.newExperimentSettings));
+				storage.experimentSettings = storage.newExperimentSettings;
 			}
 
 
@@ -259,6 +258,9 @@ void Automation::ResetAutomation()
 	// If the shutdown event is called externally, it will default to a cancel
 	// Otherwise the flag will be changed from inside the code
 	shutdownReason = STOP_CANCEL;
+
+	// Delete all current measurements
+	storage.deleteData();
 
 	// Time
 	storage.currentData->timeStart = time(0);

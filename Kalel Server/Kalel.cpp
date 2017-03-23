@@ -200,7 +200,7 @@ void Kalel::ExperimentSettingsSync(http_request* req, http_response* resp)
 
 			auto newExpSettings = std::make_shared<ExperimentSettings>();
 			serialization::deserializeJSONtoExperimentSettings(j, *newExpSettings);
-			storageVectors.setexperimentSettings(newExpSettings);
+			storageVectors.setnewExperimentSettings(newExpSettings);
 
 			threadManager.SetModifiedData();
 
