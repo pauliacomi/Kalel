@@ -183,26 +183,21 @@ void CKalelView::OnInitialUpdate()
 	// Get a pointer to the app itself for access to the menu availability
 	pApp = static_cast<CKalelApp *>(AfxGetApp());
 
-	// Pass window handle to comm handler
-	commHandler.SetHandle(GetSafeHwnd());
-
-	// Then connect to the server if the address exists
-	commHandler.Connect(savedParams.GetServerAddress());
-
 	// Pass stored array to graph
 	GetDocument()->GraphSetArray(dataCollection);
 	
 	// Initial button set-up
 	UpdateButtons();
 	
+	// Pass window handle to comm handler
+	commHandler.SetHandle(GetSafeHwnd());
+
+	// Then connect to the server if the address exists
+	commHandler.Connect(savedParams.GetServerAddress());
+
 	// Set the timers for the window update
 	dataTimer = SetTimer(1, savedParams.GetDataRefreshInterval(), NULL);
 	graphTimer = SetTimer(1, savedParams.GetGraphRefreshInterval(), NULL);
-
-	//// TODO: Remove this
-	//auto dt2 = std::make_shared<ExperimentData>();
-	//auto time_now = NowTime();
-	//dataCollection.insert(std::make_pair(time_now, dt2));
 }
 
 
@@ -288,54 +283,52 @@ CKalelView * CKalelView::GetView()
 
 void CKalelView::OnTimer(UINT_PTR nIDEvent)
 {
-	if (pApp->serverConnected && !dataCollection.empty()) {
+	if (pApp->serverConnected) {
 
-		//*****
-		// Refresh data timer
-		//*****
-		if (nIDEvent == dataTimer)
+		if (!dataCollection.empty())
 		{
-			// Write textbox values
-			DisplayTextboxValues(dataCollection.rbegin()->second);
+			//*****
+			// Refresh data timer
+			//*****
+			if (nIDEvent == dataTimer)
+			{
+				// Request ongoing sync
+				commHandler.Sync(false);
 
-			// Write the current step
-			DisplayStepProgress(dataCollection.rbegin()->second);
+				// Send the request for data
+				commHandler.GetData(TimePointToString(dataCollection.rbegin()->first));
 
-			// Send the request for data
-			commHandler.GetData(TimePointToString(dataCollection.rbegin()->first));
+				// Send the request for logs
+				if (!logCollection.empty())
+					commHandler.GetLog(TimePointToString(logCollection.rbegin()->first));
+				else
+					commHandler.GetLog();
 
-			// Send the request for logs
-			if (!logCollection.empty())
-				commHandler.GetLog(TimePointToString(logCollection.rbegin()->first));
-			else
-				commHandler.GetLog();
+				// Send the request for user input
+				if (!requestCollection.empty())
+					commHandler.GetRequests(TimePointToString(requestCollection.rbegin()->first));
+				else
+					commHandler.GetRequests();
 
-			// Send the request for user input
-			if (!requestCollection.empty())
-				commHandler.GetRequests(TimePointToString(requestCollection.rbegin()->first));
-			else
-				commHandler.GetRequests();
-		}
-		
-		//*****
-		// Refresh graph timer
-		//*****
-		if (nIDEvent == graphTimer)
-		{
-			// Write in measurement box
-			DiplayMeasurements(dataCollection.rbegin()->second);
+				// Write textbox values
+				DisplayTextboxValues(dataCollection.rbegin()->second);
 
-			// Write graph
-			GetDocument()->UpdateAllViews(this);
+				// Write the current step
+				DisplayStepProgress(dataCollection.rbegin()->second);
+			}
 
-			// TODO: Remove this
-			/*auto dt2 = std::make_shared<ExperimentData>();
-			dt2->pressureHigh = 5 + 3 * rand();
-			dt2->pressureLow = 5 + 3 * rand();
-			dt2->resultCalorimeter = 5 + 3 * rand();
-			dt2->timeElapsed = 1000*(++sstime);
-			auto time_now = NowTime();
-			dataCollection.insert(std::make_pair(time_now, dt2));*/
+			//*****
+			// Refresh graph timer
+			//*****
+			if (nIDEvent == graphTimer)
+			{
+				// TODO: Really ugly
+				// Write in measurement box
+				DiplayMeasurements(dataCollection.rbegin()->second);
+
+				// Write graph
+				GetDocument()->UpdateAllViews(this);
+			}
 		}
 	}
 
@@ -366,7 +359,7 @@ LRESULT CKalelView::DisplayConnectDialog(WPARAM, LPARAM)
 
 LRESULT CKalelView::ManualSync(WPARAM, LPARAM)
 {
-	commHandler.Sync();
+	commHandler.Sync(true);
 	return 0;
 }
 
@@ -556,7 +549,7 @@ LRESULT CKalelView::OnServerConnected(WPARAM, LPARAM)
 {
 	pApp->serverConnected = true;
 	commHandler.SaveAddress(savedParams.GetServerAddress());
-	commHandler.Sync();
+	commHandler.Sync(true);
 	return 0;
 }
 
@@ -567,7 +560,6 @@ LRESULT CKalelView::OnServerDisconnected(WPARAM, LPARAM)
 	UpdateButtons();
 	return 0;
 }
-
 
 LRESULT CKalelView::OnSync(WPARAM, LPARAM)
 {

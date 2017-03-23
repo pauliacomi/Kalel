@@ -71,16 +71,32 @@ void CommHandler::SaveAddress(std::wstring address)
 /*********************************
 // Sync
 *********************************/
-void CommHandler::Sync()
+void CommHandler::Sync(bool initialSync)
 {
-	sync = 6;
 
-	GetMachineSettings();
-	GetControlInstrumentState();
-	GetExperimentSettings();
-	GetData();
-	GetLog();
-	GetRequests();
+	if (initialSync)
+	{
+		sync = 6;
+
+		GetMachineSettings();
+		GetControlInstrumentState();
+		GetExperimentSettings();
+		GetData();
+		GetLog();
+		GetRequests();
+	}
+	else
+	{
+		auto request = std::bind(&CommHandler::Sync_req, this, std::placeholders::_1);
+		auto callback = std::bind(&CommHandler::Sync_resp, this, std::placeholders::_1);
+
+		try {
+			client.Request(request, callback, localAddress);
+		}
+		catch (const std::exception& e) {
+			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, UnicodeConv::s2ws(e.what()));
+		}
+	}	
 }
 
 unsigned int CommHandler::CheckSync()
@@ -404,6 +420,60 @@ unsigned CommHandler::Handshake_resp(http_response* r) {
 		return 1;
 	}
 	else if(r->disconnected_)
+	{
+		messageHandler.Disconnection();
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server disconnected"));
+	}
+
+	return 0;
+}
+
+
+/*********************************
+// Sync
+*********************************/
+unsigned CommHandler::Sync_req(http_request* r) {
+	r->method_ = http::method::get;
+	r->path_ = "/api/sync";
+	return 0;
+}
+
+unsigned CommHandler::Sync_resp(http_response* r) {
+
+	if (r->status_ == http::responses::ok)
+	{
+		// Parse JSON
+		//////////////////////////////////////////////
+		json j;
+		try
+		{
+			j = json::parse(r->answer_);
+		}
+		catch (const std::exception& e)
+		{
+			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, UnicodeConv::s2ws(e.what()));
+			return 1;
+		}
+
+		// Check changes and request updates if needed
+		//////////////////////////////////////////////
+		if (j["machineSettings"] == true) {
+			GetMachineSettings();
+		}
+		if (j["expSettings"] == true) {
+			GetExperimentSettings();
+		}
+		if (j["controlState"] == true) {
+			GetControlInstrumentState();
+		}
+
+	}
+	else if (r->status_ == http::responses::not_found)
+	{
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server not found"));
+		return 1;
+	}
+	else if (r->disconnected_)
 	{
 		messageHandler.Disconnection();
 		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server disconnected"));

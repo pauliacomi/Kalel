@@ -21,7 +21,7 @@ public:
 
 	void Connect(std::wstring address);
 	void SaveAddress(std::wstring address);
-	void Sync();
+	void Sync(bool initialSync);
 
 	void GetMachineSettings();
 	void SetMachineSettings(std::shared_ptr<const MachineSettings> ptr);
@@ -93,6 +93,10 @@ private:
 	// Handshake/ping
 	unsigned Handshake_req(http_request* r);
 	unsigned Handshake_resp(http_response * r);
+
+	unsigned Sync_req(http_request * r);
+
+	unsigned Sync_resp(http_response * r);
 	
 	// Machine settings set
 	unsigned GetMachineSettings_req(http_request * r);
