@@ -571,9 +571,16 @@ LRESULT CKalelView::OnServerDisconnected(WPARAM, LPARAM)
 
 LRESULT CKalelView::OnSync(WPARAM, LPARAM)
 {
-	// unlock the menu
-	pApp->menuIsAvailable = true;
-	pApp->experimentRunning = dataCollection.rbegin()->second->experimentInProgress;
+	// Make sure buttons are updated
+	if (experimentSettings->experimentType != EXPERIMENT_TYPE_UNDEF) {
+		pApp->experimentRunning = true;
+		pApp->menuIsAvailable = false;
+	}
+	else
+	{
+		pApp->experimentRunning = false;
+		pApp->menuIsAvailable = true;
+	}
 
 	return 0;
 }
@@ -610,17 +617,7 @@ LRESULT CKalelView::OnExchangeExperimentSettings(WPARAM wParam, LPARAM incomingE
 	experimentSettings.reset(reinterpret_cast<ExperimentSettings*>(incomingExperimentSettings));
 
 	// Block menu and set running flag
-	if (experimentSettings->experimentType != EXPERIMENT_TYPE_UNDEF) {
-		pApp->experimentRunning = true;
-		pApp->menuIsAvailable = false;
-	}
-	else
-	{
-		pApp->experimentRunning = false;
-		pApp->menuIsAvailable = true;
-	}
-
-	UpdateButtons();
+	OnSync(NULL, NULL);
 
 	return 0;
 }

@@ -91,6 +91,7 @@ unsigned int CommHandler::CheckSync()
 	}
 	else if (sync == 0) {
 		messageHandler.SyncComplete();
+		--sync;
 	}
 	else
 		--sync;
@@ -399,13 +400,13 @@ unsigned CommHandler::Handshake_resp(http_response* r) {
 	}
 	else if (r->status_ == http::responses::not_found)
 	{
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Server not found"));
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server not found"));
 		return 1;
 	}
 	else if(r->disconnected_)
 	{
 		messageHandler.Disconnection();
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Server disconnected"));
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server disconnected"));
 	}
 
 	return 0;
@@ -437,7 +438,7 @@ unsigned CommHandler::GetMachineSettings_resp(http_response* r) {
 			}
 			catch (const std::exception& e)
 			{
-				messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, UnicodeConv::s2ws(e.what()));
+				messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, UnicodeConv::s2ws(e.what()));
 				return 1;
 			}
 
@@ -451,7 +452,7 @@ unsigned CommHandler::GetMachineSettings_resp(http_response* r) {
 			}
 			catch (const std::exception& e)
 			{
-				messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, UnicodeConv::s2ws(e.what()));
+				messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, UnicodeConv::s2ws(e.what()));
 				return 1;
 			}
 
@@ -462,13 +463,13 @@ unsigned CommHandler::GetMachineSettings_resp(http_response* r) {
 		}
 		else
 		{
-			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Corrupt response format"));
+			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Corrupt response format"));
 			return 1;
 		}
 	}
 	else if (r->status_ == http::responses::not_found)
 	{
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Server not found"));
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server not found"));
 		return 1;
 	}
 
@@ -491,7 +492,7 @@ unsigned CommHandler::SetMachineSettings_req(http_request* r) {
 	}
 	catch (const std::exception& e)
 	{
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, UnicodeConv::s2ws(e.what()));
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, UnicodeConv::s2ws(e.what()));
 		return 1;
 	}
 
@@ -506,11 +507,10 @@ unsigned CommHandler::SetMachineSettings_resp(http_response* r) {
 	{
 		localMachineSettings.reset();
 		messageHandler.OnSetMachineSettings();
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Machine settings updated"));
 	}
 	else if (r->status_ == http::responses::internal_err)
 	{
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Server error, could not update settings"));
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server error, could not update settings"));
 		return 1;
 	}
 
@@ -543,7 +543,7 @@ unsigned CommHandler::GetExperimentSettings_resp(http_response* r) {
 			}
 			catch (const std::exception& e)
 			{
-				messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, UnicodeConv::s2ws(e.what()));
+				messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, UnicodeConv::s2ws(e.what()));
 				return 1;
 			}
 
@@ -557,7 +557,7 @@ unsigned CommHandler::GetExperimentSettings_resp(http_response* r) {
 			}
 			catch (const std::exception& e)
 			{
-				messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, UnicodeConv::s2ws(e.what()));
+				messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, UnicodeConv::s2ws(e.what()));
 				return 1;
 			}
 
@@ -568,13 +568,13 @@ unsigned CommHandler::GetExperimentSettings_resp(http_response* r) {
 		}
 		else
 		{
-			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Corrupt response format"));
+			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Corrupt response format"));
 			return 1;
 		}
 	}
 	else if (r->status_ == http::responses::not_found)
 	{
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Server not found"));
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server not found"));
 		return 1;
 	}
 
@@ -597,7 +597,7 @@ unsigned CommHandler::SetExperimentSettings_req(http_request* r) {
 	}
 	catch (const std::exception& e)
 	{
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, UnicodeConv::s2ws(e.what()));
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, UnicodeConv::s2ws(e.what()));
 		return 1;
 	}
 
@@ -614,7 +614,7 @@ unsigned CommHandler::SetExperimentSettings_resp(http_response* r) {
 	}
 	else if (r->status_ == http::responses::internal_err)
 	{
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Server error, could not start a new experiment"));
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server error, could not start a new experiment"));
 		return 1;
 	}
 
@@ -647,7 +647,7 @@ unsigned CommHandler::GetInstrumentState_resp(http_response * r)
 		}
 		catch (const std::exception& e)
 		{
-			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, UnicodeConv::s2ws(e.what()));
+			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, UnicodeConv::s2ws(e.what()));
 			return 1;
 		}
 
@@ -661,7 +661,7 @@ unsigned CommHandler::GetInstrumentState_resp(http_response * r)
 		}
 		catch (const std::exception& e)
 		{
-			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, UnicodeConv::s2ws(e.what()));
+			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, UnicodeConv::s2ws(e.what()));
 			return 1;
 		}
 
@@ -671,7 +671,7 @@ unsigned CommHandler::GetInstrumentState_resp(http_response * r)
 		CheckSync();
 	}
 	else if (r->status_ == http::responses::not_found) {
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Server not found"));
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server not found"));
 		return 1;
 	}
 	return 0;
@@ -727,16 +727,16 @@ unsigned CommHandler::SetInstrumentState_resp(http_response * r)
 	}
 	else if (r->status_ == http::responses::conflict)
 	{
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Server cannot process thread command"));
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server cannot process thread command"));
 		return 1;
 	}
 	else if (r->status_ == http::responses::bad_request)
 	{
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Bad request"));
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Bad request"));
 		return 1;
 	}
 	else if (r->status_ == http::responses::not_found) {
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Server not found"));
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server not found"));
 		return 1;
 	}
 	return 0;
@@ -770,7 +770,7 @@ unsigned CommHandler::GetData_resp(http_response* r) {
 			}
 			catch (const std::exception& e)
 			{
-				messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, UnicodeConv::s2ws(e.what()));
+				messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, UnicodeConv::s2ws(e.what()));
 				flagExperimentRequest = false;
 				return 1;
 			}
@@ -790,7 +790,7 @@ unsigned CommHandler::GetData_resp(http_response* r) {
 				}
 				catch (const std::exception& e)
 				{
-					messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, UnicodeConv::s2ws(e.what()));
+					messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, UnicodeConv::s2ws(e.what()));
 					delete receivedDataArray;
 					flagExperimentRequest = false;
 					return 1;
@@ -805,21 +805,21 @@ unsigned CommHandler::GetData_resp(http_response* r) {
 		}
 		else
 		{
-			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Corrupt response format"));
+			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Corrupt response format"));
 			flagExperimentRequest = false;
 			return 1;
 		}
 	}
 	else if (r->status_ == http::responses::not_found)
 	{
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Server not found"));
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server not found"));
 		flagExperimentRequest = false;
 		return 1;
 	}
 	else if (r->disconnected_)
 	{
 		messageHandler.Disconnection();
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Server disconnected"));
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server disconnected"));
 	}
 
 
@@ -856,7 +856,7 @@ unsigned CommHandler::GetLogs_resp(http_response * r)
 			}
 			catch (const std::exception& e)
 			{
-				messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, UnicodeConv::s2ws(e.what()));
+				messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, UnicodeConv::s2ws(e.what()));
 				flagLogsRequest = false;
 				return 1;
 			}
@@ -873,7 +873,7 @@ unsigned CommHandler::GetLogs_resp(http_response * r)
 					receivedLog = UnicodeConv::s2ws(j[i.key()].get<std::string>().c_str());
 				}
 				catch (const std::exception& e)	{
-					messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, UnicodeConv::s2ws(e.what()));
+					messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, UnicodeConv::s2ws(e.what()));
 					delete receivedLogArray;
 					flagLogsRequest = false;
 					return 1;
@@ -888,14 +888,14 @@ unsigned CommHandler::GetLogs_resp(http_response * r)
 		}
 		else
 		{
-			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Corrupt response format"));
+			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Corrupt response format"));
 			flagLogsRequest = false;
 			return 1;
 		}
 	}
 	else if (r->status_ == http::responses::not_found)
 	{
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Server not found"));
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server not found"));
 		flagLogsRequest = false;
 		return 1;
 	}
@@ -934,7 +934,7 @@ unsigned CommHandler::GetRequest_resp(http_response * r)
 			}
 			catch (const std::exception& e)
 			{
-				messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, UnicodeConv::s2ws(e.what()));
+				messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, UnicodeConv::s2ws(e.what()));
 				flagReqRequest = false;
 				return 1;
 			}
@@ -951,7 +951,7 @@ unsigned CommHandler::GetRequest_resp(http_response * r)
 					receivedReq = UnicodeConv::s2ws(j[i.key()].get<std::string>().c_str());
 				}
 				catch (const std::exception& e) {
-					messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, UnicodeConv::s2ws(e.what()));
+					messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, UnicodeConv::s2ws(e.what()));
 					delete receivedReqArray;
 					flagReqRequest = false;
 					return 1;
@@ -965,14 +965,14 @@ unsigned CommHandler::GetRequest_resp(http_response * r)
 		}
 		else
 		{
-			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Corrupt response format"));
+			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Corrupt response format"));
 			flagReqRequest = false;
 			return 1;
 		}
 	}
 	else if (r->status_ == http::responses::not_found)
 	{
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Server not found"));
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server not found"));
 		flagReqRequest = false;
 		return 1;
 	}
@@ -1023,12 +1023,12 @@ unsigned CommHandler::ThreadCommand_resp(http_response * r)
 {
 	if (r->status_ == http::responses::ok)
 	{
-
+		messageHandler.SyncComplete();
 		return 1;
 	}
 	else if (r->status_ == http::responses::conflict)
 	{
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Server cannot process thread command"));
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server cannot process thread command"));
 		return 1;
 	}
 	else if (r->status_ == http::responses::bad_request)
@@ -1037,7 +1037,7 @@ unsigned CommHandler::ThreadCommand_resp(http_response * r)
 		return 1;
 	}
 	else if (r->status_ == http::responses::not_found) {
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Server not found"));
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server not found"));
 		return 1;
 	}
 	return 0;
@@ -1077,7 +1077,7 @@ unsigned CommHandler::FunctionalityCommand_resp(http_response* r)
 	}
 	else if (r->status_ == http::responses::conflict)
 	{
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Server cannot process functionality"));
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server cannot process functionality"));
 		return 1;
 	}
 	else if (r->status_ == http::responses::bad_request)
@@ -1086,7 +1086,7 @@ unsigned CommHandler::FunctionalityCommand_resp(http_response* r)
 		return 1;
 	}
 	else if (r->status_ == http::responses::not_found) {
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, true, _T("Server not found"));
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server not found"));
 		return 1;
 	}
 	return 0;
