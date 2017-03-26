@@ -71,7 +71,7 @@ void CommHandler::SaveAddress(std::wstring address)
 /*********************************
 // Sync
 *********************************/
-void CommHandler::Sync(bool initialSync)
+void CommHandler::Sync(bool initialSync, std::string fromTimeES, std::string fromTimeMS, std::string fromTimeCS)
 {
 
 	if (initialSync)
@@ -434,7 +434,13 @@ unsigned CommHandler::Handshake_resp(http_response* r) {
 *********************************/
 unsigned CommHandler::Sync_req(http_request* r) {
 	r->method_ = http::method::get;
+	r->accept_ = http::mimetype::appjson;
 	r->path_ = "/api/sync";
+
+	r->params_.emplace("MS", localMachineSettingsTime);
+	r->params_.emplace("ES", localExperimentSettingsTime);
+	r->params_.emplace("CS", localControlStateTime);
+
 	return 0;
 }
 

@@ -293,7 +293,7 @@ void CKalelView::OnTimer(UINT_PTR nIDEvent)
 			if (nIDEvent == dataTimer)
 			{
 				// Request ongoing sync
-				commHandler.Sync(false);
+				commHandler.Sync(false, TimePointToString(experimentSettingsTime), TimePointToString(machineSettingsTime), TimePointToString(machineStateTime));
 
 				// Send the request for data
 				commHandler.GetData(TimePointToString(dataCollection.rbegin()->first));
@@ -581,6 +581,7 @@ LRESULT CKalelView::OnSetMachineSettings(WPARAM, LPARAM)
 {
 	// Make the temporary local version official
 	machineSettings = tempMchSettings;
+	machineSettingsTime = NowTime();
 	tempMchSettings.reset();
 
 	return 0;
@@ -590,6 +591,7 @@ LRESULT CKalelView::OnExchangeMachineSettings(WPARAM, LPARAM incomingMachineSett
 {
 	// Get the incoming pointer
 	machineSettings.reset(reinterpret_cast<MachineSettings*>(incomingMachineSettings));
+	machineSettingsTime = NowTime();
 
 	return 0;
 }
@@ -598,6 +600,7 @@ LRESULT CKalelView::OnSetExperimentSettings(WPARAM, LPARAM)
 {
 	// Make the temporary local version official
 	experimentSettings = tempExpSettings;
+	experimentSettingsTime = NowTime();
 	tempExpSettings.reset();
 
 	return 0;
@@ -607,7 +610,7 @@ LRESULT CKalelView::OnExchangeExperimentSettings(WPARAM wParam, LPARAM incomingE
 {
 	// Get the incoming pointer
 	experimentSettings.reset(reinterpret_cast<ExperimentSettings*>(incomingExperimentSettings));
-
+	experimentSettingsTime = NowTime();
 	// Block menu and set running flag
 	OnSync(NULL, NULL);
 

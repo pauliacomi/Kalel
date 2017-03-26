@@ -21,7 +21,7 @@ public:
 
 	void Connect(std::wstring address);
 	void SaveAddress(std::wstring address);
-	void Sync(bool initialSync);
+	void Sync(bool initialSync, std::string fromTimeES = R"()", std::string fromTimeMS = R"()", std::string fromTimeCS = R"()");
 
 	void GetMachineSettings();
 	void SetMachineSettings(std::shared_ptr<const MachineSettings> ptr);
@@ -66,6 +66,9 @@ private:
 	std::string localExperimentTime;						// Start time requested for experiment data 
 	std::string localLogsTime;								// Start time requested for logs 
 	std::string localReqTime;								// Start time requested for requests 
+	std::string localExperimentSettingsTime;				// Start time requested for experiment data 
+	std::string localMachineSettingsTime;					// Start time requested for logs 
+	std::string localControlStateTime;						// Start time requested for requests 
 
 	ControlInstrumentStateData localInstrumentState;
 
@@ -94,8 +97,8 @@ private:
 	unsigned Handshake_req(http_request* r);
 	unsigned Handshake_resp(http_response * r);
 
+	// Sync timers
 	unsigned Sync_req(http_request * r);
-
 	unsigned Sync_resp(http_response * r);
 	
 	// Machine settings set
