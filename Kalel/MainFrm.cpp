@@ -68,7 +68,6 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	}
 	m_wndStatusBar.SetIndicators(indicators, sizeof(indicators)/sizeof(UINT));
 
-	// TODO: Delete these three lines if you don't want the toolbar to be dockable
 	/*m_wndToolBar.EnableDocking(CBRS_ALIGN_ANY);
 	EnableDocking(CBRS_ALIGN_ANY);
 	DockControlBar(&m_wndToolBar);*/
@@ -99,8 +98,6 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 {
 	if( !CFrameWnd::PreCreateWindow(cs) )
 		return FALSE;
-	// TODO: Modify the Window class or styles here by modifying
-	//  the CREATESTRUCT cs
 
 	//cs.style &= ~(LONG)WS_MAXIMIZE;
 	cs.cy = ::GetSystemMetrics(SM_CYSCREEN);
