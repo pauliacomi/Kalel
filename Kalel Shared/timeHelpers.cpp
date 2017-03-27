@@ -152,7 +152,7 @@ timer::~timer(void)
 void timer::Start()
 {
 	running = true;
-	timeElapsedPrevious.zero();
+	timeElapsedPrevious = std::chrono::milliseconds{ 0 };
 	startTP = std::chrono::high_resolution_clock::now();
 }
 

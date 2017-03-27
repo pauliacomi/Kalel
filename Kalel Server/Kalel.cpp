@@ -108,7 +108,7 @@ Kalel::~Kalel()
 void Kalel::GetLogs(std::string &logs) {
 	logs.clear();
 
-	auto localCollection = storageVectors.getInfoLogs();
+	auto localCollection = storageVectors.getErrLogs();
 
 	for (auto it = localCollection.begin(); it != localCollection.end(); ++it)
 	{
