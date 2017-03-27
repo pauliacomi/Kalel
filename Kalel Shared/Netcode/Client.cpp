@@ -43,8 +43,8 @@ void Client::SetLogs(std::vector<std::string> & vct)
 
 void Client::Request(std::function<void(http_request*)> req, std::function<void(http_response*)> resp, std::string ip, std::string port)
 {
-	processThread = std::thread(&Client::Process, this, ip, port, req, resp);
-	processThread.detach();
+	auto processThread = std::make_shared<std::thread>(std::thread(&Client::Process, this, ip, port, req, resp));
+	processThread->detach();
 }
 
 
@@ -59,12 +59,12 @@ unsigned Client::Process(std::string ip, std::string port, std::function<void(ht
 	//*************************************************************************************************************************
 	//						CONNECT TO SERVER
 	//*************************************************************************************************************************
-	// create socket and connect
-
+	
+	// Create socket
 	Socket l_sock;
 
 	try{
-		l_sock.Connect(ip.c_str(), port.c_str());
+		l_sock.Connect(ip.c_str(), port.c_str());	// Try connecting
 	}
 	catch (const std::exception& e)
 	{
@@ -73,7 +73,7 @@ unsigned Client::Process(std::string ip, std::string port, std::function<void(ht
 	}
 
 	try {
-		l_sock.SetNagle(false);		// Disable Nagle's algorithm, should lead to improved latency
+		l_sock.SetNagle(false);						// Disable Nagle's algorithm, should lead to improved latency
 	}
 	catch (const std::exception& e)
 	{
@@ -85,15 +85,15 @@ unsigned Client::Process(std::string ip, std::string port, std::function<void(ht
 	//						OUTGOING REQUEST
 	//*************************************************************************************************************************
 
-	http_request request;
-	request_func_(&request);
+	http_request request;														// Create request
+	request_func_(&request);													// Populate request from function
 
-
-	std::string reqUrl;
+	std::string reqUrl;															// Build URL
 	URLHelper::BuildReq(reqUrl, request.path_, request.params_);
 
 	request.content_length_ = StringFrom(request.entity_.size());
 
+	// Build string request and send it
 	std::string requestString;
 
 	try	{
@@ -114,6 +114,7 @@ unsigned Client::Process(std::string ip, std::string port, std::function<void(ht
 		return 1;
 	}
 
+	// Log request string
 	STREAM_LOG(logDEBUG) << l_sock.GetSocket() << LOG_REQUEST << requestString;
 #ifdef FILE_LOGGING
 	FILE_LOG(logDEBUG) << l_sock.GetSocket() << LOG_REQUEST << requestString;
@@ -134,12 +135,14 @@ unsigned Client::Process(std::string ip, std::string port, std::function<void(ht
 		return 1;
 	}
 
+	// Check if initial line is empty
 	if (responseString.empty()) {
 		return 1;
 	}
 
 	http_response response;
 
+	// Parse the first line of the response
 	size_t posSpace = responseString.find_first_of(" ");
 
 	response.http_version_	= responseString.substr(0, posSpace);
@@ -251,6 +254,7 @@ inline void Client::ErrorCaught(std::string err_str, std::function<void(http_res
 
 	http_response response;
 	response.disconnected_ = true;
-	response.status_ = err_str;
+	response.error_ = true;
+	response.error_str_ = err_str;
 	response_func_(&response);
 }

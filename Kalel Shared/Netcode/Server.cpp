@@ -110,7 +110,7 @@ unsigned Server::AcceptLoop()
 #endif // FILE_LOGGING
 
 		std::unique_ptr<Socket> acceptedSocket = std::make_unique<Socket>(s);			// Create a client socket pointer from the accepted SOCKET
-		//acceptedSocket->SetNagle(false);												// Disable Nagle's algorithm, should lead to improved latency
+		acceptedSocket->SetNagle(false);												// Disable Nagle's algorithm, should lead to improved latency
 		std::thread(&Server::Process, this, std::move(acceptedSocket)).detach();		// Start the request processing thread
 	}
 
@@ -175,7 +175,7 @@ unsigned Server::Process(std::unique_ptr<Socket> sock)
 	while (true) {
 		try
 		{			
-			line = sock->ReceiveLine();				// not attempting to receive message body, regular line-based receive 
+			line = sock->ReceiveLine();						// not attempting to receive message body, regular line-based receive 
 		}
 		catch (const std::exception& e)
 		{

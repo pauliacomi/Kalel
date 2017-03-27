@@ -26,7 +26,6 @@ public:
 protected:
 	unsigned Process(std::string ip, std::string port, std::function<void(http_request*)> request_func_, std::function<void(http_response*)> response_func_);
 	inline void ErrorCaught(std::string err_str, std::function<void(http_response*)> response_func_);
-	std::thread processThread;
 };
 
 #endif
