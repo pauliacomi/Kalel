@@ -77,6 +77,8 @@ private:
 	int localThreadCommand = 0;
 	int localFunctionalityCommand = 0;
 
+	// TODO: worst way of doing this
+	std::atomic_bool flagSyncRequest = false;
 	std::atomic_bool flagReqRequest = false;
 	std::atomic_bool flagLogsRequest = false;
 	std::atomic_bool flagExperimentRequest = false;

@@ -148,33 +148,55 @@ void Kalel::Sync(http_request* req, http_response* resp)
 {
 	if (req->method_ == http::method::get)
 	{
-		auto j1 = json::parse(req->entity_);
+		if (!req->params_.empty())
+		{
+			bool timeMS;
+			bool timeES;
+			bool timeCS;
 
-		auto timeMS = StringToTimePoint(j1["MS"]);
-		auto timeES = StringToTimePoint(j1["ES"]);
-		auto timeCS = StringToTimePoint(j1["CS"]);
+			// MachineSettings
+			if (req->params_.at("MS").empty()) {
+				timeMS = false;
+			}
+			else {
+				if (StringToTimePoint(req->params_.at("MS")) > storageVectors.machineSettingsChanged)
+					timeMS = true;
+				else
+					timeMS = false;
+			}
 
-		json j2;
+			// ExperimentSettings
+			if (req->params_.at("ES").empty()) {
+				timeES = false;
+			}
+			else {
+				if (StringToTimePoint(req->params_.at("ES")) > storageVectors.experimentSettingsChanged)
+					timeES = true;
+				else
+					timeES = false;
+			}
 
-		if (timeMS > storageVectors.machineSettingsChanged)
-			j2["MS"] = false;
-		else
-			j2["MS"] = true;
+			// TODO make this an actual value instead of machineSettingsChanged
+			// ControlState
+			if (req->params_.at("CS").empty()) {
+				timeCS = false;
+			}
+			else {
+				if (StringToTimePoint(req->params_.at("CS")) > storageVectors.machineSettingsChanged)
+					timeCS = true;
+				else
+					timeCS = false;
+			}
 
-		if (timeES > storageVectors.experimentSettingsChanged)
-			j2["ES"] = false;
-		else
-			j2["ES"] = true;
+			json j2;
+			j2["MS"] = timeMS;
+			j2["ES"] = timeES;
+			j2["CS"] = timeCS;
 
-		// TODO: fill this with the actual value
-		if (timeCS > storageVectors.experimentSettingsChanged)
-			j2["CS"] = false;
-		else
-			j2["CS"] = true;
-
-		resp->status_ = http::responses::ok;
-		resp->content_type_ = http::mimetype::appjson;
-		resp->answer_ = j2.dump();
+			resp->status_ = http::responses::ok;
+			resp->content_type_ = http::mimetype::appjson;
+			resp->answer_ = j2.dump();
+		}
 	}
 }
 
