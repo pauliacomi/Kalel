@@ -32,10 +32,14 @@
 
 IMPLEMENT_DYNCREATE(CKalelView, CFormView)
 
+//*************************************************************************************************************************
+//						MESSAGE MAP
+//*************************************************************************************************************************
+
 BEGIN_MESSAGE_MAP(CKalelView, CFormView)
 
 	//************************************
-	// Custom messages
+	// CUSTOM MESSAGE MAP MESSAGES
 	//************************************
 
 	// Menu messages:
@@ -112,12 +116,16 @@ BEGIN_MESSAGE_MAP(CKalelView, CFormView)
 	ON_BN_CLICKED(IDC_DESACTIVER_POMPE,						&CKalelView::OnBnClickedDesactiverPompe)
 
 
-	// timer for update of the values
+	//************************************
+	// Standard messages
+	//************************************
 	ON_WM_TIMER()					
 
 END_MESSAGE_MAP()
 
-// CKalelView construction/destruction
+//*************************************************************************************************************************
+//						Constructor/Destructor
+//*************************************************************************************************************************
 
 CKalelView::CKalelView()
 	: CFormView(CKalelView::IDD)
@@ -128,10 +136,11 @@ CKalelView::CKalelView()
 
 CKalelView::~CKalelView()
 {
-
 }
 
-// Liaising between variables and controls
+//*************************************************************************************************************************
+//						Liaising between variables and controls
+//*************************************************************************************************************************
 void CKalelView::DoDataExchange(CDataExchange* pDX)
 {
 	CFormView::DoDataExchange(pDX);
@@ -168,9 +177,12 @@ void CKalelView::DoDataExchange(CDataExchange* pDX)
 }
 
 
+//*************************************************************************************************************************
+//						Creation functions, initial calls, drawing
+//*************************************************************************************************************************
+
 BOOL CKalelView::PreCreateWindow(CREATESTRUCT& cs)
 {
-
 	return CFormView::PreCreateWindow(cs);
 }
 
@@ -201,7 +213,6 @@ void CKalelView::OnInitialUpdate()
 }
 
 
-
 // CKalelView drawing
 
 void CKalelView::OnDraw(CDC* /*pDC*/)
@@ -213,9 +224,9 @@ void CKalelView::OnDraw(CDC* /*pDC*/)
 
 }
 
-
-
-// CKalelView diagnostics
+//*************************************************************************************************************************
+//						Diagnostics
+//*************************************************************************************************************************
 
 #ifdef _DEBUG
 void CKalelView::AssertValid() const
@@ -278,7 +289,7 @@ CKalelView * CKalelView::GetView()
 
 
 /**********************************************************************************************************************************
-//	Non-standard members
+//				Timer function
 **********************************************************************************************************************************/
 
 void CKalelView::OnTimer(UINT_PTR nIDEvent)
@@ -574,6 +585,20 @@ LRESULT CKalelView::OnSync(WPARAM, LPARAM)
 		pApp->menuIsAvailable = true;
 	}
 
+	UpdateButtons();
+
+	return 0;
+}
+
+LRESULT CKalelView::OnExchangeMachineSettings(WPARAM, LPARAM incomingMachineSettings)
+{
+	// Get the incoming pointer
+	machineSettings.reset(reinterpret_cast<MachineSettings*>(incomingMachineSettings));
+	machineSettingsTime = NowTime();
+
+	// Update GUI
+	OnSync(NULL, NULL);
+
 	return 0;
 }
 
@@ -584,14 +609,20 @@ LRESULT CKalelView::OnSetMachineSettings(WPARAM, LPARAM)
 	machineSettingsTime = NowTime();
 	tempMchSettings.reset();
 
+	// Update GUI
+	OnSync(NULL, NULL);
+
 	return 0;
 }
 
-LRESULT CKalelView::OnExchangeMachineSettings(WPARAM, LPARAM incomingMachineSettings)
+LRESULT CKalelView::OnExchangeExperimentSettings(WPARAM wParam, LPARAM incomingExperimentSettings)
 {
 	// Get the incoming pointer
-	machineSettings.reset(reinterpret_cast<MachineSettings*>(incomingMachineSettings));
-	machineSettingsTime = NowTime();
+	experimentSettings.reset(reinterpret_cast<ExperimentSettings*>(incomingExperimentSettings));
+	experimentSettingsTime = NowTime();
+
+	// Update GUI
+	OnSync(NULL, NULL);
 
 	return 0;
 }
@@ -603,27 +634,24 @@ LRESULT CKalelView::OnSetExperimentSettings(WPARAM, LPARAM)
 	experimentSettingsTime = NowTime();
 	tempExpSettings.reset();
 
-	return 0;
-}
-
-LRESULT CKalelView::OnExchangeExperimentSettings(WPARAM wParam, LPARAM incomingExperimentSettings)
-{
-	// Get the incoming pointer
-	experimentSettings.reset(reinterpret_cast<ExperimentSettings*>(incomingExperimentSettings));
-	experimentSettingsTime = NowTime();
-	// Block menu and set running flag
+	// Update GUI
 	OnSync(NULL, NULL);
 
 	return 0;
 }
 
+
 LRESULT CKalelView::OnExchangeInstrumentState(WPARAM wParam, LPARAM incomingInstrumentState) {
 
 	// Cast the parameters object and take ownership
 	std::auto_ptr<ControlInstrumentState> maParam(reinterpret_cast<ControlInstrumentState*>(incomingInstrumentState));
+	buttonStates.Update(*maParam);
 
 	// Update buttons
-	buttonStates.Update(*maParam);
+	machineStateTime = NowTime();
+
+	// Update GUI
+	OnSync(NULL, NULL);
 
 	return 0;
 }
@@ -691,6 +719,7 @@ LRESULT CKalelView::OnExchangeRequests(WPARAM, LPARAM incomingRequests)
 	return 0;
 }
 
+// TODO: deprecated
 LRESULT CKalelView::OnAutoExperimentFinished(WPARAM, LPARAM) {
 
 	experimentSettings->ResetData();
@@ -714,6 +743,11 @@ LRESULT CKalelView::CancelBeforeStarting(WPARAM, LPARAM)
 	return 0;
 }
 
+
+/******************************************
+// Message boxes
+******************************************/
+
 LRESULT CKalelView::MessageBoxAlert(WPARAM wParam, LPARAM lParam)
 {
 	// Get the incoming pointer and cast it as a smart pointer
@@ -723,6 +757,7 @@ LRESULT CKalelView::MessageBoxAlert(WPARAM wParam, LPARAM lParam)
 	return AfxMessageBox(*message, *nType);
 }
 
+// TODO: make sure the confirmation is what is required
 LRESULT CKalelView::MessageBoxConfirmation(WPARAM wParam, LPARAM lParam)
 {
 	// Get the incoming pointer and cast it as a smart pointer

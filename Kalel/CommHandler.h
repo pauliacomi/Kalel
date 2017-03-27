@@ -21,7 +21,9 @@ public:
 
 	void Connect(std::wstring address);
 	void SaveAddress(std::wstring address);
+
 	void Sync(bool initialSync, std::string fromTimeES = R"()", std::string fromTimeMS = R"()", std::string fromTimeCS = R"()");
+	unsigned int CheckSync();
 
 	void GetMachineSettings();
 	void SetMachineSettings(std::shared_ptr<const MachineSettings> ptr);
@@ -122,8 +124,6 @@ private:
 	// Instrument state get
 	unsigned GetInstrumentState_req(http_request * r);
 	unsigned GetInstrumentState_resp(http_response * r);
-
-	unsigned int CheckSync();
 
 	// Instrument state set
 	unsigned SetInstrumentState_req(http_request * r);

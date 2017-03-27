@@ -432,6 +432,7 @@ unsigned CommHandler::Handshake_resp(http_response* r) {
 	{
 		messageHandler.Disconnection();
 		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server disconnected"));
+		return 1;
 	}
 
 	return 0;
@@ -697,6 +698,7 @@ unsigned CommHandler::SetExperimentSettings_resp(http_response* r) {
 
 	if (r->status_ == http::responses::ok)
 	{
+		localExperimentSettings.reset();
 		messageHandler.OnSetExperimentSettings();
 	}
 	else if (r->status_ == http::responses::internal_err)

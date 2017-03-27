@@ -68,25 +68,33 @@ private:
 	Parameters savedParams;					// Class for saving the parameters file
 	CommHandler commHandler;				// Class dealing with all communication between frontend and backend
 
-	// Storage
+	//*************************************************************************************************************************
+	//						Storage classes
+	//*************************************************************************************************************************
 private:
-	ListOfInstrumentButtons																buttonStates;			// The class which deals which keeps all the state of the buttons, for displaying them 
-	
-	std::map<std::chrono::system_clock::time_point, std::wstring> 						logCollection;			// Log points for an experiment are stored here
-	std::map<std::chrono::system_clock::time_point, std::wstring> 						requestCollection;		// Log points for an all errors or requests are stored here
-	ExperimentDataStorageArray															dataCollection;			// Measurement points for an experiment are stored here
-	
+	// Machine settings related
 	std::chrono::system_clock::time_point												machineSettingsTime;	// Timepoint storing when the machine settings were generated
 	std::shared_ptr<MachineSettings>													machineSettings;		// Pointer to a machineSettings object
 	std::shared_ptr<MachineSettings>													tempMchSettings;		// Temporary machineSettings stored here between sending change request to server and server acknowledgement
 	
+	// Control state related
+	ListOfInstrumentButtons																buttonStates;			// The class which deals which keeps all the state of the buttons, for displaying them 
+	std::chrono::system_clock::time_point												machineStateTime;		// Timepoint storing when the control state was generated
+	
+	// Experiment Settings related
 	std::chrono::system_clock::time_point												experimentSettingsTime;	// Timepoint storing when the experiment settings were generated
 	std::shared_ptr<ExperimentSettings>													experimentSettings;		// Local storage of experimentSettings
 	std::shared_ptr<ExperimentSettings>													tempExpSettings;		// Temporary experimentSettings stored here between sending change request to server and server acknowledgement
-
-	std::chrono::system_clock::time_point												machineStateTime;		// Timepoint storing when the control state was generated
 	
-	// Some storage variables for each MFC control
+	// Data/Logs/Request collections
+	std::map<std::chrono::system_clock::time_point, std::wstring> 						logCollection;			// Log points for an experiment are stored here
+	std::map<std::chrono::system_clock::time_point, std::wstring> 						requestCollection;		// Log points for an all errors or requests are stored here
+	ExperimentDataStorageArray															dataCollection;			// Measurement points for an experiment are stored here
+		
+
+	//*************************************************************************************************************************
+	//						Some storage variables for each MFC control
+	//*************************************************************************************************************************
 private:
 	CButton m_ButtonLancer;
 	CButton m_ButtonArreter;

@@ -234,9 +234,9 @@ void CKalelView::UpdateButtons() {
 
 	buttonStates.Init();
 
-	// the start button is blocked
+	// the start button
 	GetDlgItem(IDC_LANCER)->EnableWindow(!pApp->experimentRunning);
-	// the stop button is activated
+	// the stop button
 	GetDlgItem(IDC_ARRETER)->EnableWindow(pApp->experimentRunning);
 }
 
