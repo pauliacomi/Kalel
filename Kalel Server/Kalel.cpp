@@ -211,7 +211,7 @@ void Kalel::MachineSettingsSync(http_request* req, http_response* resp)
 	if (req->method_ == http::method::get)
 	{
 		json j;
-		serialization::serializeMachineSettingsToJSON(*storageVectors.machineSettings, j);
+		serialization::to_json(j, *storageVectors.machineSettings);
 		
 		resp->status_ = http::responses::ok;
 		resp->content_type_ = http::mimetype::appjson;
@@ -228,7 +228,7 @@ void Kalel::MachineSettingsSync(http_request* req, http_response* resp)
 			
 			// Save to memory
 			auto newMachineSettings = std::make_shared<MachineSettings>();
-			serialization::deserializeJSONtoMachineSettings(j, *newMachineSettings);
+			serialization::from_json(j, *newMachineSettings);
 			storageVectors.setmachineSettings(newMachineSettings);
 
 			// Save to file
@@ -252,7 +252,7 @@ void Kalel::ExperimentSettingsSync(http_request* req, http_response* resp)
 	if (req->method_ == http::method::get)
 	{
 		json j;
-		serialization::serializeExperimentSettingsToJSON(*storageVectors.experimentSettings, j);
+		serialization::to_json(j, *storageVectors.experimentSettings);
 
 		resp->status_ = http::responses::ok;
 		resp->content_type_ = http::mimetype::appjson;
@@ -268,7 +268,7 @@ void Kalel::ExperimentSettingsSync(http_request* req, http_response* resp)
 			auto j = json::parse(req->entity_.c_str());
 
 			auto newExpSettings = std::make_shared<ExperimentSettings>();
-			serialization::deserializeJSONtoExperimentSettings(j, *newExpSettings);
+			serialization::from_json(j, *newExpSettings);
 			storageVectors.setnewExperimentSettings(newExpSettings);
 
 			threadManager.SetModifiedData();
@@ -293,7 +293,7 @@ void Kalel::InstrumentStateSync(http_request* req, http_response* resp)
 		ControlInstrumentState instrumentStates(threadManager.GetInstrumentStates());
 
 		json j;
-		serialization::serializeControlInstrumentStatetoJSON(instrumentStates, j);
+		serialization::to_json(j, instrumentStates);
 
 		resp->status_ = http::responses::ok;
 		resp->content_type_ = http::mimetype::appjson;
@@ -331,7 +331,7 @@ void Kalel::InstrumentStateSync(http_request* req, http_response* resp)
 			ControlInstrumentState instrumentStates(threadManager.GetInstrumentStates());
 
 			json j;
-			serialization::serializeControlInstrumentStatetoJSON(instrumentStates, j); 
+			serialization::to_json(j, instrumentStates); 
 			
 			resp->status_ = http::responses::ok;
 			resp->content_type_ = http::mimetype::appjson;
@@ -375,7 +375,7 @@ void Kalel::DataSync(http_request* req, http_response* resp)
 			while (it != localCollection.end())
 			{
 				json j2;
-				serialization::serializeExperimentDataToJSON(*(it->second), j2);
+				serialization::to_json(j2, *(it->second));
 				j.push_back(json::object_t::value_type({ timeh::TimePointToString(it->first), j2 }));
 				++it;
 			}

@@ -13,41 +13,41 @@
 
 namespace serialization {
 
-	static void serializeMachineSettingsToJSON(const MachineSettings &m, nlohmann::json &j);
-	static void deserializeJSONtoMachineSettings(const nlohmann::json &j, MachineSettings &m);
+	static void to_json(nlohmann::json &j, const MachineSettings &m);
+	static void from_json(const nlohmann::json &j, MachineSettings &m);
 
-	static void serializeExperimentDataToJSON(const ExperimentData &e, nlohmann::json &j);
-	static void deserializeJSONtoExperimentData(const nlohmann::json &j, ExperimentData &e);
+	static void to_json(nlohmann::json &j, const ExperimentData &e);
+	static void from_json(const nlohmann::json &j, ExperimentData &e);
 
-	static void serializeExperimentSettingsToJSON(const ExperimentSettings &e, nlohmann::json &j);
-	static void deserializeJSONtoExperimentSettings(const nlohmann::json &j, ExperimentSettings &e);
+	static void to_json(nlohmann::json &j, const ExperimentSettings &e);
+	static void from_json(const nlohmann::json &j, ExperimentSettings &e);
 
-	static void serializeDataGeneralToJSON(const Donnees_General &m, nlohmann::json &j);
-	static void serializeDataDiversToJSON(const Donnees_Divers &m, nlohmann::json &j);
-	static void serializeDataAdsToJSON(const Donnees_Doses &m, nlohmann::json &j);
-	static void serializeDataDesToJSON(const Donnees_Desorption &m, nlohmann::json &j);
+	static void to_json(nlohmann::json &j, const Donnees_General &m);
+	static void to_json(nlohmann::json &j, const Donnees_Divers &m);
+	static void to_json(nlohmann::json &j, const Donnees_Doses &m);
+	static void to_json(nlohmann::json &j, const Donnees_Desorption &m);
 
-	static void deserializeJSONToDataGeneral(const nlohmann::json &j, Donnees_General &m);
-	static void deserializeJSONToDataDivers(const nlohmann::json &j, Donnees_Divers &m);
-	static void deserializeJSONToDataAds(const nlohmann::json &j, Donnees_Doses &m);
-	static void deserializeJSONToDataDes(const nlohmann::json &j, Donnees_Desorption &m);
+	static void from_json(const nlohmann::json &j, Donnees_General &m);
+	static void from_json(const nlohmann::json &j, Donnees_Divers &m);
+	static void from_json(const nlohmann::json &j, Donnees_Doses &m);
+	static void from_json(const nlohmann::json &j, Donnees_Desorption &m);
 
-	static void serializeGasToJSON(const gaz &m, nlohmann::json &j);
-	static void serializeCellToJSON(const cellule &m, nlohmann::json &j);
-	static void serializeUserToJSON(const experimentateur &m, nlohmann::json &j);
+	static void to_json(nlohmann::json &j, const gaz &m);
+	static void to_json(nlohmann::json &j, const cellule &m);
+	static void to_json(nlohmann::json &j, const experimentateur &m);
 
-	static void deserializeJSONToGas(const nlohmann::json &j, gaz &m);
-	static void deserializeJSONToCell(const nlohmann::json &j, cellule &m);
-	static void deserializeJSONToUser(const nlohmann::json &j, experimentateur &m);
+	static void from_json(const nlohmann::json &j, gaz &m);
+	static void from_json(const nlohmann::json &j, cellule &m);
+	static void from_json(const nlohmann::json &j, experimentateur &m);
 
-	static void serializeControlInstrumentStatetoJSON(const ControlInstrumentState &e, nlohmann::json &j);
-	static void deserializeJSONtoControlInstrumentState(const nlohmann::json &j, ControlInstrumentState &e);
+	static void to_json(nlohmann::json &j, const ControlInstrumentState &e);
+	static void from_json(const nlohmann::json &j, ControlInstrumentState &e);
 
 	//*************************************************************************************************************************
 	//						MachineSettings <> JSON
 	//*************************************************************************************************************************
 
-static void serializeMachineSettingsToJSON(const MachineSettings &m, nlohmann::json &j) {
+static void to_json(nlohmann::json &j, const MachineSettings &m) {
 		
 		j[STRINGIFY(m.CaloName							)]	= UnicodeConv::ws2s(m.CaloName)				;
 		j[STRINGIFY(m.CaloEntete						)]	= UnicodeConv::ws2s(m.CaloEntete)			;
@@ -75,7 +75,7 @@ static void serializeMachineSettingsToJSON(const MachineSettings &m, nlohmann::j
 
 	}
 
-	static void deserializeJSONtoMachineSettings(const nlohmann::json &j, MachineSettings &m) {
+	static void from_json(const nlohmann::json &j, MachineSettings &m) {
 
 		m.CaloName											= UnicodeConv::s2ws(j[STRINGIFY(m.CaloName									)]);
 		m.CaloEntete										= UnicodeConv::s2ws(j[STRINGIFY(m.CaloEntete								)]);
@@ -106,7 +106,7 @@ static void serializeMachineSettingsToJSON(const MachineSettings &m, nlohmann::j
 	//*************************************************************************************************************************
 	//						ExperimentData <> JSON
 	//*************************************************************************************************************************
-	static void serializeExperimentDataToJSON(const ExperimentData &e, nlohmann::json &j) {
+	static void to_json(nlohmann::json &j, const ExperimentData &e) {
 
 		j[	STRINGIFY(e.experimentInProgress			)]	= e.GetexperimentInProgress					();
 		j[	STRINGIFY(e.experimentRecording				)]	= e.GetexperimentRecording					();
@@ -138,7 +138,7 @@ static void serializeMachineSettingsToJSON(const MachineSettings &m, nlohmann::j
 		j[	STRINGIFY(e.temperatureRoom					)]	= e.GettemperatureRoom						();
 	}
 
-	static void deserializeJSONtoExperimentData(const nlohmann::json &j, ExperimentData &e) {
+	static void from_json(const nlohmann::json &j, ExperimentData &e) {
 
 		e.SetexperimentInProgress								( j[	STRINGIFY(e.experimentInProgress			)]);
 		e.SetexperimentRecording								( j[	STRINGIFY(e.experimentRecording				)]);
@@ -175,49 +175,49 @@ static void serializeMachineSettingsToJSON(const MachineSettings &m, nlohmann::j
 	//*************************************************************************************************************************
 	//						ExperimentSettings <> JSON
 	//*************************************************************************************************************************
-	static void serializeExperimentSettingsToJSON(const ExperimentSettings &e, nlohmann::json &j) {
+	static void to_json(nlohmann::json &j, const ExperimentSettings &e) {
 		
 		j["experimentType"]						= e.experimentType;
 
 		// general data
-		serializeDataGeneralToJSON(e.dataGeneral, j["general"]);
+		to_json(j["general"], e.dataGeneral);
 
 		// divers data
-		serializeDataDiversToJSON(e.dataDivers, j["divers"]);
+		to_json(j["divers"], e.dataDivers);
 
 		// adsorption data
 		for (size_t i = 0; i < e.dataAdsorption.size(); i++)
 		{
-			serializeDataAdsToJSON(e.dataAdsorption[i], j["ads"][i]);
+			to_json(j["ads"][i], e.dataAdsorption[i]);
 		}
 		
 		// desorption data
 		for (size_t i = 0; i < e.dataDesorption.size(); i++)
 		{
-			serializeDataDesToJSON(e.dataDesorption[i], j["des"][i]);
+			to_json(j["des"][i], e.dataDesorption[i]);
 		}
 	}
 
-	static void deserializeJSONtoExperimentSettings(const nlohmann::json &j, ExperimentSettings &e) {
+	static void from_json(const nlohmann::json &j, ExperimentSettings &e) {
 
 		e.experimentType						= j["experimentType"];
 
 		// general data
-		deserializeJSONToDataGeneral(j["general"], e.dataGeneral);
+		from_json(j["general"], e.dataGeneral);
 
 		// divers data
-		deserializeJSONToDataDivers(j["divers"], e.dataDivers);
+		from_json(j["divers"], e.dataDivers);
 
 		// adsorption data
 		for (size_t i = 0; i < e.dataAdsorption.size(); i++)
 		{
-			deserializeJSONToDataAds(j["ads"][i], e.dataAdsorption[i]);
+			from_json(j["ads"][i], e.dataAdsorption[i]);
 		}
 		
 		// desorption data
 		for (size_t i = 0; i < e.dataDesorption.size(); i++)
 		{
-			deserializeJSONToDataDes(j["des"][i], e.dataDesorption[i]);
+			from_json(j["des"][i], e.dataDesorption[i]);
 		}
 	}
 
@@ -225,10 +225,10 @@ static void serializeMachineSettingsToJSON(const MachineSettings &m, nlohmann::j
 	//*************************************************************************************************************************
 	//						Data (General+Divers+Ads+Des) <> JSON
 	//*************************************************************************************************************************
-	static void serializeDataGeneralToJSON(const Donnees_General &m, nlohmann::json &j) {
+	static void to_json(nlohmann::json &j, const Donnees_General &m) {
 
-		serializeUserToJSON(m.experimentateur, j["user"]);
-		serializeGasToJSON(	m.gaz,				j["gas"]);
+		to_json(j["user"]	, m.experimentateur	);
+		to_json(j["gas"]	, m.gaz				);
 
 		j["path"			]					= UnicodeConv::ws2s(m.chemin					);
 		j["comments"		]					= UnicodeConv::ws2s(m.commentaires				);
@@ -239,10 +239,10 @@ static void serializeMachineSettingsToJSON(const MachineSettings &m, nlohmann::j
 		j["temperature"		]					=					m.temperature_experience	;
 	}
 
-	void deserializeJSONToDataGeneral(const nlohmann::json & j, Donnees_General & m)
+	void from_json(const nlohmann::json & j, Donnees_General & m)
 	{
-		deserializeJSONToUser(j["user"]		,	m.experimentateur);
-		deserializeJSONToGas( j["gas"]		,	m.gaz);
+		from_json(j["user"]		,	m.experimentateur);
+		from_json( j["gas"]		,	m.gaz);
 
 		m.chemin								= UnicodeConv::s2ws(j["path"					]);
 		m.commentaires							= UnicodeConv::s2ws(j["comments"				]);
@@ -255,18 +255,18 @@ static void serializeMachineSettingsToJSON(const MachineSettings &m, nlohmann::j
 
 
 
-	static void serializeDataDiversToJSON(const Donnees_Divers &m, nlohmann::json &j) {
+	static void to_json(nlohmann::json &j, const Donnees_Divers &m) {
 
-		serializeCellToJSON(m.cellule			, j["cell"]);
+		to_json(j["cell"], m.cellule);
 
 		j["endUnderVacuum"]						= m.mise_sous_vide_fin_experience	;
 		j["baselineTime"]						= m.temps_ligne_base				;
 		j["vacuumTime"]							= m.temps_vide						;
 	}
 
-	static void deserializeJSONToDataDivers(const nlohmann::json & j, Donnees_Divers & m)
+	static void from_json(const nlohmann::json & j, Donnees_Divers & m)
 	{
-		deserializeJSONToCell(j["cell"]			, m.cellule);
+		from_json(j["cell"]			, m.cellule);
 
 		m.mise_sous_vide_fin_experience			= j["endUnderVacuum"				];
 		m.temps_ligne_base						= j["baselineTime"					];
@@ -275,14 +275,14 @@ static void serializeMachineSettingsToJSON(const MachineSettings &m, nlohmann::j
 
 
 
-	static void serializeDataAdsToJSON(const Donnees_Doses &m, nlohmann::json &j) {
+	static void to_json(nlohmann::json &j, const Donnees_Doses &m) {
 		j["dP"]									= m.delta_pression						;
 		j["Pfinal"]								= m.pression_finale						;
 		j["Tads"]								= m.temps_adsorption					;
 		j["Tref"]								= m.temps_volume						;
 	}
 	
-	static void deserializeJSONToDataAds(const nlohmann::json & j, Donnees_Doses & m)
+	static void from_json(const nlohmann::json & j, Donnees_Doses & m)
 	{
 		m.delta_pression						= j["dP"								];
 		m.pression_finale						= j["Pfinal"							];
@@ -292,14 +292,14 @@ static void serializeMachineSettingsToJSON(const MachineSettings &m, nlohmann::j
 
 
 
-	static void serializeDataDesToJSON(const Donnees_Desorption &m, nlohmann::json &j) {
+	static void to_json(nlohmann::json &j, const Donnees_Desorption &m) {
 		j["dP"]									= m.delta_pression						;
 		j["Pfinal"]								= m.pression_finale						;
 		j["Tdes"]								= m.temps_desorption					;
 		j["Tref"]								= m.temps_volume						;
 	}
 
-	static void deserializeJSONToDataDes(const nlohmann::json & j, Donnees_Desorption & m)
+	static void from_json(const nlohmann::json & j, Donnees_Desorption & m)
 	{
 		m.delta_pression						= j["dP"								];
 		m.pression_finale						= j["Pfinal"							];
@@ -312,7 +312,7 @@ static void serializeMachineSettingsToJSON(const MachineSettings &m, nlohmann::j
 	//*************************************************************************************************************************
 	//						gas/user/cell <> JSON
 	//*************************************************************************************************************************
-	static void serializeGasToJSON(const gaz &m, nlohmann::json &j) 
+	static void to_json(nlohmann::json &j, const gaz &m) 
 	{
 		j["masse_moleculaire"		]			=					m.masse_moleculaire				;
 		j["nom"						]			= UnicodeConv::ws2s(m.nom							);
@@ -323,7 +323,7 @@ static void serializeMachineSettingsToJSON(const MachineSettings &m, nlohmann::j
 		j["temperature_ebullition"	]			=					m.temperature_ebullition		;
 	}
 
-	static void deserializeJSONToGas(const nlohmann::json & j, gaz & m)
+	static void from_json(const nlohmann::json & j, gaz & m)
 	{
 		m.masse_moleculaire						=					j["masse_moleculaire"			];
 		m.nom									= UnicodeConv::s2ws(j["nom"							]);
@@ -335,27 +335,27 @@ static void serializeMachineSettingsToJSON(const MachineSettings &m, nlohmann::j
 	}
 
 
-	static void serializeUserToJSON(const experimentateur &m, nlohmann::json &j) 
+	static void to_json(nlohmann::json &j, const experimentateur &m) 
 	{
 		j["nom"]								= UnicodeConv::ws2s(m.nom			);
 		j["surnom"]								= UnicodeConv::ws2s(m.surnom		);
 	}
 
-	static void deserializeJSONToUser(const nlohmann::json & j, experimentateur & m)
+	static void from_json(const nlohmann::json & j, experimentateur & m)
 	{
 		m.nom									= UnicodeConv::s2ws(j["nom"			]);	
 		m.surnom								= UnicodeConv::s2ws(j["surnom"		]);	
 	}
 
 
-	static void serializeCellToJSON(const cellule &m, nlohmann::json &j) 
+	static void to_json(nlohmann::json &j, const cellule &m) 
 	{
 		j["number"		]						= UnicodeConv::ws2s(m.numero		);
 		j["caloVolume"	]						=					m.volume_calo	;
 		j["totalVolume"	]						=					m.volume_total	;
 	}
 
-	static void deserializeJSONToCell(const nlohmann::json & j, cellule & m)
+	static void from_json(const nlohmann::json & j, cellule & m)
 	{
 		m.numero								= UnicodeConv::s2ws(j["number"		]);
 		m.volume_calo							=					j["caloVolume"	];
@@ -370,7 +370,7 @@ static void serializeMachineSettingsToJSON(const MachineSettings &m, nlohmann::j
 
 
 
-	static void serializeControlInstrumentStatetoJSON(const ControlInstrumentState & e, nlohmann::json & j)
+	static void to_json(nlohmann::json & j, const ControlInstrumentState & e)
 	{
 		for (size_t i = 0; i < e.valves.size(); i++)
 		{
@@ -386,7 +386,7 @@ static void serializeMachineSettingsToJSON(const MachineSettings &m, nlohmann::j
 		}
 	}
 
-	static void deserializeJSONtoControlInstrumentState(const nlohmann::json & j, ControlInstrumentState & e)
+	static void from_json(const nlohmann::json & j, ControlInstrumentState & e)
 	{
 		auto j1 = j["valve"].get<std::vector<bool>>();
 		for (auto i = 0; i < j1.size(); ++i)
