@@ -364,11 +364,18 @@ void Kalel::DataSync(http_request* req, http_response* resp)
 
 		if (it != localCollection.end())						// If iterator is valid, send requested logs
 		{
-			//json j(localCollection);
+			json j;
+
+			while (it != localCollection.end())
+			{
+				json j2 = *(it->second);
+				j.push_back(json::object_t::value_type({ timeh::TimePointToString(it->first), j2 }));
+				++it;
+			}
 
 			resp->status_ = http::responses::ok;
 			resp->content_type_ = http::mimetype::appjson;
-			//resp->answer_ = j.dump();
+			resp->answer_ = j.dump();
 		}
 		else
 		{
@@ -403,11 +410,17 @@ void Kalel::LogSync(http_request* req, http_response* resp)
 
 		if (it != localCollection.end())							// If iterator is valid, send requested logs
 		{
-			//json j(localCollection);
+			json j;
+
+			while (it != localCollection.end())
+			{
+				j[timeh::TimePointToString(it->first)] = it->second;
+				++it;
+			}
 
 			resp->status_ = http::responses::ok;
 			resp->content_type_ = http::mimetype::appjson;
-			//resp->answer_ = j.dump();
+			resp->answer_ = j.dump();
 		}
 		else
 		{
@@ -442,11 +455,17 @@ void Kalel::RequestSync(http_request* req, http_response* resp)
 
 		if (it != localCollection.end())							// If iterator is valid, send requested logs
 		{
-			//json j(localCollection);
+			json j;
+
+			while (it != localCollection.end())
+			{
+				j[timeh::TimePointToString(it->first)] = it->second;
+				++it;
+			}
 
 			resp->status_ = http::responses::ok;
 			resp->content_type_ = http::mimetype::appjson;
-			//resp->answer_ = j.dump();
+			resp->answer_ = j.dump();
 		}
 		else
 		{

@@ -46,18 +46,20 @@ inline void from_json(const nlohmann::json &j, ControlInstrumentState &e);
 //						timpoint <> JSON
 //*************************************************************************************************************************
 
-
-namespace timeh {
-	void to_json(nlohmann::json & j, const std::chrono::time_point<std::chrono::system_clock> & m)
-	{
-		j = nlohmann::json{ timeh::TimePointToString(m) };
-	}
-
-	void from_json(const nlohmann::json & j, std::chrono::time_point<std::chrono::system_clock> & m)
-	{
-		m = timeh::StringToTimePoint(j.get<std::string>());
-	}
-}
+//namespace nlohmann {
+//	template <>
+//	struct adl_serializer<std::chrono::time_point<std::chrono::system_clock>> {
+//		void to_json(nlohmann::json & j, const std::chrono::time_point<std::chrono::system_clock> & m)
+//		{
+//			j = nlohmann::json{ timeh::TimePointToString(m) };
+//		}
+//
+//		void from_json(const nlohmann::json & j, std::chrono::time_point<std::chrono::system_clock> & m)
+//		{
+//			m = timeh::StringToTimePoint(j.get<std::string>());
+//		}
+//	};
+//}
 
 //*************************************************************************************************************************
 //						MachineSettings <> JSON
