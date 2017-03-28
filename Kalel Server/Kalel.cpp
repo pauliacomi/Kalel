@@ -13,7 +13,6 @@
 #include "../Kalel Shared/Com Classes/MachineSettings.h"
 #include "../Kalel Shared/unicodeConv.h"
 
-
 // Std
 #include <vector>
 #include <string>
@@ -90,10 +89,8 @@ Kalel::Kalel()
 	// Start the measurement and automation threads
 	threadManager.StartMeasurement();
 	threadManager.StartAutomation();
-
-
-
 }
+
 
 
 Kalel::~Kalel()
@@ -115,7 +112,7 @@ void Kalel::GetLogs(std::string &logs) {
 
 	for (auto it = localCollection.begin(); it != localCollection.end(); ++it)
 	{
-		logs += TimePointToString(it->first);
+		logs += timeh::TimePointToString(it->first);
 		logs += "   ";
 		logs += it->second;
 		logs += "\r\n";
@@ -162,7 +159,7 @@ void Kalel::Sync(http_request* req, http_response* resp)
 				timeMS = false;
 			}
 			else {
-				if (StringToTimePoint(req->params_.at("MS")) > storageVectors.machineSettingsChanged)
+				if (timeh::StringToTimePoint(req->params_.at("MS")) > storageVectors.machineSettingsChanged)
 					timeMS = true;
 				else
 					timeMS = false;
@@ -173,7 +170,7 @@ void Kalel::Sync(http_request* req, http_response* resp)
 				timeES = false;
 			}
 			else {
-				if (StringToTimePoint(req->params_.at("ES")) > storageVectors.experimentSettingsChanged)
+				if (timeh::StringToTimePoint(req->params_.at("ES")) > storageVectors.experimentSettingsChanged)
 					timeES = true;
 				else
 					timeES = false;
@@ -185,7 +182,7 @@ void Kalel::Sync(http_request* req, http_response* resp)
 				timeCS = false;
 			}
 			else {
-				if (StringToTimePoint(req->params_.at("CS")) > storageVectors.machineSettingsChanged)
+				if (timeh::StringToTimePoint(req->params_.at("CS")) > storageVectors.machineSettingsChanged)
 					timeCS = true;
 				else
 					timeCS = false;
@@ -368,7 +365,7 @@ void Kalel::DataSync(http_request* req, http_response* resp)
 		}
 		else
 		{
-			it = localCollection.upper_bound(StringToTimePoint(req->params_.at("time")));
+			it = localCollection.upper_bound(timeh::StringToTimePoint(req->params_.at("time")));
 		}
 
 		if (it != localCollection.end())						// If iterator is valid, send requested logs
@@ -379,7 +376,7 @@ void Kalel::DataSync(http_request* req, http_response* resp)
 			{
 				json j2;
 				serialization::serializeExperimentDataToJSON(*(it->second), j2);
-				j.push_back(json::object_t::value_type({ TimePointToString(it->first), j2 }));
+				j.push_back(json::object_t::value_type({ timeh::TimePointToString(it->first), j2 }));
 				++it;
 			}
 
@@ -415,7 +412,7 @@ void Kalel::LogSync(http_request* req, http_response* resp)
 		}
 		else
 		{
-			it = localCollection.upper_bound(StringToTimePoint(req->params_.at("time")));
+			it = localCollection.upper_bound(timeh::StringToTimePoint(req->params_.at("time")));
 		}
 
 		if (it != localCollection.end())							// If iterator is valid, send requested logs
@@ -424,7 +421,7 @@ void Kalel::LogSync(http_request* req, http_response* resp)
 
 			while (it != localCollection.end())
 			{
-				j[TimePointToString(it->first)] = it->second;
+				j[timeh::TimePointToString(it->first)] = it->second;
 				++it;
 			}
 
@@ -460,7 +457,7 @@ void Kalel::RequestSync(http_request* req, http_response* resp)
 		}
 		else
 		{
-			it = localCollection.upper_bound(StringToTimePoint(req->params_.at("time")));
+			it = localCollection.upper_bound(timeh::StringToTimePoint(req->params_.at("time")));
 		}
 
 		if (it != localCollection.end())							// If iterator is valid, send requested logs
@@ -469,7 +466,7 @@ void Kalel::RequestSync(http_request* req, http_response* resp)
 
 			while (it != localCollection.end())
 			{
-				j[TimePointToString(it->first)] = it->second;
+				j[timeh::TimePointToString(it->first)] = it->second;
 				++it;
 			}
 

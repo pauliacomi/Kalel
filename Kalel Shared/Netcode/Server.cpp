@@ -274,7 +274,7 @@ unsigned Server::Process(std::unique_ptr<Socket> sock)
 
 	// Fill remaining headers
 	response.server_			= "Kalel Server";
-	response.date_				= GMTtime(RFC_1123);
+	response.date_				= timeh::GMTtime(RFC_1123);
 	response.connection_		= "close";
 	response.content_length_	= StringFrom<size_t>(response.answer_.size());
 

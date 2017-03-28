@@ -102,7 +102,7 @@ public:
 	void setmachineSettings(std::shared_ptr<MachineSettings> i) {
 		std::unique_lock<std::mutex> lock(machineSettingsMutex);
 		machineSettings = i;
-		machineSettingsChanged = NowTime();
+		machineSettingsChanged = timeh::NowTime();
 	}
 
 	//**********
@@ -119,13 +119,13 @@ public:
 	void setExperimentSettings(std::shared_ptr<ExperimentSettings> i) {
 		std::unique_lock<std::mutex> lock(experimentSettingsMutex);
 		experimentSettings = i;
-		experimentSettingsChanged = NowTime();
+		experimentSettingsChanged = timeh::NowTime();
 	}
 
 	void resetExperimentSettings() {
 		std::unique_lock<std::mutex> lock(experimentSettingsMutex);
 		experimentSettings->ResetData();
-		experimentSettingsChanged = NowTime();
+		experimentSettingsChanged = timeh::NowTime();
 	}
 
 	void setnewExperimentSettings(std::shared_ptr<ExperimentSettings> i) {
@@ -150,8 +150,8 @@ inline Storage::Storage(void)
 	experimentSettings = std::make_shared<ExperimentSettings>();
 	newExperimentSettings = std::make_shared<ExperimentSettings>();
 
-	machineSettingsChanged = NowTime();
-	experimentSettingsChanged = NowTime();
+	machineSettingsChanged = timeh::NowTime();
+	experimentSettingsChanged = timeh::NowTime();
 }
 
 inline Storage::~Storage(void)

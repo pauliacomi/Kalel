@@ -26,7 +26,7 @@ bool MessageHandler::ExchangeData(const ExperimentData &pParam)
 	std::shared_ptr<ExperimentData> newData = std::make_shared<ExperimentData>(pParam);
 
 	// Add to map
-	storage.pushData(NowTime(), newData);
+	storage.pushData(timeh::NowTime(), newData);
 
 	return true;
 }
@@ -59,7 +59,7 @@ bool MessageHandler::DisplayMessage(std::string pParam, int pInt1, int pInt2, do
 		}
 	}
 	
-	storage.pushInfoLogs(NowTime(), message);
+	storage.pushInfoLogs(timeh::NowTime(), message);
 
 	return true;
 }
@@ -69,7 +69,7 @@ bool MessageHandler::DisplayMessage(std::string pParam, std::string m)
 	std::string message;
 	message = string_format(pParam, m);
 
-	storage.pushInfoLogs(NowTime(), message);
+	storage.pushInfoLogs(timeh::NowTime(), message);
 
 	return true;
 }
@@ -93,7 +93,7 @@ bool MessageHandler::DisplayMessageBox(std::string pParam, unsigned nType, bool 
 		message = string_format(pParam);
 	}
 
-	//storage.automationErrorLogs.insert(std::make_pair(NowTime(), message));
+	//storage.automationErrorLogs.insert(std::make_pair(timeh::NowTime(), message));
 
 	return true;
 }
@@ -103,7 +103,7 @@ bool MessageHandler::DisplayMessageBox(std::string pParam, unsigned nType, bool 
 	std::string message;
 	message = string_format(pParam, pString);
 
-	//storage.automationErrorLogs.insert(std::make_pair(NowTime(), message));
+	//storage.automationErrorLogs.insert(std::make_pair(timeh::NowTime(), message));
 
 	//// Check if the message box is supposed to alert the user or ask for input
 	//// Other thread is now responsible for deleting this object

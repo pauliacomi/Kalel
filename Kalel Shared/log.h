@@ -50,7 +50,7 @@ private:
 template <typename T>
 Log<T>::Log()
 {
-	timestamp = TimePointToString(NowTime());
+	timestamp = timeh::TimePointToString(timeh::NowTime());
 }
 
 /*********************************
@@ -216,7 +216,7 @@ inline void Output2map::Output(const std::string& msg)
 		return;
 
 	pMutex->lock();
-	pStream->emplace(std::make_pair(TimePointToString(NowTime()), msg));
+	pStream->emplace(std::make_pair(timeh::TimePointToString(timeh::NowTime()), msg));
 	pMutex->unlock();
 }
 
