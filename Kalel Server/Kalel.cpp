@@ -366,12 +366,18 @@ void Kalel::DataSync(http_request* req, http_response* resp)
 		{
 			json j;
 
+			timeh::timer t;
+			std::string s = "Serialisation of " + std::to_string(localCollection.size());
+			storageVectors.pushErrLogs(timeh::NowTime(), s);
+			t.Start();
+			
 			while (it != localCollection.end())
 			{
-				json j2 = *(it->second);
-				j.push_back(json::object_t::value_type({ timeh::TimePointToString(it->first), j2 }));
+				j.push_back(json::object_t::value_type({ timeh::TimePointToString(it->first), *(it->second) }));
 				++it;
 			}
+
+			storageVectors.pushErrLogs(timeh::NowTime(), std::to_string(t.TimeMilliseconds()));
 
 			resp->status_ = http::responses::ok;
 			resp->content_type_ = http::mimetype::appjson;
