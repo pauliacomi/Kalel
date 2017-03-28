@@ -90,6 +90,9 @@ Kalel::Kalel()
 	// Start the measurement and automation threads
 	threadManager.StartMeasurement();
 	threadManager.StartAutomation();
+
+
+
 }
 
 
@@ -224,7 +227,7 @@ void Kalel::MachineSettingsSync(http_request* req, http_response* resp)
 		if (req->content_type_ == http::mimetype::appjson) {
 
 			// Parse the input
-			auto j = json::parse(req->entity_);
+			auto j = json::parse(req->entity_.c_str());
 			
 			// Save to memory
 			auto newMachineSettings = std::make_shared<MachineSettings>();
@@ -265,7 +268,7 @@ void Kalel::ExperimentSettingsSync(http_request* req, http_response* resp)
 		if (req->content_type_ == http::mimetype::appjson) {
 
 			// Parse the input
-			auto j = json::parse(req->entity_);
+			auto j = json::parse(req->entity_.c_str());
 
 			auto newExpSettings = std::make_shared<ExperimentSettings>();
 			serialization::deserializeJSONtoExperimentSettings(j, *newExpSettings);

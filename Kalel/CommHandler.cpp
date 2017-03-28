@@ -465,7 +465,7 @@ unsigned CommHandler::Sync_resp(http_response* r) {
 		json j;
 		try
 		{
-			j = json::parse(r->answer_);
+			j = json::parse(r->answer_.c_str());
 		}
 		catch (const std::exception& e)
 		{
@@ -522,7 +522,7 @@ unsigned CommHandler::GetMachineSettings_resp(http_response* r) {
 			json j;
 			try
 			{
-				j = json::parse(r->answer_);
+				j = json::parse(r->answer_.c_str());
 			}
 			catch (const std::exception& e)
 			{
@@ -627,7 +627,7 @@ unsigned CommHandler::GetExperimentSettings_resp(http_response* r) {
 			json j;
 			try
 			{
-				j = json::parse(r->answer_);
+				j = json::parse(r->answer_.c_str());
 			}
 			catch (const std::exception& e)
 			{
@@ -732,7 +732,7 @@ unsigned CommHandler::GetInstrumentState_resp(http_response * r)
 		//////////////////////////////////////////////
 		try
 		{
-			j = json::parse(r->answer_);
+			j = json::parse(r->answer_.c_str());
 		}
 		catch (const std::exception& e)
 		{
@@ -857,7 +857,7 @@ unsigned CommHandler::GetData_resp(http_response* r) {
 			//////////////////////////////////////////////
 			try
 			{
-				j = json::parse(r->answer_);
+				j = json::parse(r->answer_.c_str());
 			}
 			catch (const std::exception& e)
 			{
@@ -940,7 +940,7 @@ unsigned CommHandler::GetLogs_resp(http_response * r)
 			//////////////////////////////////////////////
 			try
 			{
-				j = json::parse(r->answer_);
+				j = json::parse(r->answer_.c_str());
 			}
 			catch (const std::exception& e)
 			{
@@ -1015,7 +1015,7 @@ unsigned CommHandler::GetRequest_resp(http_response * r)
 			//////////////////////////////////////////////
 			try
 			{
-				j = json::parse(r->answer_);
+				j = json::parse(r->answer_.c_str());
 			}
 			catch (const std::exception& e)
 			{
