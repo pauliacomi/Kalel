@@ -207,6 +207,10 @@ void Kalel::Sync(http_request* req, http_response* resp)
 *********************************/
 void Kalel::MachineSettingsSync(http_request* req, http_response* resp)
 {
+	timeh::timer t;
+	storageVectors.pushErrLogs(timeh::NowTime(), "Machine Settings" + req->method_);
+	t.Start();
+
 	// GET
 	if (req->method_ == http::method::get)
 	{
@@ -239,6 +243,8 @@ void Kalel::MachineSettingsSync(http_request* req, http_response* resp)
 			resp->status_ = http::responses::bad_request;
 		}
 	}
+
+	storageVectors.pushErrLogs(timeh::NowTime(), std::to_string(t.TimeMilliseconds()));
 }
 
 
@@ -247,6 +253,10 @@ void Kalel::MachineSettingsSync(http_request* req, http_response* resp)
 *********************************/
 void Kalel::ExperimentSettingsSync(http_request* req, http_response* resp)
 {
+	timeh::timer t;
+	storageVectors.pushErrLogs(timeh::NowTime(), "ExpSettings" + req->method_);
+	t.Start();
+
 	// GET
 	if (req->method_ == http::method::get)
 	{
@@ -277,6 +287,8 @@ void Kalel::ExperimentSettingsSync(http_request* req, http_response* resp)
 			resp->status_ = http::responses::bad_request;
 		}
 	}
+
+	storageVectors.pushErrLogs(timeh::NowTime(), std::to_string(t.TimeMilliseconds()));
 }
 
 
@@ -285,6 +297,10 @@ void Kalel::ExperimentSettingsSync(http_request* req, http_response* resp)
 *********************************/
 void Kalel::InstrumentStateSync(http_request* req, http_response* resp)
 {
+	timeh::timer t;
+	storageVectors.pushErrLogs(timeh::NowTime(), "Instrument state" + req->method_);
+	t.Start();
+
 	// GET
 	if (req->method_ == http::method::get)
 	{
@@ -336,6 +352,8 @@ void Kalel::InstrumentStateSync(http_request* req, http_response* resp)
 			resp->status_ = http::responses::conflict;
 		}
 	}
+
+	storageVectors.pushErrLogs(timeh::NowTime(), std::to_string(t.TimeMilliseconds()));
 }
 
 
@@ -344,37 +362,37 @@ void Kalel::InstrumentStateSync(http_request* req, http_response* resp)
 *********************************/
 void Kalel::DataSync(http_request* req, http_response* resp)
 {
+	timeh::timer t;
+	storageVectors.pushErrLogs(timeh::NowTime(),  "Data sync");
+	t.Start();
+
 	if (req->method_ == http::method::get)
 	{
 		// Figure out which range of data to send by looking at the time requested
 
-		ExperimentDataStorageArray::iterator it;
-		auto localCollection = storageVectors.getData();
+		std::unique_ptr<ExperimentDataStorageArray> localCollection;
 
 		if (req->params_.empty() ||
 			req->params_.at("time").empty() ||
 			req->params_.at("time") == "start")
 		{
-			it = localCollection.begin();
+			localCollection = std::make_unique<ExperimentDataStorageArray>(storageVectors.getData());
 		}
 		else
 		{
-			it = localCollection.upper_bound(timeh::StringToTimePoint(req->params_.at("time")));
+			localCollection = std::make_unique<ExperimentDataStorageArray>(storageVectors.getData(timeh::StringToTimePoint(req->params_.at("time"))));
 		}
 
-		if (it != localCollection.end())						// If iterator is valid, send requested logs
+		if (localCollection->size() != 0)						// If any exist
 		{
 			json j;
 
-			timeh::timer t;
-			std::string s = "Serialisation of " + std::to_string(localCollection.size());
+			std::string s = "Serialisation of " + std::to_string(localCollection->size());
 			storageVectors.pushErrLogs(timeh::NowTime(), s);
 			t.Start();
 			
-			while (it != localCollection.end())
-			{
-				j.push_back(json::object_t::value_type({ timeh::TimePointToString(it->first), *(it->second) }));
-				++it;
+			for (const auto& kv : *localCollection) {
+				j.push_back(json::object_t::value_type({ timeh::TimePointToString(kv.first), *(kv.second) }));
 			}
 
 			storageVectors.pushErrLogs(timeh::NowTime(), std::to_string(t.TimeMilliseconds()));
@@ -388,6 +406,8 @@ void Kalel::DataSync(http_request* req, http_response* resp)
 			resp->status_ = http::responses::no_content;
 		}
 	}
+
+	storageVectors.pushErrLogs(timeh::NowTime(), std::to_string(t.TimeMilliseconds()));
 }
 
 
@@ -396,32 +416,33 @@ void Kalel::DataSync(http_request* req, http_response* resp)
 *********************************/
 void Kalel::LogSync(http_request* req, http_response* resp)
 {
+	timeh::timer t;
+	storageVectors.pushErrLogs(timeh::NowTime(), "Log sync");
+	t.Start();
+
 	if (req->method_ == http::method::get)
 	{
 		// Figure out which range of logs to send by finding the requested timestamp
 
-		std::map<std::chrono::system_clock::time_point, std::string>::iterator it;
-		auto localCollection = storageVectors.getInfoLogs();
+		std::unique_ptr<TextStorage> localCollection;
 
 		if (req->params_.empty() ||									// If parameters don't exist, send all the logs
 			req->params_.at("time").empty() ||
 			req->params_.at("time") == "start")
 		{
-			it = localCollection.begin();
+			localCollection = std::make_unique<TextStorage>(storageVectors.getInfoLogs());
 		}
 		else
 		{
-			it = localCollection.upper_bound(timeh::StringToTimePoint(req->params_.at("time")));
+			localCollection = std::make_unique<TextStorage>(storageVectors.getInfoLogs(timeh::StringToTimePoint(req->params_.at("time"))));
 		}
 
-		if (it != localCollection.end())							// If iterator is valid, send requested logs
+		if (localCollection->size() != 0)							// If any exist
 		{
 			json j;
 
-			while (it != localCollection.end())
-			{
-				j[timeh::TimePointToString(it->first)] = it->second;
-				++it;
+			for (const auto& kv : *localCollection) {
+				j[timeh::TimePointToString(kv.first)] = kv.second;
 			}
 
 			resp->status_ = http::responses::ok;
@@ -433,40 +454,43 @@ void Kalel::LogSync(http_request* req, http_response* resp)
 			resp->status_ = http::responses::no_content;
 		}
 	}
+
+	storageVectors.pushErrLogs(timeh::NowTime(), std::to_string(t.TimeMilliseconds()));
 }
 
 
 /*********************************
-// Logs sync
+// Request sync
 *********************************/
 void Kalel::RequestSync(http_request* req, http_response* resp)
 {
+	timeh::timer t;
+	storageVectors.pushErrLogs(timeh::NowTime(), "Request sync");
+	t.Start();
+
 	if (req->method_ == http::method::get)
 	{
 		// Figure out which range of logs to send by finding the requested timestamp
 
-		std::map<std::chrono::system_clock::time_point, std::string>::iterator it;
-		auto localCollection = storageVectors.getInfoLogs();
+		std::unique_ptr<TextStorage> localCollection;
 
 		if (req->params_.empty() ||									// If parameters don't exist, send all the logs
 			req->params_.at("time").empty() ||
 			req->params_.at("time") == "start")
 		{
-			it = localCollection.begin();
+			localCollection = std::make_unique<TextStorage>(storageVectors.getErrLogs());
 		}
 		else
 		{
-			it = localCollection.upper_bound(timeh::StringToTimePoint(req->params_.at("time")));
+			localCollection = std::make_unique<TextStorage>(storageVectors.getInfoLogs(timeh::StringToTimePoint(req->params_.at("time"))));
 		}
 
-		if (it != localCollection.end())							// If iterator is valid, send requested logs
+		if (localCollection->size() != 0)							// If any exist
 		{
 			json j;
 
-			while (it != localCollection.end())
-			{
-				j[timeh::TimePointToString(it->first)] = it->second;
-				++it;
+			for (const auto& kv : *localCollection) {
+				j[timeh::TimePointToString(kv.first)] = kv.second;
 			}
 
 			resp->status_ = http::responses::ok;
@@ -478,6 +502,8 @@ void Kalel::RequestSync(http_request* req, http_response* resp)
 			resp->status_ = http::responses::no_content;
 		}
 	}
+
+	storageVectors.pushErrLogs(timeh::NowTime(), std::to_string(t.TimeMilliseconds()));
 }
 
 

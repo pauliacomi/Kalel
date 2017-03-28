@@ -16,6 +16,8 @@
 #include <memory>
 #include <chrono>
 
+typedef std::map<std::chrono::system_clock::time_point, std::string> TextStorage;
+
 class Storage {
 public:
 	Storage(void);
@@ -34,7 +36,7 @@ public:
 	//**********
 private:
 	std::mutex autoInfoLogsMutex;																				// Synchronisation class, should be used whenever there are writes to the logs
-	std::map<std::chrono::system_clock::time_point, std::string> automationInfoLogs;					// All non-error logs are stored here
+	TextStorage automationInfoLogs;					// All non-error logs are stored here
 
 public:
 	void pushInfoLogs(std::chrono::system_clock::time_point time, std::string value) {
@@ -42,9 +44,16 @@ public:
 		automationInfoLogs.insert(std::make_pair(time, value));
 	}
 
-	std::map<std::chrono::system_clock::time_point, std::string> getInfoLogs() {
+	TextStorage getInfoLogs() {
 		std::unique_lock<std::mutex> lock(autoInfoLogsMutex);
 		return automationInfoLogs;
+	}
+
+	TextStorage getInfoLogs(const std::chrono::system_clock::time_point & tp) {
+		std::unique_lock<std::mutex> lock(autoInfoLogsMutex);
+		auto start = automationInfoLogs.upper_bound(tp);
+		auto end = automationInfoLogs;
+		return TextStorage(automationInfoLogs.upper_bound(tp), automationInfoLogs.end());
 	}
 
 	//**********
@@ -52,7 +61,7 @@ public:
 	//**********
 private:
 	std::mutex autoReqMutex;																				// Synchronisation class, should be used whenever there are writes to the logs
-	std::map<std::chrono::system_clock::time_point, std::string> automationErrorLogs;						// All error logs are stored here
+	TextStorage automationErrorLogs;						// All error logs are stored here
 
 public:
 	void pushErrLogs(std::chrono::system_clock::time_point time, std::string value) {
@@ -60,9 +69,16 @@ public:
 		automationErrorLogs.insert(std::make_pair(time, value));
 	}
 
-	std::map<std::chrono::system_clock::time_point, std::string> getErrLogs() {
+	TextStorage getErrLogs() {
 		std::unique_lock<std::mutex> lock(autoReqMutex);
 		return automationErrorLogs;
+	}
+
+	TextStorage getErrLogs(const std::chrono::system_clock::time_point & tp) {
+		std::unique_lock<std::mutex> lock(autoReqMutex);
+		auto start = automationErrorLogs.upper_bound(tp);
+		auto end = automationErrorLogs;
+		return TextStorage(automationErrorLogs.upper_bound(tp), automationErrorLogs.end());
 	}
 
 	//**********
@@ -83,6 +99,13 @@ public:
 	ExperimentDataStorageArray getData() {
 		std::unique_lock<std::mutex> lock(sharedMutex);
 		return dataCollection;
+	}
+
+	ExperimentDataStorageArray getData(const std::chrono::system_clock::time_point & tp) {
+		std::unique_lock<std::mutex> lock(sharedMutex);
+		auto start = dataCollection.upper_bound(tp);
+		auto end = dataCollection;
+		return ExperimentDataStorageArray(dataCollection.upper_bound(tp), dataCollection.end());
 	}
 
 	void deleteData() {
