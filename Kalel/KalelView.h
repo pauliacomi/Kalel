@@ -163,7 +163,7 @@ private:
 	LRESULT OnExchangeExperimentSettings(WPARAM wParam, LPARAM incomingExperimentSettings);
 
 	LRESULT OnExchangeInstrumentState(WPARAM wParam, LPARAM lParam);
-	LRESULT OnInstrumentButtonConfirmed(WPARAM wParam, LPARAM lParam);
+	LRESULT OnSetInstrumentState(WPARAM wParam, LPARAM lParam);
 
 	LRESULT OnExchangeData(WPARAM, LPARAM incomingExperimentData);
 	LRESULT OnExchangeLogs(WPARAM, LPARAM incomingLogs);
