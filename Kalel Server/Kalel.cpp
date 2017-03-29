@@ -304,8 +304,7 @@ void Kalel::InstrumentStateSync(http_request* req, http_response* resp)
 	// GET
 	if (req->method_ == http::method::get)
 	{
-		ControlInstrumentState instrumentStates(threadManager.GetInstrumentStates());
-		json j = instrumentStates;
+		json j = threadManager.GetInstrumentStates();
 
 		resp->status_ = http::responses::ok;
 		resp->content_type_ = http::mimetype::appjson;
