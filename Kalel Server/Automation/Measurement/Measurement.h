@@ -32,7 +32,7 @@ public:
 	Controls & controls;
 	
 	// New
-	std::unique_ptr<TemperatureInstruments> temperatureReaders;									// Pointer to the class that deals with temperature recording
+	std::unique_ptr<TemperatureInstruments> temperatureReader;									// Pointer to the class that deals with temperature recording
 	std::unique_ptr<SerialInstruments> serialReaders;						// Pointer to the class that deals with calorimeter & pressure recording
 	std::unique_ptr<Security> security;
 

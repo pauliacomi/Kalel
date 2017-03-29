@@ -32,7 +32,7 @@ inline Controls::Controls(Storage &h)
 	// Create objects from controls class
 	fileWriter = std::make_shared<FileWriter>();
 	messageHandler = std::make_shared<MessageHandler>(h);
-	valveControls = std::make_shared<ValveController>(*messageHandler);
+	valveControls = std::make_shared<ValveController>(*messageHandler, h.machineSettings->PortVannes);
 }
 
 inline Controls::~Controls(void)

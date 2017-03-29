@@ -10,9 +10,9 @@
 
 // --------- Initialisation and destruction -------
 
-ThreadManager::ThreadManager(Storage &h)
+ThreadManager::ThreadManager(Storage &h, Controls &c)
 	: storage{ h }
-	, controls { h }
+	, controls { c }
 {
 }
 
@@ -99,7 +99,7 @@ unsigned ThreadManager::ResumeAutomation()
 	if (automation != nullptr)
 	{
 		// Give the threads the start signal
-		std::unique_lock<std::mutex> lk(storage.automationMutex);
+		std::unique_lock<std::mutex> lk(storage.automationMutex);	// mutex for thread notification
 		automation->eventResume = true;
 		storage.automationControl.notify_all();
 	}
@@ -115,7 +115,7 @@ unsigned ThreadManager::PauseAutomation()
 	if (automation != nullptr)
 	{
 		// Signal the thread to resume
-		std::unique_lock<std::mutex> lk(storage.automationMutex);
+		std::unique_lock<std::mutex> lk(storage.automationMutex);	// mutex for thread notification
 		automation->eventPause = true;
 		storage.automationControl.notify_all();
 	}
@@ -132,7 +132,7 @@ unsigned ThreadManager::ResetAutomation()
 	if (automation != nullptr)
 	{
 		// Signal the thread to reset
-		std::unique_lock<std::mutex> lk(storage.automationMutex);
+		std::unique_lock<std::mutex> lk(storage.automationMutex);	// mutex for thread notification
 		automation->eventReset = true;
 		storage.automationControl.notify_all();
 	}
@@ -149,7 +149,7 @@ unsigned ThreadManager::SetModifiedData()
 	if (automation != nullptr)
 	{
 		// Signal the atomic bool as modified
-		std::unique_lock<std::mutex> lk(storage.automationMutex);
+		std::unique_lock<std::mutex> lk(storage.automationMutex);	// mutex for thread notification
 		automation->eventSettingsModified = true;
 		storage.automationControl.notify_all();
 	}
@@ -165,7 +165,7 @@ unsigned ThreadManager::SetUserContinue()
 	if (automation != nullptr)
 	{
 		// Signal the atomic bool as modified
-		std::unique_lock<std::mutex> lk(storage.automationMutex);
+		std::unique_lock<std::mutex> lk(storage.automationMutex);	// mutex for thread notification
 		automation->sb_userContinue = true;
 		storage.automationControl.notify_all();
 	}
@@ -183,7 +183,7 @@ unsigned ThreadManager::ShutdownAutomation()
 	if (automation != nullptr)
 	{
 		// Signal the thread to exit
-		std::unique_lock<std::mutex> lk(storage.automationMutex);
+		std::unique_lock<std::mutex> lk(storage.automationMutex);	// mutex for thread notification
 		automation->eventShutdown = true;
 		storage.automationControl.notify_all();
 		// Unlock to continue function
@@ -210,6 +210,7 @@ unsigned ThreadManager::ThreadManualAction(int instrumentType, int instrumentNum
 {
 	//start thread
 	manualActionThread = std::thread(&ThreadManager::ManualAction, this, instrumentType, instrumentNumber, state);
+	manualActionThread.detach();
 
 	return 0;
 }

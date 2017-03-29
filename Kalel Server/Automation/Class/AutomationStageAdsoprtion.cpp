@@ -176,7 +176,7 @@ void Automation::SubstepsAdsorption()
 		storage.currentData->experimentWaiting == false)
 	{
 		// Turn on pump
-		if (controls.valveControls->PumpIsInactive()) {
+		if (!controls.valveControls->PumpIsActive()) {
 			controls.valveControls->EVActivate(1, true);
 			controls.valveControls->EVActivate(2, true);
 			controls.valveControls->PumpActivate(true);

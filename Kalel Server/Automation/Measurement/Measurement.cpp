@@ -26,7 +26,7 @@ Measurement::Measurement(Storage &s, Controls &c)
 	, controls{ c }
 {
 	// Initialise instruments
-	temperatureReaders.reset(new TemperatureInstruments()); 
+	temperatureReader.reset(new TemperatureInstruments(s.machineSettings->PortTemperatures)); 
 	serialReaders.reset(new SerialInstruments());
 
 	std::string errorInit;
@@ -263,9 +263,9 @@ void Measurement::ReadTemperatures()
 	bool success;
 	std::string error;
 
-	success = temperatureReaders->Read(&dTemperatureCalo, &dTemperatureCage, &dTemperaturePiece);
+	success = temperatureReader->Read(&dTemperatureCalo, &dTemperatureCage, &dTemperaturePiece);
 	if (!success)
-		temperatureReaders->GetError(&error);
+		temperatureReader->GetError(&error);
 
 	if (success == false) {
 		controls.messageHandler->DisplayMessage(error);

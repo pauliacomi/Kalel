@@ -13,7 +13,7 @@ class Measurement;
 class ThreadManager
 {
 public:
-	ThreadManager(Storage &h);
+	ThreadManager(Storage &h, Controls & c);
 	~ThreadManager();
 
 private:
@@ -28,7 +28,7 @@ private:
 
 	// Storage/controls
 	Storage & storage;										// reference to storage class
-	Controls controls;
+	Controls & controls;									// reference to controls class
 
 	// Public interface methods
 public:

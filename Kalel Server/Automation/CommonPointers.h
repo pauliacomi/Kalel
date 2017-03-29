@@ -7,6 +7,7 @@
 #include "../../Kalel Shared/Com Classes/ExperimentSettings.h"
 #include "../../Kalel Shared/Com Classes/MachineSettings.h"
 #include "../../Kalel Shared/timeHelpers.h"
+#include "../Parameters/Parametres.h"
 
 
 #include <mutex>
@@ -161,6 +162,7 @@ public:
 	// Automation control
 	//**********
 
+	// mutex for thread notification
 	std::mutex automationMutex;
 	std::condition_variable automationControl;
 };
@@ -168,7 +170,11 @@ public:
 // Initializer for class
 inline Storage::Storage(void)
 {
+	//
+	// Populate Machine Settings
 	machineSettings = std::make_shared<MachineSettings>();
+	ParametersGet(*machineSettings);
+
 	currentData = std::make_shared<ExperimentData>();
 	experimentSettings = std::make_shared<ExperimentSettings>();
 	newExperimentSettings = std::make_shared<ExperimentSettings>();

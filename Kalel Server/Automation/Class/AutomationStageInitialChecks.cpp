@@ -94,7 +94,9 @@ bool Automation::VerificationResidualPressure()
 		// Display initial message
 		controls.messageHandler->DisplayMessage(MESSAGE_CHECK_INITIAL_PRESSURE);
 
-		if (storage.currentData->pressureHigh < GetPressionSecuriteBassePression() && GetMesureBassePression() && GetMesureHautePression())
+		if (storage.currentData->pressureHigh < storage.machineSettings->PressionSecuriteBassePression 
+			&& storage.machineSettings->HighPressureToMeasure 
+			&& storage.machineSettings->LowPressureToMeasure)
 		{
 			// Tell GUI we are opening valve 6
 			controls.messageHandler->DisplayMessage(MESSAGE_CHECK_OPENV6_POSSIB, storage.currentData->pressureHigh);
@@ -132,9 +134,9 @@ bool Automation::VerificationResidualPressure()
 		&& storage.currentData->experimentWaiting == false)							// If waiting is done
 	{
 		// Check residual pressure
-		if (storage.currentData->pressureHigh >= GetPressionLimiteVide())
+		if (storage.currentData->pressureHigh >= storage.machineSettings->PressionLimiteVide)
 		{
-			controls.messageHandler->DisplayMessageBox(MESSAGE_WARNING_INITIAL_PRESSURE, MB_ICONQUESTION | MB_OKCANCEL, true, storage.currentData->pressureHigh, GetPressionLimiteVide());
+			controls.messageHandler->DisplayMessageBox(MESSAGE_WARNING_INITIAL_PRESSURE, MB_ICONQUESTION | MB_OKCANCEL, true, storage.currentData->pressureHigh, storage.machineSettings->PressionLimiteVide);
 			eventPause = true;
 			storage.automationControl.notify_all();
 		}

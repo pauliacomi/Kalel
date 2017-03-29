@@ -11,8 +11,9 @@ public:
 
 	void GetLogs(std::string &logs);
 protected:
-	Storage storageVectors;
 	Server server;
+	Storage storageVectors;
+	Controls controlMechanisms;
 	ThreadManager threadManager;
 
 	void Ping(http_request* req, http_response* resp);

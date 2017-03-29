@@ -52,7 +52,7 @@ void Automation::BottleVacuum()
 		&& storage.currentData->experimentWaiting == false)
 	{
 		if (storage.currentData->experimentWaiting == false) {
-			if (storage.currentData->pressureHigh > GetPressionSecuriteBassePression()) {
+			if (storage.currentData->pressureHigh > storage.machineSettings->PressionSecuriteBassePression) {
 
 				// Open, then close v8 and v7
 				controls.valveControls->ValveOpen(8, true);

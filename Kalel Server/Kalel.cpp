@@ -20,7 +20,8 @@
 using json = nlohmann::json;
 
 Kalel::Kalel()
-	: threadManager{ storageVectors }
+	: controlMechanisms {storageVectors}
+	, threadManager{ storageVectors, controlMechanisms}
 {
 	//
 	// Check to see whether the parameters file has been created
@@ -29,11 +30,6 @@ Kalel::Kalel()
 		ParametersInit();		// If not, create it
 	}
 
-	//
-	// Populate Machine Settings
-	auto newMachineSettings = std::make_shared<MachineSettings>();
-	ParametersGet(*newMachineSettings);
-	storageVectors.setmachineSettings(newMachineSettings);
 	// Set path
 	storageVectors.experimentSettings->dataGeneral.chemin = storageVectors.machineSettings->CheminFichierGeneral;
 	storageVectors.newExperimentSettings->dataGeneral.chemin = storageVectors.machineSettings->CheminFichierGeneral;
@@ -108,7 +104,7 @@ Kalel::~Kalel()
 void Kalel::GetLogs(std::string &logs) {
 	logs.clear();
 
-	auto localCollection = storageVectors.getErrLogs();
+	auto localCollection = storageVectors.getInfoLogs();
 
 	for (auto it = localCollection.begin(); it != localCollection.end(); ++it)
 	{

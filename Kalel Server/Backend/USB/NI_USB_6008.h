@@ -1,13 +1,16 @@
+//*****************************************************************************************************
+//
+//	This class is the implementation for the National Instruments Controller
+//	used for controlling the valves and pump
+//
+//*****************************************************************************************************
+
 #ifndef NI_USB_6008_H_
 #define NI_USB_6008_H_
 #pragma once
 
 #include "NIDAQmx.h"
-#include <math.h>
 #include <string>
-
-#define ouvert 1
-#define ferme  0
 
 class NI_USB_6008
 {
@@ -16,24 +19,38 @@ public:
 	NI_USB_6008(int dev);
 	~NI_USB_6008(void);
 	
-	int DevNI_USB_6008;								// USB port
-
-	int etatPort0[8];								// Array for keeping port states
-	int etatPort1[4];								// Array for keeping port states
-
-
-	int GetDevNI_USB_6008();						// Get USB port
-	void SetDevNI_USB_6008(int dev);				// Set USB port
-
 private:
-	bool ActionPort0();
-	bool ActionPort1();
-	bool ActionDigital(char chan[], uInt32 w_data[]);
-	std::string errorKeep;
+
+	//*************************
+	// Parameters for writing
+	//*************************
+	int DevNI_USB_6008;								// USB port
+	uInt8 etatPort0[8] = { 0 };						// Array for keeping port 0 states
+	uInt8 etatPort1[8] = { 0 };						// Array for keeping port 1 states
+
+	std::string errorKeep;							// C++ string of error
+
+	// Read/Write parameters
+	static const uInt32 bufferSize	= 8;
+	int32		samplesPerChannel	= 1;
+	bool32		autostart			= true;
+	float64     timeout				= 10.0f;
+
+	// Read/write functions
+	bool ReadPort0();
+	bool ReadPort1();
+	bool WritePort0();
+	bool WritePort1();
+	bool ReadDigital(char chan[], uInt8 w_data[]);
+	bool WriteDigital(char chan[], uInt8 w_data[]);
 
 public:
 	
+	int GetDevNI_USB_6008();						// Get USB port
+	void SetDevNI_USB_6008(int dev);				// Set USB port
+
 	// Functions to open / close a particular bit from a port or all bits
+	bool SetPortCustom(int port, unsigned int customarray[8]);
 
 	bool OuvrirPort0(int num);
 	bool FermerPort0(int num);
