@@ -304,20 +304,20 @@ void CKalelView::OnTimer(UINT_PTR nIDEvent)
 			if (nIDEvent == dataTimer)
 			{
 				// Request ongoing sync
-				commHandler.Sync(false, TimePointToString(experimentSettingsTime), TimePointToString(machineSettingsTime), TimePointToString(machineStateTime));
+				commHandler.Sync(false, timeh::TimePointToString(experimentSettingsTime), timeh::TimePointToString(machineSettingsTime), timeh::TimePointToString(machineStateTime));
 
 				// Send the request for data
-				commHandler.GetData(TimePointToString(dataCollection.rbegin()->first));
+				commHandler.GetData(timeh::TimePointToString(dataCollection.rbegin()->first));
 
 				// Send the request for logs
 				if (!logCollection.empty())
-					commHandler.GetLog(TimePointToString(logCollection.rbegin()->first));
+					commHandler.GetLog(timeh::TimePointToString(logCollection.rbegin()->first));
 				else
 					commHandler.GetLog();
 
 				// Send the request for user input
 				if (!requestCollection.empty())
-					commHandler.GetRequests(TimePointToString(requestCollection.rbegin()->first));
+					commHandler.GetRequests(timeh::TimePointToString(requestCollection.rbegin()->first));
 				else
 					commHandler.GetRequests();
 
@@ -575,7 +575,7 @@ LRESULT CKalelView::OnServerDisconnected(WPARAM, LPARAM)
 LRESULT CKalelView::OnSync(WPARAM, LPARAM)
 {
 	// Make sure buttons are updated
-	if (experimentSettings->experimentType != EXPERIMENT_TYPE_UNDEF) {
+	if (experimentSettings && experimentSettings->experimentType != EXPERIMENT_TYPE_UNDEF) {
 		pApp->experimentRunning = true;
 		pApp->menuIsAvailable = false;
 	}
@@ -594,7 +594,7 @@ LRESULT CKalelView::OnExchangeMachineSettings(WPARAM, LPARAM incomingMachineSett
 {
 	// Get the incoming pointer
 	machineSettings.reset(reinterpret_cast<MachineSettings*>(incomingMachineSettings));
-	machineSettingsTime = NowTime();
+	machineSettingsTime = timeh::NowTime();
 
 	// Update GUI
 	OnSync(NULL, NULL);
@@ -606,7 +606,7 @@ LRESULT CKalelView::OnSetMachineSettings(WPARAM, LPARAM)
 {
 	// Make the temporary local version official
 	machineSettings = tempMchSettings;
-	machineSettingsTime = NowTime();
+	machineSettingsTime = timeh::NowTime();
 	tempMchSettings.reset();
 
 	// Update GUI
@@ -619,7 +619,7 @@ LRESULT CKalelView::OnExchangeExperimentSettings(WPARAM wParam, LPARAM incomingE
 {
 	// Get the incoming pointer
 	experimentSettings.reset(reinterpret_cast<ExperimentSettings*>(incomingExperimentSettings));
-	experimentSettingsTime = NowTime();
+	experimentSettingsTime = timeh::NowTime();
 
 	// Update GUI
 	OnSync(NULL, NULL);
@@ -631,7 +631,7 @@ LRESULT CKalelView::OnSetExperimentSettings(WPARAM, LPARAM)
 {
 	// Make the temporary local version official
 	experimentSettings = tempExpSettings;
-	experimentSettingsTime = NowTime();
+	experimentSettingsTime = timeh::NowTime();
 	tempExpSettings.reset();
 
 	// Update GUI
@@ -648,7 +648,7 @@ LRESULT CKalelView::OnExchangeInstrumentState(WPARAM wParam, LPARAM incomingInst
 	buttonStates.Update(*maParam);
 
 	// Update buttons
-	machineStateTime = NowTime();
+	machineStateTime = timeh::NowTime();
 
 	// Update GUI
 	OnSync(NULL, NULL);
@@ -692,7 +692,7 @@ LRESULT CKalelView::OnExchangeLogs(WPARAM, LPARAM incomingLogs)
 	CString * temp = new CString();
 	for (auto i = newLogs->begin(); i != newLogs->end(); ++i)
 	{
-		CString time(TimePointToString(i->first).c_str());
+		CString time(timeh::TimePointToString(i->first).c_str());
 		CString log(i->second.c_str());
 		temp->Append(time + " " + log + _T("\r\n"));
 	}

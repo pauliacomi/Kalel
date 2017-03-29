@@ -536,7 +536,7 @@ unsigned CommHandler::GetMachineSettings_resp(http_response* r) {
 
 			try
 			{
-				serialization::deserializeJSONtoMachineSettings(j, receivedSettings);
+				receivedSettings = j;
 			}
 			catch (const std::exception& e)
 			{
@@ -576,7 +576,7 @@ unsigned CommHandler::SetMachineSettings_req(http_request* r) {
 	json j;
 	try
 	{
-		serialization::serializeMachineSettingsToJSON(*localMachineSettings, j);
+		j = *localMachineSettings;
 	}
 	catch (const std::exception& e)
 	{
@@ -641,7 +641,7 @@ unsigned CommHandler::GetExperimentSettings_resp(http_response* r) {
 
 			try
 			{
-				serialization::deserializeJSONtoExperimentSettings(j, receivedSettings);
+				receivedSettings = j;
 			}
 			catch (const std::exception& e)
 			{
@@ -681,7 +681,7 @@ unsigned CommHandler::SetExperimentSettings_req(http_request* r) {
 	json j;
 	try
 	{
-		serialization::serializeExperimentSettingsToJSON(*localExperimentSettings, j);
+		j = *localExperimentSettings;
 	}
 	catch (const std::exception& e)
 	{
@@ -746,7 +746,7 @@ unsigned CommHandler::GetInstrumentState_resp(http_response * r)
 		//////////////////////////////////////////////
 		try
 		{
-			serialization::deserializeJSONtoControlInstrumentState(j, instrumentState);
+			instrumentState = j;
 		}
 		catch (const std::exception& e)
 		{
@@ -867,16 +867,15 @@ unsigned CommHandler::GetData_resp(http_response* r) {
 
 			// Deserialise Data
 			//////////////////////////////////////////////
-			std::shared_ptr<ExperimentData> receivedData = nullptr;
 			auto receivedDataArray = new ExperimentDataStorageArray();
 
 			for (json::iterator i = j.begin(); i != j.end(); ++i)
 			{
-				receivedData = std::make_shared<ExperimentData>();
+				std::shared_ptr<ExperimentData> receivedData = nullptr;
 				json j2 = j[i.key()];
 				try
 				{
-					serialization::deserializeJSONtoExperimentData(j2, *receivedData);
+					receivedData = std::make_shared<ExperimentData>(j2);
 				}
 				catch (const std::exception& e)
 				{
@@ -884,7 +883,7 @@ unsigned CommHandler::GetData_resp(http_response* r) {
 					delete receivedDataArray;
 					return 1;
 				}
-				receivedDataArray->insert(std::make_pair(StringToTimePoint(i.key()), receivedData));
+				receivedDataArray->insert(std::make_pair(timeh::StringToTimePoint(i.key()), receivedData));
 			}																													 
 
 			messageHandler.ExchangeData(receivedDataArray);
@@ -964,7 +963,7 @@ unsigned CommHandler::GetLogs_resp(http_response * r)
 					delete receivedLogArray;
 					return 1;
 				}
-				receivedLogArray->insert(std::make_pair(StringToTimePoint(i.key()), receivedLog));
+				receivedLogArray->insert(std::make_pair(timeh::StringToTimePoint(i.key()), receivedLog));
 			}
 
 			messageHandler.ExchangeLogs(receivedLogArray);
@@ -1039,7 +1038,7 @@ unsigned CommHandler::GetRequest_resp(http_response * r)
 					delete receivedReqArray;
 					return 1;
 				}
-				receivedReqArray->insert(std::make_pair(StringToTimePoint(i.key()), receivedReq));
+				receivedReqArray->insert(std::make_pair(timeh::StringToTimePoint(i.key()), receivedReq));
 			}
 			messageHandler.ExchangeRequests(receivedReqArray);
 
