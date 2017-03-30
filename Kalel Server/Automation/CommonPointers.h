@@ -127,7 +127,14 @@ public:
 		std::unique_lock<std::mutex> lock(machineSettingsMutex);
 		machineSettings = i;
 		machineSettingsChanged = timeh::NowTime();
+		lock.unlock();
 	}
+
+	//**********
+	// Control State
+	//**********
+	
+	std::chrono::system_clock::time_point controlStateChanged;													// Time when control state changed
 
 	//**********
 	// Experiment Settings
@@ -179,8 +186,14 @@ inline Storage::Storage(void)
 	experimentSettings = std::make_shared<ExperimentSettings>();
 	newExperimentSettings = std::make_shared<ExperimentSettings>();
 
+	// initialise control state times
+	controlStateChanged = timeh::NowTime();
 	machineSettingsChanged = timeh::NowTime();
 	experimentSettingsChanged = timeh::NowTime();
+
+	// Set path
+	experimentSettings->dataGeneral.chemin = machineSettings->CheminFichierGeneral;
+	newExperimentSettings->dataGeneral.chemin = machineSettings->CheminFichierGeneral;
 }
 
 inline Storage::~Storage(void)

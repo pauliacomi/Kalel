@@ -263,7 +263,6 @@ void ValveController::SetReadPort(int port)
 {
 	// Lock for the remainder of function
 	std::lock_guard<std::mutex> lk(ctrlmutex);
-
 	return NI_USB_6008::SetDevNI_USB_6008(port);	
 }
 

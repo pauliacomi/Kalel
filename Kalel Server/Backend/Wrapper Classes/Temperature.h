@@ -12,6 +12,8 @@
 
 #include "../USB/NI_USB_9211A.h"
 
+#include <mutex>
+
 class TemperatureInstruments :
 	public NI_USB_9211A
 {
@@ -38,6 +40,9 @@ public:
 
 	// Set the port for temperature readings
 	void SetReadPort(int port);
+
+private:
+	std::mutex ctrlmutex;						// locks to prevent clash of threads 
 };
 
 #endif

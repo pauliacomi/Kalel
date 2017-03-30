@@ -1,17 +1,16 @@
 #include "SerialInstruments.h"
 
+#include "../../MessageHandler.h"
 #include "../RS232/Keithley.h"
 #include "../RS232/Mensor.h"
 
 #include "../../Parameters/Parametres.h"
 #include "../../../Kalel Shared/Resources/DefineInstruments.h"
+#include "../../../Kalel Shared/Resources/DefineText.h"
 
 
-SerialInstruments::SerialInstruments()
-	:keithleyInitiated(false)
-	,keithley(nullptr)
-	,mens_LowRange(nullptr)
-	,mens_HighRange(nullptr)
+SerialInstruments::SerialInstruments(MessageHandler & messageHandler)
+	: messageHandler{ messageHandler }
 {
 	// This loop goes through all the instruments in the Parameters file
 	// Depending on the type of instruments it will output parameters for
@@ -27,9 +26,9 @@ SerialInstruments::SerialInstruments()
 	// * Channel:		the channel that has to be read (only makes sense for a keithley)
 	//
 
-	calorimeter = INSTRUMENT_INEXIST;
-	pressureLowRange = INSTRUMENT_INEXIST;
-	pressureHighRange = INSTRUMENT_INEXIST;
+	calorimeter			= INSTRUMENT_INEXIST;
+	pressureLowRange	= INSTRUMENT_INEXIST;
+	pressureHighRange	= INSTRUMENT_INEXIST;
 
 	for (int i = 1; i <= GetNumberInstruments(); i++)
 	{
@@ -122,6 +121,11 @@ SerialInstruments::SerialInstruments()
 	}
 
 	// Now the init function can be called
+	std::string errorInit;
+	if (!Init(&errorInit))
+	{
+		messageHandler.DisplayMessageBox(MESSAGE_INSTRUMENT_INIT_FAIL, MB_ICONERROR | MB_OK, false, errorInit);
+	}
 }
 
 
@@ -163,7 +167,6 @@ bool SerialInstruments::Init(std::string * errorInit)
 		*errorInit = *errorInit + tempErr + "\n";;
 		successs = false;
 	}
-	
 	return successs;
 }
 

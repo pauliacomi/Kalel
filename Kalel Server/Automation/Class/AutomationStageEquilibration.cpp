@@ -18,7 +18,6 @@ void Automation::StageEquilibration()
 
 		// This is where we start recording
 		storage.currentData->experimentRecording = true;
-		controls.messageHandler->GraphReset();
 
 		// Create, open and write the columns in the:
 		bool err = false;

@@ -30,54 +30,40 @@ Kalel::Kalel()
 		ParametersInit();		// If not, create it
 	}
 
-	// Set path
-	storageVectors.experimentSettings->dataGeneral.chemin = storageVectors.machineSettings->CheminFichierGeneral;
-	storageVectors.newExperimentSettings->dataGeneral.chemin = storageVectors.machineSettings->CheminFichierGeneral;
-
 	//
 	// Start server functionality
 	server.SetLogs(storageVectors.serverLogs, storageVectors.serverLogsMtx);
 
 	server.AddMethod(
-		std::bind(&Kalel::Ping, this, std::placeholders::_1, std::placeholders::_2), 
-		"/api/handshake"
-	);
+		std::bind(&Kalel::Ping,						this, std::placeholders::_1, std::placeholders::_2), 
+													"/api/handshake");
 	server.AddMethod(
-		std::bind(&Kalel::Sync, this, std::placeholders::_1, std::placeholders::_2),
-		"/api/sync"
-	);
+		std::bind(&Kalel::Sync,						this, std::placeholders::_1, std::placeholders::_2),
+													"/api/sync");
 	server.AddMethod(
-		std::bind(&Kalel::MachineSettingsSync, this, std::placeholders::_1, std::placeholders::_2), 
-		"/api/machinesettings"
-	);
+		std::bind(&Kalel::MachineSettingsSync,		this, std::placeholders::_1, std::placeholders::_2), 
+													"/api/machinesettings");
 	server.AddMethod(
-		std::bind(&Kalel::ExperimentSettingsSync, this, std::placeholders::_1, std::placeholders::_2), 
-		"/api/experimentsettings"
-	); 
+		std::bind(&Kalel::ExperimentSettingsSync,	this, std::placeholders::_1, std::placeholders::_2), 
+													"/api/experimentsettings");
 	server.AddMethod(
-		std::bind(&Kalel::InstrumentStateSync, this, std::placeholders::_1, std::placeholders::_2), 
-		"/api/instrument"
-	);
+		std::bind(&Kalel::InstrumentStateSync,		this, std::placeholders::_1, std::placeholders::_2), 
+													"/api/instrument");
 	server.AddMethod(
-		std::bind(&Kalel::DataSync, this, std::placeholders::_1, std::placeholders::_2), 
-		"/api/experimentdata"
-	);
+		std::bind(&Kalel::DataSync,					this, std::placeholders::_1, std::placeholders::_2), 
+													"/api/experimentdata");
 	server.AddMethod(
-		std::bind(&Kalel::LogSync, this, std::placeholders::_1, std::placeholders::_2), 
-		"/api/experimentlogs"
-	);
+		std::bind(&Kalel::LogSync,					this, std::placeholders::_1, std::placeholders::_2), 
+													"/api/experimentlogs");
 	server.AddMethod(
-		std::bind(&Kalel::RequestSync, this, std::placeholders::_1, std::placeholders::_2),
-		"/api/experimentrequests"
-	);
+		std::bind(&Kalel::RequestSync,				this, std::placeholders::_1, std::placeholders::_2),
+													"/api/experimentrequests");
 	server.AddMethod(
-		std::bind(&Kalel::AutomationControl, this, std::placeholders::_1, std::placeholders::_2),
-		"/api/thread"
-	);
+		std::bind(&Kalel::AutomationControl,		this, std::placeholders::_1, std::placeholders::_2),
+													"/api/thread");
 	server.AddMethod(
-		std::bind(&Kalel::Debug, this, std::placeholders::_1, std::placeholders::_2), 
-		"/api/debug/testconnection"
-	);
+		std::bind(&Kalel::Debug,					this, std::placeholders::_1, std::placeholders::_2), 
+													"/api/debug/testconnection");
 
 	server.Start();
 
@@ -172,13 +158,12 @@ void Kalel::Sync(http_request* req, http_response* resp)
 					timeES = false;
 			}
 
-			// TODO make this an actual value instead of machineSettingsChanged
 			// ControlState
 			if (req->params_.at("CS").empty()) {
 				timeCS = false;
 			}
 			else {
-				if (timeh::StringToTimePoint(req->params_.at("CS")) > storageVectors.machineSettingsChanged)
+				if (timeh::StringToTimePoint(req->params_.at("CS")) > storageVectors.controlStateChanged)
 					timeCS = true;
 				else
 					timeCS = false;
@@ -189,9 +174,9 @@ void Kalel::Sync(http_request* req, http_response* resp)
 			j2["ES"] = timeES;
 			j2["CS"] = timeCS;
 
-			resp->status_ = http::responses::ok;
+			resp->status_		= http::responses::ok;
 			resp->content_type_ = http::mimetype::appjson;
-			resp->answer_ = j2.dump();
+			resp->answer_		= j2.dump();
 		}
 	}
 }
@@ -212,9 +197,9 @@ void Kalel::MachineSettingsSync(http_request* req, http_response* resp)
 	{
 		json j = *storageVectors.machineSettings;
 		
-		resp->status_ = http::responses::ok;
+		resp->status_		= http::responses::ok;
 		resp->content_type_ = http::mimetype::appjson;
-		resp->answer_ = j.dump();
+		resp->answer_		= j.dump();
 	}
 
 	// SET
@@ -225,13 +210,13 @@ void Kalel::MachineSettingsSync(http_request* req, http_response* resp)
 			// Parse the input
 			auto j = json::parse(req->entity_.c_str());
 			
-			// Save to memory
-			auto newMachineSettings = std::make_shared<MachineSettings>();
-			*newMachineSettings = j;
-			storageVectors.setmachineSettings(newMachineSettings);
+			// Create new settings
+			storageVectors.setmachineSettings(std::make_shared<MachineSettings>(j));
+			// Ensure all changes
+			controlMechanisms.on_setmachineSettings();
 
 			// Save to file
-			ParametersReplace(*newMachineSettings);
+			ParametersReplace(*storageVectors.machineSettings);
 
 			resp->status_ = http::responses::ok;
 		}
@@ -271,10 +256,9 @@ void Kalel::ExperimentSettingsSync(http_request* req, http_response* resp)
 			// Parse the input
 			auto j = json::parse(req->entity_.c_str());
 
-			auto newExpSettings = std::make_shared<ExperimentSettings>();
-			*newExpSettings = j;
-			storageVectors.setnewExperimentSettings(newExpSettings);
-
+			// Create new experiment settings
+			storageVectors.setnewExperimentSettings(std::make_shared<ExperimentSettings>(j));
+			// Ensure all changes
 			threadManager.SetModifiedData();
 
 			resp->status_ = http::responses::ok;
@@ -333,7 +317,7 @@ void Kalel::InstrumentStateSync(http_request* req, http_response* resp)
 			auto instrumentState = To<bool>(req->params_.at("active"));
 
 
-			threadManager.ThreadManualAction(instrumentType, instrumentNumber, instrumentState);		// Should have a future/promise here
+			threadManager.ThreadManualAction(instrumentType, instrumentNumber, instrumentState);		// TODO: Should have a better way
 
 			ControlInstrumentState instrumentStates(threadManager.GetInstrumentStates());
 			json j = instrumentStates;

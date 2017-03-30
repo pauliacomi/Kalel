@@ -6,11 +6,12 @@
 
 class Keithley;
 class Mensor;
+class MessageHandler;
 
 class SerialInstruments
 {
 public:
-	SerialInstruments();
+	SerialInstruments(MessageHandler & messageHandler);
 	~SerialInstruments();
 
 protected:
@@ -26,14 +27,14 @@ protected:
 	int pressureLowRangeChannel;
 	int pressureHighRangeChannel;
 
-	bool keithleyInitiated;
+	bool keithleyInitiated	= false;
 
 	// There is only one Keithley
-	Keithley * keithley;
+	Keithley * keithley		= nullptr;
 
 	// And up to two mensors
-	Mensor * mens_LowRange;
-	Mensor * mens_HighRange;
+	Mensor * mens_LowRange	= nullptr;
+	Mensor * mens_HighRange	= nullptr;
 
 	// Converter
 	FluxConverter converter;
@@ -53,5 +54,8 @@ public:
 	void GetErrorCalrimeter(std::string * err);
 	void GetErrorLowRange(std::string * err);
 	void GetErrorHighRange(std::string * err);
+
+private:
+	MessageHandler & messageHandler;
 };
 

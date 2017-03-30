@@ -20,5 +20,8 @@ bool TemperatureInstruments::ReadRoom(double* Temperature_Piece)
 int TemperatureInstruments::GetReadPort()
 {	return NI_USB_9211A::GetDevNI_USB_9211A();		}
 
-void TemperatureInstruments::SetReadPort(int port)
-{	return NI_USB_9211A::SetDevNI_USB_9211A(port);	}
+void TemperatureInstruments::SetReadPort(int port) {		
+	// Lock for the remainder of function
+	std::lock_guard<std::mutex> lk(ctrlmutex);
+	return NI_USB_9211A::SetDevNI_USB_9211A(port);	
+}
