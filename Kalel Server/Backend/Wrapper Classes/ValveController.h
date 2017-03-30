@@ -2,12 +2,9 @@
 #define _VANNE_H_
 #pragma once
 
-
-#include <stdio.h>
-#include <tchar.h>
-
 #include "../USB/NI_USB_6008.h"
-#include "../../Parameters/Parametres.h"
+
+#include <mutex>
 
 class MessageHandler;
 
@@ -15,13 +12,11 @@ class ValveController :
 	public NI_USB_6008
 {
 public:
-	ValveController(MessageHandler & messageHandler);
+	ValveController(MessageHandler & messageHandler, int port);
 	~ValveController(void);
 
 	bool ValveOpen(int num, bool verbose);		// Open a valve
 	bool ValveClose(int num, bool verbose);		// Close a valve
-
-	bool ValveOpenClose(int num, bool verbose); // Open, then close a valve
 
 	bool EVActivate(int num, bool verbose);		// Activate EV
 	bool EVDeactivate(int num, bool verbose);	// Deactivate EV
@@ -36,18 +31,18 @@ public:
 	// Checks for activation
 
 	bool ValveIsOpen(int num);
-	bool ValveIsClosed(int num);
 	bool EV1IsActive();
-	bool EV1IsInactive();
 	bool EV2IsActive();
-	bool EV2IsInactive();
 	bool PumpIsActive();
-	bool PumpIsInactive();
 
-	// Get the USB port
-	int PortUSB();
+	// Get the port
+	int GetReadPort();
+
+	// Set the port
+	void SetReadPort(int port);
 
 private:
+	std::mutex ctrlmutex;						// locks to prevent clash of threads 
 	MessageHandler & messageHandler;
 };
 

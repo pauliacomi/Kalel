@@ -8,11 +8,6 @@
 #include <string>
 #include <memory>
 
-// forward declarations
-class TemperatureInstruments;
-class SerialInstruments;
-class Storage;
-
 class Measurement
 {
 public:
@@ -30,11 +25,6 @@ public:
 	// Inherited
 	Storage & storage;
 	Controls & controls;
-	
-	// New
-	std::unique_ptr<TemperatureInstruments> temperatureReaders;									// Pointer to the class that deals with temperature recording
-	std::unique_ptr<SerialInstruments> serialReaders;						// Pointer to the class that deals with calorimeter & pressure recording
-	std::unique_ptr<Security> security;
 
 	//------------------------------------------------------------
 	// Syncronisation primitives and threads

@@ -63,7 +63,7 @@ BEGIN_MESSAGE_MAP(CKalelView, CFormView)
 	ON_MESSAGE(UWM_SET_MACHINESETTINGS,				&CKalelView::OnSetMachineSettings)				// Callback on notify of server-side changed MachineSettings
 	ON_MESSAGE(UWM_EXCHANGE_MACHINESETTINGS,		&CKalelView::OnExchangeMachineSettings)			// Callback to notify of received MachineSettings
 	ON_MESSAGE(UWM_EXCHANGESTATE,					&CKalelView::OnExchangeInstrumentState)			// Calls to update all button pairs and associated display on a manual message
-	ON_MESSAGE(UWM_EXCHANGESTATESPECIFIC,			&CKalelView::OnInstrumentButtonConfirmed)		// Calls to update a specific button pair and associated display on a manual message
+	ON_MESSAGE(UWM_EXCHANGESTATESPECIFIC,			&CKalelView::OnSetInstrumentState)		// Calls to update a specific button pair and associated display on a manual message
 	ON_MESSAGE(UWM_SET_EXPERIMENTSETTINGS,			&CKalelView::OnSetExperimentSettings)			// Callback on notify of server-side changed MachineSettings
 	ON_MESSAGE(UWM_EXCHANGE_EXPERIMENTSETTINGS,		&CKalelView::OnExchangeExperimentSettings)		// Callback to notify of received ExperimetnSettings
 	ON_MESSAGE(UWM_EXCHANGEDATA,					&CKalelView::OnExchangeData)					// Callback to notify of incoming ExperimentData array
@@ -647,7 +647,7 @@ LRESULT CKalelView::OnExchangeInstrumentState(WPARAM wParam, LPARAM incomingInst
 	std::auto_ptr<ControlInstrumentState> maParam(reinterpret_cast<ControlInstrumentState*>(incomingInstrumentState));
 	buttonStates.Update(*maParam);
 
-	// Update buttons
+	// Set time
 	machineStateTime = timeh::NowTime();
 
 	// Update GUI
@@ -656,7 +656,7 @@ LRESULT CKalelView::OnExchangeInstrumentState(WPARAM wParam, LPARAM incomingInst
 	return 0;
 }
 
-LRESULT CKalelView::OnInstrumentButtonConfirmed(WPARAM wParam, LPARAM incomingInstrumentState) {
+LRESULT CKalelView::OnSetInstrumentState(WPARAM wParam, LPARAM incomingInstrumentState) {
 
 	// Cast the parameters object and take ownership
 	std::auto_ptr<ControlInstrumentStateData> maParam(reinterpret_cast<ControlInstrumentStateData*>(incomingInstrumentState));

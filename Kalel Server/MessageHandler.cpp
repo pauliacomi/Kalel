@@ -130,7 +130,6 @@ bool MessageHandler::ExperimentStart()
 {
 	DisplayMessage(MESSAGE_FILLLINE);
 	DisplayMessage(MESSAGE_EXPSTART);
-	GraphReset();
 
 	return true;
 }
@@ -138,7 +137,6 @@ bool MessageHandler::ExperimentStart()
 bool MessageHandler::ExperimentEnd()
 {
 	DisplayMessage(MESSAGE_FILLLINE);
-	GraphReset();
 
 	return true;
 }
@@ -146,13 +144,6 @@ bool MessageHandler::ExperimentEnd()
 bool MessageHandler::ThreadShutdown()
 {
 	DisplayMessage(MESSAGE_THREAD_SHUTTINGDOWN);
-	GraphReset();
 
-	return true;
-}
-
-
-bool MessageHandler::GraphReset()
-{
 	return true;
 }

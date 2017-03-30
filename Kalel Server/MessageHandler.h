@@ -44,7 +44,6 @@ public:
 	bool ExperimentStart();
 	bool ExperimentEnd();
 	bool ThreadShutdown();
-	bool GraphReset();
 	bool ExchangeData(const ExperimentData &pParam);
 
 	bool DisplayMessage(std::string pParam, int pInt1 = default_val, int pInt2 = default_val, double pDouble = default_val);							// Simple display message which takes an int

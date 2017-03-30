@@ -59,7 +59,7 @@ void Security::SecurityHighPressureManual(float maxPlow, float maxPhigh, const E
 	}
 	else
 	{
-		if (valveController.ValveIsClosed(6))
+		if (!valveController.ValveIsOpen(6))
 		{
 			valveController.ValveOpen(6, false);
 			messageHandler.DisplayMessage(MESSAGE_VALVE_OPENED, 6);
@@ -112,7 +112,7 @@ void Security::SecurityHighPressureAuto(float maxPlow, float maxPhigh, const Exp
 			}
 			else
 			{
-				if (valveController.ValveIsClosed(6))
+				if (!valveController.ValveIsOpen(6))
 				{
 					valveController.ValveOpen(6, false);
 					messageHandler.DisplayMessage(MESSAGE_VALVE_OPENED, 6);

@@ -1,20 +1,14 @@
 #include "Measurement.h"
 
 // Resources
-#include "../../../Kalel Shared/Resources/DefineText.h"					// Definitions for the text in the messages
+#include "../../../Kalel Shared/Resources/DefineText.h"						// Definitions for the text in the messages
 #include "../../../Kalel Shared/Resources/DefineAutomationSettings.h"		// All settings for automation are stored here
 
 // Synchronization classes
 #include "../../../Kalel Shared/Com Classes/ExperimentData.h"
 
-// Measurement classes
-#include "../../Backend/Wrapper Classes/Temperature.h"						// Temperature recording
-#include "../../Backend/Wrapper Classes/SerialInstruments.h"				// Pressure & Calorimeter recording
-
 // Utilities
 #include "../../../Kalel Shared/timeHelpers.h"
-#include "../../../Kalel Server/Automation/FileWriter.h"					// Writing file
-#include "../../../Kalel Server/Backend/Wrapper Classes/ValveController.h"	// Valve class
 
 // std::functionality
 #include <string>
@@ -25,22 +19,6 @@ Measurement::Measurement(Storage &s, Controls &c)
 	: storage{ s }
 	, controls{ c }
 {
-	// Initialise instruments
-	temperatureReaders.reset(new TemperatureInstruments()); 
-	serialReaders.reset(new SerialInstruments());
-
-	std::string errorInit;
-	if (!serialReaders->Init(&errorInit))
-	{
-		controls.messageHandler->DisplayMessageBox(MESSAGE_INSTRUMENT_INIT_FAIL, MB_ICONERROR | MB_OK, false, errorInit);
-	}
-
-	// Initialise security;
-	security.reset(new Security(
-		storage.machineSettings->ActivationSecurite, 
-		*controls.valveControls,								
-		*controls.messageHandler)
-			);
 }
 
 
@@ -51,7 +29,7 @@ Measurement::~Measurement()
 ////////////////////////////////////////////////////////
 //	Main execution function
 //
-//	This is an infinite loop which has to be broken form inside
+//	This is an infinite loop which has to be broken from inside
 //	The general flowchart goes as follows:
 //	
 //	initialize everything
@@ -94,14 +72,14 @@ void Measurement::Execution()
 		*/
 
 		// Do the security checks
-		security->SecurityTemperatures(
+		controls.security->SecurityTemperatures(
 			storage.experimentSettings->experimentType,											// Experiment type to ensure proper response
 			storage.currentData->temperatureCalo + securite_temperature,						// Maximum temperature limit
 			storage.currentData->temperatureCalo - securite_temperature,						// Minimum temperature limit
 			*storage.currentData																// Current data recorded to do the checks
 			);
 
-		security->SecurityHighPressure(															
+		controls.security->SecurityHighPressure(
 			storage.experimentSettings->experimentType,											// Experiment type to ensure proper response
 			storage.machineSettings->PressionSecuriteBassePression,								// Maximum pressure limit
 			storage.machineSettings->PressionSecuriteHautePression,								// Minimum pressure limit
@@ -151,8 +129,6 @@ void Measurement::Execution()
 
 
 
-
-
 void Measurement::ThreadMeasurement()
 {
 	// Start the 4 threads
@@ -192,9 +168,9 @@ void Measurement::ReadCalorimeter()
 	bool success;
 	std::string error;
 
-	success = serialReaders->ReadCalorimeter(&calorimeter);
+	success = controls.serialReaders->ReadCalorimeter(&calorimeter);
 	if (!success)
-		serialReaders->GetErrorCalrimeter(&error);
+		controls.serialReaders->GetErrorCalrimeter(&error);
 
 	if (success == false) {
 		controls.messageHandler->DisplayMessage(error);
@@ -216,9 +192,9 @@ void Measurement::ReadLowPressure()
 	bool success;
 	std::string error;
 
-	success = serialReaders->ReadPressureLowRange(&pressureLowRange);
+	success = controls.serialReaders->ReadPressureLowRange(&pressureLowRange);
 	if (!success)
-		serialReaders->GetErrorLowRange(&error);
+		controls.serialReaders->GetErrorLowRange(&error);
 
 	if (success == false) {
 		controls.messageHandler->DisplayMessage(error);
@@ -240,9 +216,9 @@ void Measurement::ReadHighPressure()
 	bool success;
 	std::string error;
 
-	success = serialReaders->ReadPressureHighRange(&pressureHighRange);
+	success = controls.serialReaders->ReadPressureHighRange(&pressureHighRange);
 	if (!success)
-		serialReaders->GetErrorHighRange(&error);
+		controls.serialReaders->GetErrorHighRange(&error);
 
 	if (success == false) {
 		controls.messageHandler->DisplayMessage(error);
@@ -263,9 +239,9 @@ void Measurement::ReadTemperatures()
 	bool success;
 	std::string error;
 
-	success = temperatureReaders->Read(&dTemperatureCalo, &dTemperatureCage, &dTemperaturePiece);
+	success = controls.temperatureReader->Read(&dTemperatureCalo, &dTemperatureCage, &dTemperaturePiece);
 	if (!success)
-		temperatureReaders->GetError(&error);
+		controls.temperatureReader->GetError(&error);
 
 	if (success == false) {
 		controls.messageHandler->DisplayMessage(error);

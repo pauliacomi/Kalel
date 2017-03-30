@@ -1,10 +1,18 @@
+//*****************************************************************************************************
+//
+//	This class extends the temperature reading class
+//	It is used as an easy-to-read interface that should make any instrument changes easy
+//	by providing a guide for the functions to implement.
+//
+//*****************************************************************************************************
+
 #pragma once
 #ifndef _TEMPERATURE_H_
 #define _TEMPERATURE_H_
 
-
 #include "../USB/NI_USB_9211A.h"
-#include "../../Parameters/Parametres.h"
+
+#include <mutex>
 
 class TemperatureInstruments :
 	public NI_USB_9211A
@@ -12,27 +20,29 @@ class TemperatureInstruments :
 protected:
 
 public:
-	TemperatureInstruments(void);
+	TemperatureInstruments(int port);
 	~TemperatureInstruments(void);
 
 	// Pass in the references to double variables to get the three temperatures
-	bool Read(double* Temperature_Calo, double* Temperature_Cage, double* Temperature_Piece);
-
-	// Pass in the references to float variables to get the three temperatures
-	bool Read(float* Temperature_Calo, float* Temperature_Cage, float* Temperature_Piece);
-	
+	bool Read(double* Temperature_Calo, double* Temperature_Cage, double* Temperature_Piece);	
 
 	// Get calorimeter temperature
-	double ReadCalo();
+	bool ReadCalo(double* Temperature_Calo);
 
 	// Get cage temperature
-	double ReadCage();
+	bool ReadCage(double* Temperature_Cage);
 
 	// Get room temperature
-	double ReadPiece();
+	bool ReadRoom(double* Temperature_Piece);
 
-	// Get the usb port for temperature readings
-	int PortUSB();
+	// Get the port for temperature readings
+	int GetReadPort();
+
+	// Set the port for temperature readings
+	void SetReadPort(int port);
+
+private:
+	std::mutex ctrlmutex;						// locks to prevent clash of threads 
 };
 
 #endif

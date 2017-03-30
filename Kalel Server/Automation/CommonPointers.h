@@ -7,6 +7,7 @@
 #include "../../Kalel Shared/Com Classes/ExperimentSettings.h"
 #include "../../Kalel Shared/Com Classes/MachineSettings.h"
 #include "../../Kalel Shared/timeHelpers.h"
+#include "../Parameters/Parametres.h"
 
 
 #include <mutex>
@@ -126,7 +127,14 @@ public:
 		std::unique_lock<std::mutex> lock(machineSettingsMutex);
 		machineSettings = i;
 		machineSettingsChanged = timeh::NowTime();
+		lock.unlock();
 	}
+
+	//**********
+	// Control State
+	//**********
+	
+	std::chrono::system_clock::time_point controlStateChanged;													// Time when control state changed
 
 	//**********
 	// Experiment Settings
@@ -161,6 +169,7 @@ public:
 	// Automation control
 	//**********
 
+	// mutex for thread notification
 	std::mutex automationMutex;
 	std::condition_variable automationControl;
 };
@@ -168,13 +177,23 @@ public:
 // Initializer for class
 inline Storage::Storage(void)
 {
+	//
+	// Populate Machine Settings
 	machineSettings = std::make_shared<MachineSettings>();
+	ParametersGet(*machineSettings);
+
 	currentData = std::make_shared<ExperimentData>();
 	experimentSettings = std::make_shared<ExperimentSettings>();
 	newExperimentSettings = std::make_shared<ExperimentSettings>();
 
+	// initialise control state times
+	controlStateChanged = timeh::NowTime();
 	machineSettingsChanged = timeh::NowTime();
 	experimentSettingsChanged = timeh::NowTime();
+
+	// Set path
+	experimentSettings->dataGeneral.chemin = machineSettings->CheminFichierGeneral;
+	newExperimentSettings->dataGeneral.chemin = machineSettings->CheminFichierGeneral;
 }
 
 inline Storage::~Storage(void)
