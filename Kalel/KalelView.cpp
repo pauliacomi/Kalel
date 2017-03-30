@@ -559,6 +559,7 @@ LRESULT CKalelView::OnChangementBouteille(WPARAM, LPARAM)
 LRESULT CKalelView::OnServerConnected(WPARAM, LPARAM)
 {
 	pApp->serverConnected = true;
+	dataCollection.clear();
 	commHandler.SaveAddress(savedParams.GetServerAddress());
 	commHandler.Sync(true);
 	return 0;
@@ -567,7 +568,6 @@ LRESULT CKalelView::OnServerConnected(WPARAM, LPARAM)
 LRESULT CKalelView::OnServerDisconnected(WPARAM, LPARAM)
 {
 	pApp->serverConnected = false;
-	dataCollection.clear();
 	UpdateButtons();
 	return 0;
 }
