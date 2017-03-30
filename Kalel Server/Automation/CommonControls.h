@@ -39,18 +39,18 @@ public:
 
 	// On machine settings change
 	void on_setmachineSettings() {
-		if (valveControls->GetReadPort() != storage.machineSettings->PortVannes)
+		if (valveControls->GetReadPort() != storage.machineSettings->PortValves)
 		{
-			valveControls->SetReadPort(storage.machineSettings->PortVannes);
+			valveControls->SetReadPort(storage.machineSettings->PortValves);
 		}
 		if (temperatureReader->GetReadPort() != storage.machineSettings->PortTemperatures)
 		{
 			temperatureReader->SetReadPort(storage.machineSettings->PortTemperatures);
 		}
 		serialReaders->SetSensitivity(
-			storage.machineSettings->SensibiliteCalo,
-			storage.machineSettings->SensibiliteCapteurBassePression,
-			storage.machineSettings->SensibiliteCapteurHautePression
+			storage.machineSettings->SensitivityCalo,
+			storage.machineSettings->SensitivityLowPRange,
+			storage.machineSettings->SensitivityHighPRange
 			);
 	}
 };
@@ -63,7 +63,7 @@ inline Controls::Controls(Storage &h)
 	// Create objects from controls class
 	fileWriter			= std::make_shared<FileWriter>();
 	messageHandler		= std::make_shared<MessageHandler>(h);
-	valveControls		= std::make_shared<ValveController>(*messageHandler, h.machineSettings->PortVannes);
+	valveControls		= std::make_shared<ValveController>(*messageHandler, h.machineSettings->PortValves);
 	temperatureReader	= std::make_shared<TemperatureReader>(h.machineSettings->PortTemperatures);
 	serialReaders		= std::make_shared<SerialInstruments>(*messageHandler, *h.machineSettings);
 	security			= std::make_shared<Security>(h.machineSettings->ActivationSecurite, *valveControls, *messageHandler);

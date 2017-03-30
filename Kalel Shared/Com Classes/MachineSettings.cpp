@@ -4,6 +4,8 @@
 
 MachineSettings::MachineSettings()
 {
+	// TODO: remove initialisations
+
 }
 
 

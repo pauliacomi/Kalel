@@ -30,9 +30,9 @@ SerialInstruments::SerialInstruments(MessageHandler & messageHandler, MachineSet
 	pressureLowRange	= INSTRUMENT_INEXIST;
 	pressureHighRange	= INSTRUMENT_INEXIST;
 
-	this->sensitivity_calo = m.SensibiliteCalo;
-	this->sensitivity_lp = m.SensibiliteCapteurBassePression;
-	this->sensitivity_hp = m.SensibiliteCapteurHautePression;
+	this->sensitivity_calo = m.SensitivityCalo;
+	this->sensitivity_lp = m.SensitivityLowPRange;
+	this->sensitivity_hp = m.SensitivityHighPRange;
 
 	for (int i = 0; i < m.NumberInstruments; i++)
 	{

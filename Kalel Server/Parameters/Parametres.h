@@ -1,12 +1,10 @@
-#pragma once
 #ifndef PARAMETRES_H
 #define PARAMETRES_H
+#pragma once
 
 #include <string>
-#include "../../Kalel Shared/Com Classes/MachineSettings.h"
 
-#define Dev_USB_Temp 2
-#define Dev_USB_Vannes 1
+class MachineSettings;
 
 bool ParametersCheck();
 void ParametersInit();
@@ -19,32 +17,33 @@ void ParametersReplace(const MachineSettings & settings);
 long double GetSensibiliteCalo();
 float GetSensibiliteCapteurBassePression();
 float GetSensibiliteCapteurHautePression();
+
 bool GetActivationSecurite();
 float GetPressionSecuriteBassePression();
 float GetPressionSecuriteHautePression();
+
 float GetPressionLimiteVide();
 bool GetPresenceTuyereSonique();
 float GetVolumeRef();
 float GetVolumeP6();
 
+// Instruments
 int GetNumberInstruments();
-
+int GetInstruments();
 int GetTypeInstrument(int num);
-int GetTypeInstrument1();
-int GetTypeInstrument2();
-int GetTypeInstrument3();
+int GetPortInstrument(int num);
+int GetFunctionInstrument(int num);
 
-int GetCOMInstrument(int num);
-int GetCOMInstrument1();
-int GetCOMInstrument2();
-int GetCOMInstrument3();
+// Readers
+int GetNumberReaderPressure();
+int GetNumberReaderTemperature();
+int GetNumberReaderCalorimeter();
+int GetNumberReaderValves();
+int GetNumberReaderPumps();
+int GetIdentifierReader(int num);
+int GetSensitivityReader(int num);
 
-int GetFonctionInstrument(int num);
-int GetFonctionInstrument1();
-int GetFonctionInstrument2();
-int GetFonctionInstrument3();
 
-int GetPortKeithley();
 int GetPortMensor();
 int GetPortVannes();
 int GetPortTemperatures();
@@ -93,7 +92,7 @@ void SetInstrument(int num,int TypeInstrument,int COMInstrument,int FonctionInst
 
 void SetPortKeithley(int PortKeithley);
 void SetPortMensor(int PortMensor);
-void SetPortVannes(int PortVannes);
+void SetPortVannes(int PortValves);
 void SetPortTemperatures(int PortTemperatures);
 
 void SetNomCalo(std::wstring NomCalo);		

@@ -5,38 +5,49 @@
 #include <string>
 #include <vector>
 
+struct Instrument
+{
+	int type;
+	int instrument;
+	int function;
+	int port;
+	int channel;
+};
+
+struct Reader
+{
+	int identifier;
+	long double sensitivity;
+	std::vector<Instrument*> instruments;
+};
+
 class MachineSettings
 {
 public:
 	MachineSettings();
 	~MachineSettings();
 
-	long double SensibiliteCalo;
-	float SensibiliteCapteurBassePression;
-	float SensibiliteCapteurHautePression;
-	bool ActivationSecurite;
-	float PressionSecuriteBassePression;
-	float PressionSecuriteHautePression;
-	float PressionLimiteVide;
-	bool PresenceTuyereSonique;
-	float VolumeRef;
-	float VolumeP6;
+	long double SensitivityCalo;					// Used for the calorimetry measurements
+	float SensitivityLowPRange;						// Used for the pressure measurements
+	float SensitivityHighPRange;					// Used for the pressure measurements
 
-	int NumberInstruments;
+	bool ActivationSecurite;						// Used for activating the automatic security
+	float PressionSecuriteBassePression;			// Considered the maximum pressure for the low range pressure transmitter
+	float PressionSecuriteHautePression;			// Considered the maximum pressure for the high range pressure transmitter
 
-	std::vector<int> typeInstruments;
-	std::vector<int> COMInstruments;
-	std::vector<int> FunctionInstruments;
+	float PressionLimiteVide;						// Used for determining the pressure considered "good vacuum"
+	
+	bool PresenceTuyereSonique;						// Used for user information (no calculations)
+	float VolumeRef;								// Used for user information (no calculations)
+	float VolumeP6;									// Used for user information (no calculations)
 
-	int TypeInstrument(int num);
-	int COMInstrument(int num);
-	int FonctionInstrument(int num);
+	std::vector<Instrument> instruments;			// The instruments in the machine
 
-	// Todo: deprecated, never used
-	int PortKeithley;
-	int PortMensor;
-	int PortVannes;
-	int PortTemperatures;
+	std::vector<Reader> calorimeter;
+	std::vector<Reader> pressure;
+	std::vector<Reader> temperatures;
+	std::vector<Reader> valves;
+	std::vector<Reader> pumps;
 
 	std::wstring CaloName;
 	std::wstring CaloEntete;
@@ -47,6 +58,9 @@ public:
 	bool LowPressureToMeasure;
 	bool HighPressureToMeasure;
 
+	int TypeInstrument(int num);
+	int COMInstrument(int num);
+	int FonctionInstrument(int num);
 	void SetInstrument(int num, int TypeInstrument, int COMInstrument, int FonctionInstrument);
 	void SetTypeInstrument(int num, int TypeInstrument);
 	void SetCOMInstrument(int num, int COMInstrument);

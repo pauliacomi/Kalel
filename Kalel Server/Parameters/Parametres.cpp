@@ -3,9 +3,8 @@
 
 #include "Parametres.h"
 #include "../../Kalel Shared/Resources/DefineInstruments.h"
+#include "../../Kalel Shared/Com Classes/MachineSettings.h"
 
-#include <stdio.h>
-#include <stdlib.h>
 #include <windows.h>
 #include <tchar.h>
 
@@ -56,14 +55,19 @@ void ParametersInit()
 	SetSensibiliteCalo(							0.05470197			);
 	SetSensibiliteCapteurBassePression(			7.6					);
 	SetSensibiliteCapteurHautePression(			1					);
+
 	SetActivationSecurite(						true				);
 	SetPressionSecuriteBassePression(			1.1					);
 	SetPressionSecuriteHautePression(			5.1					);
+	
 	SetPressionLimiteVide(						0.02				);
+	
 	SetPresenceTuyereSonique(					true				);
 	SetVolumeRef(								1					);
 	SetVolumeP6(								1					);
-	SetNumberInstruments(						3					);
+	
+	SetNumberInstruments(						NB_OF_INSTRUMENTS	);
+	
 	SetPortVannes(								1					);
 	SetPortTemperatures(						2					);
 	
@@ -94,20 +98,20 @@ void ParametersGet(MachineSettings& settings)
 	settings.PortKeithley							= GetPortKeithley();
 	settings.PortMensor								= GetPortMensor();
 	settings.PortTemperatures						= GetPortTemperatures();
-	settings.PortVannes								= GetPortVannes();
+	settings.PortValves								= GetPortVannes();
 	settings.PresenceTuyereSonique					= GetPresenceTuyereSonique();
 	settings.PressionLimiteVide						= GetPressionLimiteVide();
 	settings.PressionSecuriteBassePression			= GetPressionSecuriteBassePression();
 	settings.PressionSecuriteHautePression			= GetPressionSecuriteHautePression();
-	settings.SensibiliteCalo						= GetSensibiliteCalo();
-	settings.SensibiliteCapteurBassePression		= GetSensibiliteCapteurBassePression();
-	settings.SensibiliteCapteurHautePression		= GetSensibiliteCapteurHautePression();
+	settings.SensitivityCalo						= GetSensibiliteCalo();
+	settings.SensitivityLowPRange		= GetSensibiliteCapteurBassePression();
+	settings.SensitivityHighPRange		= GetSensibiliteCapteurHautePression();
 	settings.VolumeP6								= GetVolumeP6();
 	settings.VolumeRef								= GetVolumeRef();
 	for (int i = 0; i < settings.NumberInstruments; i++)
 	{
-		settings.COMInstruments.push_back(GetCOMInstrument(i));
-		settings.FunctionInstruments.push_back(GetFonctionInstrument(i));
+		settings.COMInstruments.push_back(GetPortInstrument(i));
+		settings.FunctionInstruments.push_back(GetFunctionInstrument(i));
 		settings.typeInstruments.push_back(GetTypeInstrument(i));
 	}
 }
@@ -124,14 +128,14 @@ void ParametersReplace(const MachineSettings& settings)
 	SetPortKeithley(						settings.PortKeithley					); 
 	SetPortMensor(							settings.PortMensor						); 
 	SetPortTemperatures(					settings.PortTemperatures				); 
-	SetPortVannes(							settings.PortVannes						); 
+	SetPortVannes(							settings.PortValves						); 
 	SetPresenceTuyereSonique(				settings.PresenceTuyereSonique			); 
 	SetPressionLimiteVide(					settings.PressionLimiteVide				); 
 	SetPressionSecuriteBassePression(		settings.PressionSecuriteBassePression	); 
 	SetPressionSecuriteHautePression(		settings.PressionSecuriteHautePression	); 
-	SetSensibiliteCalo(						settings.SensibiliteCalo					); 
-	SetSensibiliteCapteurBassePression(		settings.SensibiliteCapteurBassePression	); 
-	SetSensibiliteCapteurHautePression(		settings.SensibiliteCapteurHautePression	); 
+	SetSensibiliteCalo(						settings.SensitivityCalo					); 
+	SetSensibiliteCapteurBassePression(		settings.SensitivityLowPRange	); 
+	SetSensibiliteCapteurHautePression(		settings.SensitivityHighPRange	); 
 	SetVolumeP6(							settings.VolumeP6						); 
 	SetVolumeRef(							settings.VolumeRef						);
 	for (auto i = 0; i < settings.NumberInstruments; i++)
@@ -297,7 +301,7 @@ int GetTypeInstrument3()
 
 
 
-int GetCOMInstrument(int num)
+int GetPortInstrument(int num)
 {
 	std::wstring title = L"Instrument" + std::to_wstring(num);
 
@@ -308,17 +312,17 @@ int GetCOMInstrument(int num)
 }
 
 int GetCOMInstrument1()
-{return GetCOMInstrument(1);}
+{return GetPortInstrument(1);}
 
 int GetCOMInstrument2()
-{return GetCOMInstrument(2);}
+{return GetPortInstrument(2);}
 
 int GetCOMInstrument3()
-{return GetCOMInstrument(3);}
+{return GetPortInstrument(3);}
 
 
 
-int GetFonctionInstrument(int num)
+int GetFunctionInstrument(int num)
 {
 	std::wstring title = L"Instrument" + std::to_wstring(num);
 	std::wstring function = std::to_wstring(FUNCTION_INEXIST);
@@ -330,13 +334,13 @@ int GetFonctionInstrument(int num)
 }
 
 int GetFonctionInstrument1()
-{return GetFonctionInstrument(1);}
+{return GetFunctionInstrument(1);}
 
 int GetFonctionInstrument2()
-{return GetFonctionInstrument(2);}
+{return GetFunctionInstrument(2);}
 
 int GetFonctionInstrument3()
-{return GetFonctionInstrument(3);}
+{return GetFunctionInstrument(3);}
 
 
 // Lecture des connections de ports
@@ -599,9 +603,9 @@ void SetPortMensor(int PortMensor)
 	WritePrivateProfileString(_T("Connection"), _T("RS232_Mensor"), value.c_str(), Fichier_parametres);
 }
 
-void SetPortVannes(int PortVannes)
+void SetPortVannes(int PortValves)
 {
-	std::wstring value = std::to_wstring(PortVannes);
+	std::wstring value = std::to_wstring(PortValves);
 	WritePrivateProfileString(_T("Connection"), _T("USB_Vannes"), value.c_str(), Fichier_parametres);
 }
 

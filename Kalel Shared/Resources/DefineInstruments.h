@@ -3,17 +3,26 @@
 #pragma once
 
 // type of instrument
-#define INSTRUMENT_KEITHLEY		10
-#define INSTRUMENT_MENSOR		11
-#define INSTRUMENT_NONE			12
+#define INSTRUMENT_KEITHLEY			10
+#define INSTRUMENT_MENSOR			11
+#define INSTRUMENT_NI_USB_6008		12
+#define INSTRUMENT_NI_USB_9211A		13
+#define INSTRUMENT_NONE				14
+#define INSTRUMENT_UNDEF			-20
 
-#define INSTRUMENT_UNDEF		-20
-#define INSTRUMENT_INEXIST		-21
+#define INSTRUMENT_KEITHLEY_TXT			"keithley"
+#define INSTRUMENT_MENSOR_TXT			"mensor"
+#define INSTRUMENT_NI_USB_6008_TXT		"NI_USB_6008"
+#define INSTRUMENT_NI_USB_9211A_TXT		"NI_USB_9211A"
+#define INSTRUMENT_NONE_TXT				"none"
+#define INSTRUMENT_UNDEF_TXT			"undefined"
 
-#define COM_UNDEF				-1
+// Connection types
+#define CONNECTION_SERIAL		1
+#define CONNECTION_USB			2
 
-#define READ_LP					0
-#define READ_HP					1
+#define CONNECTION_SERIAL_TXT	"serial"
+#define CONNECTION_USB_TXT		"usb"
 
 // functions
 #define CALO_V1_BP_V2_KEITHLEY			100
@@ -24,15 +33,23 @@
 #define INSTRUMENT_MENSOR_HP			200
 #define INSTRUMENT_MENSOR_LP			201
 #define FUNCTION_NONE					0
-
 #define FUNCTION_UNDEF					-22
 #define FUNCTION_INEXIST				-23
 
-
+// channels
 #define INSTRUMENT_KEYTHLEY_V1			300
 #define INSTRUMENT_KEYTHLEY_V2			301
 #define MENSOR_VOIE						302
 #define VOIE_INDEF						-30
+
+
+#define COM_UNDEF				-1
+#define READ_LP					0
+#define READ_HP					1
+
+
+
+
 
 #define NB_OF_INSTRUMENTS				3
 #define INDEX_INDEF						NB_OF_INSTRUMENTS

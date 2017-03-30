@@ -11,7 +11,6 @@ public:
 	Parameters();
 	~Parameters();
 
-	void VerifParametres();
 	void Initialisation();
 
 	// Get
