@@ -117,9 +117,6 @@
     <ClInclude Include="Backend\RS232\Keithley.h">
       <Filter>Header Files\Backend\RS232</Filter>
     </ClInclude>
-    <ClInclude Include="Backend\RS232\LiaisonRS232.h">
-      <Filter>Header Files\Backend\RS232</Filter>
-    </ClInclude>
     <ClInclude Include="Backend\USB\NI_USB_6008.h">
       <Filter>Header Files\Backend\USB</Filter>
     </ClInclude>
@@ -128,12 +125,6 @@
     </ClInclude>
     <ClInclude Include="Backend\USB\NI_USB_9211A.h">
       <Filter>Header Files\Backend\USB</Filter>
-    </ClInclude>
-    <ClInclude Include="Backend\Wrapper Classes\Temperature.h">
-      <Filter>Header Files\Backend\Wrapper Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="Backend\Wrapper Classes\SerialInstruments.h">
-      <Filter>Header Files\Backend\Wrapper Classes</Filter>
     </ClInclude>
     <ClInclude Include="Automation\ThreadManager.h">
       <Filter>Header Files\Automation</Filter>
@@ -264,7 +255,22 @@
     <ClInclude Include="..\Kalel Shared\soundHelpers.h">
       <Filter>Header Files\Common</Filter>
     </ClInclude>
-    <ClInclude Include="Backend\RS232\rs232.h">
+    <ClInclude Include="Backend\Wrapper Classes\TemperatureReader.h">
+      <Filter>Header Files\Backend\Wrapper Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Backend\Wrapper Classes\PressureReader.h">
+      <Filter>Header Files\Backend\Wrapper Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Backend\Wrapper Classes\CalorimeterReader.h">
+      <Filter>Header Files\Backend\Wrapper Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Backend\RS232\SerialInstruments.h">
+      <Filter>Header Files\Backend\RS232</Filter>
+    </ClInclude>
+    <ClInclude Include="Backend\RS232\lrs232.h">
+      <Filter>Header Files\Backend\RS232</Filter>
+    </ClInclude>
+    <ClInclude Include="Backend\RS232\RS232.h">
       <Filter>Header Files\Backend\RS232</Filter>
     </ClInclude>
   </ItemGroup>
@@ -395,9 +401,6 @@
     <ClCompile Include="Backend\RS232\Keithley.cpp">
       <Filter>Source Files\Backend\RS232</Filter>
     </ClCompile>
-    <ClCompile Include="Backend\RS232\LiaisonRS232.cpp">
-      <Filter>Source Files\Backend\RS232</Filter>
-    </ClCompile>
     <ClCompile Include="Backend\RS232\Mensor.cpp">
       <Filter>Source Files\Backend\RS232</Filter>
     </ClCompile>
@@ -406,12 +409,6 @@
     </ClCompile>
     <ClCompile Include="Backend\USB\NI_USB_9211A.cpp">
       <Filter>Source Files\Backend\USB</Filter>
-    </ClCompile>
-    <ClCompile Include="Backend\Wrapper Classes\SerialInstruments.cpp">
-      <Filter>Source Files\Backend\Wrapper Classes</Filter>
-    </ClCompile>
-    <ClCompile Include="Backend\Wrapper Classes\Temperature.cpp">
-      <Filter>Source Files\Backend\Wrapper Classes</Filter>
     </ClCompile>
     <ClCompile Include="Automation\Class\Automation.cpp">
       <Filter>Source Files\Automation\Class</Filter>
@@ -503,7 +500,22 @@
     <ClCompile Include="..\Kalel Shared\soundHelpers.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
-    <ClCompile Include="Backend\RS232\rs232.c">
+    <ClCompile Include="Backend\Wrapper Classes\CalorimeterReader.cpp">
+      <Filter>Source Files\Backend\Wrapper Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="Backend\Wrapper Classes\TemperatureReader.cpp">
+      <Filter>Source Files\Backend\Wrapper Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="Backend\Wrapper Classes\PressureReader.cpp">
+      <Filter>Source Files\Backend\Wrapper Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="Backend\RS232\SerialInstruments.cpp">
+      <Filter>Source Files\Backend\RS232</Filter>
+    </ClCompile>
+    <ClCompile Include="Backend\RS232\lrs232.c">
+      <Filter>Source Files\Backend\RS232</Filter>
+    </ClCompile>
+    <ClCompile Include="Backend\RS232\RS232.cpp">
       <Filter>Source Files\Backend\RS232</Filter>
     </ClCompile>
   </ItemGroup>

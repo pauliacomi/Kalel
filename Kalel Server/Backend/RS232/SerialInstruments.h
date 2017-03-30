@@ -43,7 +43,6 @@ protected:
 	double sensitivity_hp	= 0.0f;
 
 public:
-	bool Init(std::string * errorInit);
 	bool SetSensitivity(double sensitivity_calo, double sensitivity_lp, double sensitivity_hp);
 
 	bool InitiateCalorimeter();

@@ -3,19 +3,19 @@
 #define _MENSOR__H_
 #pragma once
 
-#include "LiaisonRS232.h"
+#include "RS232.h"
 
 class Mensor :
-	public LiaisonRS232
+	public RS232
 {
-private:
-	char buffer[256];
-	bool connectionOpen = false;
-
 public:
 	Mensor(int comport);
 	~Mensor(void);
 
+private:
+	char buffer[256]	= { "\0" };
+	bool connectionOpen = false;
+public:
 	bool OpenCOM(int nId);
 	bool CloseCOM();
 	bool ReadMensor(double* pression);

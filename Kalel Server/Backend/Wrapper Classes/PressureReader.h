@@ -1,39 +1,30 @@
 //*****************************************************************************************************
 //
-//	This class extends the temperature reading class
+//	This class extends the pressure reading class
 //	It is used as an easy-to-read interface that should make any instrument changes easy
 //	by providing a guide for the functions to implement.
 //
 //*****************************************************************************************************
 
+#ifndef _PRESSURE_H_
+#define _PRESSURE_H_
 #pragma once
-#ifndef _TEMPERATURE_H_
-#define _TEMPERATURE_H_
 
-#include "../USB/NI_USB_9211A.h"
 
-#include <mutex>
-
-class TemperatureInstruments :
-	public NI_USB_9211A
+class PressureReader
 {
-protected:
-
 public:
-	TemperatureInstruments(int port);
-	~TemperatureInstruments(void);
+	PressureReader(int port);
+	~PressureReader(void);
 
 	// Pass in the references to double variables to get the three temperatures
-	bool Read(double* Temperature_Calo, double* Temperature_Cage, double* Temperature_Piece);	
+	bool Read(double* pressure_low_range, double* pressure_high_range);
 
 	// Get calorimeter temperature
-	bool ReadCalo(double* Temperature_Calo);
+	bool ReadLowRangeP(double* pressure_low_range);
 
 	// Get cage temperature
-	bool ReadCage(double* Temperature_Cage);
-
-	// Get room temperature
-	bool ReadRoom(double* Temperature_Piece);
+	bool ReadHighRangeP(double* pressure_high_range);
 
 	// Get the port for temperature readings
 	int GetReadPort();
@@ -42,7 +33,6 @@ public:
 	void SetReadPort(int port);
 
 private:
-	std::mutex ctrlmutex;						// locks to prevent clash of threads 
 };
 
 #endif

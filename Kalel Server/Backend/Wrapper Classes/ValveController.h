@@ -1,3 +1,11 @@
+//*****************************************************************************************************
+//
+//	This class extends the pressure reading class
+//	It is used as an easy-to-read interface that should make any instrument changes easy
+//	by providing a guide for the functions to implement.
+//
+//*****************************************************************************************************
+
 #ifndef _VANNE_H_
 #define _VANNE_H_
 #pragma once

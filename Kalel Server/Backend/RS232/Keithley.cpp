@@ -4,12 +4,25 @@
 #include <sstream>
 
 
+//=====================================================================
+//                    Serial Port Configuration
+//
+//						Item		Value
+//						----		-----
+//						Type		RS-232
+//						Address		  1
+//						Baud		19200
+//						Data Bits	  8
+//						Parity		 None
+//						Stop Bits	  1
+//=====================================================================
 
-Keithley::Keithley(int comport) : LiaisonRS232()
+
+Keithley::Keithley(int comport) : RS232()
 {
 	g_dcb.BaudRate = 19200;								// On a le moyen d'augmenter le BaudRate du keithley.
 
-	connectionOpen = LiaisonRS232::OpenCOM(comport);	// Open port
+	connectionOpen = RS232::OpenCOM(comport);	// Open port
 	if (connectionOpen)	{
 		errorKeep = "Keithley open: COM" + std::to_string(comport);
 
@@ -24,7 +37,7 @@ Keithley::~Keithley(void)
 {
 	if (connectionOpen) {
 		// Close the connection
-		LiaisonRS232::CloseCOM();
+		RS232::CloseCOM();
 	}
 }
 
@@ -34,7 +47,7 @@ Keithley::~Keithley(void)
 
 bool Keithley::OpenCOM(int nId)
 {
-	connectionOpen = LiaisonRS232::OpenCOM(nId);
+	connectionOpen = RS232::OpenCOM(nId);
 
 	if (connectionOpen)
 	{
@@ -50,7 +63,7 @@ bool Keithley::OpenCOM(int nId)
 
 bool Keithley::CloseCOM()
 {
-	bool fermeture = LiaisonRS232::CloseCOM();
+	bool fermeture = RS232::CloseCOM();
 
 	if (fermeture)
 	{

@@ -1,4 +1,4 @@
-#include "LiaisonRS232.h"
+#include "RS232.h"
 
 #include <iostream>
 
@@ -8,7 +8,7 @@
 #define MAX_WAIT_WRITE  200		/* temps max d'attente pour lecture (en ms) */
 
 
-LiaisonRS232::LiaisonRS232()
+RS232::RS232()
 {
 	// Null out the handle
 	g_hCOM = NULL;
@@ -50,11 +50,11 @@ LiaisonRS232::LiaisonRS232()
 	g_dcb.EvtChar			= 0x10;
 }
 
-LiaisonRS232::~LiaisonRS232()
+RS232::~RS232()
 {
 }
 
-bool LiaisonRS232::OpenCOM(int pnId)
+bool RS232::OpenCOM(int pnId)
 {
 	// Construct port specifier
 	std::wstring szCOM = L"\\\\.\\COM%d" + std::to_wstring(pnId);
@@ -99,7 +99,7 @@ bool LiaisonRS232::OpenCOM(int pnId)
 }
 
 
-bool LiaisonRS232::ReadCOM(char *buffer, int nBytesToRead)
+bool RS232::ReadCOM(char *buffer, int nBytesToRead)
 {
 	// Start by checking if port is open
 	if (!g_hCOM) {
@@ -207,7 +207,7 @@ bool LiaisonRS232::ReadCOM(char *buffer, int nBytesToRead)
 	return false;
 }
 
-bool LiaisonRS232::WriteCOM(void* buffer, int nBytesToWrite, int* pBytesWritten)
+bool RS232::WriteCOM(void* buffer, int nBytesToWrite, int* pBytesWritten)
 {
 	// Start by checking if port is open
 	if (!g_hCOM) {
@@ -279,7 +279,7 @@ bool LiaisonRS232::WriteCOM(void* buffer, int nBytesToWrite, int* pBytesWritten)
 	return fRes;
 }
 
-bool LiaisonRS232::CloseCOM()
+bool RS232::CloseCOM()
 {
 	if (g_hCOM) {
 		CloseHandle(g_hCOM);
@@ -288,7 +288,7 @@ bool LiaisonRS232::CloseCOM()
     return true;
 }
 
-void LiaisonRS232::GetError(std::string* err)
+void RS232::GetError(std::string* err)
 {
 	*err = errorKeep;
 }

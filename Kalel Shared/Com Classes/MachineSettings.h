@@ -32,6 +32,7 @@ public:
 	int COMInstrument(int num);
 	int FonctionInstrument(int num);
 
+	// Todo: deprecated, never used
 	int PortKeithley;
 	int PortMensor;
 	int PortVannes;

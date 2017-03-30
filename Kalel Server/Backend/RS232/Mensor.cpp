@@ -19,9 +19,9 @@
 
 
 
-Mensor::Mensor(int comport) : LiaisonRS232()
+Mensor::Mensor(int comport) : RS232()
 { 
-	connectionOpen = LiaisonRS232::OpenCOM(comport);	// Open port
+	connectionOpen = RS232::OpenCOM(comport);	// Open port
 	if (connectionOpen) {
 		errorKeep = "Mensor open: COM" + std::to_string(comport);
 	}
@@ -35,13 +35,13 @@ Mensor::~Mensor(void)
 {
 	if (connectionOpen) {
 		// Close the connection
-		LiaisonRS232::CloseCOM();
+		RS232::CloseCOM();
 	}
 }
 
 bool Mensor::OpenCOM(int nId)
 {
-	connectionOpen = LiaisonRS232::OpenCOM(nId);
+	connectionOpen = RS232::OpenCOM(nId);
 	
 	if (connectionOpen)
 	{
@@ -57,7 +57,7 @@ bool Mensor::OpenCOM(int nId)
 
 bool Mensor::CloseCOM()
 {
-	bool fermeture = LiaisonRS232::CloseCOM();
+	bool fermeture = RS232::CloseCOM();
 
 	if (fermeture)
 	{
@@ -112,7 +112,7 @@ bool Mensor::ReadMensor(double* pression)
 		return false;
 
 	std::string resultat = buffer;
-	resultat = resultat.substr(4,nbOctetsLus-6);
+	resultat = resultat.substr(4, nbOctetsLus - 6);
 	*pression = atof(resultat.c_str()); //conversion du string en float
 	errorKeep = "Mensor read";
 	return true;

@@ -2,13 +2,13 @@
 #define _KEITHLEY__H_
 #pragma once
 
-#include "LiaisonRS232.h"
+#include "RS232.h"
 
 #include <mutex>
 
 
 class Keithley :
-	public LiaisonRS232
+	public RS232
 {
 
 public:

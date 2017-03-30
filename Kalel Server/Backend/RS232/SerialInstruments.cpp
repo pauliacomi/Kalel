@@ -124,9 +124,28 @@ SerialInstruments::SerialInstruments(MessageHandler & messageHandler, MachineSet
 		}
 	}
 
-	// Now the init function can be called
+	// Now the init functions can be called
 	std::string errorInit;
-	if (!Init(&errorInit))
+	std::string tempErr;
+	bool successs = true;
+
+	// Now that we have all the data we can call the initiator functions
+	if (!InitiateCalorimeter()) {
+		GetErrorCalrimeter(&tempErr);
+		errorInit += tempErr + "\n";
+		successs = false;
+	}
+	if (!InitiatePressureLowRange()) {
+		GetErrorLowRange(&tempErr);
+		errorInit += tempErr + "\n";;
+		successs = false;
+	}
+	if (!InitiatePressureHighRange()) {
+		GetErrorHighRange(&tempErr);
+		errorInit += tempErr + "\n";;
+		successs = false;
+	}
+	if (!successs)
 	{
 		messageHandler.DisplayMessageBox(MESSAGE_INSTRUMENT_INIT_FAIL, MB_ICONERROR | MB_OK, false, errorInit);
 	}
@@ -148,31 +167,6 @@ SerialInstruments::~SerialInstruments()
 //
 // initiation functions
 //
-
-bool SerialInstruments::Init(std::string * errorInit)
-{
-	bool successs = true;
-	errorInit->clear();
-	std::string tempErr;
-
-	// Now that we have all the data we can call the initiator functions
-	if (!InitiateCalorimeter()) {
-		GetErrorCalrimeter(&tempErr);
-		*errorInit = *errorInit + tempErr + "\n";
-		successs = false;
-	}
-	if (!InitiatePressureLowRange()) {
-		GetErrorLowRange(&tempErr);
-		*errorInit = *errorInit + tempErr + "\n";;
-		successs = false;
-	}
-	if (!InitiatePressureHighRange()) {
-		GetErrorHighRange(&tempErr);
-		*errorInit = *errorInit + tempErr + "\n";;
-		successs = false;
-	}
-	return successs;
-}
 
 bool SerialInstruments::SetSensitivity(double sensitivity_calo, double sensitivity_lp, double sensitivity_hp)
 {

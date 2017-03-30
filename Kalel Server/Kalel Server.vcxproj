@@ -236,14 +236,16 @@
     </ClInclude>
     <ClInclude Include="Automation\ThreadManager.h" />
     <ClInclude Include="Backend\RS232\Keithley.h" />
-    <ClInclude Include="Backend\RS232\LiaisonRS232.h" />
+    <ClInclude Include="Backend\RS232\RS232.h" />
     <ClInclude Include="Backend\RS232\Mensor.h" />
-    <ClInclude Include="Backend\RS232\rs232.h" />
+    <ClInclude Include="Backend\RS232\lrs232.h" />
+    <ClInclude Include="Backend\RS232\SerialInstruments.h" />
     <ClInclude Include="Backend\USB\NIDAQmx.h" />
     <ClInclude Include="Backend\USB\NI_USB_6008.h" />
     <ClInclude Include="Backend\USB\NI_USB_9211A.h" />
-    <ClInclude Include="Backend\Wrapper Classes\SerialInstruments.h" />
-    <ClInclude Include="Backend\Wrapper Classes\Temperature.h" />
+    <ClInclude Include="Backend\Wrapper Classes\PressureReader.h" />
+    <ClInclude Include="Backend\Wrapper Classes\CalorimeterReader.h" />
+    <ClInclude Include="Backend\Wrapper Classes\TemperatureReader.h" />
     <ClInclude Include="Backend\Wrapper Classes\ValveController.h" />
     <ClInclude Include="Kalel Server.h" />
     <ClInclude Include="Kalel ServerDlg.h" />
@@ -425,13 +427,15 @@
     </ClCompile>
     <ClCompile Include="Automation\ThreadManager.cpp" />
     <ClCompile Include="Backend\RS232\Keithley.cpp" />
-    <ClCompile Include="Backend\RS232\LiaisonRS232.cpp" />
+    <ClCompile Include="Backend\RS232\RS232.cpp" />
     <ClCompile Include="Backend\RS232\Mensor.cpp" />
-    <ClCompile Include="Backend\RS232\rs232.c" />
+    <ClCompile Include="Backend\RS232\lrs232.c" />
+    <ClCompile Include="Backend\RS232\SerialInstruments.cpp" />
     <ClCompile Include="Backend\USB\NI_USB_6008.cpp" />
     <ClCompile Include="Backend\USB\NI_USB_9211A.cpp" />
-    <ClCompile Include="Backend\Wrapper Classes\SerialInstruments.cpp" />
-    <ClCompile Include="Backend\Wrapper Classes\Temperature.cpp" />
+    <ClCompile Include="Backend\Wrapper Classes\PressureReader.cpp" />
+    <ClCompile Include="Backend\Wrapper Classes\CalorimeterReader.cpp" />
+    <ClCompile Include="Backend\Wrapper Classes\TemperatureReader.cpp" />
     <ClCompile Include="Backend\Wrapper Classes\ValveController.cpp" />
     <ClCompile Include="Kalel Server.cpp" />
     <ClCompile Include="Kalel ServerDlg.cpp" />

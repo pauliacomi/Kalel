@@ -93,6 +93,9 @@ bool MessageHandler::DisplayMessageBox(std::string pParam, unsigned nType, bool 
 		message = string_format(pParam);
 	}
 
+	storage.pushInfoLogs(timeh::NowTime(), message);
+	storage.pushErrLogs(timeh::NowTime(), message);
+
 	//storage.automationErrorLogs.insert(std::make_pair(timeh::NowTime(), message));
 
 	return true;
