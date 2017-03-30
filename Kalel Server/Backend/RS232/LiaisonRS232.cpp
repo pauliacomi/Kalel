@@ -1,10 +1,6 @@
 #include "LiaisonRS232.h"
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <conio.h>
 #include <iostream>
-#include <string.h>
 
 #define RX_SIZE         4096    /* taille tampon d'entrée  */
 #define TX_SIZE         4096    /* taille tampon de sortie */
@@ -18,40 +14,40 @@ LiaisonRS232::LiaisonRS232()
 	g_hCOM = NULL;
 
 	// Configuration of timeouts
-	g_cto.ReadIntervalTimeout = MAX_WAIT_READ;
-	g_cto.ReadTotalTimeoutMultiplier = 0;
-	g_cto.ReadTotalTimeoutConstant = MAX_WAIT_READ;
-	g_cto.WriteTotalTimeoutMultiplier = 0;
-	g_cto.WriteTotalTimeoutConstant = 0;
+	g_cto.ReadIntervalTimeout			= MAX_WAIT_READ;
+	g_cto.ReadTotalTimeoutMultiplier	= 0;
+	g_cto.ReadTotalTimeoutConstant		= MAX_WAIT_READ;
+	g_cto.WriteTotalTimeoutMultiplier	= 0;
+	g_cto.WriteTotalTimeoutConstant		= 0;
 
 	// Configuration of port
-	g_dcb.DCBlength = sizeof(DCB);
-	g_dcb.BaudRate = 9600;
-	g_dcb.fBinary = true;
-	g_dcb.fParity = false;
-	g_dcb.fOutxCtsFlow = false;
-	g_dcb.fOutxDsrFlow = false;
-	g_dcb.fDtrControl = DTR_CONTROL_ENABLE;
-	g_dcb.fDsrSensitivity = false;
+	g_dcb.DCBlength			= sizeof(DCB);
+	g_dcb.BaudRate			= 9600;
+	g_dcb.fBinary			= true;
+	g_dcb.fParity			= false;
+	g_dcb.fOutxCtsFlow		= false;
+	g_dcb.fOutxDsrFlow		= false;
+	g_dcb.fDtrControl		= DTR_CONTROL_ENABLE;
+	g_dcb.fDsrSensitivity	= false;
 	g_dcb.fTXContinueOnXoff = false;
-	g_dcb.fOutX = false;
-	g_dcb.fInX = false;
-	g_dcb.fErrorChar = false;
-	g_dcb.fNull = false;
-	g_dcb.fRtsControl = RTS_CONTROL_ENABLE;
-	g_dcb.fAbortOnError = false;
-	g_dcb.fDummy2 = 0;
-	g_dcb.wReserved = 0;
-	g_dcb.XonLim = 0x100;
-	g_dcb.XoffLim = 0x100;
-	g_dcb.ByteSize = 8;
-	g_dcb.Parity = NOPARITY;
-	g_dcb.StopBits = ONESTOPBIT;
-	g_dcb.XonChar = 0x11;
-	g_dcb.XoffChar = 0x13;
-	g_dcb.ErrorChar = '?';
-	g_dcb.EofChar = 0x1A;
-	g_dcb.EvtChar = 0x10;
+	g_dcb.fOutX				= false;
+	g_dcb.fInX				= false;
+	g_dcb.fErrorChar		= false;
+	g_dcb.fNull				= false;
+	g_dcb.fRtsControl		= RTS_CONTROL_ENABLE;
+	g_dcb.fAbortOnError		= false;
+	g_dcb.fDummy2			= 0;
+	g_dcb.wReserved			= 0;
+	g_dcb.XonLim			= 0x100;
+	g_dcb.XoffLim			= 0x100;
+	g_dcb.ByteSize			= 8;
+	g_dcb.Parity			= NOPARITY;
+	g_dcb.StopBits			= ONESTOPBIT;
+	g_dcb.XonChar			= 0x11;
+	g_dcb.XoffChar			= 0x13;
+	g_dcb.ErrorChar			= '?';
+	g_dcb.EofChar			= 0x1A;
+	g_dcb.EvtChar			= 0x10;
 }
 
 LiaisonRS232::~LiaisonRS232()

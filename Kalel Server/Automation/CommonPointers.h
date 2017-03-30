@@ -9,13 +9,10 @@
 #include "../../Kalel Shared/timeHelpers.h"
 #include "../Parameters/Parametres.h"
 
-
 #include <mutex>
 #include <vector>
 #include <map>
-#include <deque>
 #include <memory>
-#include <chrono>
 
 typedef std::map<std::chrono::system_clock::time_point, std::string> TextStorage;
 

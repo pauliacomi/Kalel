@@ -10,6 +10,8 @@
 #include "../Automation/Measurement/Security.h"							// Security parameters
 #include "../../Kalel Shared/timeHelpers.h"
 
+#include "CommonPointers.h"
+
 #include <memory>
 
 class Controls {
@@ -42,6 +44,11 @@ public:
 		{
 			temperatureReader->SetReadPort(storage.machineSettings->PortTemperatures);
 		}
+		serialReaders->SetSensitivity(
+			storage.machineSettings->SensibiliteCalo,
+			storage.machineSettings->SensibiliteCapteurBassePression,
+			storage.machineSettings->SensibiliteCapteurHautePression
+			);
 	}
 };
 
@@ -55,7 +62,7 @@ inline Controls::Controls(Storage &h)
 	messageHandler		= std::make_shared<MessageHandler>(h);
 	valveControls		= std::make_shared<ValveController>(*messageHandler, h.machineSettings->PortVannes);
 	temperatureReader	= std::make_shared<TemperatureInstruments>(h.machineSettings->PortTemperatures);
-	serialReaders		= std::make_shared<SerialInstruments>(*messageHandler);
+	serialReaders		= std::make_shared<SerialInstruments>(*messageHandler, *h.machineSettings);
 	security			= std::make_shared<Security>(h.machineSettings->ActivationSecurite, *valveControls, *messageHandler);
 }
 

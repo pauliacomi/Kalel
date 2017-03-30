@@ -5,8 +5,6 @@
 
 #include "LiaisonRS232.h"
 
-#include <string>
-
 class Mensor :
 	public LiaisonRS232
 {

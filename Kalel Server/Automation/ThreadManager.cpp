@@ -4,6 +4,8 @@
 
 #include "Class/Automation.h"										// Backend for all the automation
 #include "Measurement/Measurement.h"								// Backend for measurements
+#include "CommonControls.h"
+#include "CommonPointers.h"
 
 // STD
 #include <atomic>

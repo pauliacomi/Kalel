@@ -4,12 +4,12 @@
 #include "../RS232/Keithley.h"
 #include "../RS232/Mensor.h"
 
-#include "../../Parameters/Parametres.h"
+#include "../../../Kalel Shared/Com Classes/MachineSettings.h"
 #include "../../../Kalel Shared/Resources/DefineInstruments.h"
 #include "../../../Kalel Shared/Resources/DefineText.h"
 
 
-SerialInstruments::SerialInstruments(MessageHandler & messageHandler)
+SerialInstruments::SerialInstruments(MessageHandler & messageHandler, MachineSettings & m)
 	: messageHandler{ messageHandler }
 {
 	// This loop goes through all the instruments in the Parameters file
@@ -30,23 +30,27 @@ SerialInstruments::SerialInstruments(MessageHandler & messageHandler)
 	pressureLowRange	= INSTRUMENT_INEXIST;
 	pressureHighRange	= INSTRUMENT_INEXIST;
 
-	for (int i = 1; i <= GetNumberInstruments(); i++)
+	this->sensitivity_calo = m.SensibiliteCalo;
+	this->sensitivity_lp = m.SensibiliteCapteurBassePression;
+	this->sensitivity_hp = m.SensibiliteCapteurHautePression;
+
+	for (int i = 0; i < m.NumberInstruments; i++)
 	{
-		switch (GetTypeInstrument(i))
+		switch (m.typeInstruments[i])
 		{
 		case INSTRUMENT_KEITHLEY:
 
-			switch (GetFonctionInstrument(i))
+			switch (m.FunctionInstruments[i])
 			{
 			case CALO_V1_BP_V2_KEITHLEY:
 
 				calorimeter = INSTRUMENT_KEITHLEY;
 				calorimeterChannel = INSTRUMENT_KEYTHLEY_V1;
-				calorimeterCOM = GetCOMInstrument(i);
+				calorimeterCOM = m.COMInstruments[i];
 
 				pressureLowRange = INSTRUMENT_KEITHLEY;
 				pressureLowRangeChannel = INSTRUMENT_KEYTHLEY_V2;
-				pressureLowRangeCOM = GetCOMInstrument(i);
+				pressureLowRangeCOM = m.COMInstruments[i];
 
 				break;
 
@@ -54,11 +58,11 @@ SerialInstruments::SerialInstruments(MessageHandler & messageHandler)
 
 				calorimeter = INSTRUMENT_KEITHLEY;
 				calorimeterChannel = INSTRUMENT_KEYTHLEY_V1;
-				calorimeterCOM = GetCOMInstrument(i);
+				calorimeterCOM = m.COMInstruments[i];
 
 				pressureHighRange = INSTRUMENT_KEITHLEY;
 				pressureHighRangeChannel = INSTRUMENT_KEYTHLEY_V2;
-				pressureHighRangeCOM = GetCOMInstrument(i);
+				pressureHighRangeCOM = m.COMInstruments[i];
 
 				break;
 
@@ -66,7 +70,7 @@ SerialInstruments::SerialInstruments(MessageHandler & messageHandler)
 
 				calorimeter = INSTRUMENT_KEITHLEY;
 				calorimeterChannel = INSTRUMENT_KEYTHLEY_V1;
-				calorimeterCOM = GetCOMInstrument(i);
+				calorimeterCOM = m.COMInstruments[i];
 
 				break;
 
@@ -74,7 +78,7 @@ SerialInstruments::SerialInstruments(MessageHandler & messageHandler)
 
 				pressureLowRange = INSTRUMENT_KEITHLEY;
 				pressureLowRangeChannel = INSTRUMENT_KEYTHLEY_V2;
-				pressureLowRangeCOM = GetCOMInstrument(i);
+				pressureLowRangeCOM = m.COMInstruments[i];
 
 				break;
 
@@ -82,7 +86,7 @@ SerialInstruments::SerialInstruments(MessageHandler & messageHandler)
 
 				pressureHighRange = INSTRUMENT_KEITHLEY;
 				pressureHighRangeChannel = INSTRUMENT_KEYTHLEY_V2;
-				pressureHighRangeCOM = GetCOMInstrument(i);
+				pressureHighRangeCOM = m.COMInstruments[i];
 
 				break;
 
@@ -94,17 +98,17 @@ SerialInstruments::SerialInstruments(MessageHandler & messageHandler)
 
 
 		case INSTRUMENT_MENSOR:
-			if (GetFonctionInstrument(i) == INSTRUMENT_MENSOR_LP)
+			if (m.FunctionInstruments[i] == INSTRUMENT_MENSOR_LP)
 			{
 				pressureLowRange = INSTRUMENT_MENSOR;
 				pressureLowRangeChannel = MENSOR_VOIE;
-				pressureLowRangeCOM = GetCOMInstrument(i);
+				pressureLowRangeCOM = m.COMInstruments[i];
 			}
-			else if (GetFonctionInstrument(i) == INSTRUMENT_MENSOR_HP)
+			else if (m.FunctionInstruments[i] == INSTRUMENT_MENSOR_HP)
 			{
 				pressureHighRange = INSTRUMENT_MENSOR;
 				pressureHighRangeChannel = MENSOR_VOIE;
-				pressureHighRangeCOM = GetCOMInstrument(i);
+				pressureHighRangeCOM = m.COMInstruments[i];
 			}
 
 			break;
@@ -168,6 +172,14 @@ bool SerialInstruments::Init(std::string * errorInit)
 		successs = false;
 	}
 	return successs;
+}
+
+bool SerialInstruments::SetSensitivity(double sensitivity_calo, double sensitivity_lp, double sensitivity_hp)
+{
+	this->sensitivity_calo = sensitivity_calo;
+	this->sensitivity_calo = sensitivity_calo;
+	this->sensitivity_calo = sensitivity_calo;
+	return false;
 }
 
 bool SerialInstruments::InitiateCalorimeter()
@@ -282,12 +294,12 @@ bool SerialInstruments::ReadCalorimeter(double * result)
 	if (calorimeter == INSTRUMENT_KEITHLEY) {
 		if (calorimeterChannel == INSTRUMENT_KEYTHLEY_V1) {
 			success = keithley->ReadChannel1(result);
-			*result = converter.ConversionCalo(*result);
+			*result = converter.ConversionCalo(*result, sensitivity_calo);
 			return success;
 		}
 		if (calorimeterChannel == INSTRUMENT_KEYTHLEY_V2) {
 			success = keithley->ReadChannel2(result);
-			*result = converter.ConversionCalo(*result);
+			*result = converter.ConversionCalo(*result, sensitivity_calo);
 			return success;
 		}
 	}	
@@ -309,13 +321,13 @@ bool SerialInstruments::ReadPressureLowRange(double * result)
 
 		if (pressureLowRangeChannel == INSTRUMENT_KEYTHLEY_V1) {
 			success = keithley->ReadChannel1(result);
-			*result = converter.ConversionBP(*result);
+			*result = converter.ConversionBP(*result, sensitivity_lp);
 			return success;
 		}
 
 		if (pressureLowRangeChannel == INSTRUMENT_KEYTHLEY_V2) {
 			success = keithley->ReadChannel2(result);
-			*result = converter.ConversionBP(*result);
+			*result = converter.ConversionBP(*result, sensitivity_lp);
 			return success;
 		}
 
@@ -323,7 +335,7 @@ bool SerialInstruments::ReadPressureLowRange(double * result)
 	
 	if (pressureLowRange == INSTRUMENT_MENSOR) {
 		success = mens_LowRange->ReadMensor(result);
-		*result = converter.ConversionBP(*result);
+		*result = converter.ConversionBP(*result, sensitivity_lp);
 		return success;
 	}
 
@@ -343,13 +355,13 @@ bool SerialInstruments::ReadPressureHighRange(double * result)
 
 		if (pressureHighRangeChannel == INSTRUMENT_KEYTHLEY_V1) {
 			success = keithley->ReadChannel1(result);
-			*result = converter.ConversionHP(*result);
+			*result = converter.ConversionHP(*result, sensitivity_hp);
 			return success;
 		}
 
 		if (pressureHighRangeChannel == INSTRUMENT_KEYTHLEY_V2) {
 			success = keithley->ReadChannel2(result);
-			*result = converter.ConversionHP(*result);
+			*result = converter.ConversionHP(*result, sensitivity_hp);
 			return success;
 		}
 
@@ -357,7 +369,7 @@ bool SerialInstruments::ReadPressureHighRange(double * result)
 
 	if (pressureHighRange == INSTRUMENT_MENSOR) {
 		success = mens_HighRange->ReadMensor(result);
-		*result = converter.ConversionHP(*result);
+		*result = converter.ConversionHP(*result, sensitivity_hp);
 		return success;
 	}
 

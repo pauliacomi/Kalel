@@ -4,8 +4,7 @@
 
 #include "LiaisonRS232.h"
 
-#include <string>
-#include <windows.h>
+#include <mutex>
 
 
 class Keithley :
@@ -17,9 +16,9 @@ public:
 	~Keithley(void);
 
 private:
-	CRITICAL_SECTION Sync_keithley;
-	bool connectionOpen = false;
-	bool readingPort = false;
+	std::mutex mutex_keithley;
+	bool connectionOpen			= false;
+	bool readingPort			= false;
 
 public:
 

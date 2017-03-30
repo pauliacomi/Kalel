@@ -2,13 +2,14 @@
 #define THREADS_H
 #pragma once
 
-#include "CommonControls.h"
 #include "../../Kalel Shared/Com Classes/ControlInstrumentState.h"
 
 #include <thread>
 
 class Automation;
 class Measurement;
+class Storage;
+class Controls;
 
 class ThreadManager
 {

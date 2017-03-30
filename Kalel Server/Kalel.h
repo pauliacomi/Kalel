@@ -1,7 +1,9 @@
 #pragma once
 
-#include "Automation/ThreadManager.h"
 #include "../Kalel Shared/Netcode/Server.h"
+#include "Automation/ThreadManager.h"
+#include "Automation/CommonControls.h"
+#include "Automation/CommonPointers.h"
 
 class Kalel
 {
@@ -25,5 +27,6 @@ protected:
 	void LogSync(http_request* req, http_response* resp);
 	void RequestSync(http_request* req, http_response* resp);
 	void AutomationControl(http_request* req, http_response* resp);
+	void ReloadParameters(http_request* req, http_response* resp);
 	void Debug(http_request* req, http_response* resp);
 };

@@ -5,8 +5,6 @@
 #define default_val -1	// This value is used as the default value for the optional parameters of the message display function. 
 // Make sure that it is set to a value that the actual parameters can never take
 
-#include "Automation/CommonPointers.h"
-
 #include <string>
 #include <memory>
 
@@ -27,6 +25,7 @@
 
 
 class ExperimentData;
+class Storage;
 
 class MessageHandler
 {

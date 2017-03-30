@@ -1,10 +1,7 @@
 #include "Mensor.h"
 
 #include <iostream>
-#include <stdio.h>
-#include <stdlib.h>
 #include <sstream>
-#include <windows.h>
 
 
 //=====================================================================

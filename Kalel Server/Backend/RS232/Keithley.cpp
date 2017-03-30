@@ -1,18 +1,13 @@
 #include "Keithley.h"
 
-//Rajout 
 #include <iostream>
 #include <sstream>
-#include <math.h>
 
 
 
 Keithley::Keithley(void) : LiaisonRS232()
 {
 	g_dcb.BaudRate = 19200;				// On a le moyen d'augmenter le BaudRate du keithley.
-
-	// Initialize the critical section
-	InitializeCriticalSection(&Sync_keithley);
 }
 
 Keithley::~Keithley(void)
@@ -21,9 +16,6 @@ Keithley::~Keithley(void)
 		// Close the connection
 		LiaisonRS232::CloseCOM();
 	}
-
-	// Delete the critical section
-	DeleteCriticalSection(&Sync_keithley);
 }
 
 //============================
@@ -130,7 +122,7 @@ bool Keithley::ReadChannel(int chanNo, double* result)
 	// Normally critical section SHOULD NOT be used with potentially blocking parts of code
 	// Due to the OVERLAPPED reading and writing of the serial port, we are guaranteed not to block the thread for more than MAX_READ + MAX_WRITE (about 500 ms) 
 	
-	EnterCriticalSection(&Sync_keithley);
+	std::unique_lock<std::mutex> lock(mutex_keithley);
 
 	// Start by sending message to ask for the data
 
@@ -150,7 +142,7 @@ bool Keithley::ReadChannel(int chanNo, double* result)
 
 	success = WriteCOM(buffer, (int)strlen(buffer), &nBytesWritten);
 	if (!success) {
-		LeaveCriticalSection(&Sync_keithley);
+		lock.unlock();
 		return false;
 	}
 
@@ -179,12 +171,12 @@ bool Keithley::ReadChannel(int chanNo, double* result)
 
 	success = ReadCOM(buffer, 256);
 	if (!success) {
-		LeaveCriticalSection(&Sync_keithley);
+		lock.unlock();
 		return false;
 	}
 
 	// Can now leave the critical section 
-	LeaveCriticalSection(&Sync_keithley);
+	lock.unlock();
 	
 	// On ne va garder de 'buffer' que les 15 premiers caracteres. On elimine le retour a la ligne
 	// On mettra cette chaine de caractere dans 'resultat'.

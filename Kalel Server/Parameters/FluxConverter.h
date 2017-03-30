@@ -10,9 +10,9 @@ public:
 	~FluxConverter();
 
 public:
-	double ConversionCalo(double flux);
-	double ConversionBP(double flux);
-	double ConversionHP(double flux);
+	double ConversionCalo(double flux, double sensitivity_calo);
+	double ConversionBP(double flux, double sensitivity_lp);
+	double ConversionHP(double flux, double sensitivity_hp);
 };
 
 #endif

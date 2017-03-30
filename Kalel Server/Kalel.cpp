@@ -5,13 +5,13 @@
 
 #include "../Kalel Shared/Netcode/json.hpp"
 #include "../Kalel Shared/Netcode/stdHelpers.h"
+#include "../Kalel Shared/unicodeConv.h"
+
 #include "../Kalel Shared/Com Classes/Serialization.h"
 #include "../Kalel Shared/Com Classes/ControlInstrumentState.h"
-
 #include "../Kalel Shared/Com Classes/ExperimentData.h"
 #include "../Kalel Shared/Com Classes/ExperimentSettings.h"
 #include "../Kalel Shared/Com Classes/MachineSettings.h"
-#include "../Kalel Shared/unicodeConv.h"
 
 // Std
 #include <vector>
@@ -20,7 +20,7 @@
 using json = nlohmann::json;
 
 Kalel::Kalel()
-	: controlMechanisms {storageVectors}
+	: controlMechanisms{ storageVectors }
 	, threadManager{ storageVectors, controlMechanisms}
 {
 	//
@@ -61,6 +61,9 @@ Kalel::Kalel()
 	server.AddMethod(
 		std::bind(&Kalel::AutomationControl,		this, std::placeholders::_1, std::placeholders::_2),
 													"/api/thread");
+	server.AddMethod(
+		std::bind(&Kalel::ReloadParameters,			this, std::placeholders::_1, std::placeholders::_2), 
+													"/api/reloadparameters");
 	server.AddMethod(
 		std::bind(&Kalel::Debug,					this, std::placeholders::_1, std::placeholders::_2), 
 													"/api/debug/testconnection");
@@ -521,6 +524,19 @@ void Kalel::AutomationControl(http_request* req, http_response* resp)
 		{
 			resp->status_ = http::responses::conflict;
 		}
+	}
+}
+
+
+/*******************************************
+// Reload of parameters file into settings
+*******************************************/
+void Kalel::ReloadParameters(http_request * req, http_response * resp)
+{
+	// SET
+	if (req->method_ == http::method::post)
+	{
+
 	}
 }
 

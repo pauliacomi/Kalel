@@ -4,7 +4,7 @@
 #include "../Kalel Shared/Com Classes/ExperimentData.h"
 #include "../Kalel Shared/timeHelpers.h"
 #include "../Kalel Shared/stringFormat.h"
-
+#include "Automation/CommonPointers.h"
 
 MessageHandler::MessageHandler(Storage &h)
 	: storage{ h }

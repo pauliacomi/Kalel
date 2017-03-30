@@ -1,17 +1,17 @@
 #pragma once
 
 #include "../../Parameters/FluxConverter.h"
-
 #include <string>
 
 class Keithley;
 class Mensor;
 class MessageHandler;
+class MachineSettings;
 
 class SerialInstruments
 {
 public:
-	SerialInstruments(MessageHandler & messageHandler);
+	SerialInstruments(MessageHandler & messageHandler, MachineSettings & m);
 	~SerialInstruments();
 
 protected:
@@ -38,9 +38,13 @@ protected:
 
 	// Converter
 	FluxConverter converter;
+	double sensitivity_calo  = 0.0f;
+	double sensitivity_lp	= 0.0f;
+	double sensitivity_hp	= 0.0f;
 
 public:
 	bool Init(std::string * errorInit);
+	bool SetSensitivity(double sensitivity_calo, double sensitivity_lp, double sensitivity_hp);
 
 	bool InitiateCalorimeter();
 	bool ReadCalorimeter(double * calorimeter);
