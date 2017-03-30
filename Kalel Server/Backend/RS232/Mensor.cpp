@@ -19,8 +19,15 @@
 
 
 
-Mensor::Mensor(void) : LiaisonRS232()
+Mensor::Mensor(int comport) : LiaisonRS232()
 { 
+	connectionOpen = LiaisonRS232::OpenCOM(comport);	// Open port
+	if (connectionOpen) {
+		errorKeep = "Mensor open: COM" + std::to_string(comport);
+	}
+	else {
+		errorKeep += "\nMensor opening failed: COM" + std::to_string(comport);
+	}
 }
 
 

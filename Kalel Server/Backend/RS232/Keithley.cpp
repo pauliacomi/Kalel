@@ -5,9 +5,19 @@
 
 
 
-Keithley::Keithley(void) : LiaisonRS232()
+Keithley::Keithley(int comport) : LiaisonRS232()
 {
-	g_dcb.BaudRate = 19200;				// On a le moyen d'augmenter le BaudRate du keithley.
+	g_dcb.BaudRate = 19200;								// On a le moyen d'augmenter le BaudRate du keithley.
+
+	connectionOpen = LiaisonRS232::OpenCOM(comport);	// Open port
+	if (connectionOpen)	{
+		errorKeep = "Keithley open: COM" + std::to_string(comport);
+
+		InitKeithley();									// Init Keithley
+	}
+	else {
+		errorKeep += "\nKeithley opening failed: COM" + std::to_string(comport);
+	}
 }
 
 Keithley::~Keithley(void)

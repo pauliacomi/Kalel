@@ -189,18 +189,7 @@ bool SerialInstruments::InitiateCalorimeter()
 		if (calorimeter == INSTRUMENT_KEITHLEY && keithleyInitiated == false)
 		{
 			keithleyInitiated = true;
-
-			keithley = new Keithley();
-
-			if (keithley->OpenCOM(calorimeterCOM))
-			{
-				if (keithley->InitKeithley())
-					return true;
-				else
-					return false;
-			}
-			else
-				return false;
+			keithley = new Keithley(calorimeterCOM);
 		}
 	}
 	return true;
@@ -214,28 +203,12 @@ bool SerialInstruments::InitiatePressureLowRange()
 		if (pressureLowRange == INSTRUMENT_KEITHLEY && keithleyInitiated == false)
 		{
 			keithleyInitiated = true;
-
-			keithley = new Keithley();
-
-			if (keithley->OpenCOM(pressureLowRangeCOM))
-			{
-				if (keithley->InitKeithley())
-					return true;
-				else
-					return false;
-			}
-			else
-				return false;
+			keithley = new Keithley(pressureLowRangeCOM);
 		}
 
 		if (pressureLowRange == INSTRUMENT_MENSOR)
 		{
-			mens_LowRange = new Mensor();
-
-			if (mens_LowRange->OpenCOM(pressureLowRangeCOM))
-				return true;
-			else
-				return false;
+			mens_LowRange = new Mensor(pressureLowRangeCOM);
 		}
 	}
 	return true;
@@ -248,28 +221,12 @@ bool SerialInstruments::InitiatePressureHighRange()
 		if (pressureHighRange == INSTRUMENT_KEITHLEY && keithleyInitiated == false)
 		{
 			keithleyInitiated = true;
-
-			keithley = new Keithley();
-
-			if (keithley->OpenCOM(pressureHighRangeCOM))
-			{
-				if (keithley->InitKeithley())
-					return true;
-				else
-					return false;
-			}
-			else
-				return false;
+			keithley = new Keithley(pressureHighRangeCOM);
 		}
 
 		if (pressureHighRange == INSTRUMENT_MENSOR)
 		{
-			mens_HighRange = new Mensor();
-
-			if (mens_HighRange->OpenCOM(pressureHighRangeCOM))
-				return true;
-			else
-				return false;
+			mens_HighRange = new Mensor(pressureHighRangeCOM);
 		}
 	}
 	return true;

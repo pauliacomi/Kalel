@@ -12,7 +12,7 @@ class Keithley :
 {
 
 public:
-	Keithley(void);
+	Keithley(int comport);
 	~Keithley(void);
 
 private:

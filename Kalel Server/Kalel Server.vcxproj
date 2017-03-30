@@ -238,6 +238,7 @@
     <ClInclude Include="Backend\RS232\Keithley.h" />
     <ClInclude Include="Backend\RS232\LiaisonRS232.h" />
     <ClInclude Include="Backend\RS232\Mensor.h" />
+    <ClInclude Include="Backend\RS232\rs232.h" />
     <ClInclude Include="Backend\USB\NIDAQmx.h" />
     <ClInclude Include="Backend\USB\NI_USB_6008.h" />
     <ClInclude Include="Backend\USB\NI_USB_9211A.h" />
@@ -426,6 +427,7 @@
     <ClCompile Include="Backend\RS232\Keithley.cpp" />
     <ClCompile Include="Backend\RS232\LiaisonRS232.cpp" />
     <ClCompile Include="Backend\RS232\Mensor.cpp" />
+    <ClCompile Include="Backend\RS232\rs232.c" />
     <ClCompile Include="Backend\USB\NI_USB_6008.cpp" />
     <ClCompile Include="Backend\USB\NI_USB_9211A.cpp" />
     <ClCompile Include="Backend\Wrapper Classes\SerialInstruments.cpp" />

@@ -13,7 +13,7 @@ private:
 	bool connectionOpen = false;
 
 public:
-	Mensor(void);
+	Mensor(int comport);
 	~Mensor(void);
 
 	bool OpenCOM(int nId);

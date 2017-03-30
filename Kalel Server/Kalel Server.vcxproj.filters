@@ -264,6 +264,9 @@
     <ClInclude Include="..\Kalel Shared\soundHelpers.h">
       <Filter>Header Files\Common</Filter>
     </ClInclude>
+    <ClInclude Include="Backend\RS232\rs232.h">
+      <Filter>Header Files\Backend\RS232</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Kalel Server.cpp">
@@ -499,6 +502,9 @@
     </ClCompile>
     <ClCompile Include="..\Kalel Shared\soundHelpers.cpp">
       <Filter>Source Files\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Backend\RS232\rs232.c">
+      <Filter>Source Files\Backend\RS232</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
