@@ -14,19 +14,17 @@
 class CalorimeterReader
 {
 public:
-	CalorimeterReader(int port);
+	CalorimeterReader(ReadingInstruments & s);
 	~CalorimeterReader(void);
 
 	// Pass in the references to double variables to get the three temperatures
 	bool Read(double* calorimeter);
 
-	// Get the port for temperature readings
-	int GetReadPort();
-
-	// Set the port for temperature readings
-	void SetReadPort(int port);
+	// Get calorimeter temperature
+	bool GetError(std::string * error);
 
 private:
+	ReadingInstruments & instruments;
 };
 
 #endif

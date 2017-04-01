@@ -4,14 +4,15 @@
 
 #include <string>
 #include <vector>
+#include <map>
 
 struct Instrument
 {
 	int type;			// serial/usb/etc
-	int instrument;		// keithley/mensor/national instruments
+	int name;			// keithley/mensor/national instruments
 	int function;		// ?
 	int port;			// port being used (USB1, COM1, DEV3)
-	int channel;		// channel 1/2
+	bool initialised = false;	//
 };
 
 struct Reader
@@ -19,8 +20,19 @@ struct Reader
 	int type;						// Pressure / Temperature etc
 	int identifier;					// Number 1/ 2 low pressure etc
 	long double sensitivity;		// sensitivity of it
-	std::vector<Instrument*> instruments;
+	int channel;					// channel 1/2 of the instrument
+	int instrument;
 };
+
+struct Controller
+{
+	int type;						// Pressure / Temperature etc
+	int identifier;					// Number 1/ 2 low pressure etc
+	long double sensitivity;		// sensitivity of it
+	int channel;					// channel 1/2 of the instrument
+	int instrument;
+};
+
 
 class MachineSettings
 {
@@ -42,13 +54,9 @@ public:
 	float VolumeRef;								// Used for user information (no calculations)
 	float VolumeP6;									// Used for user information (no calculations)
 
-	std::vector<Instrument> instruments;			// The instruments in the machine
-
-	std::vector<Reader> calorimeter;
-	std::vector<Reader> pressure;
-	std::vector<Reader> temperatures;
-	std::vector<Reader> valves;
-	std::vector<Reader> pumps;
+	std::map<unsigned int, Instrument> instruments;			// The instruments in the machine
+	std::map<unsigned int, Reader>	readers;				// The readers which are available
+	std::map<unsigned int, Controller>	controllers;		// The controllers which are available
 
 	std::wstring CaloName;
 	std::wstring CaloEntete;

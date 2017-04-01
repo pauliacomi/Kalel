@@ -24,6 +24,7 @@ public:
 
 	bool OpenCOM(int nId);
 	bool CloseCOM();
+	bool ChangeCOM(int nId);
 	bool InitKeithley();
 
 	bool ReadChannel(int chanNo, double* result);

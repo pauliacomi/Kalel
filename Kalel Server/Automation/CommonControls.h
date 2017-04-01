@@ -28,16 +28,19 @@ public:
 private:
 	Storage & storage;
 
-	SerialInstruments serialInstruments;
+	// A class containing and managing all the reading instruments
+	ReadingInstruments readerInstruments;
 
 public:
 
 	std::shared_ptr<MessageHandler> messageHandler;							// The message sender class.		Thread Safe!
 	std::shared_ptr<FileWriter> fileWriter;									// The file writing class
 	std::shared_ptr<ValveController> valveControls;							// The valve control/query class.	Thread Safe!
+
 	std::shared_ptr<TemperatureReader> temperatureReader;					// Pointer to the class that deals with temperature recording
 	std::shared_ptr<PressureReader> pressureReader;							// Pointer to the class that deals with pressure recording
 	std::shared_ptr<CalorimeterReader> calorimeterReader;					// Pointer to the class that deals with calorimeter recording
+
 	std::shared_ptr<Security> security;										// Pointer to the class that deals with security
 
 	// Timers
@@ -67,14 +70,19 @@ public:
 
 inline Controls::Controls(Storage &h)
 	: storage{ h }
-	, serialInstruments{*messageHandler, h.machineSettings}
+	, readerInstruments{*messageHandler, *h.machineSettings}
 {
 	// Create objects from controls class
 	fileWriter			= std::make_shared<FileWriter>();
 	messageHandler		= std::make_shared<MessageHandler>(h);
+
+	// controls
 	valveControls		= std::make_shared<ValveController>(*messageHandler, h.machineSettings->PortValves);
-	pressureReader		= std::make_shared<PressureReader>(h.machineSettings);
-	temperatureReader	= std::make_shared<TemperatureReader>(h.machineSettings->PortTemperatures);
+	// readers
+	pressureReader		= std::make_shared<PressureReader>(readerInstruments);
+	temperatureReader	= std::make_shared<TemperatureReader>(readerInstruments);
+	calorimeterReader	= std::make_shared<CalorimeterReader>(readerInstruments);
+
 	security			= std::make_shared<Security>(h.machineSettings->ActivationSecurite, *valveControls, *messageHandler);
 }
 

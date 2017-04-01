@@ -44,10 +44,16 @@
 
 
 #define COM_UNDEF				-1
-#define READ_LP					0
-#define READ_HP					1
 
+// Readers 
+#define READER_PRESSURE				0
+#define READER_TEMPERATURE			1
+#define READER_CALO					2
 
+// identifiers 
+#define PRESSURE_LP					0
+#define PRESSURE_HP					1
+#define CALO						2
 
 
 

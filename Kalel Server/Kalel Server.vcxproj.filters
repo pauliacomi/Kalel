@@ -264,14 +264,14 @@
     <ClInclude Include="Backend\Wrapper Classes\CalorimeterReader.h">
       <Filter>Header Files\Backend\Wrapper Classes</Filter>
     </ClInclude>
-    <ClInclude Include="Backend\RS232\SerialInstruments.h">
-      <Filter>Header Files\Backend\RS232</Filter>
-    </ClInclude>
     <ClInclude Include="Backend\RS232\lrs232.h">
       <Filter>Header Files\Backend\RS232</Filter>
     </ClInclude>
     <ClInclude Include="Backend\RS232\RS232.h">
       <Filter>Header Files\Backend\RS232</Filter>
+    </ClInclude>
+    <ClInclude Include="Backend\Instruments.h">
+      <Filter>Header Files\Backend</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -509,14 +509,17 @@
     <ClCompile Include="Backend\Wrapper Classes\PressureReader.cpp">
       <Filter>Source Files\Backend\Wrapper Classes</Filter>
     </ClCompile>
-    <ClCompile Include="Backend\RS232\SerialInstruments.cpp">
-      <Filter>Source Files\Backend\RS232</Filter>
-    </ClCompile>
     <ClCompile Include="Backend\RS232\lrs232.c">
       <Filter>Source Files\Backend\RS232</Filter>
     </ClCompile>
     <ClCompile Include="Backend\RS232\RS232.cpp">
       <Filter>Source Files\Backend\RS232</Filter>
+    </ClCompile>
+    <ClCompile Include="BACKEND\WRAPPER CLASSES\SERIALINSTRUMENTS.CPP">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Backend\Instruments.cpp">
+      <Filter>Source Files\Backend</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

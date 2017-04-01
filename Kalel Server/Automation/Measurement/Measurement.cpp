@@ -168,9 +168,9 @@ void Measurement::ReadCalorimeter()
 	bool success;
 	std::string error;
 
-	success = controls.serialReaders->ReadCalorimeter(&calorimeter);
+	success = controls.calorimeterReader->Read(&calorimeter);
 	if (!success)
-		controls.serialReaders->GetErrorCalrimeter(&error);
+		controls.calorimeterReader->GetError(&error);
 
 	if (success == false) {
 		controls.messageHandler->DisplayMessage(error);
@@ -192,9 +192,9 @@ void Measurement::ReadLowPressure()
 	bool success;
 	std::string error;
 
-	success = controls.serialReaders->ReadPressureLowRange(&pressureLowRange);
+	success = controls.pressureReader->ReadLowRangeP(&pressureLowRange);
 	if (!success)
-		controls.serialReaders->GetErrorLowRange(&error);
+		controls.pressureReader->GetErrorLowRangeP(&error);
 
 	if (success == false) {
 		controls.messageHandler->DisplayMessage(error);
@@ -216,9 +216,9 @@ void Measurement::ReadHighPressure()
 	bool success;
 	std::string error;
 
-	success = controls.serialReaders->ReadPressureHighRange(&pressureHighRange);
+	success = controls.pressureReader->ReadHighRangeP(&pressureHighRange);
 	if (!success)
-		controls.serialReaders->GetErrorHighRange(&error);
+		controls.pressureReader->GetErrorHighRangeP(&error);
 
 	if (success == false) {
 		controls.messageHandler->DisplayMessage(error);

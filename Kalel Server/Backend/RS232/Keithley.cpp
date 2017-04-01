@@ -77,6 +77,19 @@ bool Keithley::CloseCOM()
 	}
 }
 
+bool Keithley::ChangeCOM(int nId)
+{
+	if (CloseCOM())
+	{
+		if (OpenCOM(nId))
+		{
+			// Finally init keithley
+			InitKeithley();									// Init Keithley
+		}
+	}
+	return false;
+}
+
 bool Keithley::InitKeithley()
 {
 	int nBytesWritten = 0;

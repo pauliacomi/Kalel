@@ -235,11 +235,11 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="Automation\ThreadManager.h" />
+    <ClInclude Include="Backend\Instruments.h" />
     <ClInclude Include="Backend\RS232\Keithley.h" />
     <ClInclude Include="Backend\RS232\RS232.h" />
     <ClInclude Include="Backend\RS232\Mensor.h" />
     <ClInclude Include="Backend\RS232\lrs232.h" />
-    <ClInclude Include="Backend\RS232\SerialInstruments.h" />
     <ClInclude Include="Backend\USB\NIDAQmx.h" />
     <ClInclude Include="Backend\USB\NI_USB_6008.h" />
     <ClInclude Include="Backend\USB\NI_USB_9211A.h" />
@@ -426,15 +426,16 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Automation\ThreadManager.cpp" />
+    <ClCompile Include="Backend\Instruments.cpp" />
     <ClCompile Include="Backend\RS232\Keithley.cpp" />
     <ClCompile Include="Backend\RS232\RS232.cpp" />
     <ClCompile Include="Backend\RS232\Mensor.cpp" />
     <ClCompile Include="Backend\RS232\lrs232.c" />
-    <ClCompile Include="Backend\RS232\SerialInstruments.cpp" />
     <ClCompile Include="Backend\USB\NI_USB_6008.cpp" />
     <ClCompile Include="Backend\USB\NI_USB_9211A.cpp" />
     <ClCompile Include="Backend\Wrapper Classes\PressureReader.cpp" />
     <ClCompile Include="Backend\Wrapper Classes\CalorimeterReader.cpp" />
+    <ClCompile Include="BACKEND\WRAPPER CLASSES\SERIALINSTRUMENTS.CPP" />
     <ClCompile Include="Backend\Wrapper Classes\TemperatureReader.cpp" />
     <ClCompile Include="Backend\Wrapper Classes\ValveController.cpp" />
     <ClCompile Include="Kalel Server.cpp" />

@@ -71,6 +71,14 @@ bool Mensor::CloseCOM()
 	}
 }
 
+bool Mensor::ChangeCOM(int nId)
+{
+	if (CloseCOM())
+	{
+		return OpenCOM(nId);
+	}
+	return false;
+}
 
 //=============================================================================
 //On vérifie qu'on peut lire le Mensor. Si c'est le cas, on instanciera la valeur

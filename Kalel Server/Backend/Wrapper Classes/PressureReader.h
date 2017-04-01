@@ -12,14 +12,15 @@
 
 #include <functional>
 #include <map>
+#include <string>
 
 class MachineSettings;
-class SerialInstruments;
+class ReadingInstruments;
 
 class PressureReader
 {
 public:
-	PressureReader(MachineSettings & m, SerialInstruments & s);
+	PressureReader(ReadingInstruments & s);
 	~PressureReader(void);
 	// Get the port for temperature readings
 	void Reset();
@@ -33,8 +34,17 @@ public:
 	// Get cage temperature
 	bool ReadHighRangeP(double* pressure_high_range);
 
+	// Get calorimeter temperature
+	bool GetErrorLowRangeP(std::string * error);
+
+	// Get cage temperature
+	bool GetErrorHighRangeP(std::string * error);
+
 private:
-	std::map<Reader, std::function<void(double* pressure)>> functions;
+	ReadingInstruments & instruments;
+
+	std::function<bool(double *)> readlrp;
+	std::function<bool(double *)> readhrp;
 };
 
 #endif
