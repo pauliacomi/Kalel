@@ -1,10 +1,15 @@
 #pragma once
 
 #include "../../Parameters/FluxConverter.h"
+
+#include "../RS232/Keithley.h"
+#include "../RS232/Mensor.h"
+#include "../USB/NI_USB_6008.h"
+#include "../USB/NI_USB_9211A.h"
+
+
 #include <string>
 
-class Keithley;
-class Mensor;
 class MessageHandler;
 class MachineSettings;
 
@@ -29,12 +34,16 @@ protected:
 
 	bool keithleyInitiated	= false;
 
-	// There is only one Keithley
-	Keithley * keithley		= nullptr;
+	std::vector<Instrument> instruments;
 
-	// And up to two mensors
-	Mensor * mens_LowRange	= nullptr;
-	Mensor * mens_HighRange	= nullptr;
+	// For Keithley
+	std::vector<Keithley> keithleys;
+	// For Mensors
+	std::vector<Mensor> mensors;
+	// For NI_USB_6008
+	std::vector<NI_USB_6008> NI_USB_6008s;
+	// For NI_USB_9211A
+	std::vector<NI_USB_9211A> NI_USB_9211As;
 
 	// Converter
 	FluxConverter converter;
@@ -43,7 +52,8 @@ protected:
 	double sensitivity_hp	= 0.0f;
 
 public:
-	bool SetSensitivity(double sensitivity_calo, double sensitivity_lp, double sensitivity_hp);
+	void Reset(MachineSettings & m);
+	std::function<void(double* p)> Link(Reader & r);
 
 	bool InitiateCalorimeter();
 	bool ReadCalorimeter(double * calorimeter);

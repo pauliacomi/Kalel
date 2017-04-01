@@ -7,17 +7,18 @@
 
 struct Instrument
 {
-	int type;
-	int instrument;
-	int function;
-	int port;
-	int channel;
+	int type;			// serial/usb/etc
+	int instrument;		// keithley/mensor/national instruments
+	int function;		// ?
+	int port;			// port being used (USB1, COM1, DEV3)
+	int channel;		// channel 1/2
 };
 
 struct Reader
 {
-	int identifier;
-	long double sensitivity;
+	int type;						// Pressure / Temperature etc
+	int identifier;					// Number 1/ 2 low pressure etc
+	long double sensitivity;		// sensitivity of it
 	std::vector<Instrument*> instruments;
 };
 

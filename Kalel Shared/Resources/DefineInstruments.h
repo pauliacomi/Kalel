@@ -2,6 +2,13 @@
 #define DEFINE_INSTRUMENT_H
 #pragma once
 
+// Connection types
+#define CONNECTION_SERIAL		1
+#define CONNECTION_USB			2
+
+#define CONNECTION_SERIAL_TXT	"serial"
+#define CONNECTION_USB_TXT		"usb"
+
 // type of instrument
 #define INSTRUMENT_KEITHLEY			10
 #define INSTRUMENT_MENSOR			11
@@ -16,13 +23,6 @@
 #define INSTRUMENT_NI_USB_9211A_TXT		"NI_USB_9211A"
 #define INSTRUMENT_NONE_TXT				"none"
 #define INSTRUMENT_UNDEF_TXT			"undefined"
-
-// Connection types
-#define CONNECTION_SERIAL		1
-#define CONNECTION_USB			2
-
-#define CONNECTION_SERIAL_TXT	"serial"
-#define CONNECTION_USB_TXT		"usb"
 
 // functions
 #define CALO_V1_BP_V2_KEITHLEY			100

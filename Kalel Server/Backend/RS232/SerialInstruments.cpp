@@ -1,13 +1,11 @@
 #include "SerialInstruments.h"
 
 #include "../../MessageHandler.h"
-#include "../RS232/Keithley.h"
-#include "../RS232/Mensor.h"
 
-#include "../../../Kalel Shared/Com Classes/MachineSettings.h"
 #include "../../../Kalel Shared/Resources/DefineInstruments.h"
 #include "../../../Kalel Shared/Resources/DefineText.h"
 
+#include "../../../Kalel Shared/Com Classes/MachineSettings.h"
 
 SerialInstruments::SerialInstruments(MessageHandler & messageHandler, MachineSettings & m)
 	: messageHandler{ messageHandler }
@@ -25,97 +23,51 @@ SerialInstruments::SerialInstruments(MessageHandler & messageHandler, MachineSet
 	// * COM port		the COM port that the instrument is connected to
 	// * Channel:		the channel that has to be read (only makes sense for a keithley)
 	//
+	instruments = m.instruments;
 
-	calorimeter			= INSTRUMENT_INEXIST;
-	pressureLowRange	= INSTRUMENT_INEXIST;
-	pressureHighRange	= INSTRUMENT_INEXIST;
-
-	this->sensitivity_calo = m.SensitivityCalo;
-	this->sensitivity_lp = m.SensitivityLowPRange;
-	this->sensitivity_hp = m.SensitivityHighPRange;
-
-	for (int i = 0; i < m.NumberInstruments; i++)
+	for (int i = 0; i < instruments.size(); i++)
 	{
-		switch (m.typeInstruments[i])
+		switch (instruments[i].instrument)
 		{
 		case INSTRUMENT_KEITHLEY:
+			try	{
+				keithleys.emplace_back(instruments[i].port);
+			}
+			catch (const std::exception&) {
 
-			switch (m.FunctionInstruments[i])
-			{
-			case CALO_V1_BP_V2_KEITHLEY:
-
-				calorimeter = INSTRUMENT_KEITHLEY;
-				calorimeterChannel = INSTRUMENT_KEYTHLEY_V1;
-				calorimeterCOM = m.COMInstruments[i];
-
-				pressureLowRange = INSTRUMENT_KEITHLEY;
-				pressureLowRangeChannel = INSTRUMENT_KEYTHLEY_V2;
-				pressureLowRangeCOM = m.COMInstruments[i];
-
-				break;
-
-			case CALO_V1_HP_V2_KEITHLEY:
-
-				calorimeter = INSTRUMENT_KEITHLEY;
-				calorimeterChannel = INSTRUMENT_KEYTHLEY_V1;
-				calorimeterCOM = m.COMInstruments[i];
-
-				pressureHighRange = INSTRUMENT_KEITHLEY;
-				pressureHighRangeChannel = INSTRUMENT_KEYTHLEY_V2;
-				pressureHighRangeCOM = m.COMInstruments[i];
-
-				break;
-
-			case CALO_V1_KEITHLEY:
-
-				calorimeter = INSTRUMENT_KEITHLEY;
-				calorimeterChannel = INSTRUMENT_KEYTHLEY_V1;
-				calorimeterCOM = m.COMInstruments[i];
-
-				break;
-
-			case INSTRUMENT_KEYTHLEY_LP_V2:
-
-				pressureLowRange = INSTRUMENT_KEITHLEY;
-				pressureLowRangeChannel = INSTRUMENT_KEYTHLEY_V2;
-				pressureLowRangeCOM = m.COMInstruments[i];
-
-				break;
-
-			case INSTRUMENT_KEYTHLEY_HP_V2:
-
-				pressureHighRange = INSTRUMENT_KEITHLEY;
-				pressureHighRangeChannel = INSTRUMENT_KEYTHLEY_V2;
-				pressureHighRangeCOM = m.COMInstruments[i];
-
-				break;
-
-			default:
-				throw; // Should never be reached
-				break;
 			}
 			break;
-
 
 		case INSTRUMENT_MENSOR:
-			if (m.FunctionInstruments[i] == INSTRUMENT_MENSOR_LP)
-			{
-				pressureLowRange = INSTRUMENT_MENSOR;
-				pressureLowRangeChannel = MENSOR_VOIE;
-				pressureLowRangeCOM = m.COMInstruments[i];
+			try {
+				mensors.emplace_back(instruments[i].port);
 			}
-			else if (m.FunctionInstruments[i] == INSTRUMENT_MENSOR_HP)
-			{
-				pressureHighRange = INSTRUMENT_MENSOR;
-				pressureHighRangeChannel = MENSOR_VOIE;
-				pressureHighRangeCOM = m.COMInstruments[i];
-			}
+			catch (const std::exception&) {
 
+			}
 			break;
+
+		case INSTRUMENT_NI_USB_6008:
+			try {
+				NI_USB_6008s.emplace_back(instruments[i].port);
+			}
+			catch (const std::exception&) {
+
+			}
+			break;
+		
+		case INSTRUMENT_NI_USB_9211A:
+			try {
+				NI_USB_9211As.emplace_back(instruments[i].port);
+			}
+			catch (const std::exception&) {
+				std::string errorInit;
+				messageHandler.DisplayMessageBox(MESSAGE_INSTRUMENT_INIT_FAIL, MB_ICONERROR | MB_OK, false, errorInit);
+			}
+			break;
+
 		case INSTRUMENT_NONE:
 		case INSTRUMENT_UNDEF:
-		case INSTRUMENT_INEXIST:
-			// If there no instrument set, don't do anything
 			break;
 		default:
 			// Should never be reached
@@ -123,43 +75,11 @@ SerialInstruments::SerialInstruments(MessageHandler & messageHandler, MachineSet
 			break;
 		}
 	}
-
-	// Now the init functions can be called
-	std::string errorInit;
-	std::string tempErr;
-	bool successs = true;
-
-	// Now that we have all the data we can call the initiator functions
-	if (!InitiateCalorimeter()) {
-		GetErrorCalrimeter(&tempErr);
-		errorInit += tempErr + "\n";
-		successs = false;
-	}
-	if (!InitiatePressureLowRange()) {
-		GetErrorLowRange(&tempErr);
-		errorInit += tempErr + "\n";;
-		successs = false;
-	}
-	if (!InitiatePressureHighRange()) {
-		GetErrorHighRange(&tempErr);
-		errorInit += tempErr + "\n";;
-		successs = false;
-	}
-	if (!successs)
-	{
-		messageHandler.DisplayMessageBox(MESSAGE_INSTRUMENT_INIT_FAIL, MB_ICONERROR | MB_OK, false, errorInit);
-	}
 }
 
 
 SerialInstruments::~SerialInstruments()
 {
-	if (keithley != nullptr)
-		delete keithley;
-	if (mens_LowRange != nullptr)
-		delete mens_LowRange;
-	if (mens_HighRange != nullptr)
-		delete mens_HighRange;
 }
 
 
@@ -168,65 +88,66 @@ SerialInstruments::~SerialInstruments()
 // initiation functions
 //
 
-bool SerialInstruments::SetSensitivity(double sensitivity_calo, double sensitivity_lp, double sensitivity_hp)
+void SerialInstruments::Reset(MachineSettings & m)
 {
-	this->sensitivity_calo = sensitivity_calo;
-	this->sensitivity_calo = sensitivity_calo;
-	this->sensitivity_calo = sensitivity_calo;
-	return false;
-}
-
-bool SerialInstruments::InitiateCalorimeter()
-{
-	if (calorimeter != INSTRUMENT_INEXIST)
+	for (int i = 0; i < instruments.size(); i++)
 	{
-		if (calorimeter == INSTRUMENT_KEITHLEY && keithleyInitiated == false)
+		switch (instruments[i].instrument)
 		{
-			keithleyInitiated = true;
-			keithley = new Keithley(calorimeterCOM);
+		case INSTRUMENT_KEITHLEY:
+			if (instruments[i].function = )
+			{
+
+			}
+			try {
+				keithleys.emplace_back(instruments[i].port);
+			}
+			catch (const std::exception&) {
+
+			}
+			break;
+
+		case INSTRUMENT_MENSOR:
+			try {
+				mensors.emplace_back(instruments[i].port);
+			}
+			catch (const std::exception&) {
+
+			}
+			break;
+
+		case INSTRUMENT_NI_USB_6008:
+			try {
+				NI_USB_6008s.emplace_back(instruments[i].port);
+			}
+			catch (const std::exception&) {
+
+			}
+			break;
+
+		case INSTRUMENT_NI_USB_9211A:
+			try {
+				NI_USB_9211As.emplace_back(instruments[i].port);
+			}
+			catch (const std::exception&) {
+				messageHandler.DisplayMessageBox(MESSAGE_INSTRUMENT_INIT_FAIL, MB_ICONERROR | MB_OK, false, errorInit);
+			}
+			break;
+
+		case INSTRUMENT_NONE:
+		case INSTRUMENT_UNDEF:
+			break;
+		default:
+			// Should never be reached
+			throw;
+			break;
 		}
 	}
-	return true;
 }
 
-
-bool SerialInstruments::InitiatePressureLowRange()
+std::function<void(double* p)> SerialInstruments::Link(Reader & r)
 {
-	if (pressureLowRange != INSTRUMENT_INEXIST)
-	{
-		if (pressureLowRange == INSTRUMENT_KEITHLEY && keithleyInitiated == false)
-		{
-			keithleyInitiated = true;
-			keithley = new Keithley(pressureLowRangeCOM);
-		}
-
-		if (pressureLowRange == INSTRUMENT_MENSOR)
-		{
-			mens_LowRange = new Mensor(pressureLowRangeCOM);
-		}
-	}
-	return true;
 }
-
-bool SerialInstruments::InitiatePressureHighRange()
-{
-	if (pressureHighRange != INSTRUMENT_INEXIST)
-	{
-		if (pressureHighRange == INSTRUMENT_KEITHLEY && keithleyInitiated == false)
-		{
-			keithleyInitiated = true;
-			keithley = new Keithley(pressureHighRangeCOM);
-		}
-
-		if (pressureHighRange == INSTRUMENT_MENSOR)
-		{
-			mens_HighRange = new Mensor(pressureHighRangeCOM);
-		}
-	}
-	return true;
-}
-
-
 
 
 //
