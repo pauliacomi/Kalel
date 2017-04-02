@@ -4,7 +4,7 @@
 #include "../../../Kalel Shared/Resources/DefineInstruments.h"
 #include "../Instruments.h"
 
-PressureReader::PressureReader(ReadingInstruments & s, MachineSettings & m)
+PressureReader::PressureReader(Instruments & s, MachineSettings & m)
 	: instruments{ s }
 {
 	Reset(m);

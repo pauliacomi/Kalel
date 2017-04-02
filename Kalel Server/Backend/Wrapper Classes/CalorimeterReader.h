@@ -13,12 +13,12 @@
 #include <string>
 
 class MachineSettings;
-class ReadingInstruments;
+class Instruments;
 
 class CalorimeterReader
 {
 public:
-	CalorimeterReader(ReadingInstruments & s, MachineSettings & m);
+	CalorimeterReader(Instruments & s, MachineSettings & m);
 	~CalorimeterReader(void);
 	void Reset(MachineSettings & m);
 
@@ -26,7 +26,7 @@ public:
 	double Read();
 
 private:
-	ReadingInstruments & instruments;
+	Instruments & instruments;
 	int calorimeter;
 };
 

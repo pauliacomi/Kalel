@@ -515,9 +515,6 @@
     <ClCompile Include="Backend\RS232\RS232.cpp">
       <Filter>Source Files\Backend\RS232</Filter>
     </ClCompile>
-    <ClCompile Include="BACKEND\WRAPPER CLASSES\SERIALINSTRUMENTS.CPP">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Backend\Instruments.cpp">
       <Filter>Source Files\Backend</Filter>
     </ClCompile>

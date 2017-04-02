@@ -47,8 +47,7 @@ public:
 
 	void ThreadMeasurement();
 	void ReadCalorimeter();
-	void ReadLowPressure();
-	void ReadHighPressure();
+	void ReadPressure();
 	void ReadTemperatures();
 };
 

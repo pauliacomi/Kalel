@@ -4,7 +4,7 @@
 #include "../../../Kalel Shared/Resources/DefineInstruments.h"
 #include "../Instruments.h"
 
-CalorimeterReader::CalorimeterReader(ReadingInstruments & s, MachineSettings & m)
+CalorimeterReader::CalorimeterReader(Instruments & s, MachineSettings & m)
 	: instruments{ s }
 {
 	Reset(m);

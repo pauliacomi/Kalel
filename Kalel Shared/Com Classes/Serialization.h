@@ -8,12 +8,16 @@
 #include "../Com Classes/MachineSettings.h"
 #include "../Com Classes/ControlInstrumentState.h"
 #include "../unicodeConv.h"
-#include "../timeHelpers.h"
-
-#include <chrono>
 
 inline void to_json(nlohmann::json &j, const MachineSettings &m);
 inline void from_json(const nlohmann::json &j, MachineSettings &m);
+
+inline void to_json(nlohmann::json &j, const Instrument &m);
+inline void from_json(const nlohmann::json &j, Instrument &m);
+inline void to_json(nlohmann::json &j, const Reader &m);
+inline void from_json(const nlohmann::json &j, Reader &m);
+inline void to_json(nlohmann::json &j, const Controller &m);
+inline void from_json(const nlohmann::json &j, Controller &m);
 
 inline void to_json(nlohmann::json &j, const ExperimentData &e);
 inline void from_json(const nlohmann::json &j, ExperimentData &e);
@@ -43,25 +47,6 @@ inline void to_json(nlohmann::json &j, const ControlInstrumentState &e);
 inline void from_json(const nlohmann::json &j, ControlInstrumentState &e);
 
 //*************************************************************************************************************************
-//						timpoint <> JSON
-//*************************************************************************************************************************
-
-//namespace nlohmann {
-//	template <>
-//	struct adl_serializer<std::chrono::time_point<std::chrono::system_clock>> {
-//		void to_json(nlohmann::json & j, const std::chrono::time_point<std::chrono::system_clock> & m)
-//		{
-//			j = nlohmann::json{ timeh::TimePointToString(m) };
-//		}
-//
-//		void from_json(const nlohmann::json & j, std::chrono::time_point<std::chrono::system_clock> & m)
-//		{
-//			m = timeh::StringToTimePoint(j.get<std::string>());
-//		}
-//	};
-//}
-
-//*************************************************************************************************************************
 //						MachineSettings <> JSON
 //*************************************************************************************************************************
 
@@ -71,26 +56,20 @@ inline void to_json(nlohmann::json &j, const MachineSettings &m) {
 	j[STRINGIFY(m.CaloEntete						)]	= UnicodeConv::ws2s(m.CaloEntete)			;
 	j[STRINGIFY(m.CheminFichierGeneral				)]	= UnicodeConv::ws2s(m.CheminFichierGeneral)	;
 	j[STRINGIFY(m.ActivationSecurite				)]	= m.ActivationSecurite						;
-	j[STRINGIFY(m.HighPressureToMeasure				)]	= m.HighPressureToMeasure					;
-	j[STRINGIFY(m.LowPressureToMeasure				)]	= m.LowPressureToMeasure					;
-	j[STRINGIFY(m.NumberInstruments					)]	= m.NumberInstruments						;
-	j[STRINGIFY(m.PortKeithley						)]	= m.PortKeithley							;
-	j[STRINGIFY(m.PortMensor						)]	= m.PortMensor								;
-	j[STRINGIFY(m.PortTemperatures					)]	= m.PortTemperatures						;
-	j[STRINGIFY(m.PortValves						)]	= m.PortValves								;
-	j[STRINGIFY(m.PresenceTuyereSonique				)]	= m.PresenceTuyereSonique					;
-	j[STRINGIFY(m.PressionLimiteVide				)]	= m.PressionLimiteVide						;
 	j[STRINGIFY(m.PressionSecuriteBassePression		)]	= m.PressionSecuriteBassePression			;
 	j[STRINGIFY(m.PressionSecuriteHautePression		)]	= m.PressionSecuriteHautePression			;
-	j[STRINGIFY(m.SensitivityCalo					)]	= m.SensitivityCalo							;
-	j[STRINGIFY(m.SensitivityLowPRange	)]	= m.SensitivityLowPRange			;
-	j[STRINGIFY(m.SensitivityHighPRange	)]	= m.SensitivityHighPRange			;
+	j[STRINGIFY(m.PressionLimiteVide				)]	= m.PressionLimiteVide						;
+	j[STRINGIFY(m.PresenceTuyereSonique				)]	= m.PresenceTuyereSonique					;
 	j[STRINGIFY(m.VolumeP6							)]	= m.VolumeP6								;
 	j[STRINGIFY(m.VolumeRef							)]	= m.VolumeRef								;
-	j[STRINGIFY(m.COMInstruments					)]	= m.COMInstruments							;
-	j[STRINGIFY(m.FunctionInstruments				)]	= m.FunctionInstruments						;
-	j[STRINGIFY(m.typeInstruments					)]	= m.typeInstruments							;
+/*
+	json j1 = m.instruments;
+	json j2 = m.readers;
+	json j3 = m.controllers;
 
+	j[STRINGIFY(m.instruments						)]	= j1						;
+	j[STRINGIFY(m.readers							)]	= j2						;
+	j[STRINGIFY(m.controllers						)]	= j3						;*/
 }
 
 inline void from_json(const nlohmann::json &j, MachineSettings &m) {
@@ -98,27 +77,76 @@ inline void from_json(const nlohmann::json &j, MachineSettings &m) {
 	m.CaloName											= UnicodeConv::s2ws(j[STRINGIFY(m.CaloName									)]);
 	m.CaloEntete										= UnicodeConv::s2ws(j[STRINGIFY(m.CaloEntete								)]);
 	m.CheminFichierGeneral								= UnicodeConv::s2ws(j[STRINGIFY(m.CheminFichierGeneral						)]);
-	m.ActivationSecurite								=					j[STRINGIFY(m.ActivationSecurite						)];				
-	m.HighPressureToMeasure								=					j[STRINGIFY(m.HighPressureToMeasure						)];				
-	m.LowPressureToMeasure								=					j[STRINGIFY(m.LowPressureToMeasure						)];				
-	m.NumberInstruments									=					j[STRINGIFY(m.NumberInstruments							)];					
-	m.PortKeithley										=					j[STRINGIFY(m.PortKeithley								)];						
-	m.PortMensor										=					j[STRINGIFY(m.PortMensor								)];							
-	m.PortTemperatures									=					j[STRINGIFY(m.PortTemperatures							)];					
-	m.PortValves										=					j[STRINGIFY(m.PortValves								)];							
-	m.PresenceTuyereSonique								=					j[STRINGIFY(m.PresenceTuyereSonique						)];				
-	m.PressionLimiteVide								=					j[STRINGIFY(m.PressionLimiteVide						)];					
-	m.PressionSecuriteBassePression						=					j[STRINGIFY(m.PressionSecuriteBassePression				)];		
-	m.PressionSecuriteHautePression						=					j[STRINGIFY(m.PressionSecuriteHautePression				)];		
-	m.SensitivityCalo									=					j[STRINGIFY(m.SensitivityCalo							)];					
-	m.SensitivityLowPRange					=					j[STRINGIFY(m.SensitivityLowPRange			)];	
-	m.SensitivityHighPRange					=					j[STRINGIFY(m.SensitivityHighPRange			)];	
-	m.VolumeP6											=					j[STRINGIFY(m.VolumeP6									)];							
-	m.VolumeRef											=					j[STRINGIFY(m.VolumeRef									)];							
-	m.COMInstruments									=					j[STRINGIFY(m.COMInstruments							)].get<std::vector<int>>();						
-	m.FunctionInstruments								=					j[STRINGIFY(m.FunctionInstruments						)].get<std::vector<int>>();
-	m.typeInstruments									=					j[STRINGIFY(m.typeInstruments							)].get<std::vector<int>>();
+	m.ActivationSecurite								=					j[STRINGIFY(m.ActivationSecurite						)];		
+	m.PressionSecuriteBassePression						=					j[STRINGIFY(m.PressionSecuriteBassePression				)];
+	m.PressionSecuriteHautePression						=					j[STRINGIFY(m.PressionSecuriteHautePression				)];
+	m.PressionLimiteVide								=					j[STRINGIFY(m.PressionLimiteVide						)];
+	m.PresenceTuyereSonique								=					j[STRINGIFY(m.PresenceTuyereSonique						)];
+	m.VolumeP6											=					j[STRINGIFY(m.VolumeP6									)];
+	m.VolumeRef											=					j[STRINGIFY(m.VolumeRef									)];
 
+	/*json j1 = j[STRINGIFY(m.instruments)];
+	for (json::iterator it = j1.begin(); it != j1.end(); ++it) {
+		m.instruments.insert(std::make_pair(*it.key, *it));
+	}
+	json j2 = j[STRINGIFY(m.readers)];
+	for (json::iterator it = j2.begin(); it != j2.end(); ++it) {
+		m.instruments.insert(std::make_pair(*it.key, *it));
+	}
+	json j3 = j[STRINGIFY(m.controllers)];
+	for (json::iterator it = j3.begin(); it != j3.end(); ++it) {
+		m.instruments.insert(std::make_pair(*it.key, *it));
+	}*/
+
+}
+
+//*************************************************************************************************************************
+//						Instrument <> JSON
+//*************************************************************************************************************************
+
+inline void to_json(nlohmann::json &j, const Instrument &m) {
+	j[STRINGIFY(m.name								)]	= m.name									;
+	j[STRINGIFY(m.port								)]	= m.port									;
+
+	}
+inline void from_json(const nlohmann::json &j, Instrument &m) {
+	m.name												=					j[STRINGIFY(m.name										)];
+	m.port												=					j[STRINGIFY(m.port										)];
+}
+
+//*************************************************************************************************************************
+//						Reader <> JSON
+//*************************************************************************************************************************
+inline void to_json(nlohmann::json &j, const Reader &m) {
+	j[STRINGIFY(m.type								)]	= m.type									;
+	j[STRINGIFY(m.identifier						)]	= m.identifier								;
+	j[STRINGIFY(m.sensitivity						)]	= m.sensitivity								;
+	j[STRINGIFY(m.channel							)]	= m.channel									;
+	j[STRINGIFY(m.instrument						)]	= m.instrument								;
+}
+inline void from_json(const nlohmann::json &j, Reader &m) {
+	m.type												=					j[STRINGIFY(m.type										)];
+	m.identifier										=					j[STRINGIFY(m.identifier								)];
+	m.sensitivity										=					j[STRINGIFY(m.sensitivity								)];
+	m.channel											=					j[STRINGIFY(m.channel									)];
+	m.instrument										=					j[STRINGIFY(m.instrument								)];
+}
+//*************************************************************************************************************************
+//						Controller <> JSON
+//*************************************************************************************************************************
+inline void to_json(nlohmann::json &j, const Controller &m) {
+	j[STRINGIFY(m.type								)]	= m.type									;
+	j[STRINGIFY(m.identifier						)]	= m.identifier								;
+	j[STRINGIFY(m.sensitivity						)]	= m.sensitivity								;
+	j[STRINGIFY(m.channel							)]	= m.channel									;
+	j[STRINGIFY(m.instrument						)]	= m.instrument								;
+}
+inline void from_json(const nlohmann::json &j, Controller &m) {
+	m.type												=					j[STRINGIFY(m.type										)];
+	m.identifier										=					j[STRINGIFY(m.identifier								)];
+	m.sensitivity										=					j[STRINGIFY(m.sensitivity								)];
+	m.channel											=					j[STRINGIFY(m.channel									)];
+	m.instrument										=					j[STRINGIFY(m.instrument								)];
 }
 
 //*************************************************************************************************************************

@@ -14,11 +14,11 @@
 
 class MessageHandler;
 
-class ReadingInstruments
+class Instruments
 {
 public:
-	ReadingInstruments(MessageHandler & messageHandler, MachineSettings & m);
-	~ReadingInstruments();
+	Instruments(MessageHandler & messageHandler, MachineSettings & m);
+	~Instruments();
 
 private:
 

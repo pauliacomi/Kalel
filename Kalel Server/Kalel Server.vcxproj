@@ -435,7 +435,6 @@
     <ClCompile Include="Backend\USB\NI_USB_9211A.cpp" />
     <ClCompile Include="Backend\Wrapper Classes\PressureReader.cpp" />
     <ClCompile Include="Backend\Wrapper Classes\CalorimeterReader.cpp" />
-    <ClCompile Include="BACKEND\WRAPPER CLASSES\SERIALINSTRUMENTS.CPP" />
     <ClCompile Include="Backend\Wrapper Classes\TemperatureReader.cpp" />
     <ClCompile Include="Backend\Wrapper Classes\ValveController.cpp" />
     <ClCompile Include="Kalel Server.cpp" />

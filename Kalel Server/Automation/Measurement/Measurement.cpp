@@ -131,10 +131,9 @@ void Measurement::Execution()
 
 void Measurement::ThreadMeasurement()
 {
-	// Start the 4 threads
+	// Start the threads
 	measurementThreads.push_back(std::thread(&Measurement::ReadCalorimeter, this));
-	measurementThreads.push_back(std::thread(&Measurement::ReadHighPressure, this));
-	measurementThreads.push_back(std::thread(&Measurement::ReadLowPressure, this));
+	measurementThreads.push_back(std::thread(&Measurement::ReadPressure, this));
 	measurementThreads.push_back(std::thread(&Measurement::ReadTemperatures, this));
 
 	// Give the threads the start signal
@@ -164,68 +163,21 @@ void Measurement::ReadCalorimeter()
 	syncThreadStart.wait(lock, [this] {return ready; });
 
 	// Read the value from the calorimeter
-	double calorimeter = 0;
-	bool success;
-	std::string error;
-
-	success = controls.calorimeterReader->Read(&calorimeter);
-	if (!success)
-		controls.calorimeterReader->GetError(&error);
-
-	if (success == false) {
-		controls.messageHandler->DisplayMessage(error);
-	}
-
 	// Write it in the shared object - NO need for mutex
-	storage.currentData->resultCalorimeter = calorimeter;
+	storage.currentData->resultCalorimeter = controls.calorimeterReader->Read();
 }
 
 
-void Measurement::ReadLowPressure()
+void Measurement::ReadPressure()
 {
 	// Wait until called
 	std::unique_lock<std::mutex> lock(lockingMutex);
 	syncThreadStart.wait(lock, [this] {return ready; });
 
-	// Read the value from the calorimeter
-	double pressureLowRange = 0;
-	bool success;
-	std::string error;
-
-	success = controls.pressureReader->ReadLowRangeP(&pressureLowRange);
-	if (!success)
-		controls.pressureReader->GetErrorLowRangeP(&error);
-
-	if (success == false) {
-		controls.messageHandler->DisplayMessage(error);
-	}
-
+	// Read the value from the pressure transmitter
 	// Write it in the shared object - NO need for mutex
-	storage.currentData->pressureLow = pressureLowRange;
-}
-
-
-void Measurement::ReadHighPressure()
-{
-	// Wait until called
-	std::unique_lock<std::mutex> lock(lockingMutex);
-	syncThreadStart.wait(lock, [this] {return ready; });
-
-	// Read the value from the calorimeter
-	double pressureHighRange = 0;
-	bool success;
-	std::string error;
-
-	success = controls.pressureReader->ReadHighRangeP(&pressureHighRange);
-	if (!success)
-		controls.pressureReader->GetErrorHighRangeP(&error);
-
-	if (success == false) {
-		controls.messageHandler->DisplayMessage(error);
-	}
-
-	// Write it in the shared object - NO need for mutex
-	storage.currentData->pressureHigh = pressureHighRange;
+	storage.currentData->pressureLow = controls.pressureReader->ReadLowRangeP();
+	storage.currentData->pressureHigh = controls.pressureReader->ReadHighRangeP();
 }
 
 void Measurement::ReadTemperatures()
@@ -234,21 +186,9 @@ void Measurement::ReadTemperatures()
 	std::unique_lock<std::mutex> lock(lockingMutex);
 	syncThreadStart.wait(lock, [this] {return ready; });
 
-	// Read the value from the calorimeter
-	double dTemperatureCalo = 0, dTemperatureCage = 0, dTemperaturePiece = 0;
-	bool success;
-	std::string error;
-
-	success = controls.temperatureReader->Read(&dTemperatureCalo, &dTemperatureCage, &dTemperaturePiece);
-	if (!success)
-		controls.temperatureReader->GetError(&error);
-
-	if (success == false) {
-		controls.messageHandler->DisplayMessage(error);
-	}
-
+	// Read the value from the pressure transmitter
 	// Write it in the shared object - NO need for mutex
-	storage.currentData->temperatureCalo = dTemperatureCalo;
-	storage.currentData->temperatureCage = dTemperatureCage;
-	storage.currentData->temperatureRoom = dTemperaturePiece;
+	storage.currentData->temperatureCalo = controls.temperatureReader->ReadCalo();
+	storage.currentData->temperatureCage = controls.temperatureReader->ReadCage();
+	storage.currentData->temperatureRoom = controls.temperatureReader->ReadRoom();
 }

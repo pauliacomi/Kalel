@@ -4,7 +4,7 @@
 #include "../../../Kalel Shared/Resources/DefineInstruments.h"
 #include "../Instruments.h"
 
-TemperatureReader::TemperatureReader(ReadingInstruments & s, MachineSettings & m)
+TemperatureReader::TemperatureReader(Instruments & s, MachineSettings & m)
 	: instruments{ s }
 {
 }

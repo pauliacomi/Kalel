@@ -7,7 +7,7 @@
 
 #include <algorithm> 
 
-ReadingInstruments::ReadingInstruments(MessageHandler & messageHandler, MachineSettings & m)
+Instruments::Instruments(MessageHandler & messageHandler, MachineSettings & m)
 	: mh{ messageHandler }
 {
 	// This loop goes through all the instruments in the Parameters file
@@ -28,7 +28,7 @@ ReadingInstruments::ReadingInstruments(MessageHandler & messageHandler, MachineS
 }
 
 
-ReadingInstruments::~ReadingInstruments()
+Instruments::~Instruments()
 {
 }
 
@@ -38,7 +38,7 @@ ReadingInstruments::~ReadingInstruments()
 // initiation functions
 //
 
-void ReadingInstruments::Reset(MachineSettings & m)
+void Instruments::Reset(MachineSettings & m)
 {
 	for (auto i = m.readers.begin(); i != m.readers.end(); ++i)
 	{
@@ -74,7 +74,7 @@ void ReadingInstruments::Reset(MachineSettings & m)
 }
 
 
-void ReadingInstruments::Init(int readernumber, Reader & r, int instrumentnumber, Instrument & i)
+void Instruments::Init(int readernumber, Reader & r, int instrumentnumber, Instrument & i)
 {
 	switch (i.name)
 	{
@@ -177,7 +177,7 @@ void ReadingInstruments::Init(int readernumber, Reader & r, int instrumentnumber
 	}
 }
 
-void ReadingInstruments::ChangePort(int instrumentnumber, Instrument & i)
+void Instruments::ChangePort(int instrumentnumber, Instrument & i)
 {
 	switch (i.name)
 	{
@@ -218,7 +218,7 @@ void ReadingInstruments::ChangePort(int instrumentnumber, Instrument & i)
 	}
 }
 
-void ReadingInstruments::DeleteInstrument(int instrumentnumber, Instrument & i)
+void Instruments::DeleteInstrument(int instrumentnumber, Instrument & i)
 {
 	switch (i.name)
 	{

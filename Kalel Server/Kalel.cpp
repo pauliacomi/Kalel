@@ -27,7 +27,7 @@ Kalel::Kalel()
 	// Check to see whether the parameters file has been created
 	if (!ParametersCheck())
 	{
-		ParametersInit();		// If not, create it
+		ParametersSet(*storageVectors.machineSettings);		// If not, create it
 	}
 
 	//
@@ -219,7 +219,7 @@ void Kalel::MachineSettingsSync(http_request* req, http_response* resp)
 			controlMechanisms.on_setmachineSettings();
 
 			// Save to file
-			ParametersReplace(*storageVectors.machineSettings);
+			ParametersSet(*storageVectors.machineSettings);
 
 			resp->status_ = http::responses::ok;
 		}

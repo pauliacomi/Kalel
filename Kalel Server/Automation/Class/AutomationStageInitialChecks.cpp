@@ -94,9 +94,7 @@ bool Automation::VerificationResidualPressure()
 		// Display initial message
 		controls.messageHandler->DisplayMessage(MESSAGE_CHECK_INITIAL_PRESSURE);
 
-		if (storage.currentData->pressureHigh < storage.machineSettings->PressionSecuriteBassePression 
-			&& storage.machineSettings->HighPressureToMeasure 
-			&& storage.machineSettings->LowPressureToMeasure)
+		if (storage.currentData->pressureHigh < storage.machineSettings->PressionSecuriteBassePression)
 		{
 			// Tell GUI we are opening valve 6
 			controls.messageHandler->DisplayMessage(MESSAGE_CHECK_OPENV6_POSSIB, storage.currentData->pressureHigh);

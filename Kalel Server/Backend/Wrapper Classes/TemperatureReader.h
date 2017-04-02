@@ -13,12 +13,12 @@
 #include <string>
 
 class MachineSettings;
-class ReadingInstruments;
+class Instruments;
 
 class TemperatureReader
 {
 public:
-	TemperatureReader(ReadingInstruments & s, MachineSettings & m);
+	TemperatureReader(Instruments & s, MachineSettings & m);
 	~TemperatureReader(void);
 	void Reset(MachineSettings & m);
 
@@ -32,7 +32,7 @@ public:
 	double ReadRoom();
 
 private:
-	ReadingInstruments & instruments;
+	Instruments & instruments;
 	int calo_t;
 	int cage_t;
 	int room_t;

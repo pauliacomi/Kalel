@@ -21,7 +21,7 @@ class ValveController :
 	public NI_USB_6008
 {
 public:
-	ValveController(MessageHandler & messageHandler, MachineSettings & m);
+	ValveController(MessageHandler & messageHandler, int port);
 	~ValveController(void);
 	void Reset(MachineSettings & m);
 

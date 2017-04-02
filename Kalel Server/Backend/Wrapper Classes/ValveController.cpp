@@ -9,8 +9,8 @@
 #define temps_ms 10
 
 
-ValveController::ValveController(MessageHandler & messageHandler, MachineSettings & m)
-	: NI_USB_6008(m.instruments[])
+ValveController::ValveController(MessageHandler & messageHandler, int port) 
+	: NI_USB_6008(port)
 	, messageHandler{ messageHandler }
 {
 }
@@ -21,14 +21,12 @@ ValveController::~ValveController(void)
 
 void ValveController::Reset(MachineSettings & m)
 {
-	for (auto i = m.controllers.begin(); i != m.controllers.end(); ++i)
-	{
-		if (i->second.type == CONTROLLER_VALVES)
-		{
-			if (GetReadPort() != m.machineSettings)
+	for (auto i = m.instruments.begin(); i != m.instruments.end(); ++i) {
+		if (i->second.name == INSTRUMENT_NI_USB_6008) {
+			if (i->second.port != GetReadPort())
 			{
-
-			};
+				SetReadPort(i->second.port);
+			}
 		}
 	}
 }

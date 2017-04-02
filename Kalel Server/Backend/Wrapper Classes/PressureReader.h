@@ -13,12 +13,12 @@
 #include <string>
 
 class MachineSettings;
-class ReadingInstruments;
+class Instruments;
 
 class PressureReader
 {
 public:
-	PressureReader(ReadingInstruments & s, MachineSettings & m);
+	PressureReader(Instruments & s, MachineSettings & m);
 	~PressureReader(void);
 	void Reset(MachineSettings & m);
 
@@ -29,7 +29,7 @@ public:
 	double ReadHighRangeP();
 
 private:
-	ReadingInstruments & instruments;
+	Instruments & instruments;
 	int lowrange;
 	int highrange;
 };

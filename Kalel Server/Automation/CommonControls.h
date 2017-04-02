@@ -2,6 +2,8 @@
 #define COMCTRL_H
 #pragma once
 
+#include "CommonPointers.h"
+
 #include "../MessageHandler.h"
 
 #include "../Backend/Instruments.h"										// Instruments
@@ -15,7 +17,9 @@
 #include "../Automation/Measurement/Security.h"							// Security parameters
 #include "../../Kalel Shared/timeHelpers.h"
 
-#include "CommonPointers.h"
+// Todo: remove
+#include "../../Kalel Shared/Resources/DefineInstruments.h"
+
 
 #include <memory>
 
@@ -29,7 +33,7 @@ private:
 	Storage & storage;
 
 	// A class containing and managing all the reading instruments
-	ReadingInstruments readerInstruments;
+	Instruments instruments;
 
 public:
 
@@ -50,10 +54,9 @@ public:
 
 	// On machine settings change
 	void on_setmachineSettings() {
-		if (valveControls->GetReadPort() != storage.machineSettings->PortValves)
-		{
-			valveControls->SetReadPort(storage.machineSettings->PortValves);
-		}
+		instruments.Reset(*storage.machineSettings);
+
+		valveControls->Reset(*storage.machineSettings);
 		pressureReader->Reset(*storage.machineSettings);
 		temperatureReader->Reset(*storage.machineSettings);
 		calorimeterReader->Reset(*storage.machineSettings);
@@ -64,18 +67,23 @@ public:
 
 inline Controls::Controls(Storage &h)
 	: storage{ h }
-	, readerInstruments{*messageHandler, *h.machineSettings}
+	, instruments{*messageHandler, *h.machineSettings}
 {
 	// Create objects from controls class
 	fileWriter			= std::make_shared<FileWriter>();
 	messageHandler		= std::make_shared<MessageHandler>(h);
 
 	// controls
-	valveControls		= std::make_shared<ValveController>(*messageHandler, h.machineSettings);
+	// TODO: rewrite valve in the style of others
+	for (auto i = h.machineSettings->instruments.begin(); i != h.machineSettings->instruments.end(); ++i) {
+		if (i->second.name == INSTRUMENT_NI_USB_6008) {
+			valveControls = std::make_shared<ValveController>(*messageHandler, i->second.port);
+		}
+	}
 	// readers
-	pressureReader		= std::make_shared<PressureReader>(readerInstruments, *h.machineSettings);
-	temperatureReader	= std::make_shared<TemperatureReader>(readerInstruments, *h.machineSettings);
-	calorimeterReader	= std::make_shared<CalorimeterReader>(readerInstruments, *h.machineSettings);
+	pressureReader		= std::make_shared<PressureReader>(instruments, *h.machineSettings);
+	temperatureReader	= std::make_shared<TemperatureReader>(instruments, *h.machineSettings);
+	calorimeterReader	= std::make_shared<CalorimeterReader>(instruments, *h.machineSettings);
 
 	security			= std::make_shared<Security>(h.machineSettings->ActivationSecurite, *valveControls, *messageHandler);
 }
