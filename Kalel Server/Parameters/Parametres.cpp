@@ -29,27 +29,28 @@ bool ParametersCheck()
 void ParametersGet(MachineSettings& settings)
 {
 	std::fstream fs;
-	std::string file;
+	std::string filestr;
 
 	fs.open(Fichier_parametres, std::fstream::in | std::fstream::out | std::fstream::app);
 
 	fs.seekg(0, std::ios::end);
-	file.reserve(fs.tellg());
+	filestr.reserve(fs.tellg());
 	fs.seekg(0, std::ios::beg);
+	filestr.assign((std::istreambuf_iterator<char>(fs)), std::istreambuf_iterator<char>());
 
-	file.assign((std::istreambuf_iterator<char>(fs)), std::istreambuf_iterator<char>());
 	fs.close();
 
-	json j;
-	j.parse(file.c_str());
+	json j = json::parse(filestr.c_str());
+	
 	try
 	{
+		std::string g = j.dump();
 	}
 	catch (const std::exception& e)
 	{
 		settings = MachineSettings();
+		return;
 	}
-	std::string g = j.dump();
 	settings = j;
 }
 

@@ -7,6 +7,7 @@
 TemperatureReader::TemperatureReader(Instruments & s, MachineSettings & m)
 	: instruments{ s }
 {
+	Reset(m);
 }
 
 TemperatureReader::~TemperatureReader(void) 
