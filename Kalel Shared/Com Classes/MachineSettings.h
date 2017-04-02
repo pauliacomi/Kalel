@@ -20,6 +20,7 @@ struct Reader
 	long double sensitivity = 0;		// sensitivity of measurement
 	int channel = -1;					// channel 1/2 of the instrument
 	int instrument = -1;				// key of the instrument used
+
 };
 
 struct Controller
@@ -58,8 +59,7 @@ public:
 
 
 	// Functions to easily create instruments or readers
-	void AddInstrument(int name, int port);
-	void AddReader(int type, int identifier, int sensitivity, int channel, int instrumentcorresponding);
+	void AddReader(Reader r, Instrument i);
 };
 
 #endif

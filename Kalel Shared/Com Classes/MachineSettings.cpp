@@ -28,13 +28,42 @@ MachineSettings::~MachineSettings()
 {
 }
 
-void MachineSettings::AddInstrument(unsigned int number, int name, int port)
-{
-	Instrument a;
-	a.name = name;
-	a.port = port;
-}
 
-void MachineSettings::AddReader(int type, int identifier, int sensitivity, int channel, int instrumentcorresponding)
+void MachineSettings::AddReader(Reader r, Instrument i)
 {
+	bool existingi = false;
+	int placei;
+
+	for (auto kr : instruments) {
+		if (kr.second.name == i.name)
+		{
+			kr.second.port = i.port;
+			existingi = true;
+			placei = kr.first;
+		}
+	}
+	if (!existingi)
+	{
+		placei = instruments.rbegin()->first + 1;
+		instruments.emplace(std::make_pair(placei, i));
+	}
+
+
+	bool existingr = false;
+	int placer;
+
+	for (auto kr : readers) {
+		if (kr.second.type == r.type && kr.second.identifier == r.identifier)
+		{
+			kr.second.sensitivity = r.sensitivity;
+			kr.second.channel = r.channel;
+			kr.second.instrument = r.instrument;
+			bool existingr = true;
+		}
+	}
+	if (!existingr)
+	{
+		placer = readers.rbegin()->first + 1;
+		readers.emplace(std::make_pair(placer, r));
+	}
 }

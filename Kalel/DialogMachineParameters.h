@@ -40,15 +40,6 @@ protected:
 	MachineSettings * settings;
 	std::shared_ptr<MachineSettings> localSettings;
 
-	double m_fSensibiliteCalo;
-	CSpinBtnCtrl m_SpinSensibiliteCalo;
-
-	float m_fSensibiliteCapteurBassePression;
-	CSpinBtnCtrl m_SpinSensibiliteCapteurBassePression;
-
-	float m_fSensibiliteCapteurHautePression;
-	CSpinBtnCtrl m_SpinSensibiliteCapteurHautePression;
-
 	float m_fPressionSecuriteBassePression;
 	CSpinBtnCtrl m_SpinPressionSecuriteBassePression;
 

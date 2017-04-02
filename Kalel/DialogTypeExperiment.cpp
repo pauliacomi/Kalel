@@ -46,28 +46,29 @@ BOOL DialogTypeExperiment::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 	
+	// TODO: reinstate these
 	// Disable the buttons if there is no mention of available instruments in the parameters file
-	if(!settings->CaloToMeasure && !settings->LowPressureToMeasure && !settings->HighPressureToMeasure)
+	/*if(!settings->CaloToMeasure && !settings->LowPressureToMeasure && !settings->HighPressureToMeasure)
 	{
 		GetDlgItem(IDC_RADIO_TYPE_EXPERIENCE_AUTO)->EnableWindow(FALSE);
 		GetDlgItem(IDC_RADIO_TYPE_EXPERIENCE_MANUAL)->EnableWindow(FALSE);
 		GetDlgItem(IDOK)->EnableWindow(FALSE);
 		return TRUE;
-	}
+	}*/
 
 	// Enable the buttons
 	GetDlgItem(IDC_RADIO_TYPE_EXPERIENCE_AUTO)->EnableWindow(TRUE);
 	GetDlgItem(IDOK)->EnableWindow(TRUE);
 
 	// Disable the button for automatic experiment if there is no mention of a high range pressure sensor in the parameters file
-	if(!settings->HighPressureToMeasure)
+	/*if(!settings->HighPressureToMeasure)
 	{
 		m_bExperienceAuto = FALSE;
 		UpdateData(FALSE);
 		GetDlgItem(IDC_RADIO_TYPE_EXPERIENCE_MANUAL)->EnableWindow(FALSE);
 		return TRUE;
 	}
-	
+	*/
 	GetDlgItem(IDC_RADIO_TYPE_EXPERIENCE_MANUAL)->EnableWindow(TRUE);
 
 	return TRUE;  // return TRUE unless you set the focus to a control

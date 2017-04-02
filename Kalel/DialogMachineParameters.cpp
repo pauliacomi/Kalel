@@ -24,9 +24,6 @@ void ApparatusParameters::PassSettings(MachineSettings* machineSettings)
 {
 	settings = machineSettings;
 
-	m_fSensibiliteCalo						= settings->SensibiliteCalo;
-	m_fSensibiliteCapteurBassePression		= settings->SensibiliteCapteurBassePression;
-	m_fSensibiliteCapteurHautePression		= settings->SensibiliteCapteurHautePression;
 	m_bSecurite								= settings->ActivationSecurite;
 
 	m_fPressionSecuriteBassePression		= settings->PressionSecuriteBassePression;
@@ -66,15 +63,6 @@ void ApparatusParameters::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
 
-	DDX_Text(pDX, IDC_EDIT_SENSIBILITE_CALO, m_fSensibiliteCalo);
-	DDX_Control(pDX, IDC_SPIN_SENSIBILITE_CALO, m_SpinSensibiliteCalo);
-
-	DDX_Text(pDX, IDC_EDIT_SENSIBILITE_CAPTEUR_BASSE_PRESSION, m_fSensibiliteCapteurBassePression);
-	DDX_Control(pDX, IDC_SPIN_SENSIBILITE_CAPTEUR_BASSE_PRESSION, m_SpinSensibiliteCapteurBassePression);
-
-	DDX_Text(pDX, IDC_EDIT_SENSIBILITE_CAPTEUR_HAUTE_PRESSION, m_fSensibiliteCapteurHautePression);
-	DDX_Control(pDX, IDC_SPIN_SENSIBILITE_CAPTEUR_HAUTE_PRESSION, m_SpinSensibiliteCapteurHautePression);
-
 	DDX_Text(pDX, IDC_EDIT_PRESSION_SECURITE_CAPTEUR_BASSE_PRESSION, m_fPressionSecuriteBassePression);
 	DDX_Control(pDX, IDC_SPIN_PRESSION_SECURITE_CAPTEUR_BASSE_PRESSION, m_SpinPressionSecuriteBassePression);
 
@@ -108,24 +96,6 @@ BOOL ApparatusParameters::Create(LPCTSTR lpszTemplateName, CWnd* pParentWnd)
 BOOL ApparatusParameters::OnInitDialog()
 {
 	CDialog::OnInitDialog();
-
-	m_SpinSensibiliteCalo.SetRange(0,100000);
-	m_SpinSensibiliteCalo.SetPos(m_fSensibiliteCalo);
-	m_SpinSensibiliteCalo.SetInc(-0.00000001);
-	m_SpinSensibiliteCalo.SetFormat(_T("%.8f"));
-	m_SpinSensibiliteCalo.UpdateBuddy();
-
-	m_SpinSensibiliteCapteurBassePression.SetRange(0,100000);
-	m_SpinSensibiliteCapteurBassePression.SetPos(m_fSensibiliteCapteurBassePression);
-	m_SpinSensibiliteCapteurBassePression.SetInc(-0.01);
-	m_SpinSensibiliteCapteurBassePression.SetFormat(_T("%1.2f"));
-	m_SpinSensibiliteCapteurBassePression.UpdateBuddy();
-
-	m_SpinSensibiliteCapteurHautePression.SetRange(0,1000000);
-	m_SpinSensibiliteCapteurHautePression.SetPos(m_fSensibiliteCapteurHautePression);
-	m_SpinSensibiliteCapteurHautePression.SetInc(-0.01);
-	m_SpinSensibiliteCapteurHautePression.SetFormat(_T("%1.2f"));
-	m_SpinSensibiliteCapteurHautePression.UpdateBuddy();
 
 	m_SpinPressionSecuriteBassePression.SetRange(0,100000);
 	m_SpinPressionSecuriteBassePression.SetPos(m_fPressionSecuriteBassePression);
@@ -179,9 +149,6 @@ void ApparatusParameters::OnBnClickedOk()
 	if (modified) {
 		localSettings = std::make_shared<MachineSettings>(*settings);
 
-		localSettings->SensibiliteCalo = m_fSensibiliteCalo;
-		localSettings->SensibiliteCapteurBassePression = m_fSensibiliteCapteurBassePression;
-		localSettings->SensibiliteCapteurHautePression = m_fSensibiliteCapteurHautePression;
 		localSettings->ActivationSecurite = m_bSecurite;
 		localSettings->PressionSecuriteBassePression = m_fPressionSecuriteBassePression;
 		localSettings->PressionSecuriteHautePression = m_fPressionSecuriteHautePression;

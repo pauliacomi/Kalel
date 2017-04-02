@@ -3,19 +3,12 @@
 #pragma once
 
 // type of instrument
-#define INSTRUMENT_KEITHLEY			10
-#define INSTRUMENT_MENSOR			11
-#define INSTRUMENT_NI_USB_6008		12
-#define INSTRUMENT_NI_USB_9211A		13
-#define INSTRUMENT_NONE				14
-#define INSTRUMENT_UNDEF			0
-
-// channels
-#define INSTRUMENT_KEYTHLEY_V1			300
-#define INSTRUMENT_KEYTHLEY_V2			301
-#define MENSOR_VOIE						302
-#define VOIE_INDEF						-30
-
+#define INSTRUMENT_NONE				0
+#define INSTRUMENT_KEITHLEY			1
+#define INSTRUMENT_MENSOR			2
+#define INSTRUMENT_NI_USB_9211A		3
+#define INSTRUMENT_NI_USB_6008		4
+#define INSTRUMENT_UNDEF			10
 
 // Readers 
 #define READER_PRESSURE				0
@@ -28,7 +21,7 @@
 #define CALO						1
 #define TEMPERATURE_CALO			0
 #define TEMPERATURE_CAGE			1
-#define TEMPERATURE_ROOM			1
+#define TEMPERATURE_ROOM			2
 
 // Controllers
 #define CONTROLLER_VALVES			0
@@ -37,15 +30,6 @@
 #define INSTRUMENT_VALVE				1
 #define INSTRUMENT_EV					2
 #define INSTRUMENT_PUMP					3
-
-
-
-
-#define NB_OF_INSTRUMENTS				3
-#define INDEX_INDEF						NB_OF_INSTRUMENTS
-#define INDEX_AUCUN						0
-#define INDEX_KEITHLEY					1
-#define INDEX_MENSOR					2
 
 
 // Some other stuff

@@ -5,12 +5,12 @@
 #include "afxwin.h"
 #include "ResourceConnectionPort.h"
 
-#include "ConnectionMesure.h"
-#include "VerifInstrument.h"
 #include "../Kalel Shared/Resources/DefineInstruments.h"
 
 #include <vector>
 #include <memory>
+
+#define NUMBER_OF_READERS 5
 
 // Boîte de dialogue ConnectionPort
 
@@ -36,28 +36,24 @@ public:
 	// Returns the new machine settings
 	std::shared_ptr<MachineSettings> GetSettings();
 
+
+
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // Prise en charge de DDX/DDV
 	DECLARE_MESSAGE_MAP()
 
-	MachineSettings * settings;
-	std::shared_ptr<MachineSettings> localSettings;
+
+	MachineSettings * settings;							// Local pointer to machine settings
+	std::shared_ptr<MachineSettings> localSettings;		// Settings being built right here
 
 	// --- Variables ---
-	std::vector<int> m_nIndexTypeInstrument;
-	std::vector<int> m_nPortInstrument;
-	std::vector<int> m_nIndexInstrumentKeithleyVoie2;
-	std::vector<int> m_nInstrumentMensor;
-	std::vector<BOOL> m_bInstrumentKeithleyVoie1;
-	std::vector<BOOL> m_bInstrumentKeithleyVoie2;
+	BOOL readers[NUMBER_OF_READERS];
+	double sensitivities[NUMBER_OF_READERS];
+	int instruments[NUMBER_OF_READERS];
+	int channels[NUMBER_OF_READERS];
+	int ports[NUMBER_OF_READERS];
 
-	int m_nIndexPortVannes;
-	int m_nIndexPortTemperatures;
-
-	VerifInstrument verifInstrument[NB_OF_INSTRUMENTS];
-	ConnectionMesure CM_Calo,CM_HP,CM_BP;
-
-	int index_verifInstrument;
+	int valveport;
 
 	BOOL bPbm;
 	BOOL bWarning;
@@ -72,40 +68,41 @@ protected:
 	CString StrMessageWarning;
 
 	// --- Contrôles ---
-	std::vector<CComboBox*> m_CBTypeInstrument;
-	std::vector<CComboBox*> m_CBPortInstrument;
-	std::vector<CButton*> m_CheckInstrumentKeithleyVoie1;
-	std::vector<CButton*> m_CheckInstrumentKeithleyVoie2;
-	std::vector<CComboBox*> m_CBInstrumentKeithleyVoie2;
-	std::vector<CComboBox*> m_CBInstrumentMensor;
 
-	CComboBox m_CBTypeInstrument1;
-	CComboBox m_CBTypeInstrument2;
-	CComboBox m_CBTypeInstrument3;
+	// Buttons that represent the checkboxes
+	CButton m_CheckTemperature1;
+	CButton m_CheckTemperature2;
+	CButton m_CheckTemperature3;
+	CButton m_CheckPressure1;
+	CButton m_CheckPressure2;
+	CButton m_CheckCalorimeter1;
 
-	CComboBox m_CBPortInstrument1;
-	CComboBox m_CBPortInstrument2;
-	CComboBox m_CBPortInstrument3;
+	// Combo boxes for instrument types
+	CComboBox m_CBTypeInstrumentT1;
+	CComboBox m_CBTypeInstrumentT2;
+	CComboBox m_CBTypeInstrumentT3;
+	CComboBox m_CBTypeInstrumentP1;
+	CComboBox m_CBTypeInstrumentP2;
+	CComboBox m_CBTypeInstrumentC1;
 
-	CButton m_CheckInstrument1KeithleyVoie1;
-	CButton m_CheckInstrument2KeithleyVoie1;
-	CButton m_CheckInstrument3KeithleyVoie1;
+	// Combo boxes for instrument channels
+	CComboBox m_CBChannelInstrumentT1;
+	CComboBox m_CBChannelInstrumentT2;
+	CComboBox m_CBChannelInstrumentT3;
+	CComboBox m_CBChannelInstrumentP1;
+	CComboBox m_CBChannelInstrumentP2;
+	CComboBox m_CBChannelInstrumentC1;
 
-	CButton m_CheckInstrument1KeithleyVoie2;
-	CButton m_CheckInstrument2KeithleyVoie2;
-	CButton m_CheckInstrument3KeithleyVoie2;
-
-	CComboBox m_CBInstrument1KeithleyVoie2;
-	CComboBox m_CBInstrument2KeithleyVoie2;
-	CComboBox m_CBInstrument3KeithleyVoie2;
-
-	CComboBox m_CBInstrumentMensor1;
-	CComboBox m_CBInstrumentMensor2;
-	CComboBox m_CBInstrumentMensor3;
+	// Combo boxes for instrument ports
+	CComboBox m_CBPortInstrumentT1;
+	CComboBox m_CBPortInstrumentT2;
+	CComboBox m_CBPortInstrumentT3;
+	CComboBox m_CBPortInstrumentP1;
+	CComboBox m_CBPortInstrumentP2;
+	CComboBox m_CBPortInstrumentC1;
 
 
-	CComboBox m_CBPortVannes;
-	CComboBox m_CBPortTemperatures;
+	CComboBox m_CBPortValves;
 
 
 	// ---- Fonctions ---
@@ -119,28 +116,11 @@ public:
 	virtual BOOL OnInitDialog();
 	afx_msg void OnBnClickedOk();
 	afx_msg void OnBnClickedCancel();
-	afx_msg void OnCbnSelchangeComboTypeInstrument1();
-	afx_msg void OnCbnSelchangeComboTypeInstrument2();
-	afx_msg void OnCbnSelchangeComboTypeInstrument3();
-	void EnregistrementConnection_port(MachineSettings & newSettings);
-	void InitConnection_port();
-
-
-	void InitDonneesInstrument(int TypeInstr,int* m_nIndex,int* m_nPortInstrument,BOOL* m_bInstrumentKeithleyVoie1,BOOL* m_bInstrumentKeithleyVoie2,CComboBox* m_CBInstrumentKeithleyVoie2,int* m_nIndexInstrumentKeithleyVoie2,int* m_nInstrumentMensor,int GetPort,int GetFonction);
-	void EnregistrementParametresInstrument(int num_instr,int m_nIndex,int COMInstrument,bool m_bInstrumentKeithleyVoie1, bool m_bInstrumentKeithleyVoie2,int m_nIndexInstrumentKeithleyVoie2,int m_nInstrumentMensor, MachineSettings & newSettings);
-	void ShowItem(int m_nIndex,bool m_bInstrumentKeithleyVoie2,CComboBox* m_CBPortInstrument,CButton* m_CheckInstrumentKeithleyVoie1,CButton* m_CheckInstrumentKeithleyVoie2,CComboBox* m_CBInstrumentKeithleyVoie2,CComboBox* m_CBInstrumentMensor);
+	void SaveModifications(MachineSettings & newSettings);
 
 	void Verifications();
-
-	void VerificationPortUSB();
-	void VerificationPortCOM();
 	void VerificationLectureMesures();
 	bool AucunInstrumentBranche();
-
-	void VerifUnInstrument(int num_instr,int m_nIndex,BOOL m_bKeithleyVoie1,BOOL m_bKeithleyVoie2,int m_nInstrumentKeithleyVoie2,int m_nMensor,int PortInstr);
-	void VerifMesure(ConnectionMesure* CM,int num_instr,int voie_mesure,CString* StrPbm,BOOL* bPbmMesure);
-	void EnregistrementVerifications(MachineSettings& newSettings);
-
 };
 
 #endif
