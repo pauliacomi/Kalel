@@ -9,6 +9,7 @@ class Mensor :
 	public RS232
 {
 public:
+	Mensor(void);
 	Mensor(int comport);
 	~Mensor(void);
 

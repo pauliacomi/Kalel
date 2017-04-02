@@ -18,6 +18,10 @@
 //=====================================================================
 
 
+Keithley::Keithley(void)
+{
+}
+
 Keithley::Keithley(int comport) : RS232()
 {
 	g_dcb.BaudRate = 19200;								// On a le moyen d'augmenter le BaudRate du keithley.

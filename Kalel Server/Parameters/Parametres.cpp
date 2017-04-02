@@ -2,16 +2,16 @@
 // This file should be rewritten as a class in the future
 
 #include "Parametres.h"
+#include "../../Kalel Shared/Netcode/json.hpp"
 #include "../../Kalel Shared/Resources/DefineInstruments.h"
 #include "../../Kalel Shared/Com Classes/MachineSettings.h"
-#include "../../Kalel Shared/Netcode/json.hpp"
 #include "../../Kalel Shared/Com Classes/Serialization.h"
 
 #include <fstream>
 
 using json = nlohmann::json;
 
-#define Fichier_parametres "../Parametres.ini"
+#define Fichier_parametres "Parametres.ini"
 
 
 bool ParametersCheck()
@@ -29,12 +29,27 @@ bool ParametersCheck()
 void ParametersGet(MachineSettings& settings)
 {
 	std::fstream fs;
+	std::string file;
+
 	fs.open(Fichier_parametres, std::fstream::in | std::fstream::out | std::fstream::app);
 
-	json j;
-	j << fs;
+	fs.seekg(0, std::ios::end);
+	file.reserve(fs.tellg());
+	fs.seekg(0, std::ios::beg);
+
+	file.assign((std::istreambuf_iterator<char>(fs)), std::istreambuf_iterator<char>());
 	fs.close();
 
+	json j;
+	j.parse(file.c_str());
+	try
+	{
+	}
+	catch (const std::exception& e)
+	{
+		settings = MachineSettings();
+	}
+	std::string g = j.dump();
 	settings = j;
 }
 

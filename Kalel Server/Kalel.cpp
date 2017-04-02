@@ -24,13 +24,6 @@ Kalel::Kalel()
 	, threadManager{ storageVectors, controlMechanisms}
 {
 	//
-	// Check to see whether the parameters file has been created
-	if (!ParametersCheck())
-	{
-		ParametersSet(*storageVectors.machineSettings);		// If not, create it
-	}
-
-	//
 	// Start server functionality
 	server.SetLogs(storageVectors.serverLogs, storageVectors.serverLogsMtx);
 

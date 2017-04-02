@@ -16,6 +16,7 @@
 class NI_USB_9211A
 {
 public:
+	NI_USB_9211A(void);
 	NI_USB_9211A(int dev);
 	~NI_USB_9211A(void);
 
@@ -52,8 +53,8 @@ private:
 	// Public functions
 	//*************************
 public:
-	int GetPort();					// Get USB port
-	void SetPort(int dev);			// Set USB port
+	int GetPortUSB();					// Get USB port
+	void SetPortUSB(int dev);			// Set USB port
 	
 	bool ReadAllThermocouples(double* Valeur0,double* Valeur1,double* Valeur2,double* Valeur3);
 

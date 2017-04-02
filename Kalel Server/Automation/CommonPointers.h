@@ -177,7 +177,16 @@ inline Storage::Storage(void)
 	//
 	// Populate Machine Settings
 	machineSettings = std::make_shared<MachineSettings>();
-	ParametersGet(*machineSettings);
+	//
+	// Check to see whether the parameters file has been created
+	if (!ParametersCheck())
+	{
+		ParametersSet(*machineSettings);		// If not, create it
+	}
+	else
+	{
+		ParametersGet(*machineSettings);		// Or get it
+	}
 
 	currentData = std::make_shared<ExperimentData>();
 	experimentSettings = std::make_shared<ExperimentSettings>();

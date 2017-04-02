@@ -19,6 +19,10 @@
 
 
 
+Mensor::Mensor(void)
+{
+}
+
 Mensor::Mensor(int comport) : RS232()
 { 
 	connectionOpen = RS232::OpenCOM(comport);	// Open port

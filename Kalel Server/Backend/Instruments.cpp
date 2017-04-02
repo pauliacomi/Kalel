@@ -199,10 +199,9 @@ void Instruments::ChangePort(int instrumentnumber, Instrument & i)
 		}
 		break;
 
-		// TODO: introduce this back
 	case INSTRUMENT_NI_USB_9211A:
 		try {
-			NI_USB_9211As[instrumentnumber].SetPort(i.port);
+			NI_USB_9211As[instrumentnumber].SetPortUSB(i.port);
 		}
 		catch (const std::exception&) {
 		}

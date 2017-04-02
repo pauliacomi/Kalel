@@ -3,6 +3,10 @@
 #define DAQmxErrChk(functionCall) { if( DAQmxFailed(error=(functionCall)) ) { goto Error; } }
 
 
+NI_USB_9211A::NI_USB_9211A(void)
+{
+}
+
 NI_USB_9211A::NI_USB_9211A(int dev)
 {
 	DevNI_USB_9211A = dev;
@@ -12,12 +16,12 @@ NI_USB_9211A::~NI_USB_9211A(void)
 {
 }
 
-int NI_USB_9211A::GetPort()
+int NI_USB_9211A::GetPortUSB()
 {
 	return DevNI_USB_9211A;
 }
 
-void NI_USB_9211A::SetPort(int dev)
+void NI_USB_9211A::SetPortUSB(int dev)
 {
 	DevNI_USB_9211A = dev;
 }
