@@ -445,7 +445,7 @@ void ConnectionPort::EnregistrementParametresInstrument(int num_instr,
 	{
 
 	case INDEX_AUCUN:
-		newSettings.SetInstrument(num_instr, INSTRUMENT_NONE, -1, FUNCTION_NONE);
+		newSettings.AddInstrument(num_instr, INSTRUMENT_NONE, -1, FUNCTION_NONE);
 		break;
 
 	case INDEX_KEITHLEY:
@@ -490,8 +490,6 @@ void ConnectionPort::ShowItem(int m_nIndex, bool instrumentKeithleyVoie2, CCombo
 	switch (m_nIndex)
 	{
 	case INDEX_AUCUN:
-	case INSTRUMENT_UNDEF:
-	case INSTRUMENT_INEXIST:
 		CBPortInstrument->ShowWindow(SW_HIDE);
 		checkInstrumentKeithleyVoie1->ShowWindow(SW_HIDE);
 		checkInstrumentKeithleyVoie2->ShowWindow(SW_HIDE);

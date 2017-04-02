@@ -8,15 +8,7 @@
 #define INSTRUMENT_NI_USB_6008		12
 #define INSTRUMENT_NI_USB_9211A		13
 #define INSTRUMENT_NONE				14
-#define INSTRUMENT_UNDEF			-20
-
-#define INSTRUMENT_KEITHLEY_TXT			"keithley"
-#define INSTRUMENT_MENSOR_TXT			"mensor"
-#define INSTRUMENT_NI_USB_6008_TXT		"NI_USB_6008"
-#define INSTRUMENT_NI_USB_9211A_TXT		"NI_USB_9211A"
-#define INSTRUMENT_NONE_TXT				"none"
-#define INSTRUMENT_UNDEF_TXT			"undefined"
-
+#define INSTRUMENT_UNDEF			0
 
 // channels
 #define INSTRUMENT_KEYTHLEY_V1			300
@@ -24,8 +16,6 @@
 #define MENSOR_VOIE						302
 #define VOIE_INDEF						-30
 
-
-#define COM_UNDEF				-1
 
 // Readers 
 #define READER_PRESSURE				0
@@ -43,22 +33,26 @@
 // Controllers
 #define CONTROLLER_VALVES			0
 
+// Controlled instruments
+#define INSTRUMENT_VALVE				1
+#define INSTRUMENT_EV					2
+#define INSTRUMENT_PUMP					3
+
+
+
+
 #define NB_OF_INSTRUMENTS				3
 #define INDEX_INDEF						NB_OF_INSTRUMENTS
 #define INDEX_AUCUN						0
 #define INDEX_KEITHLEY					1
 #define INDEX_MENSOR					2
 
-// Controlled instruments
-
-#define INSTRUMENT_VALVE				1
-#define INSTRUMENT_EV					2
-#define INSTRUMENT_PUMP					3
 
 // Some other stuff
 #define PassageNul						0
 #define PassageCOM1						1
 #define PassageCOMs						2
 
+#define COM_UNDEF				-1
 
 #endif

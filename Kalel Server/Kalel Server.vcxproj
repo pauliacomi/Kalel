@@ -251,7 +251,6 @@
     <ClInclude Include="Kalel ServerDlg.h" />
     <ClInclude Include="Kalel.h" />
     <ClInclude Include="MessageHandler.h" />
-    <ClInclude Include="Parameters\FluxConverter.h" />
     <ClInclude Include="Parameters\Parametres.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
@@ -441,7 +440,6 @@
     <ClCompile Include="Kalel ServerDlg.cpp" />
     <ClCompile Include="Kalel.cpp" />
     <ClCompile Include="MessageHandler.cpp" />
-    <ClCompile Include="Parameters\FluxConverter.cpp" />
     <ClCompile Include="Parameters\Parametres.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

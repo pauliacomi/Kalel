@@ -7,20 +7,13 @@ MachineSettings::MachineSettings()
 {
 	// TODO: remove initialisations
 	Instrument a;
-	a.name = INSTRUMENT_KEITHLEY;
-	a.port = 1;
 
 	instruments.insert(std::make_pair(1, a));
 	instruments.insert(std::make_pair(2, a));
 	instruments.insert(std::make_pair(3, a));
-
+	instruments.insert(std::make_pair(4, a));
 
 	Reader b;
-	b.type = READER_PRESSURE;
-	b.identifier = PRESSURE_LP;
-	b.channel = 1;
-	b.sensitivity = 1;
-	b.instrument = 1;
 
 	readers.insert(std::make_pair(1, b));
 	readers.insert(std::make_pair(2, b));
@@ -32,5 +25,16 @@ MachineSettings::MachineSettings()
 
 
 MachineSettings::~MachineSettings()
+{
+}
+
+void MachineSettings::AddInstrument(unsigned int number, int name, int port)
+{
+	Instrument a;
+	a.name = name;
+	a.port = port;
+}
+
+void MachineSettings::AddReader(int type, int identifier, int sensitivity, int channel, int instrumentcorresponding)
 {
 }

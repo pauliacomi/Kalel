@@ -8,27 +8,27 @@
 
 struct Instrument
 {
-	int name;					// keithley/mensor/national instruments
-	int port;					// port being used (USB1, COM1, DEV3)
-	bool initialised = false;	//
+	int name = 0;						// keithley/mensor/national instruments
+	int port = 0;						// port being used (USB1, COM1, DEV3)
+	bool initialised = false;			//
 };
 
 struct Reader
 {
-	int type;						// Pressure / Temperature etc
-	int identifier;					// Number low pressure, calo temperature
-	long double sensitivity;		// sensitivity of measurement
-	int channel;					// channel 1/2 of the instrument
-	int instrument;					// key of the instrument used
+	int type = -1;						// Pressure / Temperature etc
+	int identifier = -1;				// Number low pressure, calo temperature
+	long double sensitivity = 0;		// sensitivity of measurement
+	int channel = -1;					// channel 1/2 of the instrument
+	int instrument = -1;				// key of the instrument used
 };
 
 struct Controller
 {
-	int type;						// Pressure / Temperature etc
-	int identifier;					// Number 1/ 2 low pressure etc
-	long double sensitivity;		// sensitivity of it
-	int channel;					// channel 1/2 of the instrument
-	int instrument;
+	int type = -1;						// Pressure / Temperature etc
+	int identifier = -1;				// Number 1/ 2 low pressure etc
+	long double sensitivity = 0;		// sensitivity of it
+	int channel = -1;					// channel 1/2 of the instrument
+	int instrument = -1;
 };
 
 
@@ -56,6 +56,10 @@ public:
 	std::map<unsigned int, Reader>	readers;				// The readers which are available
 	std::map<unsigned int, Controller>	controllers;		// The controllers which are available
 
+
+	// Functions to easily create instruments or readers
+	void AddInstrument(int name, int port);
+	void AddReader(int type, int identifier, int sensitivity, int channel, int instrumentcorresponding);
 };
 
 #endif

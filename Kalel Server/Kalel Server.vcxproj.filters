@@ -156,9 +156,6 @@
     <ClInclude Include="..\Kalel Shared\Netcode\URLHelper.h">
       <Filter>Header Files\Common\Netcode</Filter>
     </ClInclude>
-    <ClInclude Include="Parameters\FluxConverter.h">
-      <Filter>Header Files\Parameters</Filter>
-    </ClInclude>
     <ClInclude Include="Parameters\Parametres.h">
       <Filter>Header Files\Parameters</Filter>
     </ClInclude>
@@ -391,9 +388,6 @@
     </ClCompile>
     <ClCompile Include="Automation\ThreadManager.cpp">
       <Filter>Source Files\Automation</Filter>
-    </ClCompile>
-    <ClCompile Include="Parameters\FluxConverter.cpp">
-      <Filter>Source Files\Parameters</Filter>
     </ClCompile>
     <ClCompile Include="Parameters\Parametres.cpp">
       <Filter>Source Files\Parameters</Filter>
