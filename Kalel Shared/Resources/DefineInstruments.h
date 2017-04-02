@@ -2,13 +2,6 @@
 #define DEFINE_INSTRUMENT_H
 #pragma once
 
-// Connection types
-#define CONNECTION_SERIAL		1
-#define CONNECTION_USB			2
-
-#define CONNECTION_SERIAL_TXT	"serial"
-#define CONNECTION_USB_TXT		"usb"
-
 // type of instrument
 #define INSTRUMENT_KEITHLEY			10
 #define INSTRUMENT_MENSOR			11
@@ -24,17 +17,6 @@
 #define INSTRUMENT_NONE_TXT				"none"
 #define INSTRUMENT_UNDEF_TXT			"undefined"
 
-// functions
-#define CALO_V1_BP_V2_KEITHLEY			100
-#define CALO_V1_HP_V2_KEITHLEY			108
-#define CALO_V1_KEITHLEY				102
-#define INSTRUMENT_KEYTHLEY_HP_V2		104
-#define INSTRUMENT_KEYTHLEY_LP_V2		103
-#define INSTRUMENT_MENSOR_HP			200
-#define INSTRUMENT_MENSOR_LP			201
-#define FUNCTION_NONE					0
-#define FUNCTION_UNDEF					-22
-#define FUNCTION_INEXIST				-23
 
 // channels
 #define INSTRUMENT_KEYTHLEY_V1			300
@@ -53,9 +35,13 @@
 // identifiers 
 #define PRESSURE_LP					0
 #define PRESSURE_HP					1
-#define CALO						2
+#define CALO						1
+#define TEMPERATURE_CALO			0
+#define TEMPERATURE_CAGE			1
+#define TEMPERATURE_ROOM			1
 
-
+// Controllers
+#define CONTROLLER_VALVES			0
 
 #define NB_OF_INSTRUMENTS				3
 #define INDEX_INDEF						NB_OF_INSTRUMENTS

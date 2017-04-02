@@ -15,7 +15,6 @@
 class NI_USB_6008
 {
 public:
-	NI_USB_6008(void);
 	NI_USB_6008(int dev);
 	~NI_USB_6008(void);
 	

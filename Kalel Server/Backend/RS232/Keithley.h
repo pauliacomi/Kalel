@@ -29,8 +29,8 @@ public:
 
 	bool ReadChannel(int chanNo, double* result);
 
-	bool ReadChannel1(double* result); 
-	bool ReadChannel2(double* result);
+	double ReadChannel1();
+	double ReadChannel2();
 };
 #endif
 

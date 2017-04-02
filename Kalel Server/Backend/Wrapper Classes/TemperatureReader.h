@@ -10,39 +10,32 @@
 #define _TEMPERATURE_H_
 #pragma once
 
-#include "../USB/NI_USB_9211A.h"
+#include <string>
 
-#include <mutex>
+class MachineSettings;
+class ReadingInstruments;
 
-class TemperatureReader :
-	public NI_USB_9211A
+class TemperatureReader
 {
-protected:
-
 public:
-	TemperatureReader(int port);
+	TemperatureReader(ReadingInstruments & s, MachineSettings & m);
 	~TemperatureReader(void);
-
-	// Pass in the references to double variables to get the three temperatures
-	bool Read(double* Temperature_Calo, double* Temperature_Cage, double* Temperature_Piece);	
+	void Reset(MachineSettings & m);
 
 	// Get calorimeter temperature
-	bool ReadCalo(double* Temperature_Calo);
+	double ReadCalo();
 
 	// Get cage temperature
-	bool ReadCage(double* Temperature_Cage);
+	double ReadCage();
 
 	// Get room temperature
-	bool ReadRoom(double* Temperature_Piece);
-
-	// Get the port for temperature readings
-	int GetReadPort();
-
-	// Set the port for temperature readings
-	void SetReadPort(int port);
+	double ReadRoom();
 
 private:
-	std::mutex ctrlmutex;						// locks to prevent clash of threads 
+	ReadingInstruments & instruments;
+	int calo_t;
+	int cage_t;
+	int room_t;
 };
 
 #endif

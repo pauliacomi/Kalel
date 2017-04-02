@@ -22,7 +22,7 @@ Keithley::Keithley(int comport) : RS232()
 {
 	g_dcb.BaudRate = 19200;								// On a le moyen d'augmenter le BaudRate du keithley.
 
-	connectionOpen = RS232::OpenCOM(comport);	// Open port
+	connectionOpen = RS232::OpenCOM(comport);			// Open port
 	if (connectionOpen)	{
 		errorKeep = "Keithley open: COM" + std::to_string(comport);
 
@@ -229,12 +229,16 @@ bool Keithley::ReadChannel(int chanNo, double* result)
 // le '(string)resultat' sera converti en double et sera attribué au 
 // '(double)resultat' qui est mis en parametre.
 
-bool Keithley::ReadChannel1(double* resultat)
+double Keithley::ReadChannel1()
 {
-	return ReadChannel(1, resultat);
+	double result;
+	ReadChannel(1, &result);
+	return result;
 }
 
-bool Keithley::ReadChannel2(double* resultat)
+double Keithley::ReadChannel2()
 {
-	return ReadChannel(2, resultat);
+	double result;
+	ReadChannel(2, &result);
+	return result;
 }

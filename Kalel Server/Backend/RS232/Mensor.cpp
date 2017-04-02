@@ -85,7 +85,7 @@ bool Mensor::ChangeCOM(int nId)
 //dans le double pression et on renverra TRUE. Sinon on instancie le message d'erreur
 //et on renvoie FALSE.
 
-bool Mensor::ReadMensor(double* pression)
+double Mensor::ReadMensor()
 {
 	int nBytesWritten = 0;
 	int nbOctetsLus = 0;
@@ -121,7 +121,7 @@ bool Mensor::ReadMensor(double* pression)
 
 	std::string resultat = buffer;
 	resultat = resultat.substr(4, nbOctetsLus - 6);
-	*pression = atof(resultat.c_str()); //conversion du string en float
 	errorKeep = "Mensor read";
-	return true;
+
+	return atof(resultat.c_str()); //conversion du string en float;
 }

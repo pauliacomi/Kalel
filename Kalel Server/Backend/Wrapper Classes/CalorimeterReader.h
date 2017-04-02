@@ -10,21 +10,24 @@
 #define _CALORIMETER_H_
 #pragma once
 
+#include <string>
+
+class MachineSettings;
+class ReadingInstruments;
 
 class CalorimeterReader
 {
 public:
-	CalorimeterReader(ReadingInstruments & s);
+	CalorimeterReader(ReadingInstruments & s, MachineSettings & m);
 	~CalorimeterReader(void);
+	void Reset(MachineSettings & m);
 
 	// Pass in the references to double variables to get the three temperatures
-	bool Read(double* calorimeter);
-
-	// Get calorimeter temperature
-	bool GetError(std::string * error);
+	double Read();
 
 private:
 	ReadingInstruments & instruments;
+	int calorimeter;
 };
 
 #endif

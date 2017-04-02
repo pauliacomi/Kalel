@@ -42,8 +42,8 @@ void ReadingInstruments::Reset(MachineSettings & m)
 {
 	for (auto i = m.readers.begin(); i != m.readers.end(); ++i)
 	{
-		// Check if this is the first time that the instrument has been seen
-		if (!m.instruments[i->second.instrument].initialised)
+		// Check if the reader function exists for the instrument referenced
+		if (readerfunctions.find(i->first) == readerfunctions.end())
 		{
 			Init(i->first, i->second, i->second.instrument, m.instruments[i->second.instrument]);
 		}
@@ -52,16 +52,14 @@ void ReadingInstruments::Reset(MachineSettings & m)
 			// Check if the same instrument as was before
 			if (i->second.instrument != readers[i->first].instrument)
 			{
-				// If not
-				// TODO: only if not referenced 
-				// Delete the instrument 
-				DeleteInstrument(i->second.instrument, m.instruments[i->second.instrument]);
-				// Create the new instrument
+				// Delete the function
+				readerfunctions.erase(i->first);
+				// Create the new instrument and function
 				Init(i->first, i->second, i->second.instrument, m.instruments[i->second.instrument]);
+				// TODO: might need deletion of the old instrument
 			}
 			else
 			{
-				// If yes
 				// Check that the port of the instrument is the same
 				if (m.instruments[i->second.instrument].port != instruments[i->second.instrument].port)
 				{
@@ -73,7 +71,6 @@ void ReadingInstruments::Reset(MachineSettings & m)
 
 	instruments = m.instruments;
 	readers = m.readers;
-	controllers = m.controllers;
 }
 
 
@@ -82,75 +79,93 @@ void ReadingInstruments::Init(int readernumber, Reader & r, int instrumentnumber
 	switch (i.name)
 	{
 	case INSTRUMENT_KEITHLEY:
-		try {
-			// Create instrument
-			keithleys.emplace(std::make_pair(instrumentnumber, i.port));
-			i.initialised = true;
-
-			// Save read function
-			std::function<bool(double*)> read;
-			switch (r.channel)
-			{
-			case 1:
-				read = std::bind(&Keithley::ReadChannel1, &keithleys[instrumentnumber], std::placeholders::_1);
-				break;
-			case 2:
-				read = std::bind(&Keithley::ReadChannel2, &keithleys[instrumentnumber], std::placeholders::_1);
-				break;
-			default:
-				throw;
-				break;
+	{
+		// See if it is initialised
+		if (!i.initialised)
+		{
+			try {
+				// Create instrument
+				keithleys.emplace(std::make_pair(instrumentnumber, i.port));
+				i.initialised = true;
 			}
-			readerfunctions.insert(std::make_pair(readernumber, read));
-		}
-		catch (const std::exception&) {
+			catch (const std::exception&) {
 
+			}
 		}
+
+		// Save read function
+		std::function<double(void)> read;
+		switch (r.channel)
+		{
+		case 1:
+			read = std::bind(&Keithley::ReadChannel1, &keithleys[instrumentnumber]);
+			break;
+		case 2:
+			read = std::bind(&Keithley::ReadChannel2, &keithleys[instrumentnumber]);
+			break;
+		default:
+			throw;
+			break;
+		}
+		readerfunctions.insert(std::make_pair(readernumber, read));
+
 		break;
+	}
 
 	case INSTRUMENT_MENSOR:
-		try {
-			// Create instrument
-			mensors.emplace(std::make_pair(instrumentnumber ,i.port));
-			i.initialised = true;
+	{
+		if (!i.initialised)
+		{
+			try	{
+				// Create instrument
+				mensors.emplace(std::make_pair(instrumentnumber, i.port));
+				i.initialised = true;
+			}
+			catch (const std::exception&) {
 
-			// Save read function
-			auto read = std::bind(&Mensor::ReadMensor, &mensors[instrumentnumber], std::placeholders::_1);
-			readerfunctions.insert(std::make_pair(readernumber, read));
+			}
 		}
-		catch (const std::exception&) {
 
-		}
+		// Save read function
+		auto read = std::bind(&Mensor::ReadMensor, &mensors[instrumentnumber]);
+		readerfunctions.insert(std::make_pair(readernumber, read));
+
 		break;
+	}
 
-		// TODO: introduce this back
 	case INSTRUMENT_NI_USB_9211A:
+	{
 		try {
 			// Create instrument
 			NI_USB_9211As.emplace(std::make_pair(instrumentnumber, i.port));
 			i.initialised = true;
-
-			// Save read function
-			std::function<bool(double*)> read;
-			switch (r.channel)
-			{
-			case 1:
-				read = std::bind(&Keithley::ReadChannel1, &keithleys[instrumentnumber], std::placeholders::_1);
-				break;
-			case 2:
-				read = std::bind(&Keithley::ReadChannel2, &keithleys[instrumentnumber], std::placeholders::_1);
-				break;
-			default:
-				throw;
-				break;
-			}
-			readerfunctions.insert(std::make_pair(readernumber, read));
 		}
 		catch (const std::exception&) {
 			std::string errorInit;
-			messageHandler.DisplayMessageBox(MESSAGE_INSTRUMENT_INIT_FAIL, MB_ICONERROR | MB_OK, false, errorInit);
+			mh.DisplayMessageBox(MESSAGE_INSTRUMENT_INIT_FAIL, MB_ICONERROR | MB_OK, false, errorInit);
 		}
+
+		// Save read functions
+		std::function<double(void)> read;
+		switch (r.channel)
+		{
+		case 1:
+			read = std::bind(&NI_USB_9211A::LectureThermocouple_0, &NI_USB_9211As[instrumentnumber]);
+			break;
+		case 2:
+			read = std::bind(&NI_USB_9211A::LectureThermocouple_1, &NI_USB_9211As[instrumentnumber]);
+			break;
+		case 3:
+			read = std::bind(&NI_USB_9211A::LectureThermocouple_2, &NI_USB_9211As[instrumentnumber]);
+			break;
+		default:
+			throw;
+			break;
+		}
+		readerfunctions.insert(std::make_pair(readernumber, read));
+
 		break;
+	}
 
 	case INSTRUMENT_NONE:
 	case INSTRUMENT_UNDEF:
@@ -187,7 +202,7 @@ void ReadingInstruments::ChangePort(int instrumentnumber, Instrument & i)
 		// TODO: introduce this back
 	case INSTRUMENT_NI_USB_9211A:
 		try {
-			NI_USB_9211As[instrumentnumber].SetDevNI_USB_9211A(i.port);
+			NI_USB_9211As[instrumentnumber].SetPort(i.port);
 		}
 		catch (const std::exception&) {
 		}
@@ -242,31 +257,4 @@ void ReadingInstruments::DeleteInstrument(int instrumentnumber, Instrument & i)
 		throw;
 		break;
 	}
-}
-
-
-//
-// read function
-//
-std::function<bool(double *)> ReadingInstruments::Bind(Reader & r) {
-
-	bool success = false;
-
-	for (auto i = readerfunctions.begin(); i != readerfunctions.end(); ++i)
-	{
-		if (i->first.type == r.type && i->first.identifier == r.identifier)
-		{
-			 return = i->second;
-		}
-	}
-	return success;
-}
-
-// 
-// error function
-//
-
-bool ReadingInstruments::GetError(Reader & r, double * value)
-{
-	return false;
 }

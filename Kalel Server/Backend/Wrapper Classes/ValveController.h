@@ -15,13 +15,15 @@
 #include <mutex>
 
 class MessageHandler;
+class MachineSettings;
 
 class ValveController :
 	public NI_USB_6008
 {
 public:
-	ValveController(MessageHandler & messageHandler, int port);
+	ValveController(MessageHandler & messageHandler, MachineSettings & m);
 	~ValveController(void);
+	void Reset(MachineSettings & m);
 
 	bool ValveOpen(int num, bool verbose);		// Open a valve
 	bool ValveClose(int num, bool verbose);		// Close a valve

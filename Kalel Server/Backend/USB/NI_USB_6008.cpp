@@ -4,16 +4,12 @@
 #define open 1
 #define closed  0
 
-NI_USB_6008::NI_USB_6008(void)
-{
-	DevNI_USB_6008 = -1;
-}
 
 NI_USB_6008::NI_USB_6008(int dev)
 {
 	DevNI_USB_6008 = dev;
-	ReadPort0();
-	ReadPort1();
+	ReadPort0();				// to generate initial states of valves
+	ReadPort1();				// to generate initial states of valves
 }
 
 NI_USB_6008::~NI_USB_6008(void)

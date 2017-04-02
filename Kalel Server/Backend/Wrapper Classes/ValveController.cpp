@@ -1,21 +1,36 @@
 #include "ValveController.h"
 
 #include "../../MessageHandler.h"
+#include "../../../Kalel Shared/Com Classes/MachineSettings.h"
+#include "../../../Kalel Shared/Resources/DefineInstruments.h"
 #include "../../../Kalel Shared/Resources/DefineText.h"
 
 #define nb_essais 3
 #define temps_ms 10
 
 
-ValveController::ValveController(MessageHandler & messageHandler, int port) 
-	: NI_USB_6008()
+ValveController::ValveController(MessageHandler & messageHandler, MachineSettings & m)
+	: NI_USB_6008(m.instruments[])
 	, messageHandler{ messageHandler }
 {
-	NI_USB_6008::SetDevNI_USB_6008(port);
 }
 
 ValveController::~ValveController(void)
 {
+}
+
+void ValveController::Reset(MachineSettings & m)
+{
+	for (auto i = m.controllers.begin(); i != m.controllers.end(); ++i)
+	{
+		if (i->second.type == CONTROLLER_VALVES)
+		{
+			if (GetReadPort() != m.machineSettings)
+			{
+
+			};
+		}
+	}
 }
 
 

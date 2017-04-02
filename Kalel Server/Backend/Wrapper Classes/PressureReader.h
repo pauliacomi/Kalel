@@ -10,8 +10,6 @@
 #define _PRESSURE_H_
 #pragma once
 
-#include <functional>
-#include <map>
 #include <string>
 
 class MachineSettings;
@@ -20,31 +18,20 @@ class ReadingInstruments;
 class PressureReader
 {
 public:
-	PressureReader(ReadingInstruments & s);
+	PressureReader(ReadingInstruments & s, MachineSettings & m);
 	~PressureReader(void);
-	// Get the port for temperature readings
-	void Reset();
+	void Reset(MachineSettings & m);
 
-	// Pass in the references to double variables to get the three temperatures
-	bool Read(double* pressure_low_range, double* pressure_high_range);
+	// Get low range pressure
+	double ReadLowRangeP();
 
-	// Get calorimeter temperature
-	bool ReadLowRangeP(double* pressure_low_range);
-
-	// Get cage temperature
-	bool ReadHighRangeP(double* pressure_high_range);
-
-	// Get calorimeter temperature
-	bool GetErrorLowRangeP(std::string * error);
-
-	// Get cage temperature
-	bool GetErrorHighRangeP(std::string * error);
+	// Get high range pressure
+	double ReadHighRangeP();
 
 private:
 	ReadingInstruments & instruments;
-
-	std::function<bool(double *)> readlrp;
-	std::function<bool(double *)> readhrp;
+	int lowrange;
+	int highrange;
 };
 
 #endif

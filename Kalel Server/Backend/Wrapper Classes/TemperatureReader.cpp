@@ -1,27 +1,52 @@
 #include "TemperatureReader.h"
 
-// Constructors & Destructor
-TemperatureReader::TemperatureReader(int port) : NI_USB_9211A(port) {}
-TemperatureReader::~TemperatureReader(void) {}
+#include "../../../Kalel Shared/Com Classes/MachineSettings.h"
+#include "../../../Kalel Shared/Resources/DefineInstruments.h"
+#include "../Instruments.h"
 
-// Functions
-bool TemperatureReader::Read(double* Temperature_Calo, double* Temperature_Cage, double* Temperature_Piece)
-{	return NI_USB_9211A::LectureThermocouple_de_0_a_2(Temperature_Calo,Temperature_Cage,Temperature_Piece);		} 
+TemperatureReader::TemperatureReader(ReadingInstruments & s, MachineSettings & m)
+	: instruments{ s }
+{
+}
 
-bool TemperatureReader::ReadCalo(double* Temperature_Calo)
-{	return NI_USB_9211A::LectureThermocouple_0(Temperature_Calo);	}
+TemperatureReader::~TemperatureReader(void) 
+{
+}
 
-bool TemperatureReader::ReadCage(double* Temperature_Cage)
-{	return NI_USB_9211A::LectureThermocouple_1(Temperature_Cage);	}
+void TemperatureReader::Reset(MachineSettings & m)
+{
+	for (auto i = m.readers.begin(); i != m.readers.end(); ++i)
+	{
+		if (i->second.type == READER_TEMPERATURE)
+		{
+			if (i->second.identifier == TEMPERATURE_CALO)
+			{
+				calo_t = i->first;
+			}
+			if (i->second.identifier == TEMPERATURE_CAGE)
+			{
+				cage_t = i->first;
+			}
+			if (i->second.identifier == TEMPERATURE_ROOM)
+			{
+				room_t = i->first;
+			}
+		}
+	}
+}
 
-bool TemperatureReader::ReadRoom(double* Temperature_Piece)
-{	return NI_USB_9211A::LectureThermocouple_2(Temperature_Piece);	}
 
-int TemperatureReader::GetReadPort()
-{	return NI_USB_9211A::GetDevNI_USB_9211A();		}
+double TemperatureReader::ReadCalo()
+{	
+	return instruments.readerfunctions[calo_t]() / instruments.readers[calo_t].sensitivity;
+}
 
-void TemperatureReader::SetReadPort(int port) {		
-	// Lock for the remainder of function
-	std::lock_guard<std::mutex> lk(ctrlmutex);
-	return NI_USB_9211A::SetDevNI_USB_9211A(port);	
+double TemperatureReader::ReadCage()
+{
+	return instruments.readerfunctions[cage_t]() / instruments.readers[cage_t].sensitivity;
+}
+
+double TemperatureReader::ReadRoom()
+{
+	return instruments.readerfunctions[room_t]() / instruments.readers[room_t].sensitivity;
 }

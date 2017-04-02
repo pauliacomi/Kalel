@@ -19,7 +19,7 @@ public:
 	bool OpenCOM(int nId);
 	bool CloseCOM();
 	bool ChangeCOM(int nId);
-	bool ReadMensor(double* pression);
+	double ReadMensor();
 
 };
 #endif

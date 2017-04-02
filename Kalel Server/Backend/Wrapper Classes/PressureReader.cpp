@@ -2,41 +2,43 @@
 
 #include "../../../Kalel Shared/Com Classes/MachineSettings.h"
 #include "../../../Kalel Shared/Resources/DefineInstruments.h"
-#include "../RS232/SerialInstruments.h"
+#include "../Instruments.h"
 
-PressureReader::PressureReader(ReadingInstruments & s)
+PressureReader::PressureReader(ReadingInstruments & s, MachineSettings & m)
 	: instruments{ s }
 {
-	Reader r;
-	r.type = READER_PRESSURE;
-	r.identifier = PRESSURE_LP;
-	readlrp = instruments.Bind(r);
-
-	r.type = READER_PRESSURE;
-	r.identifier = PRESSURE_HP;
-	readhrp = instruments.Bind(r);
+	Reset(m);
 }
 
 PressureReader::~PressureReader(void)
 {
 }
 
-bool PressureReader::ReadLowRangeP(double * pressure_low_range)
+void PressureReader::Reset(MachineSettings & m)
 {
-	return readlrp(pressure_low_range);
+	for (auto i = m.readers.begin(); i != m.readers.end(); ++i)
+	{
+		if (i->second.type == READER_PRESSURE)
+		{
+			if (i->second.identifier == PRESSURE_LP)
+			{
+				lowrange = i->first;
+			}
+			if (i->second.identifier == PRESSURE_HP)
+			{
+				highrange = i->first;
+			}
+		}
+	}
 }
 
-bool PressureReader::ReadHighRangeP(double * pressure_high_range)
+double PressureReader::ReadLowRangeP()
 {
-	return readhrp(pressure_high_range);
+	return instruments.readerfunctions[lowrange]() / instruments.readers[lowrange].sensitivity;
 }
 
-bool PressureReader::GetErrorLowRangeP(std::string * error)
+double PressureReader::ReadHighRangeP()
 {
-	return false;
+	return instruments.readerfunctions[highrange]() / instruments.readers[highrange].sensitivity;
 }
 
-bool PressureReader::GetErrorHighRangeP(std::string * error)
-{
-	return false;
-}

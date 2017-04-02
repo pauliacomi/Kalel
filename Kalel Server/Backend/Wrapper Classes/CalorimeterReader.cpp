@@ -4,24 +4,29 @@
 #include "../../../Kalel Shared/Resources/DefineInstruments.h"
 #include "../Instruments.h"
 
-CalorimeterReader::CalorimeterReader(ReadingInstruments & s)
+CalorimeterReader::CalorimeterReader(ReadingInstruments & s, MachineSettings & m)
 	: instruments{ s }
 {
+	Reset(m);
 }
 
 CalorimeterReader::~CalorimeterReader(void)
 {
 }
 
-bool CalorimeterReader::Read(double * pressure_low_range)
+void CalorimeterReader::Reset(MachineSettings & m)
 {
-	Reader r;
-	r.type = READER_PRESSURE;
-	r.identifier = PRESSURE_LP;
-	return instruments.Bind(r);
+	for (auto i = m.readers.begin(); i != m.readers.end(); ++i)
+	{
+		if (i->second.type == READER_CALO)
+		{
+			calorimeter = i->first;
+		}
+	}
 }
 
-bool CalorimeterReader::GetError(std::string * error)
+double CalorimeterReader::Read()
 {
-	return false;
+	return instruments.readerfunctions[calorimeter]() / instruments.readers[calorimeter].sensitivity;
 }
+

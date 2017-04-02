@@ -21,25 +21,22 @@ public:
 	~ReadingInstruments();
 
 private:
-	std::map<unsigned int, Instrument> instruments;			// The instruments in the machine
-	std::map<unsigned int, Reader>	readers;				// The readers which are available
-	std::map<unsigned int, Controller>	controllers;		// The controllers which are available
 
-	std::map<unsigned int, std::function<bool(double *)>> readerfunctions;
 
 	// For Keithley
 	std::map<unsigned int, Keithley> keithleys;
 	// For Mensors
 	std::map<unsigned int, Mensor> mensors;
-	// For NI_USB_6008
-	std::map<unsigned int, NI_USB_6008> NI_USB_6008s;
 	// For NI_USB_9211A
 	std::map<unsigned int, NI_USB_9211A> NI_USB_9211As;
 
 public:
 	void Reset(MachineSettings & m);
-	std::function<bool(double *)> Bind(Reader & r);
-	bool GetError(Reader & r, double * value);
+
+	std::map<unsigned int, Instrument> instruments;			// The instruments in the machine
+	std::map<unsigned int, Reader>	readers;				// The readers which are available
+	std::map<unsigned int, Controller>	controllers;		// The controllers which are available
+	std::map<unsigned int, std::function<double(void)>> readerfunctions;
 
 private:
 	MessageHandler & mh;

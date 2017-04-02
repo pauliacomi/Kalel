@@ -16,7 +16,6 @@
 class NI_USB_9211A
 {
 public:
-	NI_USB_9211A(void);
 	NI_USB_9211A(int dev);
 	~NI_USB_9211A(void);
 
@@ -26,11 +25,6 @@ private:
 	// Parameters for reading
 	//*************************
 	int DevNI_USB_9211A;								// USB port used
-
-	//double TC0 = -25000;								// Store the data from the thermocouples
-	//double TC1 = -25000;								// Store the data from the thermocouples
-	//double TC2 = -25000;								// Store the data from the thermocouples
-	//double TC3 = -25000;								// Store the data from the thermocouples
 
 	std::string errorKeep;								// C++ string of error
 
@@ -58,8 +52,8 @@ private:
 	// Public functions
 	//*************************
 public:
-	int GetDevNI_USB_9211A();					// Get USB port
-	void SetDevNI_USB_9211A(int dev);			// Set USB port
+	int GetPort();					// Get USB port
+	void SetPort(int dev);			// Set USB port
 	
 	bool ReadAllThermocouples(double* Valeur0,double* Valeur1,double* Valeur2,double* Valeur3);
 
@@ -78,10 +72,10 @@ public:
 	bool LectureThermocouple_1_3(double* Valeur1,double* Valeur3);
 	bool LectureThermocouple_2_3(double* Valeur2,double* Valeur3);
 	
-	bool LectureThermocouple_0(double* Valeur0);
-	bool LectureThermocouple_1(double* Valeur1);
-	bool LectureThermocouple_2(double* Valeur2);
-	bool LectureThermocouple_3(double* Valeur3);
+	double LectureThermocouple_0();
+	double LectureThermocouple_1();
+	double LectureThermocouple_2();
+	double LectureThermocouple_3();
 
 };
 

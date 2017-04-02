@@ -2,10 +2,6 @@
 
 #define DAQmxErrChk(functionCall) { if( DAQmxFailed(error=(functionCall)) ) { goto Error; } }
 
-NI_USB_9211A::NI_USB_9211A(void)
-{
-	DevNI_USB_9211A = -1;
-}
 
 NI_USB_9211A::NI_USB_9211A(int dev)
 {
@@ -16,12 +12,12 @@ NI_USB_9211A::~NI_USB_9211A(void)
 {
 }
 
-int NI_USB_9211A::GetDevNI_USB_9211A()
+int NI_USB_9211A::GetPort()
 {
 	return DevNI_USB_9211A;
 }
 
-void NI_USB_9211A::SetDevNI_USB_9211A(int dev)
+void NI_USB_9211A::SetPort(int dev)
 {
 	DevNI_USB_9211A = dev;
 }
@@ -242,57 +238,37 @@ bool NI_USB_9211A::LectureThermocouple_2_3(double* Valeur2,double* Valeur3)
 	return false;
 }
 
-bool NI_USB_9211A::LectureThermocouple_0(double* Valeur0)
+double NI_USB_9211A::LectureThermocouple_0()
 {
 	float64     data[bufferSize];
 	bool result = ReadThermocouple(data);
-	*Valeur0 = data[0];
 
-	if (result == true)
-	{
-		return true;
-	}
-	return false;
+	return data[0];
 }
 
 
-bool NI_USB_9211A::LectureThermocouple_1(double* Valeur1)
+double NI_USB_9211A::LectureThermocouple_1()
 {
 	float64     data[bufferSize];
 	bool result = ReadThermocouple(data);
-	*Valeur1 = data[1];
 
-	if (result == true)
-	{
-		return true;
-	}
-	return false;
+	return data[1];
 }
 
 
-bool NI_USB_9211A::LectureThermocouple_2(double* Valeur2)
+double NI_USB_9211A::LectureThermocouple_2()
 {
 	float64     data[bufferSize];
 	bool result = ReadThermocouple(data);
-	*Valeur2 = data[2];
 
-	if (result == true)
-	{
-		return true;
-	}
-	return false;
+	return data[2];
 }
 
 
-bool NI_USB_9211A::LectureThermocouple_3(double* Valeur3)
+double NI_USB_9211A::LectureThermocouple_3()
 {
 	float64     data[bufferSize];
 	bool result = ReadThermocouple(data);
-	*Valeur3 = data[3];
 
-	if (result == true)
-	{
-		return true;
-	}
-	return false;
+	return data[3];
 }
