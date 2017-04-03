@@ -167,7 +167,7 @@ void Instruments::Init(int readernumber, Reader & r, int instrumentnumber, Instr
 		break;
 	}
 
-	case INSTRUMENT_NONE:
+	case NONE:
 	case INSTRUMENT_UNDEF:
 		break;
 	default:
@@ -207,7 +207,7 @@ void Instruments::ChangePort(int instrumentnumber, Instrument & i)
 		}
 		break;
 
-	case INSTRUMENT_NONE:
+	case NONE:
 	case INSTRUMENT_UNDEF:
 		break;
 	default:
@@ -248,7 +248,7 @@ void Instruments::DeleteInstrument(int instrumentnumber, Instrument & i)
 		}
 		break;
 
-	case INSTRUMENT_NONE:
+	case NONE:
 	case INSTRUMENT_UNDEF:
 		break;
 	default:

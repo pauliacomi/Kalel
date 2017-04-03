@@ -39,6 +39,7 @@ public:
 	MachineSettings();
 	~MachineSettings();
 
+
 	std::wstring CaloName = std::to_wstring(1);
 	std::wstring CaloEntete = std::to_wstring(1);
 	std::wstring CheminFichierGeneral = std::to_wstring(1);
@@ -59,7 +60,9 @@ public:
 
 
 	// Functions to easily create instruments or readers
-	void AddReader(Reader r, Instrument i);
+	void AddInstrument(Instrument i, unsigned int position = 0);
+	void AddReader(Reader r, unsigned int position = 0);
+	void AddController(Controller r, unsigned int position = 0);
 };
 
 #endif

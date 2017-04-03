@@ -10,7 +10,8 @@
 #include <vector>
 #include <memory>
 
-#define NUMBER_OF_READERS 5
+#define NUMBER_OF_READERS 6
+#define NUMBER_OF_INSTRUMENTS 6
 
 // Boîte de dialogue ConnectionPort
 
@@ -49,11 +50,13 @@ protected:
 	// --- Variables ---
 	BOOL readers[NUMBER_OF_READERS];
 	double sensitivities[NUMBER_OF_READERS];
-	int instruments[NUMBER_OF_READERS];
 	int channels[NUMBER_OF_READERS];
-	int ports[NUMBER_OF_READERS];
+	int instrument_related[NUMBER_OF_READERS];
 
-	int valveport;
+	int instruments[NUMBER_OF_INSTRUMENTS];
+	int ports[NUMBER_OF_INSTRUMENTS];
+
+	int valvecontroller;
 
 	BOOL bPbm;
 	BOOL bWarning;
@@ -77,13 +80,6 @@ protected:
 	CButton m_CheckPressure2;
 	CButton m_CheckCalorimeter1;
 
-	// Combo boxes for instrument types
-	CComboBox m_CBTypeInstrumentT1;
-	CComboBox m_CBTypeInstrumentT2;
-	CComboBox m_CBTypeInstrumentT3;
-	CComboBox m_CBTypeInstrumentP1;
-	CComboBox m_CBTypeInstrumentP2;
-	CComboBox m_CBTypeInstrumentC1;
 
 	// Combo boxes for instrument channels
 	CComboBox m_CBChannelInstrumentT1;
@@ -92,6 +88,23 @@ protected:
 	CComboBox m_CBChannelInstrumentP1;
 	CComboBox m_CBChannelInstrumentP2;
 	CComboBox m_CBChannelInstrumentC1;
+
+	// Related instrument
+	CComboBox m_CBInstrumentT1;
+	CComboBox m_CBInstrumentT2;
+	CComboBox m_CBInstrumentT3;
+	CComboBox m_CBInstrumentP1;
+	CComboBox m_CBInstrumentP2;
+	CComboBox m_CBInstrumentC1;
+
+	/////////////////////////////////
+	// Combo boxes for instrument types
+	CComboBox m_CBTypeInstrument1;
+	CComboBox m_CBTypeInstrument2;
+	CComboBox m_CBTypeInstrument3;
+	CComboBox m_CBTypeInstrument4;
+	CComboBox m_CBTypeInstrument5;
+	CComboBox m_CBTypeInstrument6;
 
 	// Combo boxes for instrument ports
 	CComboBox m_CBPortInstrumentT1;

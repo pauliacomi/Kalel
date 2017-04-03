@@ -29,41 +29,57 @@ MachineSettings::~MachineSettings()
 }
 
 
-void MachineSettings::AddReader(Reader r, Instrument i)
+void MachineSettings::AddInstrument(Instrument i, unsigned int position)
 {
-	bool existingi = false;
-	int placei;
-
-	for (auto kr : instruments) {
-		if (kr.second.name == i.name)
-		{
-			kr.second.port = i.port;
-			existingi = true;
-			placei = kr.first;
-		}
+	if (position != 0) {
+		instruments[position].name = i.name;
+		instruments[position].port = i.port;
 	}
-	if (!existingi)
+	else
 	{
-		placei = instruments.rbegin()->first + 1;
-		instruments.emplace(std::make_pair(placei, i));
-	}
-
-
-	bool existingr = false;
-	int placer;
-
-	for (auto kr : readers) {
-		if (kr.second.type == r.type && kr.second.identifier == r.identifier)
+		if (i.name != 0)
 		{
-			kr.second.sensitivity = r.sensitivity;
-			kr.second.channel = r.channel;
-			kr.second.instrument = r.instrument;
-			bool existingr = true;
+			int placer = instruments.rbegin()->first + 1;
+			instruments.emplace(std::make_pair(placer, i));
 		}
-	}
-	if (!existingr)
-	{
-		placer = readers.rbegin()->first + 1;
-		readers.emplace(std::make_pair(placer, r));
 	}
 }
+
+void MachineSettings::AddReader(Reader r, unsigned int position)
+{
+	if (position != 0) {
+		readers[position].type			= r.type		;
+		readers[position].identifier	= r.identifier	;
+		readers[position].sensitivity	= r.sensitivity	;
+		readers[position].channel		= r.channel		;
+		readers[position].instrument	= r.instrument	;
+	}
+	else
+	{
+		if (r.type != 0 && r.identifier != 0)
+		{
+			int placer = readers.rbegin()->first + 1;
+			readers.emplace(std::make_pair(placer, r));
+		}
+	}
+}
+
+void MachineSettings::AddController(Controller r, unsigned int position)
+{
+	if (position != 0) {
+		controllers[position].type			= r.type		;
+		controllers[position].identifier	= r.identifier	;
+		controllers[position].sensitivity	= r.sensitivity	;
+		controllers[position].channel		= r.channel		;
+		controllers[position].instrument	= r.instrument	;
+	}
+	else
+	{
+		if (r.type != 0 && r.identifier != 0)
+		{
+			int placer = controllers.rbegin()->first + 1;
+			controllers.emplace(std::make_pair(placer, r));
+		}
+	}
+}
+

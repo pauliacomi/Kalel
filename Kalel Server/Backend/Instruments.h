@@ -1,7 +1,5 @@
 #pragma once
 
-#include "../Parameters/FluxConverter.h"
-
 #include "RS232/Keithley.h"
 #include "RS232/Mensor.h"
 #include "USB/NI_USB_6008.h"

@@ -24,6 +24,14 @@ void ConnectionPort::PassSettings(MachineSettings * machineSettings)
 {
 	settings = machineSettings;
 
+	// Instruments
+	for (auto i : settings->instruments)
+	{
+		instruments[i.first - 1] = i.second.name;
+		ports[i.first - 1] = i.second.port;
+	}
+
+	// Readers
 	for (auto i:  settings->readers)
 	{
 		switch (i.second.type)
@@ -32,25 +40,22 @@ void ConnectionPort::PassSettings(MachineSettings * machineSettings)
 			switch (i.second.identifier)
 			{
 			case TEMPERATURE_CALO:
-				readers			[0] = TRUE;
-				sensitivities	[0] = i.second.sensitivity;
-				channels		[0] = i.second.channel;
-				ports			[0] = settings->instruments[i.second.instrument].port;
-				instruments		[0] = settings->instruments[i.second.instrument].name;
+				readers				[0] = TRUE;
+				sensitivities		[0] = i.second.sensitivity;
+				channels			[0] = i.second.channel;
+				instrument_related	[0] = i.second.instrument;
 				break;
 			case TEMPERATURE_CAGE:
-				readers			[1] = TRUE;
-				sensitivities	[1] = i.second.sensitivity;
-				channels		[1] = i.second.channel;
-				ports			[1] = settings->instruments[i.second.instrument].port;
-				instruments		[1] = settings->instruments[i.second.instrument].name;
+				readers				[1] = TRUE;
+				sensitivities		[1] = i.second.sensitivity;
+				channels			[1] = i.second.channel;
+				instrument_related  [1] = i.second.instrument;
 				break;
 			case TEMPERATURE_ROOM:
-				readers			[2] = TRUE;
-				sensitivities	[2] = i.second.sensitivity;
-				channels		[2] = i.second.channel;
-				ports			[2] = settings->instruments[i.second.instrument].port;
-				instruments		[2] = settings->instruments[i.second.instrument].name;
+				readers				[2] = TRUE;
+				sensitivities		[2] = i.second.sensitivity;
+				channels			[2] = i.second.channel;
+				instrument_related  [2] = i.second.instrument;
 				break;
 			default:
 				break;
@@ -60,18 +65,16 @@ void ConnectionPort::PassSettings(MachineSettings * machineSettings)
 			switch (i.second.identifier)
 			{
 			case PRESSURE_HP:
-				readers			[3] = TRUE;
-				sensitivities	[3] = i.second.sensitivity;
-				channels		[3] = i.second.channel;
-				ports			[3] = settings->instruments[i.second.instrument].port;
-				instruments		[3] = settings->instruments[i.second.instrument].name;
+				readers				[3] = TRUE;
+				sensitivities		[3] = i.second.sensitivity;
+				channels			[3] = i.second.channel;
+				instrument_related  [3] = i.second.instrument;
 				break;
 			case PRESSURE_LP:
-				readers			[4] = TRUE;
-				sensitivities	[4] = i.second.sensitivity;
-				channels		[4] = i.second.channel;
-				ports			[4] = settings->instruments[i.second.instrument].port;
-				instruments		[4] = settings->instruments[i.second.instrument].name;
+				readers				[4] = TRUE;
+				sensitivities		[4] = i.second.sensitivity;
+				channels			[4] = i.second.channel;
+				instrument_related  [4] = i.second.instrument;
 				break;
 			default:
 				break;
@@ -81,11 +84,10 @@ void ConnectionPort::PassSettings(MachineSettings * machineSettings)
 			switch (i.second.identifier)
 			{
 			case CALO:
-				readers			[5] = TRUE;
-				sensitivities	[5] = i.second.sensitivity;
-				channels		[5] = i.second.channel;
-				ports			[5] = settings->instruments[i.second.instrument].port;
-				instruments		[5] = settings->instruments[i.second.instrument].name;
+				readers				[5] = TRUE;
+				sensitivities		[5] = i.second.sensitivity;
+				channels			[5] = i.second.channel;
+				instrument_related  [5] = i.second.instrument;
 				break;
 			default:
 				break;
@@ -96,7 +98,17 @@ void ConnectionPort::PassSettings(MachineSettings * machineSettings)
 		}
 	}
 
-	UpdateData(FALSE);
+	// Controllers
+	for (auto i : settings->controllers)
+	{
+		switch (i.second.type)
+		{
+		case CONTROLLER_VALVES:
+			valvecontroller = i.second.instrument;
+		default:
+			break;
+		}
+	}	
 }
 
 ConnectionPort::~ConnectionPort()
@@ -141,22 +153,20 @@ void ConnectionPort::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_P2, sensitivities[4]);
 	DDX_Text(pDX, IDC_EDIT_C1, sensitivities[5]);
 
+	// Channel
+	DDX_Control(pDX, IDC_COMBO_CHANNEL_T1, m_CBPortInstrumentT1);
+	DDX_Control(pDX, IDC_COMBO_CHANNEL_T2, m_CBPortInstrumentT2);
+	DDX_Control(pDX, IDC_COMBO_CHANNEL_T3, m_CBPortInstrumentT3);
+	DDX_Control(pDX, IDC_COMBO_CHANNEL_P1, m_CBPortInstrumentP1);
+	DDX_Control(pDX, IDC_COMBO_CHANNEL_P2, m_CBPortInstrumentP2);
+	DDX_Control(pDX, IDC_COMBO_CHANNEL_C1, m_CBPortInstrumentC1);
 
-	// Instrument
-	DDX_Control(pDX, IDC_COMBO_TYPE_INSTRUMENT_T1, m_CBTypeInstrumentT1);
-	DDX_Control(pDX, IDC_COMBO_TYPE_INSTRUMENT_T2, m_CBTypeInstrumentT2);
-	DDX_Control(pDX, IDC_COMBO_TYPE_INSTRUMENT_T3, m_CBTypeInstrumentT3);
-	DDX_Control(pDX, IDC_COMBO_TYPE_INSTRUMENT_P1, m_CBTypeInstrumentP1);
-	DDX_Control(pDX, IDC_COMBO_TYPE_INSTRUMENT_P2, m_CBTypeInstrumentP2);
-	DDX_Control(pDX, IDC_COMBO_TYPE_INSTRUMENT_C1, m_CBTypeInstrumentC1);
-	
-	DDX_CBIndex(pDX, IDC_COMBO_TYPE_INSTRUMENT_T1, instruments[0]);
-	DDX_CBIndex(pDX, IDC_COMBO_TYPE_INSTRUMENT_T2, instruments[1]);
-	DDX_CBIndex(pDX, IDC_COMBO_TYPE_INSTRUMENT_T3, instruments[2]);
-	DDX_CBIndex(pDX, IDC_COMBO_TYPE_INSTRUMENT_P1, instruments[3]);
-	DDX_CBIndex(pDX, IDC_COMBO_TYPE_INSTRUMENT_P2, instruments[4]);
-	DDX_CBIndex(pDX, IDC_COMBO_TYPE_INSTRUMENT_C1, instruments[5]);
-	
+	DDX_CBIndex(pDX, IDC_COMBO_CHANNEL_T1, channels[0]);
+	DDX_CBIndex(pDX, IDC_COMBO_CHANNEL_T2, channels[1]);
+	DDX_CBIndex(pDX, IDC_COMBO_CHANNEL_T3, channels[2]);
+	DDX_CBIndex(pDX, IDC_COMBO_CHANNEL_P1, channels[3]);
+	DDX_CBIndex(pDX, IDC_COMBO_CHANNEL_P2, channels[4]);
+	DDX_CBIndex(pDX, IDC_COMBO_CHANNEL_C1, channels[5]);
 
 	// Channel
 	DDX_Control(pDX, IDC_COMBO_CHANNEL_T1, m_CBPortInstrumentT1);
@@ -173,25 +183,56 @@ void ConnectionPort::DoDataExchange(CDataExchange* pDX)
 	DDX_CBIndex(pDX, IDC_COMBO_CHANNEL_P2, channels[4]);
 	DDX_CBIndex(pDX, IDC_COMBO_CHANNEL_C1, channels[5]);
 
+	// Instrument number
+	DDX_Control(pDX, IDC_COMBO_INSTRUMENT_T1, m_CBInstrumentT1);
+	DDX_Control(pDX, IDC_COMBO_INSTRUMENT_T2, m_CBInstrumentT2);
+	DDX_Control(pDX, IDC_COMBO_INSTRUMENT_T3, m_CBInstrumentT3);
+	DDX_Control(pDX, IDC_COMBO_INSTRUMENT_P1, m_CBInstrumentP1);
+	DDX_Control(pDX, IDC_COMBO_INSTRUMENT_P2, m_CBInstrumentP2);
+	DDX_Control(pDX, IDC_COMBO_INSTRUMENT_C1, m_CBInstrumentC1);
+							  
+	DDX_CBIndex(pDX, IDC_COMBO_INSTRUMENT_T1, instrument_related[0]);
+	DDX_CBIndex(pDX, IDC_COMBO_INSTRUMENT_T2, instrument_related[1]);
+	DDX_CBIndex(pDX, IDC_COMBO_INSTRUMENT_T3, instrument_related[2]);
+	DDX_CBIndex(pDX, IDC_COMBO_INSTRUMENT_P1, instrument_related[3]);
+	DDX_CBIndex(pDX, IDC_COMBO_INSTRUMENT_P2, instrument_related[4]);
+	DDX_CBIndex(pDX, IDC_COMBO_INSTRUMENT_C1, instrument_related[5]);
+
+	//******************************
+	// Instrument name
+	DDX_Control(pDX, IDC_COMBO_TYPE_INSTRUMENT_1, m_CBTypeInstrument1);
+	DDX_Control(pDX, IDC_COMBO_TYPE_INSTRUMENT_2, m_CBTypeInstrument2);
+	DDX_Control(pDX, IDC_COMBO_TYPE_INSTRUMENT_3, m_CBTypeInstrument3);
+	DDX_Control(pDX, IDC_COMBO_TYPE_INSTRUMENT_4, m_CBTypeInstrument4);
+	DDX_Control(pDX, IDC_COMBO_TYPE_INSTRUMENT_5, m_CBTypeInstrument5);
+	DDX_Control(pDX, IDC_COMBO_TYPE_INSTRUMENT_6, m_CBTypeInstrument6);
+
+	DDX_CBIndex(pDX, IDC_COMBO_TYPE_INSTRUMENT_1, instruments[0]);
+	DDX_CBIndex(pDX, IDC_COMBO_TYPE_INSTRUMENT_2, instruments[1]);
+	DDX_CBIndex(pDX, IDC_COMBO_TYPE_INSTRUMENT_3, instruments[2]);
+	DDX_CBIndex(pDX, IDC_COMBO_TYPE_INSTRUMENT_4, instruments[3]);
+	DDX_CBIndex(pDX, IDC_COMBO_TYPE_INSTRUMENT_5, instruments[4]);
+	DDX_CBIndex(pDX, IDC_COMBO_TYPE_INSTRUMENT_6, instruments[5]);
 
 	// Port
-	DDX_Control(pDX, IDC_PORT_INSTRUMENT_T1, m_CBPortInstrumentT1);
-	DDX_Control(pDX, IDC_PORT_INSTRUMENT_T2, m_CBPortInstrumentT2);
-	DDX_Control(pDX, IDC_PORT_INSTRUMENT_T3, m_CBPortInstrumentT3);
-	DDX_Control(pDX, IDC_PORT_INSTRUMENT_P1, m_CBPortInstrumentP1);
-	DDX_Control(pDX, IDC_PORT_INSTRUMENT_P2, m_CBPortInstrumentP2);
-	DDX_Control(pDX, IDC_PORT_INSTRUMENT_C1, m_CBPortInstrumentC1);
+	DDX_Control(pDX, IDC_PORT_INSTRUMENT_1, m_CBPortInstrumentT1);
+	DDX_Control(pDX, IDC_PORT_INSTRUMENT_2, m_CBPortInstrumentT2);
+	DDX_Control(pDX, IDC_PORT_INSTRUMENT_3, m_CBPortInstrumentT3);
+	DDX_Control(pDX, IDC_PORT_INSTRUMENT_4, m_CBPortInstrumentP1);
+	DDX_Control(pDX, IDC_PORT_INSTRUMENT_5, m_CBPortInstrumentP2);
+	DDX_Control(pDX, IDC_PORT_INSTRUMENT_6, m_CBPortInstrumentC1);
 	
-	DDX_CBIndex(pDX, IDC_PORT_INSTRUMENT_T1, ports[0]);
-	DDX_CBIndex(pDX, IDC_PORT_INSTRUMENT_T2, ports[1]);
-	DDX_CBIndex(pDX, IDC_PORT_INSTRUMENT_T3, ports[2]);
-	DDX_CBIndex(pDX, IDC_PORT_INSTRUMENT_P1, ports[3]);
-	DDX_CBIndex(pDX, IDC_PORT_INSTRUMENT_P2, ports[4]);
-	DDX_CBIndex(pDX, IDC_PORT_INSTRUMENT_C1, ports[5]);
+	DDX_CBIndex(pDX, IDC_PORT_INSTRUMENT_1, ports[0]);
+	DDX_CBIndex(pDX, IDC_PORT_INSTRUMENT_2, ports[1]);
+	DDX_CBIndex(pDX, IDC_PORT_INSTRUMENT_3, ports[2]);
+	DDX_CBIndex(pDX, IDC_PORT_INSTRUMENT_4, ports[3]);
+	DDX_CBIndex(pDX, IDC_PORT_INSTRUMENT_5, ports[4]);
+	DDX_CBIndex(pDX, IDC_PORT_INSTRUMENT_6, ports[5]);
 	
+	//***************************************************
 	// Controllers - currently just falves
 	DDX_Control(pDX, IDC_PORT_VANNES, m_CBPortValves);
-	DDX_CBIndex(pDX, IDC_PORT_VANNES, valveport);
+	DDX_CBIndex(pDX, IDC_PORT_VANNES, valvecontroller);
 }
 
 
@@ -298,9 +339,19 @@ void ConnectionPort::OnModified(UINT nID)
 void ConnectionPort::SaveModifications(MachineSettings& newSettings)
 {
 	// Save instruments
-	for (size_t key = 0; key < sizeof(readers); key++)
+	for (size_t key = 0; key < sizeof(instruments)/sizeof(*instruments); key++)
+	{
+		Instrument i;
+		i.name = instruments[key];
+		i.port = ports[key];
+		newSettings.AddInstrument(i, key + 1);
+	}
+
+	// Save readers
+	for (size_t key = 0; key < sizeof(readers) / sizeof(*readers); key++)
 	{
 		Reader r;
+
 		switch (key)
 		{
 		case 0:
@@ -332,13 +383,20 @@ void ConnectionPort::SaveModifications(MachineSettings& newSettings)
 		}
 		r.channel = channels[key];
 		r.sensitivity = sensitivities[key];
+		r.instrument = instrument_related[key];
 		
-		Instrument i;
-		i.port = ports[key];
-		i.name = instruments[key];
-
-		newSettings.AddReader(r, i);
+		newSettings.AddReader(r, key +1);
 	}
+
+	// Save controllers
+	Controller c;
+	c.type = CONTROLLER_VALVES;
+	c.identifier = ID_CONTROLLER_VALVES;
+	c.sensitivity = 1.0;
+	c.channel = 1;
+	c.instrument = valvecontroller;
+
+	newSettings.AddController(c, 1);
 }
 
 
@@ -371,11 +429,7 @@ void ConnectionPort::Verifications()
 
 void ConnectionPort::VerificationLectureMesures()
 {
-
-	for (size_t key = 0; key < sizeof(readers); key++)
-	{
-	}
-	if (readers[5] = FALSE)
+	if (readers[5] == FALSE)
 	{
 		bWarning = TRUE;
 		CString message;
@@ -383,7 +437,7 @@ void ConnectionPort::VerificationLectureMesures()
 		StrMessageWarning += message;
 	}
 
-	if (readers[4] = FALSE)
+	if (readers[4] == FALSE)
 	{
 		bWarning = TRUE;
 		CString message;
@@ -391,7 +445,7 @@ void ConnectionPort::VerificationLectureMesures()
 		StrMessageWarning += message;
 	}
 
-	if (readers[3] = FALSE)
+	if (readers[3] == FALSE)
 	{
 		bWarning = TRUE;
 		CString message;
@@ -405,9 +459,9 @@ bool ConnectionPort::AucunInstrumentBranche()
 	// Aucun appareil branché
 	bool notConn = true;
 
-	for (size_t i = 0; i < sizeof(readers); i++)
+	for (size_t i = 0; i < sizeof(instruments)/sizeof(*readers); i++)
 	{
-		if (readers[i] == TRUE)
+		if (instruments[i] != 0)
 		{
 			notConn = false;
 		}

@@ -31,7 +31,7 @@ void ParametersGet(MachineSettings& settings)
 	std::fstream fs;
 	std::string filestr;
 
-	fs.open(Fichier_parametres, std::fstream::in | std::fstream::out | std::fstream::app);
+	fs.open(Fichier_parametres, std::fstream::in);
 
 	fs.seekg(0, std::ios::end);
 	filestr.reserve(fs.tellg());
@@ -39,25 +39,24 @@ void ParametersGet(MachineSettings& settings)
 	filestr.assign((std::istreambuf_iterator<char>(fs)), std::istreambuf_iterator<char>());
 
 	fs.close();
-
-	json j = json::parse(filestr.c_str());
-	
+	json j;
 	try
 	{
-		std::string g = j.dump();
+		j = json::parse(filestr.c_str());
 	}
 	catch (const std::exception& e)
 	{
 		settings = MachineSettings();
 		return;
 	}
+	std::string g = j.dump();
 	settings = j;
 }
 
 void ParametersSet(const MachineSettings& settings)
 {
 	std::fstream fs;
-	fs.open(Fichier_parametres, std::fstream::in | std::fstream::out | std::fstream::app);
+	fs.open(Fichier_parametres, std::fstream::out | std::ofstream::trunc);
 
 	json j = settings;
 	fs << j.dump(4);

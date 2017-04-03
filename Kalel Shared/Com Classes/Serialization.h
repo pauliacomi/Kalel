@@ -88,7 +88,7 @@ void to_json(nlohmann::json &j, const MachineSettings &m) {
 		j2[std::to_string(kv.first)]["channel"							]	= kv.second.channel				;
 		j2[std::to_string(kv.first)]["instrument"						]	= kv.second.instrument			;
 	}
-	j["controllers"							]	= j["controllers"]							;
+	j["controllers"							]	= j3										;
 }
 
 inline void from_json(const nlohmann::json &j, MachineSettings &m) {
