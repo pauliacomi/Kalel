@@ -1,4 +1,3 @@
-#include "../Forcelib.h"
 #include "Server.h"
 
 #include "http_helpers.h"
@@ -6,32 +5,21 @@
 #include "stdHelpers.h"
 #include "base64.h"
 #include "Netcode Resources.h"
-#include "../timeHelpers.h"
 
-// Logging functionality
+#include "../timeHelpers.h"
 #include "../log.h"	
-#define FILE_LOGGING	"server.log"		// Comment this line to disable file logging
-#define LOG_LEVEL		logDEBUG4			// Change the level of logging here
+
+
+#define FILE_LOGGING			// Comment this line to disable file logging
 
 
 Server::Server(PCSTR port)
 	: accepting{ false }
 {
-#ifdef FILE_LOGGING
-
-	FILELog::ReportingLevel() = LOG_LEVEL;
-	FILE * f;
-	fopen_s(&f, FILE_LOGGING, "w");
-	Output2FILE::Stream() = f;
-
-#endif // FILE_LOGGING
-
 	// Listen on the socket
 	listeningSocket.Listen(port);
-
-#ifdef FILE_LOGGING
+	STREAM_LOG(logINFO) << LOG_LISTENING << listeningSocket.GetSocket();
 	FILE_LOG(logINFO) << LOG_LISTENING << listeningSocket.GetSocket();
-#endif // FILE_LOGGING
 }
 
 
@@ -43,15 +31,6 @@ Server::~Server()
 	{
 		acceptThread.join();
 	}
-}
-
-void Server::SetLogs(std::vector<std::string> & vct, std::mutex & mtx)
-{
-	StreamLog::ReportingLevel() = LOG_LEVEL;
-	Output2vector::Stream() = &vct;
-	Output2vector::Mutex() = &mtx;
-
-	STREAM_LOG(logINFO) << LOG_LISTENING << listeningSocket.GetSocket();
 }
 
 

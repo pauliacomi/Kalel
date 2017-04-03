@@ -17,6 +17,12 @@
 #include <vector>
 #include <string>
 
+// Logging functionality
+#include "../Kalel Shared/log.h"
+#define FILE_LOGGING	"server.log"		// Comment this line to disable file logging
+#define LOG_LEVEL		logDEBUG4			// Change the level of logging here
+
+
 using json = nlohmann::json;
 
 Kalel::Kalel()
@@ -24,8 +30,23 @@ Kalel::Kalel()
 	, threadManager{ storageVectors, controlMechanisms}
 {
 	//
+	// Configure logging
+#ifdef FILE_LOGGING
+
+	FILELog::ReportingLevel() = LOG_LEVEL;
+	FILE * f;
+	fopen_s(&f, FILE_LOGGING, "w");
+	Output2FILE::Stream() = f;
+
+#endif // FILE_LOGGING
+
+	StreamLog::ReportingLevel() = LOG_LEVEL;
+	Output2vector::Stream() = &storageVectors.serverLogs;
+	Output2vector::Mutex() = &storageVectors.serverLogsMtx;
+
+
+	//
 	// Start server functionality
-	server.SetLogs(storageVectors.serverLogs, storageVectors.serverLogsMtx);
 
 	server.AddMethod(
 		std::bind(&Kalel::Ping,						this, std::placeholders::_1, std::placeholders::_2), 
