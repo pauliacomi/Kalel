@@ -247,7 +247,12 @@ BEGIN_MESSAGE_MAP(ConnectionPort, CDialog)
 	ON_BN_CLICKED(IDOK, &ConnectionPort::OnBnClickedOk)
 	ON_BN_CLICKED(IDCANCEL, &ConnectionPort::OnBnClickedCancel)
 
-	ON_CONTROL_RANGE(CBN_SELCHANGE, IDC_EDIT_T1, IDC_PORT_VANNES, &ConnectionPort::OnModified)
+	// Dropdown-down boxes
+	ON_CONTROL_RANGE(CBN_SELCHANGE, IDC_PORT_VANNES, IDC_COMBO_TYPE_INSTRUMENT_6, &ConnectionPort::OnModified)
+	// Edit boxes
+	ON_CONTROL_RANGE(EN_CHANGE, IDC_EDIT_T1, IDC_EDIT_C1, &ConnectionPort::OnModified)
+	// Check boxes
+	ON_CONTROL_RANGE(BN_CLICKED, IDC_CHECK_T1, IDC_CHECK_C1, &ConnectionPort::OnModified)
 
 END_MESSAGE_MAP()
 

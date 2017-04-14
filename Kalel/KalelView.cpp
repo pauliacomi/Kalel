@@ -379,12 +379,12 @@ LRESULT CKalelView::DisplayPortDialog(WPARAM, LPARAM)
 {
 	if (pApp->serverConnected)
 	{
-		ApparatusParameters apparatusParameters;
-		apparatusParameters.PassSettings(machineSettings.get());
-		if (apparatusParameters.DoModal() == IDOK) {
-			if (apparatusParameters.Changed())
+		ConnectionPort m_connection_ports;
+		m_connection_ports.PassSettings(machineSettings.get());
+		if (m_connection_ports.DoModal() == IDOK) {
+			if (m_connection_ports.Changed())
 			{
-				tempMchSettings = apparatusParameters.GetSettings();			// Save it separately to prevent extra communication
+				tempMchSettings = m_connection_ports.GetSettings();			// Save it separately to prevent extra communication
 				commHandler.SetMachineSettings(tempMchSettings);
 			}
 		}
@@ -401,12 +401,12 @@ LRESULT CKalelView::DisplayApparatusSettingsDialog(WPARAM, LPARAM)
 {
 	if (pApp->serverConnected)
 	{
-		ConnectionPort m_connection_ports;
-		m_connection_ports.PassSettings(machineSettings.get());
-		if (m_connection_ports.DoModal() == IDOK) {
-			if (m_connection_ports.Changed())
+		ApparatusParameters apparatusParameters;
+		apparatusParameters.PassSettings(machineSettings.get());
+		if (apparatusParameters.DoModal() == IDOK) {
+			if (apparatusParameters.Changed())
 			{
-				tempMchSettings = m_connection_ports.GetSettings();			// Save it separately to prevent extra communication
+				tempMchSettings = apparatusParameters.GetSettings();			// Save it separately to prevent extra communication
 				commHandler.SetMachineSettings(tempMchSettings);
 			}
 		}
