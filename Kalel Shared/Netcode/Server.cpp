@@ -10,14 +10,13 @@
 #include "../log.h"	
 
 
-#define FILE_LOGGING			// Comment this line to disable file logging
-
 
 Server::Server(PCSTR port)
 	: accepting{ false }
 {
 	// Listen on the socket
 	listeningSocket.Listen(port);
+
 	STREAM_LOG(logINFO) << LOG_LISTENING << listeningSocket.GetSocket();
 	FILE_LOG(logINFO) << LOG_LISTENING << listeningSocket.GetSocket();
 }
@@ -54,10 +53,7 @@ void Server::Start()
 
 unsigned Server::AcceptLoop()
 {
-
-#ifdef FILE_LOGGING
 	FILE_LOG(logDEBUG1) << "Entering accept loop";
-#endif // FILE_LOGGING
 
 	listeningSocket.Accept_PrimeSelect();
 	
@@ -84,18 +80,14 @@ unsigned Server::AcceptLoop()
 		}
 
 		STREAM_LOG(logINFO) << LOG_ACCEPTED_SOCK << theirIP;
-#ifdef FILE_LOGGING
 		FILE_LOG(logINFO) << LOG_ACCEPTED_SOCK << theirIP;
-#endif // FILE_LOGGING
 
 		std::unique_ptr<Socket> acceptedSocket = std::make_unique<Socket>(s);			// Create a client socket pointer from the accepted SOCKET
 		acceptedSocket->SetNagle(false);												// Disable Nagle's algorithm, should lead to improved latency
 		std::thread(&Server::Process, this, std::move(acceptedSocket)).detach();		// Start the request processing thread
 	}
 
-#ifdef FILE_LOGGING
 	FILE_LOG(logDEBUG1) << "Leaving accept loop";
-#endif // FILE_LOGGING
 
 	return 0;
 }
@@ -105,9 +97,7 @@ unsigned Server::Process(std::unique_ptr<Socket> sock)
 {
 
 	STREAM_LOG(logDEBUG2) << "Enter thread for socket" << sock->GetSocket();
-#ifdef FILE_LOGGING
 	FILE_LOG(logDEBUG2) << "Enter thread for socket" << sock->GetSocket();
-#endif // FILE_LOGGING
 
 
 	//*************************************************************************************************************************
@@ -137,9 +127,7 @@ unsigned Server::Process(std::unique_ptr<Socket> sock)
 	request.method_ = ParseMethod(requestString.substr(0, posSpace));
 	if(request.method_.empty()){
 		STREAM_LOG(logDEBUG2) << "Request method unknown: " << sock->GetSocket();
-#ifdef FILE_LOGGING
 		FILE_LOG(logDEBUG2) << "Request method unknown: " << sock->GetSocket();
-#endif // FILE_LOGGING
 		return 1;
 	}
 
@@ -226,9 +214,7 @@ unsigned Server::Process(std::unique_ptr<Socket> sock)
 	}
 
 	STREAM_LOG(logDEBUG) << sock->GetSocket() << LOG_REQUEST << requestString;
-#ifdef FILE_LOGGING
 	FILE_LOG(logDEBUG) << sock->GetSocket() << LOG_REQUEST << requestString;
-#endif // FILE_LOGGING
 
 
 
@@ -246,9 +232,7 @@ unsigned Server::Process(std::unique_ptr<Socket> sock)
 		response.status_ = http::responses::bad_request;
 
 		STREAM_LOG(logDEBUG2) << e.what();
-#ifdef FILE_LOGGING
 		FILE_LOG(logDEBUG2) << e.what();
-#endif // FILE_LOGGING
 	}
 
 	// Fill remaining headers
@@ -300,9 +284,7 @@ unsigned Server::Process(std::unique_ptr<Socket> sock)
 	}
 	
 	STREAM_LOG(logDEBUG) << sock->GetSocket() << LOG_RESPONSE << responseString;
-#ifdef FILE_LOGGING
 	FILE_LOG(logDEBUG) << sock->GetSocket() << LOG_RESPONSE << responseString;
-#endif // FILE_LOGGING
 
 	//
 	// Exit
@@ -312,9 +294,7 @@ unsigned Server::Process(std::unique_ptr<Socket> sock)
 	// sock->SetLinger(true);
 
 	STREAM_LOG(logDEBUG3) << "Exit thread " << sock->GetSocket();
-#ifdef FILE_LOGGING
 	FILE_LOG(logDEBUG3) << "Exit thread " << sock->GetSocket();
-#endif // FILE_LOGGING
 
 	return 0;
 }

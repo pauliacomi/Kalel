@@ -20,6 +20,7 @@
 // Logging functionality
 #include "../Kalel Shared/log.h"
 #define FILE_LOGGING	"server.log"		// Comment this line to disable file logging
+#define STREAM_LOGGING						// Comment this line to disable stream logging
 #define LOG_LEVEL		logDEBUG4			// Change the level of logging here
 
 
@@ -32,17 +33,16 @@ Kalel::Kalel()
 	//
 	// Configure logging
 #ifdef FILE_LOGGING
-
 	FILELog::ReportingLevel() = LOG_LEVEL;
 	FILE * f;
 	fopen_s(&f, FILE_LOGGING, "w");
 	Output2FILE::Stream() = f;
-
 #endif // FILE_LOGGING
 
+#ifdef STREAM_LOGGING
 	StreamLog::ReportingLevel() = LOG_LEVEL;
 	Output2vector::Stream() = &storageVectors.serverLogs;
-	Output2vector::Mutex() = &storageVectors.serverLogsMtx;
+#endif // FILE_LOGGING
 
 
 	//

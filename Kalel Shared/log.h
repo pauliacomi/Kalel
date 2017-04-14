@@ -25,9 +25,9 @@ class Log
 public:
     Log();
     virtual ~Log();
-    std::ostringstream& GetNoStamp(TLogLevel level = logINFO);
-	std::ostringstream& GetTimeStamped(TLogLevel level = logINFO);
-	std::ostringstream& GetTimeStamp();
+    std::ostringstream& GetNoStamp(TLogLevel level = logINFO);					// Write to a stringstream without timestamp
+	std::ostringstream& GetTimeStamped(TLogLevel level = logINFO);				// Write to a stringstream with timestamp
+	std::ostringstream& GetTimeStamp();											// Write to a stringstream only the timestamp
 
 public:
     static TLogLevel& ReportingLevel();
@@ -40,9 +40,13 @@ protected:
 	std::string timestamp;
 
 private:
+	static std::mutex write_mutex;
     Log(const Log&);
     Log& operator =(const Log&);
 };
+
+template <typename T>
+std::mutex Log<T>::Log::write_mutex;
 
 /*********************************
 // Constructor
@@ -50,7 +54,7 @@ private:
 template <typename T>
 Log<T>::Log()
 {
-	timestamp = timeh::TimePointToString(timeh::NowTime());
+	timestamp = timeh::TimePointToString(timeh::NowTime());						// Write timestamp and store it
 }
 
 /*********************************
@@ -59,7 +63,7 @@ Log<T>::Log()
 template <typename T>
 std::ostringstream& Log<T>::GetNoStamp(TLogLevel level)
 {
-    os << std::string(level > logDEBUG ? level - logDEBUG : 0, '\t');
+    os << std::string(level > logDEBUG ? level - logDEBUG : 0, '\t');			// Write only the logging level
     return os;
 }
 
@@ -91,8 +95,11 @@ std::ostringstream& Log<T>::GetTimeStamp()
 template <typename T>
 Log<T>::~Log()
 {
-    os << std::endl;
-    T::Output(os.str());
+    os << std::endl;		// Write an endline
+
+	write_mutex.lock();		// Lock the mutex before writing
+    T::Output(os.str());	// Call write function of template class
+	write_mutex.unlock();	// Unlock mutex after writing
 }
 
 /*********************************
@@ -150,7 +157,6 @@ class Output2vector
 {
 public:
 	static std::vector<std::string>*& Stream();
-	static std::mutex*& Mutex();
 	static void Output(const std::string& msg);
 };
 
@@ -160,25 +166,13 @@ inline std::vector<std::string>*& Output2vector::Stream()
 	return pStream;
 }
 
-inline std::mutex*& Output2vector::Mutex()
-{
-	static std::mutex* pMutex = nullptr;
-	return pMutex;
-}
-
 inline void Output2vector::Output(const std::string& msg)
 {
 	std::vector<std::string>* pStream = Stream();
 	if (!pStream)
 		return;
-	
-	std::mutex* pMutex = Mutex();
-	if (!pMutex)
-		return;
 
-	pMutex->lock();
 	pStream->push_back(msg);
-	pMutex->unlock();
 }
 
 /**********************************************************************************************************************************
@@ -189,7 +183,6 @@ class Output2map
 {
 public:
 	static std::map<std::string, std::string>*& Stream();
-	static std::mutex*& Mutex();
 	static void Output(const std::string& msg);
 };
 
@@ -199,25 +192,13 @@ inline std::map<std::string, std::string>*& Output2map::Stream()
 	return pStream;
 }
 
-inline std::mutex*& Output2map::Mutex()
-{
-	static std::mutex* pMutex = nullptr;
-	return pMutex;
-}
-
 inline void Output2map::Output(const std::string& msg)
 {
 	std::map<std::string, std::string>* pStream = Stream();
 	if (!pStream)
 		return;
 
-	std::mutex* pMutex = Mutex();
-	if (!pMutex)
-		return;
-
-	pMutex->lock();
 	pStream->emplace(std::make_pair(timeh::TimePointToString(timeh::NowTime()), msg));
-	pMutex->unlock();
 }
 
 /**********************************************************************************************************************************
@@ -246,6 +227,11 @@ inline void Output2FILE::Output(const std::string& msg)
     fflush(pStream);
 }
 
+
+/**********************************************************************************************************************************
+// Macro definitions
+**********************************************************************************************************************************/
+
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__)
 #   if defined (BUILDING_FILELOG_DLL)
 #       define FILELOG_DECLSPEC   __declspec (dllexport)
@@ -258,17 +244,10 @@ inline void Output2FILE::Output(const std::string& msg)
 #   define FILELOG_DECLSPEC
 #endif // _WIN32
 
-/**********************************************************************************************************************************
-// Class definitions
-**********************************************************************************************************************************/
 
 class FILELOG_DECLSPEC FILELog : public Log<Output2FILE> {};
 class StreamLog : public Log<Output2vector> {};
 class MapLog : public Log<Output2map> {};
-
-/**********************************************************************************************************************************
-// Macro definitions
-**********************************************************************************************************************************/
 
 
 #ifndef FILELOG_MAX_LEVEL
@@ -290,12 +269,12 @@ class MapLog : public Log<Output2map> {};
 
 #define STREAM_LOG(level) \
     if (level > STREAMLOG_MAX_LEVEL) ;\
-    else if (level > StreamLog::ReportingLevel() || !Output2vector::Stream() || !Output2vector::Mutex()) ; \
+    else if (level > StreamLog::ReportingLevel() || !Output2vector::Stream()) ; \
     else StreamLog().GetTimeStamped(level)
 
 #define MAP_LOG(level) \
     if (level > MAPLOG_MAX_LEVEL) ;\
-    else if (level > MapLog::ReportingLevel() || !Output2map::Stream() || !Output2map::Mutex()) ; \
+    else if (level > MapLog::ReportingLevel() || !Output2map::Stream()) ; \
     else MapLog().GetNoStamp(level)
 
 #endif //__LOG_H__

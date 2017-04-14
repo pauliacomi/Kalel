@@ -25,8 +25,7 @@ public:
 	// Server logs
 	//**********
 
-public:
-	std::mutex serverLogsMtx;																					// Mutex for the server logs					
+public:				
 	std::vector<std::string> serverLogs;																		// Logs from the server are stored here
 
 	//**********
