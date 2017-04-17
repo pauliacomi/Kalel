@@ -32,12 +32,12 @@ MachineSettings::~MachineSettings()
 void MachineSettings::AddInstrument(Instrument i, unsigned int position)
 {
 	if (position != 0) {
-		instruments[position].name = i.name;
+		instruments[position].type = i.type;
 		instruments[position].port = i.port;
 	}
 	else
 	{
-		if (i.name != 0)
+		if (i.type != 0)
 		{
 			int placer = instruments.rbegin()->first + 1;
 			instruments.emplace(std::make_pair(placer, i));

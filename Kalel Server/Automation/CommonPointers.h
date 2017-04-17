@@ -33,7 +33,7 @@ public:
 	//**********
 private:
 	std::mutex autoInfoLogsMutex;																				// Synchronisation class, should be used whenever there are writes to the logs
-	TextStorage automationInfoLogs;					// All non-error logs are stored here
+	TextStorage automationInfoLogs;																				// All non-error logs are stored here
 
 public:
 	void pushInfoLogs(std::chrono::system_clock::time_point time, std::string value) {

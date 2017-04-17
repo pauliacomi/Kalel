@@ -22,7 +22,7 @@ ValveController::~ValveController(void)
 void ValveController::Reset(MachineSettings & m)
 {
 	for (auto i = m.instruments.begin(); i != m.instruments.end(); ++i) {
-		if (i->second.name == INSTRUMENT_NI_USB_6008) {
+		if (i->second.type == INSTRUMENT_NI_USB_6008) {
 			if (i->second.port != GetReadPort())
 			{
 				SetReadPort(i->second.port);

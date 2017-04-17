@@ -135,7 +135,7 @@ void Kalel::Ping(http_request* req, http_response* resp)
 	{
 		resp->status_ = http::responses::ok;
 		resp->content_type_ = http::mimetype::texthtml;
-		resp->answer_ = R"(<!DOCTYPE html PUBLIC " -//IETF//DTD HTML 2.0//EN"><html><head><title>Hello</title></head><body><h1>Ping OK</h1></body></html>)";
+		resp->answer_ = R"(<!DOCTYPE html PUBLIC " -//IETF//DTD HTML 2.0//EN"><html><head><title>Kalel Server</title></head><body><h1>Ping OK</h1></body></html>)";
 	}
 }
 

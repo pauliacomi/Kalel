@@ -49,7 +49,6 @@ void ParametersGet(MachineSettings& settings)
 		settings = MachineSettings();
 		return;
 	}
-	std::string g = j.dump();
 	settings = j;
 }
 

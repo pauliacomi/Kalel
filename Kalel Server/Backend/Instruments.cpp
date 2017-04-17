@@ -9,21 +9,7 @@
 
 Instruments::Instruments(MessageHandler & messageHandler, MachineSettings & m)
 	: mh{ messageHandler }
-{
-	// This loop goes through all the instruments in the Parameters file
-	// Depending on the type of instruments it will output parameters for
-	//
-	// * Calorimeter Apparatus
-	// * Low Range Pressure Apparatus
-	// * High Range Pressure Apparatus
-	//
-	// The parameters for each are 
-	//
-	// * Type:			if using a keithley or a mensor
-	// * COM port		the COM port that the instrument is connected to
-	// * Channel:		the channel that has to be read (only makes sense for a keithley)
-	//
-	
+{	
 	Reset(m);
 }
 
@@ -40,6 +26,20 @@ Instruments::~Instruments()
 
 void Instruments::Reset(MachineSettings & m)
 {
+	// This loop goes through all the instruments in the Parameters file
+	// Depending on the type of instruments it will output parameters for
+	//
+	// * Calorimeter Apparatus
+	// * Low Range Pressure Apparatus
+	// * High Range Pressure Apparatus
+	//
+	// The parameters for each are 
+	//
+	// * Type:			if using a keithley or a mensor
+	// * COM port		the COM port that the instrument is connected to
+	// * Channel:		the channel that has to be read (only makes sense for a keithley)
+	//
+
 	for (auto i = m.readers.begin(); i != m.readers.end(); ++i)
 	{
 		// Check if the reader function exists for the instrument referenced
@@ -76,7 +76,7 @@ void Instruments::Reset(MachineSettings & m)
 
 void Instruments::Init(int readernumber, Reader & r, int instrumentnumber, Instrument & i)
 {
-	switch (i.name)
+	switch (i.type)
 	{
 	case INSTRUMENT_KEITHLEY:
 	{
@@ -179,7 +179,7 @@ void Instruments::Init(int readernumber, Reader & r, int instrumentnumber, Instr
 
 void Instruments::ChangePort(int instrumentnumber, Instrument & i)
 {
-	switch (i.name)
+	switch (i.type)
 	{
 	case INSTRUMENT_KEITHLEY:
 		try {
@@ -219,7 +219,7 @@ void Instruments::ChangePort(int instrumentnumber, Instrument & i)
 
 void Instruments::DeleteInstrument(int instrumentnumber, Instrument & i)
 {
-	switch (i.name)
+	switch (i.type)
 	{
 	case INSTRUMENT_KEITHLEY:
 		try {
@@ -239,7 +239,6 @@ void Instruments::DeleteInstrument(int instrumentnumber, Instrument & i)
 		}
 		break;
 
-		// TODO: introduce this back
 	case INSTRUMENT_NI_USB_9211A:
 		try {
 			NI_USB_9211As.erase(instrumentnumber);

@@ -65,7 +65,7 @@ void to_json(nlohmann::json &j, const MachineSettings &m) {
 
 	nlohmann::json j1;
 	for (const auto& kv : m.instruments) {
-		j1[std::to_string(kv.first)]["name"								]	= kv.second.name				;
+		j1[std::to_string(kv.first)]["type"								]	= kv.second.type				;
 		j1[std::to_string(kv.first)]["port"								]	= kv.second.port				;
 	}
 	j["instruments"							]	= j1										;
@@ -109,7 +109,7 @@ inline void from_json(const nlohmann::json &j, MachineSettings &m) {
 	for (nlohmann::json::iterator it = j1.begin(); it != j1.end(); ++it) {
 		Instrument i;
 
-		i.name = it.value()["name"];
+		i.type = it.value()["type"];
 		i.port = it.value()["port"];
 
 		m.instruments.insert(std::make_pair(atoi(it.key().c_str()), i));

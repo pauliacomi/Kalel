@@ -41,9 +41,9 @@ public:
 	std::shared_ptr<FileWriter> fileWriter;									// The file writing class
 	std::shared_ptr<ValveController> valveControls;							// The valve control/query class.	Thread Safe!
 
-	std::shared_ptr<TemperatureReader> temperatureReader;					// Pointer to the class that deals with temperature recording		Not thread safe
-	std::shared_ptr<PressureReader> pressureReader;							// Pointer to the class that deals with pressure recording			Not thread safe
-	std::shared_ptr<CalorimeterReader> calorimeterReader;					// Pointer to the class that deals with calorimeter recording		Not thread safe
+	std::shared_ptr<TemperatureReader> temperatureReader;					// Pointer to the class that deals with temperature recording
+	std::shared_ptr<PressureReader> pressureReader;							// Pointer to the class that deals with pressure recording	
+	std::shared_ptr<CalorimeterReader> calorimeterReader;					// Pointer to the class that deals with calorimeter recording
 
 	std::shared_ptr<Security> security;										// Pointer to the class that deals with security
 
@@ -76,7 +76,7 @@ inline Controls::Controls(Storage &h)
 	// controls
 	// TODO: rewrite valve in the style of others
 	for (auto i = h.machineSettings->instruments.begin(); i != h.machineSettings->instruments.end(); ++i) {
-		if (i->second.name == INSTRUMENT_NI_USB_6008) {
+		if (i->second.type == INSTRUMENT_NI_USB_6008) {
 			valveControls = std::make_shared<ValveController>(*messageHandler, i->second.port);
 		}
 	}

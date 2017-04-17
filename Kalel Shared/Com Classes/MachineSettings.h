@@ -8,7 +8,7 @@
 
 struct Instrument
 {
-	int name = 0;						// keithley/mensor/national instruments
+	int type = 0;						// keithley/mensor/national instruments
 	int port = 0;						// port being used (USB1, COM1, DEV3)
 	bool initialised = false;			//
 };

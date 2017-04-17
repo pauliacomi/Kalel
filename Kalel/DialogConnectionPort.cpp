@@ -27,7 +27,7 @@ void ConnectionPort::PassSettings(MachineSettings * machineSettings)
 	// Instruments
 	for (auto i : settings->instruments)
 	{
-		instruments[i.first - 1] = i.second.name;
+		instruments[i.first - 1] = i.second.type;
 		ports[i.first - 1] = i.second.port;
 	}
 
@@ -347,7 +347,7 @@ void ConnectionPort::SaveModifications(MachineSettings& newSettings)
 	for (size_t key = 0; key < sizeof(instruments)/sizeof(*instruments); key++)
 	{
 		Instrument i;
-		i.name = instruments[key];
+		i.type = instruments[key];
 		i.port = ports[key];
 		newSettings.AddInstrument(i, key + 1);
 	}
