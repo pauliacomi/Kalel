@@ -22,66 +22,67 @@ public:
 	~Storage(void);
 
 	//**********
-	// Server logs
+	// Debug logs
 	//**********
 
-public:				
-	std::vector<std::string> serverLogs;																		// Logs from the server are stored here
+public:
+
+	TextStorage debugLogs;																						// Logs for debug are stored here
 
 	//**********
 	// Automation logs
 	//**********
-private:
+public:
 	std::mutex autoInfoLogsMutex;																				// Synchronisation class, should be used whenever there are writes to the logs
-	TextStorage automationInfoLogs;																				// All non-error logs are stored here
+	TextStorage infoLogs;																				// All non-error logs are stored here
 
 public:
 	void pushInfoLogs(std::chrono::system_clock::time_point time, std::string value) {
 		std::unique_lock<std::mutex> lock(autoInfoLogsMutex);
-		automationInfoLogs.insert(std::make_pair(time, value));
+		infoLogs.insert(std::make_pair(time, value));
 	}
 
 	TextStorage getInfoLogs() {
 		std::unique_lock<std::mutex> lock(autoInfoLogsMutex);
-		return automationInfoLogs;
+		return infoLogs;
 	}
 
 	TextStorage getInfoLogs(const std::chrono::system_clock::time_point & tp) {
 		std::unique_lock<std::mutex> lock(autoInfoLogsMutex);
-		auto start = automationInfoLogs.upper_bound(tp);
-		auto end = automationInfoLogs;
-		return TextStorage(automationInfoLogs.upper_bound(tp), automationInfoLogs.end());
+		auto start = infoLogs.upper_bound(tp);
+		auto end = infoLogs;
+		return TextStorage(infoLogs.upper_bound(tp), infoLogs.end());
 	}
 
 	//**********
 	// Requests and error interactions
 	//**********
-private:
+public:
 	std::mutex autoReqMutex;																				// Synchronisation class, should be used whenever there are writes to the logs
-	TextStorage automationErrorLogs;						// All error logs are stored here
+	TextStorage errorLogs;						// All error logs are stored here
 
 public:
 	void pushErrLogs(std::chrono::system_clock::time_point time, std::string value) {
 		std::unique_lock<std::mutex> lock(autoReqMutex);
-		automationErrorLogs.insert(std::make_pair(time, value));
+		errorLogs.insert(std::make_pair(time, value));
 	}
 
 	TextStorage getErrLogs() {
 		std::unique_lock<std::mutex> lock(autoReqMutex);
-		return automationErrorLogs;
+		return errorLogs;
 	}
 
 	TextStorage getErrLogs(const std::chrono::system_clock::time_point & tp) {
 		std::unique_lock<std::mutex> lock(autoReqMutex);
-		auto start = automationErrorLogs.upper_bound(tp);
-		auto end = automationErrorLogs;
-		return TextStorage(automationErrorLogs.upper_bound(tp), automationErrorLogs.end());
+		auto start = errorLogs.upper_bound(tp);
+		auto end = errorLogs;
+		return TextStorage(errorLogs.upper_bound(tp), errorLogs.end());
 	}
 
 	//**********
 	// Data
 	//**********
-private:
+public:
 	std::mutex sharedMutex;																					// Synchronisation class, should be used whenever there are writes
 	ExperimentDataStorageArray dataCollection;																// The collection of data from an experiment
 

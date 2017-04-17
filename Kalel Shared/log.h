@@ -5,7 +5,6 @@
 #include <string>
 #include <vector>
 #include <mutex>
-#include <stdio.h>
 
 #include "timeHelpers.h"
 
@@ -37,6 +36,7 @@ public:
 	// String stream
 protected:
     std::ostringstream os;
+	TLogLevel local_level = logINFO;
 	std::string timestamp;
 
 private:
@@ -63,6 +63,8 @@ Log<T>::Log()
 template <typename T>
 std::ostringstream& Log<T>::GetNoStamp(TLogLevel level)
 {
+	local_level = level;
+	os << ToString(level) << ": ";
     os << std::string(level > logDEBUG ? level - logDEBUG : 0, '\t');			// Write only the logging level
     return os;
 }
@@ -73,6 +75,7 @@ std::ostringstream& Log<T>::GetNoStamp(TLogLevel level)
 template <typename T>
 std::ostringstream& Log<T>::GetTimeStamped(TLogLevel level)
 {
+	local_level = level;
 	os << "- " << timestamp;
 	os << " " << ToString(level) << ": ";
 	os << std::string(level > logDEBUG ? level - logDEBUG : 0, '\t');
@@ -95,11 +98,11 @@ std::ostringstream& Log<T>::GetTimeStamp()
 template <typename T>
 Log<T>::~Log()
 {
-    os << std::endl;		// Write an endline
+    os << std::endl;					// Write an endline
 
-	write_mutex.lock();		// Lock the mutex before writing
-    T::Output(os.str());	// Call write function of template class
-	write_mutex.unlock();	// Unlock mutex after writing
+	write_mutex.lock();					// Lock the mutex before writing
+    T::Output(os.str(), local_level);	// Call write function of template class
+	write_mutex.unlock();				// Unlock mutex after writing
 }
 
 /*********************************
@@ -157,7 +160,7 @@ class Output2vector
 {
 public:
 	static std::vector<std::string>*& Stream();
-	static void Output(const std::string& msg);
+	static void Output(const std::string& msg, TLogLevel level);
 };
 
 inline std::vector<std::string>*& Output2vector::Stream()
@@ -166,7 +169,7 @@ inline std::vector<std::string>*& Output2vector::Stream()
 	return pStream;
 }
 
-inline void Output2vector::Output(const std::string& msg)
+inline void Output2vector::Output(const std::string& msg, TLogLevel level)
 {
 	std::vector<std::string>* pStream = Stream();
 	if (!pStream)
@@ -182,23 +185,58 @@ inline void Output2vector::Output(const std::string& msg)
 class Output2map
 {
 public:
-	static std::map<std::string, std::string>*& Stream();
-	static void Output(const std::string& msg);
+	static std::map<std::chrono::system_clock::time_point, std::string>*& Error();
+	static std::map<std::chrono::system_clock::time_point, std::string>*& Info();
+	static std::map<std::chrono::system_clock::time_point, std::string>*& Debug();
+	static void Output(const std::string& msg, TLogLevel level);
 };
 
-inline std::map<std::string, std::string>*& Output2map::Stream()
+inline std::map<std::chrono::system_clock::time_point, std::string>*& Output2map::Error()
 {
-	static std::map<std::string, std::string>* pStream = nullptr;
+	static std::map<std::chrono::system_clock::time_point, std::string>* pStream = nullptr;
 	return pStream;
 }
 
-inline void Output2map::Output(const std::string& msg)
+inline std::map<std::chrono::system_clock::time_point, std::string>*& Output2map::Info()
 {
-	std::map<std::string, std::string>* pStream = Stream();
+	static std::map<std::chrono::system_clock::time_point, std::string>* pStream = nullptr;
+	return pStream;
+}
+
+inline std::map<std::chrono::system_clock::time_point, std::string>*& Output2map::Debug()
+{
+	static std::map<std::chrono::system_clock::time_point, std::string>* pStream = nullptr;
+	return pStream;
+}
+
+inline void Output2map::Output(const std::string& msg, TLogLevel level)
+{
+	std::map<std::chrono::system_clock::time_point, std::string>* pStream = nullptr;
+	
+	switch (level)
+	{
+	case logERROR:
+	case logWARNING:
+		pStream = Error();
+		break;
+	case logINFO:
+		pStream = Info();
+		break;
+	case logDEBUG:
+	case logDEBUG1:
+	case logDEBUG2:
+	case logDEBUG3:
+	case logDEBUG4:
+		pStream = Debug();
+	default:
+		pStream = nullptr;
+		break;
+	}
+	
 	if (!pStream)
 		return;
 
-	pStream->emplace(std::make_pair(timeh::TimePointToString(timeh::NowTime()), msg));
+	pStream->emplace(std::make_pair(timeh::NowTime(), msg));
 }
 
 /**********************************************************************************************************************************
@@ -209,7 +247,7 @@ class Output2FILE
 {
 public:
     static FILE*& Stream();
-    static void Output(const std::string& msg);
+    static void Output(const std::string& msg, TLogLevel level);
 };
 
 inline FILE*& Output2FILE::Stream()
@@ -218,7 +256,7 @@ inline FILE*& Output2FILE::Stream()
     return pStream;
 }
 
-inline void Output2FILE::Output(const std::string& msg)
+inline void Output2FILE::Output(const std::string& msg, TLogLevel level)
 {   
     FILE* pStream = Stream();
     if (!pStream)
@@ -272,9 +310,9 @@ class MapLog : public Log<Output2map> {};
     else if (level > StreamLog::ReportingLevel() || !Output2vector::Stream()) ; \
     else StreamLog().GetTimeStamped(level)
 
-#define MAP_LOG(level) \
+#define MEM_LOG(level) \
     if (level > MAPLOG_MAX_LEVEL) ;\
-    else if (level > MapLog::ReportingLevel() || !Output2map::Stream()) ; \
+    else if (level > MapLog::ReportingLevel() || !Output2map::Info() || !Output2map::Error() || !Output2map::Debug()) ; \
     else MapLog().GetNoStamp(level)
 
 #endif //__LOG_H__

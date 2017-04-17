@@ -20,7 +20,7 @@
 // Logging functionality
 #include "../Kalel Shared/log.h"
 #define FILE_LOGGING	"server.log"		// Comment this line to disable file logging
-#define STREAM_LOGGING						// Comment this line to disable stream logging
+#define MAP_LOGGING							// Comment this line to disable map logging
 #define LOG_LEVEL		logDEBUG4			// Change the level of logging here
 
 
@@ -39,9 +39,11 @@ Kalel::Kalel()
 	Output2FILE::Stream() = f;
 #endif // FILE_LOGGING
 
-#ifdef STREAM_LOGGING
-	StreamLog::ReportingLevel() = LOG_LEVEL;
-	Output2vector::Stream() = &storageVectors.serverLogs;
+#ifdef MAP_LOGGING
+	MapLog::ReportingLevel() = LOG_LEVEL;
+	Output2map::Info() = &storageVectors.infoLogs;
+	Output2map::Error() = &storageVectors.errorLogs;
+	Output2map::Debug() = &storageVectors.debugLogs;
 #endif // FILE_LOGGING
 
 
@@ -206,7 +208,7 @@ void Kalel::Sync(http_request* req, http_response* resp)
 void Kalel::MachineSettingsSync(http_request* req, http_response* resp)
 {
 	timeh::timer t;
-	storageVectors.pushErrLogs(timeh::NowTime(), "Machine Settings" + req->method_);
+	MEM_LOG(logINFO) << "Machine Settings" << req->method_;
 	t.Start();
 
 	// GET
@@ -242,7 +244,7 @@ void Kalel::MachineSettingsSync(http_request* req, http_response* resp)
 		}
 	}
 
-	storageVectors.pushErrLogs(timeh::NowTime(), std::to_string(t.TimeMilliseconds()));
+	MEM_LOG(logINFO) << std::to_string(t.TimeMilliseconds());
 }
 
 
@@ -252,7 +254,7 @@ void Kalel::MachineSettingsSync(http_request* req, http_response* resp)
 void Kalel::ExperimentSettingsSync(http_request* req, http_response* resp)
 {
 	timeh::timer t;
-	storageVectors.pushErrLogs(timeh::NowTime(), "ExpSettings" + req->method_);
+	MEM_LOG(logINFO) << "ExpSettings" << req->method_;
 	t.Start();
 
 	// GET
@@ -285,7 +287,7 @@ void Kalel::ExperimentSettingsSync(http_request* req, http_response* resp)
 		}
 	}
 
-	storageVectors.pushErrLogs(timeh::NowTime(), std::to_string(t.TimeMilliseconds()));
+	MEM_LOG(logINFO) << std::to_string(t.TimeMilliseconds());
 }
 
 
@@ -295,7 +297,7 @@ void Kalel::ExperimentSettingsSync(http_request* req, http_response* resp)
 void Kalel::InstrumentStateSync(http_request* req, http_response* resp)
 {
 	timeh::timer t;
-	storageVectors.pushErrLogs(timeh::NowTime(), "Instrument state" + req->method_);
+	MEM_LOG(logINFO) << "Instrument state" << req->method_;
 	t.Start();
 
 	// GET
@@ -349,7 +351,7 @@ void Kalel::InstrumentStateSync(http_request* req, http_response* resp)
 		}
 	}
 
-	storageVectors.pushErrLogs(timeh::NowTime(), std::to_string(t.TimeMilliseconds()));
+	MEM_LOG(logINFO) << std::to_string(t.TimeMilliseconds());
 }
 
 
@@ -359,7 +361,7 @@ void Kalel::InstrumentStateSync(http_request* req, http_response* resp)
 void Kalel::DataSync(http_request* req, http_response* resp)
 {
 	timeh::timer t;
-	storageVectors.pushErrLogs(timeh::NowTime(),  "Data sync");
+	MEM_LOG(logINFO) << "Data sync";
 	t.Start();
 
 	if (req->method_ == http::method::get)
@@ -384,14 +386,14 @@ void Kalel::DataSync(http_request* req, http_response* resp)
 			json j;
 
 			std::string s = "Serialisation of " + std::to_string(localCollection->size());
-			storageVectors.pushErrLogs(timeh::NowTime(), s);
+			MEM_LOG(logINFO) << s;
 			t.Start();
 			
 			for (const auto& kv : *localCollection) {
 				j.push_back(json::object_t::value_type({ timeh::TimePointToString(kv.first), *(kv.second) }));
 			}
 
-			storageVectors.pushErrLogs(timeh::NowTime(), std::to_string(t.TimeMilliseconds()));
+			MEM_LOG(logINFO) << std::to_string(t.TimeMilliseconds());
 
 			resp->status_ = http::responses::ok;
 			resp->content_type_ = http::mimetype::appjson;
@@ -403,7 +405,7 @@ void Kalel::DataSync(http_request* req, http_response* resp)
 		}
 	}
 
-	storageVectors.pushErrLogs(timeh::NowTime(), std::to_string(t.TimeMilliseconds()));
+	MEM_LOG(logINFO) << std::to_string(t.TimeMilliseconds());
 }
 
 
@@ -413,7 +415,7 @@ void Kalel::DataSync(http_request* req, http_response* resp)
 void Kalel::LogSync(http_request* req, http_response* resp)
 {
 	timeh::timer t;
-	storageVectors.pushErrLogs(timeh::NowTime(), "Log sync");
+	MEM_LOG(logINFO) << "Log sync";
 	t.Start();
 
 	if (req->method_ == http::method::get)
@@ -451,7 +453,7 @@ void Kalel::LogSync(http_request* req, http_response* resp)
 		}
 	}
 
-	storageVectors.pushErrLogs(timeh::NowTime(), std::to_string(t.TimeMilliseconds()));
+	MEM_LOG(logINFO) << std::to_string(t.TimeMilliseconds());
 }
 
 
@@ -461,7 +463,7 @@ void Kalel::LogSync(http_request* req, http_response* resp)
 void Kalel::RequestSync(http_request* req, http_response* resp)
 {
 	timeh::timer t;
-	storageVectors.pushErrLogs(timeh::NowTime(), "Request sync");
+	MEM_LOG(logINFO) << "Request sync";
 	t.Start();
 
 	if (req->method_ == http::method::get)
@@ -499,7 +501,7 @@ void Kalel::RequestSync(http_request* req, http_response* resp)
 		}
 	}
 
-	storageVectors.pushErrLogs(timeh::NowTime(), std::to_string(t.TimeMilliseconds()));
+	MEM_LOG(logINFO) << std::to_string(t.TimeMilliseconds());
 }
 
 

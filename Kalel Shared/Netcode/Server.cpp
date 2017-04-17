@@ -17,7 +17,7 @@ Server::Server(PCSTR port)
 	// Listen on the socket
 	listeningSocket.Listen(port);
 
-	STREAM_LOG(logINFO) << LOG_LISTENING << listeningSocket.GetSocket();
+	MEM_LOG(logINFO) << LOG_LISTENING << listeningSocket.GetSocket();
 	FILE_LOG(logINFO) << LOG_LISTENING << listeningSocket.GetSocket();
 }
 
@@ -53,7 +53,8 @@ void Server::Start()
 
 unsigned Server::AcceptLoop()
 {
-	FILE_LOG(logDEBUG1) << "Entering accept loop";
+	MEM_LOG(logDEBUG1) << LOG_ACCEPT_ENTER;
+	FILE_LOG(logDEBUG1) << LOG_ACCEPT_ENTER;
 
 	listeningSocket.Accept_PrimeSelect();
 	
@@ -75,19 +76,21 @@ unsigned Server::AcceptLoop()
 		}
 		catch (const std::exception& e)
 		{
-			STREAM_LOG(logERROR) << e.what();
+			MEM_LOG(logERROR) << e.what();
+			FILE_LOG(logERROR) << e.what();
 			return 1;
 		}
 
-		STREAM_LOG(logINFO) << LOG_ACCEPTED_SOCK << theirIP;
-		FILE_LOG(logINFO) << LOG_ACCEPTED_SOCK << theirIP;
+		MEM_LOG(logDEBUG1) << LOG_ACCEPTED_SOCK << theirIP;
+		FILE_LOG(logDEBUG1) << LOG_ACCEPTED_SOCK << theirIP;
 
 		std::unique_ptr<Socket> acceptedSocket = std::make_unique<Socket>(s);			// Create a client socket pointer from the accepted SOCKET
 		acceptedSocket->SetNagle(false);												// Disable Nagle's algorithm, should lead to improved latency
 		std::thread(&Server::Process, this, std::move(acceptedSocket)).detach();		// Start the request processing thread
 	}
 
-	FILE_LOG(logDEBUG1) << "Leaving accept loop";
+	MEM_LOG(logDEBUG1) << LOG_ACCEPT_LEAVE;
+	FILE_LOG(logDEBUG1) << LOG_ACCEPT_LEAVE;
 
 	return 0;
 }
@@ -96,8 +99,8 @@ unsigned Server::AcceptLoop()
 unsigned Server::Process(std::unique_ptr<Socket> sock)
 {
 
-	STREAM_LOG(logDEBUG2) << "Enter thread for socket" << sock->GetSocket();
-	FILE_LOG(logDEBUG2) << "Enter thread for socket" << sock->GetSocket();
+	MEM_LOG(logDEBUG2) << LOG_PROCESS_ENTER << sock->GetSocket();
+	FILE_LOG(logDEBUG2) << LOG_PROCESS_ENTER << sock->GetSocket();
 
 
 	//*************************************************************************************************************************
@@ -111,7 +114,8 @@ unsigned Server::Process(std::unique_ptr<Socket> sock)
 		requestString = sock->ReceiveLine();
 	}
 	catch (const std::exception& e)	{
-		STREAM_LOG(logERROR) << e.what();
+		MEM_LOG(logERROR) << e.what();
+		FILE_LOG(logERROR) << e.what();
 	}
 
 	if (requestString.empty()) {							// Check for valid request
@@ -126,8 +130,8 @@ unsigned Server::Process(std::unique_ptr<Socket> sock)
 
 	request.method_ = ParseMethod(requestString.substr(0, posSpace));
 	if(request.method_.empty()){
-		STREAM_LOG(logDEBUG2) << "Request method unknown: " << sock->GetSocket();
-		FILE_LOG(logDEBUG2) << "Request method unknown: " << sock->GetSocket();
+		MEM_LOG(logWARNING) << LOG_METHOD_UNKNOWN << sock->GetSocket();
+		FILE_LOG(logWARNING) << LOG_METHOD_UNKNOWN << sock->GetSocket();
 		return 1;
 	}
 
@@ -146,7 +150,8 @@ unsigned Server::Process(std::unique_ptr<Socket> sock)
 		}
 		catch (const std::exception& e)
 		{
-			STREAM_LOG(logERROR) << e.what();
+			MEM_LOG(logERROR) << e.what();
+			FILE_LOG(logERROR) << e.what();
 		}
 
 		if (line.empty()) 
@@ -167,7 +172,8 @@ unsigned Server::Process(std::unique_ptr<Socket> sock)
 				}
 				catch (const std::exception& e)
 				{
-					STREAM_LOG(logERROR) << e.what();
+					MEM_LOG(logERROR) << e.what();
+					FILE_LOG(logERROR) << e.what();
 				}
 
 				request.entity_ = line;					// save the message body
@@ -213,8 +219,8 @@ unsigned Server::Process(std::unique_ptr<Socket> sock)
 		}
 	}
 
-	STREAM_LOG(logDEBUG) << sock->GetSocket() << LOG_REQUEST << requestString;
-	FILE_LOG(logDEBUG) << sock->GetSocket() << LOG_REQUEST << requestString;
+	MEM_LOG(logDEBUG3) << sock->GetSocket() << LOG_REQUEST << requestString;
+	FILE_LOG(logDEBUG3) << sock->GetSocket() << LOG_REQUEST << requestString;
 
 
 
@@ -231,8 +237,8 @@ unsigned Server::Process(std::unique_ptr<Socket> sock)
 
 		response.status_ = http::responses::bad_request;
 
-		STREAM_LOG(logDEBUG2) << e.what();
-		FILE_LOG(logDEBUG2) << e.what();
+		MEM_LOG(logERROR) << e.what();
+		FILE_LOG(logERROR) << e.what();
 	}
 
 	// Fill remaining headers
@@ -280,11 +286,12 @@ unsigned Server::Process(std::unique_ptr<Socket> sock)
 	}
 	catch (const std::exception& e)
 	{
-		STREAM_LOG(logERROR) << e.what();
+		MEM_LOG(logERROR) << e.what();
+		FILE_LOG(logERROR) << e.what();
 	}
 	
-	STREAM_LOG(logDEBUG) << sock->GetSocket() << LOG_RESPONSE << responseString;
-	FILE_LOG(logDEBUG) << sock->GetSocket() << LOG_RESPONSE << responseString;
+	MEM_LOG(logDEBUG3) << sock->GetSocket() << LOG_RESPONSE << responseString;
+	FILE_LOG(logDEBUG3) << sock->GetSocket() << LOG_RESPONSE << responseString;
 
 	//
 	// Exit
@@ -293,8 +300,8 @@ unsigned Server::Process(std::unique_ptr<Socket> sock)
 	// Make sure all data will get sent before socket is closed
 	// sock->SetLinger(true);
 
-	STREAM_LOG(logDEBUG3) << "Exit thread " << sock->GetSocket();
-	FILE_LOG(logDEBUG3) << "Exit thread " << sock->GetSocket();
+	MEM_LOG(logDEBUG2) << LOG_PROCESS_EXIT << sock->GetSocket();
+	FILE_LOG(logDEBUG2) << LOG_PROCESS_EXIT << sock->GetSocket();
 
 	return 0;
 }
