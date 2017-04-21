@@ -1,5 +1,7 @@
 #include "NI_USB_9211A.h"
 
+#include "../../../Kalel Shared/log.h"
+
 #define DAQmxErrChk(functionCall) { if( DAQmxFailed(error=(functionCall)) ) { goto Error; } }
 
 
@@ -52,7 +54,7 @@ Error:
     if (DAQmxFailed (error))
 	{
 		DAQmxGetExtendedErrorInfo (errBuff, 2048);
-		errorKeep.assign(errBuff);
+		MEM_LOG(logERROR) << errBuff;
 		for (size_t i = 0; i < bufferSize; i++)
 		{
 			data[i] = error;
@@ -70,11 +72,6 @@ Error:
 	if (error == 0)
 		return true;
 	return false;
-}
-
-void NI_USB_9211A::GetError(std::string* err)
-{
-	*err = errorKeep;
 }
 
 //////////////////////////////////////////

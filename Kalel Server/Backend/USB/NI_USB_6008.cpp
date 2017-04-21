@@ -1,5 +1,7 @@
 #include "NI_USB_6008.h"
 
+#include "../../../Kalel Shared/log.h"
+
 #define DAQmxErrChk(functionCall) { if( DAQmxFailed(error=(functionCall)) ) { goto Error; } }
 #define open 1
 #define closed  0
@@ -135,7 +137,7 @@ Error:
 	if (DAQmxFailed(error))
 	{
 		DAQmxGetExtendedErrorInfo(errBuff, 2048);
-		errorKeep.assign(errBuff);
+		MEM_LOG(logERROR) << errBuff;
 	}
 
 	// Clear task to free memory
@@ -191,7 +193,7 @@ Error:
 	if (DAQmxFailed(error))
 	{
 		DAQmxGetExtendedErrorInfo(errBuff, 2048);
-		errorKeep.assign(errBuff);
+		MEM_LOG(logERROR) << errBuff;
 	}
 
 	// Clear task to free memory
@@ -205,12 +207,6 @@ Error:
 	if (error == 0)
 		return true;
 	return false;
-}
-
-
-void NI_USB_6008::GetError(std::string* err)
-{
-	*err = errorKeep;
 }
 
 

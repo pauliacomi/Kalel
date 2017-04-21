@@ -1,5 +1,7 @@
 #include "Keithley.h"
 
+#include "../../../Kalel Shared/log.h"
+
 #include <iostream>
 #include <sstream>
 
@@ -26,14 +28,9 @@ Keithley::Keithley(int comport) : RS232()
 {
 	g_dcb.BaudRate = 19200;								// On a le moyen d'augmenter le BaudRate du keithley.
 
-	connectionOpen = RS232::OpenCOM(comport);			// Open port
-	if (connectionOpen)	{
-		errorKeep = "Keithley open: COM" + std::to_string(comport);
-
-		InitKeithley();									// Init Keithley
-	}
-	else {
-		errorKeep += "\nKeithley opening failed: COM" + std::to_string(comport);
+	if (OpenCOM(comport))								// Open port
+	{
+		InitKeithley();
 	}
 }
 
@@ -55,12 +52,13 @@ bool Keithley::OpenCOM(int nId)
 
 	if (connectionOpen)
 	{
-		errorKeep = "Keithley open: COM" + std::to_string(nId);
+		MEM_LOG(logDEBUG) << "Keithley open: COM" << std::to_string(nId);
 		return true;
 	}
 	else
 	{
-		errorKeep += "\nKeithley opening failed: COM" + std::to_string(nId);
+		MEM_LOG(logERROR) << "Keithley opening failed: COM" << std::to_string(nId);
+
 		return false;
 	}
 }
@@ -71,12 +69,12 @@ bool Keithley::CloseCOM()
 
 	if (fermeture)
 	{
-		errorKeep = "Keithley closed";
+		MEM_LOG(logDEBUG) << "Keithley closed";
 		return true;
 	}
 	else
 	{
-		errorKeep += "\nKeithley closing failed";
+		MEM_LOG(logERROR) << "Keithley closing failed";
 		return false;
 	}
 }
@@ -134,12 +132,12 @@ bool Keithley::InitKeithley()
 
 	if(success)
 	{
-		errorKeep = "Keithley initialised";
+		MEM_LOG(logDEBUG) << "Keithley initialised";
 		return true;
 	}
 	else
 	{
-		errorKeep += "\nKeithley initialisation failure";
+		MEM_LOG(logERROR) << "Keithley initialisation failure";
 		return false;
 	}
 }
@@ -224,7 +222,7 @@ bool Keithley::ReadChannel(int chanNo, double* result)
 	temp = temp.substr(0,15);
 	*result = atof(temp.c_str());
 
-	errorKeep = "Channel " + std::to_string(chanNo) + " read";
+	MEM_LOG(logDEBUG1) << "Keithley channel " + std::to_string(chanNo) + " read";
 	return true;
 }
 

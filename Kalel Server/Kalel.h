@@ -13,8 +13,8 @@ public:
 
 	void GetLogs(std::string &logs);
 protected:
-	Server server;
 	Storage storageVectors;
+	Server server;
 	Controls controlMechanisms;
 	ThreadManager threadManager;
 

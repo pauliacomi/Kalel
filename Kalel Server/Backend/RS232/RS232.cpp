@@ -1,5 +1,7 @@
 #include "RS232.h"
 
+#include "../../../Kalel Shared/log.h"
+
 #include <iostream>
 
 #define RX_SIZE         4096    /* taille tampon d'entrée  */
@@ -73,7 +75,7 @@ bool RS232::OpenCOM(int pnId)
 	// Error check
     if(g_hCOM == INVALID_HANDLE_VALUE)
     {
-        errorKeep = "Error opening port COM" + std::to_string(pnId);
+		MEM_LOG(logERROR) << "Error opening port COM" << std::to_string(pnId);
 		g_hCOM = NULL;
         return false;
     }
@@ -81,7 +83,7 @@ bool RS232::OpenCOM(int pnId)
     // Configure port
     if(!SetCommTimeouts(g_hCOM, &g_cto) || !SetCommState(g_hCOM, &g_dcb))
     {
-		errorKeep = "Error configuring port COM" + std::to_string(pnId);
+		MEM_LOG(logERROR) << "Error configuring port COM" << std::to_string(pnId);
         CloseHandle(g_hCOM);
         return false;
     }
@@ -103,7 +105,7 @@ bool RS232::ReadCOM(char *buffer, int nBytesToRead)
 {
 	// Start by checking if port is open
 	if (!g_hCOM) {
-		errorKeep = "Port must be opened first";
+		MEM_LOG(logDEBUG) << "Port must be opened first";
 		return false;
 	}
 
@@ -120,7 +122,7 @@ bool RS232::ReadCOM(char *buffer, int nBytesToRead)
 
 	if (osReader.hEvent == NULL) {
 		// Error creating overlapped event; abort.
-		errorKeep = "Error creating COM read overlapped event";
+		MEM_LOG(logWARNING) << "Error creating COM read overlapped event";
 		noErrors = false;
 	}
 
@@ -138,7 +140,7 @@ bool RS232::ReadCOM(char *buffer, int nBytesToRead)
 
 		if (!ok) {
 			if (GetLastError() != ERROR_IO_PENDING) {	// read not delayed?					
-				errorKeep = "Error issuing read command";
+				MEM_LOG(logWARNING) << "Error issuing read command";
 				noErrors = false;
 			}
 			else
@@ -162,9 +164,9 @@ bool RS232::ReadCOM(char *buffer, int nBytesToRead)
 			case WAIT_OBJECT_0:
 				if (!GetOverlappedResult(g_hCOM, &osReader, &dwRead, FALSE)) {
 					if (GetLastError() == ERROR_OPERATION_ABORTED)
-						errorKeep = "Read aborted";
+						MEM_LOG(logERROR) << "Read aborted";
 					else
-						errorKeep = "GetOverlappedResult (in Reader)";
+						MEM_LOG(logERROR) << "GetOverlappedResult (in Reader)";
 
 					noErrors = false;
 				}
@@ -185,7 +187,7 @@ bool RS232::ReadCOM(char *buffer, int nBytesToRead)
 
 			default:
 				// Error in the WaitForSingleObject; abort.
-				errorKeep = "WaitForMultipleObjects reader";
+				MEM_LOG(logERROR) << "WaitForMultipleObjects reader";
 				noErrors = false;
 				break;
 		}
@@ -211,7 +213,7 @@ bool RS232::WriteCOM(void* buffer, int nBytesToWrite, int* pBytesWritten)
 {
 	// Start by checking if port is open
 	if (!g_hCOM) {
-		errorKeep = "Port must be opened first";
+		MEM_LOG(logWARNING) << "Port must be opened first";
 		return false;
 	}
 
@@ -225,7 +227,7 @@ bool RS232::WriteCOM(void* buffer, int nBytesToWrite, int* pBytesWritten)
 
 	if (osWrite.hEvent == NULL) {
 		// Error creating overlapped event; abort.
-		errorKeep = "Error creating COM write overlapped event";
+		MEM_LOG(logERROR) << "Error creating COM write overlapped event";
 		return false;
 	}
 
@@ -240,7 +242,7 @@ bool RS232::WriteCOM(void* buffer, int nBytesToWrite, int* pBytesWritten)
 	if (!ok) {
 		if (GetLastError() != ERROR_IO_PENDING) {
 			// WriteFile failed, but isn't delayed. Report error and abort.
-			errorKeep = "Error writing to COM";
+			MEM_LOG(logERROR) << "Error writing to COM";
 			fRes = false;
 		}
 		else {
@@ -251,7 +253,7 @@ bool RS232::WriteCOM(void* buffer, int nBytesToWrite, int* pBytesWritten)
 				// OVERLAPPED structure's event has been signaled. 
 			case WAIT_OBJECT_0:
 				if (!GetOverlappedResult(g_hCOM, &osWrite, (LPDWORD)pBytesWritten, FALSE)) {
-					errorKeep = "Error writing to COM";
+					MEM_LOG(logERROR) << "Error writing to COM";
 					fRes = false;
 				}
 				else
@@ -263,7 +265,7 @@ bool RS232::WriteCOM(void* buffer, int nBytesToWrite, int* pBytesWritten)
 				// An error has occurred in WaitForSingleObject.
 				// This usually indicates a problem with the
 				// OVERLAPPED structure's event handle.
-				errorKeep = "WaitForMultipleObjects writer";
+				MEM_LOG(logERROR) << "WaitForMultipleObjects writer";
 				fRes = false;
 				break;
 			}
@@ -286,9 +288,4 @@ bool RS232::CloseCOM()
 		g_hCOM = NULL;
 	}
     return true;
-}
-
-void RS232::GetError(std::string* err)
-{
-	*err = errorKeep;
 }

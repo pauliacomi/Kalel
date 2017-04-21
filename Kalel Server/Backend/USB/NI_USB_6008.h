@@ -10,7 +10,6 @@
 #pragma once
 
 #include "NIDAQmx.h"
-#include <string>
 
 class NI_USB_6008
 {
@@ -26,8 +25,6 @@ private:
 	int DevNI_USB_6008;								// USB port
 	uInt8 etatPort0[8] = { 0 };						// Array for keeping port 0 states
 	uInt8 etatPort1[8] = { 0 };						// Array for keeping port 1 states
-
-	std::string errorKeep;							// C++ string of error
 
 	// Read/Write parameters
 	static const uInt32 bufferSize	= 8;
@@ -67,10 +64,6 @@ public:
 	bool EstFermePort0(int num);
 	bool EstOuvertPort1(int num);
 	bool EstFermePort1(int num);
-
-	// Error retrieval
-
-	void GetError(std::string* err);
 };
 
 #endif

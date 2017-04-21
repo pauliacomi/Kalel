@@ -1,5 +1,7 @@
 #include "Mensor.h"
 
+#include "../../../Kalel Shared/log.h"
+
 #include <iostream>
 #include <sstream>
 
@@ -25,13 +27,7 @@ Mensor::Mensor(void)
 
 Mensor::Mensor(int comport) : RS232()
 { 
-	connectionOpen = RS232::OpenCOM(comport);	// Open port
-	if (connectionOpen) {
-		errorKeep = "Mensor open: COM" + std::to_string(comport);
-	}
-	else {
-		errorKeep += "\nMensor opening failed: COM" + std::to_string(comport);
-	}
+	OpenCOM(comport);
 }
 
 
@@ -39,7 +35,7 @@ Mensor::~Mensor(void)
 {
 	if (connectionOpen) {
 		// Close the connection
-		RS232::CloseCOM();
+		CloseCOM();
 	}
 }
 
@@ -49,12 +45,12 @@ bool Mensor::OpenCOM(int nId)
 	
 	if (connectionOpen)
 	{
-		errorKeep = "Mensor open: COM" + std::to_string(nId);
+		MEM_LOG(logDEBUG) << "Mensor open: COM" << std::to_string(nId);
 		return true;
 	}
 	else
 	{
-		errorKeep += "\nMensor opening failed: COM" + std::to_string(nId);
+		MEM_LOG(logERROR) << "\nMensor opening failed: COM" << std::to_string(nId);
 		return false;
 	}
 }
@@ -65,12 +61,12 @@ bool Mensor::CloseCOM()
 
 	if (fermeture)
 	{
-		errorKeep = "Mensor closed";
+		MEM_LOG(logDEBUG) << "Mensor closed";
 		return true;
 	}
 	else
 	{
-		errorKeep += "\nMensor closing failed";
+		MEM_LOG(logDEBUG) << "Mensor closing failed";
 		return false;
 	}
 }
@@ -125,7 +121,8 @@ double Mensor::ReadMensor()
 
 	std::string resultat = buffer;
 	resultat = resultat.substr(4, nbOctetsLus - 6);
-	errorKeep = "Mensor read";
+
+	MEM_LOG(logDEBUG1) << "Mensor read";
 
 	return atof(resultat.c_str()); //conversion du string en float;
 }

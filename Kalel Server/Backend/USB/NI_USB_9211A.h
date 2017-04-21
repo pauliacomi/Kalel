@@ -10,8 +10,6 @@
 #pragma once
 
 #include "NIDAQmx.h"
-#include <string>
-
 
 class NI_USB_9211A
 {
@@ -26,8 +24,6 @@ private:
 	// Parameters for reading
 	//*************************
 	int DevNI_USB_9211A;								// USB port used
-
-	std::string errorKeep;								// C++ string of error
 
     // Channel parameters
 	char        chan[25]		= { '\0' };
@@ -57,9 +53,6 @@ public:
 	void SetPortUSB(int dev);			// Set USB port
 	
 	bool ReadAllThermocouples(double* Valeur0,double* Valeur1,double* Valeur2,double* Valeur3);
-
-	// Error retrieval
-	void GetError(std::string* err);
 
 	bool LectureThermocouple_de_0_a_2(double* Valeur0,double* Valeur1,double* Valeur2);
 	bool LectureThermocouple_de_1_a_3(double* Valeur1,double* Valeur2,double* Valeur3);
