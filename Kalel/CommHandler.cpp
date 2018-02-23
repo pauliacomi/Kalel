@@ -515,7 +515,7 @@ unsigned CommHandler::GetMachineSettings_resp(http_response* r) {
 
 	if (r->status_ == http::responses::ok)
 	{
-		if (r->content_type_ == http::mimetype::appjson) {
+		if (r->content_type_.find(http::mimetype::appjson) != std::string::npos) {
 
 			// Parse JSON
 			//////////////////////////////////////////////
@@ -620,7 +620,7 @@ unsigned CommHandler::GetExperimentSettings_resp(http_response* r) {
 
 	if (r->status_ == http::responses::ok)
 	{
-		if (r->content_type_ == http::mimetype::appjson) {
+		if (r->content_type_.find(http::mimetype::appjson) != std::string::npos) {
 
 			// Parse JSON
 			//////////////////////////////////////////////
@@ -849,7 +849,7 @@ unsigned CommHandler::GetData_resp(http_response* r) {
 
 	if (r->status_ == http::responses::ok)
 	{
-		if (r->content_type_ == http::mimetype::appjson) {
+		if (r->content_type_.find(http::mimetype::appjson) != std::string::npos) {
 			
 			json j;
 
@@ -931,7 +931,7 @@ unsigned CommHandler::GetLogs_resp(http_response * r)
 
 	if (r->status_ == http::responses::ok)
 	{
-		if (r->content_type_ == http::mimetype::appjson) {
+		if (r->content_type_.find(http::mimetype::appjson) != std::string::npos) {
 
 			json j;
 
@@ -1006,7 +1006,7 @@ unsigned CommHandler::GetRequest_resp(http_response * r)
 
 	if (r->status_ == http::responses::ok)
 	{
-		if (r->content_type_ == http::mimetype::appjson) {
+		if (r->content_type_.find(http::mimetype::appjson) != std::string::npos) {
 
 			json j;
 
