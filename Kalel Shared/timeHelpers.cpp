@@ -12,7 +12,7 @@ namespace timeh {
 	{ "Jan", "Feb", "Mar", "Apr", "May", "Jun",
 	"Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
 
-	static const char *DATE_FORMAT = "%Y-%m-%d %H:%M:%S";
+	static const char *ISO_DATE_FORMAT = "%Y-%m-%dT%H:%M:%S";
 
 	std::chrono::system_clock::time_point NowTime()
 	{
@@ -59,7 +59,7 @@ namespace timeh {
 
 		std::string time;
 		std::stringstream str;
-		str << std::put_time(&gmt, DATE_FORMAT);
+		str << std::put_time(&gmt, ISO_DATE_FORMAT);
 		time = str.str();
 
 		return time;
@@ -100,6 +100,9 @@ namespace timeh {
 		}
 		str_frsec += std::to_string(fractional_seconds);
 
+		// Add trailing character
+		str_frsec += 'Z';
+
 		// Return complete string
 		return str_time + str_frsec;
 	}
@@ -108,13 +111,13 @@ namespace timeh {
 	std::chrono::system_clock::time_point StringToTimePoint(const std::string & str_time)
 	{
 		// Cut the fractional seconds part
-		auto fractional_seconds = To<int>(str_time.substr(str_time.size() - 3, 3));
+		auto fractional_seconds = To<int>(str_time.substr(str_time.size() - 4, 3));
 		auto str_time_nofrac = str_time.substr(0, str_time.size() - 4);
 
 		// Generate the regular timepoint
 		struct std::tm tm_time;
 		std::stringstream ss(str_time_nofrac);
-		ss >> std::get_time(&tm_time, DATE_FORMAT);
+		ss >> std::get_time(&tm_time, ISO_DATE_FORMAT);
 		auto tp = std::chrono::system_clock::from_time_t(std::mktime(&tm_time));
 
 		// Add the remaining miliseconds

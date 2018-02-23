@@ -208,8 +208,8 @@ void CKalelView::OnInitialUpdate()
 	commHandler.Connect(savedParams.GetServerAddress());
 
 	// Set the timers for the window update
-	dataTimer = SetTimer(1, savedParams.GetDataRefreshInterval(), NULL);
-	graphTimer = SetTimer(1, savedParams.GetGraphRefreshInterval(), NULL);
+	//dataTimer = SetTimer(1, savedParams.GetDataRefreshInterval(), NULL);
+	//graphTimer = SetTimer(1, savedParams.GetGraphRefreshInterval(), NULL);
 }
 
 

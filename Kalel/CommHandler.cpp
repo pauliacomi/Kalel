@@ -488,7 +488,7 @@ unsigned CommHandler::Sync_resp(http_response* r) {
 	}
 	else if (r->status_ == http::responses::not_found)
 	{
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server not found"));
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Sync failed"));
 		return 1;
 	}
 	else if (r->disconnected_)
@@ -557,7 +557,7 @@ unsigned CommHandler::GetMachineSettings_resp(http_response* r) {
 	}
 	else if (r->status_ == http::responses::not_found)
 	{
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server not found"));
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server cannot get Machine Settings"));
 		return 1;
 	}
 
@@ -662,7 +662,7 @@ unsigned CommHandler::GetExperimentSettings_resp(http_response* r) {
 	}
 	else if (r->status_ == http::responses::not_found)
 	{
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server not found"));
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server cannot get Experiment Settings"));
 		return 1;
 	}
 
@@ -760,7 +760,7 @@ unsigned CommHandler::GetInstrumentState_resp(http_response * r)
 		CheckSync();
 	}
 	else if (r->status_ == http::responses::not_found) {
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server not found"));
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server cannot get Instrument State"));
 		return 1;
 	}
 	return 0;
@@ -825,7 +825,7 @@ unsigned CommHandler::SetInstrumentState_resp(http_response * r)
 		return 1;
 	}
 	else if (r->status_ == http::responses::not_found) {
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server not found"));
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server cannot set Instrument State"));
 		return 1;
 	}
 	return 0;
@@ -899,7 +899,7 @@ unsigned CommHandler::GetData_resp(http_response* r) {
 	}
 	else if (r->status_ == http::responses::not_found)
 	{
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server not found"));
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server cannot get Experiment Data"));
 		return 1;
 	}
 	else if (r->disconnected_)
@@ -979,7 +979,7 @@ unsigned CommHandler::GetLogs_resp(http_response * r)
 	}
 	else if (r->status_ == http::responses::not_found)
 	{
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server not found"));
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server cannot get Experiment Log"));
 		return 1;
 	}
 
@@ -1053,7 +1053,7 @@ unsigned CommHandler::GetRequest_resp(http_response * r)
 	}
 	else if (r->status_ == http::responses::not_found)
 	{
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server not found"));
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server cannot Get Experiment Request"));
 		return 1;
 	}
 
@@ -1116,7 +1116,7 @@ unsigned CommHandler::ThreadCommand_resp(http_response * r)
 		return 1;
 	}
 	else if (r->status_ == http::responses::not_found) {
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server not found"));
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server cannot find thread function"));
 		return 1;
 	}
 	return 0;
@@ -1165,7 +1165,7 @@ unsigned CommHandler::FunctionalityCommand_resp(http_response* r)
 		return 1;
 	}
 	else if (r->status_ == http::responses::not_found) {
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server not found"));
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server cannot find functionality"));
 		return 1;
 	}
 	return 0;
