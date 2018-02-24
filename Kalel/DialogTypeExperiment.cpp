@@ -19,14 +19,27 @@ DialogTypeExperiment::DialogTypeExperiment(CWnd* pParent /*=NULL*/)
 	TypeExperience = EXPERIMENT_TYPE_UNDEF;
 }
 
+DialogTypeExperiment::DialogTypeExperiment(const MachineSettings & ms, CWnd* pParent /*=NULL*/)
+	: CDialog(DialogTypeExperiment::IDD, pParent)
+	, m_bExperienceAuto(FALSE)
+{
+	TypeExperience = EXPERIMENT_TYPE_UNDEF;
+
+	if (!ms.CaloToMeasure && !ms.LowPressureToMeasure && !ms.HighPressureToMeasure)
+	{
+		instruments_exist = false;
+	}
+	if (!ms.HighPressureToMeasure)
+	{
+		high_pressure_exists = false;
+	}
+}
+
+
 DialogTypeExperiment::~DialogTypeExperiment()
 {
 }
 
-void DialogTypeExperiment::PassSettings(const MachineSettings & machineSettings)
-{
-	 settings = new MachineSettings(machineSettings);
-}
 
 // Data exchange and message map
 void DialogTypeExperiment::DoDataExchange(CDataExchange* pDX)
@@ -47,7 +60,7 @@ BOOL DialogTypeExperiment::OnInitDialog()
 	CDialog::OnInitDialog();
 	
 	// Disable the buttons if there is no mention of available instruments in the parameters file
-	if(!settings->CaloToMeasure && !settings->LowPressureToMeasure && !settings->HighPressureToMeasure)
+	if(!instruments_exist)
 	{
 		GetDlgItem(IDC_RADIO_TYPE_EXPERIENCE_AUTO)->EnableWindow(FALSE);
 		GetDlgItem(IDC_RADIO_TYPE_EXPERIENCE_MANUAL)->EnableWindow(FALSE);
@@ -60,7 +73,7 @@ BOOL DialogTypeExperiment::OnInitDialog()
 	GetDlgItem(IDOK)->EnableWindow(TRUE);
 
 	// Disable the button for automatic experiment if there is no mention of a high range pressure sensor in the parameters file
-	if(!settings->HighPressureToMeasure)
+	if(!high_pressure_exists)
 	{
 		m_bExperienceAuto = FALSE;
 		UpdateData(FALSE);

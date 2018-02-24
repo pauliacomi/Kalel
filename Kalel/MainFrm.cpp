@@ -136,7 +136,7 @@ void CMainFrame::OnSysCommand(UINT nID, LPARAM lParam)
 	{
 		CKalelApp* pApp = static_cast<CKalelApp *>(AfxGetApp());
 
-		if (pApp->experimentRunning)
+		if (pApp->serverConnected && pApp->experimentRunning)
 		{
 			if (AfxMessageBox(PROMPT_RUNNINGEXP, MB_YESNO | MB_ICONQUESTION, 0) == IDNO)
 			{

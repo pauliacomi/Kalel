@@ -18,8 +18,7 @@ void CKalelView::OnBnClickedLancer()
 	if (pApp->serverConnected)
 	{
 		// Create the experiment type window
-		DialogTypeExperiment dialogExperimentType;
-		dialogExperimentType.PassSettings(*machineSettings.get());
+		DialogTypeExperiment dialogExperimentType(*machineSettings.get());
 
 		if (dialogExperimentType.DoModal() == IDOK)
 		{
@@ -35,11 +34,6 @@ void CKalelView::OnBnClickedLancer()
 
 			if (dialogExperimentProperties.DoModal() == IDOK)
 			{
-				// Block menu and set running flag
-				pApp->experimentRunning = true;
-				pApp->menuIsAvailable = false;
-				UpdateButtons();
-
 				// Get the data from the dialog
 				GetExperimentData(dialogExperimentProperties, *tempExpSettings, true);
 
@@ -50,9 +44,6 @@ void CKalelView::OnBnClickedLancer()
 			{
 				// Save the data from the dialog
 				GetExperimentData(dialogExperimentProperties, *tempExpSettings, true);
-
-				// Roll back by calling stop function
-				CancelBeforeStarting(NULL, NULL);
 			}
 		}
 	}
@@ -107,16 +98,16 @@ void CKalelView::OnBnClickedButtonParametresExperience()
 
 			// Set the dialog to only display the ongoing stages
 			int counter = 0;
-			if (dataCollection.end()->second->experimentStage == STAGE_ADSORPTION)
+			if (dataCollection.rbegin()->second->experimentStage == STAGE_ADSORPTION)
 			{
-				counter = dataCollection.end()->second->adsorptionCounter;
+				counter = dataCollection.rbegin()->second->adsorptionCounter;
 			}
-			if (dataCollection.end()->second->experimentStage == STAGE_DESORPTION)
+			if (dataCollection.rbegin()->second->experimentStage == STAGE_DESORPTION)
 			{
-				counter = dataCollection.end()->second->desorptionCounter;
+				counter = dataCollection.rbegin()->second->desorptionCounter;
 			}
 
-			dialogExperimentProperties.SetProprietiesModif(dataCollection.end()->second->experimentStage, counter);
+			dialogExperimentProperties.SetProprietiesModif(dataCollection.rbegin()->second->experimentStage, counter);
 
 			// If ok has been clicked
 			if (dialogExperimentProperties.DoModal() == IDOK)
