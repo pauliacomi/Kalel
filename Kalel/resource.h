@@ -39,7 +39,6 @@
 #define IDC_TEMPERATURE_CAGE            1020
 #define IDC_TEMPERATURE_CALO            1021
 #define IDC_TEMPERATURE_PIECE           1022
-#define IDC_EDIT_MESURES                1023
 #define IDC_TEMPS                       1024
 #define IDC_LANCER                      1025
 #define IDC_ARRETER                     1026

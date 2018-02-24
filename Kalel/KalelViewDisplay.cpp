@@ -62,23 +62,6 @@ LRESULT CKalelView::DisplayTextboxValues(std::shared_ptr<ExperimentData> data)
 	return 0;
 }
 
-// Write on the dialog box reserved for new measurements
-LRESULT CKalelView::DiplayMeasurements(std::shared_ptr<ExperimentData> data)
-{
-	CString mesure;
-
-	mesure.Format(_T("Time=%.2f  Calo=%.2f  LP=%.2f  HP=%.2f"), data->GettimeElapsed(), data->GetresultCalorimeter(), data->GetpressureLow(), data->GetpressureHigh());
-
-	m_StrEditMesures += mesure;
-	m_StrEditMesures += "\r\n";
-	SetDlgItemText(IDC_EDIT_MESURES,m_StrEditMesures);
-	pEditMesures.GetWindowText(m_StrEditMesures);
-
-	pEditMesures.SetSel(m_StrEditMesures.GetLength(),-1);
-
-	return 0;
-}
-
 // Display the step
 LRESULT CKalelView::DisplayStepProgress(std::shared_ptr<ExperimentData> data)
 {

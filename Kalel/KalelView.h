@@ -100,10 +100,8 @@ private:
 	CButton m_ButtonArreter;
 
 	CEdit pEditMessages;
-	CEdit pEditMesures;
 
 	CString m_StrEditMessages					= _T("");
-	CString m_StrEditMesures					= _T("");
 
 	CString m_StrCalo							= _T("");
 	CString m_StrBassePression					= _T("");
@@ -180,7 +178,6 @@ private:
 
 	LRESULT AffichageMessages(WPARAM wParam, LPARAM lParam);
 	LRESULT DisplayTextboxValues(std::shared_ptr<ExperimentData> data);
-	LRESULT DiplayMeasurements(std::shared_ptr<ExperimentData> data);
 	LRESULT DisplayStepProgress(std::shared_ptr<ExperimentData> data);
 	LRESULT MessageBoxAlert(WPARAM wParam, LPARAM lParam);
 	LRESULT MessageBoxConfirmation(WPARAM wParam, LPARAM);
