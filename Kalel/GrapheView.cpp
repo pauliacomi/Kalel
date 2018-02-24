@@ -38,7 +38,7 @@ void CGrapheView::OnInitialUpdate()
 
 	CKalelDoc* pDoc = GetDocument();
 	ASSERT_VALID(pDoc);
-	measurementArray = pDoc->m_TableauMesures;
+	measurementArray = pDoc->pMeasurementArray;
 }
 
 

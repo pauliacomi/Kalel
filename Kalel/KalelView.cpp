@@ -300,6 +300,17 @@ void CKalelView::OnTimer(UINT_PTR nIDEvent)
 			//*****
 			if (nIDEvent == dataTimer)
 			{
+				// We check to see if we need to delete some of the stored data
+				// in the case of no experiments running
+				if (!pApp->experimentRunning)
+				{
+					auto check_delete = dataCollection.upper_bound(dataCollection.rbegin()->first - std::chrono::minutes(5));
+					if (check_delete != dataCollection.begin())
+					{
+						dataCollection.erase(dataCollection.begin(), check_delete);
+					}
+				}
+
 				// Request ongoing sync
 				commHandler.Sync(false, timeh::TimePointToString(experimentSettingsTime), timeh::TimePointToString(machineSettingsTime), timeh::TimePointToString(machineStateTime));
 

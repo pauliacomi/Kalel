@@ -13,7 +13,7 @@ protected: // create from serialization only
 
 // Attributes
 public:	
-	ExperimentDataStorageArray* m_TableauMesures;
+	ExperimentDataStorageArray* pMeasurementArray = nullptr;
 
 // Operations
 public:
