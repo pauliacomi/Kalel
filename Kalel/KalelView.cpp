@@ -572,6 +572,7 @@ LRESULT CKalelView::OnServerConnected(WPARAM, LPARAM)
 LRESULT CKalelView::OnServerDisconnected(WPARAM, LPARAM)
 {
 	pApp->serverConnected = false;
+	pApp->experimentRunning = false;
 	UpdateButtons();
 	return 0;
 }
