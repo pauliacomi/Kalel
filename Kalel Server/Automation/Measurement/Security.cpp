@@ -27,7 +27,7 @@ Security::~Security()
 {
 }
 
-void Security::SecurityHighPressure(int experimentType, float maxPlow, float maxPhigh, const ExperimentData &expData)
+void Security::SecurityOverPressure(int experimentType, float maxPlow, float maxPhigh, const ExperimentData &expData)
 {
 	if (experimentType == EXPERIMENT_TYPE_MANUAL)
 		SecurityHighPressureManual(maxPlow,  maxPhigh, expData);

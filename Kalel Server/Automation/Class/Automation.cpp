@@ -26,11 +26,10 @@ Automation::~Automation()
 //	initialize everything
 //	loop
 //	{
-//		1. Get the experiment settings if they are new
-//		2. Run through the automation algorithm for the chosen program (nothing, manual, automatic, vacuum, etc)
-//		3. IF WAITING
+//		1. Run through the automation algorithm for the chosen program (nothing, manual, automatic, vacuum, etc)
+//		2. IF WAITING
 //				check whether the wait is complete and reset the wait
-//		4. Event-based wait. If any events are triggered in this time, the thread performs the requested action.
+//		3. Event-based wait. If any events are triggered in this time, the thread performs the requested action.
 //	}
 //
 //
@@ -78,7 +77,7 @@ void Automation::Execution()
 
 		// If waiting complete
 		if (storage.currentData->experimentWaiting &&														// If the wait functionality is requested																					
-			storage.currentData->timeToEquilibrateCurrent > storage.currentData->timeToEquilibrate) {			//and the time has been completed
+			storage.currentData->timeToEquilibrateCurrent > storage.currentData->timeToEquilibrate) {		//and the time has been completed
 
 			// Stop the timer
 			controls.timerWaiting.Pause();
@@ -108,6 +107,7 @@ void Automation::Execution()
 			{
 				eventSettingsModified = false;
 
+				// Record change of experiment settings in output files
 				if (storage.currentData->experimentInProgress == true) {
 					controls.fileWriter->RecordDataChange(false, *storage.newExperimentSettings, *storage.experimentSettings, *storage.currentData);	// non-CSV
 					controls.fileWriter->RecordDataChange(true, *storage.newExperimentSettings, *storage.experimentSettings, *storage.currentData);		// CSV

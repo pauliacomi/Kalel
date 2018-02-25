@@ -15,7 +15,7 @@ public:
 	Security(bool activated, ValveController & valveControl, MessageHandler & messageHandler);
 	~Security();
 
-	void SecurityHighPressure(int experimentType, float maxPlow, float maxPhigh, const ExperimentData &expData);
+	void SecurityOverPressure(int experimentType, float maxPlow, float maxPhigh, const ExperimentData &expData);
 	void SecurityTemperatures(int experimentType, float maxPlow, float maxPhigh, const ExperimentData &expData);
 
 private:

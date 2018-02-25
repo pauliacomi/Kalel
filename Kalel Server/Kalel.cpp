@@ -1,13 +1,16 @@
 #include "Kalel.h"
 
-#include "Parameters/Parametres.h"
-#include "MessageHandler.h"
-
-#include "../Kalel Shared/Netcode/json.hpp"
+// Helpers
 #include "../Kalel Shared/Netcode/stdHelpers.h"
-#include "../Kalel Shared/unicodeConv.h"
 
+// JSON
+#include "../Kalel Shared/Netcode/json.hpp"
 #include "../Kalel Shared/Com Classes/Serialization.h"
+
+// Settings file
+#include "Parameters/Parametres.h"
+
+// Com classes
 #include "../Kalel Shared/Com Classes/ControlInstrumentState.h"
 #include "../Kalel Shared/Com Classes/ExperimentData.h"
 #include "../Kalel Shared/Com Classes/ExperimentSettings.h"

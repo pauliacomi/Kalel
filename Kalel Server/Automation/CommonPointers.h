@@ -21,20 +21,20 @@ public:
 	Storage(void);
 	~Storage(void);
 
-	//**********
+	//******************************************************************************************
 	// Debug logs
-	//**********
+	//******************************************************************************************
 
 public:
 
-	TextStorage debugLogs;																						// Logs for debug are stored here
-
-	//**********
+	TextStorage debugLogs;																		// Logs for debug are stored here
+	
+	//******************************************************************************************
 	// Automation logs
-	//**********
+	//******************************************************************************************
 public:
-	std::mutex autoInfoLogsMutex;																				// Synchronisation class, should be used whenever there are writes to the logs
-	TextStorage infoLogs;																				// All non-error logs are stored here
+	std::mutex autoInfoLogsMutex;																// Synchronisation class, should be used whenever there are writes to the logs
+	TextStorage infoLogs;																		// All non-error logs are stored here
 
 public:
 	void pushInfoLogs(std::chrono::system_clock::time_point time, std::string value) {
@@ -54,9 +54,9 @@ public:
 		return TextStorage(infoLogs.upper_bound(tp), infoLogs.end());
 	}
 
-	//**********
+	//******************************************************************************************
 	// Requests and error interactions
-	//**********
+	//******************************************************************************************
 public:
 	std::mutex autoReqMutex;																				// Synchronisation class, should be used whenever there are writes to the logs
 	TextStorage errorLogs;						// All error logs are stored here
@@ -79,9 +79,9 @@ public:
 		return TextStorage(errorLogs.upper_bound(tp), errorLogs.end());
 	}
 
-	//**********
+	//******************************************************************************************
 	// Data
-	//**********
+	//******************************************************************************************
 public:
 	std::mutex sharedMutex;																					// Synchronisation class, should be used whenever there are writes
 	ExperimentDataStorageArray dataCollection;																// The collection of data from an experiment
@@ -111,9 +111,9 @@ public:
 		dataCollection.clear();
 	}
 
-	//**********
+	//******************************************************************************************
 	// Machine Settings
-	//**********
+	//******************************************************************************************
 
 	std::chrono::system_clock::time_point machineSettingsChanged;												// Time when machine settings changed
 	std::mutex machineSettingsMutex;
@@ -127,15 +127,15 @@ public:
 		lock.unlock();
 	}
 
-	//**********
+	//******************************************************************************************
 	// Control State
-	//**********
+	//******************************************************************************************
 	
 	std::chrono::system_clock::time_point controlStateChanged;													// Time when control state changed
-
-	//**********
+	
+	//******************************************************************************************
 	// Experiment Settings
-	//**********
+	//******************************************************************************************
 
 	std::chrono::system_clock::time_point experimentSettingsChanged;											// Time when experiment settings changed
 	std::mutex experimentSettingsMutex;																			// Synchronisation class, should be used whenever there are writes
@@ -162,9 +162,9 @@ public:
 	}
 
 
-	//**********
+	//******************************************************************************************
 	// Automation control
-	//**********
+	//******************************************************************************************
 
 	// mutex for thread notification
 	std::mutex automationMutex;

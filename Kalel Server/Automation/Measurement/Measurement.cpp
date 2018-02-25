@@ -39,7 +39,7 @@ Measurement::~Measurement()
 //		2. Do a security and safety check on the values
 //		3. IF RECORDING 
 //				save the data to the file, restart timer between measurements and increment measurement number
-//		4. Save data
+//		4. Save data to list in memory
 //		5. Wait until next measurement
 //	}
 //
@@ -61,7 +61,7 @@ void Measurement::Execution()
 		ThreadMeasurement();
 
 		// Record time
-		++storage.currentData->measurementsMade;												// Save the measurement number
+		storage.currentData->measurementsMade += 1;												// Save the measurement number
 		storage.currentData->timeElapsed = controls.timerExperiment.TimeMilliseconds();			// Save the time elapsed from the beginning of the experiment
 		storage.currentData->timeToEquilibrateCurrent = controls.timerWaiting.TimeSeconds();	// Save the waiting time if it exists
 
@@ -79,10 +79,10 @@ void Measurement::Execution()
 			*storage.currentData																// Current data recorded to do the checks
 			);
 
-		controls.security->SecurityHighPressure(
+		controls.security->SecurityOverPressure(
 			storage.experimentSettings->experimentType,											// Experiment type to ensure proper response
-			storage.machineSettings->PressionSecuriteBassePression,								// Maximum pressure limit
-			storage.machineSettings->PressionSecuriteHautePression,								// Minimum pressure limit
+			storage.machineSettings->PressionSecuriteBassePression,								// LP transmitter pressure limit
+			storage.machineSettings->PressionSecuriteHautePression,								// HP transmitter pressure limit
 			*storage.currentData																// Current data recorded to do the checks
 		);
 
@@ -105,16 +105,16 @@ void Measurement::Execution()
 			controls.timerMeasurement.Start();
 
 			// Increment the measurement number
-			++storage.currentData->experimentGraphPoints;
+			storage.currentData->experimentGraphPoints += 1;
 		}
 
 		/*
 		*
-		*		4. Save data
+		*		4. Save data to list in memory
 		*
 		*/
 
-		// Send the data to be displayed to the GUI
+		// Send the data out
 		controls.messageHandler->ExchangeData(*storage.currentData);
 
 		/*
