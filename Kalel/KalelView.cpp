@@ -150,9 +150,6 @@ void CKalelView::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX,		IDC_EDIT_MESSAGES,		pEditMessages			);
 	DDX_Text(pDX,			IDC_EDIT_MESSAGES,		m_StrEditMessages		);
 
-	DDX_Control(pDX,		IDC_EDIT_MESURES,		pEditMesures			);
-	DDX_Text(pDX,			IDC_EDIT_MESURES,		m_StrEditMesures		);
-
 	DDX_Text(pDX,			IDC_CALO,				m_StrCalo				);
 	DDX_Text(pDX,			IDC_BASSE_PRESSION,		m_StrBassePression		);
 	DDX_Text(pDX,			IDC_HAUTE_PRESSION,		m_StrHautePression		);
@@ -303,6 +300,17 @@ void CKalelView::OnTimer(UINT_PTR nIDEvent)
 			//*****
 			if (nIDEvent == dataTimer)
 			{
+				// We check to see if we need to delete some of the stored data
+				// in the case of no experiments running
+				if (!pApp->experimentRunning)
+				{
+					auto check_delete = dataCollection.upper_bound(dataCollection.rbegin()->first - std::chrono::minutes(5));
+					if (check_delete != dataCollection.begin())
+					{
+						dataCollection.erase(dataCollection.begin(), check_delete);
+					}
+				}
+
 				// Request ongoing sync
 				commHandler.Sync(false, timeh::TimePointToString(experimentSettingsTime), timeh::TimePointToString(machineSettingsTime), timeh::TimePointToString(machineStateTime));
 
@@ -333,10 +341,6 @@ void CKalelView::OnTimer(UINT_PTR nIDEvent)
 			//*****
 			if (nIDEvent == graphTimer)
 			{
-				// TODO: Really ugly
-				// Write in measurement box
-				DiplayMeasurements(dataCollection.rbegin()->second);
-
 				// Write graph
 				GetDocument()->UpdateAllViews(this);
 			}
@@ -568,6 +572,7 @@ LRESULT CKalelView::OnServerConnected(WPARAM, LPARAM)
 LRESULT CKalelView::OnServerDisconnected(WPARAM, LPARAM)
 {
 	pApp->serverConnected = false;
+	pApp->experimentRunning = false;
 	UpdateButtons();
 	return 0;
 }

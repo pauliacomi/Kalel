@@ -15,15 +15,18 @@ class DialogTypeExperiment : public CDialog
 
 public:
 	DialogTypeExperiment(CWnd* pParent = NULL);   // constructeur standard
+	DialogTypeExperiment(const MachineSettings & machineSettings, CWnd* pParent = NULL);   // non-custom standard
 	virtual ~DialogTypeExperiment();
 
 // Données de boîte de dialogue
 	enum { IDD = IDD_TYPE_EXPERIENCE };
-	void PassSettings(const MachineSettings & machineSettings);
 
 protected:
 	MachineSettings * settings;
 	virtual void DoDataExchange(CDataExchange* pDX);    // Prise en charge de DDX/DDV
+
+	bool instruments_exist = true;
+	bool high_pressure_exists = true;
 
 	DECLARE_MESSAGE_MAP()
 public:

@@ -5,7 +5,7 @@
 #include <fstream>
 
 
-const int nSizeString{ 100 };
+const int nSizeString{ 200 };
 
 
 Parameters::Parameters()
@@ -28,23 +28,23 @@ Parameters::~Parameters()
 }
 
 
+/*
+BOOL WritePrivateProfileString(
+LPCTSTR lpAppName,
+LPCTSTR lpKeyName,
+LPCTSTR lpString,
+LPCTSTR lpFileName
+);
+
+lpAppName [in] : le nom de la section
+lpKeyName [in] : le nom de la clé
+lpString [in] : la valeur à sauvegarder (le système ne supporte pas l'utilisation du caractères \t-tabulations dans cette chaîne)
+lpFileName [in] : le nom du fichier d'initialisation
+
+*/
+
 void Parameters::Initialisation()
 {
-	/*
-		BOOL WritePrivateProfileString(
-		  LPCTSTR lpAppName,
-		  LPCTSTR lpKeyName,
-		  LPCTSTR lpString,
-		  LPCTSTR lpFileName
-		);
-
-	lpAppName [in] : le nom de la section
-	lpKeyName [in] : le nom de la clé
-	lpString [in] : la valeur à sauvegarder (le système ne supporte pas l'utilisation du caractères \t-tabulations dans cette chaîne)
-	lpFileName [in] : le nom du fichier d'initialisation
-	
-	*/
-
 
 	WritePrivateProfileString(_T("server"),_T("address"),_T(""), fileLocation);
 	WritePrivateProfileString(_T("server"), _T("port"), _T(""), fileLocation);
@@ -58,7 +58,6 @@ void Parameters::Initialisation()
 
 
 // Lecture des paramètres de l'appareil
-
 
 /*
 	GetPrivateProfileString

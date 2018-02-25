@@ -8,9 +8,6 @@
 
 struct http_request {
 
-	http_request() : authentication_given_(false) {}
-
-	
 	/* method_: used to transmit the REST method desired
 	o  GET
 	o  POST
@@ -46,8 +43,7 @@ struct http_request {
 	
 	/*   authentication_given_ is true when the user has entered a username and password.
 	These can then be read from username_ and password_ */
-	bool authentication_given_;
-	
+	bool authentication_given_ = false;
 	
 	std::string username_;
 	std::string password_;

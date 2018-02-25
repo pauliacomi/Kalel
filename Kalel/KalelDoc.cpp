@@ -29,7 +29,6 @@ END_MESSAGE_MAP()
 // CKalelDoc construction/destruction
 
 CKalelDoc::CKalelDoc()
-	:m_TableauMesures{ nullptr }
 {
 }
 
@@ -139,5 +138,5 @@ CKalelDoc * CKalelDoc::GetDocument()
 //-------------------- CKalelDoc custom functions
 
 void CKalelDoc::GraphSetArray(ExperimentDataStorageArray &expData) {
-	m_TableauMesures = &expData;
+	pMeasurementArray = &expData;
 }

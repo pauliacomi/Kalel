@@ -62,29 +62,12 @@ LRESULT CKalelView::DisplayTextboxValues(std::shared_ptr<ExperimentData> data)
 	return 0;
 }
 
-// Write on the dialog box reserved for new measurements
-LRESULT CKalelView::DiplayMeasurements(std::shared_ptr<ExperimentData> data)
-{
-	CString mesure;
-
-	mesure.Format(_T("Time=%.2f  Calo=%.2f  LP=%.2f  HP=%.2f"), data->GettimeElapsed(), data->GetresultCalorimeter(), data->GetpressureLow(), data->GetpressureHigh());
-
-	m_StrEditMesures += mesure;
-	m_StrEditMesures += "\r\n";
-	SetDlgItemText(IDC_EDIT_MESURES,m_StrEditMesures);
-	pEditMesures.GetWindowText(m_StrEditMesures);
-
-	pEditMesures.SetSel(m_StrEditMesures.GetLength(),-1);
-
-	return 0;
-}
-
 // Display the step
 LRESULT CKalelView::DisplayStepProgress(std::shared_ptr<ExperimentData> data)
 {
 
 	CString temp;
-	
+
 	temp.Format(data->experimentStage);
 
 	m_StrEtape = temp;
@@ -108,64 +91,7 @@ LRESULT CKalelView::DisplayStepProgress(std::shared_ptr<ExperimentData> data)
 		m_StrEtape += temp;
 	}
 
-	SetDlgItemText(IDC_EDIT_ETAPE,m_StrEtape);
+	SetDlgItemText(IDC_EDIT_ETAPE, m_StrEtape);
 
 	return 0;
-
-
-	//#define jour_sec 86400
-	//#define heure_sec 3600
-	//#define minute_sec 60
-	//#define message_jour 	0
-	//#define message_heure 	1
-	//#define message_minute	2
-	//#define message_seconde	3
-
-	/*CString Automation::MessageTemps(int duree)
-	{
-		int TypeMessage;
-
-		if (duree >= jour_sec)
-			TypeMessage = message_jour;
-		else
-			if (duree >= heure_sec)
-				TypeMessage = message_heure;
-			else
-				if (duree >= minute_sec)
-					TypeMessage = message_minute;
-				else
-					TypeMessage = message_seconde;
-
-		CString temps_attente, tmp;
-		temps_attente = _T("");
-		int duree_restante = duree;
-		switch (TypeMessage)
-		{
-		case message_jour:
-			tmp.Format(_T("%dj"), duree_restante / jour_sec);
-			duree_restante = duree_restante%jour_sec;
-			temps_attente += tmp;
-		case message_heure:
-			if (TypeMessage == message_heure)
-				tmp.Format(_T("%dh"), duree_restante / heure_sec);
-			else
-				tmp.Format(_T("%02dh"), duree_restante / heure_sec);
-			duree_restante = duree_restante%heure_sec;
-			temps_attente += tmp;
-		case message_minute:
-			if (TypeMessage == message_minute)
-				tmp.Format(_T("%dmin"), duree_restante / minute_sec);
-			else
-				tmp.Format(_T("%02dmin"), duree_restante / minute_sec);
-			duree_restante = duree_restante%minute_sec;
-			temps_attente += tmp;
-		case message_seconde:
-			if (TypeMessage == message_seconde)
-				tmp.Format(_T("%ds"), duree_restante);
-			else
-				tmp.Format(_T("%02ds"), duree_restante);
-			temps_attente += tmp;
-		}
-		return temps_attente;
-	}*/
 }

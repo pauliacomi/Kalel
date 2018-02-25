@@ -154,7 +154,7 @@ unsigned Client::Process(std::string ip, std::string port, std::function<void(ht
 	}
 
 	std::string line;
-	bool messageToReceive = true;		// expecting a message
+	bool messageToReceive = false;		// not expecting a message
 
 	while (true) {
 		try	
@@ -209,9 +209,9 @@ unsigned Client::Process(std::string ip, std::string port, std::function<void(ht
 		}
 		else if (line.substr(0, http::header::content_length.size()) == http::header::content_length) {
 			response.content_length_ = line.substr(http::header::content_length.size());
-			if (response.content_length_ == "0")
+			if (response.content_length_ != "0")
 			{
-				messageToReceive = false;
+				messageToReceive = true;
 			}
 		}
 		else if (line.substr(0, http::header::content_type.size()) == http::header::content_type) {
