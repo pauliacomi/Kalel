@@ -2,6 +2,7 @@
 // This file should be rewritten as a class in the future
 
 #include "Parametres.h"
+#include "../../Kalel Shared/log.h"
 #include "../../Kalel Shared/Netcode/json.hpp"
 #include "../../Kalel Shared/Resources/DefineInstruments.h"
 #include "../../Kalel Shared/Com Classes/MachineSettings.h"
@@ -47,6 +48,7 @@ void ParametersGet(MachineSettings& settings)
 	catch (const std::exception& e)
 	{
 		settings = MachineSettings();
+		LOG(logINFO) << "Could not read settings file: " << e.what();
 		return;
 	}
 	settings = j;

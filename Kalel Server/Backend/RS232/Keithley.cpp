@@ -52,12 +52,12 @@ bool Keithley::OpenCOM(int nId)
 
 	if (connectionOpen)
 	{
-		MEM_LOG(logDEBUG) << "Keithley open: COM" << std::to_string(nId);
+		LOG(logDEBUG) << "Keithley open: COM" << std::to_string(nId);
 		return true;
 	}
 	else
 	{
-		MEM_LOG(logERROR) << "Keithley opening failed: COM" << std::to_string(nId);
+		LOG(logERROR) << "Keithley opening failed: COM" << std::to_string(nId);
 
 		return false;
 	}
@@ -69,12 +69,12 @@ bool Keithley::CloseCOM()
 
 	if (fermeture)
 	{
-		MEM_LOG(logDEBUG) << "Keithley closed";
+		LOG(logDEBUG) << "Keithley closed";
 		return true;
 	}
 	else
 	{
-		MEM_LOG(logERROR) << "Keithley closing failed";
+		LOG(logERROR) << "Keithley closing failed";
 		return false;
 	}
 }
@@ -121,7 +121,7 @@ bool Keithley::InitKeithley()
 		"*CLS\n",
 		":SENS:VOLT:CHAN1:LPAS OFF\n",
 		":SENS:VOLT:CHAN1:DFIL:STAT OFF\n",
-		":SENS:VOLT:CHAN2:LPAS OFF\n"
+		":SENS:VOLT:CHAN2:LPAS OFF\n",
 		":SENS:VOLT:CHAN2:DFIL:STAT OFF\n");
 
 
@@ -132,12 +132,12 @@ bool Keithley::InitKeithley()
 
 	if(success)
 	{
-		MEM_LOG(logDEBUG) << "Keithley initialised";
+		LOG(logDEBUG) << "Keithley initialised";
 		return true;
 	}
 	else
 	{
-		MEM_LOG(logERROR) << "Keithley initialisation failure";
+		LOG(logERROR) << "Keithley initialisation failure";
 		return false;
 	}
 }
@@ -222,7 +222,7 @@ bool Keithley::ReadChannel(int chanNo, double* result)
 	temp = temp.substr(0,15);
 	*result = atof(temp.c_str());
 
-	MEM_LOG(logDEBUG1) << "Keithley channel " + std::to_string(chanNo) + " read";
+	LOG(logDEBUG1) << "Keithley channel " + std::to_string(chanNo) + " read";
 	return true;
 }
 
