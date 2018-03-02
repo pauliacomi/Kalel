@@ -147,7 +147,7 @@ void Socket::Accept_PrimeSelect()
 std::string Socket::Accept(SOCKET &clientSocket, timeval tv)
 {
 	*readfds = *master;
-	int selectResult = select(sock + 1, &*readfds, NULL, NULL, &tv);
+	SOCKET selectResult = select(sock + 1, &*readfds, NULL, NULL, &tv);
 
 	if ((selectResult < 0) && (errno != EINTR)) {			// Check to see if select returned correctly
 		stringex.set(ERR_ACCEPT);

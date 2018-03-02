@@ -4,9 +4,7 @@
 #include "tinystr.h"
 #include "tinyxml.h"
 
-#include "../Kalel Shared/unicodeConv.h"
-
-UnicodeConv unicodeConverter;
+#include "../Kalel Shared/stringHelpers.h"
 
 #include <sstream>
 
@@ -76,8 +74,8 @@ bool ConfigsExists() //Regarde si le fichier XML existe ou pas
 
 TiXmlElement * NewElement(std::wstring nom_element, std::wstring text_element)
 {
-	std::string s_elem = unicodeConverter.ws2s(nom_element);
-	std::string s_text = unicodeConverter.ws2s(text_element);
+	std::string s_elem = stringh::ws2s(nom_element);
+	std::string s_text = stringh::ws2s(text_element);
 
 	TiXmlElement * elem = new TiXmlElement(s_elem.c_str());
 	TiXmlText * text = new TiXmlText(s_text.c_str());
@@ -139,8 +137,8 @@ std::vector<experimentateur> GetExperimentateurs()
 		// On crée une variable "experimentateur" et 
 		// on récupère le nom et le surnom de l'experimentateur du XML
 		experimentateur exp;
-		exp.nom = unicodeConverter.s2ws(root->FirstChildElement("nom")->GetText());
-		exp.surnom = unicodeConverter.s2ws(root->FirstChildElement("surnom")->GetText());
+		exp.nom = stringh::s2ws(root->FirstChildElement("nom")->GetText());
+		exp.surnom = stringh::s2ws(root->FirstChildElement("surnom")->GetText());
 		
 		// On rajoute la variable "exp" à la fin du 'std::vector'
 		t_experimentateur.push_back(exp);
@@ -264,8 +262,8 @@ std::vector<gaz> GetGazs()
 	while(root)
 	{
 		gaz m_gaz;
-		m_gaz.nom						= unicodeConverter.s2ws(root->FirstChildElement("nom")->GetText());
-		m_gaz.symbole					= unicodeConverter.s2ws(root->FirstChildElement("symbole")->GetText());
+		m_gaz.nom						= stringh::s2ws(root->FirstChildElement("nom")->GetText());
+		m_gaz.symbole					= stringh::s2ws(root->FirstChildElement("symbole")->GetText());
 		m_gaz.masse_moleculaire			= atof(root->FirstChildElement("masse_moleculaire")->GetText());
 		m_gaz.temperature_critique		= atof(root->FirstChildElement("temperature_critique")->GetText());
 		m_gaz.pression_critique			= atof(root->FirstChildElement("pression_critique")->GetText());
@@ -389,7 +387,7 @@ std::vector<cellule> GetCellules()
 	while(root)
 	{
 		cellule cell;
-		cell.numero = unicodeConverter.s2ws(root->FirstChildElement("numero")->GetText());
+		cell.numero = stringh::s2ws(root->FirstChildElement("numero")->GetText());
 		cell.volume_total = atof(root->FirstChildElement("volume_total")->GetText());
 		cell.volume_calo = atof(root->FirstChildElement("volume_calo")->GetText());
 
@@ -510,7 +508,7 @@ bool Doublon(TiXmlHandle& handle_root, std::wstring valeur, std::wstring type)
 		//char * bidon3 = _strdup(root->FirstChildElement(ws2s(type).c_str())->GetText());
 		//char * bidon4 = _strdup(ws2s(valeur).c_str());
 
-		std::wstring temp_nom(unicodeConverter.s2ws(_strdup(root->FirstChildElement(unicodeConverter.ws2s(type).c_str())->GetText())));
+		std::wstring temp_nom(stringh::s2ws(_strdup(root->FirstChildElement(stringh::ws2s(type).c_str())->GetText())));
 
 		//if (strdup(valeur.c_str()) == strdup(root->FirstChildElement(type.c_str())->GetText()))
 		if (valeur == temp_nom)

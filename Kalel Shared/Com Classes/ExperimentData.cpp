@@ -76,7 +76,7 @@ void ExperimentData::ResetData()
 	verificationStep			= STEP_VERIFICATIONS_UNDEF;
 
 	timeStart					= 0;
-	timeElapsed					= 0.f;
+	timeElapsed					= 0;
 	measurementsMade			= 0;
 	timeToEquilibrate			= 0.f;
 	timeToEquilibrateCurrent	= 0.f;
