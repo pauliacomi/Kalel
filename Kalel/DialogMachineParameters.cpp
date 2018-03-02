@@ -30,7 +30,7 @@ void ApparatusParameters::PassSettings(MachineSettings* machineSettings)
 	m_fPressionSecuriteHautePression		= settings->PressionSecuriteHautePression;
 	m_fPressionLimiteVide					= settings->PressionLimiteVide;
 
-	m_bTuyere								= settings->PresenceTuyereSonique;
+	m_bTuyere								= settings->hasSonicNozzle;
 
 	m_fVolumeRef							= settings->VolumeRef;
 	m_fVolumeP6								= settings->VolumeP6;
@@ -153,7 +153,7 @@ void ApparatusParameters::OnBnClickedOk()
 		localSettings->PressionSecuriteBassePression = m_fPressionSecuriteBassePression;
 		localSettings->PressionSecuriteHautePression = m_fPressionSecuriteHautePression;
 		localSettings->PressionLimiteVide = m_fPressionLimiteVide;
-		localSettings->PresenceTuyereSonique = m_bTuyere;
+		localSettings->hasSonicNozzle = m_bTuyere;
 		localSettings->VolumeRef = m_fVolumeRef;
 		localSettings->VolumeP6 = m_fVolumeP6;
 		localSettings->CaloName = m_StrNomCalo.GetBuffer();

@@ -6,6 +6,7 @@
 
 #include "../Kalel Shared/Com Classes/MachineSettings.h"		// Accessing the settings
 #include "../Kalel Shared/Resources/DefineStages.h"				// Experiment types
+#include "../Kalel Shared/Resources/DefineInstruments.h"		// Instrument types
 
 // Dialog box DialogTypeExperiment
 
@@ -14,24 +15,26 @@ IMPLEMENT_DYNAMIC(DialogTypeExperiment, CDialog)
 // Constructor and destructor
 DialogTypeExperiment::DialogTypeExperiment(CWnd* pParent /*=NULL*/)
 	: CDialog(DialogTypeExperiment::IDD, pParent)
-	, m_bExperienceAuto(FALSE)
 {
 	TypeExperience = EXPERIMENT_TYPE_UNDEF;
 }
 
 DialogTypeExperiment::DialogTypeExperiment(const MachineSettings & ms, CWnd* pParent /*=NULL*/)
 	: CDialog(DialogTypeExperiment::IDD, pParent)
-	, m_bExperienceAuto(FALSE)
 {
 	TypeExperience = EXPERIMENT_TYPE_UNDEF;
 
-	if (!ms.CaloToMeasure && !ms.LowPressureToMeasure && !ms.HighPressureToMeasure)
+	auto exists = [&ms](int type) {
+		bool is_here = false;
+		for (auto pair : ms.readers) {
+			if (pair.second.type == type) return true;
+		}
+		return false;
+	};
+
+	if (!exists(READER_CALO) && !exists(READER_PRESSURE))
 	{
 		instruments_exist = false;
-	}
-	if (!ms.HighPressureToMeasure)
-	{
-		high_pressure_exists = false;
 	}
 }
 
@@ -70,18 +73,8 @@ BOOL DialogTypeExperiment::OnInitDialog()
 
 	// Enable the buttons
 	GetDlgItem(IDC_RADIO_TYPE_EXPERIENCE_AUTO)->EnableWindow(TRUE);
-	GetDlgItem(IDOK)->EnableWindow(TRUE);
-
-	// Disable the button for automatic experiment if there is no mention of a high range pressure sensor in the parameters file
-	if(!high_pressure_exists)
-	{
-		m_bExperienceAuto = FALSE;
-		UpdateData(FALSE);
-		GetDlgItem(IDC_RADIO_TYPE_EXPERIENCE_MANUAL)->EnableWindow(FALSE);
-		return TRUE;
-	}
-	
 	GetDlgItem(IDC_RADIO_TYPE_EXPERIENCE_MANUAL)->EnableWindow(TRUE);
+	GetDlgItem(IDOK)->EnableWindow(TRUE);	
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 }

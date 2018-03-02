@@ -26,11 +26,10 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // Prise en charge de DDX/DDV
 
 	bool instruments_exist = true;
-	bool high_pressure_exists = true;
 
 	DECLARE_MESSAGE_MAP()
 public:
-	BOOL m_bExperienceAuto;
+	BOOL m_bExperienceAuto = FALSE;
 	int TypeExperience;
 protected:
 	virtual void OnOK();

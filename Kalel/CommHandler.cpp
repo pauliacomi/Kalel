@@ -7,8 +7,7 @@
 #include "../Kalel Shared/Resources/DefineInstruments.h"
 #include "../Kalel Shared/Com Classes/Serialization.h"
 #include "../Kalel Shared/Com Classes/ControlInstrumentState.h"
-#include "../Kalel Shared/Netcode/stdHelpers.h"
-#include "../Kalel Shared/unicodeConv.h"
+#include "../Kalel Shared/stringHelpers.h"
 #include "../Kalel Shared/timeHelpers.h"
 
 #include <functional>
@@ -55,17 +54,17 @@ void CommHandler::Connect(std::wstring address)
 		auto callback = std::bind(&CommHandler::Handshake_resp, this, std::placeholders::_1);
 
 		try	{
-			client.Request(request, callback, UnicodeConv::ws2s(address.c_str()));
+			client.Request(request, callback, stringh::ws2s(address.c_str()));
 		}
 		catch (const std::exception& e)	{
-			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK,false, UnicodeConv::s2ws(e.what()));
+			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK,false, stringh::s2ws(e.what()));
 		}
 	}
 }
 
 void CommHandler::SaveAddress(std::wstring address)
 {
-	localAddress = UnicodeConv::ws2s(address.c_str());
+	localAddress = stringh::ws2s(address.c_str());
 }
 
 /*********************************
@@ -101,7 +100,7 @@ void CommHandler::Sync(bool initialSync, std::string fromTimeES, std::string fro
 				client.Request(request, callback, localAddress);
 			}
 			catch (const std::exception& e) {
-				messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, UnicodeConv::s2ws(e.what()));
+				messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, stringh::s2ws(e.what()));
 			}
 		}
 	}
@@ -136,7 +135,7 @@ void CommHandler::GetMachineSettings()
 		client.Request(request, callback, localAddress);
 	}
 	catch (const std::exception& e)	{
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, UnicodeConv::s2ws(e.what()));
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, stringh::s2ws(e.what()));
 	}
 }
 
@@ -151,7 +150,7 @@ void CommHandler::SetMachineSettings(std::shared_ptr<const MachineSettings> ptr)
 		client.Request(request, callback, localAddress);
 	}
 	catch (const std::exception& e) {
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, UnicodeConv::s2ws(e.what()));
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, stringh::s2ws(e.what()));
 	}
 }
 
@@ -168,7 +167,7 @@ void CommHandler::GetExperimentSettings()
 		client.Request(request, callback, localAddress);
 	}
 	catch (const std::exception& e) {
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, UnicodeConv::s2ws(e.what()));
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, stringh::s2ws(e.what()));
 	}
 }
 
@@ -183,7 +182,7 @@ void CommHandler::SetExperimentSettings(std::shared_ptr<const ExperimentSettings
 		client.Request(request, callback, localAddress);
 	}
 	catch (const std::exception& e) {
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, UnicodeConv::s2ws(e.what()));
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, stringh::s2ws(e.what()));
 	}
 }
 
@@ -200,7 +199,7 @@ void CommHandler::GetControlInstrumentState()
 		client.Request(request, callback, localAddress);
 	}
 	catch (const std::exception& e) {
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, UnicodeConv::s2ws(e.what()));
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, stringh::s2ws(e.what()));
 	}
 }
 
@@ -218,7 +217,7 @@ void CommHandler::ManualCommand(int instrumentType, int instrumentNumber, bool s
 		client.Request(request, callback, localAddress);
 	}
 	catch (const std::exception& e) {
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, UnicodeConv::s2ws(e.what()));
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, stringh::s2ws(e.what()));
 	}
 }
 
@@ -241,7 +240,7 @@ void CommHandler::GetData(std::string fromTime)
 			client.Request(request, callback, localAddress);
 		}
 		catch (const std::exception& e) {
-			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, UnicodeConv::s2ws(e.what()));
+			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, stringh::s2ws(e.what()));
 		}
 	}
 }
@@ -265,7 +264,7 @@ void CommHandler::GetLog(std::string fromTime)
 			client.Request(request, callback, localAddress);
 		}
 		catch (const std::exception& e) {
-			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, UnicodeConv::s2ws(e.what()));
+			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, stringh::s2ws(e.what()));
 		}
 	}
 }
@@ -289,7 +288,7 @@ void CommHandler::GetRequests(std::string fromTime)
 			client.Request(request, callback, localAddress);
 		}
 		catch (const std::exception& e) {
-			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, UnicodeConv::s2ws(e.what()));
+			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, stringh::s2ws(e.what()));
 		}
 	}
 }
@@ -347,7 +346,7 @@ void CommHandler::ThreadCommand()
 		client.Request(request, callback, localAddress);
 	}
 	catch (const std::exception& e) {
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, UnicodeConv::s2ws(e.what()));
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, stringh::s2ws(e.what()));
 	}
 }
 
@@ -379,7 +378,7 @@ void CommHandler::FunctionalityCommand()
 		client.Request(request, callback, localAddress);
 	}
 	catch (const std::exception& e) {
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, UnicodeConv::s2ws(e.what()));
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, stringh::s2ws(e.what()));
 	}
 }
 
@@ -395,7 +394,7 @@ void CommHandler::TestConn()
 		client.Request(request, callback, localAddress);
 	}
 	catch (const std::exception& e) {
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, UnicodeConv::s2ws(e.what()));
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, stringh::s2ws(e.what()));
 	}
 }
 
@@ -469,7 +468,7 @@ unsigned CommHandler::Sync_resp(http_response* r) {
 		}
 		catch (const std::exception& e)
 		{
-			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, UnicodeConv::s2ws(e.what()));
+			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, stringh::s2ws(e.what()));
 			return 1;
 		}
 
@@ -526,7 +525,7 @@ unsigned CommHandler::GetMachineSettings_resp(http_response* r) {
 			}
 			catch (const std::exception& e)
 			{
-				messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, UnicodeConv::s2ws(e.what()));
+				messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, stringh::s2ws(e.what()));
 				return 1;
 			}
 
@@ -540,7 +539,7 @@ unsigned CommHandler::GetMachineSettings_resp(http_response* r) {
 			}
 			catch (const std::exception& e)
 			{
-				messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, UnicodeConv::s2ws(e.what()));
+				messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, stringh::s2ws(e.what()));
 				return 1;
 			}
 
@@ -580,7 +579,7 @@ unsigned CommHandler::SetMachineSettings_req(http_request* r) {
 	}
 	catch (const std::exception& e)
 	{
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, UnicodeConv::s2ws(e.what()));
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, stringh::s2ws(e.what()));
 		return 1;
 	}
 
@@ -631,7 +630,7 @@ unsigned CommHandler::GetExperimentSettings_resp(http_response* r) {
 			}
 			catch (const std::exception& e)
 			{
-				messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, UnicodeConv::s2ws(e.what()));
+				messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, stringh::s2ws(e.what()));
 				return 1;
 			}
 
@@ -645,7 +644,7 @@ unsigned CommHandler::GetExperimentSettings_resp(http_response* r) {
 			}
 			catch (const std::exception& e)
 			{
-				messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, UnicodeConv::s2ws(e.what()));
+				messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, stringh::s2ws(e.what()));
 				return 1;
 			}
 
@@ -685,7 +684,7 @@ unsigned CommHandler::SetExperimentSettings_req(http_request* r) {
 	}
 	catch (const std::exception& e)
 	{
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, UnicodeConv::s2ws(e.what()));
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, stringh::s2ws(e.what()));
 		return 1;
 	}
 
@@ -736,7 +735,7 @@ unsigned CommHandler::GetInstrumentState_resp(http_response * r)
 		}
 		catch (const std::exception& e)
 		{
-			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, UnicodeConv::s2ws(e.what()));
+			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, stringh::s2ws(e.what()));
 			return 1;
 		}
 
@@ -750,7 +749,7 @@ unsigned CommHandler::GetInstrumentState_resp(http_response * r)
 		}
 		catch (const std::exception& e)
 		{
-			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, UnicodeConv::s2ws(e.what()));
+			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, stringh::s2ws(e.what()));
 			return 1;
 		}
 
@@ -861,7 +860,7 @@ unsigned CommHandler::GetData_resp(http_response* r) {
 			}
 			catch (const std::exception& e)
 			{
-				messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, UnicodeConv::s2ws(e.what()));
+				messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, stringh::s2ws(e.what()));
 				return 1;
 			}
 
@@ -879,7 +878,7 @@ unsigned CommHandler::GetData_resp(http_response* r) {
 				}
 				catch (const std::exception& e)
 				{
-					messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, UnicodeConv::s2ws(e.what()));
+					messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, stringh::s2ws(e.what()));
 					delete receivedDataArray;
 					return 1;
 				}
@@ -943,7 +942,7 @@ unsigned CommHandler::GetLogs_resp(http_response * r)
 			}
 			catch (const std::exception& e)
 			{
-				messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, UnicodeConv::s2ws(e.what()));
+				messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, stringh::s2ws(e.what()));
 				return 1;
 			}
 
@@ -956,10 +955,10 @@ unsigned CommHandler::GetLogs_resp(http_response * r)
 				std::wstring receivedLog;
 				try
 				{
-					receivedLog = UnicodeConv::s2ws(j[i.key()].get<std::string>().c_str());
+					receivedLog = stringh::s2ws(j[i.key()].get<std::string>().c_str());
 				}
 				catch (const std::exception& e)	{
-					messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, UnicodeConv::s2ws(e.what()));
+					messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, stringh::s2ws(e.what()));
 					delete receivedLogArray;
 					return 1;
 				}
@@ -1018,7 +1017,7 @@ unsigned CommHandler::GetRequest_resp(http_response * r)
 			}
 			catch (const std::exception& e)
 			{
-				messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, UnicodeConv::s2ws(e.what()));
+				messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, stringh::s2ws(e.what()));
 				return 1;
 			}
 
@@ -1031,10 +1030,10 @@ unsigned CommHandler::GetRequest_resp(http_response * r)
 				std::wstring receivedReq;
 				try
 				{
-					receivedReq = UnicodeConv::s2ws(j[i.key()].get<std::string>().c_str());
+					receivedReq = stringh::s2ws(j[i.key()].get<std::string>().c_str());
 				}
 				catch (const std::exception& e) {
-					messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, UnicodeConv::s2ws(e.what()));
+					messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, stringh::s2ws(e.what()));
 					delete receivedReqArray;
 					return 1;
 				}

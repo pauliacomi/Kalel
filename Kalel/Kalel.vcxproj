@@ -223,9 +223,9 @@
     <ClInclude Include="..\Kalel Shared\Resources\DefineInstruments.h" />
     <ClInclude Include="..\Kalel Shared\Resources\DefineStages.h" />
     <ClInclude Include="..\Kalel Shared\Resources\StringTable.h" />
+    <ClInclude Include="..\Kalel Shared\stringHelpers.h" />
     <ClInclude Include="..\Kalel Shared\timeHelpers.h" />
     <ClInclude Include="..\Kalel Shared\timestamp.h" />
-    <ClInclude Include="..\Kalel Shared\unicodeConv.h" />
     <ClInclude Include="CommHandler.h" />
     <ClInclude Include="DefineDialogMessages.h" />
     <ClInclude Include="DefineMenuMessages.h" />
@@ -278,8 +278,8 @@
     <ClCompile Include="..\Kalel Shared\Netcode\Server.cpp" />
     <ClCompile Include="..\Kalel Shared\Netcode\Socket.cpp" />
     <ClCompile Include="..\Kalel Shared\Netcode\URLHelper.cpp" />
+    <ClCompile Include="..\Kalel Shared\stringHelpers.cpp" />
     <ClCompile Include="..\Kalel Shared\timeHelpers.cpp" />
-    <ClCompile Include="..\Kalel Shared\unicodeConv.cpp" />
     <ClCompile Include="CommHandler.cpp" />
     <ClCompile Include="DialogConnectServer.cpp" />
     <ClCompile Include="DialogMachineParameters.cpp" />

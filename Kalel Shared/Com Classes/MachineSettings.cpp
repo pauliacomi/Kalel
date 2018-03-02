@@ -6,21 +6,18 @@
 MachineSettings::MachineSettings()
 {
 	// TODO: remove initialisations
-	Instrument a;
 
-	instruments.insert(std::make_pair(1, a));
-	instruments.insert(std::make_pair(2, a));
-	instruments.insert(std::make_pair(3, a));
-	instruments.insert(std::make_pair(4, a));
+	instruments.insert(std::make_pair(1, Instrument()));
+	instruments.insert(std::make_pair(2, Instrument()));
+	instruments.insert(std::make_pair(3, Instrument()));
+	instruments.insert(std::make_pair(4, Instrument()));
 
-	Reader b;
-
-	readers.insert(std::make_pair(1, b));
-	readers.insert(std::make_pair(2, b));
-	readers.insert(std::make_pair(3, b));
-	readers.insert(std::make_pair(4, b));
-	readers.insert(std::make_pair(5, b));
-	readers.insert(std::make_pair(6, b));
+	readers.insert(std::make_pair(1, Reader()));
+	readers.insert(std::make_pair(2, Reader()));
+	readers.insert(std::make_pair(3, Reader()));
+	readers.insert(std::make_pair(4, Reader()));
+	readers.insert(std::make_pair(5, Reader()));
+	readers.insert(std::make_pair(6, Reader()));
 }
 
 

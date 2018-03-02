@@ -285,9 +285,6 @@
     <ClInclude Include="MFCMessageHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Kalel Shared\unicodeConv.h">
-      <Filter>Header Files\Commmon</Filter>
-    </ClInclude>
     <ClInclude Include="..\Kalel Shared\Netcode\http_define.h">
       <Filter>Header Files\Commmon\Netcode</Filter>
     </ClInclude>
@@ -313,6 +310,9 @@
       <Filter>Source Files\Commmon</Filter>
     </ClInclude>
     <ClInclude Include="..\Kalel Shared\timeHelpers.h">
+      <Filter>Header Files\Commmon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Kalel Shared\stringHelpers.h">
       <Filter>Header Files\Commmon</Filter>
     </ClInclude>
   </ItemGroup>
@@ -443,13 +443,13 @@
     <ClCompile Include="MFCMessageHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Kalel Shared\unicodeConv.cpp">
-      <Filter>Source Files\Commmon</Filter>
-    </ClCompile>
     <ClCompile Include="..\Kalel Shared\Netcode\http_helpers.cpp">
       <Filter>Source Files\Commmon\Netcode</Filter>
     </ClCompile>
     <ClCompile Include="..\Kalel Shared\timeHelpers.cpp">
+      <Filter>Source Files\Commmon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Kalel Shared\stringHelpers.cpp">
       <Filter>Source Files\Commmon</Filter>
     </ClCompile>
   </ItemGroup>

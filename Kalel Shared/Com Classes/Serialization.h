@@ -59,7 +59,7 @@ void to_json(nlohmann::json &j, const MachineSettings &m) {
 	j["PressionSecuriteBassePression"		]	= m.PressionSecuriteBassePression			;
 	j["PressionSecuriteHautePression"		]	= m.PressionSecuriteHautePression			;
 	j["PressionLimiteVide"					]	= m.PressionLimiteVide						;
-	j["PresenceTuyereSonique"				]	= m.PresenceTuyereSonique					;
+	j["hasSonicNozzle"				]	= m.hasSonicNozzle					;
 	j["VolumeP6"							]	= m.VolumeP6								;
 	j["VolumeRef"							]	= m.VolumeRef								;
 
@@ -100,7 +100,7 @@ inline void from_json(const nlohmann::json &j, MachineSettings &m) {
 	m.PressionSecuriteBassePression						=					j["PressionSecuriteBassePression"		];
 	m.PressionSecuriteHautePression						=					j["PressionSecuriteHautePression"		];
 	m.PressionLimiteVide								=					j["PressionLimiteVide"					];
-	m.PresenceTuyereSonique								=					j["PresenceTuyereSonique"				];
+	m.hasSonicNozzle								=					j["hasSonicNozzle"				];
 	m.VolumeP6											=					j["VolumeP6"							];
 	m.VolumeRef											=					j["VolumeRef"							];
 

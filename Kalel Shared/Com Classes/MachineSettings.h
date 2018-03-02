@@ -1,5 +1,3 @@
-#ifndef MACHINESETTINGS_H
-#define MACHINESETTINGS_H
 #pragma once
 
 #include <string>
@@ -20,7 +18,6 @@ struct Reader
 	long double sensitivity = 0;		// sensitivity of measurement
 	int channel = -1;					// channel 1/2 of the instrument
 	int instrument = -1;				// key of the instrument used
-
 };
 
 struct Controller
@@ -50,7 +47,7 @@ public:
 
 	float PressionLimiteVide = 0.1f;						// Used for determining the pressure considered "good vacuum"
 	
-	bool PresenceTuyereSonique = false;						// Used for user information (no calculations)
+	bool hasSonicNozzle = false;							// Used for user information (no calculations)
 	float VolumeRef = 1;									// Used for user information (no calculations)
 	float VolumeP6 = 1;										// Used for user information (no calculations)
 
@@ -64,5 +61,3 @@ public:
 	void AddReader(Reader r, unsigned int position = 0);
 	void AddController(Controller r, unsigned int position = 0);
 };
-
-#endif
