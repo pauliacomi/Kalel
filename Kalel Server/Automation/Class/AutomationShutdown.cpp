@@ -1,5 +1,7 @@
 #include "Automation.h"
 
+// Utilities
+#include "../../../Kalel Shared/log.h"
 
 
 void Automation::Shutdown()
@@ -10,8 +12,8 @@ void Automation::Shutdown()
 	case STOP_CANCEL:		// This cancels an experiment in progress, GUI must ask check for experiment running
 		
 		//When thread finishes, let main window know to unlock menu and reset graph
-		controls.messageHandler->DisplayMessage(MESSAGE_EXPCANCEL);		// Experiment has been cancelled
-		controls.messageHandler->ExperimentEnd();
+		LOG(logINFO) << MESSAGE_EXPCANCEL;
+		LOG(logINFO) << MESSAGE_FILLLINE;
 
 		// Stop all timers 
 		controls.timerExperiment.Pause();
@@ -28,8 +30,8 @@ void Automation::Shutdown()
 							// It then resets everything
 
 		//When thread finishes, let main window know to unlock menu
-		controls.messageHandler->DisplayMessage(MESSAGE_EXPFINISH);		// Experiment has been finished normally
-		controls.messageHandler->ExperimentEnd();
+		LOG(logINFO) << MESSAGE_EXPFINISH;					// Experiment has been finished normally
+		LOG(logINFO) << MESSAGE_FILLLINE;
 
 		// Stop all timers 
 		controls.timerExperiment.Pause();
@@ -48,7 +50,7 @@ void Automation::Shutdown()
 	case STOP_COMPLETE:		// This option is used if the automation thread is to be closed
 
 		// When thread finishes, let main window know to unlock menu
-		controls.messageHandler->ThreadShutdown();
+		LOG(logINFO) << MESSAGE_THREAD_SHUTDOWN;
 
 		// Break loop
 		running = false;
@@ -69,7 +71,8 @@ void Automation::Pause()
 		controls.timerWaiting.Pause();
 		storage.currentData->experimentRecording = false;
 
-		controls.messageHandler->DisplayMessage(MESSAGE_EXPPAUSE);
+		// Log the pause
+		LOG(logINFO) << MESSAGE_EXPPAUSE;
 	}
 	controls.timerExperiment.Pause();
 	controls.timerMeasurement.Pause();
@@ -84,7 +87,8 @@ void Automation::Resume()
 		controls.timerWaiting.Resume();
 		storage.currentData->experimentRecording = true;
 
-		controls.messageHandler->DisplayMessage(MESSAGE_EXPRESUME);
+		// Log the resume
+		LOG(logINFO) << MESSAGE_EXPRESUME;
 	}
 	controls.timerExperiment.Resume();
 	controls.timerMeasurement.Resume();

@@ -54,17 +54,15 @@
 //
 */
 
-#define MESSAGE_WARNING_PHIGH				"Attention ! High PT above pressure limit \t\n Veuillez la mettre en dessous de : %f bar \t\n"
-#define MESSAGE_WARNING_PHNORMAL			"HAUTE PRESSION (%f) DEPASSANT LA SECURITE DE LA BASSE PRESSION (%f)\r\n PAR MESURE DE SECURITE, FERMETURE DE LA VANNE 6\r\n"
-#define MESSAGE_WARNING_CALOT_HIGH			"Attention ! Température du calo trop élevé par rapport à la température d'expérience\t\n"
-#define MESSAGE_WARNING_CALOT_NORMAL		"Attention ! Température du calo trop faible par rapport à la température d'expérience\t\n"
-#define MESSAGE_WARNING_CALOT_LOW			"Arrêt de l'expérience : La température du Calo étant trop élevée (supérieure à %d°C)\r\n"
-#define MESSAGE_WARNING_PHIGH_BOX			"Arrêt de l'expérience : La température du Calo étant trop faible (inférieure à %d°C)\r\n"
-#define MESSAGE_WARNING_PHIGH_V6			"High PT above pressure limit"
-#define MESSAGE_WARNING_THIGH_BOX			"High PT has returned to normal"
-#define MESSAGE_WARNING_TLOW_BOX			"Calorimeter temperature too high"
-#define MESSAGE_WARNING_THIGH_STOP			"Calorimeter temperature above pressure limit"
-#define MESSAGE_WARNING_TLOW_STOP			"Calorimeter temperature too low"
+#define MESSAGE_WARNING_PHIGH				"High range PT above pressure limit \t\n Veuillez la mettre en dessous de : %f bar \t\n"
+#define MESSAGE_WARNING_PHNORMAL			"High range PT pressure back to normal."
+#define MESSAGE_WARNING_PHIGH_V6			"HAUTE PRESSION (%f) DEPASSANT LA SECURITE DE LA BASSE PRESSION (%f)\r\n PAR MESURE DE SECURITE, FERMETURE DE LA VANNE 6\r\n"
+
+#define MESSAGE_WARNING_CALOT_HIGH			"Calorimeter temperature too high"
+#define MESSAGE_WARNING_CALOT_LOW			"Calorimeter temperature too low"
+#define MESSAGE_WARNING_CALOT_NORMAL		"Calorimeter temperature returned to normal"
+#define MESSAGE_WARNING_THIGH_STOP			"Experiment stopping :Calorimeter temperature too high"
+#define MESSAGE_WARNING_TLOW_STOP			"Experiment stopping: Calorimeter temperature too low"
 
 /*
 //

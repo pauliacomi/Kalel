@@ -13,10 +13,10 @@ public:
 
 	void GetLogs(std::string &logs);
 protected:
-	Storage storageVectors;
-	Server server;
-	Controls controlMechanisms;
-	ThreadManager threadManager;
+	Server server;								// Http server for REST
+	Storage storageVectors;						// Stores all settings, experiment data, logs etc
+	Controls controlMechanisms;					// Controls all machines
+	ThreadManager threadManager;	
 
 	void Ping(http_request* req, http_response* resp);
 	void Sync(http_request * req, http_response * resp);

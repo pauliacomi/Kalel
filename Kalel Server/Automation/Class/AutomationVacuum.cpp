@@ -1,5 +1,15 @@
 #include "Automation.h"
 
+// Utilities
+#include "../../../Kalel Shared/log.h"
+
+/*
+*
+*
+*			VACUUMING
+*
+*
+*/
 
 void Automation::SampleVacuum()
 {
@@ -20,7 +30,7 @@ void Automation::BottleVacuum()
 		storage.currentData->experimentStage = STAGE_VACUUM_BOTTLE;
 		storage.currentData->experimentStepStatus = STEP_STATUS_START;
 		storage.currentData->experimentInProgress = true;
-		controls.messageHandler->DisplayMessageBox(MESSAGE_VACUUM_BOTTLE_CLOSE, MB_OK | MB_ICONQUESTION, true);
+		LOG(logEVENT) << MESSAGE_VACUUM_BOTTLE_CLOSE;
 		
 		// Pause
 		eventPause = true;
@@ -33,8 +43,8 @@ void Automation::BottleVacuum()
 		&& storage.currentData->experimentWaiting == false)
 	{
 		storage.currentData->experimentStepStatus = STEP_STATUS_INPROGRESS;				// Set next step
-		controls.messageHandler->DisplayMessage(MESSAGE_VACUUM_BOTTLE_START);			// Let GUI know the step change
-		controls.messageHandler->DisplayMessage(MESSAGE_VACUUM_HIGHPRESSURE_START);
+		LOG(logINFO) << MESSAGE_VACUUM_BOTTLE_START;									// Let GUI know the step change
+		LOG(logINFO) << MESSAGE_VACUUM_HIGHPRESSURE_START;
 
 		controls.valveControls->CloseAll(true);											// Close everything
 		controls.valveControls->PumpActivate(true);										// Activate the pump
@@ -61,8 +71,8 @@ void Automation::BottleVacuum()
 			}
 			else
 			{
-				controls.messageHandler->DisplayMessage(MESSAGE_VACUUM_HIGHPRESSURE_END);
-				controls.messageHandler->DisplayMessage(MESSAGE_VACUUM_LOWPRESSURE_START);
+				LOG(logINFO) << MESSAGE_VACUUM_HIGHPRESSURE_END;
+				LOG(logINFO) << MESSAGE_VACUUM_LOWPRESSURE_START;
 				controls.valveControls->ValveOpen(4, true);
 				WaitSeconds(TIME_WAIT_VALVES);
 
@@ -111,7 +121,7 @@ void Automation::BottleVacuum()
 			}
 			else
 			{
-				controls.messageHandler->DisplayMessage(MESSAGE_VACUUM_LOWPRESSURE_END);
+				LOG(logINFO) << MESSAGE_VACUUM_LOWPRESSURE_END;
 
 				controls.valveControls->ValveOpen(8, true);
 				controls.valveControls->ValveOpen(7, true);
@@ -154,7 +164,7 @@ void Automation::BottleVacuum()
 	if (storage.currentData->experimentStepStatus == STEP_STATUS_INPROGRESS + 8
 		&& storage.currentData->experimentWaiting == false)
 	{
-		controls.messageHandler->DisplayMessage(MESSAGE_VACUUM_FINALOUTGAS_START);
+		LOG(logINFO) << MESSAGE_VACUUM_FINALOUTGAS_START;
 		WaitMinutes(temps_bouteille);
 		storage.currentData->experimentStepStatus = STEP_STATUS_END;
 	}
@@ -163,7 +173,7 @@ void Automation::BottleVacuum()
 	if (storage.currentData->experimentStepStatus == STEP_STATUS_END
 		&& storage.currentData->experimentWaiting == false)
 	{
-		controls.messageHandler->DisplayMessage(MESSAGE_VACUUM_BOTTLE_END);
+		LOG(logINFO) << MESSAGE_VACUUM_BOTTLE_END;
 
 		storage.currentData->experimentStage = STAGE_UNDEF;
 		storage.currentData->experimentStepStatus = STEP_STATUS_START;				// Let GUI know the step change

@@ -8,7 +8,7 @@
 
 
 // Synchronization classes
-#include "../../MessageHandler.h"											// Handles all the messages from this class to the client
+#include "../../../Kalel Shared/log.h"										// Logging
 #include "../../../Kalel Shared/soundHelpers.h"								// Sound handling for beeps
 
 // Measurement and manipulation classes
@@ -16,10 +16,9 @@
 #include "../../../Kalel Shared/Com Classes/ExperimentData.h"
 
 
-Security::Security(bool activated, ValveController & valveControl, MessageHandler & messageHandler)
+Security::Security(bool activated, ValveController & valveControl)
 	: securityActivated{ activated }
 	, valveController{ valveControl }
-	, messageHandler{ messageHandler }
 {
 }
 
@@ -27,7 +26,7 @@ Security::~Security()
 {
 }
 
-void Security::SecurityHighPressure(int experimentType, float maxPlow, float maxPhigh, const ExperimentData &expData)
+void Security::SecurityOverPressure(int experimentType, double maxPlow, double maxPhigh, const ExperimentData &expData)
 {
 	if (experimentType == EXPERIMENT_TYPE_MANUAL)
 		SecurityHighPressureManual(maxPlow,  maxPhigh, expData);
@@ -35,7 +34,7 @@ void Security::SecurityHighPressure(int experimentType, float maxPlow, float max
 		SecurityHighPressureAuto(maxPlow, maxPhigh, expData);
 }
 
-void Security::SecurityTemperatures(int experimentType, float maxPlow, float maxPhigh, const ExperimentData &expData)
+void Security::SecurityTemperatures(int experimentType, double maxPlow, double maxPhigh, const ExperimentData &expData)
 {
 	if (experimentType == EXPERIMENT_TYPE_MANUAL)
 		SecurityTemperaturesManual(maxPlow, maxPhigh, expData);
@@ -44,7 +43,7 @@ void Security::SecurityTemperatures(int experimentType, float maxPlow, float max
 }
 
 
-void Security::SecurityHighPressureManual(float maxPlow, float maxPhigh, const ExperimentData &expData)
+void Security::SecurityHighPressureManual(double maxPlow, double maxPhigh, const ExperimentData &expData)
 {
 	// Check for the pressure being higher than low pressure limit
 	if (expData.pressureLow > maxPlow)
@@ -52,9 +51,9 @@ void Security::SecurityHighPressureManual(float maxPlow, float maxPhigh, const E
 		// If valve 6 is open and pressure is higher than specified, close valve 6
 		if (valveController.ValveIsOpen(6))
 		{
-			messageHandler.DisplayMessage(MESSAGE_WARNING_PHIGH_V6, expData.pressureHigh, maxPlow);
+			LOG(logINFO) << MESSAGE_WARNING_PHIGH_V6 << expData.pressureHigh << maxPlow;
 			valveController.ValveClose(6, false);
-			messageHandler.DisplayMessage(MESSAGE_VALVE_CLOSED, 6);
+			LOG(logINFO) << MESSAGE_VALVE_CLOSED << 6;
 		}
 	}
 	else
@@ -62,7 +61,7 @@ void Security::SecurityHighPressureManual(float maxPlow, float maxPhigh, const E
 		if (!valveController.ValveIsOpen(6))
 		{
 			valveController.ValveOpen(6, false);
-			messageHandler.DisplayMessage(MESSAGE_VALVE_OPENED, 6);
+			LOG(logINFO) << MESSAGE_VALVE_OPENED << 6;
 		}
 	}
 
@@ -74,26 +73,23 @@ void Security::SecurityHighPressureManual(float maxPlow, float maxPhigh, const E
 			security_PressureHigh_flag = true;
 
 			// Alert user
-			messageHandler.DisplayMessageBox(MESSAGE_WARNING_PHIGH_BOX, MB_ICONERROR, false, maxPhigh);
-			messageHandler.DisplayMessage(MESSAGE_WARNING_PHIGH);
+			LOG(logWARNING) << MESSAGE_WARNING_PHIGH << maxPhigh;
 
 			// Play a sound
-			beep newBeep;
-			newBeep.error();
+			soundh::beep::error();
 		}
 	}
 	else
 		if (security_PressureHigh_flag)
 		{
-			messageHandler.DisplayMessage(MESSAGE_WARNING_PHNORMAL);
-			beep newBeep;
-			newBeep.allgood();
+			LOG(logINFO) << MESSAGE_WARNING_PHNORMAL;
+			soundh::beep::allgood();
 			security_PressureHigh_flag = FALSE;
 		}
 }
 
 
-void Security::SecurityHighPressureAuto(float maxPlow, float maxPhigh, const ExperimentData &expData)
+void Security::SecurityHighPressureAuto(double maxPlow, double maxPhigh, const ExperimentData &expData)
 {
 	if (securityActivated)
 	{
@@ -105,9 +101,9 @@ void Security::SecurityHighPressureAuto(float maxPlow, float maxPhigh, const Exp
 				// If valve 6 is open and pressure is higher than specified, close valve 6
 				if (valveController.ValveIsOpen(6))
 				{
-					messageHandler.DisplayMessage(MESSAGE_WARNING_PHIGH_V6, expData.pressureHigh, maxPlow);
+					LOG(logINFO) << MESSAGE_WARNING_PHIGH_V6 << expData.pressureHigh << maxPlow;
 					valveController.ValveClose(6, false);
-					messageHandler.DisplayMessage(MESSAGE_VALVE_CLOSED, 6);
+					LOG(logINFO) << MESSAGE_VALVE_CLOSED << 6;
 				}
 			}
 			else
@@ -115,7 +111,7 @@ void Security::SecurityHighPressureAuto(float maxPlow, float maxPhigh, const Exp
 				if (!valveController.ValveIsOpen(6))
 				{
 					valveController.ValveOpen(6, false);
-					messageHandler.DisplayMessage(MESSAGE_VALVE_OPENED, 6);
+					LOG(logINFO) << MESSAGE_VALVE_OPENED << 6;
 				}
 			}
 
@@ -138,20 +134,17 @@ void Security::SecurityTemperaturesManual(double maximumT, double minimumT, cons
 			security_TemperatureHigh_flag = true;
 
 			// Alert user
-			messageHandler.DisplayMessageBox(MESSAGE_WARNING_THIGH_BOX, MB_ICONERROR, false, maximumT);
-			messageHandler.DisplayMessage(MESSAGE_WARNING_CALOT_HIGH);
+			LOG(logWARNING) << MESSAGE_WARNING_CALOT_HIGH << maximumT;
 
 			// Play a sound
-			beep newBeep;
-			newBeep.error();
+			soundh::beep::error();
 		}
 	}
 	else
 		if (security_TemperatureHigh_flag)
 		{
-			messageHandler.DisplayMessage(MESSAGE_WARNING_CALOT_NORMAL);
-			beep newBeep;
-			newBeep.allgood();
+			LOG(logINFO) << MESSAGE_WARNING_CALOT_NORMAL;
+			soundh::beep::allgood();
 			security_TemperatureHigh_flag = FALSE;
 		}
 
@@ -163,20 +156,17 @@ void Security::SecurityTemperaturesManual(double maximumT, double minimumT, cons
 			security_TemperatureLow_flag = true;
 
 			// Alert user
-			messageHandler.DisplayMessageBox(MESSAGE_WARNING_TLOW_BOX, MB_ICONERROR, false, minimumT);
-			messageHandler.DisplayMessage(MESSAGE_WARNING_CALOT_LOW);
+			LOG(logWARNING) << MESSAGE_WARNING_CALOT_LOW << minimumT;
 
 			// Play a sound
-			beep newBeep;
-			newBeep.error();
+			soundh::beep::error();
 		}
 	}
 	else
 		if (security_TemperatureLow_flag)
 		{
-			messageHandler.DisplayMessage(MESSAGE_WARNING_CALOT_NORMAL);
-			beep newBeep;
-			newBeep.allgood();
+			LOG(logINFO) << MESSAGE_WARNING_CALOT_NORMAL;
+			soundh::beep::allgood();
 			security_TemperatureLow_flag = FALSE;
 		}
 }
@@ -192,12 +182,12 @@ void Security::SecuriteTemperaturesAuto(double maximumT, double minimumT, const 
 		{
 			if (expData.temperatureCalo >= maximumT)
 			{
-				messageHandler.DisplayMessage(MESSAGE_WARNING_THIGH_STOP, maximumT);
+				LOG(logINFO) << MESSAGE_WARNING_THIGH_STOP << maximumT;
 				//g_flagState = ARRET_URGENCE_TCH;
 			}
 			if (expData.temperatureCalo <= minimumT)
 			{
-				messageHandler.DisplayMessage(MESSAGE_WARNING_TLOW_STOP, minimumT);
+				LOG(logINFO) << MESSAGE_WARNING_TLOW_STOP << minimumT;
 				//g_flagState = ARRET_URGENCE_TCB;
 			}
 		}

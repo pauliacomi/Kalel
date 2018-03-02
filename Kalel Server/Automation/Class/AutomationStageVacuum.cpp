@@ -1,5 +1,16 @@
 #include "Automation.h"
 
+// Utilities
+#include "../../../Kalel Shared/log.h"
+
+/*
+*
+*
+*			VACUUMING
+*
+*
+*/
+
 void Automation::StageVacuum(bool separateFunctionality)
 {
 	
@@ -7,8 +18,8 @@ void Automation::StageVacuum(bool separateFunctionality)
 		&& storage.currentData->experimentWaiting == false)
 	{
 		storage.currentData->experimentStepStatus = STEP_STATUS_INPROGRESS;					// Set next step
-		controls.messageHandler->DisplayMessage(MESSAGE_VACUUM_STAGE_START);				// Let GUI know the step change
-		controls.messageHandler->DisplayMessage(MESSAGE_VACUUM_HIGHPRESSURE_START);
+		LOG(logINFO) << MESSAGE_VACUUM_STAGE_START;											// Let GUI know the step change
+		LOG(logINFO) << MESSAGE_VACUUM_HIGHPRESSURE_START;
 
 		controls.valveControls->CloseAll(true);												// Close all valves
 		controls.valveControls->PumpActivate(true);											// Activate the pump
@@ -29,8 +40,8 @@ void Automation::StageVacuum(bool separateFunctionality)
 		}
 		else
 		{
-			controls.messageHandler->DisplayMessage(MESSAGE_VACUUM_HIGHPRESSURE_END);
-			controls.messageHandler->DisplayMessage(MESSAGE_VACUUM_LOWPRESSURE_START);
+			LOG(logINFO) << MESSAGE_VACUUM_HIGHPRESSURE_END;
+			LOG(logINFO) << MESSAGE_VACUUM_LOWPRESSURE_START;
 			controls.valveControls->ValveOpen(6, true);
 			WaitSeconds(TIME_WAIT_VALVES_SHORT);
 
@@ -78,7 +89,7 @@ void Automation::StageVacuum(bool separateFunctionality)
 		}
 		else
 		{
-			controls.messageHandler->DisplayMessage(MESSAGE_VACUUM_LOWPRESSURE_END);
+			LOG(logINFO) << MESSAGE_VACUUM_LOWPRESSURE_END;
 
 			controls.valveControls->ValveOpen(8, true);
 			controls.valveControls->ValveOpen(7, true);
@@ -119,11 +130,11 @@ void Automation::StageVacuum(bool separateFunctionality)
 	if (storage.currentData->experimentStepStatus == STEP_STATUS_INPROGRESS + 8
 		&& storage.currentData->experimentWaiting == false)
 	{
-		controls.messageHandler->DisplayMessage(MESSAGE_VACUUM_FINALOUTGAS_START);
+		LOG(logINFO) << MESSAGE_VACUUM_FINALOUTGAS_START;
 
 		if (separateFunctionality)
 		{
-			controls.messageHandler->DisplayMessageBox(MESSAGE_VACUUM_USER_CHOICE, MB_ICONINFORMATION | MB_OK, true);
+			LOG(logEVENT) << MESSAGE_VACUUM_USER_CHOICE;
 			eventPause = true;
 			storage.automationControl.notify_all();
 		}
@@ -141,7 +152,7 @@ void Automation::StageVacuum(bool separateFunctionality)
 	if (storage.currentData->experimentStepStatus == STEP_STATUS_END
 		&& storage.currentData->experimentWaiting == false)
 	{
-		controls.messageHandler->DisplayMessage(MESSAGE_VACUUM_FINALOUTGAS_END);
+		LOG(logINFO) << MESSAGE_VACUUM_FINALOUTGAS_END;
 
 		storage.currentData->experimentStepStatus = STEP_STATUS_START;													// Let GUI know the step change
 
@@ -156,7 +167,7 @@ void Automation::StageVacuum(bool separateFunctionality)
 		}
 		else
 		{
-			controls.messageHandler->DisplayMessage(MESSAGE_VACUUM_STAGE_END);
+			LOG(logINFO) << MESSAGE_VACUUM_STAGE_END;
 
 			storage.currentData->experimentStepStatus = STAGE_END_AUTOMATIC;
 		}

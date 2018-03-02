@@ -30,6 +30,7 @@ public:
 
 	bool ReadChannel(int chanNo, double* result);
 
+	double ReadChannel(int chanNo);
 	double ReadChannel1();
 	double ReadChannel2();
 };

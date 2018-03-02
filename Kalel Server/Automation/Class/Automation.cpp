@@ -1,5 +1,8 @@
 #include "Automation.h"
 
+// Utilities
+#include "../../../Kalel Shared/log.h"
+
 Automation::Automation(Storage &s, Controls &c)
 	: storage{ s }
 	, controls{ c }
@@ -26,11 +29,10 @@ Automation::~Automation()
 //	initialize everything
 //	loop
 //	{
-//		1. Get the experiment settings if they are new
-//		2. Run through the automation algorithm for the chosen program (nothing, manual, automatic, vacuum, etc)
-//		3. IF WAITING
+//		1. Run through the automation algorithm for the chosen program (nothing, manual, automatic, vacuum, etc)
+//		2. IF WAITING
 //				check whether the wait is complete and reset the wait
-//		4. Event-based wait. If any events are triggered in this time, the thread performs the requested action.
+//		3. Event-based wait. If any events are triggered in this time, the thread performs the requested action.
 //	}
 //
 //
@@ -78,7 +80,7 @@ void Automation::Execution()
 
 		// If waiting complete
 		if (storage.currentData->experimentWaiting &&														// If the wait functionality is requested																					
-			storage.currentData->timeToEquilibrateCurrent > storage.currentData->timeToEquilibrate) {			//and the time has been completed
+			storage.currentData->timeToEquilibrateCurrent > storage.currentData->timeToEquilibrate) {		//and the time has been completed
 
 			// Stop the timer
 			controls.timerWaiting.Pause();
@@ -108,6 +110,7 @@ void Automation::Execution()
 			{
 				eventSettingsModified = false;
 
+				// Record change of experiment settings in output files
 				if (storage.currentData->experimentInProgress == true) {
 					controls.fileWriter->RecordDataChange(false, *storage.newExperimentSettings, *storage.experimentSettings, *storage.currentData);	// non-CSV
 					controls.fileWriter->RecordDataChange(true, *storage.newExperimentSettings, *storage.experimentSettings, *storage.currentData);		// CSV
@@ -163,7 +166,7 @@ bool Automation::ExecutionManual()
 	if (storage.currentData->experimentStepStatus == STEP_STATUS_UNDEF) {
 
 		// Send start message
-		controls.messageHandler->ExperimentStart();
+		LOG(logINFO) << MESSAGE_EXPSTART;
 		
 		ResetAutomation();
 
@@ -176,7 +179,7 @@ bool Automation::ExecutionManual()
 		err = controls.fileWriter->EnteteCreate(*storage.experimentSettings, *storage.machineSettings);				// Entete TXT
 		err = controls.fileWriter->EnteteCSVCreate(*storage.experimentSettings, *storage.machineSettings);			// Entete CSV
 		if (err){
-			controls.messageHandler->DisplayMessageBox(ERROR_PATHUNDEF, MB_ICONERROR | MB_OK, false);
+			LOG(logERROR) << ERROR_PATHUNDEF;
 		}
 		controls.fileWriter->FileMeasurementCreate(storage.experimentSettings->dataGeneral);						// Measurement file
 
@@ -198,7 +201,7 @@ bool Automation::ExecutionAuto()
 	if (storage.currentData->experimentStepStatus == STEP_STATUS_UNDEF){
 
 		// Send start message
-		controls.messageHandler->ExperimentStart();
+		LOG(logINFO) << MESSAGE_EXPSTART;
 
 		ResetAutomation();
 
@@ -260,7 +263,7 @@ void Automation::ResetAutomation()
 	shutdownReason = STOP_CANCEL;
 
 	// Delete all current measurements
-	storage.deleteData();
+	storage.dataCollection.del();
 
 	// Time
 	storage.currentData->timeStart = time(0);

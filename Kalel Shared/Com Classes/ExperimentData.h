@@ -1,5 +1,3 @@
-#ifndef EXPERIMENT_DATA
-#define EXPERIMENT_DATA
 #pragma once
 
 #include <ctime>
@@ -152,5 +150,3 @@ public:
 };
 
 typedef std::map<std::chrono::system_clock::time_point, std::shared_ptr<ExperimentData>> ExperimentDataStorageArray;
-
-#endif

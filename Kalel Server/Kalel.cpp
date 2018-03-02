@@ -1,28 +1,28 @@
 #include "Kalel.h"
 
-#include "Parameters/Parametres.h"
-#include "MessageHandler.h"
+// Helpers
+#include "../Kalel Shared/stringHelpers.h"
 
+// JSON
 #include "../Kalel Shared/Netcode/json.hpp"
-#include "../Kalel Shared/Netcode/stdHelpers.h"
-#include "../Kalel Shared/unicodeConv.h"
-
 #include "../Kalel Shared/Com Classes/Serialization.h"
+
+// Settings file
+#include "Parameters/Parametres.h"
+
+// Com classes
 #include "../Kalel Shared/Com Classes/ControlInstrumentState.h"
 #include "../Kalel Shared/Com Classes/ExperimentData.h"
 #include "../Kalel Shared/Com Classes/ExperimentSettings.h"
 #include "../Kalel Shared/Com Classes/MachineSettings.h"
+#include "../Kalel Shared/log.h"
 
 // Std
 #include <vector>
 #include <string>
 
-// Logging functionality
-#include "../Kalel Shared/log.h"
-#define FILE_LOGGING	"server.log"		// Comment this line to disable file logging
-#define MAP_LOGGING							// Comment this line to disable map logging
 #define LOG_LEVEL		logDEBUG4			// Change the level of logging here
-
+#define FILE_LOGGING	"server.log"		// Comment this line to disable file logging
 
 using json = nlohmann::json;
 
@@ -30,20 +30,20 @@ Kalel::Kalel()
 	: controlMechanisms{ storageVectors }
 	, threadManager{ storageVectors, controlMechanisms}
 {
+
 	//
 	// Configure logging
+
+	GeneralLog::ReportingLevel() = LOG_LEVEL;
+	OutputGeneral::Info() =	&storageVectors.infoLogs;
+	OutputGeneral::Event() = &storageVectors.eventLogs;
+	OutputGeneral::Debug() = &storageVectors.debugLogs;
+
 #ifdef FILE_LOGGING
 	FILELog::ReportingLevel() = LOG_LEVEL;
 	FILE * f;
 	fopen_s(&f, FILE_LOGGING, "w");
 	Output2FILE::Stream() = f;
-#endif // FILE_LOGGING
-
-#ifdef MAP_LOGGING
-	MapLog::ReportingLevel() = LOG_LEVEL;
-	Output2map::Info() = &storageVectors.infoLogs;
-	Output2map::Error() = &storageVectors.errorLogs;
-	Output2map::Debug() = &storageVectors.debugLogs;
 #endif // FILE_LOGGING
 
 
@@ -109,7 +109,7 @@ Kalel::~Kalel()
 void Kalel::GetLogs(std::string &logs) {
 	logs.clear();
 
-	auto localCollection = storageVectors.getInfoLogs();
+	auto localCollection = storageVectors.infoLogs.get();
 
 	for (auto it = localCollection.begin(); it != localCollection.end(); ++it)
 	{
@@ -133,6 +133,7 @@ void Kalel::GetLogs(std::string &logs) {
 *********************************/
 void Kalel::Ping(http_request* req, http_response* resp)
 {
+	LOG(logINFO) << "Machine Settings" << req->method_;
 	if (req->method_ == http::method::get)
 	{
 		resp->status_ = http::responses::ok;
@@ -208,7 +209,7 @@ void Kalel::Sync(http_request* req, http_response* resp)
 void Kalel::MachineSettingsSync(http_request* req, http_response* resp)
 {
 	timeh::timer t;
-	MEM_LOG(logINFO) << "Machine Settings" << req->method_;
+	LOG(logINFO) << "Machine Settings" << req->method_;
 	t.Start();
 
 	// GET
@@ -244,7 +245,7 @@ void Kalel::MachineSettingsSync(http_request* req, http_response* resp)
 		}
 	}
 
-	MEM_LOG(logINFO) << std::to_string(t.TimeMilliseconds());
+	LOG(logINFO) << std::to_string(t.TimeMilliseconds());
 }
 
 
@@ -254,7 +255,7 @@ void Kalel::MachineSettingsSync(http_request* req, http_response* resp)
 void Kalel::ExperimentSettingsSync(http_request* req, http_response* resp)
 {
 	timeh::timer t;
-	MEM_LOG(logINFO) << "ExpSettings" << req->method_;
+	LOG(logINFO) << "ExpSettings" << req->method_;
 	t.Start();
 
 	// GET
@@ -287,7 +288,7 @@ void Kalel::ExperimentSettingsSync(http_request* req, http_response* resp)
 		}
 	}
 
-	MEM_LOG(logINFO) << std::to_string(t.TimeMilliseconds());
+	LOG(logINFO) << std::to_string(t.TimeMilliseconds());
 }
 
 
@@ -297,7 +298,7 @@ void Kalel::ExperimentSettingsSync(http_request* req, http_response* resp)
 void Kalel::InstrumentStateSync(http_request* req, http_response* resp)
 {
 	timeh::timer t;
-	MEM_LOG(logINFO) << "Instrument state" << req->method_;
+	LOG(logINFO) << "Instrument state" << req->method_;
 	t.Start();
 
 	// GET
@@ -329,11 +330,11 @@ void Kalel::InstrumentStateSync(http_request* req, http_response* resp)
 				instrumentType = INSTRUMENT_PUMP;
 			}
 			else {
-				instrumentType = To<int>(req->params_.at("type"));
+				instrumentType = stringh::To<int>(req->params_.at("type"));
 			}
 
-			auto instrumentNumber = To<int>(req->params_.at("number"));
-			auto instrumentState = To<bool>(req->params_.at("active"));
+			auto instrumentNumber = stringh::To<int>(req->params_.at("number"));
+			auto instrumentState = stringh::To<bool>(req->params_.at("active"));
 
 
 			threadManager.ThreadManualAction(instrumentType, instrumentNumber, instrumentState);		// TODO: Should have a better way
@@ -351,7 +352,7 @@ void Kalel::InstrumentStateSync(http_request* req, http_response* resp)
 		}
 	}
 
-	MEM_LOG(logINFO) << std::to_string(t.TimeMilliseconds());
+	LOG(logINFO) << std::to_string(t.TimeMilliseconds());
 }
 
 
@@ -361,7 +362,7 @@ void Kalel::InstrumentStateSync(http_request* req, http_response* resp)
 void Kalel::DataSync(http_request* req, http_response* resp)
 {
 	timeh::timer t;
-	MEM_LOG(logINFO) << "Data sync";
+	LOG(logINFO) << "Data sync";
 	t.Start();
 
 	if (req->method_ == http::method::get)
@@ -374,11 +375,11 @@ void Kalel::DataSync(http_request* req, http_response* resp)
 			req->params_.at("time").empty() ||
 			req->params_.at("time") == "start")
 		{
-			localCollection = std::make_unique<ExperimentDataStorageArray>(storageVectors.getData());
+			localCollection = std::make_unique<ExperimentDataStorageArray>(storageVectors.dataCollection.get());
 		}
 		else
 		{
-			localCollection = std::make_unique<ExperimentDataStorageArray>(storageVectors.getData(timeh::StringToTimePoint(req->params_.at("time"))));
+			localCollection = std::make_unique<ExperimentDataStorageArray>(storageVectors.dataCollection.get(timeh::StringToTimePoint(req->params_.at("time"))));
 		}
 
 		if (localCollection->size() != 0)						// If any exist
@@ -386,14 +387,14 @@ void Kalel::DataSync(http_request* req, http_response* resp)
 			json j;
 
 			std::string s = "Serialisation of " + std::to_string(localCollection->size());
-			MEM_LOG(logINFO) << s;
+			LOG(logINFO) << s;
 			t.Start();
 			
 			for (const auto& kv : *localCollection) {
 				j.push_back(json::object_t::value_type({ timeh::TimePointToString(kv.first), *(kv.second) }));
 			}
 
-			MEM_LOG(logINFO) << std::to_string(t.TimeMilliseconds());
+			LOG(logINFO) << std::to_string(t.TimeMilliseconds());
 
 			resp->status_ = http::responses::ok;
 			resp->content_type_ = http::mimetype::appjson;
@@ -405,7 +406,7 @@ void Kalel::DataSync(http_request* req, http_response* resp)
 		}
 	}
 
-	MEM_LOG(logINFO) << std::to_string(t.TimeMilliseconds());
+	LOG(logINFO) << std::to_string(t.TimeMilliseconds());
 }
 
 
@@ -415,7 +416,7 @@ void Kalel::DataSync(http_request* req, http_response* resp)
 void Kalel::LogSync(http_request* req, http_response* resp)
 {
 	timeh::timer t;
-	MEM_LOG(logINFO) << "Log sync";
+	LOG(logINFO) << "Log sync";
 	t.Start();
 
 	if (req->method_ == http::method::get)
@@ -428,11 +429,11 @@ void Kalel::LogSync(http_request* req, http_response* resp)
 			req->params_.at("time").empty() ||
 			req->params_.at("time") == "start")
 		{
-			localCollection = std::make_unique<TextStorage>(storageVectors.getInfoLogs());
+			localCollection = std::make_unique<TextStorage>(storageVectors.infoLogs.get());
 		}
 		else
 		{
-			localCollection = std::make_unique<TextStorage>(storageVectors.getInfoLogs(timeh::StringToTimePoint(req->params_.at("time"))));
+			localCollection = std::make_unique<TextStorage>(storageVectors.infoLogs.get(timeh::StringToTimePoint(req->params_.at("time"))));
 		}
 
 		if (localCollection->size() != 0)							// If any exist
@@ -453,7 +454,7 @@ void Kalel::LogSync(http_request* req, http_response* resp)
 		}
 	}
 
-	MEM_LOG(logINFO) << std::to_string(t.TimeMilliseconds());
+	LOG(logINFO) << std::to_string(t.TimeMilliseconds());
 }
 
 
@@ -463,7 +464,7 @@ void Kalel::LogSync(http_request* req, http_response* resp)
 void Kalel::RequestSync(http_request* req, http_response* resp)
 {
 	timeh::timer t;
-	MEM_LOG(logINFO) << "Request sync";
+	LOG(logINFO) << "Request sync";
 	t.Start();
 
 	if (req->method_ == http::method::get)
@@ -476,11 +477,11 @@ void Kalel::RequestSync(http_request* req, http_response* resp)
 			req->params_.at("time").empty() ||
 			req->params_.at("time") == "start")
 		{
-			localCollection = std::make_unique<TextStorage>(storageVectors.getErrLogs());
+			localCollection = std::make_unique<TextStorage>(storageVectors.eventLogs.get());
 		}
 		else
 		{
-			localCollection = std::make_unique<TextStorage>(storageVectors.getInfoLogs(timeh::StringToTimePoint(req->params_.at("time"))));
+			localCollection = std::make_unique<TextStorage>(storageVectors.eventLogs.get(timeh::StringToTimePoint(req->params_.at("time"))));
 		}
 
 		if (localCollection->size() != 0)							// If any exist
@@ -501,7 +502,7 @@ void Kalel::RequestSync(http_request* req, http_response* resp)
 		}
 	}
 
-	MEM_LOG(logINFO) << std::to_string(t.TimeMilliseconds());
+	LOG(logINFO) << std::to_string(t.TimeMilliseconds());
 }
 
 
@@ -570,7 +571,7 @@ void Kalel::Debug(http_request* req, http_response* resp)
 
 			resp->content_type_ = http::mimetype::texthtml;
 
-			for (size_t i = 0; i < To<size_t>(req->params_.at("return")); i++)
+			for (size_t i = 0; i < stringh::To<size_t>(req->params_.at("return")); i++)
 			{
 				resp->answer_ += "test";
 			}

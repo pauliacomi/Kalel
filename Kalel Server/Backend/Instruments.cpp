@@ -1,14 +1,12 @@
 #include "Instruments.h"
 
-#include "../MessageHandler.h"
-
 #include "../../Kalel Shared/Resources/DefineInstruments.h"
 #include "../../Kalel Shared/Resources/DefineText.h"
+#include "../../Kalel Shared/log.h"
 
 #include <algorithm> 
 
-Instruments::Instruments(MessageHandler & messageHandler, MachineSettings & m)
-	: mh{ messageHandler }
+Instruments::Instruments(MachineSettings & m)
 {	
 	Reset(m);
 }
@@ -142,7 +140,7 @@ void Instruments::Init(int readernumber, Reader & r, int instrumentnumber, Instr
 		}
 		catch (const std::exception&) {
 			std::string errorInit;
-			mh.DisplayMessageBox(MESSAGE_INSTRUMENT_INIT_FAIL, MB_ICONERROR | MB_OK, false, errorInit);
+			LOG(logERROR) << MESSAGE_INSTRUMENT_INIT_FAIL << errorInit;
 		}
 
 		// Save read functions

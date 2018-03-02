@@ -2,20 +2,21 @@
 #include "Client.h"
 
 #include "http_helpers.h"
-#include "stdHelpers.h"
 #include "URLHelper.h"
 #include "Netcode Resources.h"
 
 // Logging functionality
+#include "../stringHelpers.h"
 #include "../log.h"	
-#define FILE_LOGGING	"client.log"		// Comment this line to disable file logging
-#define LOG_LEVEL		logDEBUG4			// Change the level of logging here
 
 #include <sstream>
 
 
 Client::Client()
 {
+
+#define FILE_LOGGING	"client.log"		// Comment this line to disable file logging
+#define LOG_LEVEL		logDEBUG4			// Change the level of logging here
 
 #ifdef FILE_LOGGING
 
@@ -91,7 +92,7 @@ unsigned Client::Process(std::string ip, std::string port, std::function<void(ht
 	std::string reqUrl;															// Build URL
 	URLHelper::BuildReq(reqUrl, request.path_, request.params_);
 
-	request.content_length_ = StringFrom(request.entity_.size());
+	request.content_length_ = stringh::StringFrom(request.entity_.size());
 
 	// Build string request and send it
 	std::string requestString;
@@ -171,11 +172,11 @@ unsigned Client::Process(std::string ip, std::string port, std::function<void(ht
 
 		responseString += line;
 
-		unsigned int pos_cr_lf = line.find_first_of("\x0a\x0d");
+		size_t pos_cr_lf = line.find_first_of("\x0a\x0d");
 		if (pos_cr_lf == 0) {
 			if (messageToReceive)		// a message body is specified using "Content-Length" header, will receive the required number of bytes
 			{						
-				u_long bytes = To<u_long>(response.content_length_);
+				u_long bytes = stringh::To<u_long>(response.content_length_);
 				try
 				{
 					line = l_sock.ReceiveBytes(bytes);

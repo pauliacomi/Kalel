@@ -14,14 +14,13 @@
 
 #include <mutex>
 
-class MessageHandler;
 class MachineSettings;
 
 class ValveController :
 	public NI_USB_6008
 {
 public:
-	ValveController(MessageHandler & messageHandler, int port);
+	ValveController(int port);
 	~ValveController(void);
 	void Reset(MachineSettings & m);
 
@@ -52,8 +51,7 @@ public:
 	void SetReadPort(int port);
 
 private:
-	std::mutex ctrlmutex;						// locks to prevent clash of threads 
-	MessageHandler & messageHandler;
+	std::mutex ctrlmutex;						// locks to prevent clash of threads
 };
 
 #endif

@@ -194,7 +194,7 @@ unsigned ThreadManager::ShutdownAutomation()
 		// Join thread
 		automationThread.join();
 
-		// Delete threads
+		// Delete thread
 		automation.reset(nullptr);
 
 	}

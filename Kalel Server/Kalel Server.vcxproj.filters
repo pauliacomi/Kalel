@@ -150,9 +150,6 @@
     <ClInclude Include="..\Kalel Shared\Netcode\Socket.h">
       <Filter>Header Files\Common\Netcode</Filter>
     </ClInclude>
-    <ClInclude Include="..\Kalel Shared\Netcode\stdHelpers.h">
-      <Filter>Header Files\Common\Netcode</Filter>
-    </ClInclude>
     <ClInclude Include="..\Kalel Shared\Netcode\URLHelper.h">
       <Filter>Header Files\Common\Netcode</Filter>
     </ClInclude>
@@ -195,9 +192,6 @@
     <ClInclude Include="..\Kalel Shared\Netcode\http_response.h">
       <Filter>Header Files\Common\Netcode</Filter>
     </ClInclude>
-    <ClInclude Include="..\Kalel Shared\unicodeConv.h">
-      <Filter>Header Files\Common</Filter>
-    </ClInclude>
     <ClInclude Include="..\Kalel Shared\Netcode\http_define.h">
       <Filter>Header Files\Common\Netcode</Filter>
     </ClInclude>
@@ -207,9 +201,6 @@
     <ClInclude Include="..\Kalel Shared\Resources\DefineText.h">
       <Filter>Header Files\Common\Resources</Filter>
     </ClInclude>
-    <ClInclude Include="..\Kalel Shared\stringFormat.h">
-      <Filter>Header Files\Common</Filter>
-    </ClInclude>
     <ClInclude Include="Automation\Old\Manip.h">
       <Filter>Header Files\Automation\Manip Old</Filter>
     </ClInclude>
@@ -218,9 +209,6 @@
     </ClInclude>
     <ClInclude Include="Automation\Old\Manip_AutoGaz.h">
       <Filter>Header Files\Automation\Manip Old</Filter>
-    </ClInclude>
-    <ClInclude Include="MessageHandler.h">
-      <Filter>Header Files\Automation</Filter>
     </ClInclude>
     <ClInclude Include="Automation\Measurement\Measurement.h">
       <Filter>Header Files\Automation\Measurement</Filter>
@@ -246,9 +234,6 @@
     <ClInclude Include="..\Kalel Shared\timeHelpers.h">
       <Filter>Header Files\Common</Filter>
     </ClInclude>
-    <ClInclude Include="..\Kalel Shared\lockedMap.h">
-      <Filter>Header Files\Common</Filter>
-    </ClInclude>
     <ClInclude Include="..\Kalel Shared\soundHelpers.h">
       <Filter>Header Files\Common</Filter>
     </ClInclude>
@@ -269,6 +254,12 @@
     </ClInclude>
     <ClInclude Include="Backend\Instruments.h">
       <Filter>Header Files\Backend</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Kalel Shared\stringHelpers.h">
+      <Filter>Header Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Kalel Shared\classHelpers.h">
+      <Filter>Header Files\Common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -443,9 +434,6 @@
     <ClCompile Include="..\Kalel Shared\Netcode\Socket.cpp">
       <Filter>Source Files\Common\Netcode</Filter>
     </ClCompile>
-    <ClCompile Include="..\Kalel Shared\Netcode\stdHelpers.cpp">
-      <Filter>Source Files\Common\Netcode</Filter>
-    </ClCompile>
     <ClCompile Include="..\Kalel Shared\Netcode\URLHelper.cpp">
       <Filter>Source Files\Common\Netcode</Filter>
     </ClCompile>
@@ -464,12 +452,6 @@
     <ClCompile Include="..\Kalel Shared\Com Classes\ExperimentHelperClasses.cpp">
       <Filter>Source Files\Common\Com Classes</Filter>
     </ClCompile>
-    <ClCompile Include="MessageHandler.cpp">
-      <Filter>Source Files\Automation</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Kalel Shared\unicodeConv.cpp">
-      <Filter>Source Files\Common</Filter>
-    </ClCompile>
     <ClCompile Include="..\Kalel Shared\Netcode\http_helpers.cpp">
       <Filter>Source Files\Common\Netcode</Filter>
     </ClCompile>
@@ -486,9 +468,6 @@
       <Filter>Source Files\Backend\Wrapper Classes</Filter>
     </ClCompile>
     <ClCompile Include="..\Kalel Shared\timeHelpers.cpp">
-      <Filter>Source Files\Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Kalel Shared\lockedMap.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
     <ClCompile Include="..\Kalel Shared\soundHelpers.cpp">
@@ -511,6 +490,9 @@
     </ClCompile>
     <ClCompile Include="Backend\Instruments.cpp">
       <Filter>Source Files\Backend</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Kalel Shared\stringHelpers.cpp">
+      <Filter>Source Files\Common</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

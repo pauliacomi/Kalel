@@ -1,7 +1,7 @@
 #include "../Forcelib.h"
 #include "URLHelper.h"
 
-#include "stdHelpers.h"
+#include "../stringHelpers.h"
 
 #include <iostream>
 #include <sstream>
@@ -130,7 +130,7 @@ void URLHelper::SplitUrl(std::string const& url, std::string& protocol, std::str
 		}
 	}
 	else if (protocol == "file") {
-		path = ReplaceInStr(server, "\\", "/");
+		path = stringh::ReplaceInStr(server, "\\", "/");
 		server = "";
 	}
 	else {

@@ -231,6 +231,13 @@ bool Keithley::ReadChannel(int chanNo, double* result)
 // le '(string)resultat' sera converti en double et sera attribué au 
 // '(double)resultat' qui est mis en parametre.
 
+double Keithley::ReadChannel(int chanNo)
+{
+	double result;
+	ReadChannel(chanNo, &result);
+	return result;
+}
+
 double Keithley::ReadChannel1()
 {
 	double result;

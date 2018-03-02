@@ -48,7 +48,7 @@ public:
 	float PressionSecuriteBassePression = 1;				// Considered the maximum pressure for the low range pressure transmitter
 	float PressionSecuriteHautePression = 5;				// Considered the maximum pressure for the high range pressure transmitter
 
-	float PressionLimiteVide = 0.1;							// Used for determining the pressure considered "good vacuum"
+	float PressionLimiteVide = 0.1f;						// Used for determining the pressure considered "good vacuum"
 	
 	bool PresenceTuyereSonique = false;						// Used for user information (no calculations)
 	float VolumeRef = 1;									// Used for user information (no calculations)

@@ -40,5 +40,5 @@ protected:
 
 	CEdit pEditMessages;
 	CString displayText;
-	int logSize;
+	size_t logSize;
 };

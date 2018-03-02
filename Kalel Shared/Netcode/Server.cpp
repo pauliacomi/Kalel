@@ -2,10 +2,10 @@
 
 #include "http_helpers.h"
 #include "URLHelper.h"
-#include "stdHelpers.h"
 #include "base64.h"
 #include "Netcode Resources.h"
 
+#include "../stringHelpers.h"
 #include "../timeHelpers.h"
 #include "../log.h"	
 
@@ -17,8 +17,8 @@ Server::Server(PCSTR port)
 	// Listen on the socket
 	listeningSocket.Listen(port);
 
-	MEM_LOG(logINFO) << LOG_LISTENING << listeningSocket.GetSocket();
-	FILE_LOG(logINFO) << LOG_LISTENING << listeningSocket.GetSocket();
+	LOG(logDEBUG) << LOG_LISTENING << listeningSocket.GetSocket();
+	FILE_LOG(logDEBUG) << LOG_LISTENING << listeningSocket.GetSocket();
 }
 
 
@@ -53,7 +53,7 @@ void Server::Start()
 
 unsigned Server::AcceptLoop()
 {
-	MEM_LOG(logDEBUG1) << LOG_ACCEPT_ENTER;
+	LOG(logDEBUG1) << LOG_ACCEPT_ENTER;
 	FILE_LOG(logDEBUG1) << LOG_ACCEPT_ENTER;
 
 	listeningSocket.Accept_PrimeSelect();
@@ -76,12 +76,12 @@ unsigned Server::AcceptLoop()
 		}
 		catch (const std::exception& e)
 		{
-			MEM_LOG(logERROR) << e.what();
+			LOG(logERROR) << e.what();
 			FILE_LOG(logERROR) << e.what();
 			return 1;
 		}
 
-		MEM_LOG(logDEBUG1) << LOG_ACCEPTED_SOCK << theirIP;
+		LOG(logDEBUG1) << LOG_ACCEPTED_SOCK << theirIP;
 		FILE_LOG(logDEBUG1) << LOG_ACCEPTED_SOCK << theirIP;
 
 		std::unique_ptr<Socket> acceptedSocket = std::make_unique<Socket>(s);			// Create a client socket pointer from the accepted SOCKET
@@ -89,7 +89,7 @@ unsigned Server::AcceptLoop()
 		std::thread(&Server::Process, this, std::move(acceptedSocket)).detach();		// Start the request processing thread
 	}
 
-	MEM_LOG(logDEBUG1) << LOG_ACCEPT_LEAVE;
+	LOG(logDEBUG1) << LOG_ACCEPT_LEAVE;
 	FILE_LOG(logDEBUG1) << LOG_ACCEPT_LEAVE;
 
 	return 0;
@@ -99,7 +99,7 @@ unsigned Server::AcceptLoop()
 unsigned Server::Process(std::unique_ptr<Socket> sock)
 {
 
-	MEM_LOG(logDEBUG2) << LOG_PROCESS_ENTER << sock->GetSocket();
+	LOG(logDEBUG2) << LOG_PROCESS_ENTER << sock->GetSocket();
 	FILE_LOG(logDEBUG2) << LOG_PROCESS_ENTER << sock->GetSocket();
 
 
@@ -114,7 +114,7 @@ unsigned Server::Process(std::unique_ptr<Socket> sock)
 		requestString = sock->ReceiveLine();
 	}
 	catch (const std::exception& e)	{
-		MEM_LOG(logERROR) << e.what();
+		LOG(logERROR) << e.what();
 		FILE_LOG(logERROR) << e.what();
 	}
 
@@ -130,7 +130,7 @@ unsigned Server::Process(std::unique_ptr<Socket> sock)
 
 	request.method_ = ParseMethod(requestString.substr(0, posSpace));
 	if(request.method_.empty()){
-		MEM_LOG(logWARNING) << LOG_METHOD_UNKNOWN << sock->GetSocket();
+		LOG(logWARNING) << LOG_METHOD_UNKNOWN << sock->GetSocket();
 		FILE_LOG(logWARNING) << LOG_METHOD_UNKNOWN << sock->GetSocket();
 		return 1;
 	}
@@ -150,7 +150,7 @@ unsigned Server::Process(std::unique_ptr<Socket> sock)
 		}
 		catch (const std::exception& e)
 		{
-			MEM_LOG(logERROR) << e.what();
+			LOG(logERROR) << e.what();
 			FILE_LOG(logERROR) << e.what();
 		}
 
@@ -160,11 +160,11 @@ unsigned Server::Process(std::unique_ptr<Socket> sock)
 		requestString += line;
 		
 		// Check for CRLF position
-		unsigned int pos_cr_lf = line.find_first_of("\x0a\x0d");
+		size_t pos_cr_lf = line.find_first_of("\x0a\x0d");
 		if (pos_cr_lf == 0) {						// if the line is empty, it's either the end of the request or we are expecting a message
 			if (messageToReceive)					// if we are expecting a message body, receive 
 			{
-				u_long bytes = To<u_long>(request.content_length_);
+				u_long bytes = stringh::To<u_long>(request.content_length_);
 
 				try
 				{
@@ -172,7 +172,7 @@ unsigned Server::Process(std::unique_ptr<Socket> sock)
 				}
 				catch (const std::exception& e)
 				{
-					MEM_LOG(logERROR) << e.what();
+					LOG(logERROR) << e.what();
 					FILE_LOG(logERROR) << e.what();
 				}
 
@@ -189,7 +189,7 @@ unsigned Server::Process(std::unique_ptr<Socket> sock)
 			std::string encoded = line.substr(http::header::authorization.size());
 			std::string decoded = base64_decode(encoded);
 
-			unsigned int pos_colon = decoded.find(":");
+			size_t pos_colon = decoded.find(":");
 
 			request.username_ = decoded.substr(0, pos_colon);
 			request.password_ = decoded.substr(pos_colon + 1);
@@ -219,7 +219,7 @@ unsigned Server::Process(std::unique_ptr<Socket> sock)
 		}
 	}
 
-	MEM_LOG(logDEBUG3) << sock->GetSocket() << LOG_REQUEST << requestString;
+	LOG(logDEBUG3) << sock->GetSocket() << LOG_REQUEST << requestString;
 	FILE_LOG(logDEBUG3) << sock->GetSocket() << LOG_REQUEST << requestString;
 
 
@@ -237,7 +237,7 @@ unsigned Server::Process(std::unique_ptr<Socket> sock)
 
 		response.status_ = http::responses::bad_request;
 
-		MEM_LOG(logERROR) << e.what();
+		LOG(logERROR) << e.what();
 		FILE_LOG(logERROR) << e.what();
 	}
 
@@ -245,7 +245,7 @@ unsigned Server::Process(std::unique_ptr<Socket> sock)
 	response.server_			= "Kalel Server";
 	response.date_				= timeh::GMTtime(RFC_1123);
 	response.connection_		= "close";
-	response.content_length_	= StringFrom<size_t>(response.answer_.size());
+	response.content_length_	= stringh::StringFrom<size_t>(response.answer_.size());
 
 
 	//
@@ -286,11 +286,11 @@ unsigned Server::Process(std::unique_ptr<Socket> sock)
 	}
 	catch (const std::exception& e)
 	{
-		MEM_LOG(logERROR) << e.what();
+		LOG(logERROR) << e.what();
 		FILE_LOG(logERROR) << e.what();
 	}
 	
-	MEM_LOG(logDEBUG3) << sock->GetSocket() << LOG_RESPONSE << responseString;
+	LOG(logDEBUG3) << sock->GetSocket() << LOG_RESPONSE << responseString;
 	FILE_LOG(logDEBUG3) << sock->GetSocket() << LOG_RESPONSE << responseString;
 
 	//
@@ -300,7 +300,7 @@ unsigned Server::Process(std::unique_ptr<Socket> sock)
 	// Make sure all data will get sent before socket is closed
 	// sock->SetLinger(true);
 
-	MEM_LOG(logDEBUG2) << LOG_PROCESS_EXIT << sock->GetSocket();
+	LOG(logDEBUG2) << LOG_PROCESS_EXIT << sock->GetSocket();
 	FILE_LOG(logDEBUG2) << LOG_PROCESS_EXIT << sock->GetSocket();
 
 	return 0;

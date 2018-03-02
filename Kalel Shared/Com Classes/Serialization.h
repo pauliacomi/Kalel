@@ -7,7 +7,7 @@
 #include "../Com Classes/ExperimentSettings.h"
 #include "../Com Classes/MachineSettings.h"
 #include "../Com Classes/ControlInstrumentState.h"
-#include "../unicodeConv.h"
+#include "../stringHelpers.h"
 
 inline void to_json(nlohmann::json &j, const MachineSettings &m);
 inline void from_json(const nlohmann::json &j, MachineSettings &m);
@@ -52,9 +52,9 @@ inline void from_json(const nlohmann::json &j, ControlInstrumentState &e);
 
 void to_json(nlohmann::json &j, const MachineSettings &m) {
 		
-	j["CaloName"							]	= UnicodeConv::ws2s(m.CaloName)				;
-	j["CaloEntete"							]	= UnicodeConv::ws2s(m.CaloEntete)			;
-	j["CheminFichierGeneral"				]	= UnicodeConv::ws2s(m.CheminFichierGeneral)	;
+	j["CaloName"							]	= stringh::ws2s(m.CaloName)					;
+	j["CaloEntete"							]	= stringh::ws2s(m.CaloEntete)				;
+	j["CheminFichierGeneral"				]	= stringh::ws2s(m.CheminFichierGeneral)		;
 	j["ActivationSecurite"					]	= m.ActivationSecurite						;
 	j["PressionSecuriteBassePression"		]	= m.PressionSecuriteBassePression			;
 	j["PressionSecuriteHautePression"		]	= m.PressionSecuriteHautePression			;
@@ -93,9 +93,9 @@ void to_json(nlohmann::json &j, const MachineSettings &m) {
 
 inline void from_json(const nlohmann::json &j, MachineSettings &m) {
 
-	m.CaloName											= UnicodeConv::s2ws(j["CaloName"							]);
-	m.CaloEntete										= UnicodeConv::s2ws(j["CaloEntete"							]);
-	m.CheminFichierGeneral								= UnicodeConv::s2ws(j["CheminFichierGeneral"				]);
+	m.CaloName											= stringh::s2ws(j["CaloName"							]);
+	m.CaloEntete										= stringh::s2ws(j["CaloEntete"							]);
+	m.CheminFichierGeneral								= stringh::s2ws(j["CheminFichierGeneral"				]);
 	m.ActivationSecurite								=					j["ActivationSecurite"					];		
 	m.PressionSecuriteBassePression						=					j["PressionSecuriteBassePression"		];
 	m.PressionSecuriteHautePression						=					j["PressionSecuriteHautePression"		];
@@ -312,12 +312,12 @@ inline void to_json(nlohmann::json &j, const Donnees_General &m) {
 	to_json(j["user"]	, m.experimentateur	);
 	to_json(j["gas"]	, m.gaz				);
 
-	j["path"			]					= UnicodeConv::ws2s(m.chemin					);
-	j["comments"		]					= UnicodeConv::ws2s(m.commentaires				);
-	j["experimentDate"	]					= UnicodeConv::ws2s(m.date_experience			);
-	j["file"			]					= UnicodeConv::ws2s(m.fichier					);
+	j["path"			]					= stringh::ws2s(m.chemin					);
+	j["comments"		]					= stringh::ws2s(m.commentaires				);
+	j["experimentDate"	]					= stringh::ws2s(m.date_experience			);
+	j["file"			]					= stringh::ws2s(m.fichier					);
 	j["sampleMass"		]					=					m.masse_echantillon			;
-	j["sampleName"		]					= UnicodeConv::ws2s(m.nom_echantillon			);
+	j["sampleName"		]					= stringh::ws2s(m.nom_echantillon			);
 	j["temperature"		]					=					m.temperature_experience	;
 }
 
@@ -326,12 +326,12 @@ void from_json(const nlohmann::json & j, Donnees_General & m)
 	from_json(j["user"]		,	m.experimentateur);
 	from_json( j["gas"]		,	m.gaz);
 
-	m.chemin								= UnicodeConv::s2ws(j["path"					]);
-	m.commentaires							= UnicodeConv::s2ws(j["comments"				]);
-	m.date_experience						= UnicodeConv::s2ws(j["experimentDate"			]);
-	m.fichier								= UnicodeConv::s2ws(j["file"					]);
+	m.chemin								= stringh::s2ws(j["path"					]);
+	m.commentaires							= stringh::s2ws(j["comments"				]);
+	m.date_experience						= stringh::s2ws(j["experimentDate"			]);
+	m.fichier								= stringh::s2ws(j["file"					]);
 	m.masse_echantillon						=					j["sampleMass"				];		 
-	m.nom_echantillon						= UnicodeConv::s2ws(j["sampleName"				]);
+	m.nom_echantillon						= stringh::s2ws(j["sampleName"				]);
 	m.temperature_experience				=					j["temperature"				];		
 }																	
 
@@ -397,10 +397,10 @@ inline void from_json(const nlohmann::json & j, Donnees_Desorption & m)
 inline void to_json(nlohmann::json &j, const gaz &m) 
 {
 	j["masse_moleculaire"		]			=					m.masse_moleculaire				;
-	j["nom"						]			= UnicodeConv::ws2s(m.nom							);
+	j["nom"						]			= stringh::ws2s(m.nom							);
 	j["omega"					]			=					m.omega							;
 	j["pression_critique"		]			=					m.pression_critique				;
-	j["symbole"					]			= UnicodeConv::ws2s(m.symbole						);
+	j["symbole"					]			= stringh::ws2s(m.symbole						);
 	j["temperature_critique"	]			=					m.temperature_critique			;
 	j["temperature_ebullition"	]			=					m.temperature_ebullition		;
 }
@@ -408,10 +408,10 @@ inline void to_json(nlohmann::json &j, const gaz &m)
 inline void from_json(const nlohmann::json & j, gaz & m)
 {
 	m.masse_moleculaire						=					j["masse_moleculaire"			];
-	m.nom									= UnicodeConv::s2ws(j["nom"							]);
+	m.nom									= stringh::s2ws(j["nom"							]);
 	m.omega									=					j["omega"						];
 	m.pression_critique						=					j["pression_critique"			];
-	m.symbole								= UnicodeConv::s2ws(j["symbole"						]);
+	m.symbole								= stringh::s2ws(j["symbole"						]);
 	m.temperature_critique					=					j["temperature_critique"		];
 	m.temperature_ebullition				=					j["temperature_ebullition"		];
 }
@@ -419,27 +419,27 @@ inline void from_json(const nlohmann::json & j, gaz & m)
 
 inline void to_json(nlohmann::json &j, const experimentateur &m) 
 {
-	j["nom"]								= UnicodeConv::ws2s(m.nom			);
-	j["surnom"]								= UnicodeConv::ws2s(m.surnom		);
+	j["nom"]								= stringh::ws2s(m.nom			);
+	j["surnom"]								= stringh::ws2s(m.surnom		);
 }
 
 inline void from_json(const nlohmann::json & j, experimentateur & m)
 {
-	m.nom									= UnicodeConv::s2ws(j["nom"			]);	
-	m.surnom								= UnicodeConv::s2ws(j["surnom"		]);	
+	m.nom									= stringh::s2ws(j["nom"			]);	
+	m.surnom								= stringh::s2ws(j["surnom"		]);	
 }
 
 
 inline void to_json(nlohmann::json &j, const cellule &m) 
 {
-	j["number"		]						= UnicodeConv::ws2s(m.numero		);
+	j["number"		]						= stringh::ws2s(m.numero		);
 	j["caloVolume"	]						=					m.volume_calo	;
 	j["totalVolume"	]						=					m.volume_total	;
 }
 
 inline void from_json(const nlohmann::json & j, cellule & m)
 {
-	m.numero								= UnicodeConv::s2ws(j["number"		]);
+	m.numero								= stringh::s2ws(j["number"		]);
 	m.volume_calo							=					j["caloVolume"	];
 	m.volume_total							=					j["totalVolume"	];
 }
