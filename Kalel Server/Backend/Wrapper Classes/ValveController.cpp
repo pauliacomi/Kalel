@@ -1,6 +1,6 @@
 #include "ValveController.h"
 
-#include "../../MessageHandler.h"
+#include "../../../Kalel Shared/log.h"										// Logging
 #include "../../../Kalel Shared/Com Classes/MachineSettings.h"
 #include "../../../Kalel Shared/Resources/DefineInstruments.h"
 #include "../../../Kalel Shared/Resources/DefineText.h"
@@ -9,9 +9,8 @@
 #define temps_ms 10
 
 
-ValveController::ValveController(MessageHandler & messageHandler, int port) 
+ValveController::ValveController(int port) 
 	: NI_USB_6008(port)
-	, messageHandler{ messageHandler }
 {
 }
 
@@ -54,7 +53,7 @@ bool ValveController::ValveOpen(int num, bool verbose)
 
 	// Log message
 	if (verbose) {
-		messageHandler.DisplayMessage(MESSAGE_VALVE_OPENED, num);
+		LOG(logINFO) << MESSAGE_VALVE_OPENED << num;
 	}
 
 	// Return success
@@ -81,7 +80,7 @@ bool ValveController::ValveClose(int num, bool verbose)
 
 	// Log message
 	if (verbose) {
-		messageHandler.DisplayMessage(MESSAGE_VALVE_CLOSED, num);
+		LOG(logINFO) << MESSAGE_VALVE_CLOSED << num;
 	}
 
 	// Return success
@@ -108,7 +107,7 @@ bool ValveController::EVActivate(int num, bool verbose)
 
 	// Log message
 	if (verbose) {
-		messageHandler.DisplayMessage(MESSAGE_EV_ACTIVATED, num);
+		LOG(logINFO) << MESSAGE_EV_ACTIVATED << num;
 	}
 
 	// Return success
@@ -135,7 +134,7 @@ bool ValveController::EVDeactivate(int num, bool verbose)
 	
 	// Log message
 	if (verbose) {
-		messageHandler.DisplayMessage(MESSAGE_EV_DEACTIVATED, num);
+		LOG(logINFO) << MESSAGE_EV_DEACTIVATED << num;
 	}
 
 	// Return success
@@ -162,7 +161,7 @@ bool ValveController::PumpActivate(bool verbose)
 
 	// Log message
 	if (verbose) {
-		messageHandler.DisplayMessage(MESSAGE_PUMP_ACTIVATED);
+		LOG(logINFO) << MESSAGE_PUMP_ACTIVATED;
 	}
 
 	// Return success
@@ -189,7 +188,7 @@ bool ValveController::PumpDeactivate(bool verbose)
 
 	// Log message
 	if (verbose) {
-		messageHandler.DisplayMessage(MESSAGE_PUMP_DEACTIVATED);
+		LOG(logINFO) << MESSAGE_PUMP_DEACTIVATED;
 	}
 
 	// Return success
@@ -207,7 +206,7 @@ bool ValveController::CloseAll(bool verbose)
 	
 	// Log message
 	if (verbose) {
-		messageHandler.DisplayMessage(MESSAGE_CLOSEEVERYTHING);
+		LOG(logINFO) << MESSAGE_CLOSEEVERYTHING;
 	}
 
 	// Return success
@@ -234,7 +233,7 @@ bool ValveController::CloseAllValves(bool verbose)
 
 	// Log message
 	if (verbose) {
-		messageHandler.DisplayMessage(MESSAGE_VALVE_CLOSEALL);
+		LOG(logINFO) << MESSAGE_VALVE_CLOSEALL;
 	}
 
 	// Return success
@@ -261,7 +260,7 @@ bool ValveController::CloseEVsAndPump(bool verbose)
 
 	// Log message
 	if (verbose) {
-		messageHandler.DisplayMessage(MESSAGE_PUMP_VALVE_CLOSEALL);
+		LOG(logINFO) << MESSAGE_PUMP_VALVE_CLOSEALL;
 	}
 
 	// Return success

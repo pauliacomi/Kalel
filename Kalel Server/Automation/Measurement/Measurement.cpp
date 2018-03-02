@@ -9,6 +9,7 @@
 
 // Utilities
 #include "../../../Kalel Shared/timeHelpers.h"
+#include "../../../Kalel Shared/log.h"
 
 // std::functionality
 #include <string>
@@ -115,7 +116,7 @@ void Measurement::Execution()
 		*/
 
 		// Send the data out
-		controls.messageHandler->ExchangeData(*storage.currentData);
+		storage.dataCollection.push(timeh::NowTime(), std::make_shared<ExperimentData>(*storage.currentData));
 
 		/*
 		*

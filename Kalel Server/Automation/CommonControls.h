@@ -4,8 +4,6 @@
 
 #include "CommonPointers.h"
 
-#include "../MessageHandler.h"
-
 #include "../Backend/Instruments.h"										// Instruments
 
 #include "../Backend/Wrapper Classes/ValveController.h"					// Valve class
@@ -37,7 +35,6 @@ private:
 
 public:
 
-	std::shared_ptr<MessageHandler> messageHandler;							// The message sender class.		Thread Safe!
 	std::shared_ptr<FileWriter> fileWriter;									// The file writing class
 	std::shared_ptr<ValveController> valveControls;							// The valve control/query class.	Thread Safe!
 
@@ -67,17 +64,16 @@ public:
 
 inline Controls::Controls(Storage &h)
 	: storage{ h }
-	, instruments{*messageHandler, *h.machineSettings}
+	, instruments{*h.machineSettings}
 {
 	// Create objects from controls class
 	fileWriter			= std::make_shared<FileWriter>();
-	messageHandler		= std::make_shared<MessageHandler>(h);
 
 	// controls
 	// TODO: rewrite valve in the style of others
 	for (auto i = h.machineSettings->instruments.begin(); i != h.machineSettings->instruments.end(); ++i) {
 		if (i->second.type == INSTRUMENT_NI_USB_6008) {
-			valveControls = std::make_shared<ValveController>(*messageHandler, i->second.port);
+			valveControls = std::make_shared<ValveController>(i->second.port);
 		}
 	}
 	// readers
@@ -85,7 +81,7 @@ inline Controls::Controls(Storage &h)
 	temperatureReader	= std::make_shared<TemperatureReader>(instruments, *h.machineSettings);
 	calorimeterReader	= std::make_shared<CalorimeterReader>(instruments, *h.machineSettings);
 
-	security			= std::make_shared<Security>(h.machineSettings->ActivationSecurite, *valveControls, *messageHandler);
+	security			= std::make_shared<Security>(h.machineSettings->ActivationSecurite, *valveControls);
 }
 
 inline Controls::~Controls(void)

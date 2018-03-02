@@ -218,7 +218,6 @@
     <ClInclude Include="..\Kalel Shared\Netcode\Netcode Resources.h" />
     <ClInclude Include="..\Kalel Shared\Netcode\Server.h" />
     <ClInclude Include="..\Kalel Shared\Netcode\Socket.h" />
-    <ClInclude Include="..\Kalel Shared\Netcode\stdHelpers.h" />
     <ClInclude Include="..\Kalel Shared\Netcode\URLHelper.h" />
     <ClInclude Include="..\Kalel Shared\Resources\DefineAutomationSettings.h" />
     <ClInclude Include="..\Kalel Shared\Resources\DefineInstruments.h" />
@@ -278,7 +277,6 @@
     <ClCompile Include="..\Kalel Shared\Netcode\http_helpers.cpp" />
     <ClCompile Include="..\Kalel Shared\Netcode\Server.cpp" />
     <ClCompile Include="..\Kalel Shared\Netcode\Socket.cpp" />
-    <ClCompile Include="..\Kalel Shared\Netcode\stdHelpers.cpp" />
     <ClCompile Include="..\Kalel Shared\Netcode\URLHelper.cpp" />
     <ClCompile Include="..\Kalel Shared\timeHelpers.cpp" />
     <ClCompile Include="..\Kalel Shared\unicodeConv.cpp" />

@@ -1,12 +1,14 @@
 #pragma once
 
-class beep
-{
-public:
-	beep();
-	~beep();
+namespace soundh {
+	class beep
+	{
+	public:
+		beep();
+		~beep();
 
-	void error();
-	void allgood();
-};
+		static void error();
+		static void allgood();
+	};
+}
 

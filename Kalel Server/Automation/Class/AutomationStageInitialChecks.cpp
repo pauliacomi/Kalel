@@ -1,5 +1,8 @@
 #include "Automation.h"
 
+// Utilities
+#include "../../../Kalel Shared/log.h"
+
 /*
 *
 *
@@ -51,7 +54,7 @@ bool Automation::VerificationSecurity()
 	if (!storage.machineSettings->ActivationSecurite)
 	{
 		// Ask user if they want to continue
-		controls.messageHandler->DisplayMessageBox(MESSAGE_NOSECURITY, MB_ICONWARNING | MB_OKCANCEL, true);
+		LOG(logWARNING) << MESSAGE_NOSECURITY;
 		eventPause = true;
 		storage.automationControl.notify_all();
 	}
@@ -65,8 +68,8 @@ bool Automation::VerificationValves()
 	if (storage.currentData->experimentStepStatus == STEP_STATUS_START)
 	{
 		// Ask user to check the valves
-		controls.messageHandler->DisplayMessage(MESSAGE_CHECK_INITIAL_STATE);
-		controls.messageHandler->DisplayMessageBox(MESSAGE_CHECK_VALVES_OPEN, MB_ICONQUESTION | MB_OKCANCEL, true);
+		LOG(logINFO) << MESSAGE_CHECK_INITIAL_STATE;
+		LOG(logEVENT) << MESSAGE_CHECK_VALVES_OPEN;
 
 		// Pause
 		eventPause = true;
@@ -92,18 +95,18 @@ bool Automation::VerificationResidualPressure()
 	if (storage.currentData->experimentStepStatus == STEP_STATUS_START)
 	{
 		// Display initial message
-		controls.messageHandler->DisplayMessage(MESSAGE_CHECK_INITIAL_PRESSURE);
+		LOG(logINFO) << MESSAGE_CHECK_INITIAL_PRESSURE;
 
 		if (storage.currentData->pressureHigh < storage.machineSettings->PressionSecuriteBassePression)
 		{
 			// Tell GUI we are opening valve 6
-			controls.messageHandler->DisplayMessage(MESSAGE_CHECK_OPENV6_POSSIB, storage.currentData->pressureHigh);
+			LOG(logINFO) << MESSAGE_CHECK_OPENV6_POSSIB << storage.currentData->pressureHigh;
 
 			// Open valve 6
 			controls.valveControls->ValveOpen(6, true);
 
 			// Tell GUI we are waiting
-			controls.messageHandler->DisplayMessage(MESSAGE_WAIT_TIME, TIME_WAIT_VALVES);
+			LOG(logINFO) << MESSAGE_WAIT_TIME << TIME_WAIT_VALVES;
 
 			// Set the time to wait
 			WaitSeconds(TIME_WAIT_VALVES);
@@ -119,7 +122,7 @@ bool Automation::VerificationResidualPressure()
 		controls.valveControls->ValveOpen(5, true);
 
 		// Tell GUI we are waiting
-		controls.messageHandler->DisplayMessage(MESSAGE_WAIT_TIME, TIME_WAIT_VALVES);
+		LOG(logINFO) << MESSAGE_WAIT_TIME, TIME_WAIT_VALVES;
 
 		// Set the time to wait
 		WaitSeconds(TIME_WAIT_VALVES);
@@ -134,7 +137,7 @@ bool Automation::VerificationResidualPressure()
 		// Check residual pressure
 		if (storage.currentData->pressureHigh >= storage.machineSettings->PressionLimiteVide)
 		{
-			controls.messageHandler->DisplayMessageBox(MESSAGE_WARNING_INITIAL_PRESSURE, MB_ICONQUESTION | MB_OKCANCEL, true, storage.currentData->pressureHigh, storage.machineSettings->PressionLimiteVide);
+			LOG(logWARNING) << MESSAGE_WARNING_INITIAL_PRESSURE << storage.currentData->pressureHigh << storage.machineSettings->PressionLimiteVide;
 			eventPause = true;
 			storage.automationControl.notify_all();
 		}
@@ -151,14 +154,14 @@ bool Automation::VerificationTemperature()
 	if (storage.currentData->experimentStepStatus == STEP_STATUS_START)
 	{
 		// Display initial message
-		controls.messageHandler->DisplayMessage(MESSAGE_CHECK_INITIAL_TEMPERATURE);
+		LOG(logINFO) << MESSAGE_CHECK_INITIAL_TEMPERATURE;
 
 		if ((storage.currentData->temperatureCalo < storage.experimentSettings->dataGeneral.temperature_experience - security_temperature_initial) || (storage.currentData->temperatureCalo > storage.experimentSettings->dataGeneral.temperature_experience + security_temperature_initial) ||
 			(storage.currentData->temperatureCage < storage.experimentSettings->dataGeneral.temperature_experience - security_temperature_initial) || (storage.currentData->temperatureCage > storage.experimentSettings->dataGeneral.temperature_experience + security_temperature_initial))
 		{
 			// Tell GUI we are waiting
-			controls.messageHandler->DisplayMessage(MESSAGE_WAIT_TEMP_EQUILIBRATION);
-			controls.messageHandler->DisplayMessageBox(MESSAGE_CHECK_TEMPERATURE_DIFF, MB_ICONQUESTION | MB_YESNOCANCEL, true, storage.currentData->temperatureCalo, storage.experimentSettings->dataGeneral.temperature_experience - security_temperature_initial);
+			LOG(logINFO) << MESSAGE_WAIT_TEMP_EQUILIBRATION;
+			LOG(logWARNING) << MESSAGE_CHECK_TEMPERATURE_DIFF << storage.currentData->temperatureCalo << storage.experimentSettings->dataGeneral.temperature_experience - security_temperature_initial;
 
 			// Pause
 			eventPause = true;

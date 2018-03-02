@@ -246,9 +246,6 @@
     <ClInclude Include="..\Kalel Shared\Netcode\Socket.h">
       <Filter>Header Files\Commmon\Netcode</Filter>
     </ClInclude>
-    <ClInclude Include="..\Kalel Shared\Netcode\stdHelpers.h">
-      <Filter>Header Files\Commmon\Netcode</Filter>
-    </ClInclude>
     <ClInclude Include="..\Kalel Shared\Netcode\URLHelper.h">
       <Filter>Header Files\Commmon\Netcode</Filter>
     </ClInclude>
@@ -417,9 +414,6 @@
       <Filter>Source Files\Commmon\Netcode</Filter>
     </ClCompile>
     <ClCompile Include="..\Kalel Shared\Netcode\Socket.cpp">
-      <Filter>Source Files\Commmon\Netcode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Kalel Shared\Netcode\stdHelpers.cpp">
       <Filter>Source Files\Commmon\Netcode</Filter>
     </ClCompile>
     <ClCompile Include="..\Kalel Shared\Netcode\URLHelper.cpp">

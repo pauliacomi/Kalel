@@ -1,5 +1,8 @@
 #include "Automation.h"
 
+// Utilities
+#include "../../../Kalel Shared/log.h"
+
 Automation::Automation(Storage &s, Controls &c)
 	: storage{ s }
 	, controls{ c }
@@ -163,7 +166,7 @@ bool Automation::ExecutionManual()
 	if (storage.currentData->experimentStepStatus == STEP_STATUS_UNDEF) {
 
 		// Send start message
-		controls.messageHandler->ExperimentStart();
+		LOG(logINFO) << MESSAGE_EXPSTART;
 		
 		ResetAutomation();
 
@@ -176,7 +179,7 @@ bool Automation::ExecutionManual()
 		err = controls.fileWriter->EnteteCreate(*storage.experimentSettings, *storage.machineSettings);				// Entete TXT
 		err = controls.fileWriter->EnteteCSVCreate(*storage.experimentSettings, *storage.machineSettings);			// Entete CSV
 		if (err){
-			controls.messageHandler->DisplayMessageBox(ERROR_PATHUNDEF, MB_ICONERROR | MB_OK, false);
+			LOG(logERROR) << ERROR_PATHUNDEF;
 		}
 		controls.fileWriter->FileMeasurementCreate(storage.experimentSettings->dataGeneral);						// Measurement file
 
@@ -198,7 +201,7 @@ bool Automation::ExecutionAuto()
 	if (storage.currentData->experimentStepStatus == STEP_STATUS_UNDEF){
 
 		// Send start message
-		controls.messageHandler->ExperimentStart();
+		LOG(logINFO) << MESSAGE_EXPSTART;
 
 		ResetAutomation();
 
@@ -260,7 +263,7 @@ void Automation::ResetAutomation()
 	shutdownReason = STOP_CANCEL;
 
 	// Delete all current measurements
-	storage.deleteData();
+	storage.dataCollection.del();
 
 	// Time
 	storage.currentData->timeStart = time(0);

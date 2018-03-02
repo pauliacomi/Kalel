@@ -189,12 +189,12 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Kalel Shared\classHelpers.h" />
     <ClInclude Include="..\Kalel Shared\Com Classes\ControlInstrumentState.h" />
     <ClInclude Include="..\Kalel Shared\Com Classes\ExperimentData.h" />
     <ClInclude Include="..\Kalel Shared\Com Classes\ExperimentHelperClasses.h" />
     <ClInclude Include="..\Kalel Shared\Com Classes\ExperimentSettings.h" />
     <ClInclude Include="..\Kalel Shared\Com Classes\MachineSettings.h" />
-    <ClInclude Include="..\Kalel Shared\lockedMap.h" />
     <ClInclude Include="..\Kalel Shared\Forcelib.h" />
     <ClInclude Include="..\Kalel Shared\log.h" />
     <ClInclude Include="..\Kalel Shared\Netcode\base64.h" />
@@ -207,7 +207,6 @@
     <ClInclude Include="..\Kalel Shared\Netcode\Netcode Resources.h" />
     <ClInclude Include="..\Kalel Shared\Netcode\Server.h" />
     <ClInclude Include="..\Kalel Shared\Netcode\Socket.h" />
-    <ClInclude Include="..\Kalel Shared\Netcode\stdHelpers.h" />
     <ClInclude Include="..\Kalel Shared\Netcode\URLHelper.h" />
     <ClInclude Include="..\Kalel Shared\Resources\DefineAutomationSettings.h" />
     <ClInclude Include="..\Kalel Shared\Resources\DefineInstruments.h" />
@@ -215,9 +214,8 @@
     <ClInclude Include="..\Kalel Shared\Resources\DefineText.h" />
     <ClInclude Include="..\Kalel Shared\Resources\StringTable.h" />
     <ClInclude Include="..\Kalel Shared\soundHelpers.h" />
-    <ClInclude Include="..\Kalel Shared\stringFormat.h" />
+    <ClInclude Include="..\Kalel Shared\stringHelpers.h" />
     <ClInclude Include="..\Kalel Shared\timeHelpers.h" />
-    <ClInclude Include="..\Kalel Shared\unicodeConv.h" />
     <ClInclude Include="Automation\Class\Automation.h" />
     <ClInclude Include="Automation\CommonControls.h" />
     <ClInclude Include="Automation\CommonPointers.h" />
@@ -250,7 +248,6 @@
     <ClInclude Include="Kalel Server.h" />
     <ClInclude Include="Kalel ServerDlg.h" />
     <ClInclude Include="Kalel.h" />
-    <ClInclude Include="MessageHandler.h" />
     <ClInclude Include="Parameters\Parametres.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
@@ -261,17 +258,15 @@
     <ClCompile Include="..\Kalel Shared\Com Classes\ExperimentHelperClasses.cpp" />
     <ClCompile Include="..\Kalel Shared\Com Classes\ExperimentSettings.cpp" />
     <ClCompile Include="..\Kalel Shared\Com Classes\MachineSettings.cpp" />
-    <ClCompile Include="..\Kalel Shared\lockedMap.cpp" />
     <ClCompile Include="..\Kalel Shared\Netcode\base64.cpp" />
     <ClCompile Include="..\Kalel Shared\Netcode\Client.cpp" />
     <ClCompile Include="..\Kalel Shared\Netcode\http_helpers.cpp" />
     <ClCompile Include="..\Kalel Shared\Netcode\Server.cpp" />
     <ClCompile Include="..\Kalel Shared\Netcode\Socket.cpp" />
-    <ClCompile Include="..\Kalel Shared\Netcode\stdHelpers.cpp" />
     <ClCompile Include="..\Kalel Shared\Netcode\URLHelper.cpp" />
     <ClCompile Include="..\Kalel Shared\soundHelpers.cpp" />
+    <ClCompile Include="..\Kalel Shared\stringHelpers.cpp" />
     <ClCompile Include="..\Kalel Shared\timeHelpers.cpp" />
-    <ClCompile Include="..\Kalel Shared\unicodeConv.cpp" />
     <ClCompile Include="Automation\Class\Automation.cpp" />
     <ClCompile Include="Automation\Class\AutomationShutdown.cpp" />
     <ClCompile Include="Automation\Class\AutomationStageAdsoprtion.cpp" />
@@ -439,7 +434,6 @@
     <ClCompile Include="Kalel Server.cpp" />
     <ClCompile Include="Kalel ServerDlg.cpp" />
     <ClCompile Include="Kalel.cpp" />
-    <ClCompile Include="MessageHandler.cpp" />
     <ClCompile Include="Parameters\Parametres.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

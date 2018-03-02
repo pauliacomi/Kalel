@@ -10,12 +10,11 @@
 #include <string>
 #include <map>
 
-class MessageHandler;
 
 class Instruments
 {
 public:
-	Instruments(MessageHandler & messageHandler, MachineSettings & m);
+	Instruments(MachineSettings & m);
 	~Instruments();
 
 private:
@@ -37,7 +36,6 @@ public:
 	std::map<unsigned int, std::function<double(void)>> readerfunctions;
 
 private:
-	MessageHandler & mh;
 	void Init(int readernumber, Reader & r, int instrumentnumber, Instrument & i);
 	void ChangePort(int instrumentnumber, Instrument & i);
 	void DeleteInstrument(int instrumentnumber, Instrument & i);

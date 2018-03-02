@@ -1,5 +1,8 @@
 #include "Automation.h"
 
+// Utilities
+#include "../../../Kalel Shared/log.h"
+
 /*
 *
 *
@@ -15,7 +18,8 @@ void Automation::StageAdsorption()
 	{
 	case STEP_STATUS_START:
 		storage.currentData->experimentStepStatus = STEP_STATUS_INPROGRESS;												// Set next step
-		controls.messageHandler->DisplayMessage(MESSAGE_ADSORPTION_STAGE_START);										// Let GUI know the step change
+
+		LOG(logINFO) << MESSAGE_ADSORPTION_STAGE_START;																	// Log the step change
 
 		controls.valveControls->CloseAll(true);																			// Close all valves
 		break;
@@ -34,7 +38,8 @@ void Automation::StageAdsorption()
 
 	case STEP_STATUS_END:
 		storage.currentData->experimentStepStatus = STEP_STATUS_START;													// Reset substep no matter what
-		controls.messageHandler->DisplayMessage(MESSAGE_ADSORPTION_STAGE_END, storage.currentData->adsorptionCounter);				// Let GUI know the step change
+
+		LOG(logINFO) << MESSAGE_ADSORPTION_STAGE_START << storage.currentData->adsorptionCounter;						// Log the step change
 
 		if (storage.currentData->adsorptionCounter < storage.experimentSettings->dataAdsorption.size())
 		{
@@ -56,9 +61,9 @@ void Automation::SubstepsAdsorption()
 		storage.currentData->experimentWaiting == false)
 	{
 		storage.currentData->injectionAttemptCounter = 0;																							// Reset adsorption attempt counter
-		storage.currentData->SetpressureInitial( storage.currentData->GetpressureHigh());																		// Set the initial pressure
-		storage.currentData->SetpressureHighOld( storage.currentData->GetpressureHigh());																		// Save the injection pressure for later
-		controls.messageHandler->DisplayMessage(MESSAGE_ADSORPTION_DOSE_START, storage.currentData->adsorptionCounter, storage.currentData->experimentDose);	// Tell GUI about current dose
+		storage.currentData->SetpressureInitial( storage.currentData->GetpressureHigh());															// Set the initial pressure
+		storage.currentData->SetpressureHighOld( storage.currentData->GetpressureHigh());															// Save the injection pressure for later
+		LOG(logINFO) << MESSAGE_ADSORPTION_DOSE_START << storage.currentData->adsorptionCounter << storage.currentData->experimentDose;				// Log current dose
 		storage.currentData->experimentSubstepStage = SUBSTEP_STATUS_INJECTION;																		// Move to injection
 	}
 	
@@ -66,7 +71,7 @@ void Automation::SubstepsAdsorption()
 	// Injection
 	if (storage.currentData->experimentSubstepStage == SUBSTEP_STATUS_INJECTION)
 	{
-		controls.messageHandler->DisplayMessage(MESSAGE_INJECTION_ATTEMPT, storage.currentData->injectionAttemptCounter);			// Tell GUI about current injection
+		LOG(logINFO) << MESSAGE_INJECTION_ATTEMPT << storage.currentData->injectionAttemptCounter;													// Log current injection
 		controls.valveControls->ValveOpen(2, true);
 		WaitSeconds(TIME_WAIT_VALVES_SHORT);																			
 		storage.currentData->experimentSubstepStage = SUBSTEP_STATUS_INJECTION + 1;										
@@ -122,11 +127,11 @@ void Automation::SubstepsAdsorption()
 		storage.currentData->SetpressureFinal( storage.currentData->GetpressureHigh());
 
 		// Display
-		controls.messageHandler->DisplayMessage(MESSAGE_PRESSURE_D_PI, storage.currentData->pressureInitial);
-		controls.messageHandler->DisplayMessage(MESSAGE_PRESSURE_D_PF, storage.currentData->pressureFinal);
-		controls.messageHandler->DisplayMessage(MESSAGE_PRESSURE_D_DP, storage.currentData->pressureFinal - storage.currentData->pressureInitial);
-		controls.messageHandler->DisplayMessage(MESSAGE_PRESSURE_D_DPREQ, (storage.experimentSettings->dataAdsorption[storage.currentData->adsorptionCounter].delta_pression));
-		controls.messageHandler->DisplayMessage(MESSAGE_INJECTION_END, storage.currentData->injectionAttemptCounter);
+		LOG(logINFO) << MESSAGE_PRESSURE_D_PI << storage.currentData->pressureInitial;
+		LOG(logINFO) << MESSAGE_PRESSURE_D_PF << storage.currentData->pressureFinal;
+		LOG(logINFO) << MESSAGE_PRESSURE_D_DP << storage.currentData->pressureFinal - storage.currentData->pressureInitial;
+		LOG(logINFO) << MESSAGE_PRESSURE_D_DPREQ << storage.experimentSettings->dataAdsorption[storage.currentData->adsorptionCounter].delta_pression;
+		LOG(logINFO) << MESSAGE_INJECTION_END << storage.currentData->injectionAttemptCounter;
 
 		// Checks for injection succeess, else increment the injection counter and try again
 		if ((storage.currentData->pressureHighOld - marge_injection < storage.currentData->pressureHigh) &&
@@ -140,8 +145,8 @@ void Automation::SubstepsAdsorption()
 				storage.automationControl.notify_all();
 
 				// Tell GUI
-				controls.messageHandler->DisplayMessage(MESSAGE_INJECTION_PROBLEM);
-				controls.messageHandler->DisplayMessageBox(MESSAGE_INJECTION_PROBLEM_BOX, MB_ICONERROR | MB_OK, true);
+				LOG(logINFO) << MESSAGE_INJECTION_PROBLEM;
+				LOG(logERROR) << MESSAGE_INJECTION_PROBLEM_BOX;
 
 				// Reset counter
 				storage.currentData->injectionAttemptCounter = 0;
@@ -182,7 +187,7 @@ void Automation::SubstepsAdsorption()
 			controls.valveControls->PumpActivate(true);
 			WaitSeconds(TIME_WAIT_PUMP);
 		}
-		controls.messageHandler->DisplayMessage(MESSAGE_OUTGAS_ATTEMPT);
+		LOG(logINFO) << MESSAGE_OUTGAS_ATTEMPT;
 		storage.currentData->experimentSubstepStage = SUBSTEP_STATUS_ABORT + 1;
 	}
 
@@ -204,7 +209,7 @@ void Automation::SubstepsAdsorption()
 				controls.valveControls->PumpDeactivate(true);
 			}
 
-			controls.messageHandler->DisplayMessage(MESSAGE_OUTGAS_END);
+			LOG(logINFO) << MESSAGE_OUTGAS_END;
 			storage.currentData->experimentSubstepStage = SUBSTEP_STATUS_INJECTION;				// Go back to injection
 		}
 	}
@@ -241,7 +246,7 @@ void Automation::SubstepsAdsorption()
 	if (storage.currentData->experimentSubstepStage == SUBSTEP_STATUS_ADSORPTION &&
 		storage.currentData->experimentWaiting == false)
 	{
-		controls.messageHandler->DisplayMessage(MESSAGE_ADSORPTION_OPENV);
+		LOG(logINFO) << MESSAGE_ADSORPTION_OPENV;
 
 		// Open valve
 		controls.valveControls->ValveOpen(5, true);
@@ -257,13 +262,13 @@ void Automation::SubstepsAdsorption()
 		storage.currentData->experimentWaiting == false)
 	{
 		// Display sample isolation message
-		controls.messageHandler->DisplayMessage(MESSAGE_ADSORPTION_CLOSEV);
+		LOG(logINFO) << MESSAGE_ADSORPTION_CLOSEV;
 		
 		// Close valve
 		controls.valveControls->ValveClose(5, true);
 
 		// Display message to show end of adsorption
-		controls.messageHandler->DisplayMessage(MESSAGE_ADSORPTION_DOSE_END, storage.currentData->experimentDose);
+		LOG(logINFO) << MESSAGE_ADSORPTION_DOSE_END << storage.currentData->experimentDose;
 
 		// Reset things
 		storage.currentData->experimentSubstepStage = SUBSTEP_STATUS_START;
