@@ -44,6 +44,7 @@ void ParametersGet(MachineSettings& settings)
 	try
 	{
 		j = json::parse(filestr.c_str());
+		settings = j;
 	}
 	catch (const std::exception& e)
 	{
@@ -51,7 +52,6 @@ void ParametersGet(MachineSettings& settings)
 		LOG(logINFO) << "Could not read settings file: " << e.what();
 		return;
 	}
-	settings = j;
 }
 
 void ParametersSet(const MachineSettings& settings)

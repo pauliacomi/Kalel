@@ -96,13 +96,13 @@ inline void from_json(const nlohmann::json &j, MachineSettings &m) {
 	m.CaloName											= stringh::s2ws(j["CaloName"							]);
 	m.CaloEntete										= stringh::s2ws(j["CaloEntete"							]);
 	m.CheminFichierGeneral								= stringh::s2ws(j["CheminFichierGeneral"				]);
-	m.ActivationSecurite								=					j["ActivationSecurite"					];		
-	m.PressionSecuriteBassePression						=					j["PressionSecuriteBassePression"		];
-	m.PressionSecuriteHautePression						=					j["PressionSecuriteHautePression"		];
-	m.PressionLimiteVide								=					j["PressionLimiteVide"					];
-	m.hasSonicNozzle								=					j["hasSonicNozzle"				];
-	m.VolumeP6											=					j["VolumeP6"							];
-	m.VolumeRef											=					j["VolumeRef"							];
+	m.ActivationSecurite								=				j["ActivationSecurite"					];		
+	m.PressionSecuriteBassePression						=				j["PressionSecuriteBassePression"		];
+	m.PressionSecuriteHautePression						=				j["PressionSecuriteHautePression"		];
+	m.PressionLimiteVide								=				j["PressionLimiteVide"					];
+	m.hasSonicNozzle									=				j["hasSonicNozzle"						];
+	m.VolumeP6											=				j["VolumeP6"							];
+	m.VolumeRef											=				j["VolumeRef"							];
 
 	m.instruments.clear();
 	nlohmann::json j1 = j["instruments"];
