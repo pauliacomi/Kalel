@@ -1,5 +1,3 @@
-#ifndef CLASSES_EXPERIENCES_H
-#define CLASSES_EXPERIENCES_H
 #pragma once
 
 #include <string>
@@ -108,5 +106,3 @@ public:
 	Donnees_Adsorption_Continue operator=(const Donnees_Adsorption_Continue &adsorption);
 	bool operator!=(const Donnees_Adsorption_Continue &adsorption);
 };
-
-#endif

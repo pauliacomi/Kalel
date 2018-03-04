@@ -1,5 +1,3 @@
-#ifndef EXPERIMENT_SETTINGS
-#define EXPERIMENT_SETTINGS
 #pragma once
 
 #include "ExperimentHelperClasses.h"
@@ -40,5 +38,3 @@ public:
 	std::vector<Donnees_Doses> dataAdsorption;
 	std::vector<Donnees_Desorption> dataDesorption;
 };
-
-#endif

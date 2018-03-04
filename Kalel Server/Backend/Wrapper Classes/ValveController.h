@@ -1,13 +1,11 @@
 //*****************************************************************************************************
 //
-//	This class extends the pressure reading class
+//	This class extends the valve controller class
 //	It is used as an easy-to-read interface that should make any instrument changes easy
 //	by providing a guide for the functions to implement.
 //
 //*****************************************************************************************************
 
-#ifndef _VANNE_H_
-#define _VANNE_H_
 #pragma once
 
 #include "../USB/NI_USB_6008.h"
@@ -53,5 +51,3 @@ public:
 private:
 	std::mutex ctrlmutex;						// locks to prevent clash of threads
 };
-
-#endif

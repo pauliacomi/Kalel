@@ -1,5 +1,4 @@
-#ifndef __LOG_H__
-#define __LOG_H__
+#pragma once
 
 #include <sstream>
 #include <string>
@@ -353,5 +352,3 @@ class StreamLog : public Log<OutputGeneral> {};
     if (level > STREAMLOG_MAX_LEVEL) ;\
     else if (level > StreamLog::ReportingLevel() || !Output2vector::Stream()) ; \
     else StreamLog().GetTimeStamped(level)
-
-#endif //__LOG_H__

@@ -5,8 +5,6 @@
 //
 //*****************************************************************************************************
 
-#ifndef NI_USB_6008_H_
-#define NI_USB_6008_H_
 #pragma once
 
 #include "NIDAQmx.h"
@@ -65,5 +63,3 @@ public:
 	bool EstOuvertPort1(int num);
 	bool EstFermePort1(int num);
 };
-
-#endif

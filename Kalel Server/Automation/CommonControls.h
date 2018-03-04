@@ -1,5 +1,3 @@
-#ifndef COMCTRL_H
-#define COMCTRL_H
 #pragma once
 
 #include "CommonPointers.h"
@@ -87,7 +85,3 @@ inline Controls::Controls(Storage &h)
 inline Controls::~Controls(void)
 {
 }
-
-
-
-#endif

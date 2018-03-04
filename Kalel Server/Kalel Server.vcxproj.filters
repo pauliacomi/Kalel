@@ -55,9 +55,6 @@
     <Filter Include="Source Files\Automation\Old">
       <UniqueIdentifier>{75357d3e-1be3-42b0-83c0-213371a6ba42}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Automation\Manip Old">
-      <UniqueIdentifier>{fc6dd5e4-cc46-4cad-a9da-75dd0e56063a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Common">
       <UniqueIdentifier>{3f1b5b90-a803-40ba-9e9b-28a86c4ff657}</UniqueIdentifier>
     </Filter>
@@ -200,15 +197,6 @@
     </ClInclude>
     <ClInclude Include="..\Kalel Shared\Resources\DefineText.h">
       <Filter>Header Files\Common\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="Automation\Old\Manip.h">
-      <Filter>Header Files\Automation\Manip Old</Filter>
-    </ClInclude>
-    <ClInclude Include="Automation\Old\Manip_Auto.h">
-      <Filter>Header Files\Automation\Manip Old</Filter>
-    </ClInclude>
-    <ClInclude Include="Automation\Old\Manip_AutoGaz.h">
-      <Filter>Header Files\Automation\Manip Old</Filter>
     </ClInclude>
     <ClInclude Include="Automation\Measurement\Measurement.h">
       <Filter>Header Files\Automation\Measurement</Filter>

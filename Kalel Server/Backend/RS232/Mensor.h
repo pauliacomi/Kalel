@@ -1,6 +1,4 @@
 // Class which reads the Mensors (Pressure Transmitters)
-#ifndef _MENSOR__H_
-#define _MENSOR__H_
 #pragma once
 
 #include "RS232.h"
@@ -23,4 +21,3 @@ public:
 	double ReadMensor();
 
 };
-#endif

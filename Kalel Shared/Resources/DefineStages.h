@@ -1,5 +1,3 @@
-#ifndef DEFINE_STAGES_H
-#define DEFINE_STAGES_H
 #pragma once
 
 // Used by Steps.rc
@@ -85,6 +83,4 @@
 #define _APS_NEXT_CONTROL_VALUE         1001
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
-#endif
-
 #endif

@@ -1,5 +1,3 @@
-#ifndef HTTPRESPONSE_H
-#define HTTPRESPONSE_H
 #pragma once
 
 #include <string>
@@ -36,5 +34,3 @@ struct http_response {
 	/*   error_str is set when the an error is seen.. */
 	std::string error_str_;
 };
-
-#endif

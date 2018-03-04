@@ -1,5 +1,3 @@
-#ifndef SERVER_H
-#define SERVER_H
 #pragma once
 
 #include "Socket.h"
@@ -32,5 +30,3 @@ protected:
 
 	std::unordered_map<std::string, std::function<void(http_request*, http_response*)>> funcMap;
 };
-
-#endif

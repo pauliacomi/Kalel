@@ -1,5 +1,3 @@
-#ifndef THREADS_H
-#define THREADS_H
 #pragma once
 
 #include "../../Kalel Shared/Com Classes/ControlInstrumentState.h"
@@ -48,5 +46,3 @@ public:
 	void ManualAction(int instrumentType, int instrumentNumber, bool state);
 	ControlInstrumentState GetInstrumentStates();
 };
-
-#endif

@@ -223,15 +223,6 @@
     <ClInclude Include="Automation\Measurement\Measurement.h" />
     <ClInclude Include="Automation\Measurement\Security.h" />
     <ClInclude Include="Automation\Old\MainFrm.h" />
-    <ClInclude Include="Automation\Old\Manip.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="Automation\Old\Manip_Auto.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="Automation\Old\Manip_AutoGaz.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="Automation\ThreadManager.h" />
     <ClInclude Include="Backend\Instruments.h" />
     <ClInclude Include="Backend\RS232\Keithley.h" />

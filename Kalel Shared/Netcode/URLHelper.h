@@ -1,5 +1,3 @@
-#ifndef URLHELPER_H
-#define URLHELPER_H
 #pragma once
 
 #include <string>
@@ -16,5 +14,3 @@ public:
 	static void SplitGetReq(std::string et_req, std::string& path, std::map<std::string, std::string>& params);
 	static void BuildReq(std::string& request, std::string const& path, std::map<std::string, std::string> const& params);
 };
-
-#endif

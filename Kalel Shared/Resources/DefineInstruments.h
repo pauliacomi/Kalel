@@ -1,5 +1,3 @@
-#ifndef DEFINE_INSTRUMENT_H
-#define DEFINE_INSTRUMENT_H
 #pragma once
 
 #define NONE						0
@@ -32,5 +30,3 @@
 #define INSTRUMENT_VALVE			1
 #define INSTRUMENT_EV				2
 #define INSTRUMENT_PUMP				3
-
-#endif

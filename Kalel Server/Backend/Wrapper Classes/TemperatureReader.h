@@ -6,8 +6,7 @@
 //
 //*****************************************************************************************************
 
-#ifndef _TEMPERATURE_H_
-#define _TEMPERATURE_H_
+
 #pragma once
 
 #include <string>
@@ -37,5 +36,3 @@ private:
 	int cage_t;
 	int room_t;
 };
-
-#endif

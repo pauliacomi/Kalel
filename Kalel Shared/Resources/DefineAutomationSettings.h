@@ -1,5 +1,3 @@
-#ifndef DEFINE_AUTOMATION_SETTINGS_H
-#define DEFINE_AUTOMATION_SETTINGS_H
 #pragma once
 
 // Time values
@@ -36,5 +34,3 @@
 #define temps_en_cas_d_urgence			10 // minutes
 #define temps_defaut					30 // minutes
 #define temps_bouteille					5 // minutes
-
-#endif

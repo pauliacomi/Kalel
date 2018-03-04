@@ -1,5 +1,3 @@
-#ifndef _KEITHLEY__H_
-#define _KEITHLEY__H_
 #pragma once
 
 #include "RS232.h"
@@ -34,5 +32,3 @@ public:
 	double ReadChannel1();
 	double ReadChannel2();
 };
-#endif
-

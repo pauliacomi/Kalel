@@ -5,8 +5,6 @@
 //
 //*****************************************************************************************************
 
-#ifndef NI_USB_9211A_H
-#define NI_USB_9211A_H
 #pragma once
 
 #include "NIDAQmx.h"
@@ -72,10 +70,3 @@ public:
 	double LectureThermocouple_3();
 
 };
-
-
-#endif
-
-
-
-

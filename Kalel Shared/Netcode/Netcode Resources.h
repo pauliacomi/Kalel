@@ -1,5 +1,3 @@
-#ifndef NETCODERES_H
-#define NETCODERES_H
 #pragma once
 
 #define ERR_WSASTARTUP			"WSAStartup failed"
@@ -27,4 +25,3 @@
 #define LOG_ACCEPTED_SOCK		" accepted new socket: "
 #define LOG_REQUEST				" request was: \n"
 #define LOG_RESPONSE			" response sent: \n"
-#endif

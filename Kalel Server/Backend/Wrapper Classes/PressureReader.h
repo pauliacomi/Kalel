@@ -6,8 +6,6 @@
 //
 //*****************************************************************************************************
 
-#ifndef _PRESSURE_H_
-#define _PRESSURE_H_
 #pragma once
 
 #include <string>
@@ -33,5 +31,3 @@ private:
 	int lowrange;
 	int highrange;
 };
-
-#endif

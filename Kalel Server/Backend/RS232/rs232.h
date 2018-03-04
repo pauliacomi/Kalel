@@ -1,8 +1,6 @@
 // This class makes the link to the serial port of the computer.
 // It is used by any serial instrument class as an extension
 
-#ifndef _LIAISONRS232__H_
-#define _LIAISONRS232__H_
 #pragma once
 
 #include <windows.h>
@@ -30,4 +28,3 @@ protected:
 	COMMTIMEOUTS g_cto;
 	DCB g_dcb;
 };
-#endif
