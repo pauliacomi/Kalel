@@ -70,8 +70,8 @@ protected:
 	// Execution
 	//------------------------------------------------------------
 
-	bool ExecutionManual();
-	bool ExecutionAuto();
+	void ExecutionManual();
+	void ExecutionAuto();
 
 	//------------------------------------------------------------
 	// Initialisation

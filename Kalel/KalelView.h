@@ -8,7 +8,8 @@
 #include "Kalel.h"
 #include "KalelDoc.h"
 
-#include "../Kalel Shared/Com Classes/ExperimentData.h"				// Where data about the experimental parameters, results and current status is stored
+#include "../Kalel Shared/Com Classes/ExperimentData.h"				// Where results are stored
+#include "../Kalel Shared/Com Classes/ExperimentStatus.h"			// Where data about the experimental parameters and current status is stored
 #include "../Kalel Shared/Com Classes/ExperimentSettings.h"			// Where returned data from results is stored
 #include "../Kalel Shared/Com Classes/MachineSettings.h"			// Where the settings for the connected machine are stored
 
@@ -86,6 +87,10 @@ private:
 	std::shared_ptr<ExperimentSettings>													experimentSettings;		// Local storage of experimentSettings
 	std::shared_ptr<ExperimentSettings>													tempExpSettings;		// Temporary experimentSettings stored here between sending change request to server and server acknowledgement
 	
+	// Experiment Status related
+	std::chrono::system_clock::time_point												experimentStatusTime;	// Timepoint storing when the experiment status was generated
+	std::shared_ptr<ExperimentStatus>													experimentStatus;		// Local storage of experimentStatus
+
 	// Data/Logs/Request collections
 	std::map<std::chrono::system_clock::time_point, std::wstring> 						logCollection;			// Log points for an experiment are stored here
 	std::map<std::chrono::system_clock::time_point, std::wstring> 						requestCollection;		// Log points for an all errors or requests are stored here
@@ -160,6 +165,8 @@ private:
 	LRESULT OnSetExperimentSettings(WPARAM, LPARAM);
 	LRESULT OnExchangeExperimentSettings(WPARAM wParam, LPARAM incomingExperimentSettings);
 
+	LRESULT OnExchangeExperimentStatus(WPARAM wParam, LPARAM incomingExperimentStatus);
+
 	LRESULT OnExchangeInstrumentState(WPARAM wParam, LPARAM lParam);
 	LRESULT OnSetInstrumentState(WPARAM wParam, LPARAM lParam);
 
@@ -177,8 +184,8 @@ private:
 private:
 
 	LRESULT AffichageMessages(WPARAM wParam, LPARAM lParam);
-	LRESULT DisplayTextboxValues(std::shared_ptr<ExperimentData> data);
-	LRESULT DisplayStepProgress(std::shared_ptr<ExperimentData> data);
+	LRESULT DisplayTextboxValues(std::shared_ptr<ExperimentData> data, std::shared_ptr<ExperimentStatus> status);
+	LRESULT DisplayStepProgress(std::shared_ptr<ExperimentStatus> status);
 	LRESULT MessageBoxAlert(WPARAM wParam, LPARAM lParam);
 	LRESULT MessageBoxConfirmation(WPARAM wParam, LPARAM);
 

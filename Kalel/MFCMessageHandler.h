@@ -11,6 +11,7 @@
 
 // Required to pass the experimental data to the main GUI
 #include "../Kalel Shared/Com Classes/ExperimentData.h"	
+#include "../Kalel Shared/Com Classes/ExperimentStatus.h"	
 #include "../Kalel Shared/Com Classes/MachineSettings.h"
 #include "../Kalel Shared/Com Classes/ControlInstrumentState.h"
 #include "../Kalel Shared/Com Classes/ExperimentSettings.h"
@@ -41,6 +42,7 @@ public:
 
 	bool OnSetExperimentSettings();
 	bool ExchangeExperimentSettings(const ExperimentSettings &pParam);
+	bool ExchangeExperimentStatus(const ExperimentStatus &pParam);
 
 	bool ExchangeData(ExperimentDataStorageArray* pParam);
 	bool ExchangeLogs(std::map<std::chrono::system_clock::time_point, std::wstring> * pParam);

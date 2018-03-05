@@ -93,32 +93,29 @@ void Security::SecurityHighPressureAuto(double maxPlow, double maxPhigh, const E
 {
 	if (securityActivated)
 	{
-		if (expData.experimentStage != STAGE_VACUUM_SAMPLE)
+		// Check for the pressure being higher than low pressure limit
+		if (expData.pressureHigh > maxPlow)
 		{
-			// Check for the pressure being higher than low pressure limit
-			if (expData.pressureHigh > maxPlow)
+			// If valve 6 is open and pressure is higher than specified, close valve 6
+			if (valveController.ValveIsOpen(6))
 			{
-				// If valve 6 is open and pressure is higher than specified, close valve 6
-				if (valveController.ValveIsOpen(6))
-				{
-					LOG(logINFO) << MESSAGE_WARNING_PHIGH_V6 << expData.pressureHigh << maxPlow;
-					valveController.ValveClose(6, false);
-					LOG(logINFO) << MESSAGE_VALVE_CLOSED << 6;
-				}
+				LOG(logINFO) << MESSAGE_WARNING_PHIGH_V6 << expData.pressureHigh << maxPlow;
+				valveController.ValveClose(6, false);
+				LOG(logINFO) << MESSAGE_VALVE_CLOSED << 6;
 			}
-			else
+		}
+		else
+		{
+			if (!valveController.ValveIsOpen(6))
 			{
-				if (!valveController.ValveIsOpen(6))
-				{
-					valveController.ValveOpen(6, false);
-					LOG(logINFO) << MESSAGE_VALVE_OPENED << 6;
-				}
+				valveController.ValveOpen(6, false);
+				LOG(logINFO) << MESSAGE_VALVE_OPENED << 6;
 			}
+		}
 
-			// Check for the pressure being higher than high pressure limit
-			if (expData.pressureHigh >= maxPhigh) {
-				//g_flagState = ARRET_URGENCE_HP;
-			}
+		// Check for the pressure being higher than high pressure limit
+		if (expData.pressureHigh >= maxPhigh) {
+			//g_flagState = ARRET_URGENCE_HP;
 		}
 	}
 }
@@ -178,18 +175,15 @@ void Security::SecuriteTemperaturesAuto(double maximumT, double minimumT, const 
 {
 	if (securityActivated)
 	{
-		if (expData.experimentStage != STAGE_VACUUM_SAMPLE)
+		if (expData.temperatureCalo >= maximumT)
 		{
-			if (expData.temperatureCalo >= maximumT)
-			{
-				LOG(logINFO) << MESSAGE_WARNING_THIGH_STOP << maximumT;
-				//g_flagState = ARRET_URGENCE_TCH;
-			}
-			if (expData.temperatureCalo <= minimumT)
-			{
-				LOG(logINFO) << MESSAGE_WARNING_TLOW_STOP << minimumT;
-				//g_flagState = ARRET_URGENCE_TCB;
-			}
+			LOG(logINFO) << MESSAGE_WARNING_THIGH_STOP << maximumT;
+			//g_flagState = ARRET_URGENCE_TCH;
+		}
+		if (expData.temperatureCalo <= minimumT)
+		{
+			LOG(logINFO) << MESSAGE_WARNING_TLOW_STOP << minimumT;
+			//g_flagState = ARRET_URGENCE_TCB;
 		}
 	}
 }

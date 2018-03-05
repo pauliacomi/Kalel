@@ -9,6 +9,7 @@
 #include "../../Kalel Shared/Com Classes/ExperimentSettings.h"	
 #include "../../Kalel Shared/Com Classes/MachineSettings.h"	
 #include "../../Kalel Shared/Com Classes/ExperimentData.h"
+#include "../../Kalel Shared/Com Classes/ExperimentStatus.h"
 
 class FileWriter
 {
@@ -76,7 +77,7 @@ public:
 	*		Reference to the experimentSettings which generates the entete
 	*		bool valveOpen6: records if valve number 6 is open or not
 	***********************************************************************/
-	void FileMeasurementRecord(const Donnees_General &general, const ExperimentData &data, bool valveOpen6);
+	void FileMeasurementRecord(const Donnees_General &general, const ExperimentData &data, const ExperimentStatus &status, bool valveOpen6);
 
 
 	/**********************************************************************
@@ -133,7 +134,7 @@ public:
 	*        const ExperimentSettings& oldSettings:	ExperimentSettings newSettings: The old settings file to compare to
 	*        const ExperimentData& newSettings:		ExperimentSettings newSettings: The current experiment state
 	***********************************************************************/
-	void RecordDataChange(bool csv, const ExperimentSettings& newSettings, const ExperimentSettings& oldSettings, const ExperimentData& data);
+	void RecordDataChange(bool csv, const ExperimentSettings& newSettings, const ExperimentSettings& oldSettings, const ExperimentStatus &status, const ExperimentData& data);
 
 
 	/**********************************************************************

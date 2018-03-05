@@ -70,7 +70,7 @@ void CommHandler::SaveAddress(std::wstring address)
 /*********************************
 // Sync
 *********************************/
-void CommHandler::Sync(bool initialSync, std::string fromTimeES, std::string fromTimeMS, std::string fromTimeCS)
+void CommHandler::Sync(bool initialSync, std::string fromTimeES, std::string fromTimeMS, std::string fromTimeCS, std::string fromTimeESt)
 {
 	if (!flagSyncRequest) {
 
@@ -78,11 +78,12 @@ void CommHandler::Sync(bool initialSync, std::string fromTimeES, std::string fro
 
 		if (initialSync)
 		{
-			sync = 6;
+			sync = 7;
 
 			GetMachineSettings();
 			GetControlInstrumentState();
 			GetExperimentSettings();
+			GetExperimentStatus();
 			GetData();
 			GetLog();
 			GetRequests();
@@ -90,6 +91,7 @@ void CommHandler::Sync(bool initialSync, std::string fromTimeES, std::string fro
 		else
 		{
 			localExperimentSettingsTime = fromTimeES;
+			localExperimentStatus = fromTimeESt;
 			localMachineSettingsTime = fromTimeMS;
 			localControlStateTime = fromTimeCS;
 
@@ -186,6 +188,21 @@ void CommHandler::SetExperimentSettings(std::shared_ptr<const ExperimentSettings
 	}
 }
 
+/*********************************
+// ExperimentStatus
+*********************************/
+void CommHandler::GetExperimentStatus()
+{
+	auto request = std::bind(&CommHandler::GetExperimentStatus_req, this, std::placeholders::_1);
+	auto callback = std::bind(&CommHandler::GetExperimentStatus_resp, this, std::placeholders::_1);
+
+	try {
+		client.Request(request, callback, localAddress);
+	}
+	catch (const std::exception& e) {
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, stringh::s2ws(e.what()));
+	}
+}
 
 /*********************************
 // Instrument State / Instrument control
@@ -710,6 +727,68 @@ unsigned CommHandler::SetExperimentSettings_resp(http_response* r) {
 }
 
 
+/*********************************
+// Get ExperimentStatus
+*********************************/
+unsigned CommHandler::GetExperimentStatus_req(http_request* r) {
+	r->method_ = http::method::get;
+	r->accept_ = http::mimetype::appjson;
+	r->path_ = "/api/experimentstatus";
+	return 0;
+}
+
+unsigned CommHandler::GetExperimentStatus_resp(http_response* r) {
+
+	if (r->status_ == http::responses::ok)
+	{
+		if (r->content_type_.find(http::mimetype::appjson) != std::string::npos) {
+
+			// Parse JSON
+			//////////////////////////////////////////////
+			json j;
+			try
+			{
+				j = json::parse(r->answer_.c_str());
+			}
+			catch (const std::exception& e)
+			{
+				messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, stringh::s2ws(e.what()));
+				return 1;
+			}
+
+			// Deserisalise data
+			//////////////////////////////////////////////
+			ExperimentStatus receivedStatus;
+
+			try
+			{
+				ExperimentStatus receivedStatus(j);
+			}
+			catch (const std::exception& e)
+			{
+				messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, stringh::s2ws(e.what()));
+				return 1;
+			}
+
+			messageHandler.ExchangeExperimentStatus(receivedStatus);
+
+			// Confirm sync
+			CheckSync();
+		}
+		else
+		{
+			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Corrupt response format"));
+			return 1;
+		}
+	}
+	else if (r->status_ == http::responses::not_found)
+	{
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server cannot get Experiment Status"));
+		return 1;
+	}
+
+	return 0;
+}
 /*********************************
 // Get machine Instrument State
 *********************************/

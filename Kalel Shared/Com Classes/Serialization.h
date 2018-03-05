@@ -1,10 +1,9 @@
 #pragma once
 
-#define STRINGIFY(Variable) (void(Variable),#Variable)
-
 #include "../Netcode/json.hpp"
 #include "../Com Classes/ExperimentData.h"
 #include "../Com Classes/ExperimentSettings.h"
+#include "../Com Classes/ExperimentStatus.h"
 #include "../Com Classes/MachineSettings.h"
 #include "../Com Classes/ControlInstrumentState.h"
 #include "../stringHelpers.h"
@@ -24,6 +23,9 @@ inline void from_json(const nlohmann::json &j, ExperimentData &e);
 
 inline void to_json(nlohmann::json &j, const ExperimentSettings &e);
 inline void from_json(const nlohmann::json &j, ExperimentSettings &e);
+
+inline void to_json(nlohmann::json &j, const ExperimentStatus &e);
+inline void from_json(const nlohmann::json &j, ExperimentStatus &e);
 
 inline void to_json(nlohmann::json &j, const Donnees_General &m);
 inline void to_json(nlohmann::json &j, const Donnees_Divers &m);
@@ -59,7 +61,7 @@ void to_json(nlohmann::json &j, const MachineSettings &m) {
 	j["PressionSecuriteBassePression"		]	= m.PressionSecuriteBassePression			;
 	j["PressionSecuriteHautePression"		]	= m.PressionSecuriteHautePression			;
 	j["PressionLimiteVide"					]	= m.PressionLimiteVide						;
-	j["hasSonicNozzle"				]	= m.hasSonicNozzle					;
+	j["hasSonicNozzle"						]	= m.hasSonicNozzle					;
 	j["VolumeP6"							]	= m.VolumeP6								;
 	j["VolumeRef"							]	= m.VolumeRef								;
 
@@ -161,28 +163,28 @@ inline void from_json(const nlohmann::json &j, Instrument &m) {
 inline void to_json(nlohmann::json &j, const Reader &m) {
 }
 inline void from_json(const nlohmann::json &j, Reader &m) {
-	m.type												=					j[STRINGIFY(m.type										)];
-	m.identifier										=					j[STRINGIFY(m.identifier								)];
-	m.sensitivity										=					j[STRINGIFY(m.sensitivity								)];
-	m.channel											=					j[STRINGIFY(m.channel									)];
-	m.instrument										=					j[STRINGIFY(m.instrument								)];
+	m.type												=					j["type"									];
+	m.identifier										=					j["identifier"								];
+	m.sensitivity										=					j["sensitivity"								];
+	m.channel											=					j["channel"									];
+	m.instrument										=					j["instrument"								];
 }
 //*************************************************************************************************************************
 //						Controller <> JSON
 //*************************************************************************************************************************
 inline void to_json(nlohmann::json &j, const Controller &m) {
-	j[STRINGIFY(m.type								)]	= m.type									;
-	j[STRINGIFY(m.identifier						)]	= m.identifier								;
-	j[STRINGIFY(m.sensitivity						)]	= m.sensitivity								;
-	j[STRINGIFY(m.channel							)]	= m.channel									;
-	j[STRINGIFY(m.instrument						)]	= m.instrument								;
+	j["type"							]	= m.type									;
+	j["identifier"						]	= m.identifier								;
+	j["sensitivity"						]	= m.sensitivity								;
+	j["channel"							]	= m.channel									;
+	j["instrument"						]	= m.instrument								;
 }
 inline void from_json(const nlohmann::json &j, Controller &m) {
-	m.type												=					j[STRINGIFY(m.type										)];
-	m.identifier										=					j[STRINGIFY(m.identifier								)];
-	m.sensitivity										=					j[STRINGIFY(m.sensitivity								)];
-	m.channel											=					j[STRINGIFY(m.channel									)];
-	m.instrument										=					j[STRINGIFY(m.instrument								)];
+	m.type												=					j["type"									];
+	m.identifier										=					j["identifier"								];
+	m.sensitivity										=					j["sensitivity"								];
+	m.channel											=					j["channel"									];
+	m.instrument										=					j["instrument"								];
 }
 
 //*************************************************************************************************************************
@@ -190,28 +192,6 @@ inline void from_json(const nlohmann::json &j, Controller &m) {
 //*************************************************************************************************************************
 inline void to_json(nlohmann::json &j, const ExperimentData &e) {
 
-	j[	"EP"	]	= e.GetexperimentInProgress					();
-	j[	"ER"	]	= e.GetexperimentRecording					();
-	j[	"EW"	]	= e.GetexperimentWaiting					();
-	j[	"ECR"	]	= e.GetexperimentCommandsRequested			();
-	j[	"ES"	]	= e.GetexperimentStage						();
-	j[	"VS"	]	= e.GetverificationStep						();
-	j[	"SSs"	]	= e.GetexperimentStepStatus					();
-	j[	"SSg"	]	= e.GetexperimentSubstepStage				();
-	j[	"ED"	]	= e.GetexperimentDose						();
-	j[	"GP"	]	= e.GetexperimentGraphPoints				();
-	j[	"EpS"	]	= e.GetexperimentPreviousStage				();
-	j[	"MM"	]	= e.GetmeasurementsMade						();
-	j[	"tS"	]	= e.GettimeStart							();
-	j[	"tE"	]	= e.GettimeElapsed							();
-	j[	"tEq"	]	= e.GettimeToEquilibrate					();
-	j[	"tEqC"	]	= e.GettimeToEquilibrateCurrent				();
-	j[	"CIa"	]	= e.GetinjectionAttemptCounter				();
-	j[	"CA"	]	= e.GetadsorptionCounter					();
-	j[	"CD"	]	= e.GetdesorptionCounter					();
-	j[	"PI"	]	= e.GetpressureInitial						();
-	j[	"PF"	]	= e.GetpressureFinal						();
-	j[	"PHo"	]	= e.GetpressureHighOld						();
 	j[	"Cl"	]	= e.GetresultCalorimeter					();
 	j[	"PL"	]	= e.GetpressureLow							();
 	j[	"PH"	]	= e.GetpressureHigh							();
@@ -222,6 +202,45 @@ inline void to_json(nlohmann::json &j, const ExperimentData &e) {
 
 inline void from_json(const nlohmann::json &j, ExperimentData &e) {
 
+	e.SetresultCalorimeter									( j[	"Cl"	]);
+	e.SetpressureLow										( j[	"PL"	]);
+	e.SetpressureHigh										( j[	"PH"	]);
+	e.SettemperatureCalo									( j[	"TCl"	]);
+	e.SettemperatureCage									( j[	"TCg"	]);
+	e.SettemperatureRoom									( j[	"TR"	]);
+
+}
+
+
+//*************************************************************************************************************************
+//						ExperimentStatus <> JSON
+//*************************************************************************************************************************
+inline void to_json(nlohmann::json &j, const ExperimentStatus &e) {
+
+	j[	"EP"	]	= e.GetexperimentInProgress					();
+	j[	"ER"	]	= e.GetexperimentRecording					();
+	j[	"EW"	]	= e.GetexperimentWaiting					();
+	j[	"ECR"	]	= e.GetexperimentCommandsRequested			();
+	j[	"ES"	]	= e.GetexperimentStage						();
+	j[	"VS"	]	= e.GetverificationStep						();
+	j[	"SSs"	]	= e.GetexperimentStepStatus					();
+	j[	"SSg"	]	= e.GetexperimentSubstepStage				();
+	j[	"ED"	]	= e.GetexperimentDose						();
+	j[	"EpS"	]	= e.GetexperimentPreviousStage				();
+	j[	"tS"	]	= e.GettimeStart							();
+	j[	"tE"	]	= e.GettimeElapsed							();
+	j[	"tEq"	]	= e.GettimeToEquilibrate					();
+	j[	"tEqC"	]	= e.GettimeToEquilibrateCurrent				();
+	j[	"CIa"	]	= e.GetinjectionAttemptCounter				();
+	j[	"CA"	]	= e.GetadsorptionCounter					();
+	j[	"CD"	]	= e.GetdesorptionCounter					();
+	j[	"PI"	]	= e.GetpressureInitial						();
+	j[	"PF"	]	= e.GetpressureFinal						();
+	j[	"PHo"	]	= e.GetpressureHighOld						();
+}
+
+inline void from_json(const nlohmann::json &j, ExperimentStatus &e) {
+
 	e.SetexperimentInProgress								( j[	"EP"	]);
 	e.SetexperimentRecording								( j[	"ER"	]);
 	e.SetexperimentWaiting									( j[	"EW"	]);
@@ -231,9 +250,7 @@ inline void from_json(const nlohmann::json &j, ExperimentData &e) {
 	e.SetexperimentStepStatus								( j[	"SSs"	]);
 	e.SetexperimentSubstepStage								( j[	"SSg"	]);	  
 	e.SetexperimentDose										( j[	"ED"	]);	  
-	e.SetexperimentGraphPoints								( j[	"GP"	]);
 	e.SetexperimentPreviousStage							( j[	"EpS"	]);
-	e.SetmeasurementsMade									( j[	"MM"	]);
 	e.SettimeStart											( j[	"tS"	]);
 	e.SettimeElapsed										( j[	"tE"	]);
 	e.SettimeToEquilibrate									( j[	"tEq"	]);
@@ -244,13 +261,6 @@ inline void from_json(const nlohmann::json &j, ExperimentData &e) {
 	e.SetpressureInitial									( j[	"PI"	]);
 	e.SetpressureFinal										( j[	"PF"	]);
 	e.SetpressureHighOld									( j[	"PHo"	]);
-	e.SetresultCalorimeter									( j[	"Cl"	]);
-	e.SetpressureLow										( j[	"PL"	]);
-	e.SetpressureHigh										( j[	"PH"	]);
-	e.SettemperatureCalo									( j[	"TCl"	]);
-	e.SettemperatureCage									( j[	"TCg"	]);
-	e.SettemperatureRoom									( j[	"TR"	]);
-
 }
 
 

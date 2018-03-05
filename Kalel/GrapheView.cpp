@@ -77,10 +77,13 @@ void CGrapheView::OnDraw(CDC* pDC)
 
 			all_points.nb_points = measurementArray->size();
 
+			auto start = measurementArray->begin()->first;
+
 			std::for_each(measurementArray->begin(), measurementArray->end(),
-				[&all_points](const std::pair<std::chrono::system_clock::time_point, std::shared_ptr<ExperimentData>>& p){
+				[&all_points, start](const std::pair<std::chrono::system_clock::time_point, std::shared_ptr<ExperimentData>>& p){
 				
-				all_points.time_elapsed.push_back(p.second->GettimeElapsedSec());
+				float elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(p.first - start).count() / 1000;
+				all_points.time_elapsed.push_back(elapsed);
 				all_points.high_pressure.push_back(p.second->GetpressureHigh());
 				all_points.low_pressure.push_back(p.second->GetpressureLow());
 				all_points.calorimeter.push_back(p.second->GetresultCalorimeter());

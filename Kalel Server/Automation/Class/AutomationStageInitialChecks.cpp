@@ -14,35 +14,35 @@
 
 void Automation::Verifications()
 {
-	switch (storage.currentData->verificationStep)
+	switch (storage.experimentStatus->verificationStep)
 	{
 	case STEP_VERIFICATIONS_SECURITY:
 		if (VerificationSecurity()) {
-			storage.currentData->verificationStep = STEP_VERIFICATIONS_VALVES;
+			storage.experimentStatus->verificationStep = STEP_VERIFICATIONS_VALVES;
 		}
 		break;
 
 	case STEP_VERIFICATIONS_VALVES:
 		if (VerificationValves()){
-			storage.currentData->verificationStep = STEP_VERIFICATIONS_PRESSURE;
+			storage.experimentStatus->verificationStep = STEP_VERIFICATIONS_PRESSURE;
 		}
 		break;
 
 	case STEP_VERIFICATIONS_PRESSURE:
 		if (VerificationResidualPressure()){
-			storage.currentData->verificationStep = STEP_VERIFICATIONS_TEMPERATURE;
+			storage.experimentStatus->verificationStep = STEP_VERIFICATIONS_TEMPERATURE;
 		}
 		break;
 
 	case STEP_VERIFICATIONS_TEMPERATURE:
 		if (VerificationTemperature()) {
-			storage.currentData->verificationStep = STEP_VERIFICATIONS_COMPLETE;
+			storage.experimentStatus->verificationStep = STEP_VERIFICATIONS_COMPLETE;
 		}
 		break;
 
 	case STEP_VERIFICATIONS_COMPLETE:
 		if (VerificationComplete()) {
-			storage.currentData->verificationStep = STEP_VERIFICATIONS_SECURITY;
+			storage.experimentStatus->verificationStep = STEP_VERIFICATIONS_SECURITY;
 		}
 		break;
 	}
@@ -54,7 +54,7 @@ bool Automation::VerificationSecurity()
 	if (!storage.machineSettings->ActivationSecurite)
 	{
 		// Ask user if they want to continue
-		LOG(logWARNING) << MESSAGE_NOSECURITY;
+		LOG(logEVENT) << MESSAGE_NOSECURITY;
 		eventPause = true;
 		storage.automationControl.notify_all();
 	}
@@ -65,7 +65,7 @@ bool Automation::VerificationSecurity()
 
 bool Automation::VerificationValves()
 {
-	if (storage.currentData->experimentStepStatus == STEP_STATUS_START)
+	if (storage.experimentStatus->experimentStepStatus == STEP_STATUS_START)
 	{
 		// Ask user to check the valves
 		LOG(logINFO) << MESSAGE_CHECK_INITIAL_STATE;
@@ -76,13 +76,13 @@ bool Automation::VerificationValves()
 		storage.automationControl.notify_all();
 
 		// Continue to next step
-		storage.currentData->experimentStepStatus = STEP_STATUS_END;
+		storage.experimentStatus->experimentStepStatus = STEP_STATUS_END;
 		return false;
 	}
 
-	if (storage.currentData->experimentStepStatus == STEP_STATUS_END)
+	if (storage.experimentStatus->experimentStepStatus == STEP_STATUS_END)
 	{
-		storage.currentData->experimentStepStatus = STEP_STATUS_START;
+		storage.experimentStatus->experimentStepStatus = STEP_STATUS_START;
 		return true;
 	}
 
@@ -92,7 +92,7 @@ bool Automation::VerificationValves()
 
 bool Automation::VerificationResidualPressure()
 {
-	if (storage.currentData->experimentStepStatus == STEP_STATUS_START)
+	if (storage.experimentStatus->experimentStepStatus == STEP_STATUS_START)
 	{
 		// Display initial message
 		LOG(logINFO) << MESSAGE_CHECK_INITIAL_PRESSURE;
@@ -112,11 +112,11 @@ bool Automation::VerificationResidualPressure()
 			WaitSeconds(TIME_WAIT_VALVES);
 		}
 		// Continue to next step
-		storage.currentData->experimentStepStatus = STEP_STATUS_INPROGRESS;
+		storage.experimentStatus->experimentStepStatus = STEP_STATUS_INPROGRESS;
 	}
 
-	if (storage.currentData->experimentStepStatus == STEP_STATUS_INPROGRESS
-		&& storage.currentData->experimentWaiting == false)							// If waiting is done
+	if (storage.experimentStatus->experimentStepStatus == STEP_STATUS_INPROGRESS
+		&& storage.experimentStatus->experimentWaiting == false)							// If waiting is done
 	{
 		// Open valve 5
 		controls.valveControls->ValveOpen(5, true);
@@ -128,11 +128,11 @@ bool Automation::VerificationResidualPressure()
 		WaitSeconds(TIME_WAIT_VALVES);
 
 		// Continue to next step
-		storage.currentData->experimentStepStatus = STEP_STATUS_END;
+		storage.experimentStatus->experimentStepStatus = STEP_STATUS_END;
 	}
 
-	if (storage.currentData->experimentStepStatus == STEP_STATUS_END
-		&& storage.currentData->experimentWaiting == false)							// If waiting is done
+	if (storage.experimentStatus->experimentStepStatus == STEP_STATUS_END
+		&& storage.experimentStatus->experimentWaiting == false)							// If waiting is done
 	{
 		// Check residual pressure
 		if (storage.currentData->pressureHigh >= storage.machineSettings->PressionLimiteVide)
@@ -141,7 +141,7 @@ bool Automation::VerificationResidualPressure()
 			eventPause = true;
 			storage.automationControl.notify_all();
 		}
-		storage.currentData->experimentStepStatus = STEP_STATUS_START;
+		storage.experimentStatus->experimentStepStatus = STEP_STATUS_START;
 		return true;
 	}
 
@@ -151,7 +151,7 @@ bool Automation::VerificationResidualPressure()
 
 bool Automation::VerificationTemperature()
 {
-	if (storage.currentData->experimentStepStatus == STEP_STATUS_START)
+	if (storage.experimentStatus->experimentStepStatus == STEP_STATUS_START)
 	{
 		// Display initial message
 		LOG(logINFO) << MESSAGE_CHECK_INITIAL_TEMPERATURE;
@@ -166,20 +166,20 @@ bool Automation::VerificationTemperature()
 			// Pause
 			eventPause = true;
 			storage.automationControl.notify_all();
-			storage.currentData->experimentStepStatus = STEP_STATUS_INPROGRESS;
+			storage.experimentStatus->experimentStepStatus = STEP_STATUS_INPROGRESS;
 		}
 		else
 		{
-			storage.currentData->experimentStepStatus = STEP_STATUS_END;
+			storage.experimentStatus->experimentStepStatus = STEP_STATUS_END;
 		}
 	}
 
-	if (storage.currentData->experimentStepStatus == STEP_STATUS_INPROGRESS)
+	if (storage.experimentStatus->experimentStepStatus == STEP_STATUS_INPROGRESS)
 	{
 		if (sb_userContinue)
 		{
 			sb_userContinue = false;
-			storage.currentData->experimentStepStatus = STEP_STATUS_END;
+			storage.experimentStatus->experimentStepStatus = STEP_STATUS_END;
 		}
 		else
 		{
@@ -187,14 +187,14 @@ bool Automation::VerificationTemperature()
 			if (!(storage.currentData->temperatureCalo < storage.experimentSettings->dataGeneral.temperature_experience - security_temperature_initial) && !(storage.currentData->temperatureCalo > storage.experimentSettings->dataGeneral.temperature_experience + security_temperature_initial) &&
 				!(storage.currentData->temperatureCage < storage.experimentSettings->dataGeneral.temperature_experience - security_temperature_initial) && !(storage.currentData->temperatureCage > storage.experimentSettings->dataGeneral.temperature_experience + security_temperature_initial))
 			{
-				storage.currentData->experimentStepStatus = STEP_STATUS_END;
+				storage.experimentStatus->experimentStepStatus = STEP_STATUS_END;
 			}
 		}
 	}
 
-	if (storage.currentData->experimentStepStatus == STEP_STATUS_END)
+	if (storage.experimentStatus->experimentStepStatus == STEP_STATUS_END)
 	{
-		storage.currentData->experimentStepStatus = STEP_STATUS_START;
+		storage.experimentStatus->experimentStepStatus = STEP_STATUS_START;
 		return true;
 	}
 
@@ -204,8 +204,8 @@ bool Automation::VerificationTemperature()
 bool Automation::VerificationComplete()
 {
 	// Go to the next step
-	storage.currentData->experimentStage = STAGE_EQUILIBRATION;
-	storage.currentData->experimentStepStatus = STEP_STATUS_START;
+	storage.experimentStatus->experimentStage = STAGE_EQUILIBRATION;
+	storage.experimentStatus->experimentStepStatus = STEP_STATUS_START;
 
 	return true;
 }

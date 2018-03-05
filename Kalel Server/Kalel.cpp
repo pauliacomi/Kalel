@@ -63,6 +63,9 @@ Kalel::Kalel()
 		std::bind(&Kalel::ExperimentSettingsSync,	this, std::placeholders::_1, std::placeholders::_2), 
 													"/api/experimentsettings");
 	server.AddMethod(
+		std::bind(&Kalel::ExperimentStatusSync,		this, std::placeholders::_1, std::placeholders::_2), 
+													"/api/experimentstatus");
+	server.AddMethod(
 		std::bind(&Kalel::InstrumentStateSync,		this, std::placeholders::_1, std::placeholders::_2), 
 													"/api/instrument");
 	server.AddMethod(
@@ -80,9 +83,6 @@ Kalel::Kalel()
 	server.AddMethod(
 		std::bind(&Kalel::ReloadParameters,			this, std::placeholders::_1, std::placeholders::_2), 
 													"/api/reloadparameters");
-	server.AddMethod(
-		std::bind(&Kalel::Debug,					this, std::placeholders::_1, std::placeholders::_2), 
-													"/api/debug/testconnection");
 
 	server.Start();
 
@@ -109,7 +109,7 @@ Kalel::~Kalel()
 void Kalel::GetLogs(std::string &logs) {
 	logs.clear();
 
-	auto localCollection = storageVectors.infoLogs.get();
+	auto localCollection = storageVectors.debugLogs.get();
 
 	for (auto it = localCollection.begin(); it != localCollection.end(); ++it)
 	{
@@ -133,7 +133,7 @@ void Kalel::GetLogs(std::string &logs) {
 *********************************/
 void Kalel::Ping(http_request* req, http_response* resp)
 {
-	LOG(logINFO) << "Machine Settings" << req->method_;
+	LOG(logDEBUG) << "Machine Settings" << req->method_;
 	if (req->method_ == http::method::get)
 	{
 		resp->status_ = http::responses::ok;
@@ -209,7 +209,7 @@ void Kalel::Sync(http_request* req, http_response* resp)
 void Kalel::MachineSettingsSync(http_request* req, http_response* resp)
 {
 	timeh::timer t;
-	LOG(logINFO) << "Machine Settings" << req->method_;
+	LOG(logDEBUG) << "Machine Settings" << req->method_;
 	t.Start();
 
 	// GET
@@ -245,7 +245,7 @@ void Kalel::MachineSettingsSync(http_request* req, http_response* resp)
 		}
 	}
 
-	LOG(logINFO) << std::to_string(t.TimeMilliseconds());
+	LOG(logDEBUG) << "Machine Settings took" << std::to_string(t.TimeMilliseconds());
 }
 
 
@@ -255,7 +255,7 @@ void Kalel::MachineSettingsSync(http_request* req, http_response* resp)
 void Kalel::ExperimentSettingsSync(http_request* req, http_response* resp)
 {
 	timeh::timer t;
-	LOG(logINFO) << "ExpSettings" << req->method_;
+	LOG(logDEBUG) << "ExpSettings" << req->method_;
 	t.Start();
 
 	// GET
@@ -288,7 +288,30 @@ void Kalel::ExperimentSettingsSync(http_request* req, http_response* resp)
 		}
 	}
 
-	LOG(logINFO) << std::to_string(t.TimeMilliseconds());
+	LOG(logDEBUG) << "Experiment settings took" << std::to_string(t.TimeMilliseconds());
+}
+
+
+/*********************************
+// ExperimentStatus
+*********************************/
+void Kalel::ExperimentStatusSync(http_request* req, http_response* resp)
+{
+	timeh::timer t;
+	LOG(logDEBUG) << "Experiment Status" << req->method_;
+	t.Start();
+
+	// GET
+	if (req->method_ == http::method::get)
+	{
+		json j = *storageVectors.experimentStatus;
+
+		resp->status_ = http::responses::ok;
+		resp->content_type_ = http::mimetype::appjson;
+		resp->answer_ = j.dump();
+	}
+
+	LOG(logDEBUG) << "Experiment Status took" << std::to_string(t.TimeMilliseconds());
 }
 
 
@@ -298,7 +321,7 @@ void Kalel::ExperimentSettingsSync(http_request* req, http_response* resp)
 void Kalel::InstrumentStateSync(http_request* req, http_response* resp)
 {
 	timeh::timer t;
-	LOG(logINFO) << "Instrument state" << req->method_;
+	LOG(logDEBUG) << "Instrument state" << req->method_;
 	t.Start();
 
 	// GET
@@ -352,7 +375,7 @@ void Kalel::InstrumentStateSync(http_request* req, http_response* resp)
 		}
 	}
 
-	LOG(logINFO) << std::to_string(t.TimeMilliseconds());
+	LOG(logDEBUG) << "Instrument state took" << std::to_string(t.TimeMilliseconds());
 }
 
 
@@ -362,7 +385,7 @@ void Kalel::InstrumentStateSync(http_request* req, http_response* resp)
 void Kalel::DataSync(http_request* req, http_response* resp)
 {
 	timeh::timer t;
-	LOG(logINFO) << "Data sync";
+	LOG(logDEBUG) << "Data sync";
 	t.Start();
 
 	if (req->method_ == http::method::get)
@@ -387,14 +410,14 @@ void Kalel::DataSync(http_request* req, http_response* resp)
 			json j;
 
 			std::string s = "Serialisation of " + std::to_string(localCollection->size());
-			LOG(logINFO) << s;
+			LOG(logDEBUG) << s;
 			t.Start();
 			
 			for (const auto& kv : *localCollection) {
 				j.push_back(json::object_t::value_type({ timeh::TimePointToString(kv.first), *(kv.second) }));
 			}
 
-			LOG(logINFO) << std::to_string(t.TimeMilliseconds());
+			LOG(logDEBUG) << "Serialisation took" << std::to_string(t.TimeMilliseconds());
 
 			resp->status_ = http::responses::ok;
 			resp->content_type_ = http::mimetype::appjson;
@@ -406,7 +429,7 @@ void Kalel::DataSync(http_request* req, http_response* resp)
 		}
 	}
 
-	LOG(logINFO) << std::to_string(t.TimeMilliseconds());
+	LOG(logDEBUG) << std::to_string(t.TimeMilliseconds());
 }
 
 
@@ -416,7 +439,7 @@ void Kalel::DataSync(http_request* req, http_response* resp)
 void Kalel::LogSync(http_request* req, http_response* resp)
 {
 	timeh::timer t;
-	LOG(logINFO) << "Log sync";
+	LOG(logDEBUG) << "Log sync";
 	t.Start();
 
 	if (req->method_ == http::method::get)
@@ -454,7 +477,7 @@ void Kalel::LogSync(http_request* req, http_response* resp)
 		}
 	}
 
-	LOG(logINFO) << std::to_string(t.TimeMilliseconds());
+	LOG(logDEBUG) << "Logs took" << std::to_string(t.TimeMilliseconds());
 }
 
 
@@ -464,7 +487,7 @@ void Kalel::LogSync(http_request* req, http_response* resp)
 void Kalel::RequestSync(http_request* req, http_response* resp)
 {
 	timeh::timer t;
-	LOG(logINFO) << "Request sync";
+	LOG(logDEBUG) << "Request sync";
 	t.Start();
 
 	if (req->method_ == http::method::get)
@@ -502,7 +525,7 @@ void Kalel::RequestSync(http_request* req, http_response* resp)
 		}
 	}
 
-	LOG(logINFO) << std::to_string(t.TimeMilliseconds());
+	LOG(logDEBUG) << "requests took" << std::to_string(t.TimeMilliseconds());
 }
 
 
@@ -561,20 +584,3 @@ void Kalel::ReloadParameters(http_request * req, http_response * resp)
 /*********************************
 // Debugging
 *********************************/
-void Kalel::Debug(http_request* req, http_response* resp)
-{
-	if (req->method_ == http::method::get)
-	{
-		resp->status_ = http::responses::ok;
-		if (!req->params_.empty() ||
-			!req->params_.at("return").empty()) {
-
-			resp->content_type_ = http::mimetype::texthtml;
-
-			for (size_t i = 0; i < stringh::To<size_t>(req->params_.at("return")); i++)
-			{
-				resp->answer_ += "test";
-			}
-		}
-	}
-}

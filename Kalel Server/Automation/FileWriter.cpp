@@ -121,7 +121,7 @@ bool FileWriter::FileMeasurementCreate(const Donnees_General &general)
 *		Reference to the experimentSettings which generates the entete
 *		bool valveOpen6: records if valve number 6 is open or not
 ***********************************************************************/
-void FileWriter::FileMeasurementRecord(const Donnees_General &general, const ExperimentData &data, bool valveOpen6)
+void FileWriter::FileMeasurementRecord(const Donnees_General &general, const ExperimentData &data, const ExperimentStatus &status, bool valveOpen6)
 {
 	std::wostringstream stream;
 	char char_resultat_calo[20];
@@ -129,8 +129,8 @@ void FileWriter::FileMeasurementRecord(const Donnees_General &general, const Exp
 
 	if (stream)
 	{
-		stream << data.experimentDose					<< ";";				// Experiment dose
-		stream << data.timeElapsed						<< ";";				// Experiment time
+		stream << status.experimentDose					<< ";";				// Experiment dose
+		stream << status.timeElapsed					<< ";";				// Experiment time
 		stream << char_resultat_calo					<< ";";				// Calorimeter value
 		stream << data.pressureLow						<< ";";				// Pressure low range
 		stream << data.pressureHigh						<< ";";				// Pressure high range
@@ -305,7 +305,7 @@ std::wstring FileWriter::EnteteDesorption(bool csv, const std::vector<Donnees_De
 *        const ExperimentSettings& oldSettings:	ExperimentSettings newSettings: The old settings file to compare to
 *        const ExperimentData& newSettings:		ExperimentSettings newSettings: The current experiment state
 ***********************************************************************/
-void FileWriter::RecordDataChange(bool csv, const ExperimentSettings& newSettings, const ExperimentSettings& oldSettings, const ExperimentData& data)
+void FileWriter::RecordDataChange(bool csv, const ExperimentSettings& newSettings, const ExperimentSettings& oldSettings, const ExperimentStatus &status, const ExperimentData& data)
 {
 	// Check if csv file is requested
 	std::wstring divider;
@@ -325,8 +325,8 @@ void FileWriter::RecordDataChange(bool csv, const ExperimentSettings& newSetting
 
 			text << std::endl << "-----------------------------------------------------"	<< std::endl;
 			text << "Settings changed"														<< std::endl;
-			text << "Step" << divider << data.adsorptionCounter								<< std::endl;
-			text << "Dose" << divider << data.experimentDose								<< std::endl;
+			text << "Step" << divider << status.adsorptionCounter							<< std::endl;
+			text << "Dose" << divider << status.experimentDose								<< std::endl;
 
 			if (oldSettings.dataAdsorption[i].delta_pression != newSettings.dataAdsorption[i].delta_pression)
 			{
@@ -357,8 +357,8 @@ void FileWriter::RecordDataChange(bool csv, const ExperimentSettings& newSetting
 		{
 			text << std::endl << "-----------------------------------------------------"	<< std::endl;
 			text << "Settings changed"														<< std::endl;
-			text << "Step" << divider << data.adsorptionCounter								<< std::endl;
-			text << "Dose" << divider << data.experimentDose								<< std::endl;
+			text << "Step" << divider << status.adsorptionCounter							<< std::endl;
+			text << "Dose" << divider << status.experimentDose								<< std::endl;
 
 			
 			if (oldSettings.dataDesorption[i].delta_pression != newSettings.dataDesorption[i].delta_pression)

@@ -52,9 +52,6 @@
     <Filter Include="Source Files\Automation\Class">
       <UniqueIdentifier>{b4376b8b-4c5a-4536-bf49-7e7d47bf1cd9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Automation\Old">
-      <UniqueIdentifier>{75357d3e-1be3-42b0-83c0-213371a6ba42}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Common">
       <UniqueIdentifier>{3f1b5b90-a803-40ba-9e9b-28a86c4ff657}</UniqueIdentifier>
     </Filter>
@@ -249,6 +246,12 @@
     <ClInclude Include="..\Kalel Shared\classHelpers.h">
       <Filter>Header Files\Common</Filter>
     </ClInclude>
+    <ClInclude Include="..\Kalel Shared\Com Classes\ExperimentStatus.h">
+      <Filter>Header Files\Common\Com Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Kalel Shared\Com Classes\Serialization.h">
+      <Filter>Header Files\Common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Kalel Server.cpp">
@@ -259,111 +262,6 @@
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Automation\Old\Manip.cpp">
-      <Filter>Source Files\Automation\Old</Filter>
-    </ClCompile>
-    <ClCompile Include="Automation\Old\Manip_Auto.cpp">
-      <Filter>Source Files\Automation\Old</Filter>
-    </ClCompile>
-    <ClCompile Include="Automation\Old\Manip_Auto_Arret.cpp">
-      <Filter>Source Files\Automation\Old</Filter>
-    </ClCompile>
-    <ClCompile Include="Automation\Old\Manip_Auto_Donnees.cpp">
-      <Filter>Source Files\Automation\Old</Filter>
-    </ClCompile>
-    <ClCompile Include="Automation\Old\Manip_Auto_Fichier.cpp">
-      <Filter>Source Files\Automation\Old</Filter>
-    </ClCompile>
-    <ClCompile Include="Automation\Old\Manip_Auto_LireAfficher.cpp">
-      <Filter>Source Files\Automation\Old</Filter>
-    </ClCompile>
-    <ClCompile Include="Automation\Old\Manip_Auto_Probleme_Injection.cpp">
-      <Filter>Source Files\Automation\Old</Filter>
-    </ClCompile>
-    <ClCompile Include="Automation\Old\Manip_Auto_Vannes.cpp">
-      <Filter>Source Files\Automation\Old</Filter>
-    </ClCompile>
-    <ClCompile Include="Automation\Old\Manip_Auto_Verifications.cpp">
-      <Filter>Source Files\Automation\Old</Filter>
-    </ClCompile>
-    <ClCompile Include="Automation\Old\Manip_AutoGaz.cpp">
-      <Filter>Source Files\Automation\Old</Filter>
-    </ClCompile>
-    <ClCompile Include="Automation\Old\Manip_AutoGaz_Adsorption_Continue.cpp">
-      <Filter>Source Files\Automation\Old</Filter>
-    </ClCompile>
-    <ClCompile Include="Automation\Old\Manip_AutoGaz_AEffectuer.cpp">
-      <Filter>Source Files\Automation\Old</Filter>
-    </ClCompile>
-    <ClCompile Include="Automation\Old\Manip_AutoGaz_Desorption.cpp">
-      <Filter>Source Files\Automation\Old</Filter>
-    </ClCompile>
-    <ClCompile Include="Automation\Old\Manip_AutoGaz_Donnees.cpp">
-      <Filter>Source Files\Automation\Old</Filter>
-    </ClCompile>
-    <ClCompile Include="Automation\Old\Manip_AutoGaz_Execution.cpp">
-      <Filter>Source Files\Automation\Old</Filter>
-    </ClCompile>
-    <ClCompile Include="Automation\Old\Manip_AutoGaz_Fichier.cpp">
-      <Filter>Source Files\Automation\Old</Filter>
-    </ClCompile>
-    <ClCompile Include="Automation\Old\Manip_AutoGaz_Grandes_Doses.cpp">
-      <Filter>Source Files\Automation\Old</Filter>
-    </ClCompile>
-    <ClCompile Include="Automation\Old\Manip_AutoGaz_LEA.cpp">
-      <Filter>Source Files\Automation\Old</Filter>
-    </ClCompile>
-    <ClCompile Include="Automation\Old\Manip_AutoGaz_Ligne_Base_Equilibre.cpp">
-      <Filter>Source Files\Automation\Old</Filter>
-    </ClCompile>
-    <ClCompile Include="Automation\Old\Manip_AutoGaz_Mesure.cpp">
-      <Filter>Source Files\Automation\Old</Filter>
-    </ClCompile>
-    <ClCompile Include="Automation\Old\Manip_AutoGaz_Mise_Sous_Vide.cpp">
-      <Filter>Source Files\Automation\Old</Filter>
-    </ClCompile>
-    <ClCompile Include="Automation\Old\Manip_AutoGaz_MiseSousVide_Ampoule.cpp">
-      <Filter>Source Files\Automation\Old</Filter>
-    </ClCompile>
-    <ClCompile Include="Automation\Old\Manip_AutoGaz_MiseSousVide_Bouteille.cpp">
-      <Filter>Source Files\Automation\Old</Filter>
-    </ClCompile>
-    <ClCompile Include="Automation\Old\Manip_AutoGaz_MiseSousVide_ChangementBouteille.cpp">
-      <Filter>Source Files\Automation\Old</Filter>
-    </ClCompile>
-    <ClCompile Include="Automation\Old\Manip_AutoGaz_Moyennes_Doses.cpp">
-      <Filter>Source Files\Automation\Old</Filter>
-    </ClCompile>
-    <ClCompile Include="Automation\Old\Manip_AutoGaz_Petites_Doses.cpp">
-      <Filter>Source Files\Automation\Old</Filter>
-    </ClCompile>
-    <ClCompile Include="Automation\Old\Manip_AutoGaz_Proprietes_Experience.cpp">
-      <Filter>Source Files\Automation\Old</Filter>
-    </ClCompile>
-    <ClCompile Include="Automation\Old\Manip_AutoGaz_Vannes.cpp">
-      <Filter>Source Files\Automation\Old</Filter>
-    </ClCompile>
-    <ClCompile Include="Automation\Old\ManipData.cpp">
-      <Filter>Source Files\Automation\Old</Filter>
-    </ClCompile>
-    <ClCompile Include="Automation\Old\ManipFileWriting.cpp">
-      <Filter>Source Files\Automation\Old</Filter>
-    </ClCompile>
-    <ClCompile Include="Automation\Old\ManipManualExecution.cpp">
-      <Filter>Source Files\Automation\Old</Filter>
-    </ClCompile>
-    <ClCompile Include="Automation\Old\ManipMeasurement.cpp">
-      <Filter>Source Files\Automation\Old</Filter>
-    </ClCompile>
-    <ClCompile Include="Automation\Old\ManipSecurity.cpp">
-      <Filter>Source Files\Automation\Old</Filter>
-    </ClCompile>
-    <ClCompile Include="Automation\Old\ManipTimeKeeping.cpp">
-      <Filter>Source Files\Automation\Old</Filter>
-    </ClCompile>
-    <ClCompile Include="Automation\Old\ManipValves.cpp">
-      <Filter>Source Files\Automation\Old</Filter>
     </ClCompile>
     <ClCompile Include="Automation\ThreadManager.cpp">
       <Filter>Source Files\Automation</Filter>
@@ -481,6 +379,9 @@
     </ClCompile>
     <ClCompile Include="..\Kalel Shared\stringHelpers.cpp">
       <Filter>Source Files\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Kalel Shared\Com Classes\ExperimentStatus.cpp">
+      <Filter>Source Files\Common\Com Classes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

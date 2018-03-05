@@ -8,9 +8,8 @@ Automation::Automation(Storage &s, Controls &c)
 	, controls{ c }
 {
 	// Time
-	storage.currentData->timeStart = time(0);
 	controls.timerExperiment.Start();				// Start global experiment timer	
-	controls.timerMeasurement.Start();				// Start the timer to record time between measurements
+	storage.experimentStatus->timeStart = time(0);
 }
 
 
@@ -50,7 +49,7 @@ void Automation::Execution()
 		*/
 
 		// Go through any functionality
-		if (storage.currentData->experimentCommandsRequested) {
+		if (storage.experimentStatus->experimentCommandsRequested) {
 			switch (storage.experimentSettings->experimentType)		// We look at the type of experiment
 			{
 			case EXPERIMENT_TYPE_MANUAL:						// in case it is manual
@@ -64,6 +63,9 @@ void Automation::Execution()
 				break;
 			case EXPERIMENT_TYPE_BOTTLE_VACUUM:					// in case we want to vacuum up to the bottle
 				BottleVacuum();									// run the functionality
+				break;
+			case EXPERIMENT_TYPE_CONTINUOUS:					// in case it is continuous
+				//ExecutionContinuous();							// run the continuous loop
 				break;
 			case EXPERIMENT_TYPE_UNDEF:							// in case no experiment has been set yet
 				break;											// just continue
@@ -79,14 +81,14 @@ void Automation::Execution()
 		*/
 
 		// If waiting complete
-		if (storage.currentData->experimentWaiting &&														// If the wait functionality is requested																					
-			storage.currentData->timeToEquilibrateCurrent > storage.currentData->timeToEquilibrate) {		//and the time has been completed
+		if (storage.experimentStatus->experimentWaiting &&															// If the wait functionality is requested																					
+			controls.timerWaiting.TimeSeconds() > storage.experimentStatus->timeToEquilibrate) {					// and the time has been completed
 
 			// Stop the timer
 			controls.timerWaiting.Pause();
 
 			// Reset the flag
-			storage.currentData->experimentWaiting = false;
+			storage.experimentStatus->experimentWaiting = false;
 		}
 		
 		/*
@@ -111,9 +113,9 @@ void Automation::Execution()
 				eventSettingsModified = false;
 
 				// Record change of experiment settings in output files
-				if (storage.currentData->experimentInProgress == true) {
-					controls.fileWriter->RecordDataChange(false, *storage.newExperimentSettings, *storage.experimentSettings, *storage.currentData);	// non-CSV
-					controls.fileWriter->RecordDataChange(true, *storage.newExperimentSettings, *storage.experimentSettings, *storage.currentData);		// CSV
+				if (storage.experimentStatus->experimentInProgress == true) {
+					controls.fileWriter->RecordDataChange(false, *storage.newExperimentSettings, *storage.experimentSettings, *storage.experimentStatus, *storage.currentData);	// non-CSV
+					controls.fileWriter->RecordDataChange(true, *storage.newExperimentSettings, *storage.experimentSettings, *storage.experimentStatus, *storage.currentData);		// CSV
 				}
 
 				storage.setExperimentSettings(storage.newExperimentSettings);
@@ -161,9 +163,9 @@ void Automation::Execution()
 
 
 
-bool Automation::ExecutionManual()
+void Automation::ExecutionManual()
 {
-	if (storage.currentData->experimentStepStatus == STEP_STATUS_UNDEF) {
+	if (storage.experimentStatus->experimentStepStatus == STEP_STATUS_UNDEF) {
 
 		// Send start message
 		LOG(logINFO) << MESSAGE_EXPSTART;
@@ -171,34 +173,30 @@ bool Automation::ExecutionManual()
 		ResetAutomation();
 
 		// Record start
-		storage.currentData->experimentInProgress = true;
-		storage.currentData->experimentRecording = true;
+		storage.experimentStatus->experimentInProgress = true;
+		storage.experimentStatus->experimentRecording = true;
 
-		// Create open and write the columns in the:
+		// Create open and write the columns in the file
 		bool err = false;
 		err = controls.fileWriter->EnteteCreate(*storage.experimentSettings, *storage.machineSettings);				// Entete TXT
 		err = controls.fileWriter->EnteteCSVCreate(*storage.experimentSettings, *storage.machineSettings);			// Entete CSV
+		err = controls.fileWriter->FileMeasurementCreate(storage.experimentSettings->dataGeneral);					// Measurement file
 		if (err){
 			LOG(logERROR) << ERROR_PATHUNDEF;
 		}
-		controls.fileWriter->FileMeasurementCreate(storage.experimentSettings->dataGeneral);						// Measurement file
 
 		// Continue experiment
-		storage.currentData->experimentStage = STAGE_MANUAL;
-		storage.currentData->experimentStepStatus = STEP_STATUS_INPROGRESS;
-
-		return true;
+		storage.experimentStatus->experimentStage = STAGE_MANUAL;
+		storage.experimentStatus->experimentStepStatus = STEP_STATUS_INPROGRESS;
 	}
-
-	return false;
 }
 
 
 
-bool Automation::ExecutionAuto()
+void Automation::ExecutionAuto()
 {
 	// First time running command
-	if (storage.currentData->experimentStepStatus == STEP_STATUS_UNDEF){
+	if (storage.experimentStatus->experimentStepStatus == STEP_STATUS_UNDEF){
 
 		// Send start message
 		LOG(logINFO) << MESSAGE_EXPSTART;
@@ -206,15 +204,15 @@ bool Automation::ExecutionAuto()
 		ResetAutomation();
 
 		// Write variables to starting position
-		storage.currentData->experimentInProgress = true;
-		storage.currentData->experimentStage = STAGE_VERIFICATIONS;
-		storage.currentData->experimentStepStatus = STEP_STATUS_START;
-		storage.currentData->experimentSubstepStage = SUBSTEP_STATUS_START;
-		storage.currentData->verificationStep = STEP_VERIFICATIONS_SECURITY;
+		storage.experimentStatus->experimentInProgress = true;
+		storage.experimentStatus->experimentStage = STAGE_VERIFICATIONS;
+		storage.experimentStatus->experimentStepStatus = STEP_STATUS_START;
+		storage.experimentStatus->experimentSubstepStage = SUBSTEP_STATUS_START;
+		storage.experimentStatus->verificationStep = STEP_VERIFICATIONS_SECURITY;
 	}
 
 	// Stages of automatic experiment
-	switch (storage.currentData->experimentStage)
+	switch (storage.experimentStatus->experimentStage)
 	{
 	case STAGE_VERIFICATIONS:
 		Verifications();
@@ -242,13 +240,9 @@ bool Automation::ExecutionAuto()
 
 		break;
 
-	case STAGE_CONTINUOUS_ADSORPTION:
-		break;
 	default:
 		break;
 	}
-
-	return true;
 }
 
 
@@ -256,7 +250,7 @@ bool Automation::ExecutionAuto()
 void Automation::ResetAutomation()
 {
 	// Reset all data from the experiment
-	storage.currentData->ResetData();
+	storage.experimentStatus->ResetData();
 
 	// If the shutdown event is called externally, it will default to a cancel
 	// Otherwise the flag will be changed from inside the code
@@ -266,7 +260,7 @@ void Automation::ResetAutomation()
 	storage.dataCollection.del();
 
 	// Time
-	storage.currentData->timeStart = time(0);
+	storage.experimentStatus->timeStart = time(0);
 	controls.timerExperiment.Start();	// Start global experiment timer	
 	controls.timerMeasurement.Start();	// Start the timer to record time between measurements
 }

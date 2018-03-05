@@ -22,11 +22,11 @@ protected:
 	void Sync(http_request * req, http_response * resp);
 	void MachineSettingsSync(http_request* req, http_response* resp);
 	void ExperimentSettingsSync(http_request* req, http_response* resp);
+	void ExperimentStatusSync(http_request* req, http_response* resp);
 	void InstrumentStateSync(http_request* req, http_response* resp);
 	void DataSync(http_request* req, http_response* resp);
 	void LogSync(http_request* req, http_response* resp);
 	void RequestSync(http_request* req, http_response* resp);
 	void AutomationControl(http_request* req, http_response* resp);
 	void ReloadParameters(http_request* req, http_response* resp);
-	void Debug(http_request* req, http_response* resp);
 };

@@ -14,38 +14,38 @@
 
 void Automation::StageEquilibration()
 {
-	if (storage.currentData->experimentStepStatus == STEP_STATUS_START) {
+	if (storage.experimentStatus->experimentStepStatus == STEP_STATUS_START) {
 
-		storage.currentData->experimentStepStatus = STEP_STATUS_END;												// Set next step
-		LOG(logINFO) << MESSAGE_EQUILIBRATION_STARTED;																// Let GUI know the step change
+		LOG(logINFO) << MESSAGE_EQUILIBRATION_STARTED;																// Log the step change
 
 		// This is where we start recording
-		storage.currentData->experimentRecording = true;
+		storage.experimentStatus->experimentRecording = true;
 
-		// Create, open and write the columns in the:
+		// Create, open and write the columns in the file
 		bool err = false;
 		err = controls.fileWriter->EnteteCreate(*storage.experimentSettings, *storage.machineSettings);				// Entete TXT
 		err = controls.fileWriter->EnteteCSVCreate(*storage.experimentSettings, *storage.machineSettings);			// Entete CSV
+		controls.fileWriter->FileMeasurementCreate(storage.experimentSettings->dataGeneral);						// Measurement file
 		if (err) {
 			LOG(logERROR) << ERROR_PATHUNDEF;
 		}
-		controls.fileWriter->FileMeasurementCreate(storage.experimentSettings->dataGeneral);						// Measurement file
 
-
-		storage.currentData->timeStart = time(0);																	// Record experiment start time
+		storage.experimentStatus->timeStart = time(0);																	// Record experiment start time
 		controls.timerExperiment.Start();																			// Start global experiment timer	
 		controls.timerMeasurement.Start();																			// Start the timer to record time between measurements
 
 		// Set the time to wait
 		WaitMinutes(storage.experimentSettings->dataDivers.temps_ligne_base);
+
+		storage.experimentStatus->experimentStepStatus = STEP_STATUS_END;												// Set next step
 	}
 
-	if (storage.currentData->experimentStepStatus == STEP_STATUS_END) {
+	if (storage.experimentStatus->experimentStepStatus == STEP_STATUS_END) {
 
-		if (storage.currentData->experimentWaiting == false) {
-			storage.currentData->experimentStage = STAGE_ADSORPTION;												// Set next stage
-			storage.currentData->experimentStepStatus = STEP_STATUS_START;											// Reset next step
-			LOG(logINFO) << MESSAGE_EQUILIBRATION_COMPLETE;															// Let GUI know the step change
+		if (storage.experimentStatus->experimentWaiting == false) {
+			LOG(logINFO) << MESSAGE_EQUILIBRATION_COMPLETE;															// Log the step change
+			storage.experimentStatus->experimentStage = STAGE_ADSORPTION;												// Set next stage
+			storage.experimentStatus->experimentStepStatus = STEP_STATUS_START;										// Reset next step
 		}
 	}
 }

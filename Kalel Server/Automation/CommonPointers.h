@@ -2,6 +2,7 @@
 
 // Required to pass the experimental data to the main GUI
 #include "../../Kalel Shared/Com Classes/ExperimentData.h"
+#include "../../Kalel Shared/Com Classes/ExperimentStatus.h"
 #include "../../Kalel Shared/Com Classes/ExperimentSettings.h"
 #include "../../Kalel Shared/Com Classes/MachineSettings.h"
 #include "../../Kalel Shared/timeHelpers.h"
@@ -16,6 +17,10 @@ class Storage {
 public:
 	Storage(void);
 	~Storage(void);
+
+	//******************************************************************************************
+	// Logs
+	//******************************************************************************************
 
 	// Debug logs
 	StampedSafeStorage<std::string> debugLogs;
@@ -57,6 +62,13 @@ public:
 	
 	std::chrono::system_clock::time_point controlStateChanged;													// Time when control state changed
 	
+	//******************************************************************************************
+	// Experiment Status
+	//******************************************************************************************
+
+	std::chrono::system_clock::time_point experimentStatusChanged;												// Time when experiment status changed
+	std::shared_ptr<ExperimentStatus> experimentStatus;
+
 	//******************************************************************************************
 	// Experiment Settings
 	//******************************************************************************************
@@ -113,6 +125,7 @@ inline Storage::Storage(void)
 	}
 
 	currentData = std::make_shared<ExperimentData>();
+	experimentStatus = std::make_shared<ExperimentStatus>();
 	experimentSettings = std::make_shared<ExperimentSettings>();
 	newExperimentSettings = std::make_shared<ExperimentSettings>();
 

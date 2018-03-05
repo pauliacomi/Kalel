@@ -34,6 +34,7 @@ class MachineSettings
 {
 public:
 	MachineSettings();
+	MachineSettings(const MachineSettings & p);
 	~MachineSettings();
 
 

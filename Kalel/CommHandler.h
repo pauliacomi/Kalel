@@ -22,7 +22,7 @@ public:
 	void Connect(std::wstring address);
 	void SaveAddress(std::wstring address);
 
-	void Sync(bool initialSync, std::string fromTimeES = R"()", std::string fromTimeMS = R"()", std::string fromTimeCS = R"()");
+	void Sync(bool initialSync, std::string fromTimeES = R"()", std::string fromTimeMS = R"()", std::string fromTimeCS = R"()", std::string fromTimeESt = R"()");
 	unsigned int CheckSync();
 
 	void GetMachineSettings();
@@ -34,6 +34,7 @@ public:
 	void GetControlInstrumentState();
 	void ManualCommand(int instrumentType, int instrumentNumber, bool shouldBeActivated);
 	
+	void GetExperimentStatus();
 	void GetData(std::string fromTime = R"()");
 	void GetLog(std::string fromTime = R"()");
 	void GetRequests(std::string fromTime = R"()");;
@@ -69,6 +70,7 @@ private:
 	std::string localLogsTime;								// Start time requested for logs 
 	std::string localReqTime;								// Start time requested for requests 
 	std::string localExperimentSettingsTime;				// Start time requested for experiment data 
+	std::string	localExperimentStatus;						// Start time requested for expeirment status
 	std::string localMachineSettingsTime;					// Start time requested for logs 
 	std::string localControlStateTime;						// Start time requested for requests 
 
@@ -120,6 +122,10 @@ private:
 	// Experiment Settings Set
 	unsigned SetExperimentSettings_req(http_request * r);
 	unsigned SetExperimentSettings_resp(http_response * r);
+
+	// Experiment Status Gets
+	unsigned GetExperimentStatus_req(http_request * r);
+	unsigned GetExperimentStatus_resp(http_response * r);
 
 	// Instrument state get
 	unsigned GetInstrumentState_req(http_request * r);

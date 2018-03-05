@@ -10,7 +10,7 @@ void Automation::WaitMinutes(int nbminutes)
 // Wait a number of seconds
 void Automation::WaitSeconds(int nbsecondes)
 {
-	storage.currentData->timeToEquilibrate = nbsecondes;
-	storage.currentData->experimentWaiting = true;
+	storage.experimentStatus->timeToEquilibrate = nbsecondes;
+	storage.experimentStatus->experimentWaiting = true;
 	controls.timerWaiting.Start();
 }

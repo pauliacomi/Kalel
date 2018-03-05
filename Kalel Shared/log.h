@@ -260,6 +260,7 @@ inline void OutputGeneral::Output(const std::string& msg, TLogLevel level, std::
 	case logDEBUG3:
 	case logDEBUG4:
 		pStream = Debug();
+		break;
 	default:
 		pStream = nullptr;
 		break;

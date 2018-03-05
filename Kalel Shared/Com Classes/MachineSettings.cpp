@@ -5,19 +5,33 @@
 
 MachineSettings::MachineSettings()
 {
-	// TODO: remove initialisations
+}
 
-	instruments.insert(std::make_pair(1, Instrument()));
-	instruments.insert(std::make_pair(2, Instrument()));
-	instruments.insert(std::make_pair(3, Instrument()));
-	instruments.insert(std::make_pair(4, Instrument()));
+MachineSettings::MachineSettings(const MachineSettings & p)
+{
+	CaloName = p.CaloName;
+	CaloEntete = p.CaloEntete;
+	CheminFichierGeneral = p.CheminFichierGeneral;
 
-	readers.insert(std::make_pair(1, Reader()));
-	readers.insert(std::make_pair(2, Reader()));
-	readers.insert(std::make_pair(3, Reader()));
-	readers.insert(std::make_pair(4, Reader()));
-	readers.insert(std::make_pair(5, Reader()));
-	readers.insert(std::make_pair(6, Reader()));
+	ActivationSecurite = p.ActivationSecurite;									// Used for activating the automatic security
+	PressionSecuriteBassePression = p.PressionSecuriteBassePression;			// Considered the maximum pressure for the low range pressure transmitter
+	PressionSecuriteHautePression = p.PressionSecuriteHautePression;			// Considered the maximum pressure for the high range pressure transmitter
+
+	PressionLimiteVide = p.PressionLimiteVide;									// Used for determining the pressure considered "good vacuum"
+
+	hasSonicNozzle = p.hasSonicNozzle;											// Used for user information (no calculations)
+	VolumeRef = p.VolumeRef;													// Used for user information (no calculations)
+	VolumeP6 = p.VolumeP6;														// Used for user information (no calculations)
+
+	for (auto instrument : p.instruments) {
+		AddInstrument(instrument.second, instrument.first);
+	}
+	for (auto reader : p.readers) {
+		AddReader(reader.second, reader.first);
+	}
+	for (auto controller : p.controllers) {
+		AddController(controller.second, controller.first);
+	}
 }
 
 
@@ -26,9 +40,15 @@ MachineSettings::~MachineSettings()
 }
 
 
-void MachineSettings::AddInstrument(Instrument i, unsigned int position)
+void MachineSettings::AddInstrument(Instrument i, unsigned int position /*=0*/)
 {
-	if (position != 0) {
+	if (position == 0)
+	{
+		unsigned int placer = instruments.size() + 1;
+		instruments.emplace(std::make_pair(placer, i));
+		return;
+	}
+	if (instruments.find(position) != instruments.end()) {
 		instruments[position].type = i.type;
 		instruments[position].port = i.port;
 	}
@@ -36,15 +56,20 @@ void MachineSettings::AddInstrument(Instrument i, unsigned int position)
 	{
 		if (i.type != 0)
 		{
-			int placer = instruments.rbegin()->first + 1;
-			instruments.emplace(std::make_pair(placer, i));
+			instruments.emplace(std::make_pair(position, i));
 		}
 	}
 }
 
 void MachineSettings::AddReader(Reader r, unsigned int position)
 {
-	if (position != 0) {
+	if (position == 0)
+	{
+		unsigned int placer = readers.size() + 1;
+		readers.emplace(std::make_pair(placer, r));
+		return;
+	}
+	if (readers.find(position) != readers.end()) {
 		readers[position].type			= r.type		;
 		readers[position].identifier	= r.identifier	;
 		readers[position].sensitivity	= r.sensitivity	;
@@ -55,15 +80,20 @@ void MachineSettings::AddReader(Reader r, unsigned int position)
 	{
 		if (r.type != 0 && r.identifier != 0)
 		{
-			int placer = readers.rbegin()->first + 1;
-			readers.emplace(std::make_pair(placer, r));
+			readers.emplace(std::make_pair(position, r));
 		}
 	}
 }
 
 void MachineSettings::AddController(Controller r, unsigned int position)
 {
-	if (position != 0) {
+	if (position == 0)
+	{
+		unsigned int placer = controllers.size() + 1;
+		controllers.emplace(std::make_pair(placer, r));
+		return;
+	}
+	if (controllers.find(position) != controllers.end()) {
 		controllers[position].type			= r.type		;
 		controllers[position].identifier	= r.identifier	;
 		controllers[position].sensitivity	= r.sensitivity	;
@@ -74,8 +104,7 @@ void MachineSettings::AddController(Controller r, unsigned int position)
 	{
 		if (r.type != 0 && r.identifier != 0)
 		{
-			int placer = controllers.rbegin()->first + 1;
-			controllers.emplace(std::make_pair(placer, r));
+			controllers.emplace(std::make_pair(position, r));
 		}
 	}
 }

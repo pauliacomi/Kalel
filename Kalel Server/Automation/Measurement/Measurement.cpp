@@ -20,6 +20,7 @@ Measurement::Measurement(Storage &s, Controls &c)
 	: storage{ s }
 	, controls{ c }
 {
+	controls.timerMeasurement.Start();				// Start the timer to record time between measurements
 }
 
 
@@ -61,11 +62,6 @@ void Measurement::Execution()
 		// Start threads and read the data
 		ThreadMeasurement();
 
-		// Record time
-		storage.currentData->measurementsMade += 1;												// Save the measurement number
-		storage.currentData->timeElapsed = controls.timerExperiment.TimeMilliseconds();			// Save the time elapsed from the beginning of the experiment
-		storage.currentData->timeToEquilibrateCurrent = controls.timerWaiting.TimeSeconds();	// Save the waiting time if it exists
-
 		/*
 		*
 		*		2. Do a security and safety check on the values
@@ -89,24 +85,24 @@ void Measurement::Execution()
 
 		/*
 		*
-		*		3. IF RECORDING save the data to the file, restart timer between measurements and increment measurement number
+		*		3. IF RECORDING save the data to the file, and restart timer between records
 		*
 		*/
 
 		// Write data
-		if (controls.timerMeasurement.TimeSeconds() > T_BETWEEN_RECORD)							// If enough time between measurements
+		if (storage.experimentStatus->experimentRecording)												// If we started recording
 		{
-			if (storage.currentData->experimentRecording)										// If we started recording
+			if (controls.timerMeasurement.TimeSeconds() > T_BETWEEN_RECORD)							// If enough time between measurements
 			{
+				// Record times
+				storage.experimentStatus->timeElapsed = controls.timerExperiment.TimeMilliseconds();			// Save the time elapsed from the beginning of the experiment
+				storage.experimentStatus->timeToEquilibrateCurrent = controls.timerWaiting.TimeSeconds();		// Save the waiting time if it exists
+
 				// Save the data to the file
-				controls.fileWriter->FileMeasurementRecord(storage.experimentSettings->dataGeneral ,*storage.currentData, controls.valveControls->ValveIsOpen(6));
+				controls.fileWriter->FileMeasurementRecord(storage.experimentSettings->dataGeneral ,*storage.currentData, *storage.experimentStatus, controls.valveControls->ValveIsOpen(6));
+				// Restart the timer to record time between measurements
+				controls.timerMeasurement.Start();
 			}
-
-			// Restart the timer to record time between measurements
-			controls.timerMeasurement.Start();
-
-			// Increment the measurement number
-			storage.currentData->experimentGraphPoints += 1;
 		}
 
 		/*

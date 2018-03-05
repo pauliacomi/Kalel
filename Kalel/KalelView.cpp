@@ -63,9 +63,10 @@ BEGIN_MESSAGE_MAP(CKalelView, CFormView)
 	ON_MESSAGE(UWM_SET_MACHINESETTINGS,				&CKalelView::OnSetMachineSettings)				// Callback on notify of server-side changed MachineSettings
 	ON_MESSAGE(UWM_EXCHANGE_MACHINESETTINGS,		&CKalelView::OnExchangeMachineSettings)			// Callback to notify of received MachineSettings
 	ON_MESSAGE(UWM_EXCHANGESTATE,					&CKalelView::OnExchangeInstrumentState)			// Calls to update all button pairs and associated display on a manual message
-	ON_MESSAGE(UWM_EXCHANGESTATESPECIFIC,			&CKalelView::OnSetInstrumentState)		// Calls to update a specific button pair and associated display on a manual message
+	ON_MESSAGE(UWM_EXCHANGESTATESPECIFIC,			&CKalelView::OnSetInstrumentState)				// Calls to update a specific button pair and associated display on a manual message
 	ON_MESSAGE(UWM_SET_EXPERIMENTSETTINGS,			&CKalelView::OnSetExperimentSettings)			// Callback on notify of server-side changed MachineSettings
 	ON_MESSAGE(UWM_EXCHANGE_EXPERIMENTSETTINGS,		&CKalelView::OnExchangeExperimentSettings)		// Callback to notify of received ExperimetnSettings
+	ON_MESSAGE(UWM_EXCHANGE_EXPERIMENTSTATUS,		&CKalelView::OnExchangeExperimentStatus)		// Callback to notify of received ExperimetnSettings
 	ON_MESSAGE(UWM_EXCHANGEDATA,					&CKalelView::OnExchangeData)					// Callback to notify of incoming ExperimentData array
 	ON_MESSAGE(UWM_EXCHANGELOGS,					&CKalelView::OnExchangeLogs)					// Callback to notify of incoming log array
 	ON_MESSAGE(UWM_EXCHANGEREQUESTS,				&CKalelView::OnExchangeRequests)				// Callback to notify of incoming request array
@@ -330,10 +331,10 @@ void CKalelView::OnTimer(UINT_PTR nIDEvent)
 					commHandler.GetRequests();
 
 				// Write textbox values
-				DisplayTextboxValues(dataCollection.rbegin()->second);
+				DisplayTextboxValues(dataCollection.rbegin()->second, experimentStatus);
 
 				// Write the current step
-				DisplayStepProgress(dataCollection.rbegin()->second);
+				DisplayStepProgress(experimentStatus);
 			}
 
 			//*****
@@ -625,6 +626,18 @@ LRESULT CKalelView::OnExchangeExperimentSettings(WPARAM wParam, LPARAM incomingE
 	// Get the incoming pointer
 	experimentSettings.reset(reinterpret_cast<ExperimentSettings*>(incomingExperimentSettings));
 	experimentSettingsTime = timeh::NowTime();
+
+	// Update GUI
+	OnSync(NULL, NULL);
+
+	return 0;
+}
+
+LRESULT CKalelView::OnExchangeExperimentStatus(WPARAM wParam, LPARAM incomingExperimentStatus)
+{	
+	// Get the incoming pointer
+	experimentStatus.reset(reinterpret_cast<ExperimentStatus*>(incomingExperimentStatus));
+	experimentStatusTime = timeh::NowTime();
 
 	// Update GUI
 	OnSync(NULL, NULL);

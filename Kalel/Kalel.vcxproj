@@ -205,6 +205,7 @@
     <ClInclude Include="..\Kalel Shared\Com Classes\ExperimentHelperClasses.h" />
     <ClInclude Include="..\Kalel Shared\Com Classes\ExperimentData.h" />
     <ClInclude Include="..\Kalel Shared\Com Classes\ExperimentSettings.h" />
+    <ClInclude Include="..\Kalel Shared\Com Classes\ExperimentStatus.h" />
     <ClInclude Include="..\Kalel Shared\Com Classes\MachineSettings.h" />
     <ClInclude Include="..\Kalel Shared\Com Classes\Serialization.h" />
     <ClInclude Include="..\Kalel Shared\Forcelib.h" />
@@ -271,6 +272,7 @@
     <ClCompile Include="..\Kalel Shared\Com Classes\ExperimentHelperClasses.cpp" />
     <ClCompile Include="..\Kalel Shared\Com Classes\ExperimentData.cpp" />
     <ClCompile Include="..\Kalel Shared\Com Classes\ExperimentSettings.cpp" />
+    <ClCompile Include="..\Kalel Shared\Com Classes\ExperimentStatus.cpp" />
     <ClCompile Include="..\Kalel Shared\Com Classes\MachineSettings.cpp" />
     <ClCompile Include="..\Kalel Shared\Netcode\base64.cpp" />
     <ClCompile Include="..\Kalel Shared\Netcode\Client.cpp" />

@@ -13,10 +13,10 @@
 
 void Automation::SampleVacuum()
 {
-	if (storage.currentData->experimentStepStatus == STEP_STATUS_UNDEF) {
-		storage.currentData->experimentStage = STAGE_VACUUM_SAMPLE;
-		storage.currentData->experimentStepStatus = STEP_STATUS_START;
-		storage.currentData->experimentInProgress = true;
+	if (storage.experimentStatus->experimentStepStatus == STEP_STATUS_UNDEF) {
+		storage.experimentStatus->experimentStage = STAGE_VACUUM_SAMPLE;
+		storage.experimentStatus->experimentStepStatus = STEP_STATUS_START;
+		storage.experimentStatus->experimentInProgress = true;
 	}
 
 	StageVacuum(true);
@@ -24,12 +24,12 @@ void Automation::SampleVacuum()
 
 void Automation::BottleVacuum()
 {
-	if (storage.currentData->experimentStepStatus == STEP_STATUS_UNDEF
-		&& storage.currentData->experimentWaiting == false)
+	if (storage.experimentStatus->experimentStepStatus == STEP_STATUS_UNDEF
+		&& storage.experimentStatus->experimentWaiting == false)
 	{
-		storage.currentData->experimentStage = STAGE_VACUUM_BOTTLE;
-		storage.currentData->experimentStepStatus = STEP_STATUS_START;
-		storage.currentData->experimentInProgress = true;
+		storage.experimentStatus->experimentStage = STAGE_VACUUM_BOTTLE;
+		storage.experimentStatus->experimentStepStatus = STEP_STATUS_START;
+		storage.experimentStatus->experimentInProgress = true;
 		LOG(logEVENT) << MESSAGE_VACUUM_BOTTLE_CLOSE;
 		
 		// Pause
@@ -39,10 +39,10 @@ void Automation::BottleVacuum()
 
 
 
-	if (storage.currentData->experimentStepStatus == STEP_STATUS_START
-		&& storage.currentData->experimentWaiting == false)
+	if (storage.experimentStatus->experimentStepStatus == STEP_STATUS_START
+		&& storage.experimentStatus->experimentWaiting == false)
 	{
-		storage.currentData->experimentStepStatus = STEP_STATUS_INPROGRESS;				// Set next step
+		storage.experimentStatus->experimentStepStatus = STEP_STATUS_INPROGRESS;				// Set next step
 		LOG(logINFO) << MESSAGE_VACUUM_BOTTLE_START;									// Let GUI know the step change
 		LOG(logINFO) << MESSAGE_VACUUM_HIGHPRESSURE_START;
 
@@ -58,16 +58,16 @@ void Automation::BottleVacuum()
 
 
 
-	if (storage.currentData->experimentStepStatus == STEP_STATUS_INPROGRESS
-		&& storage.currentData->experimentWaiting == false)
+	if (storage.experimentStatus->experimentStepStatus == STEP_STATUS_INPROGRESS
+		&& storage.experimentStatus->experimentWaiting == false)
 	{
-		if (storage.currentData->experimentWaiting == false) {
+		if (storage.experimentStatus->experimentWaiting == false) {
 			if (storage.currentData->pressureHigh > storage.machineSettings->PressionSecuriteBassePression) {
 
 				// Open, then close v8 and v7
 				controls.valveControls->ValveOpen(8, true);
 				WaitSeconds(TIME_WAIT_VALVES_SHORT);
-				storage.currentData->experimentStepStatus = STEP_STATUS_INPROGRESS + 1;
+				storage.experimentStatus->experimentStepStatus = STEP_STATUS_INPROGRESS + 1;
 			}
 			else
 			{
@@ -76,48 +76,48 @@ void Automation::BottleVacuum()
 				controls.valveControls->ValveOpen(4, true);
 				WaitSeconds(TIME_WAIT_VALVES);
 
-				storage.currentData->experimentStepStatus = STEP_STATUS_INPROGRESS + 4;
+				storage.experimentStatus->experimentStepStatus = STEP_STATUS_INPROGRESS + 4;
 			}
 		}
 	}
 
-	if (storage.currentData->experimentSubstepStage == STEP_STATUS_INPROGRESS + 1 &&
-		storage.currentData->experimentWaiting == false)
+	if (storage.experimentStatus->experimentSubstepStage == STEP_STATUS_INPROGRESS + 1 &&
+		storage.experimentStatus->experimentWaiting == false)
 	{
 		controls.valveControls->ValveClose(8, true);
 		WaitSeconds(TIME_WAIT_VALVES_SHORT);
-		storage.currentData->experimentSubstepStage = STEP_STATUS_INPROGRESS + 2;
+		storage.experimentStatus->experimentSubstepStage = STEP_STATUS_INPROGRESS + 2;
 	}
 
-	if (storage.currentData->experimentSubstepStage == STEP_STATUS_INPROGRESS + 2 &&
-		storage.currentData->experimentWaiting == false)
+	if (storage.experimentStatus->experimentSubstepStage == STEP_STATUS_INPROGRESS + 2 &&
+		storage.experimentStatus->experimentWaiting == false)
 	{
 		controls.valveControls->ValveOpen(7, true);
 		WaitSeconds(TIME_WAIT_VALVES_SHORT);
-		storage.currentData->experimentSubstepStage = STEP_STATUS_INPROGRESS + 3;
+		storage.experimentStatus->experimentSubstepStage = STEP_STATUS_INPROGRESS + 3;
 	}
 
-	if (storage.currentData->experimentSubstepStage == STEP_STATUS_INPROGRESS + 3 &&
-		storage.currentData->experimentWaiting == false)
+	if (storage.experimentStatus->experimentSubstepStage == STEP_STATUS_INPROGRESS + 3 &&
+		storage.experimentStatus->experimentWaiting == false)
 	{
 		controls.valveControls->ValveClose(7, true);
 		WaitSeconds(TIME_WAIT_VALVES_SHORT);
-		storage.currentData->experimentSubstepStage = STEP_STATUS_INPROGRESS;					// Go back to the start
+		storage.experimentStatus->experimentSubstepStage = STEP_STATUS_INPROGRESS;					// Go back to the start
 	}
 
 
 
 
-	if (storage.currentData->experimentStepStatus == STEP_STATUS_INPROGRESS + 4
-		&& storage.currentData->experimentWaiting == false)
+	if (storage.experimentStatus->experimentStepStatus == STEP_STATUS_INPROGRESS + 4
+		&& storage.experimentStatus->experimentWaiting == false)
 	{
-		if (storage.currentData->experimentWaiting == false) {
+		if (storage.experimentStatus->experimentWaiting == false) {
 			if (storage.currentData->pressureHigh > pression_pompe) {
 
 				// Open, then close v8 and v7
 				controls.valveControls->ValveOpen(8, true);
 				WaitSeconds(TIME_WAIT_VALVES_SHORT);
-				storage.currentData->experimentStepStatus = STEP_STATUS_INPROGRESS + 5;
+				storage.experimentStatus->experimentStepStatus = STEP_STATUS_INPROGRESS + 5;
 			}
 			else
 			{
@@ -127,33 +127,33 @@ void Automation::BottleVacuum()
 				controls.valveControls->ValveOpen(7, true);
 				WaitSeconds(TIME_WAIT_VALVES);
 
-				storage.currentData->experimentStepStatus = STEP_STATUS_INPROGRESS + 8;
+				storage.experimentStatus->experimentStepStatus = STEP_STATUS_INPROGRESS + 8;
 			}
 		}
 	}
 
-	if (storage.currentData->experimentSubstepStage == STEP_STATUS_INPROGRESS + 5 &&
-		storage.currentData->experimentWaiting == false)
+	if (storage.experimentStatus->experimentSubstepStage == STEP_STATUS_INPROGRESS + 5 &&
+		storage.experimentStatus->experimentWaiting == false)
 	{
 		controls.valveControls->ValveClose(8, true);
 		WaitSeconds(TIME_WAIT_VALVES_SHORT);
-		storage.currentData->experimentSubstepStage = STEP_STATUS_INPROGRESS + 6;
+		storage.experimentStatus->experimentSubstepStage = STEP_STATUS_INPROGRESS + 6;
 	}
 
-	if (storage.currentData->experimentSubstepStage == STEP_STATUS_INPROGRESS + 6 &&
-		storage.currentData->experimentWaiting == false)
+	if (storage.experimentStatus->experimentSubstepStage == STEP_STATUS_INPROGRESS + 6 &&
+		storage.experimentStatus->experimentWaiting == false)
 	{
 		controls.valveControls->ValveOpen(7, true);
 		WaitSeconds(TIME_WAIT_VALVES_SHORT);
-		storage.currentData->experimentSubstepStage = STEP_STATUS_INPROGRESS + 7;
+		storage.experimentStatus->experimentSubstepStage = STEP_STATUS_INPROGRESS + 7;
 	}
 
-	if (storage.currentData->experimentSubstepStage == STEP_STATUS_INPROGRESS + 7 &&
-		storage.currentData->experimentWaiting == false)
+	if (storage.experimentStatus->experimentSubstepStage == STEP_STATUS_INPROGRESS + 7 &&
+		storage.experimentStatus->experimentWaiting == false)
 	{
 		controls.valveControls->ValveClose(7, true);
 		WaitSeconds(TIME_WAIT_VALVES_SHORT);
-		storage.currentData->experimentSubstepStage = STEP_STATUS_INPROGRESS + 4;					// Go back to the start
+		storage.experimentStatus->experimentSubstepStage = STEP_STATUS_INPROGRESS + 4;					// Go back to the start
 	}
 
 
@@ -161,22 +161,22 @@ void Automation::BottleVacuum()
 
 
 
-	if (storage.currentData->experimentStepStatus == STEP_STATUS_INPROGRESS + 8
-		&& storage.currentData->experimentWaiting == false)
+	if (storage.experimentStatus->experimentStepStatus == STEP_STATUS_INPROGRESS + 8
+		&& storage.experimentStatus->experimentWaiting == false)
 	{
 		LOG(logINFO) << MESSAGE_VACUUM_FINALOUTGAS_START;
 		WaitMinutes(temps_bouteille);
-		storage.currentData->experimentStepStatus = STEP_STATUS_END;
+		storage.experimentStatus->experimentStepStatus = STEP_STATUS_END;
 	}
 
 
-	if (storage.currentData->experimentStepStatus == STEP_STATUS_END
-		&& storage.currentData->experimentWaiting == false)
+	if (storage.experimentStatus->experimentStepStatus == STEP_STATUS_END
+		&& storage.experimentStatus->experimentWaiting == false)
 	{
 		LOG(logINFO) << MESSAGE_VACUUM_BOTTLE_END;
 
-		storage.currentData->experimentStage = STAGE_UNDEF;
-		storage.currentData->experimentStepStatus = STEP_STATUS_START;				// Let GUI know the step change
+		storage.experimentStatus->experimentStage = STAGE_UNDEF;
+		storage.experimentStatus->experimentStepStatus = STEP_STATUS_START;				// Let GUI know the step change
 
 		controls.valveControls->CloseAll(true);										// Close everything
 

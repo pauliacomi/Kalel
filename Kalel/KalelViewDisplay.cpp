@@ -34,7 +34,7 @@ LRESULT CKalelView::AffichageMessages(WPARAM, LPARAM lParam)
 
 
 // Write the 
-LRESULT CKalelView::DisplayTextboxValues(std::shared_ptr<ExperimentData> data)
+LRESULT CKalelView::DisplayTextboxValues(std::shared_ptr<ExperimentData> data, std::shared_ptr<ExperimentStatus> status)
 {
 
 	// Convert to strings
@@ -44,9 +44,9 @@ LRESULT CKalelView::DisplayTextboxValues(std::shared_ptr<ExperimentData> data)
 	m_StrTemperatureCalo.Format(_T("%.2f"), data->GettemperatureCalo());
 	m_StrTemperatureCage.Format(_T("%.2f"), data->GettemperatureCage());
 	m_StrTemperaturePiece.Format(_T("%.2f"), data->GettemperatureRoom());
-	m_StrTemps.Format(_T("%.1f"), data->GettimeElapsedSec());
-	m_StrPressionInitiale.Format(_T("%.6f"), data->GetpressureInitial());
-	m_StrPressionFinale.Format(_T("%.6f"), data->GetpressureFinal());
+	m_StrTemps.Format(_T("%.1f"), status->GettimeElapsedSec());
+	m_StrPressionInitiale.Format(_T("%.6f"), status->GetpressureInitial());
+	m_StrPressionFinale.Format(_T("%.6f"), status->GetpressureFinal());
 
 	// Refresh textboxes
 	SetDlgItemText(IDC_CALO, m_StrCalo);
@@ -63,30 +63,30 @@ LRESULT CKalelView::DisplayTextboxValues(std::shared_ptr<ExperimentData> data)
 }
 
 // Display the step
-LRESULT CKalelView::DisplayStepProgress(std::shared_ptr<ExperimentData> data)
+LRESULT CKalelView::DisplayStepProgress(std::shared_ptr<ExperimentStatus> status)
 {
 
 	CString temp;
 
-	temp.Format(data->experimentStage);
+	temp.Format(status->experimentStage);
 
 	m_StrEtape = temp;
 
-	if (data->verificationStep != STEP_VERIFICATIONS_UNDEF && data->verificationStep != STEP_VERIFICATIONS_COMPLETE)
+	if (status->verificationStep != STEP_VERIFICATIONS_UNDEF && status->verificationStep != STEP_VERIFICATIONS_COMPLETE)
 	{
-		temp.Format(data->verificationStep);
+		temp.Format(status->verificationStep);
 		m_StrEtape += _T(",   Substage: ") + temp;
 	}
 
-	if (data->experimentWaiting == true)
+	if (status->experimentWaiting == true)
 	{
-		if (data->timeToEquilibrate / 60 > 1)
+		if (status->timeToEquilibrate / 60 > 1)
 		{
-			temp.Format(_T(" *** Waiting: %.0f min %.0f s /  %.0f min %.0f s"), floorf(data->timeToEquilibrateCurrent / 60.0f), fmodf(data->timeToEquilibrateCurrent, 60.0f), floorf(data->timeToEquilibrate / 60.0f), fmodf(data->timeToEquilibrate, 60.0f));
+			temp.Format(_T(" *** Waiting: %.0f min %.0f s /  %.0f min %.0f s"), floorf(status->timeToEquilibrateCurrent / 60.0f), fmodf(status->timeToEquilibrateCurrent, 60.0f), floorf(status->timeToEquilibrate / 60.0f), fmodf(status->timeToEquilibrate, 60.0f));
 		}
 		else
 		{
-			temp.Format(_T(" *** Waiting: %.0f s /  %.0f s"), data->GettimeToEquilibrateCurrent(), data->GettimeToEquilibrate());
+			temp.Format(_T(" *** Waiting: %.0f s /  %.0f s"), status->GettimeToEquilibrateCurrent(), status->GettimeToEquilibrate());
 		}
 		m_StrEtape += temp;
 	}

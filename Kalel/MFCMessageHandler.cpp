@@ -98,6 +98,21 @@ bool MFCMessageHandler::ExchangeExperimentSettings(const ExperimentSettings &pPa
 	return true;
 }
 
+bool MFCMessageHandler::ExchangeExperimentStatus(const ExperimentStatus &pParam)
+{
+	// Create a new instance of the storage class and equate it to the local class
+	ExperimentStatus * newData = new ExperimentStatus(pParam);
+
+	// Post the required message, now the main thread is responsible for deleting the new class
+	if (::PostMessage(windowHandle, UWM_EXCHANGE_EXPERIMENTSTATUS, NULL, (LPARAM)newData) == 0)
+	{
+		delete newData;
+		return false;
+	}
+	return true;
+}
+
+
 bool MFCMessageHandler::ExchangeData(ExperimentDataStorageArray * pParam)
 {
 	// Post the required message, now the main thread is responsible for deleting the new class
