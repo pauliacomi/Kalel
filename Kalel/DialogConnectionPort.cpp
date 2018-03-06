@@ -390,7 +390,7 @@ void ConnectionPort::SaveModifications(MachineSettings& newSettings)
 		r.sensitivity = sensitivities[key];
 		r.instrument = instrument_related[key];
 		
-		newSettings.AddReader(r, key +1);
+		newSettings.AddReader(r, key + 1);
 	}
 
 	// Save controllers

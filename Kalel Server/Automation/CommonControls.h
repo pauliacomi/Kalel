@@ -47,10 +47,10 @@ public:
 	timeh::timer timerMeasurement;											// Class for measuring the time between each measurement
 	timeh::timer timerWaiting;												// Class for measuring the time to wait
 
+	// TODO: why?
 	// On machine settings change
 	void on_setmachineSettings() {
 		instruments.Reset(*storage.machineSettings);
-
 		valveControls->Reset(*storage.machineSettings);
 		pressureReader->Reset(*storage.machineSettings);
 		temperatureReader->Reset(*storage.machineSettings);

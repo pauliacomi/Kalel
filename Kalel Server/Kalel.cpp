@@ -102,20 +102,6 @@ Kalel::~Kalel()
 	// Server functionality is self-contained
 }
 
-//
-//std::map<std::chrono::system_clock::time_point, std::string> Kalel::GetLogs(std::string &logs) {
-//
-//	return storageVectors.debugLogs.get();
-//
-	/*for (auto it = localCollection.begin(); it != localCollection.end(); ++it)
-	{
-		logs += timeh::TimePointToString(it->first);
-		logs += "   ";
-		logs += it->second;
-		logs += "\r\n";
-	}*/
-//}
-
 
 
 /*********************************
@@ -129,7 +115,7 @@ Kalel::~Kalel()
 *********************************/
 void Kalel::Ping(http_request* req, http_response* resp)
 {
-	LOG(logDEBUG) << "Machine Settings" << req->method_;
+	LOG(logDEBUG) << "Handshake " << req->method_;
 	if (req->method_ == http::method::get)
 	{
 		resp->status_ = http::responses::ok;
@@ -205,7 +191,7 @@ void Kalel::Sync(http_request* req, http_response* resp)
 void Kalel::MachineSettingsSync(http_request* req, http_response* resp)
 {
 	timeh::timer t;
-	LOG(logDEBUG) << "Machine Settings" << req->method_;
+	LOG(logDEBUG) << "Machine Settings " << req->method_;
 	t.Start();
 
 	// GET
@@ -228,6 +214,7 @@ void Kalel::MachineSettingsSync(http_request* req, http_response* resp)
 			
 			// Create new settings
 			storageVectors.setmachineSettings(std::make_shared<MachineSettings>(j));
+
 			// Ensure all changes
 			controlMechanisms.on_setmachineSettings();
 

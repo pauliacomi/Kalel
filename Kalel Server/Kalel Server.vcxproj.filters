@@ -234,11 +234,11 @@
     <ClInclude Include="..\Kalel Shared\Com Classes\ExperimentStatus.h">
       <Filter>Header Files\Common\Com Classes</Filter>
     </ClInclude>
-    <ClInclude Include="..\Kalel Shared\Com Classes\Serialization.h">
-      <Filter>Header Files\Common</Filter>
-    </ClInclude>
     <ClInclude Include="Automation\Old\MainFrm.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Kalel Shared\Com Classes\Serialization.h">
+      <Filter>Header Files\Common\Com Classes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

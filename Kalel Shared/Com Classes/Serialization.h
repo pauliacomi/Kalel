@@ -84,11 +84,11 @@ void to_json(nlohmann::json &j, const MachineSettings &m) {
 
 	nlohmann::json j3;
 	for (const auto& kv : m.controllers) {
-		j2[std::to_string(kv.first)]["type"								]	= kv.second.type				;
-		j2[std::to_string(kv.first)]["identifier"						]	= kv.second.identifier			;
-		j2[std::to_string(kv.first)]["sensitivity"						]	= kv.second.sensitivity			;
-		j2[std::to_string(kv.first)]["channel"							]	= kv.second.channel				;
-		j2[std::to_string(kv.first)]["instrument"						]	= kv.second.instrument			;
+		j3[std::to_string(kv.first)]["type"								]	= kv.second.type				;
+		j3[std::to_string(kv.first)]["identifier"						]	= kv.second.identifier			;
+		j3[std::to_string(kv.first)]["sensitivity"						]	= kv.second.sensitivity			;
+		j3[std::to_string(kv.first)]["channel"							]	= kv.second.channel				;
+		j3[std::to_string(kv.first)]["instrument"						]	= kv.second.instrument			;
 	}
 	j["controllers"							]	= j3										;
 }
@@ -106,7 +106,6 @@ inline void from_json(const nlohmann::json &j, MachineSettings &m) {
 	m.VolumeP6											=				j["VolumeP6"							];
 	m.VolumeRef											=				j["VolumeRef"							];
 
-	m.instruments.clear();
 	nlohmann::json j1 = j["instruments"];
 	for (nlohmann::json::iterator it = j1.begin(); it != j1.end(); ++it) {
 		Instrument i;
@@ -117,7 +116,6 @@ inline void from_json(const nlohmann::json &j, MachineSettings &m) {
 		m.instruments.insert(std::make_pair(atoi(it.key().c_str()), i));
 	}
 
-	m.readers.clear();
 	nlohmann::json j2 = j["readers"];
 	for (nlohmann::json::iterator it = j2.begin(); it != j2.end(); ++it) {
 		Reader i;
@@ -131,7 +129,6 @@ inline void from_json(const nlohmann::json &j, MachineSettings &m) {
 		m.readers.insert(std::make_pair(atoi(it.key().c_str()), i));
 	}
 
-	m.controllers.clear();
 	nlohmann::json j3 = j["controllers"];
 	for (nlohmann::json::iterator it = j3.begin(); it != j3.end(); ++it) {
 		Controller i;
@@ -315,7 +312,7 @@ inline void from_json(const nlohmann::json &j, ExperimentSettings &e) {
 
 
 //*************************************************************************************************************************
-//						Data (General+Divers+Ads+Des) <> JSON
+//						ExperimentData (General+Divers+Ads+Des) <> JSON
 //*************************************************************************************************************************
 inline void to_json(nlohmann::json &j, const Donnees_General &m) {
 
