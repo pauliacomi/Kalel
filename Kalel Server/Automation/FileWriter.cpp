@@ -2,7 +2,7 @@
 
 #include <filesystem>
 
-namespace fs = std::experimental::filesystem::v1;
+namespace filesystem = std::experimental::filesystem::v1;
 
 // Resources
 #include "../../Kalel Shared/Resources/DefineText.h"						// Definitions for the text in the messages
@@ -26,14 +26,17 @@ FileWriter::~FileWriter()
 *		const wstring &filename:	Filename to write to
 *		const wstring &stream:		What to write
 ***********************************************************************/
-void FileWriter::writeFile(const std::wstring &filename, const std::wstring & stream)
+bool FileWriter::writeFile(const std::wstring &filename, const std::wstring & stream)
 {	
 	std::unique_lock<std::mutex> lock(fileLock);			// get mutex
-	_wfopen_s(&f, filename.c_str(), L"w");
-	if (!f)
-		return;
+	bool err =_wfopen_s(&f, filename.c_str(), L"a+");
+	if (err)
+		return true;
 	fprintf(f, "%ws", stream.c_str());
 	fflush(f);
+	fclose(f);
+
+	return false;
 }
 
 
@@ -57,8 +60,8 @@ bool FileWriter::EnteteCreate(const ExperimentSettings &expSettings, const Machi
 	}
 
 	bool ret = false;
-	writeFile(FileWriter::BuildFileName(L"txt", expSettings.dataGeneral, true, ret), stream.str());
-	return ret;
+	bool ret2 = writeFile(FileWriter::BuildFileName(L"txt", expSettings.dataGeneral, true, ret), stream.str());
+	return ret || ret2;
 }
 
 
@@ -83,8 +86,8 @@ bool FileWriter::EnteteCSVCreate(const ExperimentSettings &expSettings, const Ma
 	}
 
 	bool ret = false;
-	writeFile(FileWriter::BuildFileName(L"csv", expSettings.dataGeneral, true, ret), stream.str());
-	return ret;
+	bool ret2 = writeFile(FileWriter::BuildFileName(L"csv", expSettings.dataGeneral, true, ret), stream.str());
+	return ret || ret2;
 }
 
 
@@ -112,8 +115,8 @@ bool FileWriter::FileMeasurementCreate(const data_general &general)
 	stream << std::endl;												// Next line
 
 	bool ret = false;
-	writeFile(FileWriter::BuildFileName(L"csv", general, false, ret), stream.str());
-	return ret;
+	bool ret2 = writeFile(FileWriter::BuildFileName(L"csv", general, false, ret), stream.str());
+	return ret || ret2;
 }
 
 
@@ -124,29 +127,26 @@ bool FileWriter::FileMeasurementCreate(const data_general &general)
 *		Reference to the experimentSettings which generates the entete
 *		bool valveOpen6: records if valve number 6 is open or not
 ***********************************************************************/
-void FileWriter::FileMeasurementRecord(const data_general &general, const ExperimentData &data, const ExperimentStatus &status, bool valveOpen6)
+bool FileWriter::FileMeasurementRecord(const data_general &general, const ExperimentData &data, const ExperimentStatus &status, bool valveOpen6)
 {
 	std::wostringstream stream;
 	char char_resultat_calo[20];
 	sprintf_s(char_resultat_calo, "%.8E", data.GetresultCalorimeter());
 
-	if (stream)
-	{
-		stream << status.experimentDose					<< ";";				// Experiment dose
-		stream << status.timeElapsed					<< ";";				// Experiment time
-		stream << char_resultat_calo					<< ";";				// Calorimeter value
-		stream << data.pressureLow						<< ";";				// Pressure low range
-		stream << data.pressureHigh						<< ";";				// Pressure high range
-		stream << data.temperatureCalo					<< ";";				// Temperature calorimeter
-		stream << data.temperatureCage					<< ";";				// Temperature enclosure
-		stream << data.temperatureRoom					<< ";";				// Temperature room
-		stream << valveOpen6							<< ";";				// Valve open
-		stream << std::endl;												// Next line
-	}
+	stream << status.experimentDose					<< ";";				// Experiment dose
+	stream << status.timeElapsed					<< ";";				// Experiment time
+	stream << char_resultat_calo					<< ";";				// Calorimeter value
+	stream << data.pressureLow						<< ";";				// Pressure low range
+	stream << data.pressureHigh						<< ";";				// Pressure high range
+	stream << data.temperatureCalo					<< ";";				// Temperature calorimeter
+	stream << data.temperatureCage					<< ";";				// Temperature enclosure
+	stream << data.temperatureRoom					<< ";";				// Temperature room
+	stream << valveOpen6							<< ";";				// Valve open
+	stream << std::endl;												// Next line
 
 	bool ret = false;
-	writeFile(FileWriter::BuildFileName(L"csv", general, false, ret), stream.str());
-	return;
+	bool ret2 = writeFile(FileWriter::BuildFileName(L"csv", general, false, ret), stream.str());
+	return ret || ret2;
 }
 
 
@@ -193,7 +193,7 @@ std::wstring FileWriter::EnteteGeneral(bool csv, const data_general &general, st
 
 	std::wostringstream text;
 
-	text << L"Experimentateur"				<< divider		<< general.user.nom								<< std::endl;
+	text << L"Experimentateur"				<< divider		<< general.user.nom											<< std::endl;
 	text << L"Date"							<< divider		<< general.date_experience									<< std::endl;
 	text << L"Gaz"							<< divider		<< general.gas.symbole										<< std::endl;
 	text << L"Echantillon"					<< divider		<< general.nom_echantillon									<< std::endl;
@@ -225,8 +225,8 @@ std::wstring FileWriter::EnteteDivers(bool csv, const data_other &divers)
 	std::wostringstream text;
 
 	text << L"Numéro de Cellule"			<< divider		<< divers.cell.numero									<< std::endl;
-	text << L"Volume du calo"				<< divider		<< divers.cell.volume_calo		<< divider << "cm3"		<< std::endl;
-	text << L"Volume total"					<< divider		<< divers.cell.volume_total		<< divider << "cm3"		<< std::endl;
+	text << L"Volume du calo"				<< divider		<< divers.cell.volume_calo			<< divider << "cm3"		<< std::endl;
+	text << L"Volume total"					<< divider		<< divers.cell.volume_total			<< divider << "cm3"		<< std::endl;
 	text << L"Baseline time"				<< divider		<< divers.temps_ligne_base			<< divider << "min"		<< std::endl;
 	text << L"Experiment end vacuum"		<< divider		<< divers.mise_sous_vide_fin_experience						<< std::endl;
 	text << L"Vacuum time"					<< divider		<< divers.temps_vide				<< divider << "min"		<< std::endl;
@@ -409,54 +409,61 @@ void FileWriter::RecordDataChange(bool csv, const ExperimentSettings& newSetting
 ***********************************************************************/
 std::wstring FileWriter::BuildFileName(std::wstring extension, const data_general &general, bool entete, bool error)
 {
-	// Create buffer
-	wchar_t fileNameBuffer[255];
-
-	// Put path in buffer
-	wprintf_s(fileNameBuffer, "%s", general.chemin.c_str());
+	// Create var
+	std::wstring directory = general.chemin;
 
 	// Check for validity, if not, put the file in the C: drive and return an error
 	error = false;
-	if (!fs::is_directory(fileNameBuffer))
+	if (!filesystem::is_directory(directory))
 	{
 		error = true;
-		wprintf_s(fileNameBuffer, "C:/");
+		directory = filesystem::current_path();
 	}
+
+	filesystem::path filePath = directory;
 
 	// Check if the user field is empty
 	if (general.user.surnom.empty())
-	{
-		wprintf_s(fileNameBuffer, "%s/Nouveau_Fichier", general.chemin.c_str());
-	}
+		filePath /= "New User";
 	else
 	{
-		// Check if the user directory exists, if not, create it
-		wprintf_s(fileNameBuffer, "%s/%s", general.chemin.c_str(), general.user.surnom.c_str());
-		if (!fs::create_directory(fileNameBuffer)) {
-			fs::create_directory(fileNameBuffer);
+		filePath /= general.user.surnom;
+
+		if (!filesystem::is_directory(filePath)) {
+			filesystem::create_directory(filePath);
 		}
-		// Check if the sample directory exists
-		wprintf_s(fileNameBuffer, "%s/%s/%s", general.chemin.c_str(), general.user.surnom.c_str(),
-			general.nom_echantillon.c_str());
 	}
 
-	// Check if the full path exists, if not create it
-	if (!fs::create_directory(fileNameBuffer)) {
-		fs::create_directory(fileNameBuffer);
+	// Check if the sample exists, if not, create it
+	if (general.nom_echantillon.empty())
+		filePath /= "New Sample";
+	else
+	{
+		// Check if the sample directory exists
+		filePath /= general.nom_echantillon;
+
+		// Check if the full path exists, if not create it
+		if (!filesystem::is_directory(filePath)) {
+			filesystem::create_directory(filePath);
+		}
 	}
 
 	// Finally store the entire path including the file name and return it
 	if (entete)
 	{
-		wprintf_s(fileNameBuffer, "%s/%s(entete).%s", fileNameBuffer, general.fichier.c_str(), extension.c_str());
+		filePath /= general.fichier;
+		filePath += "(entete).";
+		filePath += extension;
 	}
 	else
 	{
-		wprintf_s(fileNameBuffer, "%s/%s.%s", fileNameBuffer, general.fichier.c_str(), extension.c_str());
+		filePath /= general.fichier;
+		filePath += ".";
+		filePath += extension;
 	}
 
-	// Now return generated std::string
-	return fileNameBuffer;
+	// Now return generated path
+	return filePath;
 }
 
 

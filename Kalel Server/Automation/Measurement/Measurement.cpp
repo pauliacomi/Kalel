@@ -99,7 +99,15 @@ void Measurement::Execution()
 				storage.experimentStatus->timeToEquilibrateCurrent = controls.timerWaiting.TimeSeconds();		// Save the waiting time if it exists
 
 				// Save the data to the file
-				controls.fileWriter->FileMeasurementRecord(storage.experimentSettings->dataGeneral ,*storage.currentData, *storage.experimentStatus, controls.valveControls->ValveIsOpen(6));
+				bool err = controls.fileWriter->FileMeasurementRecord(
+					storage.experimentSettings->dataGeneral ,
+					*storage.currentData, 
+					*storage.experimentStatus, 
+					controls.valveControls->ValveIsOpen(6));
+				if (err) {
+					LOG(logERROR) << MESSAGE_WARNING_FILE;
+				}
+
 				// Restart the timer to record time between measurements
 				controls.timerMeasurement.Start();
 			}

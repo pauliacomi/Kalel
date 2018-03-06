@@ -33,7 +33,7 @@ private:
 	*		const wstring &filename:	Filename to write to
 	*		const wstring &stream:		What to write
 	***********************************************************************/
-	void writeFile(const std::wstring &filename, const std::wstring & stream);
+	bool writeFile(const std::wstring &filename, const std::wstring & stream);
 
 public:
 
@@ -77,7 +77,7 @@ public:
 	*		Reference to the experimentSettings which generates the entete
 	*		bool valveOpen6: records if valve number 6 is open or not
 	***********************************************************************/
-	void FileMeasurementRecord(const data_general &general, const ExperimentData &data, const ExperimentStatus &status, bool valveOpen6);
+	bool FileMeasurementRecord(const data_general &general, const ExperimentData &data, const ExperimentStatus &status, bool valveOpen6);
 
 
 	/**********************************************************************
