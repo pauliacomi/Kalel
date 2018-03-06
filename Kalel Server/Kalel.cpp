@@ -93,6 +93,12 @@ Kalel::~Kalel()
 	threadManager.ShutdownMeasurement();
 
 	// 
+	// Set the outputs to null to prevent any lingering logs
+	OutputGeneral::Info() = nullptr;
+	OutputGeneral::Event() = nullptr;
+	OutputGeneral::Debug() = nullptr;
+
+	// 
 	// Server functionality is self-contained
 }
 
