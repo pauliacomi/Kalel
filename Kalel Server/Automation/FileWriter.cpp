@@ -1,5 +1,8 @@
-#include "../stdafx.h"
 #include "FileWriter.h"
+
+#include <filesystem>
+
+namespace fs = std::experimental::filesystem::v1;
 
 // Resources
 #include "../../Kalel Shared/Resources/DefineText.h"						// Definitions for the text in the messages
@@ -414,7 +417,7 @@ std::wstring FileWriter::BuildFileName(std::wstring extension, const Donnees_Gen
 
 	// Check for validity, if not, put the file in the C: drive and return an error
 	error = false;
-	if (!PathIsDirectory(fileNameBuffer))
+	if (!fs::is_directory(fileNameBuffer))
 	{
 		error = true;
 		wprintf_s(fileNameBuffer, "C:/");
@@ -429,8 +432,8 @@ std::wstring FileWriter::BuildFileName(std::wstring extension, const Donnees_Gen
 	{
 		// Check if the user directory exists, if not, create it
 		wprintf_s(fileNameBuffer, "%s/%s", general.chemin.c_str(), general.experimentateur.surnom.c_str());
-		if (!PathIsDirectory(fileNameBuffer)) {
-			CreateDirectory(fileNameBuffer, NULL);
+		if (!fs::create_directory(fileNameBuffer)) {
+			fs::create_directory(fileNameBuffer);
 		}
 		// Check if the sample directory exists
 		wprintf_s(fileNameBuffer, "%s/%s/%s", general.chemin.c_str(), general.experimentateur.surnom.c_str(),
@@ -438,8 +441,8 @@ std::wstring FileWriter::BuildFileName(std::wstring extension, const Donnees_Gen
 	}
 
 	// Check if the full path exists, if not create it
-	if (!PathIsDirectory(fileNameBuffer)) {
-		CreateDirectory(fileNameBuffer, NULL);
+	if (!fs::create_directory(fileNameBuffer)) {
+		fs::create_directory(fileNameBuffer);
 	}
 
 	// Finally store the entire path including the file name and return it

@@ -22,7 +22,6 @@
 #include <string>
 
 #define LOG_LEVEL		logDEBUG4			// Change the level of logging here
-#define FILE_LOGGING	"server.log"		// Comment this line to disable file logging
 
 using json = nlohmann::json;
 
@@ -38,14 +37,6 @@ Kalel::Kalel()
 	OutputGeneral::Info() =	&storageVectors.infoLogs;
 	OutputGeneral::Event() = &storageVectors.eventLogs;
 	OutputGeneral::Debug() = &storageVectors.debugLogs;
-
-#ifdef FILE_LOGGING
-	FILELog::ReportingLevel() = LOG_LEVEL;
-	FILE * f;
-	fopen_s(&f, FILE_LOGGING, "w");
-	Output2FILE::Stream() = f;
-#endif // FILE_LOGGING
-
 
 	//
 	// Start server functionality
@@ -105,20 +96,19 @@ Kalel::~Kalel()
 	// Server functionality is self-contained
 }
 
-
-void Kalel::GetLogs(std::string &logs) {
-	logs.clear();
-
-	auto localCollection = storageVectors.debugLogs.get();
-
-	for (auto it = localCollection.begin(); it != localCollection.end(); ++it)
+//
+//std::map<std::chrono::system_clock::time_point, std::string> Kalel::GetLogs(std::string &logs) {
+//
+//	return storageVectors.debugLogs.get();
+//
+	/*for (auto it = localCollection.begin(); it != localCollection.end(); ++it)
 	{
 		logs += timeh::TimePointToString(it->first);
 		logs += "   ";
 		logs += it->second;
 		logs += "\r\n";
-	}
-}
+	}*/
+//}
 
 
 
@@ -245,7 +235,7 @@ void Kalel::MachineSettingsSync(http_request* req, http_response* resp)
 		}
 	}
 
-	LOG(logDEBUG) << "Machine Settings took" << std::to_string(t.TimeMilliseconds());
+	LOG(logDEBUG) << "Machine Settings took " << std::to_string(t.TimeMilliseconds());
 }
 
 
@@ -288,7 +278,7 @@ void Kalel::ExperimentSettingsSync(http_request* req, http_response* resp)
 		}
 	}
 
-	LOG(logDEBUG) << "Experiment settings took" << std::to_string(t.TimeMilliseconds());
+	LOG(logDEBUG) << "Experiment settings took " << std::to_string(t.TimeMilliseconds());
 }
 
 
@@ -311,7 +301,7 @@ void Kalel::ExperimentStatusSync(http_request* req, http_response* resp)
 		resp->answer_ = j.dump();
 	}
 
-	LOG(logDEBUG) << "Experiment Status took" << std::to_string(t.TimeMilliseconds());
+	LOG(logDEBUG) << "Experiment Status took " << std::to_string(t.TimeMilliseconds());
 }
 
 
@@ -375,7 +365,7 @@ void Kalel::InstrumentStateSync(http_request* req, http_response* resp)
 		}
 	}
 
-	LOG(logDEBUG) << "Instrument state took" << std::to_string(t.TimeMilliseconds());
+	LOG(logDEBUG) << "Instrument state took " << std::to_string(t.TimeMilliseconds());
 }
 
 
@@ -417,7 +407,7 @@ void Kalel::DataSync(http_request* req, http_response* resp)
 				j.push_back(json::object_t::value_type({ timeh::TimePointToString(kv.first), *(kv.second) }));
 			}
 
-			LOG(logDEBUG) << "Serialisation took" << std::to_string(t.TimeMilliseconds());
+			LOG(logDEBUG) << "Serialisation took " << std::to_string(t.TimeMilliseconds());
 
 			resp->status_ = http::responses::ok;
 			resp->content_type_ = http::mimetype::appjson;
@@ -477,7 +467,7 @@ void Kalel::LogSync(http_request* req, http_response* resp)
 		}
 	}
 
-	LOG(logDEBUG) << "Logs took" << std::to_string(t.TimeMilliseconds());
+	LOG(logDEBUG) << "Logs took " << std::to_string(t.TimeMilliseconds());
 }
 
 
@@ -525,7 +515,7 @@ void Kalel::RequestSync(http_request* req, http_response* resp)
 		}
 	}
 
-	LOG(logDEBUG) << "requests took" << std::to_string(t.TimeMilliseconds());
+	LOG(logDEBUG) << "requests took " << std::to_string(t.TimeMilliseconds());
 }
 
 

@@ -11,12 +11,12 @@ public:
 	Kalel();
 	~Kalel();
 
-	void GetLogs(std::string &logs);
-protected:
 	Server server;								// Http server for REST
 	Storage storageVectors;						// Stores all settings, experiment data, logs etc
 	Controls controlMechanisms;					// Controls all machines
 	ThreadManager threadManager;	
+
+protected:
 
 	void Ping(http_request* req, http_response* resp);
 	void Sync(http_request * req, http_response * resp);

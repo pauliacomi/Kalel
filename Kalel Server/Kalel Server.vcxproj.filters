@@ -81,25 +81,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Kalel Server.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Kalel ServerDlg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="targetver.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Resource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Automation\Old\MainFrm.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Automation\Class\Automation.h">
@@ -252,12 +237,12 @@
     <ClInclude Include="..\Kalel Shared\Com Classes\Serialization.h">
       <Filter>Header Files\Common</Filter>
     </ClInclude>
+    <ClInclude Include="Automation\Old\MainFrm.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Kalel Server.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Kalel ServerDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
@@ -383,22 +368,6 @@
     <ClCompile Include="..\Kalel Shared\Com Classes\ExperimentStatus.cpp">
       <Filter>Source Files\Common\Com Classes</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Kalel Server.htm" />
-    <None Include="res\KalelServer.rc2">
-      <Filter>Resource Files</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="Kalel Server.rc">
-      <Filter>Resource Files</Filter>
-    </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="res\Kalel Server.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
   </ItemGroup>
   <ItemGroup>
     <Library Include="Backend\USB\NIDAQmx.lib">

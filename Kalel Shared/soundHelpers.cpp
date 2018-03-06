@@ -1,5 +1,5 @@
-#include "windows/stdafx.h"
 #include "soundHelpers.h"
+#include <iostream>
 
 namespace soundh {
 
@@ -13,12 +13,12 @@ namespace soundh {
 
 	void beep::error()
 	{
-		MessageBeep(MB_ICONERROR);
+		std::cout << '\a';
 	}
 
 	void beep::allgood()
 	{
-		MessageBeep(MB_ICONINFORMATION);
+		std::cout << '\a' << '\a';
 	}
 
 }

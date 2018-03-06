@@ -1,93 +1,79 @@
 
-// Kalel Server.cpp : Defines the class behaviors for the application.
-//
-
 #include "stdafx.h"
-#include "Kalel Server.h"
-#include "Kalel ServerDlg.h"
+#include <iostream>
+#include <signal.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
+#include "Kalel.h"
+#include "../Kalel Shared/log.h"
 
-// CKalelServerApp
-
-BEGIN_MESSAGE_MAP(CKalelServerApp, CWinApp)
-	ON_COMMAND(ID_HELP, &CWinApp::OnHelp)
-END_MESSAGE_MAP()
+#define LOG_LEVEL		logDEBUG4			// Change the level of logging here
+#define FILE_LOGGING	"server.log"		// Comment this line to disable file logging
 
 
-// CKalelServerApp construction
+bool runnning = true;
+#ifdef _WIN32
 
-CKalelServerApp::CKalelServerApp()
-{
-	// TODO: add construction code here,
-	// Place all significant initialization in InitInstance
-}
+BOOL WINAPI win32consoleHandler(DWORD signal) {
 
-
-// The one and only CKalelServerApp object
-
-CKalelServerApp theApp;
-
-
-// CKalelServerApp initialization
-
-BOOL CKalelServerApp::InitInstance()
-{
-	// InitCommonControlsEx() is required on Windows XP if an application
-	// manifest specifies use of ComCtl32.dll version 6 or later to enable
-	// visual styles.  Otherwise, any window creation will fail.
-	INITCOMMONCONTROLSEX InitCtrls;
-	InitCtrls.dwSize = sizeof(InitCtrls);
-	// Set this to include all the common control classes you want to use
-	// in your application.
-	InitCtrls.dwICC = ICC_WIN95_CLASSES;
-	InitCommonControlsEx(&InitCtrls);
-
-	CWinApp::InitInstance();
-
-	if (!AfxSocketInit())
-	{
-		AfxMessageBox(IDP_SOCKETS_INIT_FAILED);
-		return FALSE;
+	if (signal == CTRL_C_EVENT ||
+		signal == CTRL_BREAK_EVENT ||
+		signal == CTRL_CLOSE_EVENT) {
+		printf("Exitting...\n");
+		runnning = false;
+		return TRUE;
 	}
-
-
-	// Activate "Windows Native" visual manager for enabling themes in MFC controls
-	CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManagerWindows));
-
-	// Standard initialization
-	// If you are not using these features and wish to reduce the size
-	// of your final executable, you should remove from the following
-	// the specific initialization routines you do not need
-	// Change the registry key under which our settings are stored
-	// TODO: You should modify this string to be something appropriate
-	// such as the name of your company or organization
-	SetRegistryKey(_T("Local AppWizard-Generated Applications"));
-
-	CKalelServerDlg dlg;
-	m_pMainWnd = &dlg;
-	INT_PTR nResponse = dlg.DoModal();
-	if (nResponse == IDOK)
-	{
-		// TODO: Place code here to handle when the dialog is
-		//  dismissed with OK
-	}
-	else if (nResponse == IDCANCEL)
-	{
-		// TODO: Place code here to handle when the dialog is
-		//  dismissed with Cancel
-	}
-	else if (nResponse == -1)
-	{
-		TRACE(traceAppMsg, 0, "Warning: dialog creation failed, so application is terminating unexpectedly.\n");
-		TRACE(traceAppMsg, 0, "Warning: if you are using MFC controls on the dialog, you cannot #define _AFX_NO_MFC_CONTROLS_IN_DIALOGS.\n");
-	}
-
-
-	// Since the dialog has been closed, return FALSE so that we exit the
-	//  application, rather than start the application's message pump.
 	return FALSE;
 }
 
+#else
+
+void unixcontrolHandler(int s) {
+	printf("Caught %d, Exitting...\n", s);
+	runnning = false;
+}
+
+#endif
+
+int main(int argc, char** argv) {
+
+#ifdef FILE_LOGGING
+	FILELog::ReportingLevel() = LOG_LEVEL;
+	FILE * f;
+	fopen_s(&f, FILE_LOGGING, "w");
+	Output2FILE::Stream() = f;
+#endif // FILE_LOGGING
+
+#ifdef _WIN32
+	if (!SetConsoleCtrlHandler(win32consoleHandler, TRUE)) {
+		printf("\nERROR: Could not set control handler");
+	}
+#else
+	signal(SIGINT, unixcontrolHandler);
+#endif
+
+	std::cout << "Starting server...\n";
+	std::cout << "Press [Ctrl+C] to exit\n";
+
+	Kalel mainBackend;
+
+	std::chrono::system_clock::time_point tp = std::chrono::system_clock::now();
+
+	while (runnning) {
+
+		std::map<std::chrono::system_clock::time_point, std::string> logs = mainBackend.storageVectors.debugLogs.get();
+
+		auto iter = logs.upper_bound(tp);
+
+		while (iter != logs.end()) {
+			std::cout << timeh::TimePointToString(iter->first) << " " << iter->second;
+			iter++;
+		}
+
+		tp = std::chrono::system_clock::now();
+
+		Sleep(500);
+	}
+	std::cout << "Stopped";
+
+	return 0;
+}
