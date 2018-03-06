@@ -114,9 +114,9 @@ TiXmlElement * NewElement(std::wstring nom_element, double double_element)
 
 
 // retourne la liste des experimentateurs
-std::vector<experimentateur> GetExperimentateurs()
+std::vector<user> GetExperimentateurs()
 {
-	std::vector<experimentateur> t_experimentateur;
+	std::vector<user> t_experimentateur;
 	TiXmlDocument doc(fichierXML);
 	if(!doc.LoadFile()){
 		return t_experimentateur; // Si le fichier XML ne s'ouvre pas, on renvoie
@@ -128,7 +128,7 @@ std::vector<experimentateur> GetExperimentateurs()
 
 	// On prend le premier 'noeud' experimentateur
 	TiXmlHandle handle_root(docHandle.FirstChild("experience").FirstChild("experimentateurs")
-					.FirstChild("experimentateur").Node());
+					.FirstChild("user").Node());
 
 	root = handle_root.Node();
 
@@ -136,7 +136,7 @@ std::vector<experimentateur> GetExperimentateurs()
 	{
 		// On crée une variable "experimentateur" et 
 		// on récupère le nom et le surnom de l'experimentateur du XML
-		experimentateur exp;
+		user exp;
 		exp.nom = stringh::s2ws(root->FirstChildElement("nom")->GetText());
 		exp.surnom = stringh::s2ws(root->FirstChildElement("surnom")->GetText());
 		
@@ -165,7 +165,7 @@ bool Rajout_Experimentateur(std::wstring nom,std::wstring surnom,int index)
 	TiXmlElement *elem = hdl.FirstChild("experience").FirstChild("experimentateurs").Element();
 
 	// On crée un nouvel element 'experimentateur' à partir des paramètres
-	TiXmlElement nouvel_experimentateur("experimentateur");
+	TiXmlElement nouvel_experimentateur("user");
 	TiXmlElement * element_nom = NewElement(_T("nom"), nom);
 	TiXmlElement * element_surnom = NewElement(_T("surnom"),surnom);
 	nouvel_experimentateur.LinkEndChild(element_nom);
@@ -173,7 +173,7 @@ bool Rajout_Experimentateur(std::wstring nom,std::wstring surnom,int index)
 
 	// On va parcourir tous les éléments 'experimentateur' du "groupe" 'experimentateurs'
 	TiXmlElement *elem_parcours = hdl.FirstChild("experience").FirstChild("experimentateurs").
-									FirstChild("experimentateur").Element();
+									FirstChild("user").Element();
 
 	for(int i=0;i<index && (elem_parcours);i++)
 		elem_parcours = elem_parcours->NextSiblingElement();
@@ -192,7 +192,7 @@ bool Rajout_Experimentateur(std::wstring nom,std::wstring surnom,int index)
 
 
 // analogue à la fonction si dessus...
-bool Rajout_Experimentateur(experimentateur new_exp,int index)
+bool Rajout_Experimentateur(user new_exp,int index)
 {
 	return Rajout_Experimentateur(new_exp.nom,new_exp.surnom,index);
 }
@@ -211,7 +211,7 @@ bool Suppression_Experimentateur(int index)
 	//        jusqu'à ce qu'on trouve l'élément à la place 'index'
 	// f : l'élément 'experimentateurs' d'où on effacera l'élément adéquat
 	TiXmlElement *elem = hdl.FirstChild("experience").FirstChild("experimentateurs").
-							FirstChild("experimentateur").Element();
+							FirstChild("user").Element();
 	TiXmlElement *f = hdl.FirstChild("experience").FirstChild("experimentateurs").Element();
 
 	for(int i=0;i<index;i++)
@@ -229,7 +229,7 @@ bool Modif_Experimentateur(std::wstring nom, std::wstring surnom,int index)
 	return Rajout_Experimentateur(nom,surnom,index);
 }
 
-bool Modif_Experimentateur(experimentateur new_exp,int index)
+bool Modif_Experimentateur(user new_exp,int index)
 {
 	Suppression_Experimentateur(index);
 	return Rajout_Experimentateur(new_exp,index);
@@ -244,9 +244,9 @@ bool Modif_Experimentateur(experimentateur new_exp,int index)
 
 // Analogues aux fonctions Experimentateur
 
-std::vector<gaz> GetGazs()
+std::vector<gas> GetGazs()
 {
-	std::vector<gaz> t_gaz;
+	std::vector<gas> t_gaz;
 	TiXmlDocument doc(fichierXML);
 	if(!doc.LoadFile()){
 		return t_gaz;
@@ -255,13 +255,13 @@ std::vector<gaz> GetGazs()
 	TiXmlHandle docHandle( &doc );
 	TiXmlNode *root;
 	TiXmlHandle handle_root(docHandle.FirstChild("experience").FirstChild("gazs")
-					.FirstChild("gaz").Node());
+					.FirstChild("gas").Node());
 
 	root = handle_root.Node();
 
 	while(root)
 	{
-		gaz m_gaz;
+		gas m_gaz;
 		m_gaz.nom						= stringh::s2ws(root->FirstChildElement("nom")->GetText());
 		m_gaz.symbole					= stringh::s2ws(root->FirstChildElement("symbole")->GetText());
 		m_gaz.masse_moleculaire			= atof(root->FirstChildElement("masse_moleculaire")->GetText());
@@ -289,7 +289,7 @@ bool Rajout_Gaz(std::wstring nom,std::wstring symbole,double masse,double temp_c
 	TiXmlHandle hdl(&doc);
 	TiXmlElement *elem = hdl.FirstChild("experience").FirstChild("gazs").Element();
 
-	TiXmlElement nouveau_gaz("gaz");
+	TiXmlElement nouveau_gaz("gas");
 
 	TiXmlElement * element_nom				= NewElement(_T("nom"),						nom);
 	TiXmlElement * element_symbole			= NewElement(_T("symbole"),					symbole);
@@ -308,7 +308,7 @@ bool Rajout_Gaz(std::wstring nom,std::wstring symbole,double masse,double temp_c
 	nouveau_gaz.LinkEndChild(element_omega);
 
 	TiXmlElement *elem_parcours = hdl.FirstChild("experience").FirstChild("gazs").
-									FirstChild("gaz").Element();
+									FirstChild("gas").Element();
 
 	for(int i=0;i<index && (elem_parcours);i++)
 		elem_parcours = elem_parcours->NextSiblingElement();
@@ -321,7 +321,7 @@ bool Rajout_Gaz(std::wstring nom,std::wstring symbole,double masse,double temp_c
 }
 
 
-bool Rajout_Gaz(gaz new_gaz,int index)
+bool Rajout_Gaz(gas new_gaz,int index)
 {
 	return Rajout_Gaz(new_gaz.nom,new_gaz.symbole,new_gaz.masse_moleculaire,new_gaz.temperature_critique,
 		new_gaz.pression_critique,new_gaz.temperature_ebullition,index);
@@ -338,7 +338,7 @@ bool Suppression_Gaz(int index)
 
 	TiXmlHandle hdl(&doc);
 	TiXmlElement *elem = hdl.FirstChild("experience").FirstChild("gazs").
-							FirstChild("gaz").Element();
+							FirstChild("gas").Element();
 	TiXmlElement *f = hdl.FirstChild("experience").FirstChild("gazs").Element();
 
 	for(int i=0;i<index;i++)
@@ -358,7 +358,7 @@ bool Modif_Gaz(std::wstring nom,std::wstring symbole,double masse,double temp_cr
 }
 
 
-bool Modif_Gaz(gaz new_gaz,int index)
+bool Modif_Gaz(gas new_gaz,int index)
 {
 	Suppression_Gaz(index);
 	return Rajout_Gaz(new_gaz,index);
@@ -369,9 +369,9 @@ bool Modif_Gaz(gaz new_gaz,int index)
 // Fonctions Cellule
 
 
-std::vector<cellule> GetCellules()
+std::vector<cell> GetCellules()
 {
-	std::vector<cellule> t_cellule;
+	std::vector<cell> t_cellule;
 	TiXmlDocument doc(fichierXML);
 	if(!doc.LoadFile()){
 		return t_cellule;
@@ -380,13 +380,13 @@ std::vector<cellule> GetCellules()
 	TiXmlHandle docHandle( &doc );
 	TiXmlNode *root;
 	TiXmlHandle handle_root(docHandle.FirstChild("experience").FirstChild("cellules")
-					.FirstChild("cellule").Node());
+					.FirstChild("cell").Node());
 
 	root = handle_root.Node();
 
 	while(root)
 	{
-		cellule cell;
+		cell cell;
 		cell.numero = stringh::s2ws(root->FirstChildElement("numero")->GetText());
 		cell.volume_total = atof(root->FirstChildElement("volume_total")->GetText());
 		cell.volume_calo = atof(root->FirstChildElement("volume_calo")->GetText());
@@ -412,7 +412,7 @@ bool Rajout_Cellule(std::wstring num, double total, double calo, int index)
 	TiXmlElement *elem = hdl.FirstChild("experience").FirstChild("cellules").Element();
 
 
-	TiXmlElement nouvel_cellule("cellule");
+	TiXmlElement nouvel_cellule("cell");
 
 	TiXmlElement * element_numero = NewElement(_T("numero"), num);
 	TiXmlElement * element_total = NewElement(_T("volume_total"),total);
@@ -423,7 +423,7 @@ bool Rajout_Cellule(std::wstring num, double total, double calo, int index)
 	nouvel_cellule.LinkEndChild(element_calo);
 
 	TiXmlElement *elem_parcours = hdl.FirstChild("experience").FirstChild("cellules").
-									FirstChild("cellule").Element();
+									FirstChild("cell").Element();
 
 	for(int i=0;i<index && (elem_parcours);i++)
 		elem_parcours = elem_parcours->NextSiblingElement();
@@ -437,7 +437,7 @@ bool Rajout_Cellule(std::wstring num, double total, double calo, int index)
 }
 
 
-bool Rajout_Cellule(cellule new_cellule,int index)
+bool Rajout_Cellule(cell new_cellule,int index)
 {
 	return Rajout_Cellule(new_cellule.numero,new_cellule.volume_total,new_cellule.volume_calo,index);
 }
@@ -453,7 +453,7 @@ bool Suppression_Cellule(int index)
 
 	TiXmlHandle hdl(&doc);
 	TiXmlElement *elem = hdl.FirstChild("experience").FirstChild("cellules").
-							FirstChild("cellule").Element();
+							FirstChild("cell").Element();
 	TiXmlElement *f = hdl.FirstChild("experience").FirstChild("cellules").Element();
 
 	for(int i=0;i<index;i++)
@@ -468,7 +468,7 @@ bool Modif_Cellule(std::wstring num, double total, double calo, int index)
 	return Rajout_Cellule(num,total,calo,index);
 }
 
-bool Modif_Cellule(cellule new_cellule,int index)
+bool Modif_Cellule(cell new_cellule,int index)
 {
 	Suppression_Cellule(index);
 	return Rajout_Cellule(new_cellule,index);
@@ -561,7 +561,7 @@ bool DoublonExperimentateur(std::wstring valeur, std::wstring type)
 
 	TiXmlHandle hdl(&doc);
 	TiXmlHandle handle_root(hdl.FirstChild("experience").FirstChild("experimentateurs")
-					.FirstChild("experimentateur").Node());
+					.FirstChild("user").Node());
 
 	return Doublon(handle_root, valeur, type);
 }
@@ -589,7 +589,7 @@ bool DoublonGaz(std::wstring valeur, std::wstring type)
 
 	TiXmlHandle hdl(&doc);
 	TiXmlHandle handle_root(hdl.FirstChild("experience").FirstChild("gazs")
-					.FirstChild("gaz").Node());
+					.FirstChild("gas").Node());
 
 	return Doublon(handle_root, valeur, type);
 }
@@ -605,7 +605,7 @@ bool DoublonNumeroCellule(std::wstring num)
 
 	TiXmlHandle hdl(&doc);
 	TiXmlHandle handle_root(hdl.FirstChild("experience").FirstChild("cellules")
-					.FirstChild("cellule").Node());
+					.FirstChild("cell").Node());
 
 	/*
 	// créer un flux de sortie

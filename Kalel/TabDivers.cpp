@@ -49,7 +49,7 @@ BOOL TabDivers::OnInitDialog()
 	m_nTempsLigneBase = allSettings.temps_ligne_base;
 	m_nTempsVide = allSettings.temps_vide;
 
-	cellExp = allSettings.cellule;
+	cellExp = allSettings.cell;
 	m_fVolumeTotal = cellExp.volume_total;
 	m_fVolumeCalo = cellExp.volume_calo;
 
@@ -58,7 +58,7 @@ BOOL TabDivers::OnInitDialog()
 	m_IndexCellule = -1;
 	for (size_t i = 0; i < cellList.size(); i++)
 	{
-		if (cellList[i].numero == allSettings.cellule.numero)
+		if (cellList[i].numero == allSettings.cell.numero)
 		{
 			m_IndexCellule = i;
 			break;
@@ -136,7 +136,7 @@ void TabDivers::Reinitialisation()
 	m_IndexCellule = -1;
 	for (UINT i = 0; i<cellList.size(); i++)
 	{
-		if (cellList[i].numero == allSettings.cellule.numero)
+		if (cellList[i].numero == allSettings.cell.numero)
 		{
 			m_IndexCellule = i;
 			break;
@@ -166,7 +166,7 @@ void TabDivers::Reinitialisation()
 
 void TabDivers::WriteData()
 {
-	allSettings.cellule = cellExp;
+	allSettings.cell = cellExp;
 	allSettings.mise_sous_vide_fin_experience = (bool)m_bMiseSousVide;
 	allSettings.temps_ligne_base = m_nTempsLigneBase;
 	allSettings.temps_vide = m_nTempsVide;

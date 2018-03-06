@@ -47,7 +47,7 @@ protected:
 	CSpinBtnCtrl m_SpinPressionFinaleAdsorptionContinue;
 
 public:
-	Donnees_Adsorption_Continue allSettings;
+	data_continuous allSettings;
 
 	// Functions
 public:

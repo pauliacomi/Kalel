@@ -2,17 +2,17 @@
 
 #include <string>
 
-class experimentateur
+class user
 {
-	public :
-		std::wstring nom;
-		std::wstring surnom;
+public :
+	std::wstring nom;
+	std::wstring surnom;
 
-		experimentateur operator=(const experimentateur &exp);
-		bool operator!=(const experimentateur &exp);
+	user operator=(const user &u);
+	bool operator!=(const user &u);
 };
 
-class gaz
+class gas
 {
 public :
 	std::wstring nom;
@@ -23,26 +23,26 @@ public :
 	double temperature_ebullition;
 	double omega;
 
-	gaz operator=(const gaz &g);
-	bool operator!=(const gaz &g);
+	gas operator=(const gas &g);
+	bool operator!=(const gas &g);
 };
 
-class cellule
+class cell
 {
 public :
 	std::wstring numero;
 	double volume_total;
 	double volume_calo;
 
-	cellule operator=(const cellule &cell);
-	bool operator!=(const cellule &cell);
+	cell operator=(const cell &c);
+	bool operator!=(const cell &c);
 };
 
-class Donnees_General
+class data_general
 {
 public:
-	experimentateur experimentateur;
-	gaz gaz;
+	user user;
+	gas gas;
 	std::wstring nom_echantillon;
 	float masse_echantillon;
 	std::wstring commentaires;
@@ -51,24 +51,24 @@ public:
 	float temperature_experience;
 	std::wstring date_experience;
 
-	Donnees_General operator=(const Donnees_General &general);
-	bool operator!=(const Donnees_General &general);
+	data_general operator=(const data_general &general);
+	bool operator!=(const data_general &general);
 };
 
-class Donnees_Divers
+class data_other
 {
 public:
-	cellule cellule;
+	cell cell;
 	int temps_ligne_base;
 	bool mise_sous_vide_fin_experience;
 	int temps_vide;
 
-	Donnees_Divers operator=(const Donnees_Divers &divers);
-	bool operator!=(const Donnees_Divers &divers);
+	data_other operator=(const data_other &divers);
+	bool operator!=(const data_other &divers);
 };
 
 /// General doses class
-class Donnees_Doses
+class data_adsorption
 {
 public:
 	float delta_pression;
@@ -76,12 +76,12 @@ public:
 	int temps_adsorption;
 	int temps_volume;
 
-	Donnees_Doses operator=(const Donnees_Doses &petites_doses);
-	bool operator!=(const Donnees_Doses &petites_doses);
-	bool operator!=(const Donnees_Doses &petites_doses) const;
+	data_adsorption operator=(const data_adsorption &petites_doses);
+	bool operator!=(const data_adsorption &petites_doses);
+	bool operator!=(const data_adsorption &petites_doses) const;
 };
 
-class Donnees_Desorption
+class data_desorption
 {
 public:
 	float delta_pression;
@@ -89,12 +89,12 @@ public:
 	int temps_desorption;
 	int temps_volume;
 
-	Donnees_Desorption operator=(const Donnees_Desorption &desorption);
-	bool operator!=(const Donnees_Desorption &desorption);
-	bool operator!=(const Donnees_Desorption &desorption) const;
+	data_desorption operator=(const data_desorption &desorption);
+	bool operator!=(const data_desorption &desorption);
+	bool operator!=(const data_desorption &desorption) const;
 };
 
-class Donnees_Adsorption_Continue
+class data_continuous
 {
 public:
 	int temps_etalonnage_debit;
@@ -103,6 +103,6 @@ public:
 	int temps_final_equilibre;
 	float pression_finale_adsorption_continue;
 
-	Donnees_Adsorption_Continue operator=(const Donnees_Adsorption_Continue &adsorption);
-	bool operator!=(const Donnees_Adsorption_Continue &adsorption);
+	data_continuous operator=(const data_continuous &adsorption);
+	bool operator!=(const data_continuous &adsorption);
 };

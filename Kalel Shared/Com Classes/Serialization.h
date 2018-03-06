@@ -27,23 +27,23 @@ inline void from_json(const nlohmann::json &j, ExperimentSettings &e);
 inline void to_json(nlohmann::json &j, const ExperimentStatus &e);
 inline void from_json(const nlohmann::json &j, ExperimentStatus &e);
 
-inline void to_json(nlohmann::json &j, const Donnees_General &m);
-inline void to_json(nlohmann::json &j, const Donnees_Divers &m);
-inline void to_json(nlohmann::json &j, const Donnees_Doses &m);
-inline void to_json(nlohmann::json &j, const Donnees_Desorption &m);
+inline void to_json(nlohmann::json &j, const data_general &m);
+inline void to_json(nlohmann::json &j, const data_other &m);
+inline void to_json(nlohmann::json &j, const data_adsorption &m);
+inline void to_json(nlohmann::json &j, const data_desorption &m);
 
-inline void from_json(const nlohmann::json &j, Donnees_General &m);
-inline void from_json(const nlohmann::json &j, Donnees_Divers &m);
-inline void from_json(const nlohmann::json &j, Donnees_Doses &m);
-inline void from_json(const nlohmann::json &j, Donnees_Desorption &m);
+inline void from_json(const nlohmann::json &j, data_general &m);
+inline void from_json(const nlohmann::json &j, data_other &m);
+inline void from_json(const nlohmann::json &j, data_adsorption &m);
+inline void from_json(const nlohmann::json &j, data_desorption &m);
 
-inline void to_json(nlohmann::json &j, const gaz &m);
-inline void to_json(nlohmann::json &j, const cellule &m);
-inline void to_json(nlohmann::json &j, const experimentateur &m);
+inline void to_json(nlohmann::json &j, const gas &m);
+inline void to_json(nlohmann::json &j, const cell &m);
+inline void to_json(nlohmann::json &j, const user &m);
 
-inline void from_json(const nlohmann::json &j, gaz &m);
-inline void from_json(const nlohmann::json &j, cellule &m);
-inline void from_json(const nlohmann::json &j, experimentateur &m);
+inline void from_json(const nlohmann::json &j, gas &m);
+inline void from_json(const nlohmann::json &j, cell &m);
+inline void from_json(const nlohmann::json &j, user &m);
 
 inline void to_json(nlohmann::json &j, const ControlInstrumentState &e);
 inline void from_json(const nlohmann::json &j, ControlInstrumentState &e);
@@ -314,10 +314,10 @@ inline void from_json(const nlohmann::json &j, ExperimentSettings &e) {
 //*************************************************************************************************************************
 //						ExperimentData (General+Divers+Ads+Des) <> JSON
 //*************************************************************************************************************************
-inline void to_json(nlohmann::json &j, const Donnees_General &m) {
+inline void to_json(nlohmann::json &j, const data_general &m) {
 
-	to_json(j["user"]	, m.experimentateur	);
-	to_json(j["gas"]	, m.gaz				);
+	to_json(j["user"]	, m.user	);
+	to_json(j["gas"]	, m.gas				);
 
 	j["path"			]					= stringh::ws2s(m.chemin					);
 	j["comments"		]					= stringh::ws2s(m.commentaires				);
@@ -328,10 +328,10 @@ inline void to_json(nlohmann::json &j, const Donnees_General &m) {
 	j["temperature"		]					=					m.temperature_experience	;
 }
 
-void from_json(const nlohmann::json & j, Donnees_General & m)
+void from_json(const nlohmann::json & j, data_general & m)
 {
-	from_json(j["user"]		,	m.experimentateur);
-	from_json( j["gas"]		,	m.gaz);
+	from_json(j["user"]		,	m.user);
+	from_json( j["gas"]		,	m.gas);
 
 	m.chemin								= stringh::s2ws(j["path"					]);
 	m.commentaires							= stringh::s2ws(j["comments"				]);
@@ -344,18 +344,18 @@ void from_json(const nlohmann::json & j, Donnees_General & m)
 
 
 
-inline void to_json(nlohmann::json &j, const Donnees_Divers &m) {
+inline void to_json(nlohmann::json &j, const data_other &m) {
 
-	to_json(j["cell"], m.cellule);
+	to_json(j["cell"], m.cell);
 
 	j["endUnderVacuum"]						= m.mise_sous_vide_fin_experience	;
 	j["baselineTime"]						= m.temps_ligne_base				;
 	j["vacuumTime"]							= m.temps_vide						;
 }
 
-inline void from_json(const nlohmann::json & j, Donnees_Divers & m)
+inline void from_json(const nlohmann::json & j, data_other & m)
 {
-	from_json(j["cell"]			, m.cellule);
+	from_json(j["cell"]			, m.cell);
 
 	m.mise_sous_vide_fin_experience			= j["endUnderVacuum"				];
 	m.temps_ligne_base						= j["baselineTime"					];
@@ -364,14 +364,14 @@ inline void from_json(const nlohmann::json & j, Donnees_Divers & m)
 
 
 
-inline void to_json(nlohmann::json &j, const Donnees_Doses &m) {
+inline void to_json(nlohmann::json &j, const data_adsorption &m) {
 	j["dP"]									= m.delta_pression						;
 	j["Pfinal"]								= m.pression_finale						;
 	j["Tads"]								= m.temps_adsorption					;
 	j["Tref"]								= m.temps_volume						;
 }
 	
-inline void from_json(const nlohmann::json & j, Donnees_Doses & m)
+inline void from_json(const nlohmann::json & j, data_adsorption & m)
 {
 	m.delta_pression						= j["dP"								];
 	m.pression_finale						= j["Pfinal"							];
@@ -381,14 +381,14 @@ inline void from_json(const nlohmann::json & j, Donnees_Doses & m)
 
 
 
-inline void to_json(nlohmann::json &j, const Donnees_Desorption &m) {
+inline void to_json(nlohmann::json &j, const data_desorption &m) {
 	j["dP"]									= m.delta_pression						;
 	j["Pfinal"]								= m.pression_finale						;
 	j["Tdes"]								= m.temps_desorption					;
 	j["Tref"]								= m.temps_volume						;
 }
 
-inline void from_json(const nlohmann::json & j, Donnees_Desorption & m)
+inline void from_json(const nlohmann::json & j, data_desorption & m)
 {
 	m.delta_pression						= j["dP"								];
 	m.pression_finale						= j["Pfinal"							];
@@ -401,7 +401,7 @@ inline void from_json(const nlohmann::json & j, Donnees_Desorption & m)
 //*************************************************************************************************************************
 //						gas/user/cell <> JSON
 //*************************************************************************************************************************
-inline void to_json(nlohmann::json &j, const gaz &m) 
+inline void to_json(nlohmann::json &j, const gas &m) 
 {
 	j["masse_moleculaire"		]			=					m.masse_moleculaire				;
 	j["nom"						]			= stringh::ws2s(m.nom							);
@@ -412,7 +412,7 @@ inline void to_json(nlohmann::json &j, const gaz &m)
 	j["temperature_ebullition"	]			=					m.temperature_ebullition		;
 }
 
-inline void from_json(const nlohmann::json & j, gaz & m)
+inline void from_json(const nlohmann::json & j, gas & m)
 {
 	m.masse_moleculaire						=					j["masse_moleculaire"			];
 	m.nom									= stringh::s2ws(j["nom"							]);
@@ -424,27 +424,27 @@ inline void from_json(const nlohmann::json & j, gaz & m)
 }
 
 
-inline void to_json(nlohmann::json &j, const experimentateur &m) 
+inline void to_json(nlohmann::json &j, const user &m) 
 {
 	j["nom"]								= stringh::ws2s(m.nom			);
 	j["surnom"]								= stringh::ws2s(m.surnom		);
 }
 
-inline void from_json(const nlohmann::json & j, experimentateur & m)
+inline void from_json(const nlohmann::json & j, user & m)
 {
 	m.nom									= stringh::s2ws(j["nom"			]);	
 	m.surnom								= stringh::s2ws(j["surnom"		]);	
 }
 
 
-inline void to_json(nlohmann::json &j, const cellule &m) 
+inline void to_json(nlohmann::json &j, const cell &m) 
 {
 	j["number"		]						= stringh::ws2s(m.numero		);
 	j["caloVolume"	]						=					m.volume_calo	;
 	j["totalVolume"	]						=					m.volume_total	;
 }
 
-inline void from_json(const nlohmann::json & j, cellule & m)
+inline void from_json(const nlohmann::json & j, cell & m)
 {
 	m.numero								= stringh::s2ws(j["number"		]);
 	m.volume_calo							=					j["caloVolume"	];

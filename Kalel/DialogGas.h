@@ -118,7 +118,7 @@ public:
 	CEdit m_EditMessageModifGaz;
 	CString m_strMessageModifGaz;
 
-	std::vector<gaz> list_modif_gaz;
+	std::vector<gas> list_modif_gaz;
 
 	afx_msg void OnCbnSelchangeComboModifGaz();
 	virtual BOOL OnInitDialog();
@@ -177,7 +177,7 @@ public:
 	CEdit m_EditTemperatureEbullitionSuppGaz;
 	CEdit m_EditOmegaSuppGaz;
 
-	std::vector<gaz> list_suppr_gaz;
+	std::vector<gas> list_suppr_gaz;
 
 	virtual BOOL OnSetActive();
 	afx_msg void OnCbnSelchangeComboSupprGaz();

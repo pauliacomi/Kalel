@@ -84,7 +84,7 @@ public:
 	CEdit m_EditModifExperimentateur;
 	CString m_strModifExperimentateur;
 
-	std::vector<experimentateur> list_modif_experimentateur;
+	std::vector<user> list_modif_experimentateur;
 
 	afx_msg void OnBnClickedModifier();
 	afx_msg void OnCbnSelchangeComboModifExperimentateur();
@@ -132,7 +132,7 @@ public:
 	CEdit m_EditSurnomSupprExperimentateur;
 	CString m_strSurnomSupprExperimentateur;
 
-	std::vector<experimentateur> list_suppr_experimentateur;
+	std::vector<user> list_suppr_experimentateur;
 
 	afx_msg void OnCbnSelchangeComboSupprExperimentateur();
 	afx_msg void OnBnClickedSupprimer();

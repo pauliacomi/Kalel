@@ -63,11 +63,11 @@ public:
 	* Opens the measurement file for the first time and stores its link in the fileStream ofstream
 	* Also writes columns in the CSV
 	* Inputs:
-	*		const Donnees_General &general:		Reference to the general data to be checked
+	*		const data_general &general:		Reference to the general data to be checked
 	* Outputs:
 	*		bool: Path undefined error
 	***********************************************************************/
-	bool FileMeasurementCreate(const Donnees_General &general);
+	bool FileMeasurementCreate(const data_general &general);
 
 
 
@@ -77,7 +77,7 @@ public:
 	*		Reference to the experimentSettings which generates the entete
 	*		bool valveOpen6: records if valve number 6 is open or not
 	***********************************************************************/
-	void FileMeasurementRecord(const Donnees_General &general, const ExperimentData &data, const ExperimentStatus &status, bool valveOpen6);
+	void FileMeasurementRecord(const data_general &general, const ExperimentData &data, const ExperimentStatus &status, bool valveOpen6);
 
 
 	/**********************************************************************
@@ -93,37 +93,37 @@ public:
 	* Writes the settings from the general tab
 	* Inputs:
 	*       bool csv: Ask for a comma separated value format if true
-	*		const Donnees_General &general:		Reference to the general data to be written
+	*		const data_general &general:		Reference to the general data to be written
 	*		std::wstring caloName: name of the calorimeter
 	***********************************************************************/
-	std::wstring EnteteGeneral(bool csv, const Donnees_General &general, std::wstring caloName);
+	std::wstring EnteteGeneral(bool csv, const data_general &general, std::wstring caloName);
 
 
 	/**********************************************************************
 	* Writes the settings from the diverse tab
 	* Inputs:
 	*       bool csv: Ask for a comma separated value format if true
-	*		const Donnees_Divers &divers:	Reference to the diverse data to be written
+	*		const data_other &divers:	Reference to the diverse data to be written
 	***********************************************************************/
-	std::wstring EnteteDivers(bool csv, const Donnees_Divers &divers);
+	std::wstring EnteteDivers(bool csv, const data_other &divers);
 
 
 	/**********************************************************************
 	* Writes the adsorption steps
 	* Inputs:
 	*       bool csv: Ask for a comma separated value format if true
-	*		const std::vector<Donnees_Doses> &doses:	Reference to the adsorption data to be written
+	*		const std::vector<data_adsorption> &doses:	Reference to the adsorption data to be written
 	***********************************************************************/
-	std::wstring EnteteAdsorption(bool csv, const std::vector<Donnees_Doses> &doses);
+	std::wstring EnteteAdsorption(bool csv, const std::vector<data_adsorption> &doses);
 
 
 	/**********************************************************************
 	* Writes the desorption steps
 	* Inputs:
 	*       bool csv: Ask for a comma separated value format if true
-	*		const std::vector<Donnees_Desorption> &desorption:	Reference to the desorpiton data to be written
+	*		const std::vector<data_desorption> &desorption:	Reference to the desorpiton data to be written
 	***********************************************************************/
-	std::wstring EnteteDesorption(bool csv, const std::vector<Donnees_Desorption> &desorption);
+	std::wstring EnteteDesorption(bool csv, const std::vector<data_desorption> &desorption);
 
 
 	/**********************************************************************
@@ -141,10 +141,10 @@ public:
 	* Returns the full path and title of the file to be written
 	* Inputs:
 	*       string extension: Extension you want the file to have
-	*		const Donnees_General &general:		Reference to the general data to be checked
+	*		const data_general &general:		Reference to the general data to be checked
 	*       bool entete: specify true to get the entete string or false for the regular file
 	*       bool entete: error return value for undefined path
 	***********************************************************************/
-	std::wstring BuildFileName(std::wstring extension, const Donnees_General &general, bool entete, bool error);
+	std::wstring BuildFileName(std::wstring extension, const data_general &general, bool entete, bool error);
 };
 

@@ -34,22 +34,22 @@ void ExperimentSettings::ResetData(int initialAdsorptions, int initialDesorption
 	dataGeneral.chemin = L"";
 	dataGeneral.commentaires = L"";
 	dataGeneral.date_experience = L"";
-	dataGeneral.experimentateur.nom = L"";
-	dataGeneral.experimentateur.surnom = L"";
+	dataGeneral.user.nom = L"";
+	dataGeneral.user.surnom = L"";
 	dataGeneral.fichier =									L"";		//std::to_wstring(TEXT_NEWFILETEXT) + cF.getDateUnderline();
-	dataGeneral.gaz.symbole = L"";
-	dataGeneral.gaz.masse_moleculaire = 0;
-	dataGeneral.gaz.pression_critique = 0;
-	dataGeneral.gaz.temperature_critique = 0;
-	dataGeneral.gaz.temperature_ebullition = 0;
+	dataGeneral.gas.symbole = L"";
+	dataGeneral.gas.masse_moleculaire = 0;
+	dataGeneral.gas.pression_critique = 0;
+	dataGeneral.gas.temperature_critique = 0;
+	dataGeneral.gas.temperature_ebullition = 0;
 	dataGeneral.masse_echantillon = 1.0f;
 	dataGeneral.nom_echantillon =							L"";		//TEXT_SAMPLE;
 	dataGeneral.temperature_experience = 30;
 
 	// Divers
-	dataDivers.cellule.numero = L"";
-	dataDivers.cellule.volume_calo = 0;
-	dataDivers.cellule.volume_total = 0;
+	dataDivers.cell.numero = L"";
+	dataDivers.cell.volume_calo = 0;
+	dataDivers.cell.volume_total = 0;
 	dataDivers.mise_sous_vide_fin_experience = false;
 	dataDivers.temps_ligne_base = 15;
 	dataDivers.temps_vide = 90;
@@ -57,7 +57,7 @@ void ExperimentSettings::ResetData(int initialAdsorptions, int initialDesorption
 	// Adsorption
 	for (int i = 0; i < initialAdsorptions; i++)
 	{
-		Donnees_Doses adsorptionStep;
+		data_adsorption adsorptionStep;
 
 		adsorptionStep.delta_pression = 1.0f;
 		adsorptionStep.pression_finale = 5.0f;
@@ -70,7 +70,7 @@ void ExperimentSettings::ResetData(int initialAdsorptions, int initialDesorption
 	// Desorption
 	for (int i = 0; i < initialDesorptions; i++)
 	{
-		Donnees_Desorption desorptionStep;
+		data_desorption desorptionStep;
 
 		desorptionStep.delta_pression = 1.0f;
 		desorptionStep.pression_finale = 5.0f;

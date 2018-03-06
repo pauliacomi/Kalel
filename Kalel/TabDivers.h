@@ -53,12 +53,12 @@ protected:
 	CSpinBtnCtrl m_SpinTempsVide;
 
 	// Definintions for cells
-	std::vector<cellule> cellList;
-	cellule cellExp;
+	std::vector<cell> cellList;
+	cell cellExp;
 
 public:
 	// All the settings are stored here
-	Donnees_Divers allSettings;
+	data_other allSettings;
 
 // Functions
 public:

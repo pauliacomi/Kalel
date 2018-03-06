@@ -1,7 +1,7 @@
 #include "../Forcelib.h"
 #include "ExperimentHelperClasses.h"
 
-experimentateur experimentateur::operator=(const experimentateur &exp)
+user user::operator=(const user &exp)
 {
 	nom = exp.nom;
 	surnom = exp.surnom;
@@ -9,7 +9,7 @@ experimentateur experimentateur::operator=(const experimentateur &exp)
 	return *this;
 }
 
-bool experimentateur::operator!=(const experimentateur &exp)
+bool user::operator!=(const user &exp)
 {
 	if (nom != exp.nom || surnom != exp.surnom)
 		return true;
@@ -19,7 +19,7 @@ bool experimentateur::operator!=(const experimentateur &exp)
 
 
 
-gaz gaz::operator=(const gaz &g)
+gas gas::operator=(const gas &g)
 {
 	nom = g.nom;
 	symbole = g.symbole;
@@ -32,7 +32,7 @@ gaz gaz::operator=(const gaz &g)
 	return *this;
 }
 
-bool gaz::operator!=(const gaz &g)
+bool gas::operator!=(const gas &g)
 {
 	if (nom != g.nom || symbole != g.symbole 
 			|| masse_moleculaire != g.masse_moleculaire
@@ -47,7 +47,7 @@ bool gaz::operator!=(const gaz &g)
 
 
 
-cellule cellule::operator=(const cellule &cell)
+cell cell::operator=(const cell &cell)
 {
 	numero = cell.numero;
 	volume_total = cell.volume_total;
@@ -56,7 +56,7 @@ cellule cellule::operator=(const cellule &cell)
 	return *this;
 }
 
-bool cellule::operator!=(const cellule &cell)
+bool cell::operator!=(const cell &cell)
 {
 	if (numero != cell.numero || 
 			volume_total != cell.volume_total ||
@@ -67,10 +67,10 @@ bool cellule::operator!=(const cellule &cell)
 
 
 
-Donnees_General Donnees_General::operator=(const Donnees_General &general)
+data_general data_general::operator=(const data_general &general)
 {
-	experimentateur = general.experimentateur;
-	gaz = general.gaz;
+	user = general.user;
+	gas = general.gas;
 	nom_echantillon = general.nom_echantillon;
 	masse_echantillon = general.masse_echantillon;
 	commentaires = general.commentaires;
@@ -82,10 +82,10 @@ Donnees_General Donnees_General::operator=(const Donnees_General &general)
 	return *this;
 }
 
-bool Donnees_General::operator!=(const Donnees_General &general)
+bool data_general::operator!=(const data_general &general)
 {
-	if (experimentateur != general.experimentateur ||
-			gaz != general.gaz ||
+	if (user != general.user ||
+			gas != general.gas ||
 			nom_echantillon != general.nom_echantillon ||
 			masse_echantillon != general.masse_echantillon ||
 			commentaires != general.commentaires ||
@@ -101,9 +101,9 @@ bool Donnees_General::operator!=(const Donnees_General &general)
 
 
 
-Donnees_Divers Donnees_Divers::operator=(const Donnees_Divers &divers)
+data_other data_other::operator=(const data_other &divers)
 {
-	cellule = divers.cellule;
+	cell = divers.cell;
 	temps_ligne_base = divers.temps_ligne_base;
 	mise_sous_vide_fin_experience = divers.mise_sous_vide_fin_experience;
 	temps_vide = divers.temps_vide;
@@ -111,9 +111,9 @@ Donnees_Divers Donnees_Divers::operator=(const Donnees_Divers &divers)
 	return *this;
 }
 
-bool Donnees_Divers::operator!=(const Donnees_Divers &divers)
+bool data_other::operator!=(const data_other &divers)
 {
-	if (cellule != divers.cellule ||
+	if (cell != divers.cell ||
 			temps_ligne_base != divers.temps_ligne_base ||
 			mise_sous_vide_fin_experience != divers.mise_sous_vide_fin_experience ||
 			temps_vide != divers.temps_vide)
@@ -123,7 +123,7 @@ bool Donnees_Divers::operator!=(const Donnees_Divers &divers)
 
 
 /// General doses class
-Donnees_Doses Donnees_Doses::operator=(const Donnees_Doses &STAGE_DOSES)
+data_adsorption data_adsorption::operator=(const data_adsorption &STAGE_DOSES)
 {
 	delta_pression = STAGE_DOSES.delta_pression;
 	pression_finale = STAGE_DOSES.pression_finale;
@@ -133,7 +133,7 @@ Donnees_Doses Donnees_Doses::operator=(const Donnees_Doses &STAGE_DOSES)
 	return *this;
 }
 
-bool Donnees_Doses::operator!=(const Donnees_Doses &STAGE_DOSES)
+bool data_adsorption::operator!=(const data_adsorption &STAGE_DOSES)
 {
 	if (delta_pression != STAGE_DOSES.delta_pression ||
 		pression_finale != STAGE_DOSES.pression_finale ||
@@ -143,7 +143,7 @@ bool Donnees_Doses::operator!=(const Donnees_Doses &STAGE_DOSES)
 	return false;
 }
 
-bool Donnees_Doses::operator!=(const Donnees_Doses & STAGE_DOSES) const
+bool data_adsorption::operator!=(const data_adsorption & STAGE_DOSES) const
 {
 	if (delta_pression != STAGE_DOSES.delta_pression ||
 		pression_finale != STAGE_DOSES.pression_finale ||
@@ -155,7 +155,7 @@ bool Donnees_Doses::operator!=(const Donnees_Doses & STAGE_DOSES) const
 
 
 
-Donnees_Desorption Donnees_Desorption::operator=(const Donnees_Desorption &STAGE_DESORPTION)
+data_desorption data_desorption::operator=(const data_desorption &STAGE_DESORPTION)
 {
 	delta_pression = STAGE_DESORPTION.delta_pression;
 	pression_finale = STAGE_DESORPTION.pression_finale;
@@ -165,7 +165,7 @@ Donnees_Desorption Donnees_Desorption::operator=(const Donnees_Desorption &STAGE
 	return *this;
 }
 
-bool Donnees_Desorption::operator!=(const Donnees_Desorption &STAGE_DESORPTION)
+bool data_desorption::operator!=(const data_desorption &STAGE_DESORPTION)
 {
 	if(delta_pression != STAGE_DESORPTION.delta_pression ||
 			pression_finale != STAGE_DESORPTION.pression_finale ||
@@ -175,7 +175,7 @@ bool Donnees_Desorption::operator!=(const Donnees_Desorption &STAGE_DESORPTION)
 	return false;
 }
 
-bool Donnees_Desorption::operator!=(const Donnees_Desorption & STAGE_DESORPTION) const
+bool data_desorption::operator!=(const data_desorption & STAGE_DESORPTION) const
 {
 	if (delta_pression != STAGE_DESORPTION.delta_pression ||
 		pression_finale != STAGE_DESORPTION.pression_finale ||
@@ -188,7 +188,7 @@ bool Donnees_Desorption::operator!=(const Donnees_Desorption & STAGE_DESORPTION)
 
 
 
-Donnees_Adsorption_Continue Donnees_Adsorption_Continue::operator=(const Donnees_Adsorption_Continue &adsorption)
+data_continuous data_continuous::operator=(const data_continuous &adsorption)
 {
 	temps_etalonnage_debit = adsorption.temps_etalonnage_debit;
 	temps_etalonnage_volume_inter = adsorption.temps_etalonnage_volume_inter;
@@ -199,7 +199,7 @@ Donnees_Adsorption_Continue Donnees_Adsorption_Continue::operator=(const Donnees
 	return *this;
 }
 
-bool Donnees_Adsorption_Continue::operator!=(const Donnees_Adsorption_Continue &adsorption)
+bool data_continuous::operator!=(const data_continuous &adsorption)
 {
 	if(temps_etalonnage_debit != adsorption.temps_etalonnage_debit ||
 			temps_etalonnage_volume_inter != adsorption.temps_etalonnage_volume_inter ||

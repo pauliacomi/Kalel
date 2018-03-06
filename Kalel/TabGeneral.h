@@ -58,16 +58,16 @@ protected:
 	CString experimentDate;
 
 	// Definitions for gasses 
-	std::vector<gaz> gasArray;
-	gaz gasExp;
+	std::vector<gas> gasArray;
+	gas gasExp;
 
 	// Definitions for users 
-	std::vector<experimentateur> userArray;
-	experimentateur userExp;
+	std::vector<user> userArray;
+	user userExp;
 
 	// All the settings are stored here
 public:
-	Donnees_General allSettings;
+	data_general allSettings;
 	bool checkGeneral;			// for greying out
 
 // Functions

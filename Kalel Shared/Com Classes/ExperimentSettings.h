@@ -29,12 +29,11 @@ public:
 
 
 public:
-	//HWND GUIhandle;						// Main GUI handle
-	int experimentType;					// General parameters
+	int experimentType;					// Experiment type
 
 	// Settings storage
-	Donnees_General dataGeneral;
-	Donnees_Divers dataDivers;
-	std::vector<Donnees_Doses> dataAdsorption;
-	std::vector<Donnees_Desorption> dataDesorption;
+	data_general dataGeneral;
+	data_other dataDivers;
+	std::vector<data_adsorption> dataAdsorption;
+	std::vector<data_desorption> dataDesorption;
 };

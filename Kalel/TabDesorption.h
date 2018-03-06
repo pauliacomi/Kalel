@@ -47,7 +47,7 @@ protected:
 	CSpinBtnCtrl m_SpinTempsVolumeDesorption;
 
 public:
-	Donnees_Desorption allSettings;
+	data_desorption allSettings;
 	bool checkDesorption;			//For greying out
 
 // Functions

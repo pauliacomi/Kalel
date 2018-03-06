@@ -50,7 +50,7 @@ protected:
 	CSpinBtnCtrl m_SpinFinalPressureDoses;
 
 public:
-	Donnees_Doses allSettings;
+	data_adsorption allSettings;
 	bool checkDoses;				// for greying out
 	
 	// Functions

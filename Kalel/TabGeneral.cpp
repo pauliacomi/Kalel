@@ -69,8 +69,8 @@ BOOL TabGeneral::OnInitDialog()
 	m_SampleMass = allSettings.masse_echantillon;
 	m_SampleName = allSettings.nom_echantillon.c_str();
 	m_ExperimentTemperature = allSettings.temperature_experience;
-	gasExp = allSettings.gaz;
-	userExp = allSettings.experimentateur;
+	gasExp = allSettings.gas;
+	userExp = allSettings.user;
 
 	StrCalo = settings->CaloEntete.c_str();
 	StrSurnom = userExp.surnom.c_str();
@@ -82,7 +82,7 @@ BOOL TabGeneral::OnInitDialog()
 	m_GasIndex = -1;
 	for (size_t i = 0; i < gasArray.size(); i++)
 	{
-		if (gasArray[i].nom == allSettings.gaz.nom)
+		if (gasArray[i].nom == allSettings.gas.nom)
 		{
 			m_GasIndex = i;
 			break;
@@ -94,7 +94,7 @@ BOOL TabGeneral::OnInitDialog()
 	m_UserIndex = -1;
 	for (size_t i = 0;  i< userArray.size(); i++)
 	{
-		if (userArray[i].surnom == allSettings.experimentateur.surnom)
+		if (userArray[i].surnom == allSettings.user.surnom)
 		{
 			m_UserIndex = i;
 			break;
@@ -233,24 +233,24 @@ void TabGeneral::Reinitialisation(void)
 	m_SampleName = allSettings.nom_echantillon.c_str();
 	m_ExperimentTemperature = allSettings.temperature_experience;
 
-	gasExp = allSettings.gaz;
+	gasExp = allSettings.gas;
 	// remettre le bon index du gaz
 	m_GasIndex = -1;
 	for (unsigned int i = 0; i<gasArray.size(); i++)
 	{
-		if (gasArray[i].nom == allSettings.gaz.nom)
+		if (gasArray[i].nom == allSettings.gas.nom)
 		{
 			m_GasIndex = i;
 			break;
 		}
 	}
 
-	userExp = allSettings.experimentateur;
+	userExp = allSettings.user;
 	// remettre le bon index de l'expériementateur
 	m_UserIndex = -1;
 	for (unsigned int i = 0; i<userArray.size(); i++)
 	{
-		if (userArray[i].surnom == allSettings.experimentateur.surnom)
+		if (userArray[i].surnom == allSettings.user.surnom)
 		{
 			m_UserIndex = i;
 			break;
@@ -271,9 +271,9 @@ void TabGeneral::WriteData()
 	allSettings.chemin = m_Path.GetBuffer();
 	allSettings.commentaires = m_Comments.GetBuffer();
 	allSettings.date_experience = experimentDate;
-	allSettings.experimentateur = userExp;
+	allSettings.user = userExp;
 	allSettings.fichier = m_FileName.GetBuffer();
-	allSettings.gaz = gasExp;
+	allSettings.gas = gasExp;
 	allSettings.masse_echantillon = m_SampleMass;
 	allSettings.nom_echantillon = m_SampleName.GetBuffer();
 	allSettings.temperature_experience = m_ExperimentTemperature;

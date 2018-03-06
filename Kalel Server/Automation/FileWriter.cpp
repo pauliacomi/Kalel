@@ -93,9 +93,9 @@ bool FileWriter::EnteteCSVCreate(const ExperimentSettings &expSettings, const Ma
 * Opens the FileWriter file for the first time and stores its link in the fileStream std::ofstream
 * Also writes columns in the CSV
 * Inputs: 
-*		const Donnees_General &general:		Reference to the general data to be checked
+*		const data_general &general:		Reference to the general data to be checked
 ***********************************************************************/
-bool FileWriter::FileMeasurementCreate(const Donnees_General &general)
+bool FileWriter::FileMeasurementCreate(const data_general &general)
 {
 	std::wostringstream stream;
 
@@ -124,7 +124,7 @@ bool FileWriter::FileMeasurementCreate(const Donnees_General &general)
 *		Reference to the experimentSettings which generates the entete
 *		bool valveOpen6: records if valve number 6 is open or not
 ***********************************************************************/
-void FileWriter::FileMeasurementRecord(const Donnees_General &general, const ExperimentData &data, const ExperimentStatus &status, bool valveOpen6)
+void FileWriter::FileMeasurementRecord(const data_general &general, const ExperimentData &data, const ExperimentStatus &status, bool valveOpen6)
 {
 	std::wostringstream stream;
 	char char_resultat_calo[20];
@@ -180,10 +180,10 @@ std::wstring FileWriter::EnteteBase(bool csv, int experimentType)
 * Writes the settings from the general tab
 * Inputs:
 *       bool csv: Ask for a comma separated value format if true
-*		const Donnees_General &general:		Reference to the general data to be written
+*		const data_general &general:		Reference to the general data to be written
 *		std::wstring caloName: name of the calorimeter
 ***********************************************************************/
-std::wstring FileWriter::EnteteGeneral(bool csv, const Donnees_General &general, std::wstring caloName)
+std::wstring FileWriter::EnteteGeneral(bool csv, const data_general &general, std::wstring caloName)
 {
 	std::wstring divider;
 	if (csv)
@@ -193,9 +193,9 @@ std::wstring FileWriter::EnteteGeneral(bool csv, const Donnees_General &general,
 
 	std::wostringstream text;
 
-	text << L"Experimentateur"				<< divider		<< general.experimentateur.nom								<< std::endl;
+	text << L"Experimentateur"				<< divider		<< general.user.nom								<< std::endl;
 	text << L"Date"							<< divider		<< general.date_experience									<< std::endl;
-	text << L"Gaz"							<< divider		<< general.gaz.symbole										<< std::endl;
+	text << L"Gaz"							<< divider		<< general.gas.symbole										<< std::endl;
 	text << L"Echantillon"					<< divider		<< general.nom_echantillon									<< std::endl;
 	text << L"Masse"						<< divider		<< general.masse_echantillon		<< divider << L"g"		<< std::endl;
 	text << L"Température de l'expérience"	<< divider		<< general.temperature_experience	<< divider << L"°C"		<< std::endl;
@@ -212,9 +212,9 @@ std::wstring FileWriter::EnteteGeneral(bool csv, const Donnees_General &general,
 * Writes the settings from the diverse tab
 * Inputs:
 *       bool csv: Ask for a comma separated value format if true
-*		const Donnees_Divers &divers:	Reference to the diverse data to be written
+*		const data_other &divers:	Reference to the diverse data to be written
 ***********************************************************************/
-std::wstring FileWriter::EnteteDivers(bool csv, const Donnees_Divers &divers)
+std::wstring FileWriter::EnteteDivers(bool csv, const data_other &divers)
 {
 	std::wstring divider;
 	if (csv)
@@ -224,9 +224,9 @@ std::wstring FileWriter::EnteteDivers(bool csv, const Donnees_Divers &divers)
 
 	std::wostringstream text;
 
-	text << L"Numéro de Cellule"			<< divider		<< divers.cellule.numero									<< std::endl;
-	text << L"Volume du calo"				<< divider		<< divers.cellule.volume_calo		<< divider << "cm3"		<< std::endl;
-	text << L"Volume total"					<< divider		<< divers.cellule.volume_total		<< divider << "cm3"		<< std::endl;
+	text << L"Numéro de Cellule"			<< divider		<< divers.cell.numero									<< std::endl;
+	text << L"Volume du calo"				<< divider		<< divers.cell.volume_calo		<< divider << "cm3"		<< std::endl;
+	text << L"Volume total"					<< divider		<< divers.cell.volume_total		<< divider << "cm3"		<< std::endl;
 	text << L"Baseline time"				<< divider		<< divers.temps_ligne_base			<< divider << "min"		<< std::endl;
 	text << L"Experiment end vacuum"		<< divider		<< divers.mise_sous_vide_fin_experience						<< std::endl;
 	text << L"Vacuum time"					<< divider		<< divers.temps_vide				<< divider << "min"		<< std::endl;
@@ -241,9 +241,9 @@ std::wstring FileWriter::EnteteDivers(bool csv, const Donnees_Divers &divers)
 * Writes the adsorption steps
 * Inputs:
 *       bool csv: Ask for a comma separated value format if true
-*		const std::vector<Donnees_Doses> &doses:	Reference to the adsorption data to be written
+*		const std::vector<data_adsorption> &doses:	Reference to the adsorption data to be written
 ***********************************************************************/
-std::wstring FileWriter::EnteteAdsorption(bool csv, const std::vector<Donnees_Doses> &doses)
+std::wstring FileWriter::EnteteAdsorption(bool csv, const std::vector<data_adsorption> &doses)
 {
 	std::wstring divider;
 	if (csv)
@@ -273,9 +273,9 @@ std::wstring FileWriter::EnteteAdsorption(bool csv, const std::vector<Donnees_Do
 * Writes the desorption steps
 * Inputs:
 *       bool csv: Ask for a comma separated value format if true
-*		const std::vector<Donnees_Desorption> &desorption:	Reference to the desorpiton data to be written
+*		const std::vector<data_desorption> &desorption:	Reference to the desorpiton data to be written
 ***********************************************************************/
-std::wstring FileWriter::EnteteDesorption(bool csv, const std::vector<Donnees_Desorption> &desorption)
+std::wstring FileWriter::EnteteDesorption(bool csv, const std::vector<data_desorption> &desorption)
 {
 	std::wstring divider;
 	if (csv)
@@ -404,10 +404,10 @@ void FileWriter::RecordDataChange(bool csv, const ExperimentSettings& newSetting
 * Returns the full path and title of the file to be written
 * Inputs:
 *       std::wstring extension: Extension you want the file to have
-*		const Donnees_General &general:		Reference to the general data to be checked
+*		const data_general &general:		Reference to the general data to be checked
 *       bool entete: specify true to get the entete std::string or false for the regular file
 ***********************************************************************/
-std::wstring FileWriter::BuildFileName(std::wstring extension, const Donnees_General &general, bool entete, bool error)
+std::wstring FileWriter::BuildFileName(std::wstring extension, const data_general &general, bool entete, bool error)
 {
 	// Create buffer
 	wchar_t fileNameBuffer[255];
@@ -424,19 +424,19 @@ std::wstring FileWriter::BuildFileName(std::wstring extension, const Donnees_Gen
 	}
 
 	// Check if the user field is empty
-	if (general.experimentateur.surnom.empty())
+	if (general.user.surnom.empty())
 	{
 		wprintf_s(fileNameBuffer, "%s/Nouveau_Fichier", general.chemin.c_str());
 	}
 	else
 	{
 		// Check if the user directory exists, if not, create it
-		wprintf_s(fileNameBuffer, "%s/%s", general.chemin.c_str(), general.experimentateur.surnom.c_str());
+		wprintf_s(fileNameBuffer, "%s/%s", general.chemin.c_str(), general.user.surnom.c_str());
 		if (!fs::create_directory(fileNameBuffer)) {
 			fs::create_directory(fileNameBuffer);
 		}
 		// Check if the sample directory exists
-		wprintf_s(fileNameBuffer, "%s/%s/%s", general.chemin.c_str(), general.experimentateur.surnom.c_str(),
+		wprintf_s(fileNameBuffer, "%s/%s/%s", general.chemin.c_str(), general.user.surnom.c_str(),
 			general.nom_echantillon.c_str());
 	}
 
