@@ -151,11 +151,6 @@ BOOL TabGeneral::OnInitDialog()
 	// Finish
 	UpdateData(FALSE);
 
-	if (!PathIsDirectory(m_Path))
-	{
-		AfxMessageBox(ERROR_PATHUNDEF, MB_ICONERROR | MB_OK);
-	}
-
 	return TRUE;  // return TRUE unless you set the focus to a control
 }
 
@@ -187,15 +182,8 @@ void TabGeneral::OnCancel()
 
 void TabGeneral::OnOK()
 {
-	if (!PathIsDirectory(m_Path))
-	{
-		AfxMessageBox(ERROR_PATHUNDEF, MB_ICONERROR | MB_OK);
-	}
-	else
-	{
-		WriteData();
-		CMFCPropertyPage::OnOK();
-	}
+	WriteData();
+	CMFCPropertyPage::OnOK();
 }
 
 
@@ -287,7 +275,6 @@ void TabGeneral::GreyOut(BOOL active)
 
 	GetDlgItem(IDC_BUTTON_EXPERIMENTATEUR)->EnableWindow(active);
 	GetDlgItem(IDC_BUTTON_GAZ)->EnableWindow(active);
-	GetDlgItem(IDC_PARCOURIR_DOSSIER)->EnableWindow(active);
 
 	GetDlgItem(IDC_NOM_FICHIER)->EnableWindow(active);
 	GetDlgItem(IDC_NOM_CHEMIN)->EnableWindow(active);
@@ -320,7 +307,6 @@ BEGIN_MESSAGE_MAP(TabGeneral, CMFCPropertyPage)
 	ON_EN_CHANGE(IDC_NOM_ECHANTILLON, &TabGeneral::OnEnChangeNomEchantillon)
 	ON_BN_CLICKED(IDC_BUTTON_EXPERIMENTATEUR, &TabGeneral::OnBnClickedUserMenu)
 	ON_BN_CLICKED(IDC_BUTTON_GAZ, &TabGeneral::OnBnClickedGasMenu)
-	ON_BN_CLICKED(IDC_PARCOURIR_DOSSIER, &TabGeneral::OnBnClickedChangeFolder)
 END_MESSAGE_MAP()
 
 
@@ -406,7 +392,7 @@ void TabGeneral::OnBnClickedGasMenu()
 	}
 }
 
-
+// TODO : not used
 void TabGeneral::OnBnClickedChangeFolder()
 {
 	// Create class

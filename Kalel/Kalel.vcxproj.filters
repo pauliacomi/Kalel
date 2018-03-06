@@ -40,17 +40,11 @@
     <Filter Include="Source Files\GUI\Dialogs\Experiment Parameters">
       <UniqueIdentifier>{0e8e0212-cbd1-445a-af00-cbec1019fcf3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\GUI\Dialogs\Connection Port">
-      <UniqueIdentifier>{c60397cb-a9fb-48bf-8ba0-4007cf653a55}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\GUI\Dialogs">
       <UniqueIdentifier>{2cad08cf-60a9-49ee-b00e-540950be69bb}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\GUI\Dialogs\Experimental Parameters">
       <UniqueIdentifier>{0d2de8f3-e9b8-41a6-8110-e7f1365de972}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\GUI\Dialogs\Connection Port">
-      <UniqueIdentifier>{ee1b43fb-d5e8-4df2-a9dd-ae3f1c4db1fd}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Utils\XML">
       <UniqueIdentifier>{8ba33742-ab29-4bfd-a2ee-4e0d241affa6}</UniqueIdentifier>
@@ -114,6 +108,9 @@
     </Filter>
     <Filter Include="Header Files\GUI\Dialogs\Type Experiment">
       <UniqueIdentifier>{5c3056c0-ad1c-406a-a4f0-80b00336239b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GUI\Dialogs\Machine Parameters">
+      <UniqueIdentifier>{c60397cb-a9fb-48bf-8ba0-4007cf653a55}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -212,9 +209,6 @@
     </ClInclude>
     <ClInclude Include="ResourceDialogExperimentSettings.h">
       <Filter>Header Files\Resources\DialogBoxes</Filter>
-    </ClInclude>
-    <ClInclude Include="DialogConnectionPort.h">
-      <Filter>Header Files\GUI\Dialogs\Connection Port</Filter>
     </ClInclude>
     <ClInclude Include="..\Kalel Shared\Com Classes\ExperimentData.h">
       <Filter>Header Files\Commmon\Com Classes</Filter>
@@ -318,6 +312,9 @@
     <ClInclude Include="..\Kalel Shared\Com Classes\ExperimentStatus.h">
       <Filter>Header Files\Commmon\Com Classes</Filter>
     </ClInclude>
+    <ClInclude Include="DialogConnectionPort.h">
+      <Filter>Header Files\GUI\Dialogs\Machine Parameters</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainFrm.cpp">
@@ -401,11 +398,8 @@
     <ClCompile Include="DialogTypeExperiment.cpp">
       <Filter>Source Files\GUI\Dialogs</Filter>
     </ClCompile>
-    <ClCompile Include="DialogMachineParameters.cpp">
-      <Filter>Source Files\GUI\Dialogs</Filter>
-    </ClCompile>
     <ClCompile Include="DialogConnectionPort.cpp">
-      <Filter>Source Files\GUI\Dialogs\Connection Port</Filter>
+      <Filter>Source Files\GUI\Dialogs\Machine Parameters</Filter>
     </ClCompile>
     <ClCompile Include="..\Kalel Shared\Netcode\base64.cpp">
       <Filter>Source Files\Commmon\Netcode</Filter>
@@ -457,6 +451,9 @@
     </ClCompile>
     <ClCompile Include="..\Kalel Shared\Com Classes\ExperimentStatus.cpp">
       <Filter>Source Files\Commmon\Com Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="DialogMachineParameters.cpp">
+      <Filter>Source Files\GUI\Dialogs\Machine Parameters</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
