@@ -91,7 +91,7 @@ void CommHandler::Sync(bool initialSync, std::string fromTimeES, std::string fro
 		else
 		{
 			localExperimentSettingsTime = fromTimeES;
-			localExperimentStatus = fromTimeESt;
+			localExperimentStatusTime = fromTimeESt;
 			localMachineSettingsTime = fromTimeMS;
 			localControlStateTime = fromTimeCS;
 
@@ -465,6 +465,7 @@ unsigned CommHandler::Sync_req(http_request* r) {
 
 	r->params_.emplace("MS", localMachineSettingsTime);
 	r->params_.emplace("ES", localExperimentSettingsTime);
+	r->params_.emplace("ESt", localExperimentStatusTime);
 	r->params_.emplace("CS", localControlStateTime);
 
 	return 0;
@@ -496,6 +497,9 @@ unsigned CommHandler::Sync_resp(http_response* r) {
 		}
 		if (j["ES"] == false) {
 			GetExperimentSettings();
+		}
+		if (j["ESt"] == false) {
+			GetExperimentStatus();
 		}
 		if (j["CS"] == false) {
 			GetControlInstrumentState();

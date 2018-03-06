@@ -134,46 +134,39 @@ void Kalel::Sync(http_request* req, http_response* resp)
 	{
 		if (!req->params_.empty())
 		{
-			bool timeMS;
-			bool timeES;
-			bool timeCS;
+			bool timeMS = false;					// MachineSettings
+			bool timeES = false;					// ExperimentSettings
+			bool timeESt = false;					// ExperimentStatus
+			bool timeCS = false;					// ControlState
 
 			// MachineSettings
-			if (req->params_.at("MS").empty()) {
-				timeMS = false;
-			}
-			else {
+			if (!req->params_.at("MS").empty()) {
 				if (timeh::StringToTimePoint(req->params_.at("MS")) > storageVectors.machineSettingsChanged)
 					timeMS = true;
-				else
-					timeMS = false;
 			}
 
 			// ExperimentSettings
-			if (req->params_.at("ES").empty()) {
-				timeES = false;
-			}
-			else {
+			if (!req->params_.at("ES").empty()) {
 				if (timeh::StringToTimePoint(req->params_.at("ES")) > storageVectors.experimentSettingsChanged)
 					timeES = true;
-				else
-					timeES = false;
+			}
+
+			// ExperimentState
+			if (!req->params_.at("ESt").empty()) {
+				if (timeh::StringToTimePoint(req->params_.at("ESt")) > storageVectors.experimentSettingsChanged)
+					timeES = true;
 			}
 
 			// ControlState
-			if (req->params_.at("CS").empty()) {
-				timeCS = false;
-			}
-			else {
+			if (!req->params_.at("CS").empty()) {
 				if (timeh::StringToTimePoint(req->params_.at("CS")) > storageVectors.controlStateChanged)
 					timeCS = true;
-				else
-					timeCS = false;
 			}
 
 			json j2;
 			j2["MS"] = timeMS;
 			j2["ES"] = timeES;
+			j2["ESt"] = timeESt;
 			j2["CS"] = timeCS;
 
 			resp->status_		= http::responses::ok;
@@ -261,6 +254,7 @@ void Kalel::ExperimentSettingsSync(http_request* req, http_response* resp)
 
 			// Create new experiment settings
 			storageVectors.setnewExperimentSettings(std::make_shared<ExperimentSettings>(j));
+
 			// Ensure all changes
 			threadManager.SetModifiedData();
 
@@ -345,8 +339,7 @@ void Kalel::InstrumentStateSync(http_request* req, http_response* resp)
 
 			threadManager.ThreadManualAction(instrumentType, instrumentNumber, instrumentState);		// TODO: Should have a better way
 
-			ControlInstrumentState instrumentStates(threadManager.GetInstrumentStates());
-			json j = instrumentStates;
+			json j = threadManager.GetInstrumentStates();
 			
 			resp->status_ = http::responses::ok;
 			resp->content_type_ = http::mimetype::appjson;

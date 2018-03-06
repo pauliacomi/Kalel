@@ -70,7 +70,7 @@ private:
 	std::string localLogsTime;								// Start time requested for logs 
 	std::string localReqTime;								// Start time requested for requests 
 	std::string localExperimentSettingsTime;				// Start time requested for experiment data 
-	std::string	localExperimentStatus;						// Start time requested for expeirment status
+	std::string	localExperimentStatusTime;					// Start time requested for expeirment status
 	std::string localMachineSettingsTime;					// Start time requested for logs 
 	std::string localControlStateTime;						// Start time requested for requests 
 
