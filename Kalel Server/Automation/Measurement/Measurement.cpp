@@ -93,11 +93,8 @@ void Measurement::Execution()
 		// Write data
 		if (storage.experimentStatus->experimentRecording)												// If we started recording
 		{
-			if (controls.timerMeasurement.TimeSeconds() > T_BETWEEN_RECORD)							// If enough time between measurements
+			if (controls.timerMeasurement.TimeSeconds() > T_BETWEEN_RECORD)								// If enough time between measurements
 			{
-				// Record times
-				storage.experimentStatus->timeToEquilibrateCurrent = controls.timerWaiting.TimeSeconds();		// Save the waiting time if it exists
-
 				// Save the data to the file
 				bool err = controls.fileWriter->FileMeasurementRecord(
 					timeh::TimePointToWString(measurementTime),

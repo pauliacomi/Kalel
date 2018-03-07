@@ -43,8 +43,8 @@ public:
 
 	// Time
 	std::atomic_ullong timeStart;									// When the experiment started
+	std::atomic_ullong timeEquilibrationStart;						// Time equilibration started
 	std::atomic<double> timeToEquilibrate;							// The amount of time that the waiting + recording functionality will run before returning to an active state
-	std::atomic<double> timeToEquilibrateCurrent;					// The current time of waiting
 	
 	// Counters
 	std::atomic_int injectionAttemptCounter;						// Counter for the injections
@@ -66,25 +66,25 @@ public:
 	///******************************************************************************************************************
 
 
-	bool GetexperimentInProgress()			const;					// Boolean stating whether the experiment is started or not
-	bool GetexperimentRecording()			const;					// Boolean stating whether the data is being recorded at each measurement
-	bool GetexperimentWaiting()				const;					// Boolean stating the experiment is currently waiting
-	bool GetexperimentCommandsRequested()	const;					// Boolean stating that any automation is requested (manual,automatic etc)
-	int GetexperimentStage()				const;					// Current experiment stage, the main part of the program (verification, equilibration, adsorption, desorption etc.)
-	int GetverificationStep()				const;					// The security check steps
-	int GetexperimentStepStatus()			const;					// Current step status, for each step this can be STARTING, ENDING or IN_PROGRESS
-	int GetexperimentSubstepStage()			const;					// Current dose substep, can be at injection, equilibration etc
-	int GetexperimentDose()					const;					// Current experiment dose that is currently underway (ex: 2nd dose of adsorption step 1)
-	int GetexperimentPreviousStage()		const;					// Previous experiment stage
-	unsigned long long GettimeStart()		const;					// When the experiment started
-	double GettimeToEquilibrate()			const;					// The amount of time that the waiting + recording functionality will run before returning to an active state
-	double GettimeToEquilibrateCurrent()	const;					// The current time of waiting
-	int GetinjectionAttemptCounter()		const;					// Counter for the injections
-	int GetadsorptionCounter()				const;					// Counter for the number of adsorption settings (small, medium, large etc) inputted by the user, starts at 0
-	int GetdesorptionCounter()				const;					// Counter for the number of desorption settings (small, medium, large etc) inputted by the user, starts at 0
-	double GetpressureInitial()				const;					// Pressure set as an initial pressure in injections
-	double GetpressureFinal()				const;					// Pressure set as the final pressure in injections
-	double GetpressureHighOld()				const;					// Previous pressure stored for injection checks
+	bool GetexperimentInProgress()					const;			// Boolean stating whether the experiment is started or not
+	bool GetexperimentRecording()					const;			// Boolean stating whether the data is being recorded at each measurement
+	bool GetexperimentWaiting()						const;			// Boolean stating the experiment is currently waiting
+	bool GetexperimentCommandsRequested()			const;			// Boolean stating that any automation is requested (manual,automatic etc)
+	int GetexperimentStage()						const;			// Current experiment stage, the main part of the program (verification, equilibration, adsorption, desorption etc.)
+	int GetverificationStep()						const;			// The security check steps
+	int GetexperimentStepStatus()					const;			// Current step status, for each step this can be STARTING, ENDING or IN_PROGRESS
+	int GetexperimentSubstepStage()					const;			// Current dose substep, can be at injection, equilibration etc
+	int GetexperimentDose()							const;			// Current experiment dose that is currently underway (ex: 2nd dose of adsorption step 1)
+	int GetexperimentPreviousStage()				const;			// Previous experiment stage
+	unsigned long long GettimeStart()				const;			// When the experiment started
+	unsigned long long GettimeEquilibrateStart()	const;			// The current time of waiting
+	double GettimeToEquilibrate()					const;			// The amount of time that the waiting + recording functionality will run before returning to an active state
+	int GetinjectionAttemptCounter()				const;			// Counter for the injections
+	int GetadsorptionCounter()						const;			// Counter for the number of adsorption settings (small, medium, large etc) inputted by the user, starts at 0
+	int GetdesorptionCounter()						const;			// Counter for the number of desorption settings (small, medium, large etc) inputted by the user, starts at 0
+	double GetpressureInitial()						const;			// Pressure set as an initial pressure in injections
+	double GetpressureFinal()						const;			// Pressure set as the final pressure in injections
+	double GetpressureHighOld()						const;			// Previous pressure stored for injection checks
 
 	void SetexperimentInProgress(bool a)						;
 	void SetexperimentRecording(bool a)							;
@@ -97,8 +97,8 @@ public:
 	void SetexperimentDose(int a)								;
 	void SetexperimentPreviousStage(int a)						;
 	void SettimeStart(unsigned long long  a)					;
+	void SettimeEquilibrateStart(unsigned long long a)			;
 	void SettimeToEquilibrate(double a)							;
-	void SettimeToEquilibrateCurrent(double a)					;
 	void SetinjectionAttemptCounter(int a)						;
 	void SetadsorptionCounter(int a)							;
 	void SetdesorptionCounter(int a)							;

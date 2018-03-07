@@ -33,8 +33,8 @@ ExperimentStatus::ExperimentStatus(const ExperimentStatus & p)
 	verificationStep				= p.GetverificationStep();
 
 	timeStart						= p.GettimeStart();
+	timeEquilibrationStart			= p.GettimeEquilibrateStart();
 	timeToEquilibrate				= p.GettimeToEquilibrate();
-	timeToEquilibrateCurrent		= p.GettimeToEquilibrateCurrent();
 
 	injectionAttemptCounter			= p.GetinjectionAttemptCounter();
 	adsorptionCounter				= p.GetadsorptionCounter();
@@ -61,8 +61,8 @@ void ExperimentStatus::ResetData()
 	verificationStep = STEP_VERIFICATIONS_UNDEF;
 
 	timeStart = 0;
+	timeEquilibrationStart = 0;
 	timeToEquilibrate = 0.f;
-	timeToEquilibrateCurrent = 0.f;
 
 	injectionAttemptCounter = 0;
 	adsorptionCounter = 0;
@@ -94,8 +94,8 @@ ExperimentStatus & ExperimentStatus::operator=(const ExperimentStatus * p)
 		verificationStep = p->GetverificationStep();
 
 		timeStart = p->GettimeStart();
+		timeEquilibrationStart = p->GettimeEquilibrateStart();
 		timeToEquilibrate = p->GettimeToEquilibrate();
-		timeToEquilibrateCurrent = p->GettimeToEquilibrateCurrent();
 
 		injectionAttemptCounter = p->GetinjectionAttemptCounter();
 		adsorptionCounter = p->GetadsorptionCounter();
@@ -121,8 +121,8 @@ int ExperimentStatus::GetexperimentSubstepStage()						const { return experiment
 int ExperimentStatus::GetexperimentDose()								const { return experimentDose						; }
 int ExperimentStatus::GetexperimentPreviousStage()						const { return experimentPreviousStage				; }
 unsigned long long ExperimentStatus::GettimeStart()						const { return timeStart							; }
+unsigned long long ExperimentStatus::GettimeEquilibrateStart()			const { return timeEquilibrationStart				; }
 double ExperimentStatus::GettimeToEquilibrate()							const { return timeToEquilibrate					; }
-double ExperimentStatus::GettimeToEquilibrateCurrent()					const { return timeToEquilibrateCurrent				; }
 int ExperimentStatus::GetinjectionAttemptCounter()						const { return injectionAttemptCounter				; }
 int ExperimentStatus::GetadsorptionCounter()							const { return adsorptionCounter					; }
 int ExperimentStatus::GetdesorptionCounter()							const { return desorptionCounter					; }
@@ -142,8 +142,8 @@ void ExperimentStatus::SetexperimentSubstepStage(int a)						{ experimentSubstep
 void ExperimentStatus::SetexperimentDose(int a)								{ experimentDose				= a ; }
 void ExperimentStatus::SetexperimentPreviousStage(int a)					{ experimentPreviousStage		= a ; }
 void ExperimentStatus::SettimeStart(unsigned long long  a)					{ timeStart						= a ; }
+void ExperimentStatus::SettimeEquilibrateStart(unsigned long long a)		{ timeEquilibrationStart		= a ; }
 void ExperimentStatus::SettimeToEquilibrate(double a)						{ timeToEquilibrate				= a ; }
-void ExperimentStatus::SettimeToEquilibrateCurrent(double a)				{ timeToEquilibrateCurrent		= a ; }
 void ExperimentStatus::SetinjectionAttemptCounter(int a)					{ injectionAttemptCounter		= a ; }
 void ExperimentStatus::SetadsorptionCounter(int a)							{ adsorptionCounter				= a ; }
 void ExperimentStatus::SetdesorptionCounter(int a)							{ desorptionCounter				= a ; }

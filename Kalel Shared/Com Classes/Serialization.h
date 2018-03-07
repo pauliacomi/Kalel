@@ -226,7 +226,7 @@ inline void to_json(nlohmann::json &j, const ExperimentStatus &e) {
 	j[	"EpS"	]	= e.GetexperimentPreviousStage				();
 	j[	"tS"	]	= e.GettimeStart							();
 	j[	"tEq"	]	= e.GettimeToEquilibrate					();
-	j[	"tEqC"	]	= e.GettimeToEquilibrateCurrent				();
+	j[	"tEqS"	]	= e.GettimeEquilibrateStart					();
 	j[	"CIa"	]	= e.GetinjectionAttemptCounter				();
 	j[	"CA"	]	= e.GetadsorptionCounter					();
 	j[	"CD"	]	= e.GetdesorptionCounter					();
@@ -249,7 +249,7 @@ inline void from_json(const nlohmann::json &j, ExperimentStatus &e) {
 	e.SetexperimentPreviousStage							( j[	"EpS"	]);
 	e.SettimeStart											( j[	"tS"	]);
 	e.SettimeToEquilibrate									( j[	"tEq"	]);
-	e.SettimeToEquilibrateCurrent							( j[	"tEqC"	]);
+	e.SettimeEquilibrateStart								( j[	"tEqS"	]);
 	e.SetinjectionAttemptCounter							( j[	"CIa"	]);
 	e.SetadsorptionCounter									( j[	"CA"	]);
 	e.SetdesorptionCounter									( j[	"CD"	]);

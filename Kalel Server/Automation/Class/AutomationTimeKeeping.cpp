@@ -10,6 +10,8 @@ void Automation::WaitMinutes(int nbminutes)
 // Wait a number of seconds
 void Automation::WaitSeconds(int nbsecondes)
 {
+	// Record times
+	storage.experimentStatus->timeEquilibrationStart = timeh::TimePointToULLong(timeh::NowTime());		// Save the waiting start time
 	storage.experimentStatus->timeToEquilibrate = nbsecondes;
 	storage.experimentStatus->experimentWaiting = true;
 	controls.timerWaiting.Start();
