@@ -3,6 +3,7 @@
 #include "ExperimentHelperClasses.h"
 
 #include <vector>
+#include <chrono>	// for timepoint
 
 class ExperimentSettings
 {
@@ -27,6 +28,11 @@ public:
 	// Variables
 	//
 
+	///*******************
+	///		Sync tools
+	///*******************
+
+	std::chrono::system_clock::time_point timeChanged;				// Time when experiment settings changed
 
 public:
 	int experimentType;					// Experiment type

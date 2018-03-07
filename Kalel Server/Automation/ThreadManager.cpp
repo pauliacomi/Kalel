@@ -146,22 +146,6 @@ unsigned ThreadManager::ResetAutomation()
 }
 
 
-unsigned ThreadManager::SetModifiedData()
-{
-	if (automation != nullptr)
-	{
-		// Signal the atomic bool as modified
-		std::unique_lock<std::mutex> lk(storage.automationMutex);	// mutex for thread notification
-		automation->eventSettingsModified = true;
-		storage.automationControl.notify_all();
-	}
-	else
-	{
-		return 1;
-	}
-	return 0;
-}
-
 unsigned ThreadManager::SetUserContinue()
 {
 	if (automation != nullptr)

@@ -102,26 +102,11 @@ void Automation::Execution()
 		std::unique_lock<std::mutex> lock(storage.automationMutex);
 		auto notified = storage.automationControl.wait_for(lock, std::chrono::milliseconds(T_BETWEEN_AUTOMATION), [&] () 
 		{
-			return (eventShutdown || eventPause || eventResume || eventReset || eventUserInput || eventSettingsModified);
+			return (eventShutdown || eventPause || eventResume || eventReset || eventUserInput);
 		});
 
 		if (notified)
 		{
-			// Get the expermient settings if they are modified
-			if (eventSettingsModified)						
-			{
-				eventSettingsModified = false;
-
-				// Record change of experiment settings in output files
-				if (storage.experimentStatus->experimentInProgress == true) {
-					controls.fileWriter->RecordDataChange(false, *storage.newExperimentSettings, *storage.experimentSettings, *storage.experimentStatus, *storage.currentData);	// non-CSV
-					controls.fileWriter->RecordDataChange(true, *storage.newExperimentSettings, *storage.experimentSettings, *storage.experimentStatus, *storage.currentData);		// CSV
-				}
-
-				storage.setExperimentSettings(storage.newExperimentSettings);
-			}
-
-
 			if (eventShutdown)							// Complete stop of thread
 			{
 				shutdownReason = STOP_COMPLETE;

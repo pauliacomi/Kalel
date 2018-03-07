@@ -44,7 +44,6 @@ public:
 	// Machine Settings
 	//******************************************************************************************
 
-	std::chrono::system_clock::time_point machineSettingsChanged;												// Time when machine settings changed
 	std::mutex machineSettingsMutex;
 	std::shared_ptr<MachineSettings> machineSettings;															// The machine settings are here
 
@@ -52,51 +51,38 @@ public:
 	void setmachineSettings(std::shared_ptr<MachineSettings> i) {
 		std::unique_lock<std::mutex> lock(machineSettingsMutex);
 		machineSettings = i;
-		machineSettingsChanged = timeh::NowTime();
-		lock.unlock();
 	}
 
-	//******************************************************************************************
-	// Control State
-	//******************************************************************************************
-	
-	std::chrono::system_clock::time_point controlStateChanged;													// Time when control state changed
 	
 	//******************************************************************************************
 	// Experiment Status
 	//******************************************************************************************
 
-	std::chrono::system_clock::time_point experimentStatusChanged;												// Time when experiment status changed
 	std::shared_ptr<ExperimentStatus> experimentStatus;
 
 	//******************************************************************************************
 	// Experiment Settings
 	//******************************************************************************************
 
-	std::chrono::system_clock::time_point experimentSettingsChanged;											// Time when experiment settings changed
 	std::mutex experimentSettingsMutex;																			// Synchronisation class, should be used whenever there are writes
 	std::shared_ptr<ExperimentSettings> experimentSettings;														// The experiment settings are here
-	std::mutex newexperimentSettingsMutex;																		// Synchronisation class, should be used whenever there are writes
-	std::shared_ptr<ExperimentSettings> newExperimentSettings;													// The new experiment settings
 
 public:
 	void setExperimentSettings(std::shared_ptr<ExperimentSettings> i) {
 		std::unique_lock<std::mutex> lock(experimentSettingsMutex);
 		experimentSettings = i;
-		experimentSettingsChanged = timeh::NowTime();
 	}
 
 	void resetExperimentSettings() {
 		std::unique_lock<std::mutex> lock(experimentSettingsMutex);
 		experimentSettings->ResetData();
-		experimentSettingsChanged = timeh::NowTime();
 	}
 
-	void setnewExperimentSettings(std::shared_ptr<ExperimentSettings> i) {
-		std::unique_lock<std::mutex> lock(newexperimentSettingsMutex);
-		newExperimentSettings = i;
-	}
+	//******************************************************************************************
+	// Control State
+	//******************************************************************************************
 
+	std::chrono::system_clock::time_point controlStateChanged;													// Time when control state changed
 
 	//******************************************************************************************
 	// Automation control
@@ -111,8 +97,15 @@ public:
 inline Storage::Storage(void)
 {
 	//
-	// Populate Machine Settings
+	// Make classes
 	machineSettings = std::make_shared<MachineSettings>();
+	currentData = std::make_shared<ExperimentData>();
+	experimentStatus = std::make_shared<ExperimentStatus>();
+	experimentSettings = std::make_shared<ExperimentSettings>();
+
+	// initialise control state times
+	controlStateChanged = timeh::NowTime();
+
 	//
 	// Check to see whether the parameters file has been created
 	if (!ParametersCheck())
@@ -124,19 +117,8 @@ inline Storage::Storage(void)
 		ParametersGet(*machineSettings);		// Or get it
 	}
 
-	currentData = std::make_shared<ExperimentData>();
-	experimentStatus = std::make_shared<ExperimentStatus>();
-	experimentSettings = std::make_shared<ExperimentSettings>();
-	newExperimentSettings = std::make_shared<ExperimentSettings>();
-
-	// initialise control state times
-	controlStateChanged = timeh::NowTime();
-	machineSettingsChanged = timeh::NowTime();
-	experimentSettingsChanged = timeh::NowTime();
-
 	// Set path
 	experimentSettings->dataGeneral.chemin = machineSettings->CheminFichierGeneral;
-	newExperimentSettings->dataGeneral.chemin = machineSettings->CheminFichierGeneral;
 }
 
 inline Storage::~Storage(void)

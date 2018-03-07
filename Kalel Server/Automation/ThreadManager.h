@@ -38,7 +38,6 @@ public:
 	unsigned ResumeAutomation();
 	unsigned PauseAutomation();
 	unsigned ResetAutomation();
-	unsigned SetModifiedData();
 	unsigned SetUserContinue();
 	unsigned ShutdownAutomation();
 

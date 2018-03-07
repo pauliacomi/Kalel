@@ -1,6 +1,8 @@
 #include "../Forcelib.h"
+
 #include "ExperimentSettings.h"
 
+#include "../timeHelpers.h"
 #include "../Resources/DefineStages.h"
 #include "../Resources/DefineText.h"
 
@@ -27,7 +29,8 @@ void ExperimentSettings::ResetData()
 
 void ExperimentSettings::ResetData(int initialAdsorptions, int initialDesorptions)
 {
-	//GUIhandle = NULL;
+	timeChanged = timeh::NowTime();
+
 	experimentType = EXPERIMENT_TYPE_UNDEF;
 
 	// General

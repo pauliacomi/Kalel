@@ -141,19 +141,19 @@ void Kalel::Sync(http_request* req, http_response* resp)
 
 			// MachineSettings
 			if (!req->params_.at("MS").empty()) {
-				if (timeh::StringToTimePoint(req->params_.at("MS")) > storageVectors.machineSettingsChanged)
+				if (timeh::StringToTimePoint(req->params_.at("MS")) > storageVectors.machineSettings->timeChanged)
 					timeMS = true;
 			}
 
 			// ExperimentSettings
 			if (!req->params_.at("ES").empty()) {
-				if (timeh::StringToTimePoint(req->params_.at("ES")) > storageVectors.experimentSettingsChanged)
+				if (timeh::StringToTimePoint(req->params_.at("ES")) > storageVectors.experimentSettings->timeChanged)
 					timeES = true;
 			}
 
 			// ExperimentState
 			if (!req->params_.at("ESt").empty()) {
-				if (timeh::StringToTimePoint(req->params_.at("ESt")) > storageVectors.experimentSettingsChanged)
+				if (timeh::StringToTimePoint(req->params_.at("ESt")) > storageVectors.experimentStatus->timeChanged)
 					timeES = true;
 			}
 
@@ -251,12 +251,19 @@ void Kalel::ExperimentSettingsSync(http_request* req, http_response* resp)
 
 			// Parse the input
 			auto j = json::parse(req->entity_.c_str());
+			auto newSettings = std::make_shared<ExperimentSettings>(j);
 
-			// Create new experiment settings
-			storageVectors.setnewExperimentSettings(std::make_shared<ExperimentSettings>(j));
+			// Create new experiment settings, logging change if experiment is running
+			if (storageVectors.experimentStatus->experimentInProgress == true) {
+				controlMechanisms.fileWriter->RecordDataChange(false, 
+					*newSettings, *storageVectors.experimentSettings,
+					*storageVectors.experimentStatus, *storageVectors.currentData);						// non-CSV
+				controlMechanisms.fileWriter->RecordDataChange(true,
+					*newSettings, *storageVectors.experimentSettings,
+					*storageVectors.experimentStatus, *storageVectors.currentData);						// CSV
+			}
 
-			// Ensure all changes
-			threadManager.SetModifiedData();
+			storageVectors.setExperimentSettings(newSettings);
 
 			resp->status_ = http::responses::ok;
 		}

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <atomic>
+#include <chrono>	// for timepoint
 
 class ExperimentStatus
 {
@@ -19,6 +20,12 @@ public:
 
 	// Overload equals function
 	ExperimentStatus & ExperimentStatus::operator=(const ExperimentStatus * p);
+
+	///*******************
+	///		Sync tools
+	///*******************
+	
+	std::chrono::system_clock::time_point timeChanged;				// Time when experiment status changed
 
 	///*******************
 	///		Global flags

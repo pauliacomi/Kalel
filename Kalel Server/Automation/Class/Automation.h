@@ -49,7 +49,6 @@ protected:
 	std::atomic_bool running = true;
 
 public:
-	std::atomic_bool eventSettingsModified = false;			// Atomic variable that can be set to let the thread know that there are new experiment settings 
 	std::atomic_bool sb_userContinue;						// Atomic variable 
 
 	std::atomic_bool eventShutdown = false;					// Bool for shutting down the thread

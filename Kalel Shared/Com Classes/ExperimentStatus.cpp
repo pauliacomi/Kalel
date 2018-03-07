@@ -1,7 +1,8 @@
-#include "ExperimentStatus.h"
 #include "../Forcelib.h"
+
 #include "ExperimentStatus.h"
 
+#include "../timeHelpers.h"
 #include "../Resources/DefineStages.h"
 
 ExperimentStatus::ExperimentStatus()
@@ -48,6 +49,8 @@ ExperimentStatus::ExperimentStatus(const ExperimentStatus & p)
 
 void ExperimentStatus::ResetData()
 {
+	timeChanged = timeh::NowTime();
+
 	experimentInProgress = false;
 	experimentRecording = false;
 	experimentWaiting = false;
