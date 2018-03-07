@@ -33,7 +33,6 @@ ExperimentStatus::ExperimentStatus(const ExperimentStatus & p)
 	verificationStep				= p.GetverificationStep();
 
 	timeStart						= p.GettimeStart();
-	timeElapsed						= p.GettimeElapsed();
 	timeToEquilibrate				= p.GettimeToEquilibrate();
 	timeToEquilibrateCurrent		= p.GettimeToEquilibrateCurrent();
 
@@ -62,7 +61,6 @@ void ExperimentStatus::ResetData()
 	verificationStep = STEP_VERIFICATIONS_UNDEF;
 
 	timeStart = 0;
-	timeElapsed = 0;
 	timeToEquilibrate = 0.f;
 	timeToEquilibrateCurrent = 0.f;
 
@@ -96,7 +94,6 @@ ExperimentStatus & ExperimentStatus::operator=(const ExperimentStatus * p)
 		verificationStep = p->GetverificationStep();
 
 		timeStart = p->GettimeStart();
-		timeElapsed = p->GettimeElapsed();
 		timeToEquilibrate = p->GettimeToEquilibrate();
 		timeToEquilibrateCurrent = p->GettimeToEquilibrateCurrent();
 
@@ -124,8 +121,6 @@ int ExperimentStatus::GetexperimentSubstepStage()						const { return experiment
 int ExperimentStatus::GetexperimentDose()								const { return experimentDose						; }
 int ExperimentStatus::GetexperimentPreviousStage()						const { return experimentPreviousStage				; }
 unsigned long long ExperimentStatus::GettimeStart()						const { return timeStart							; }
-unsigned long long ExperimentStatus::GettimeElapsed()					const { return timeElapsed							; }
-double ExperimentStatus::GettimeElapsedSec()							const { return static_cast<float>(timeElapsed)/1000	; }
 double ExperimentStatus::GettimeToEquilibrate()							const { return timeToEquilibrate					; }
 double ExperimentStatus::GettimeToEquilibrateCurrent()					const { return timeToEquilibrateCurrent				; }
 int ExperimentStatus::GetinjectionAttemptCounter()						const { return injectionAttemptCounter				; }
@@ -147,7 +142,6 @@ void ExperimentStatus::SetexperimentSubstepStage(int a)						{ experimentSubstep
 void ExperimentStatus::SetexperimentDose(int a)								{ experimentDose				= a ; }
 void ExperimentStatus::SetexperimentPreviousStage(int a)					{ experimentPreviousStage		= a ; }
 void ExperimentStatus::SettimeStart(unsigned long long  a)					{ timeStart						= a ; }
-void ExperimentStatus::SettimeElapsed(unsigned long long  a)				{ timeElapsed					= a ; }
 void ExperimentStatus::SettimeToEquilibrate(double a)						{ timeToEquilibrate				= a ; }
 void ExperimentStatus::SettimeToEquilibrateCurrent(double a)				{ timeToEquilibrateCurrent		= a ; }
 void ExperimentStatus::SetinjectionAttemptCounter(int a)					{ injectionAttemptCounter		= a ; }

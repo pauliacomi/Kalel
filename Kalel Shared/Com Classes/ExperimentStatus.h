@@ -43,7 +43,6 @@ public:
 
 	// Time
 	std::atomic_ullong timeStart;									// When the experiment started
-	std::atomic_ullong timeElapsed;									// Time from the experiment start, in miliseconds
 	std::atomic<double> timeToEquilibrate;							// The amount of time that the waiting + recording functionality will run before returning to an active state
 	std::atomic<double> timeToEquilibrateCurrent;					// The current time of waiting
 	
@@ -78,8 +77,6 @@ public:
 	int GetexperimentDose()					const;					// Current experiment dose that is currently underway (ex: 2nd dose of adsorption step 1)
 	int GetexperimentPreviousStage()		const;					// Previous experiment stage
 	unsigned long long GettimeStart()		const;					// When the experiment started
-	unsigned long long GettimeElapsed()		const;					// Time from the experiment start
-	double GettimeElapsedSec()				const;					// Time from the experiment start, in seconds
 	double GettimeToEquilibrate()			const;					// The amount of time that the waiting + recording functionality will run before returning to an active state
 	double GettimeToEquilibrateCurrent()	const;					// The current time of waiting
 	int GetinjectionAttemptCounter()		const;					// Counter for the injections
@@ -100,7 +97,6 @@ public:
 	void SetexperimentDose(int a)								;
 	void SetexperimentPreviousStage(int a)						;
 	void SettimeStart(unsigned long long  a)					;
-	void SettimeElapsed(unsigned long long  a)					;
 	void SettimeToEquilibrate(double a)							;
 	void SettimeToEquilibrateCurrent(double a)					;
 	void SetinjectionAttemptCounter(int a)						;

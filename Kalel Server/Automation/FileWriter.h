@@ -77,7 +77,7 @@ public:
 	*		Reference to the experimentSettings which generates the entete
 	*		bool valveOpen6: records if valve number 6 is open or not
 	***********************************************************************/
-	bool FileMeasurementRecord(const data_general &general, const ExperimentData &data, const ExperimentStatus &status, bool valveOpen6);
+	bool FileMeasurementRecord(std::wstring time, const data_general &general, const ExperimentData &data, const ExperimentStatus &status, bool valveOpen6);
 
 
 	/**********************************************************************

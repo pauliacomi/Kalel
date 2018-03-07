@@ -61,6 +61,7 @@ void Measurement::Execution()
 
 		// Start threads and read the data
 		ThreadMeasurement();
+		auto measurementTime = timeh::NowTime();
 
 		/*
 		*
@@ -95,11 +96,11 @@ void Measurement::Execution()
 			if (controls.timerMeasurement.TimeSeconds() > T_BETWEEN_RECORD)							// If enough time between measurements
 			{
 				// Record times
-				storage.experimentStatus->timeElapsed = controls.timerExperiment.TimeMilliseconds();			// Save the time elapsed from the beginning of the experiment
 				storage.experimentStatus->timeToEquilibrateCurrent = controls.timerWaiting.TimeSeconds();		// Save the waiting time if it exists
 
 				// Save the data to the file
 				bool err = controls.fileWriter->FileMeasurementRecord(
+					timeh::TimePointToWString(measurementTime),
 					storage.experimentSettings->dataGeneral ,
 					*storage.currentData, 
 					*storage.experimentStatus, 
@@ -120,7 +121,7 @@ void Measurement::Execution()
 		*/
 
 		// Send the data out
-		storage.dataCollection.push(timeh::NowTime(), std::make_shared<ExperimentData>(*storage.currentData));
+		storage.dataCollection.push(measurementTime, std::make_shared<ExperimentData>(*storage.currentData));
 
 		/*
 		*

@@ -103,8 +103,8 @@ bool FileWriter::FileMeasurementCreate(const data_general &general)
 	std::wostringstream stream;
 
 	// Write column names
-	stream << "N°mesure;";												// Experiment dose
 	stream << "Temps(s);";												// Experiment time
+	stream << "Dose;";													// Experiment dose
 	stream << "Calorimètre(W);";										// Calorimeter value
 	stream << "Basse Pression(Bar);";									// Pressure low range
 	stream << "Haute Pression(Bar);";									// Pressure high range
@@ -127,14 +127,14 @@ bool FileWriter::FileMeasurementCreate(const data_general &general)
 *		Reference to the experimentSettings which generates the entete
 *		bool valveOpen6: records if valve number 6 is open or not
 ***********************************************************************/
-bool FileWriter::FileMeasurementRecord(const data_general &general, const ExperimentData &data, const ExperimentStatus &status, bool valveOpen6)
+bool FileWriter::FileMeasurementRecord(std::wstring time, const data_general &general, const ExperimentData &data, const ExperimentStatus &status, bool valveOpen6)
 {
 	std::wostringstream stream;
 	char char_resultat_calo[20];
 	sprintf_s(char_resultat_calo, "%.8E", data.GetresultCalorimeter());
-
+	
+	stream << time									<< ";";				// Experiment time
 	stream << status.experimentDose					<< ";";				// Experiment dose
-	stream << status.timeElapsed					<< ";";				// Experiment time
 	stream << char_resultat_calo					<< ";";				// Calorimeter value
 	stream << data.pressureLow						<< ";";				// Pressure low range
 	stream << data.pressureHigh						<< ";";				// Pressure high range

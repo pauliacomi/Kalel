@@ -313,7 +313,12 @@ void CKalelView::OnTimer(UINT_PTR nIDEvent)
 				}
 
 				// Request ongoing sync
-				commHandler.Sync(false, timeh::TimePointToString(experimentSettingsTime), timeh::TimePointToString(machineSettingsTime), timeh::TimePointToString(machineStateTime));
+				commHandler.Sync(false, 
+					timeh::TimePointToString(experimentSettingsTime), 
+					timeh::TimePointToString(machineSettingsTime), 
+					timeh::TimePointToString(machineStateTime),
+					timeh::TimePointToString(experimentStatusTime)
+				);
 
 				// Send the request for data
 				commHandler.GetData(timeh::TimePointToString(dataCollection.rbegin()->first));
@@ -329,6 +334,9 @@ void CKalelView::OnTimer(UINT_PTR nIDEvent)
 					commHandler.GetRequests(timeh::TimePointToString(requestCollection.rbegin()->first));
 				else
 					commHandler.GetRequests();
+
+
+				// We check to see if there are any requests from the experiment
 
 				// Write textbox values
 				DisplayTextboxValues(dataCollection.rbegin()->second, experimentStatus);

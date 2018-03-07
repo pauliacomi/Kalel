@@ -13,6 +13,7 @@ namespace timeh {
 	"Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
 
 	static const char *ISO_DATE_FORMAT = "%Y-%m-%dT%H:%M:%S";
+	static const wchar_t *W_ISO_DATE_FORMAT = L"%Y-%m-%dT%H:%M:%S";
 
 	std::chrono::system_clock::time_point NowTime()
 	{
@@ -65,6 +66,18 @@ namespace timeh {
 		return time;
 	}
 
+	std::wstring TimeTToWStringLocal(const time_t & t)
+	{
+		struct tm gmt;
+		localtime_s(&gmt, &t);
+
+		std::wstring time;
+		std::wstringstream str;
+		str << std::put_time(&gmt, W_ISO_DATE_FORMAT);
+		time = str.str();
+
+		return time;
+	}
 
 
 	std::string TimeTToStringGMT(const time_t & t)
@@ -107,6 +120,30 @@ namespace timeh {
 		return str_time + str_frsec;
 	}
 
+	std::wstring TimePointToWString(const std::chrono::system_clock::time_point & tp)
+	{
+		// Build the main time string
+		auto tt = std::chrono::system_clock::to_time_t(tp);
+		auto str_time = TimeTToWStringLocal(tt);
+
+		// Build the milisecond string
+		auto epoch = tp.time_since_epoch();
+		auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(epoch);
+		auto fractional_seconds = ms.count() % 1000;
+
+		std::wstring str_frsec = L".";
+		if (fractional_seconds < 100)
+		{
+			str_frsec += L"0";
+		}
+		str_frsec += std::to_wstring(fractional_seconds);
+
+		// Add trailing character
+		str_frsec += L'Z';
+
+		// Return complete string
+		return str_time + str_frsec;
+	}
 
 	std::chrono::system_clock::time_point StringToTimePoint(const std::string & str_time)
 	{
