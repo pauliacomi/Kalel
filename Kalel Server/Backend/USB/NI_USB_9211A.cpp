@@ -5,31 +5,27 @@
 #define DAQmxErrChk(functionCall) { if( DAQmxFailed(error=(functionCall)) ) { goto Error; } }
 
 
-NI_USB_9211A::NI_USB_9211A(void)
-{
-}
-
 NI_USB_9211A::NI_USB_9211A(int dev)
 {
-	DevNI_USB_9211A = dev;
+	portUSB = dev;
 }
 
 NI_USB_9211A::~NI_USB_9211A(void)
 {
 }
 
-int NI_USB_9211A::GetPortUSB()
+int NI_USB_9211A::GetComPort()
 {
-	return DevNI_USB_9211A;
+	return portUSB;
 }
 
-void NI_USB_9211A::SetPortUSB(int dev)
+void NI_USB_9211A::SetComPort(int dev)
 {
-	DevNI_USB_9211A = dev;
+	portUSB = dev;
 }
 
 
-bool NI_USB_9211A::ReadThermocouple(float64 data[bufferSize])
+bool NI_USB_9211A::ReadAll(float64 data[bufferSize])
 {	
 	// Task variables
     TaskHandle  taskHandle		= nullptr;
@@ -38,7 +34,7 @@ bool NI_USB_9211A::ReadThermocouple(float64 data[bufferSize])
 	int32       pointsRead		= 0;
 
 	// Write channel string
-	sprintf_s(chan, "Dev%d/ai%d:%d", DevNI_USB_9211A, analog_start, analog_end);
+	sprintf_s(chan, "Dev%d/ai%d:%d", portUSB, analog_start, analog_end);
 
 	// Create thrermocouple Task and Channel
 	DAQmxErrChk (DAQmxCreateTask ("ReadThermocouple", &taskHandle));
@@ -78,10 +74,10 @@ Error:
 //
 // Individual functions to read data
 
-bool NI_USB_9211A::ReadAllThermocouples(double* Valeur0,double* Valeur1,double* Valeur2,double* Valeur3)
+bool NI_USB_9211A::ReadAllChannels(double* Valeur0,double* Valeur1,double* Valeur2,double* Valeur3)
 {
 	float64     data[bufferSize];
-	bool result = ReadThermocouple(data);
+	bool result = ReadAll(data);
 
 	*Valeur0 = data[0];
 	*Valeur1 = data[1];
@@ -95,181 +91,11 @@ bool NI_USB_9211A::ReadAllThermocouples(double* Valeur0,double* Valeur1,double* 
 	return false;
 }
 
-bool NI_USB_9211A::LectureThermocouple_de_0_a_2(double* Valeur0,double* Valeur1,double* Valeur2)
+
+double NI_USB_9211A::Read(unsigned int channel)
 {
 	float64     data[bufferSize];
-	bool result = ReadThermocouple(data);
-	*Valeur0 = data[0];
-	*Valeur1 = data[1];
-	*Valeur2 = data[2];
+	bool result = ReadAll(data);
 
-	if (result == true)
-	{
-		return true;
-	}
-	return false;
-}
-
-bool NI_USB_9211A::LectureThermocouple_de_1_a_3(double* Valeur1,double* Valeur2,double* Valeur3)
-{
-	float64     data[bufferSize];
-	bool result = ReadThermocouple(data);
-	*Valeur1 = data[1];
-	*Valeur2 = data[2];
-	*Valeur3 = data[3];
-
-	if (result == true)
-	{
-		return true;
-	}
-	return false;
-}
-
-bool NI_USB_9211A::LectureThermocouple_0_1_3(double* Valeur0,double* Valeur1,double* Valeur3)
-{
-	float64     data[bufferSize];
-	bool result = ReadThermocouple(data);
-	*Valeur0 = data[0];
-	*Valeur1 = data[1];
-	*Valeur3 = data[3];
-
-	if (result == true)
-	{
-		return true;
-	}
-	return false;
-}
-
-bool NI_USB_9211A::LectureThermocouple_0_2_3(double* Valeur0,double* Valeur2,double* Valeur3)
-{
-	float64     data[bufferSize];
-	bool result = ReadThermocouple(data);
-	*Valeur0 = data[0];
-	*Valeur2 = data[2];
-	*Valeur3 = data[3];
-
-	if (result == true)
-	{
-		return true;
-	}
-	return false;
-}
-
-bool NI_USB_9211A::LectureThermocouple_0_1(double* Valeur0,double* Valeur1)
-{
-	float64     data[bufferSize];
-	bool result = ReadThermocouple(data);
-	*Valeur0 = data[0];
-	*Valeur1 = data[1];
-
-	if (result == true)
-	{
-		return true;
-	}
-	return false;
-}
-
-bool NI_USB_9211A::LectureThermocouple_0_2(double* Valeur0,double* Valeur2)
-{
-	float64     data[bufferSize];
-	bool result = ReadThermocouple(data);
-	*Valeur0 = data[0];
-	*Valeur2 = data[2];
-
-	if (result == true)
-	{
-		return true;
-	}
-	return false;
-}
-
-bool NI_USB_9211A::LectureThermocouple_0_3(double* Valeur0,double* Valeur3)
-{
-	float64     data[bufferSize];
-	bool result = ReadThermocouple(data);
-	*Valeur0 = data[0];
-	*Valeur3 = data[3];
-
-	if (result == true)
-	{
-		return true;
-	}
-	return false;
-}
-
-bool NI_USB_9211A::LectureThermocouple_1_2(double* Valeur1,double* Valeur2)
-{
-	float64     data[bufferSize];
-	bool result = ReadThermocouple(data);
-	*Valeur1 = data[1];
-	*Valeur2 = data[2];
-
-	if (result == true)
-	{
-		return true;
-	}
-	return false;
-}
-
-bool NI_USB_9211A::LectureThermocouple_1_3(double* Valeur1,double* Valeur3)
-{
-	float64     data[bufferSize];
-	bool result = ReadThermocouple(data);
-	*Valeur1 = data[1];
-	*Valeur3 = data[3];
-
-	if (result == true)
-	{
-		return true;
-	}
-	return false;
-}
-
-bool NI_USB_9211A::LectureThermocouple_2_3(double* Valeur2,double* Valeur3)
-{
-	float64     data[bufferSize];
-	bool result = ReadThermocouple(data);
-	*Valeur2 = data[2];
-	*Valeur3 = data[3];
-
-	if (result == true)
-	{
-		return true;
-	}
-	return false;
-}
-
-double NI_USB_9211A::LectureThermocouple_0()
-{
-	float64     data[bufferSize];
-	bool result = ReadThermocouple(data);
-
-	return data[0];
-}
-
-
-double NI_USB_9211A::LectureThermocouple_1()
-{
-	float64     data[bufferSize];
-	bool result = ReadThermocouple(data);
-
-	return data[1];
-}
-
-
-double NI_USB_9211A::LectureThermocouple_2()
-{
-	float64     data[bufferSize];
-	bool result = ReadThermocouple(data);
-
-	return data[2];
-}
-
-
-double NI_USB_9211A::LectureThermocouple_3()
-{
-	float64     data[bufferSize];
-	bool result = ReadThermocouple(data);
-
-	return data[3];
+	return data[channel];
 }

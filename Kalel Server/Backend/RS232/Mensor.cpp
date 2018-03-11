@@ -21,13 +21,10 @@
 
 
 
-Mensor::Mensor(void)
+Mensor::Mensor(int comport)
 {
-}
-
-Mensor::Mensor(int comport) : RS232()
-{ 
-	OpenCOM(comport);
+	portRS = comport;
+	OpenCOM(portRS);
 }
 
 
@@ -71,13 +68,18 @@ bool Mensor::CloseCOM()
 	}
 }
 
-bool Mensor::ChangeCOM(int nId)
+void Mensor::SetComPort(int comport)
 {
 	if (CloseCOM())
 	{
-		return OpenCOM(nId);
+		portRS = comport;
+		OpenCOM(comport);
 	}
-	return false;
+}
+
+int Mensor::GetComPort()
+{
+	return portRS;
 }
 
 //=============================================================================
@@ -85,7 +87,7 @@ bool Mensor::ChangeCOM(int nId)
 //dans le double pression et on renverra TRUE. Sinon on instancie le message d'erreur
 //et on renvoie FALSE.
 
-double Mensor::ReadMensor()
+double Mensor::Read()
 {
 	int nBytesWritten = 0;
 	int nbOctetsLus = 0;

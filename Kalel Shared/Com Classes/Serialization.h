@@ -61,36 +61,27 @@ void to_json(nlohmann::json &j, const MachineSettings &m) {
 	j["PressionSecuriteBassePression"		]	= m.PressionSecuriteBassePression			;
 	j["PressionSecuriteHautePression"		]	= m.PressionSecuriteHautePression			;
 	j["PressionLimiteVide"					]	= m.PressionLimiteVide						;
-	j["hasSonicNozzle"						]	= m.hasSonicNozzle					;
+	j["hasSonicNozzle"						]	= m.hasSonicNozzle							;
 	j["VolumeP6"							]	= m.VolumeP6								;
 	j["VolumeRef"							]	= m.VolumeRef								;
 
 	nlohmann::json j1;
 	for (const auto& kv : m.instruments) {
-		j1[std::to_string(kv.first)]["type"								]	= kv.second.type				;
-		j1[std::to_string(kv.first)]["port"								]	= kv.second.port				;
+		j1[std::to_string(kv.first)] = kv.second;
 	}
-	j["instruments"							]	= j1										;
+	j["instruments"]	= j1;
 
 	nlohmann::json j2;
 	for (const auto& kv : m.readers) {
-		j2[std::to_string(kv.first)]["type"								]	= kv.second.type				;
-		j2[std::to_string(kv.first)]["identifier"						]	= kv.second.identifier			;
-		j2[std::to_string(kv.first)]["sensitivity"						]	= kv.second.sensitivity			;
-		j2[std::to_string(kv.first)]["channel"							]	= kv.second.channel				;
-		j2[std::to_string(kv.first)]["instrument"						]	= kv.second.instrument			;
+		j2[std::to_string(kv.first)] = kv.second;
 	}
-	j["readers"								]	= j2										;
+	j["readers"]		= j2;
 
 	nlohmann::json j3;
 	for (const auto& kv : m.controllers) {
-		j3[std::to_string(kv.first)]["type"								]	= kv.second.type				;
-		j3[std::to_string(kv.first)]["identifier"						]	= kv.second.identifier			;
-		j3[std::to_string(kv.first)]["sensitivity"						]	= kv.second.sensitivity			;
-		j3[std::to_string(kv.first)]["channel"							]	= kv.second.channel				;
-		j3[std::to_string(kv.first)]["instrument"						]	= kv.second.instrument			;
+		j3[std::to_string(kv.first)] = kv.second;
 	}
-	j["controllers"							]	= j3										;
+	j["controllers"]	= j3;
 }
 
 inline void from_json(const nlohmann::json &j, MachineSettings &m) {
@@ -108,38 +99,20 @@ inline void from_json(const nlohmann::json &j, MachineSettings &m) {
 
 	nlohmann::json j1 = j["instruments"];
 	for (nlohmann::json::iterator it = j1.begin(); it != j1.end(); ++it) {
-		Instrument i;
 
-		i.type = it.value()["type"];
-		i.port = it.value()["port"];
-
-		m.instruments.insert(std::make_pair(atoi(it.key().c_str()), i));
+		m.instruments.emplace(atoi(it.key().c_str()), it.value());
 	}
 
 	nlohmann::json j2 = j["readers"];
 	for (nlohmann::json::iterator it = j2.begin(); it != j2.end(); ++it) {
-		Reader i;
 
-		i.type				= it.value()["type"			];
-		i.identifier		= it.value()["identifier"	];
-		i.sensitivity		= it.value()["sensitivity"	];
-		i.channel			= it.value()["channel"		];
-		i.instrument		= it.value()["instrument"	];
-
-		m.readers.insert(std::make_pair(atoi(it.key().c_str()), i));
+		m.readers.emplace(atoi(it.key().c_str()), it.value());
 	}
 
 	nlohmann::json j3 = j["controllers"];
 	for (nlohmann::json::iterator it = j3.begin(); it != j3.end(); ++it) {
-		Controller i;
-		
-		i.type				= it.value()["type"			];
-		i.identifier		= it.value()["identifier"	];
-		i.sensitivity		= it.value()["sensitivity"	];
-		i.channel			= it.value()["channel"		];
-		i.instrument		= it.value()["instrument"	];
 
-		m.controllers.insert(std::make_pair(atoi(it.key().c_str()), i));
+		m.controllers.emplace(atoi(it.key().c_str()), it.value());
 	}
 }
 
@@ -148,17 +121,27 @@ inline void from_json(const nlohmann::json &j, MachineSettings &m) {
 //*************************************************************************************************************************
 
 inline void to_json(nlohmann::json &j, const Instrument &m) {
-	
-
+	j["type"]		=				  m.type		;
+	j["portType"]	=	stringh::ws2s(m.port_type)	;
+	j["port"]		=				  m.port		;
 	}
 inline void from_json(const nlohmann::json &j, Instrument &m) {
+	m.type			=					  j["type"]		;
+	m.port_type		=		stringh::s2ws(j["portType"]);
+	m.port			=					  j["port"]		;
 }
 
 //*************************************************************************************************************************
 //						Reader <> JSON
 //*************************************************************************************************************************
 inline void to_json(nlohmann::json &j, const Reader &m) {
+	j["type"									]		= m.type														;
+	j["identifier"								]		= m.identifier													;
+	j["sensitivity"								]		= m.sensitivity													;
+	j["channel"									]		= m.channel														;
+	j["instrument"								]		= m.instrument													;
 }
+
 inline void from_json(const nlohmann::json &j, Reader &m) {
 	m.type												=					j["type"									];
 	m.identifier										=					j["identifier"								];
@@ -172,15 +155,12 @@ inline void from_json(const nlohmann::json &j, Reader &m) {
 inline void to_json(nlohmann::json &j, const Controller &m) {
 	j["type"							]	= m.type									;
 	j["identifier"						]	= m.identifier								;
-	j["sensitivity"						]	= m.sensitivity								;
-	j["channel"							]	= m.channel									;
 	j["instrument"						]	= m.instrument								;
 }
+
 inline void from_json(const nlohmann::json &j, Controller &m) {
 	m.type												=					j["type"									];
 	m.identifier										=					j["identifier"								];
-	m.sensitivity										=					j["sensitivity"								];
-	m.channel											=					j["channel"									];
 	m.instrument										=					j["instrument"								];
 }
 

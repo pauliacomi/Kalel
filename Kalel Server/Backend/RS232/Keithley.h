@@ -1,34 +1,34 @@
 #pragma once
 
 #include "RS232.h"
+#include "../Wrapper Classes/InstrumentInterface.h"
 
 #include <mutex>
 
-
 class Keithley :
-	public RS232
+	public RS232, InstrumentInterface
 {
 
 public:
-	Keithley(void);
 	Keithley(int comport);
 	~Keithley(void);
 
 private:
+	int portRS;										// RS232 port used
+
 	std::mutex mutex_keithley;
 	bool connectionOpen			= false;
 	bool readingPort			= false;
 
-public:
-
 	bool OpenCOM(int nId);
 	bool CloseCOM();
-	bool ChangeCOM(int nId);
 	bool InitKeithley();
+	bool ReadChan(int chanNo, double* result);
 
-	bool ReadChannel(int chanNo, double* result);
+public:
 
-	double ReadChannel(int chanNo);
-	double ReadChannel1();
-	double ReadChannel2();
+	void SetComPort(int nId) override;
+	int GetComPort() override;
+
+	double Read(unsigned int channel) override;
 };

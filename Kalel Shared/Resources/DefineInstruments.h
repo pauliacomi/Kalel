@@ -10,9 +10,9 @@
 #define INSTRUMENT_UNDEF			10
 
 // Readers 
-#define READER_PRESSURE				1
-#define READER_TEMPERATURE			2
-#define READER_CALO					3
+#define READER_PRESSURE				0b00010000
+#define READER_TEMPERATURE			0b00100000
+#define READER_CALO					0b00110000
 
 // identifiers 
 #define PRESSURE_LP					1
@@ -22,11 +22,7 @@
 #define TEMPERATURE_ROOM			3
 #define CALO						1
 
-// Controllers
-#define CONTROLLER_VALVES			1
-#define ID_CONTROLLER_VALVES		1
-
 // Controlled instruments
-#define INSTRUMENT_VALVE			1
-#define INSTRUMENT_EV				2
-#define INSTRUMENT_PUMP				3
+#define INSTRUMENT_VALVE			0b00010000
+#define INSTRUMENT_EV				0b00100000
+#define INSTRUMENT_PUMP				0b00110000

@@ -8,8 +8,11 @@
 #pragma once
 
 #include "NIDAQmx.h"
+#include "../Wrapper Classes/InstrumentInterface.h"
+#include <vector>
+#include <array>
 
-class NI_USB_6008
+class NI_USB_6008 : InstrumentInterface
 {
 public:
 	NI_USB_6008(int dev);
@@ -20,9 +23,8 @@ private:
 	//*************************
 	// Parameters for writing
 	//*************************
-	int DevNI_USB_6008;								// USB port
-	uInt8 etatPort0[8] = { 0 };						// Array for keeping port 0 states
-	uInt8 etatPort1[8] = { 0 };						// Array for keeping port 1 states
+	int portUSB;													// USB port
+	std::vector<std::array<uInt8, 8>> portStates = { {0},{0} };
 
 	// Read/Write parameters
 	static const uInt32 bufferSize	= 8;
@@ -31,35 +33,24 @@ private:
 	float64     timeout				= 10.0f;
 
 	// Read/write functions
-	bool ReadPort0();
-	bool ReadPort1();
-	bool WritePort0();
-	bool WritePort1();
+	bool ReadPort(unsigned int port);
+	bool WritePort(unsigned int port);
 	bool ReadDigital(char chan[], uInt8 w_data[]);
 	bool WriteDigital(char chan[], uInt8 w_data[]);
 
 public:
 	
-	int GetDevNI_USB_6008();						// Get USB port
-	void SetDevNI_USB_6008(int dev);				// Set USB port
+	void SetComPort(int dev) override;					// Set USB port
+	int GetComPort() override;							// Get USB port
 
-	// Functions to open / close a particular bit from a port or all bits
-	bool SetPortCustom(int port, unsigned int customarray[8]);
+	// Functions to open / close stuff
 
-	bool OuvrirPort0(int num);
-	bool FermerPort0(int num);
-	bool OuvrirPort1(int num);
-	bool FermerPort1(int num);
-
-	bool FermerPort0Tous();
-	bool OuvrirPort0Tous();
-	bool FermerPort1Tous();
-	bool OuvrirPort1Tous();
-
-	// Check for open/closed functions
-
-	bool EstOuvertPort0(int num);
-	bool EstFermePort0(int num);
-	bool EstOuvertPort1(int num);
-	bool EstFermePort1(int num);
+	// Set the state in a custom way
+	bool SetChannelCustom(unsigned int chan, unsigned int customarray[8]);
+	// Set the entire bits from a channel to a state
+	bool SetChannelAll(unsigned int chan, bool state) override;
+	// Set a particullar subchannel to a state
+	bool SetSubchannel(unsigned int chan, unsigned int subchan, bool state) override;
+	// Read if a subchannel is open or not
+	bool IsOpenSubchannel(unsigned int chan, unsigned int subchan) override;
 };

@@ -20,13 +20,10 @@
 //=====================================================================
 
 
-Keithley::Keithley(void)
-{
-}
-
-Keithley::Keithley(int comport) : RS232()
+Keithley::Keithley(int comport)
 {
 	g_dcb.BaudRate = 19200;								// On a le moyen d'augmenter le BaudRate du keithley.
+	portRS = comport;
 
 	if (OpenCOM(comport))								// Open port
 	{
@@ -58,7 +55,6 @@ bool Keithley::OpenCOM(int nId)
 	else
 	{
 		LOG(logERROR) << "Keithley opening failed: COM" << std::to_string(nId);
-
 		return false;
 	}
 }
@@ -79,17 +75,22 @@ bool Keithley::CloseCOM()
 	}
 }
 
-bool Keithley::ChangeCOM(int nId)
+void Keithley::SetComPort(int comport)
 {
 	if (CloseCOM())
 	{
-		if (OpenCOM(nId))
+		portRS = comport;
+		if (OpenCOM(comport))
 		{
 			// Finally init keithley
 			InitKeithley();									// Init Keithley
 		}
 	}
-	return false;
+}
+
+int Keithley::GetComPort()
+{
+	return portRS;
 }
 
 bool Keithley::InitKeithley()
@@ -148,7 +149,7 @@ bool Keithley::InitKeithley()
 // Elle donnera aussi le retour de lecture du Keithley qu'on mettra 
 // dans 'result' (mis en parametre)
 
-bool Keithley::ReadChannel(int chanNo, double* result)
+bool Keithley::ReadChan(int chanNo, double* result)
 {
 	int nBytesWritten = 0;
 	int nbOctetsLus = 0;
@@ -231,23 +232,9 @@ bool Keithley::ReadChannel(int chanNo, double* result)
 // le '(string)resultat' sera converti en double et sera attribué au 
 // '(double)resultat' qui est mis en parametre.
 
-double Keithley::ReadChannel(int chanNo)
+double Keithley::Read(unsigned int chanNo)
 {
 	double result;
-	ReadChannel(chanNo, &result);
-	return result;
-}
-
-double Keithley::ReadChannel1()
-{
-	double result;
-	ReadChannel(1, &result);
-	return result;
-}
-
-double Keithley::ReadChannel2()
-{
-	double result;
-	ReadChannel(2, &result);
+	ReadChan(chanNo, &result);
 	return result;
 }

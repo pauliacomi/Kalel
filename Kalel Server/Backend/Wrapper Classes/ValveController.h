@@ -38,8 +38,7 @@ public:
 	// Checks for activation
 
 	bool ValveIsOpen(int num);
-	bool EV1IsActive();
-	bool EV2IsActive();
+	bool EVIsActive(int num);
 	bool PumpIsActive();
 
 	// Get the port

@@ -3,33 +3,9 @@
 #include <string>
 #include <vector>
 #include <map>
-#include <chrono>	// for timepoint
-
-struct Instrument
-{
-	int type = 0;						// keithley/mensor/national instruments
-	int port = 0;						// port being used (USB1, COM1, DEV3)
-	bool initialised = false;			//
-};
-
-struct Reader
-{
-	int type = -1;						// Pressure / Temperature etc
-	int identifier = -1;				// Number low pressure, calo temperature
-	long double sensitivity = 0;		// sensitivity of measurement
-	int channel = -1;					// channel 1/2 of the instrument
-	int instrument = -1;				// key of the instrument used
-};
-
-struct Controller
-{
-	int type = -1;						// Pressure / Temperature etc
-	int identifier = -1;				// Number 1/ 2 low pressure etc
-	long double sensitivity = 0;		// sensitivity of it
-	int channel = -1;					// channel 1/2 of the instrument
-	int instrument = -1;
-};
-
+#include <chrono>		// for timepoint
+ 
+#include "ExperimentHelperClasses.h"
 
 class MachineSettings
 {

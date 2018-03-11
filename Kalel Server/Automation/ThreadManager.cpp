@@ -252,8 +252,8 @@ ControlInstrumentState ThreadManager::GetInstrumentStates()
 		state.valves[i] = controls.valveControls->ValveIsOpen(i);
 	}
 
-	state.EVs[0] = controls.valveControls->EV1IsActive();
-	state.EVs[1] = controls.valveControls->EV2IsActive();
+	state.EVs[0] = controls.valveControls->EVIsActive(1);
+	state.EVs[1] = controls.valveControls->EVIsActive(2);
 	state.pumps[0] = controls.valveControls->PumpIsActive();
 
 	return state;

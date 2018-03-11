@@ -44,7 +44,7 @@ bool ValveController::ValveOpen(int num, bool verbose)
 	while (!success && tentative <= nb_essais)
 	{
 		tentative++;
-		success = NI_USB_6008::OuvrirPort0(num - 1);
+		success = NI_USB_6008::SetSubchannel(0, num -1, true);
 		if (!success)
 		{
 			std::this_thread::sleep_for(std::chrono::milliseconds(temps_ms));
@@ -71,7 +71,7 @@ bool ValveController::ValveClose(int num, bool verbose)
 	while (!success && tentative <= nb_essais)
 	{
 		tentative++;
-		success = NI_USB_6008::FermerPort0(num - 1);
+		success = NI_USB_6008::SetSubchannel(0, num -1, false);
 		if (!success)
 		{
 			std::this_thread::sleep_for(std::chrono::milliseconds(temps_ms));
@@ -98,7 +98,7 @@ bool ValveController::EVActivate(int num, bool verbose)
 	while (!success && tentative <= nb_essais)
 	{
 		tentative++;
-		success = NI_USB_6008::OuvrirPort1(0 + num);
+		success = NI_USB_6008::SetSubchannel(1, num, true);
 		if (!success)
 		{
 			std::this_thread::sleep_for(std::chrono::milliseconds(temps_ms));
@@ -125,7 +125,7 @@ bool ValveController::EVDeactivate(int num, bool verbose)
 	while (!success && tentative <= nb_essais)
 	{
 		tentative++;
-		success = NI_USB_6008::FermerPort1(0 + num);
+		success = NI_USB_6008::SetSubchannel(1, num, false);
 		if (!success)
 		{
 			std::this_thread::sleep_for(std::chrono::milliseconds(temps_ms));
@@ -152,7 +152,7 @@ bool ValveController::PumpActivate(bool verbose)
 	while (!success && tentative <= nb_essais)
 	{
 		tentative++;
-		success = NI_USB_6008::OuvrirPort1(2);
+		success = NI_USB_6008::SetSubchannel(1, 2, true);
 		if (!success)
 		{
 			std::this_thread::sleep_for(std::chrono::milliseconds(temps_ms));
@@ -179,7 +179,7 @@ bool ValveController::PumpDeactivate(bool verbose)
 	while (!success && tentative <= nb_essais)
 	{
 		tentative++;
-		success = NI_USB_6008::FermerPort1(2);
+		success = NI_USB_6008::SetSubchannel(1, 2, false);
 		if (!success)
 		{
 			std::this_thread::sleep_for(std::chrono::milliseconds(temps_ms));
@@ -224,7 +224,7 @@ bool ValveController::CloseAllValves(bool verbose)
 	while (!success && tentative <= nb_essais)
 	{
 		tentative++;
-		success = NI_USB_6008::FermerPort0Tous();
+		success = NI_USB_6008::SetChannelAll(0, false);
 		if (!success)
 		{
 			std::this_thread::sleep_for(std::chrono::milliseconds(temps_ms));
@@ -251,7 +251,7 @@ bool ValveController::CloseEVsAndPump(bool verbose)
 	while (!success && tentative <= nb_essais)
 	{
 		tentative++;
-		success = NI_USB_6008::FermerPort1Tous();
+		success = NI_USB_6008::SetChannelAll(1, false);
 		if (!success)
 		{
 			std::this_thread::sleep_for(std::chrono::milliseconds(temps_ms));
@@ -269,13 +269,13 @@ bool ValveController::CloseEVsAndPump(bool verbose)
 
 
 int ValveController::GetReadPort()
-{	return NI_USB_6008::GetDevNI_USB_6008();	}
+{	return NI_USB_6008::GetComPort();	}
 
 void ValveController::SetReadPort(int port)
 {
 	// Lock for the remainder of function
 	std::lock_guard<std::mutex> lk(ctrlmutex);
-	return NI_USB_6008::SetDevNI_USB_6008(port);	
+	return NI_USB_6008::SetComPort(port);	
 }
 
 
@@ -283,13 +283,10 @@ void ValveController::SetReadPort(int port)
 // Functions checking for the state of the equipemt
 
 bool ValveController::ValveIsOpen(int num)
-{return NI_USB_6008::EstOuvertPort0(num-1);}
+{return NI_USB_6008::IsOpenSubchannel(0, num-1);}
 
-bool ValveController::EV1IsActive()
-{return NI_USB_6008::EstOuvertPort1(0);}
-
-bool ValveController::EV2IsActive()
-{return NI_USB_6008::EstOuvertPort1(1);}
+bool ValveController::EVIsActive(int num)
+{return NI_USB_6008::IsOpenSubchannel(1, num-1);}
 
 bool ValveController::PumpIsActive()
-{return NI_USB_6008::EstOuvertPort1(2);}
+{return NI_USB_6008::IsOpenSubchannel(1, 2);}

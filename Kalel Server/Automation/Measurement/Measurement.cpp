@@ -167,9 +167,9 @@ void Measurement::ReadCalorimeter()
 
 	// Read the value from the calorimeter
 	// Write it in the shared object - NO need for mutex
-	storage.currentData->resultCalorimeter = controls.calorimeterReader->Read();
-}
+	storage.currentData->resultCalorimeter = controls.instruments.MeasureReader(READER_CALO + CALO);
 
+}
 
 void Measurement::ReadPressure()
 {
@@ -179,8 +179,8 @@ void Measurement::ReadPressure()
 
 	// Read the value from the pressure transmitter
 	// Write it in the shared object - NO need for mutex
-	storage.currentData->pressureLow = controls.pressureReader->ReadLowRangeP();
-	storage.currentData->pressureHigh = controls.pressureReader->ReadHighRangeP();
+	storage.currentData->pressureLow = controls.instruments.MeasureReader(READER_PRESSURE + PRESSURE_LP);
+	storage.currentData->pressureHigh = controls.instruments.MeasureReader(READER_PRESSURE + PRESSURE_HP);
 }
 
 void Measurement::ReadTemperatures()
@@ -189,9 +189,9 @@ void Measurement::ReadTemperatures()
 	std::unique_lock<std::mutex> lock(lockingMutex);
 	syncThreadStart.wait(lock, [this] {return ready; });
 
-	// Read the value from the pressure transmitter
+	// Read the value from the temperatures
 	// Write it in the shared object - NO need for mutex
-	storage.currentData->temperatureCalo = controls.temperatureReader->ReadCalo();
-	storage.currentData->temperatureCage = controls.temperatureReader->ReadCage();
-	storage.currentData->temperatureRoom = controls.temperatureReader->ReadRoom();
+	storage.currentData->temperatureCalo = controls.instruments.MeasureReader(READER_TEMPERATURE + TEMPERATURE_CALO);
+	storage.currentData->temperatureCage = controls.instruments.MeasureReader(READER_TEMPERATURE + TEMPERATURE_CAGE);
+	storage.currentData->temperatureRoom = controls.instruments.MeasureReader(READER_TEMPERATURE + TEMPERATURE_ROOM);
 }

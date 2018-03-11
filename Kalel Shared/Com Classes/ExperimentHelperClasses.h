@@ -1,6 +1,9 @@
 #pragma once
 
 #include <string>
+#include <functional>	// for function
+#include <memory>		// for pointers
+
 
 class user
 {
@@ -105,4 +108,47 @@ public:
 
 	data_continuous operator=(const data_continuous &adsorption);
 	bool operator!=(const data_continuous &adsorption);
+};
+
+
+class Instrument
+{
+public:
+	unsigned int type = 0;				// keithley/mensor/national instruments
+	std::wstring port_type;				// port type
+	unsigned int port = 0;				// port being used (USB1, COM1, DEV3)
+	bool initialised = false;			// whether the instrument is intialised, internal
+	unsigned int iNumber = 0;
+
+	Instrument operator=(const Instrument &i);
+	bool operator==(const Instrument &i);
+	bool operator==(const Instrument &i) const;
+};
+
+class Reader
+{
+public:
+	unsigned int type = 0;				// Pressure / Temperature etc
+	unsigned int identifier = 0;		// Number low pressure, calo temperature
+	unsigned int channel = 0;			// channel 1/2 of the instrument
+	unsigned int instrument = 0;		// key of the instrument used
+	long double sensitivity = 1;		// sensitivity of measurement
+	std::function<double(void)>			readerfunction = []() {return 0; };
+
+	Reader operator=(const Reader &r);
+	bool operator==(const Reader &r);
+};
+
+class Controller
+{
+public:
+	unsigned int type = 0;				// Valve, Pump, etc
+	unsigned int identifier = 0;		// Number 1/2
+	unsigned int channel = 0;			// channel 1/2 of the instrument
+	unsigned int instrument = 0;		// Key of the associated instrument
+	std::function<bool(void)>			readerfunction = []() {return false; };
+	std::function<bool(bool)>			controllerfunction = [](bool) {return false; };
+
+	Controller operator=(const Controller &c);
+	bool operator==(const Controller &c);
 };

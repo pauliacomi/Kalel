@@ -1,5 +1,9 @@
 // This class makes the link to the serial port of the computer.
 // It is used by any serial instrument class as an extension
+//
+// This class uses an OVERLAPPED means of RS232 communications
+// which means that it is therefore safely accessed by multiple 
+// threads
 
 #pragma once
 

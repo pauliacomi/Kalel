@@ -9,9 +9,9 @@
 
 NI_USB_6008::NI_USB_6008(int dev)
 {
-	DevNI_USB_6008 = dev;
-	ReadPort0();				// to generate initial states of valves
-	ReadPort1();				// to generate initial states of valves
+	portUSB = dev;
+	ReadPort(0);				// to generate initial states of valves
+	ReadPort(1);				// to generate initial states of valves
 }
 
 NI_USB_6008::~NI_USB_6008(void)
@@ -20,81 +20,46 @@ NI_USB_6008::~NI_USB_6008(void)
 
 // Get and set functions for the USB port
 
-int NI_USB_6008::GetDevNI_USB_6008()
+int NI_USB_6008::GetComPort()
 {
-	return DevNI_USB_6008;
+	return portUSB;
 }
 
-void NI_USB_6008::SetDevNI_USB_6008(int dev)
+void NI_USB_6008::SetComPort(int dev)
 {
-	DevNI_USB_6008 = dev;
+	portUSB = dev;
 }
 
 
-bool NI_USB_6008::ReadPort0()
+bool NI_USB_6008::ReadPort(unsigned int port)
 {
 	// Specific channel and line parameters
 	char        chan[50]		= { '\0' };
-	int			port			= 0;
 	int			line_start		= 0;
 	int			line_end		= 7;
 	
 	// Write channel string
-	sprintf_s(chan,"Dev%d/port%d/line%d:%d",DevNI_USB_6008, port, line_start, line_end);
+	sprintf_s(chan,"Dev%d/port%d/line%d:%d",portUSB, port, line_start, line_end);
 
 	// Read state
-	if (ReadDigital(chan, etatPort0)) {
+	if (ReadDigital(chan, portStates[port].data())) {
 		return true;
 	}
 	return false;
 }
 
-bool NI_USB_6008::ReadPort1()
+bool NI_USB_6008::WritePort(unsigned int port)
 {
 	// Specific channel and line parameters
 	char        chan[50]		= { '\0' };
-	int			port			= 1;
-	int			line_start		= 0;
-	int			line_end		= 3;
-
-	// Write channel string
-	sprintf_s(chan,"Dev%d/port%d/line%d:%d",DevNI_USB_6008, port, line_start, line_end);
-	
-	// Read state
-	if (ReadDigital(chan, etatPort1)) {
-		return true;
-	}
-	return false;
-}
-
-bool NI_USB_6008::WritePort0()
-{
-	// Specific channel and line parameters
-	char        chan[50]		= { '\0' };
-	int			port			= 0;
 	int			line_start		= 0;
 	int			line_end		= 7;
 
 	// Write channel string
-	sprintf_s(chan, "Dev%d/port%d/line%d:%d", DevNI_USB_6008, port, line_start, line_end);
+	sprintf_s(chan, "Dev%d/port%d/line%d:%d", portUSB, port, line_start, line_end);
 
 	// Write action
-	return WriteDigital(chan, etatPort0);
-}
-
-bool NI_USB_6008::WritePort1()
-{
-	// Specific channel and line parameters
-	char        chan[50]		= { '\0' };
-	int			port			= 1;
-	int			line_start		= 0;
-	int			line_end		= 3;
-
-	// Write channel string
-	sprintf_s(chan, "Dev%d/port%d/line%d:%d", DevNI_USB_6008, port, line_start, line_end);
-
-	// Write action
-	return WriteDigital(chan, etatPort1);
+	return WriteDigital(chan, portStates[port].data());
 }
 
 
@@ -216,25 +181,25 @@ Error:
 
 //// Complete set
 
-bool NI_USB_6008::SetPortCustom(int port, unsigned int customarray[8])
+bool NI_USB_6008::SetChannelCustom(unsigned int port, unsigned int customarray[8])
 {
 	if (port == 0)
 	{
 		int temp[8];
 		for (int i = 0; i < 8; i++)
 		{
-			temp[i] = etatPort0[i];
-			etatPort0[i] = customarray[i];
+			temp[i] = portStates[0][i];
+			portStates[0][i] = customarray[i];
 		}
 
-		if (WritePort0())
+		if (WritePort(0))
 		{
 			return true;
 		}
 
 		for (int i = 0; i < 8; i++)
 		{
-			etatPort0[i] = temp[i];
+			portStates[0][i] = temp[i];
 		}
 
 	}
@@ -243,166 +208,64 @@ bool NI_USB_6008::SetPortCustom(int port, unsigned int customarray[8])
 		int temp[8];
 		for (int i = 0; i < 8; i++)
 		{
-			temp[i] = etatPort1[i];
-			etatPort1[i] = customarray[i];
+			temp[i] = portStates[1][i];
+			portStates[1][i] = customarray[i];
 		}
 
-		if (WritePort1())
+		if (WritePort(1))
 		{
 			return true;
 		}
 
 		for (int i = 0; i < 8; i++)
 		{
-			etatPort1[i] = temp[i];
+			portStates[1][i] = temp[i];
 		}
 	}
 
 	return false;
 }
 
-///// Single lines
-
-bool NI_USB_6008::OuvrirPort0(int num)
-{
-	etatPort0[num] = open;
-	if(WritePort0())
-	{
-		return true;
-	}
-	
-	etatPort0[num] = closed;
-	return false;
-}
-
-bool NI_USB_6008::FermerPort0(int num)
-{
-	etatPort0[num] = closed;
-	if(WritePort0())
-	{
-		return true;
-	}
-	
-	etatPort0[num] = open;
-	return false;
-}
-
-
-bool NI_USB_6008::OuvrirPort1(int num)
-{
-	etatPort1[num] = open;
-	if(WritePort1())
-	{
-		return true;
-	}
-	
-	etatPort1[num]=closed;
-	return false;
-}
-
-bool NI_USB_6008::FermerPort1(int num)
-{
-	etatPort1[num] = closed;
-	if(WritePort1())
-	{
-		return true;
-	}
-	
-	etatPort1[num] = open;
-	return false;
-}
-
 
 ///// Whole ports
 
-bool NI_USB_6008::FermerPort0Tous()
+bool NI_USB_6008::SetChannelAll(unsigned int chan, bool state)
 {
 	int temp[8];
-	for (int i = 0; i < 8; i++)
+	for (int i : temp)
 	{
-		temp[i] = etatPort0[i];
-		etatPort0[i] = closed;
+		temp[i] = portStates[chan][i];
+		portStates[chan][i] = state;
 	}
-	if (WritePort0()) {
+	if (WritePort(chan)) {
 		return true;
 	}
 
-	for (int i = 0; i < 8; i++)
+	for (int i : temp)
 	{
-		etatPort0[i] = temp[i];
+		portStates[chan][i] = temp[i];
 	}
 	return false;
 }
 
-bool NI_USB_6008::OuvrirPort0Tous()
+///// Single lines
+
+bool NI_USB_6008::SetSubchannel(unsigned int chan, unsigned int subchan, bool state)
 {
-	int temp[8];
-	for (int i = 0; i < 8; i++)
+	portStates[chan][subchan] = state;
+	if(WritePort(chan))
 	{
-		temp[i] = etatPort0[i];
-		etatPort0[i] = open;
-	}
-	if (WritePort0()) {
 		return true;
 	}
-
-	for (int i = 0; i < 8; i++)
-	{
-		etatPort0[i] = temp[i];
-	}
-	return false;
-}
-
-bool NI_USB_6008::FermerPort1Tous()
-{
-	int temp[4];
-	for (int i = 0; i < 4; i++)
-	{
-		temp[i] = etatPort1[i];
-		etatPort1[i] = closed;
-	}
-	if (WritePort0()) {
-		return true;
-	}
-
-	for (int i = 0; i < 4; i++)
-	{
-		etatPort1[i] = temp[i];
-	}
-	return false;
-}
-
-bool NI_USB_6008::OuvrirPort1Tous()
-{
-	int temp[4];
-	for (int i = 0; i < 4; i++)
-	{
-		temp[i] = etatPort1[i];
-		etatPort1[i] = open;
-	}
-	if (WritePort1()) {
-		return true;
-	}
-
-	for (int i = 0; i < 4; i++)
-	{
-		etatPort1[i] = temp[i];
-	}
+	
+	portStates[chan][subchan] = !state;
 	return false;
 }
 
 
-bool NI_USB_6008::EstOuvertPort0(int num)
-{return (etatPort0[num]==open);}
 
-bool NI_USB_6008::EstFermePort0(int num)
-{return (etatPort0[num]==closed);}
+bool NI_USB_6008::IsOpenSubchannel(unsigned int chan, unsigned int subchan)
+{return (portStates[chan][subchan]==open);}
 
-
-bool NI_USB_6008::EstOuvertPort1(int num)
-{return (etatPort1[num]==open);}
-
-bool NI_USB_6008::EstFermePort1(int num)
-{return (etatPort1[num]==closed);}
 
 

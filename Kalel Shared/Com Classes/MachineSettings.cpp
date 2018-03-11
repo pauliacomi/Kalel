@@ -113,8 +113,7 @@ void MachineSettings::AddInstrument(Instrument i, unsigned int position /*=0*/)
 		return;
 	}
 	if (instruments.find(position) != instruments.end()) {
-		instruments[position].type = i.type;
-		instruments[position].port = i.port;
+		instruments[position] = i;
 	}
 	else
 	{
@@ -134,11 +133,8 @@ void MachineSettings::AddReader(Reader r, unsigned int position)
 		return;
 	}
 	if (readers.find(position) != readers.end()) {
-		readers[position].type			= r.type		;
-		readers[position].identifier	= r.identifier	;
-		readers[position].sensitivity	= r.sensitivity	;
-		readers[position].channel		= r.channel		;
-		readers[position].instrument	= r.instrument	;
+		readers[position] = r;
+		readers[position].readerfunction = r.readerfunction;
 	}
 	else
 	{
@@ -158,11 +154,8 @@ void MachineSettings::AddController(Controller r, unsigned int position)
 		return;
 	}
 	if (controllers.find(position) != controllers.end()) {
-		controllers[position].type			= r.type		;
-		controllers[position].identifier	= r.identifier	;
-		controllers[position].sensitivity	= r.sensitivity	;
-		controllers[position].channel		= r.channel		;
-		controllers[position].instrument	= r.instrument	;
+		controllers[position] = r;
+		controllers[position].controllerfunction	= r.controllerfunction;
 	}
 	else
 	{

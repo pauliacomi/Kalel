@@ -30,6 +30,8 @@
 #define MESSAGE_THREAD_SHUTTINGDOWN			"Thread is shutting down"
 #define MESSAGE_THREAD_SHUTDOWN				"Thread shut down"
 #define MESSAGE_INSTRUMENT_INIT_FAIL		"Instrument initiation failed: \t\n%s"
+#define MESSAGE_INSTRUMENT_DESTROY_FAIL		"Instrument removal failed: \t\n%s"
+#define MESSAGE_INSTRUMENT_PORTCHANGE_FAIL	"Instrument port change failed: \t\n%s"
 
 /*
 //

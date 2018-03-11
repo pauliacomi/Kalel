@@ -192,9 +192,7 @@
     <ClInclude Include="Backend\USB\NIDAQmx.h" />
     <ClInclude Include="Backend\USB\NI_USB_6008.h" />
     <ClInclude Include="Backend\USB\NI_USB_9211A.h" />
-    <ClInclude Include="Backend\Wrapper Classes\PressureReader.h" />
-    <ClInclude Include="Backend\Wrapper Classes\CalorimeterReader.h" />
-    <ClInclude Include="Backend\Wrapper Classes\TemperatureReader.h" />
+    <ClInclude Include="Backend\Wrapper Classes\InstrumentInterface.h" />
     <ClInclude Include="Backend\Wrapper Classes\ValveController.h" />
     <ClInclude Include="Kalel.h" />
     <ClInclude Include="Parameters\Parametres.h" />
@@ -236,9 +234,6 @@
     <ClCompile Include="Backend\RS232\lrs232.c" />
     <ClCompile Include="Backend\USB\NI_USB_6008.cpp" />
     <ClCompile Include="Backend\USB\NI_USB_9211A.cpp" />
-    <ClCompile Include="Backend\Wrapper Classes\PressureReader.cpp" />
-    <ClCompile Include="Backend\Wrapper Classes\CalorimeterReader.cpp" />
-    <ClCompile Include="Backend\Wrapper Classes\TemperatureReader.cpp" />
     <ClCompile Include="Backend\Wrapper Classes\ValveController.cpp" />
     <ClCompile Include="Kalel Server.cpp" />
     <ClCompile Include="Kalel.cpp" />

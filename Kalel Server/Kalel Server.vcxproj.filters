@@ -43,9 +43,6 @@
     <Filter Include="Source Files\Backend\USB">
       <UniqueIdentifier>{2d2c139f-1f3c-464a-afd5-cf3f2e506f5c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Backend\Wrapper Classes">
-      <UniqueIdentifier>{088f445a-ea32-4638-ab07-6ca890227991}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Backend\RS232">
       <UniqueIdentifier>{d395abf1-4f98-4ab8-b9c7-10125a817d9e}</UniqueIdentifier>
     </Filter>
@@ -195,9 +192,6 @@
     <ClInclude Include="Automation\Measurement\Security.h">
       <Filter>Header Files\Automation\Measurement</Filter>
     </ClInclude>
-    <ClInclude Include="Backend\Wrapper Classes\ValveController.h">
-      <Filter>Header Files\Backend\Wrapper Classes</Filter>
-    </ClInclude>
     <ClInclude Include="..\Kalel Shared\Com Classes\ControlInstrumentState.h">
       <Filter>Header Files\Common\Com Classes</Filter>
     </ClInclude>
@@ -206,15 +200,6 @@
     </ClInclude>
     <ClInclude Include="..\Kalel Shared\soundHelpers.h">
       <Filter>Header Files\Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Backend\Wrapper Classes\TemperatureReader.h">
-      <Filter>Header Files\Backend\Wrapper Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="Backend\Wrapper Classes\PressureReader.h">
-      <Filter>Header Files\Backend\Wrapper Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="Backend\Wrapper Classes\CalorimeterReader.h">
-      <Filter>Header Files\Backend\Wrapper Classes</Filter>
     </ClInclude>
     <ClInclude Include="Backend\RS232\lrs232.h">
       <Filter>Header Files\Backend\RS232</Filter>
@@ -239,6 +224,12 @@
     </ClInclude>
     <ClInclude Include="..\Kalel Shared\Com Classes\Serialization.h">
       <Filter>Header Files\Common\Com Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Backend\Wrapper Classes\InstrumentInterface.h">
+      <Filter>Header Files\Backend\Wrapper Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Backend\Wrapper Classes\ValveController.h">
+      <Filter>Header Files\Backend\Wrapper Classes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -335,23 +326,11 @@
     <ClCompile Include="Automation\Measurement\Security.cpp">
       <Filter>Source Files\Automation\Measurement</Filter>
     </ClCompile>
-    <ClCompile Include="Backend\Wrapper Classes\ValveController.cpp">
-      <Filter>Source Files\Backend\Wrapper Classes</Filter>
-    </ClCompile>
     <ClCompile Include="..\Kalel Shared\timeHelpers.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
     <ClCompile Include="..\Kalel Shared\soundHelpers.cpp">
       <Filter>Source Files\Common</Filter>
-    </ClCompile>
-    <ClCompile Include="Backend\Wrapper Classes\CalorimeterReader.cpp">
-      <Filter>Source Files\Backend\Wrapper Classes</Filter>
-    </ClCompile>
-    <ClCompile Include="Backend\Wrapper Classes\TemperatureReader.cpp">
-      <Filter>Source Files\Backend\Wrapper Classes</Filter>
-    </ClCompile>
-    <ClCompile Include="Backend\Wrapper Classes\PressureReader.cpp">
-      <Filter>Source Files\Backend\Wrapper Classes</Filter>
     </ClCompile>
     <ClCompile Include="Backend\RS232\lrs232.c">
       <Filter>Source Files\Backend\RS232</Filter>
@@ -367,6 +346,9 @@
     </ClCompile>
     <ClCompile Include="..\Kalel Shared\Com Classes\ExperimentStatus.cpp">
       <Filter>Source Files\Common\Com Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="Backend\Wrapper Classes\ValveController.cpp">
+      <Filter>Header Files\Backend\Wrapper Classes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
