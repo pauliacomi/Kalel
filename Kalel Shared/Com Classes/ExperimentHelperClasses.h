@@ -144,8 +144,9 @@ class Controller
 public:
 	unsigned int type = 0;				// Valve, Pump, etc
 	unsigned int identifier = 0;		// Number 1/2
-	unsigned int channel = 0;			// channel 1/2 of the instrument
 	unsigned int instrument = 0;		// Key of the associated instrument
+	unsigned int channel = 0;			// channel 1/2 of the instrument
+	unsigned int subchannel = 0;		// channel 1/2 of the instrument
 	std::function<bool(void)>			readerfunction = []() {return false; };
 	std::function<bool(bool)>			controllerfunction = [](bool) {return false; };
 

@@ -1,26 +1,20 @@
 //*****************************************************************************************************
 //
-//	This class extends the valve controller class
-//	It is used as an easy-to-read interface that should make any instrument changes easy
-//	by providing a guide for the functions to implement.
+//	This class makes the valve controlling easier by providing simple functions
 //
 //*****************************************************************************************************
 
 #pragma once
 
-#include "../USB/NI_USB_6008.h"
+#include "../Instruments.h"
 
-#include <mutex>
-
-class MachineSettings;
-
-class ValveController :
-	public NI_USB_6008
+class ValveController
 {
 public:
-	ValveController(int port);
+	ValveController(Instruments & i);
 	~ValveController(void);
-	void Reset(MachineSettings & m);
+
+	Instruments & instruments;
 
 	bool ValveOpen(int num, bool verbose);		// Open a valve
 	bool ValveClose(int num, bool verbose);		// Close a valve
@@ -34,19 +28,11 @@ public:
 	bool CloseAll(bool verbose);				// Close everything
 	bool CloseAllValves(bool verbose);			// Close all the valves
 	bool CloseEVsAndPump(bool verbose);			// Close the Pump and EV's
+	bool CloseEverything(bool verbose);			// Close all things
 
 	// Checks for activation
 
 	bool ValveIsOpen(int num);
 	bool EVIsActive(int num);
 	bool PumpIsActive();
-
-	// Get the port
-	int GetReadPort();
-
-	// Set the port
-	void SetReadPort(int port);
-
-private:
-	std::mutex ctrlmutex;						// locks to prevent clash of threads
 };

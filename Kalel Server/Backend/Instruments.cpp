@@ -331,12 +331,15 @@ void Instruments::BindReader(Reader & r) {
 
 
 void Instruments::BindController(Controller & c) {
-	switch (c.type)
+
+	auto instrument = instruments[c.instrument];
+
+	switch (instrument.type)
 	{
 
 	case INSTRUMENT_NI_USB_6008:
-		c.readerfunction = std::bind(&NI_USB_6008::IsOpenSubchannel, &NI_USB_6008s.find(instruments[c.instrument].iNumber)->second, c.channel, c.identifier);
-		c.controllerfunction = std::bind(&NI_USB_6008::SetSubchannel, &NI_USB_6008s.find(instruments[c.instrument].iNumber)->second, c.channel, c.identifier, std::placeholders::_1);
+		c.readerfunction = std::bind(&NI_USB_6008::IsOpenSubchannel, &NI_USB_6008s.find(instrument.iNumber)->second, c.channel, c.subchannel);
+		c.controllerfunction = std::bind(&NI_USB_6008::SetSubchannel, &NI_USB_6008s.find(instrument.iNumber)->second, c.channel, c.subchannel, std::placeholders::_1);
 		break;
 
 	case NONE:

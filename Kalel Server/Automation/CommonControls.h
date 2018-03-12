@@ -31,7 +31,7 @@ public:
 	Instruments instruments;
 
 	std::shared_ptr<FileWriter> fileWriter;									// The file writing class
-	std::shared_ptr<ValveController> valveControls;							// The valve control/query class.	Thread Safe!
+	ValveController valveControls{ instruments };							// The valve control/query class -> simplification for instruments
 
 	std::shared_ptr<Security> security;										// Pointer to the class that deals with security
 
@@ -44,7 +44,6 @@ public:
 	// On machine settings change
 	void on_setmachineSettings() {
 		instruments.Reset(*storage.machineSettings);
-		valveControls->Reset(*storage.machineSettings);
 	}
 };
 
@@ -56,16 +55,7 @@ inline Controls::Controls(Storage &h)
 {
 	// Create objects from controls class
 	fileWriter			= std::make_shared<FileWriter>();
-
-	// controls
-	// TODO: rewrite valve in the style of others
-	for (auto i = h.machineSettings->instruments.begin(); i != h.machineSettings->instruments.end(); ++i) {
-		if (i->second.type == INSTRUMENT_NI_USB_6008) {
-			valveControls = std::make_shared<ValveController>(i->second.port);
-		}
-	}
-
-	security			= std::make_shared<Security>(h.machineSettings->ActivationSecurite, *valveControls);
+	security			= std::make_shared<Security>(h.machineSettings->ActivationSecurite, valveControls);
 }
 
 inline Controls::~Controls(void)

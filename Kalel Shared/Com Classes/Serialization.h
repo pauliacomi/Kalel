@@ -156,12 +156,16 @@ inline void to_json(nlohmann::json &j, const Controller &m) {
 	j["type"							]	= m.type									;
 	j["identifier"						]	= m.identifier								;
 	j["instrument"						]	= m.instrument								;
+	j["channel"							]	= m.channel									;
+	j["subchannel"						]	= m.subchannel								;
 }
 
 inline void from_json(const nlohmann::json &j, Controller &m) {
 	m.type												=					j["type"									];
 	m.identifier										=					j["identifier"								];
 	m.instrument										=					j["instrument"								];
+	m.channel											=					j["channel"									];
+	m.subchannel										=					j["subchannel"								];
 }
 
 //*************************************************************************************************************************

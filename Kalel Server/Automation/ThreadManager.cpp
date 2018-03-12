@@ -188,7 +188,7 @@ unsigned ThreadManager::ShutdownAutomation()
 
 //--------------------------------------------------------------------------------------
 //
-// --------- Manual actions start, pausing, resetting, resuming and shutdown --------
+// --------- Manual actions start ------------------------------------------------------
 //
 //--------------------------------------------------------------------------------------
 
@@ -206,34 +206,7 @@ void ThreadManager::ManualAction(int instrumentType, int instrumentNumber, bool 
 {
 	bool actionSuccessful = false;
 
-	// Launch required functionality
-	switch (instrumentType)
-	{
-	case INSTRUMENT_VALVE:
-		if (state)
-			actionSuccessful = controls.valveControls->ValveOpen(instrumentNumber, false);
-		else
-			actionSuccessful = controls.valveControls->ValveClose(instrumentNumber, false);
-		break;
-
-	case INSTRUMENT_EV:
-		if (state)
-			actionSuccessful = controls.valveControls->EVActivate(instrumentNumber, false);
-		else
-			actionSuccessful = controls.valveControls->EVDeactivate(instrumentNumber, false);
-		break;
-
-	case INSTRUMENT_PUMP:
-		if (state)
-			actionSuccessful = controls.valveControls->PumpActivate(false);
-		else
-			actionSuccessful = controls.valveControls->PumpDeactivate(false);
-		break;
-
-	default:
-		throw;
-		break;
-	}
+	actionSuccessful = controls.instruments.ActuateController(instrumentType + instrumentNumber, state);
 
 	// return
 	if (actionSuccessful)
@@ -247,14 +220,23 @@ ControlInstrumentState ThreadManager::GetInstrumentStates()
 {
 	ControlInstrumentState state;
 
-	for (size_t i = 0; i < state.valves.size(); i++)
+	for (auto i : controls.instruments.controllers)
 	{
-		state.valves[i] = controls.valveControls->ValveIsOpen(i);
+		switch (i.second.type)
+		{
+		case INSTRUMENT_VALVE:
+			state.valves[i.second.identifier -1] = i.second.readerfunction();
+			break;
+		case INSTRUMENT_EV:
+			state.EVs[i.second.identifier - 1] = i.second.readerfunction();
+			break;
+		case INSTRUMENT_PUMP:
+			state.pumps[i.second.identifier - 1] = i.second.readerfunction();
+			break;
+		default:
+			break;
+		}
+	
 	}
-
-	state.EVs[0] = controls.valveControls->EVIsActive(1);
-	state.EVs[1] = controls.valveControls->EVIsActive(2);
-	state.pumps[0] = controls.valveControls->PumpIsActive();
-
 	return state;
 }

@@ -27,6 +27,9 @@ int NI_USB_6008::GetComPort()
 
 void NI_USB_6008::SetComPort(int dev)
 {
+	// Lock for the remainder of function
+	std::lock_guard<std::mutex> lk(mutex);
+
 	portUSB = dev;
 }
 
@@ -183,44 +186,24 @@ Error:
 
 bool NI_USB_6008::SetChannelCustom(unsigned int port, unsigned int customarray[8])
 {
-	if (port == 0)
+	// Lock for the remainder of function
+	std::lock_guard<std::mutex> lk(mutex);
+
+	int temp[8];
+	for (int i : temp)
 	{
-		int temp[8];
-		for (int i = 0; i < 8; i++)
-		{
-			temp[i] = portStates[0][i];
-			portStates[0][i] = customarray[i];
-		}
-
-		if (WritePort(0))
-		{
-			return true;
-		}
-
-		for (int i = 0; i < 8; i++)
-		{
-			portStates[0][i] = temp[i];
-		}
-
+		temp[i] = portStates[port][i];
+		portStates[port][i] = customarray[i];
 	}
-	else if (port == 1)
+
+	if (WritePort(port))
 	{
-		int temp[8];
-		for (int i = 0; i < 8; i++)
-		{
-			temp[i] = portStates[1][i];
-			portStates[1][i] = customarray[i];
-		}
+		return true;
+	}
 
-		if (WritePort(1))
-		{
-			return true;
-		}
-
-		for (int i = 0; i < 8; i++)
-		{
-			portStates[1][i] = temp[i];
-		}
+	for (int i : temp)
+	{
+		portStates[port][i] = temp[i];
 	}
 
 	return false;
@@ -231,6 +214,9 @@ bool NI_USB_6008::SetChannelCustom(unsigned int port, unsigned int customarray[8
 
 bool NI_USB_6008::SetChannelAll(unsigned int chan, bool state)
 {
+	// Lock for the remainder of function
+	std::lock_guard<std::mutex> lk(mutex);
+
 	int temp[8];
 	for (int i : temp)
 	{
@@ -252,6 +238,9 @@ bool NI_USB_6008::SetChannelAll(unsigned int chan, bool state)
 
 bool NI_USB_6008::SetSubchannel(unsigned int chan, unsigned int subchan, bool state)
 {
+	// Lock for the remainder of function
+	std::lock_guard<std::mutex> lk(mutex);
+
 	portStates[chan][subchan] = state;
 	if(WritePort(chan))
 	{

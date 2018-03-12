@@ -16,7 +16,7 @@ Automation::Automation(Storage &s, Controls &c)
 Automation::~Automation()
 {
 	// Close valves/pump
-	controls.valveControls->CloseAll(false);
+	controls.valveControls.CloseAll(false);
 }
 
 ////////////////////////////////////////////////////////

@@ -103,7 +103,7 @@ bool Automation::VerificationResidualPressure()
 			LOG(logINFO) << MESSAGE_CHECK_OPENV6_POSSIB << storage.currentData->pressureHigh;
 
 			// Open valve 6
-			controls.valveControls->ValveOpen(6, true);
+			controls.valveControls.ValveOpen(6, true);
 
 			// Tell GUI we are waiting
 			LOG(logINFO) << MESSAGE_WAIT_TIME << TIME_WAIT_VALVES;
@@ -119,7 +119,7 @@ bool Automation::VerificationResidualPressure()
 		&& storage.experimentStatus->experimentWaiting == false)							// If waiting is done
 	{
 		// Open valve 5
-		controls.valveControls->ValveOpen(5, true);
+		controls.valveControls.ValveOpen(5, true);
 
 		// Tell GUI we are waiting
 		LOG(logINFO) << MESSAGE_WAIT_TIME, TIME_WAIT_VALVES;

@@ -21,9 +21,9 @@ void Automation::StageVacuum(bool separateFunctionality)
 		LOG(logINFO) << MESSAGE_VACUUM_STAGE_START;											// Let GUI know the step change
 		LOG(logINFO) << MESSAGE_VACUUM_HIGHPRESSURE_START;
 
-		controls.valveControls->CloseAll(true);												// Close all valves
-		controls.valveControls->PumpActivate(true);											// Activate the pump
-		controls.valveControls->ValveOpen(5, true);											// Open V5
+		controls.valveControls.CloseAll(true);												// Close all valves
+		controls.valveControls.PumpActivate(true);											// Activate the pump
+		controls.valveControls.ValveOpen(5, true);											// Open V5
 		WaitSeconds(TIME_WAIT_PUMP);
 	}
 
@@ -34,7 +34,7 @@ void Automation::StageVacuum(bool separateFunctionality)
 		if (storage.currentData->pressureHigh > storage.machineSettings->PressionSecuriteBassePression) {
 
 			// Open, then close v8 and v7
-			controls.valveControls->ValveOpen(8, true);
+			controls.valveControls.ValveOpen(8, true);
 			WaitSeconds(TIME_WAIT_VALVES_SHORT);
 			storage.experimentStatus->experimentStepStatus = STEP_STATUS_INPROGRESS + 1;
 		}
@@ -42,7 +42,7 @@ void Automation::StageVacuum(bool separateFunctionality)
 		{
 			LOG(logINFO) << MESSAGE_VACUUM_HIGHPRESSURE_END;
 			LOG(logINFO) << MESSAGE_VACUUM_LOWPRESSURE_START;
-			controls.valveControls->ValveOpen(6, true);
+			controls.valveControls.ValveOpen(6, true);
 			WaitSeconds(TIME_WAIT_VALVES_SHORT);
 
 			storage.experimentStatus->experimentStepStatus = STEP_STATUS_INPROGRESS + 4;
@@ -52,7 +52,7 @@ void Automation::StageVacuum(bool separateFunctionality)
 	if (storage.experimentStatus->experimentSubstepStage == STEP_STATUS_INPROGRESS + 1 &&
 		storage.experimentStatus->experimentWaiting == false)
 	{
-		controls.valveControls->ValveClose(8, true);
+		controls.valveControls.ValveClose(8, true);
 		WaitSeconds(TIME_WAIT_VALVES_SHORT);
 		storage.experimentStatus->experimentSubstepStage = STEP_STATUS_INPROGRESS + 2;
 	}
@@ -60,7 +60,7 @@ void Automation::StageVacuum(bool separateFunctionality)
 	if (storage.experimentStatus->experimentSubstepStage == STEP_STATUS_INPROGRESS + 2 &&
 		storage.experimentStatus->experimentWaiting == false)
 	{
-		controls.valveControls->ValveOpen(7, true);
+		controls.valveControls.ValveOpen(7, true);
 		WaitSeconds(TIME_WAIT_VALVES_SHORT);
 		storage.experimentStatus->experimentSubstepStage = STEP_STATUS_INPROGRESS + 3;
 	}
@@ -68,7 +68,7 @@ void Automation::StageVacuum(bool separateFunctionality)
 	if (storage.experimentStatus->experimentSubstepStage == STEP_STATUS_INPROGRESS + 3 &&
 		storage.experimentStatus->experimentWaiting == false)
 	{
-		controls.valveControls->ValveClose(7, true);
+		controls.valveControls.ValveClose(7, true);
 		WaitSeconds(TIME_WAIT_VALVES_SHORT);
 		storage.experimentStatus->experimentSubstepStage = STEP_STATUS_INPROGRESS;					// Go back to the start
 	}
@@ -83,7 +83,7 @@ void Automation::StageVacuum(bool separateFunctionality)
 		if (storage.currentData->pressureHigh > pression_pompe) {
 
 			// Open, then close v8 and v7
-			controls.valveControls->ValveOpen(8, true);
+			controls.valveControls.ValveOpen(8, true);
 			WaitSeconds(TIME_WAIT_VALVES_SHORT);
 			storage.experimentStatus->experimentStepStatus = STEP_STATUS_INPROGRESS + 5;
 		}
@@ -91,8 +91,8 @@ void Automation::StageVacuum(bool separateFunctionality)
 		{
 			LOG(logINFO) << MESSAGE_VACUUM_LOWPRESSURE_END;
 
-			controls.valveControls->ValveOpen(8, true);
-			controls.valveControls->ValveOpen(7, true);
+			controls.valveControls.ValveOpen(8, true);
+			controls.valveControls.ValveOpen(7, true);
 			WaitSeconds(TIME_WAIT_VALVES);
 
 			storage.experimentStatus->experimentStepStatus = STEP_STATUS_INPROGRESS + 8;
@@ -102,7 +102,7 @@ void Automation::StageVacuum(bool separateFunctionality)
 	if (storage.experimentStatus->experimentSubstepStage == STEP_STATUS_INPROGRESS + 5 &&
 		storage.experimentStatus->experimentWaiting == false)
 	{
-		controls.valveControls->ValveClose(8, true);
+		controls.valveControls.ValveClose(8, true);
 		WaitSeconds(TIME_WAIT_VALVES_SHORT);
 		storage.experimentStatus->experimentSubstepStage = STEP_STATUS_INPROGRESS + 6;
 	}
@@ -110,7 +110,7 @@ void Automation::StageVacuum(bool separateFunctionality)
 	if (storage.experimentStatus->experimentSubstepStage == STEP_STATUS_INPROGRESS + 6 &&
 		storage.experimentStatus->experimentWaiting == false)
 	{
-		controls.valveControls->ValveOpen(7, true);
+		controls.valveControls.ValveOpen(7, true);
 		WaitSeconds(TIME_WAIT_VALVES_SHORT);
 		storage.experimentStatus->experimentSubstepStage = STEP_STATUS_INPROGRESS + 7;
 	}
@@ -118,7 +118,7 @@ void Automation::StageVacuum(bool separateFunctionality)
 	if (storage.experimentStatus->experimentSubstepStage == STEP_STATUS_INPROGRESS + 7 &&
 		storage.experimentStatus->experimentWaiting == false)
 	{
-		controls.valveControls->ValveClose(7, true);
+		controls.valveControls.ValveClose(7, true);
 		WaitSeconds(TIME_WAIT_VALVES_SHORT);
 		storage.experimentStatus->experimentSubstepStage = STEP_STATUS_INPROGRESS + 4;					// Go back to the start
 	}
@@ -156,7 +156,7 @@ void Automation::StageVacuum(bool separateFunctionality)
 
 		storage.experimentStatus->experimentStepStatus = STEP_STATUS_START;													// Let GUI know the step change
 
-		controls.valveControls->CloseAll(true);
+		controls.valveControls.CloseAll(true);
 
 		if (separateFunctionality)
 		{

@@ -101,7 +101,7 @@ void Measurement::Execution()
 					storage.experimentSettings->dataGeneral ,
 					*storage.currentData, 
 					*storage.experimentStatus, 
-					controls.valveControls->ValveIsOpen(6));
+					controls.valveControls.ValveIsOpen(6));
 				if (err) {
 					LOG(logERROR) << MESSAGE_WARNING_FILE;
 				}

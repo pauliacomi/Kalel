@@ -29,10 +29,11 @@ private:
 
 	std::map<unsigned int, Instrument> instruments;			// The instruments in the machine
 
+
+public:
 	std::map<unsigned int, Reader>	readers;				// The readers which are available
 	std::map<unsigned int, Controller>	controllers;		// The controllers which are available
 
-public:
 	void Reset(const MachineSettings & m);
 
 	double MeasureReader(unsigned int identifier);

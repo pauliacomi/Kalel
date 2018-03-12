@@ -11,6 +11,7 @@
 #include "../Wrapper Classes/InstrumentInterface.h"
 #include <vector>
 #include <array>
+#include <mutex>
 
 class NI_USB_6008 : InstrumentInterface
 {
@@ -37,6 +38,9 @@ private:
 	bool WritePort(unsigned int port);
 	bool ReadDigital(char chan[], uInt8 w_data[]);
 	bool WriteDigital(char chan[], uInt8 w_data[]);
+
+private:
+	std::mutex mutex;									// locks to prevent clash of threads on writing
 
 public:
 	
