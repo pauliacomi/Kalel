@@ -183,9 +183,6 @@
     <ClInclude Include="Automation\FileWriter.h">
       <Filter>Header Files\Automation</Filter>
     </ClInclude>
-    <ClInclude Include="Automation\CommonPointers.h">
-      <Filter>Header Files\Automation</Filter>
-    </ClInclude>
     <ClInclude Include="Automation\CommonControls.h">
       <Filter>Header Files\Automation</Filter>
     </ClInclude>
@@ -230,6 +227,9 @@
     </ClInclude>
     <ClInclude Include="Backend\Wrapper Classes\ValveController.h">
       <Filter>Header Files\Backend\Wrapper Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Automation\CommonStorage.h">
+      <Filter>Header Files\Automation</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -12,7 +12,7 @@
 
 // Synchronization classes
 #include "../CommonControls.h"
-#include "../CommonPointers.h"
+#include "../CommonStorage.h"
 
 
 // std::functionality

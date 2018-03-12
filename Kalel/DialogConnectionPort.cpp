@@ -397,7 +397,6 @@ void ConnectionPort::SaveModifications(MachineSettings& newSettings)
 	Controller c;
 	c.type = CONTROLLER_VALVES;
 	c.identifier = ID_CONTROLLER_VALVES;
-	c.sensitivity = 1.0;
 	c.channel = 1;
 	c.instrument = valvecontroller;
 

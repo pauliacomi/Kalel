@@ -69,6 +69,9 @@ Kalel::Kalel()
 		std::bind(&Kalel::RequestSync,				this, std::placeholders::_1, std::placeholders::_2),
 													"/api/experimentrequests");
 	server.AddMethod(
+		std::bind(&Kalel::RequestSync,				this, std::placeholders::_1, std::placeholders::_2),
+													"/api/debuglogs");
+	server.AddMethod(
 		std::bind(&Kalel::AutomationControl,		this, std::placeholders::_1, std::placeholders::_2),
 													"/api/thread");
 	server.AddMethod(
@@ -120,7 +123,15 @@ void Kalel::Ping(http_request* req, http_response* resp)
 	{
 		resp->status_ = http::responses::ok;
 		resp->content_type_ = http::mimetype::texthtml;
-		resp->answer_ = R"(<!DOCTYPE html PUBLIC " -//IETF//DTD HTML 2.0//EN"><html><head><title>Kalel Server</title></head><body><h1>Ping OK</h1></body></html>)";
+		resp->answer_ = R"(<!DOCTYPE html PUBLIC " -//IETF//DTD HTML 2.0//EN">
+					<html>
+						<head>
+							<title>Kalel Server</title>
+						</head>
+					<body>
+						<h1>Ping OK</h1>
+					</body>
+					</html>)";
 	}
 }
 
@@ -255,10 +266,10 @@ void Kalel::ExperimentSettingsSync(http_request* req, http_response* resp)
 
 			// Create new experiment settings, logging change if experiment is running
 			if (storageVectors.experimentStatus->experimentInProgress == true) {
-				controlMechanisms.fileWriter->RecordDataChange(false, 
+				controlMechanisms.fileWriter.RecordDataChange(false, 
 					*newSettings, *storageVectors.experimentSettings,
 					*storageVectors.experimentStatus, *storageVectors.currentData);						// non-CSV
-				controlMechanisms.fileWriter->RecordDataChange(true,
+				controlMechanisms.fileWriter.RecordDataChange(true,
 					*newSettings, *storageVectors.experimentSettings,
 					*storageVectors.experimentStatus, *storageVectors.currentData);						// CSV
 			}
@@ -511,6 +522,54 @@ void Kalel::RequestSync(http_request* req, http_response* resp)
 	LOG(logDEBUG) << "requests took " << std::to_string(t.TimeMilliseconds());
 }
 
+/*********************************
+// Debug sync
+*********************************/
+void Kalel::DebugSync(http_request* req, http_response* resp)
+{
+	timeh::timer t;
+	LOG(logDEBUG) << "Debug sync";
+	t.Start();
+
+	if (req->method_ == http::method::get)
+	{
+		// Figure out which range of logs to send by finding the requested timestamp
+
+		std::unique_ptr<TextStorage> localCollection;
+
+		if (req->params_.empty() ||									// If parameters don't exist, send all the logs
+			req->params_.at("time").empty() ||
+			req->params_.at("time") == "start")
+		{
+			localCollection = std::make_unique<TextStorage>(storageVectors.debugLogs.get());
+		}
+		else
+		{
+			localCollection = std::make_unique<TextStorage>(storageVectors.debugLogs.get(timeh::StringToTimePoint(req->params_.at("time"))));
+		}
+
+		if (localCollection->size() != 0)							// If any exist
+		{
+			json j;
+
+			for (const auto& kv : *localCollection) {
+				j[timeh::TimePointToString(kv.first)] = kv.second;
+			}
+
+			resp->status_ = http::responses::ok;
+			resp->content_type_ = http::mimetype::appjson;
+			resp->answer_ = j.dump();
+		}
+		else
+		{
+			resp->status_ = http::responses::no_content;
+		}
+	}
+
+	LOG(logDEBUG) << "Debug took " << std::to_string(t.TimeMilliseconds());
+}
+
+
 
 /*********************************
 // Automation control
@@ -562,8 +621,3 @@ void Kalel::ReloadParameters(http_request * req, http_response * resp)
 
 	}
 }
-
-
-/*********************************
-// Debugging
-*********************************/

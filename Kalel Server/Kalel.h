@@ -3,7 +3,7 @@
 #include "../Kalel Shared/Netcode/Server.h"
 #include "Automation/ThreadManager.h"
 #include "Automation/CommonControls.h"
-#include "Automation/CommonPointers.h"
+#include "Automation/CommonStorage.h"
 
 class Kalel
 {
@@ -27,6 +27,7 @@ protected:
 	void DataSync(http_request* req, http_response* resp);
 	void LogSync(http_request* req, http_response* resp);
 	void RequestSync(http_request* req, http_response* resp);
+	void DebugSync(http_request * req, http_response * resp);
 	void AutomationControl(http_request* req, http_response* resp);
 	void ReloadParameters(http_request* req, http_response* resp);
 };

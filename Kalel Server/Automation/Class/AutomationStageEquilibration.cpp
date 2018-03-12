@@ -23,9 +23,9 @@ void Automation::StageEquilibration()
 
 		// Create, open and write the columns in the file
 		bool err = false;
-		err = controls.fileWriter->EnteteCreate(*storage.experimentSettings, *storage.machineSettings);				// Entete TXT
-		err = controls.fileWriter->EnteteCSVCreate(*storage.experimentSettings, *storage.machineSettings);			// Entete CSV
-		controls.fileWriter->FileMeasurementCreate(storage.experimentSettings->dataGeneral);						// Measurement file
+		err = controls.fileWriter.EnteteCreate(*storage.experimentSettings, *storage.machineSettings);				// Entete TXT
+		err = controls.fileWriter.EnteteCSVCreate(*storage.experimentSettings, *storage.machineSettings);			// Entete CSV
+		controls.fileWriter.FileMeasurementCreate(storage.experimentSettings->dataGeneral);						// Measurement file
 		if (err) {
 			LOG(logERROR) << ERROR_PATHUNDEF;
 		}

@@ -3,6 +3,7 @@
 // Resources
 #include "../../../Kalel Shared/Resources/DefineText.h"						// Definitions for the text in the messages
 #include "../../../Kalel Shared/Resources/DefineAutomationSettings.h"		// All settings for automation are stored here
+#include "../../../Kalel Shared/Resources/DefineInstruments.h"				// All settings for automation are stored here
 
 // Synchronization classes
 #include "../../../Kalel Shared/Com Classes/ExperimentData.h"
@@ -96,7 +97,7 @@ void Measurement::Execution()
 			if (controls.timerMeasurement.TimeSeconds() > T_BETWEEN_RECORD)								// If enough time between measurements
 			{
 				// Save the data to the file
-				bool err = controls.fileWriter->FileMeasurementRecord(
+				bool err = controls.fileWriter.FileMeasurementRecord(
 					timeh::TimePointToWString(measurementTime),
 					storage.experimentSettings->dataGeneral ,
 					*storage.currentData, 

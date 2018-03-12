@@ -178,7 +178,7 @@
     <ClInclude Include="..\Kalel Shared\timeHelpers.h" />
     <ClInclude Include="Automation\Class\Automation.h" />
     <ClInclude Include="Automation\CommonControls.h" />
-    <ClInclude Include="Automation\CommonPointers.h" />
+    <ClInclude Include="Automation\CommonStorage.h" />
     <ClInclude Include="Automation\FileWriter.h" />
     <ClInclude Include="Automation\Measurement\Measurement.h" />
     <ClInclude Include="Automation\Measurement\Security.h" />
