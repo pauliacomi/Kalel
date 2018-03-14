@@ -1,7 +1,7 @@
 {
     "CaloName": "name",
-    "CaloEntete": "entete",
-    "CheminFichierGeneral": "C:",
+    "CaloPrefix": "entete",
+    "DefaultPath": "C:",
 
     "SafetyOn": true,
     "hasSonicNozzle": false,
@@ -22,7 +22,7 @@
     "TimeVacuumBottle": 300,
     "TimeVacuumEndDefault": 12000,
 
-    "PressureLimitPump": 0.5,
+    "PressurePumpVacuum": 0.5,
     "PressureLimitVacuum": 0.01,
     
     "instruments": {

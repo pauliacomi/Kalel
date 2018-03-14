@@ -44,12 +44,10 @@ unsigned ThreadManager::StartMeasurement()
 
 		// Launch measurement
 		measurementThread = std::thread(&Measurement::Execution, measurement.get());
+
+		return 0;
 	}
-	else
-	{
-		return 1;
-	}
-	return 0;
+	return 1;
 }
 
 
@@ -66,8 +64,10 @@ unsigned ThreadManager::ShutdownMeasurement()
 
 		// Delete threads
 		measurement.reset(nullptr);
+
+		return 0;
 	}
-	return 0;
+	return 1;
 }
 
 
@@ -88,12 +88,24 @@ unsigned ThreadManager::StartAutomation()
 
 		// Launch functionality
 		automationThread = std::thread(&Automation::Execution, automation.get());
+
+		return 0;
 	}
-	else
+	return 1;
+}
+
+unsigned ThreadManager::PauseAutomation()
+{
+	if (automation != nullptr)
 	{
-		return 1;
+		// Signal the thread to resume
+		std::unique_lock<std::mutex> lk(storage.automationMutex);	// mutex for thread notification
+		automation->eventPause = true;
+		storage.automationControl.notify_all();
+
+		return 0;
 	}
-	return 0;
+	return 1;
 }
 
 unsigned ThreadManager::ResumeAutomation() 
@@ -104,28 +116,10 @@ unsigned ThreadManager::ResumeAutomation()
 		std::unique_lock<std::mutex> lk(storage.automationMutex);	// mutex for thread notification
 		automation->eventResume = true;
 		storage.automationControl.notify_all();
-	}
-	else
-	{
-		return 1;
-	}
-	return 0;
-}
 
-unsigned ThreadManager::PauseAutomation() 
-{
-	if (automation != nullptr)
-	{
-		// Signal the thread to resume
-		std::unique_lock<std::mutex> lk(storage.automationMutex);	// mutex for thread notification
-		automation->eventPause = true;
-		storage.automationControl.notify_all();
+		return 0;
 	}
-	else
-	{
-		return 1;
-	}
-	return 0;
+	return 1;
 }
 
 
@@ -137,29 +131,26 @@ unsigned ThreadManager::ResetAutomation()
 		std::unique_lock<std::mutex> lk(storage.automationMutex);	// mutex for thread notification
 		automation->eventReset = true;
 		storage.automationControl.notify_all();
+
+		return 0;
 	}
-	else
-	{
-		return 1;
-	}
-	return 0;
+	return 1;
 }
 
 
-unsigned ThreadManager::SetUserContinue()
+unsigned ThreadManager::SetUserChoice(unsigned int choice)
 {
 	if (automation != nullptr)
 	{
 		// Signal the atomic bool as modified
 		std::unique_lock<std::mutex> lk(storage.automationMutex);	// mutex for thread notification
-		automation->sb_userContinue = true;
+		automation->userChoice = choice;							// set choice
+		automation->eventResume = true;								// then continue
 		storage.automationControl.notify_all();
+
+		return 0;
 	}
-	else
-	{
-		return 1;
-	}
-	return 0;
+	return 1;
 }
 
 // Shutdownfunction will check if thread is running and then send it the shutdown command
@@ -172,6 +163,7 @@ unsigned ThreadManager::ShutdownAutomation()
 		std::unique_lock<std::mutex> lk(storage.automationMutex);	// mutex for thread notification
 		automation->eventShutdown = true;
 		storage.automationControl.notify_all();
+
 		// Unlock to continue function
 		lk.unlock();
 
@@ -181,8 +173,9 @@ unsigned ThreadManager::ShutdownAutomation()
 		// Delete thread
 		automation.reset(nullptr);
 
+		return 0;
 	}
-	return 0;
+	return 1;
 }
 
 

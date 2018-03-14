@@ -46,7 +46,7 @@ BOOL TabDivers::OnInitDialog()
 {
 	// Get settings from storage
 	m_bMiseSousVide = allSettings.mise_sous_vide_fin_experience;
-	m_nTempsLigneBase = allSettings.temps_ligne_base;
+	m_nTempsLigneBase = allSettings.time_baseline;
 	m_nTempsVide = allSettings.temps_vide;
 
 	cellExp = allSettings.cell;
@@ -158,7 +158,7 @@ void TabDivers::Reinitialisation()
 	}
 
 	m_bMiseSousVide = allSettings.mise_sous_vide_fin_experience;
-	m_nTempsLigneBase = allSettings.temps_ligne_base;
+	m_nTempsLigneBase = allSettings.time_baseline;
 	m_nTempsVide = allSettings.temps_vide;
 
 	EnableMiseSousVide(m_bMiseSousVide);
@@ -168,7 +168,7 @@ void TabDivers::WriteData()
 {
 	allSettings.cell = cellExp;
 	allSettings.mise_sous_vide_fin_experience = (bool)m_bMiseSousVide;
-	allSettings.temps_ligne_base = m_nTempsLigneBase;
+	allSettings.time_baseline = m_nTempsLigneBase;
 	allSettings.temps_vide = m_nTempsVide;
 }
 

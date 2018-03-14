@@ -97,15 +97,17 @@ void Automation::Execution()
 		*		
 		*/
 
-		// Now run through the possible events
-		// Wait until called
+		// Aquire the lock
 		std::unique_lock<std::mutex> lock(storage.automationMutex);
-		auto notified = storage.automationControl.wait_for(lock, std::chrono::milliseconds(storage.machineSettings->TimeBetweenAutomation), [&] () 
+
+		// Wait until called or until timeout
+		bool notified = storage.automationControl.wait_for(lock, std::chrono::milliseconds(storage.machineSettings->TimeBetweenAutomation), [&] () 
 		{
 			return (eventShutdown || eventPause || eventResume || eventReset || eventUserInput);
 		});
 
-		if (notified)
+		// Now run through the possible events
+		if (notified)									// If there was a notification, check what kind
 		{
 			if (eventShutdown)							// Complete stop of thread
 			{
@@ -138,6 +140,10 @@ void Automation::Execution()
 
 			if (eventUserInput)							// Wait for user input
 			{
+				userChoice = 0;							// make sure no choice selected
+				Pause();								// pause everything
+				eventUserInput = false;					// reset event
+				continue;
 			}
 		}
 	}
@@ -163,10 +169,13 @@ void Automation::ExecutionManual()
 
 		// Create open and write the columns in the file
 		bool err = false;
-		err = controls.fileWriter.EnteteCreate(*storage.experimentSettings, *storage.machineSettings);				// Entete TXT
-		err = controls.fileWriter.EnteteCSVCreate(*storage.experimentSettings, *storage.machineSettings);			// Entete CSV
-		err = controls.fileWriter.FileMeasurementCreate(storage.experimentSettings->dataGeneral);					// Measurement file
-		if (err){
+		err = err || controls.fileWriter.EnteteCreate(*storage.experimentSettings, *storage.machineSettings);				// Entete TXT
+		err = err || controls.fileWriter.EnteteCSVCreate(*storage.experimentSettings, *storage.machineSettings);			// Entete CSV
+		err = err || controls.fileWriter.FileMeasurementCreate(storage.experimentSettings->dataGeneral);					// Measurement file
+		if (err) {																											// No point in starting experiment then
+			shutdownReason = STOP;
+			eventShutdown = true;
+			storage.automationControl.notify_all();
 			LOG(logERROR) << ERROR_PATHUNDEF;
 		}
 
@@ -187,6 +196,18 @@ void Automation::ExecutionAuto()
 		LOG(logINFO) << MESSAGE_EXPSTART;
 
 		ResetAutomation();
+
+		// Create, open and write the columns in the file
+		bool err = false;
+		err = err || controls.fileWriter.EnteteCreate(*storage.experimentSettings, *storage.machineSettings);				// Entete TXT
+		err = err || controls.fileWriter.EnteteCSVCreate(*storage.experimentSettings, *storage.machineSettings);			// Entete CSV
+		err = err || controls.fileWriter.FileMeasurementCreate(storage.experimentSettings->dataGeneral);					// Measurement file
+		if (err) {																											// No point in starting experiment then
+			shutdownReason = STOP;
+			eventShutdown = true;
+			storage.automationControl.notify_all();
+			LOG(logERROR) << ERROR_PATHUNDEF;
+		}
 
 		// Write variables to starting position
 		storage.experimentStatus->experimentInProgress = true;
@@ -217,11 +238,9 @@ void Automation::ExecutionAuto()
 	case STAGE_END_AUTOMATIC:
 
 		// If the experiment has finished
-		shutdownReason = STOP_NORMAL;	// set a normal shutdown
-
-		eventReset = true;				// end then set the event
-		// TODO: check if this notification works in advance
-		storage.automationControl.notify_all();
+		shutdownReason = STOP_NORMAL;				// set a normal shutdown
+		eventReset = true;							// end then set the event
+		storage.automationControl.notify_all();		// and notify
 
 		break;
 
@@ -246,6 +265,5 @@ void Automation::ResetAutomation()
 
 	// Time
 	storage.experimentStatus->timeStart = time(0);
-	controls.timerExperiment.Start();	// Start global experiment timer	
-	controls.timerMeasurement.Start();	// Start the timer to record time between measurements
+	controls.timerExperiment.Start();	// Start global experiment timer
 }

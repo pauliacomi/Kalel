@@ -54,7 +54,7 @@ void ExperimentSettings::ResetData(int initialAdsorptions, int initialDesorption
 	dataDivers.cell.volume_calo = 0;
 	dataDivers.cell.volume_total = 0;
 	dataDivers.mise_sous_vide_fin_experience = false;
-	dataDivers.temps_ligne_base = 15;
+	dataDivers.time_baseline = 15;
 	dataDivers.temps_vide = 90;
 
 	// Adsorption

@@ -90,7 +90,7 @@ void Measurement::Execution()
 					storage.experimentSettings->dataGeneral ,
 					*storage.currentData, 
 					*storage.experimentStatus, 
-					controls.valveControls.ValveIsOpen(6));
+					controls.valveControls.ValveIsOpen(VALVE_6));
 				if (err) {
 					LOG(logERROR) << MESSAGE_WARNING_FILE;
 				}
@@ -161,7 +161,7 @@ void Measurement::ReadCalorimeter()
 
 	// Read the value from the calorimeter
 	// Write it in the shared object - NO need for mutex
-	storage.currentData->resultCalorimeter = controls.instruments.MeasureReader(READER_CALO + CALO);
+	storage.currentData->resultCalorimeter = controls.instruments.MeasureReader(CALO);
 
 }
 

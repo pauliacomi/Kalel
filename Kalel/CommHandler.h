@@ -45,7 +45,7 @@ public:
 	void ResetClient();
 	void PauseClient();
 	void ResumeClient();
-	void SetUserContinue();
+	void SetUserChoice();
 
 	void FunctionSampleVacuum();
 	void FunctionBottleVacuum();

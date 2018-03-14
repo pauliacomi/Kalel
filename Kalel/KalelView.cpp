@@ -808,7 +808,7 @@ LRESULT CKalelView::MessageBoxConfirmation(WPARAM wParam, LPARAM lParam)
 			}
 			if (result == IDNO) {
 				commHandler.ResumeClient();
-				commHandler.SetUserContinue();
+				commHandler.SetUserChoice();
 				continuer = false;
 			}
 		}

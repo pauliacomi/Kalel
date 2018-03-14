@@ -63,7 +63,7 @@ class data_other
 {
 public:
 	cell cell;
-	int temps_ligne_base;
+	int time_baseline;
 	bool mise_sous_vide_fin_experience;
 	int temps_vide;
 
