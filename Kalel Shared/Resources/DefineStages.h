@@ -1,12 +1,5 @@
 #pragma once
 
-// Used by Steps.rc
-
-
-//#define STAGE_EQ_LINE				0
-//#define STAGE_CONT_ADSORPTON		1
-
-
 #define EXPERIMENT_TYPE_UNDEF			0
 #define EXPERIMENT_TYPE_AUTO			1
 #define EXPERIMENT_TYPE_MANUAL			2

@@ -38,7 +38,7 @@ public:
 	StampedSafeStorage<std::shared_ptr<ExperimentData>>  dataCollection;										// The collection of data from an experiment
 
 public:
-	std::shared_ptr<ExperimentData> currentData;
+	std::unique_ptr<ExperimentData> currentData;
 
 	//******************************************************************************************
 	// Machine Settings
@@ -82,7 +82,7 @@ public:
 	// Control State
 	//******************************************************************************************
 
-	std::chrono::system_clock::time_point controlStateChanged;													// Time when control state changed
+	std::chrono::system_clock::time_point controlStateChanged = timeh::NowTime();					// Time when control state changed
 
 	//******************************************************************************************
 	// Automation control
@@ -99,12 +99,10 @@ inline Storage::Storage(void)
 	//
 	// Make classes
 	machineSettings = std::make_shared<MachineSettings>();
-	currentData = std::make_shared<ExperimentData>();
 	experimentStatus = std::make_shared<ExperimentStatus>();
 	experimentSettings = std::make_shared<ExperimentSettings>();
 
-	// initialise control state times
-	controlStateChanged = timeh::NowTime();
+	currentData = std::make_unique<ExperimentData>();
 
 	//
 	// Check to see whether the parameters file has been created

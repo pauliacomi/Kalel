@@ -214,7 +214,7 @@ void Kalel::MachineSettingsSync(http_request* req, http_response* resp)
 		if (req->content_type_ == http::mimetype::appjson) {
 
 			// Parse the input
-			auto j = json::parse(req->entity_.c_str());
+			auto j = json::parse(req->entity_);
 			
 			// Create new settings
 			storageVectors.setmachineSettings(std::make_shared<MachineSettings>(j));
@@ -261,7 +261,7 @@ void Kalel::ExperimentSettingsSync(http_request* req, http_response* resp)
 		if (req->content_type_ == http::mimetype::appjson) {
 
 			// Parse the input
-			auto j = json::parse(req->entity_.c_str());
+			auto j = json::parse(req->entity_);
 			auto newSettings = std::make_shared<ExperimentSettings>(j);
 
 			// Create new experiment settings, logging change if experiment is running
@@ -403,8 +403,7 @@ void Kalel::DataSync(http_request* req, http_response* resp)
 		{
 			json j;
 
-			std::string s = "Serialisation of " + std::to_string(localCollection->size());
-			LOG(logDEBUG) << s;
+			LOG(logDEBUG) << "Serialisation of " << std::to_string(localCollection->size());
 			t.Start();
 			
 			for (const auto& kv : *localCollection) {
@@ -519,8 +518,9 @@ void Kalel::RequestSync(http_request* req, http_response* resp)
 		}
 	}
 
-	LOG(logDEBUG) << "requests took " << std::to_string(t.TimeMilliseconds());
+	LOG(logDEBUG) << "Requests took " << std::to_string(t.TimeMilliseconds());
 }
+
 
 /*********************************
 // Debug sync

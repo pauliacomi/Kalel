@@ -8,6 +8,7 @@
 
 MachineSettings::MachineSettings()
 {
+	timeChanged = timeh::NowTime();
 }
 
 MachineSettings::~MachineSettings()
