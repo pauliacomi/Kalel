@@ -1,7 +1,7 @@
 /*============================================================================*/
 /*                 National Instruments / Data Acquisition                    */
 /*----------------------------------------------------------------------------*/
-/*    Copyright (c) National Instruments 2003-2016.  All Rights Reserved.     */
+/*    Copyright (c) National Instruments 2003-2017.  All Rights Reserved.     */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Title:       NIDAQmx.h                                                     */
@@ -92,6 +92,17 @@
 #else
 	typedef unsigned __int64   uInt64;
 #endif
+#endif
+
+#ifndef CVITime_DECLARED
+#define CVITime_DECLARED
+	// Please visit ni.com/info and enter the Info Code NI_BTF for more information
+	typedef struct CVITime { uInt64 lsb; int64 msb; } CVITime;
+#endif
+#ifndef CVIAbsoluteTime_DECLARED
+#define CVIAbsoluteTime_DECLARED
+	// Please visit ni.com/info and enter the Info Code NI_BTF for more information
+	typedef union CVIAbsoluteTime { CVITime cviTime; uInt32 u32Data[4]; } CVIAbsoluteTime;
 #endif
 
 typedef uInt32             bool32;
@@ -300,6 +311,8 @@ typedef uInt32             CalHandle;
 #define DAQmx_AI_Gain                                                    0x1818 // Specifies a gain factor to apply to the channel.
 #define DAQmx_AI_SampAndHold_Enable                                      0x181A // Specifies whether to enable the sample and hold circuitry of the device. When you disable sample and hold circuitry, a small voltage offset might be introduced into the signal.  You can eliminate this offset by using Auto Zero Mode to perform an auto zero on the channel.
 #define DAQmx_AI_AutoZeroMode                                            0x1760 // Specifies how often to measure ground. NI-DAQmx subtracts the measured ground voltage from every sample.
+#define DAQmx_AI_ChopEnable                                              0x3143 // Specifies whether the device will chop its inputs. Chopping removes offset voltages and other low frequency errors.
+#define DAQmx_AI_DataXferMaxRate                                         0x3117 // Specifies the rate in B/s to transfer data from the device. If this value is not set, then the device will transfer data at a rate based on the bus detected. Modify this value to affect performance under different combinations of operating system, configuration, and device.
 #define DAQmx_AI_DataXferMech                                            0x1821 // Specifies the data transfer mode for the device.
 #define DAQmx_AI_DataXferReqCond                                         0x188B // Specifies under what condition to transfer data from the onboard memory of the device to the buffer.
 #define DAQmx_AI_DataXferCustomThreshold                                 0x230C // Specifies the number of samples that must be in the FIFO to transfer data from the device if Data Transfer Request Condition is DAQmx_Val_OnbrdMemCustomThreshold.
@@ -659,6 +672,7 @@ typedef uInt32             CalHandle;
 #define DAQmx_PhysicalChanName                                           0x18F5 // Specifies the name of the physical channel upon which this virtual channel is based.
 #define DAQmx_ChanDescr                                                  0x1926 // Specifies a user-defined description for the channel.
 #define DAQmx_ChanIsGlobal                                               0x2304 // Indicates whether the channel is a global channel.
+#define DAQmx_Chan_SyncUnlockBehavior                                    0x313C // Specifies the action to take if the target loses its synchronization to the grand master.
 
 //********** Device Attributes **********
 #define DAQmx_Dev_IsSimulated                                            0x22CA // Indicates if the device is a simulated device.
@@ -673,6 +687,7 @@ typedef uInt32             CalHandle;
 #define DAQmx_Dev_Chassis_ModuleDevNames                                 0x29B6 // Indicates an array containing the names of the modules in the chassis.
 #define DAQmx_Dev_AnlgTrigSupported                                      0x2984 // Indicates if the device supports analog triggering.
 #define DAQmx_Dev_DigTrigSupported                                       0x2985 // Indicates if the device supports digital triggering.
+#define DAQmx_Dev_TimeTrigSupported                                      0x301F // Indicates whether the device supports time triggering.
 #define DAQmx_Dev_AI_PhysicalChans                                       0x231E // Indicates an array containing the names of the analog input physical channels available on the device.
 #define DAQmx_Dev_AI_SupportedMeasTypes                                  0x2FD2 // Indicates the measurement types supported by the physical channels of the device. Refer to Measurement Types for information on specific channels.
 #define DAQmx_Dev_AI_MaxSingleChanRate                                   0x298C // Indicates the maximum rate for an analog input task if the task contains only a single channel from this device.
@@ -742,6 +757,8 @@ typedef uInt32             CalHandle;
 #define DAQmx_Dev_TCPIP_EthernetIP                                       0x2A8C // Indicates the IPv4 address of the Ethernet interface in dotted decimal format. This property returns 0.0.0.0 if the Ethernet interface cannot acquire an address.
 #define DAQmx_Dev_TCPIP_WirelessIP                                       0x2A8D // Indicates the IPv4 address of the 802.11 wireless interface in dotted decimal format. This property returns 0.0.0.0 if the wireless interface cannot acquire an address.
 #define DAQmx_Dev_Terminals                                              0x2A40 // Indicates a list of all terminals on the device.
+#define DAQmx_Dev_NumTimeTrigs                                           0x3141 // Indicates the number of time triggers available on the device.
+#define DAQmx_Dev_NumTimestampEngines                                    0x3142 // Indicates the number of timestamp engines available on the device.
 
 //********** Export Signal Attributes **********
 #define DAQmx_Exported_AIConvClk_OutputTerm                              0x1687 // Specifies the terminal to which to route the AI Convert Clock.
@@ -878,6 +895,10 @@ typedef uInt32             CalHandle;
 #define DAQmx_Read_OpenThrmcplChans                                      0x2A97 // Indicates a list of names of any virtual channels in the task for which the device(s) detected an open thermcouple. You must read Open Thermocouple Channels Exist before you read this property. Otherwise, you will receive an error.
 #define DAQmx_Read_OverloadedChansExist                                  0x2174 // Indicates if the device(s) detected an overload in any virtual channel in the task. Reading this property clears the overload status for all channels in the task. You must read this property before you read Overloaded Channels. Otherwise, you will receive an error.
 #define DAQmx_Read_OverloadedChans                                       0x2175 // Indicates a list of names of any overloaded virtual channels in the task. You must read Overloaded Channels Exist before you read this property. Otherwise, you will receive an error.
+#define DAQmx_Read_PLL_UnlockedChansExist                                0x3118 // Indicates whether the PLL is currently locked, or whether it became unlocked during the previous acquisition. Devices may report PLL Unlock either during acquisition or after acquisition.
+#define DAQmx_Read_PLL_UnlockedChans                                     0x3119 // Indicates the channels that had their PLLs unlock.
+#define DAQmx_Read_Sync_UnlockedChansExist                               0x313D // Indicates whether the target is currently locked to the grand master. Devices may report PLL Unlock either during acquisition or after acquisition.
+#define DAQmx_Read_Sync_UnlockedChans                                    0x313E // Indicates the channels from devices in an unlocked target.
 #define DAQmx_Read_AccessoryInsertionOrRemovalDetected                   0x2F70 // Indicates if any device(s) in the task detected the insertion or removal of an accessory since the task started. Reading this property clears the accessory change status for all channels in the task. You must read this property before you read Devices with Inserted or Removed Accessories. Otherwise, you will receive an error.
 #define DAQmx_Read_DevsWithInsertedOrRemovedAccessories                  0x2F71 // Indicates the names of any devices that detected the insertion or removal of an accessory since the task started. You must read Accessory Insertion or Removal Detected before you read this property. Otherwise, you will receive an error.
 #define DAQmx_Read_ChangeDetect_HasOverflowed                            0x2194 // Indicates if samples were missed because change detection events occurred faster than the device could handle them. Some devices detect overflows differently than others.
@@ -1011,7 +1032,10 @@ typedef uInt32             CalHandle;
 #define DAQmx_MasterTimebase_Src                                         0x1343 // Specifies the terminal of the signal to use as the Master Timebase. On an E Series device, you can choose only between the onboard 20MHz Timebase or the RTSI7 terminal.
 #define DAQmx_RefClk_Rate                                                0x1315 // Specifies the frequency of the Reference Clock.
 #define DAQmx_RefClk_Src                                                 0x1316 // Specifies the terminal of the signal to use as the Reference Clock.
+#define DAQmx_SyncPulse_Type                                             0x3136 // Specifies the type of sync pulse used in the task.
 #define DAQmx_SyncPulse_Src                                              0x223D // Specifies the terminal of the signal to use as the synchronization pulse. The synchronization pulse resets the clock dividers and the ADCs/DACs on the device.
+#define DAQmx_SyncPulse_Time_When                                        0x3137 // Specifies the start time of the sync pulse.
+#define DAQmx_SyncPulse_Time_Timescale                                   0x3138 // Specifies the timescale to be used for timestamps for a sync pulse.
 #define DAQmx_SyncPulse_SyncTime                                         0x223E // Indicates in seconds the delay required to reset the ADCs/DACs after the device receives the synchronization pulse.
 #define DAQmx_SyncPulse_MinDelayToStart                                  0x223F // Specifies in seconds the amount of time that elapses after the master device issues the synchronization pulse before the task starts.
 #define DAQmx_SyncPulse_ResetTime                                        0x2F7C // Indicates in seconds the amount of time required for the ADCs or DACs on the device to reset. When synchronizing devices, query this property on all devices and note the largest reset time. Then, for each device, subtract the value of this property from the largest reset time and set Reset Delay to the resulting value.
@@ -1019,6 +1043,9 @@ typedef uInt32             CalHandle;
 #define DAQmx_SyncPulse_Term                                             0x2F85 // Indicates the name of the internal Synchronization Pulse terminal for the task. This property does not return the name of the source terminal.
 #define DAQmx_SyncClk_Interval                                           0x2F7E // Specifies the interval, in Sample Clock periods, between each internal Synchronization Clock pulse. NI-DAQmx uses this pulse for synchronization of triggers between multiple devices at different rates. Refer to device documentation for information about how to calculate this value.
 #define DAQmx_SampTimingEngine                                           0x2A26 // Specifies which timing engine to use for the task.
+#define DAQmx_FirstSampTimestamp_Enable                                  0x3139 // Specifies whether to enable the first sample timestamp.
+#define DAQmx_FirstSampTimestamp_Timescale                               0x313B // Specifies the timescale to be used for the first sample timestamp.
+#define DAQmx_FirstSampTimestamp_Val                                     0x313A // Indicates the timestamp of the first sample.
 
 //********** Trigger Attributes **********
 #define DAQmx_StartTrig_Type                                             0x1393 // Specifies the type of trigger to use to start a task.
@@ -1043,6 +1070,11 @@ typedef uInt32             CalHandle;
 #define DAQmx_AnlgEdge_StartTrig_DigFltr_TimebaseSrc                     0x2EE3 // Specifies the terminal of the signal to use as the timebase of the digital filter.
 #define DAQmx_AnlgEdge_StartTrig_DigFltr_TimebaseRate                    0x2EE4 // Specifies in hertz the rate of the digital filter timebase. NI-DAQmx uses this value to compute settings for the filter.
 #define DAQmx_AnlgEdge_StartTrig_DigSync_Enable                          0x2EE5 // Specifies whether to synchronize recognition of transitions in the signal to the internal timebase of the device.
+#define DAQmx_AnlgMultiEdge_StartTrig_Srcs                               0x3121 // Specifies a list and/or range of analog sources that are going to be used for Analog triggering. Each source corresponds to an element in each of the Analog Multi Edge property arrays, if they are not empty.
+#define DAQmx_AnlgMultiEdge_StartTrig_Slopes                             0x3122 // Specifies an array of slopes on which to trigger task to start generating or acquiring samples. Each element of the array corresponds to a source in Start.AnlgMultiEdge.Srcs and an element in each of the other Analog Multi Edge property arrays, if they are not empty.
+#define DAQmx_AnlgMultiEdge_StartTrig_Lvls                               0x3123 // Specifies an array of thresholds in the units of the measurement or generation to start acquiring or generating samples. Each element of the array corresponds to a source in Start.AnlgMultiEdge.Srcs and an element in each of the other Analog Multi Edge property arrays, if they are not empty.
+#define DAQmx_AnlgMultiEdge_StartTrig_Hysts                              0x3124 // Specifies an array of hysteresis levels in the units of the measurement or generation. If the corresponding element of Start.AnlgMultiEdge.Slopes is Rising, the trigger does not deassert until the source signal passes below the corresponding element of Start.AnlgMultiEdge.Lvls minus the hysteresis. If Start.AnlgEdge.Slope is Falling, the trigger does not deassert until the source signal passes above Start.AnlgEdge...
+#define DAQmx_AnlgMultiEdge_StartTrig_Couplings                          0x3125 // Specifies an array that describes the couplings for the corresponding source signal of the trigger if the source is a terminal rather than a virtual channel. Each element of the array corresponds to a source in Start.AnlgMultiEdge.Srcs and an element in each of the other Analog Multi Edge property arrays, if they are not empty.
 #define DAQmx_AnlgWin_StartTrig_Src                                      0x1400 // Specifies the name of a virtual channel or terminal where there is an analog signal to use as the source of the Start Trigger.
 #define DAQmx_AnlgWin_StartTrig_When                                     0x1401 // Specifies whether the task starts acquiring or generating samples when the signal enters or leaves the window you specify with Bottom and Top.
 #define DAQmx_AnlgWin_StartTrig_Top                                      0x1403 // Specifies the upper limit of the window. Specify this value in the units of the measurement or generation.
@@ -1053,9 +1085,17 @@ typedef uInt32             CalHandle;
 #define DAQmx_AnlgWin_StartTrig_DigFltr_TimebaseSrc                      0x2F01 // Specifies the terminal of the signal to use as the timebase of the digital filter.
 #define DAQmx_AnlgWin_StartTrig_DigFltr_TimebaseRate                     0x2F02 // Specifies in hertz the rate of the digital filter timebase. NI-DAQmx uses this value to compute settings for the filter.
 #define DAQmx_AnlgWin_StartTrig_DigSync_Enable                           0x2F03 // Specifies whether to synchronize recognition of transitions in the signal to the internal timebase of the device.
+#define DAQmx_StartTrig_TrigWhen                                         0x304D // Specifies when to trigger the start trigger.
+#define DAQmx_StartTrig_Timescale                                        0x3036 // Specifies the timescale to be used for timestamps used in a time trigger.
+#define DAQmx_StartTrig_TimestampEnable                                  0x314A // Specifies whether the start trigger timestamp is enabled. If the timestamp is enabled but no resources are available, an error will be returned at run time.
+#define DAQmx_StartTrig_TimestampTimescale                               0x312D // Specifies the start trigger timestamp timescale.
+#define DAQmx_StartTrig_TimestampVal                                     0x314B // Indicates the start trigger timestamp value.
 #define DAQmx_StartTrig_Delay                                            0x1856 // Specifies an amount of time to wait after the Start Trigger is received before acquiring or generating the first sample. This value is in the units you specify with Delay Units.
 #define DAQmx_StartTrig_DelayUnits                                       0x18C8 // Specifies the units of Delay.
 #define DAQmx_StartTrig_Retriggerable                                    0x190F // Specifies whether a finite task resets and waits for another Start Trigger after the task completes. When you set this property to TRUE, the device performs a finite acquisition or generation each time the Start Trigger occurs until the task stops. The device ignores a trigger if it is in the process of acquiring or generating signals.
+#define DAQmx_StartTrig_TrigWin                                          0x311A // Specifies the period of time in seconds after the task starts during which the device may trigger. Once the window has expired, the device stops detecting triggers, and the task will finish after the device finishes acquiring post-trigger samples for any triggers detected. If no triggers are detected during the entire period, then no data will be returned. Ensure the period of time specified covers the entire time...
+#define DAQmx_StartTrig_RetriggerWin                                     0x311B // Specifies the period of time in seconds after each trigger during which the device may trigger. Once the window has expired, the device stops detecting triggers, and the task will finish after the device finishes acquiring post-trigger samples that it already started. Ensure the period of time specified covers the entire time span desired for retrigger detection to avoid missed triggers. Specifying a Retrigger Win...
+#define DAQmx_StartTrig_MaxNumTrigsToDetect                              0x311C // Specifies the maximum number of times the task will detect a start trigger during the task. The number of times a trigger is detected and acted upon by the module may be less than the specified amount if the task stops early because of trigger/retrigger window expiration. Specifying the Maximum Number of Triggers to Detect to be 0 causes the driver to automatically set this value to the maximum possible number of ...
 #define DAQmx_RefTrig_Type                                               0x1419 // Specifies the type of trigger to use to mark a reference point for the measurement.
 #define DAQmx_RefTrig_PretrigSamples                                     0x1445 // Specifies the minimum number of pretrigger samples to acquire from each channel before recognizing the reference trigger. Post-trigger samples per channel are equal to Samples Per Channel minus the number of pretrigger samples per channel.
 #define DAQmx_RefTrig_Term                                               0x2F1F // Indicates the name of the internal Reference Trigger terminal for the task. This property does not return the name of the trigger source terminal.
@@ -1079,6 +1119,11 @@ typedef uInt32             CalHandle;
 #define DAQmx_AnlgEdge_RefTrig_DigFltr_TimebaseSrc                       0x2EE8 // Specifies the terminal of the signal to use as the timebase of the digital filter.
 #define DAQmx_AnlgEdge_RefTrig_DigFltr_TimebaseRate                      0x2EE9 // Specifies in hertz the rate of the digital filter timebase. NI-DAQmx uses this value to compute settings for the filter.
 #define DAQmx_AnlgEdge_RefTrig_DigSync_Enable                            0x2EEA // Specifies whether to synchronize recognition of transitions in the signal to the internal timebase of the device.
+#define DAQmx_AnlgMultiEdge_RefTrig_Srcs                                 0x3126 // Specifies a List and/or range of analog sources that are going to be used for Analog triggering. Each source corresponds to an element in each of the Analog Multi Edge property arrays, if they are not empty.
+#define DAQmx_AnlgMultiEdge_RefTrig_Slopes                               0x3127 // Specifies an array of slopes on which to trigger task to start generating or acquiring samples. Each element of the array corresponds to a source in Ref.AnlgMultiEdge.Srcs and an element in each of the other Analog Multi Edge property arrays, if they are not empty.
+#define DAQmx_AnlgMultiEdge_RefTrig_Lvls                                 0x3128 // Specifies an array of thresholds in the units of the measurement or generation to start acquiring or generating samples. Each element of the array corresponds to a source in Ref.AnlgMultiEdge.Srcs and an element in each of the other Analog Multi Edge property arrays, if they are not empty.
+#define DAQmx_AnlgMultiEdge_RefTrig_Hysts                                0x3129 // Specifies an array of hysteresis levels in the units of the measurement or generation. If the corresponding element of Ref.AnlgMultiEdge.Slopes is Rising, the trigger does not deassert until the source signal passes below the corresponding element of Ref.AnlgMultiEdge.Lvls minus the hysteresis. If Ref.AnlgEdge.Slope is Falling, the trigger does not deassert until the source signal passes above Ref.AnlgEdge.Lvl plu...
+#define DAQmx_AnlgMultiEdge_RefTrig_Couplings                            0x312A // Specifies an array that describes the couplings for the corresponding source signal of the trigger if the source is a terminal rather than a virtual channel. Each element of the array corresponds to a source in Ref.AnlgMultiEdge.Srcs and an element in each of the other Analog Multi Edge property arrays, if they are not empty.
 #define DAQmx_AnlgWin_RefTrig_Src                                        0x1426 // Specifies the name of a virtual channel or terminal where there is an analog signal to use as the source of the Reference Trigger.
 #define DAQmx_AnlgWin_RefTrig_When                                       0x1427 // Specifies whether the Reference Trigger occurs when the source signal enters the window or when it leaves the window. Use Bottom and Top to specify the window.
 #define DAQmx_AnlgWin_RefTrig_Top                                        0x1429 // Specifies the upper limit of the window. Specify this value in the units of the measurement.
@@ -1091,11 +1136,18 @@ typedef uInt32             CalHandle;
 #define DAQmx_AnlgWin_RefTrig_DigSync_Enable                             0x2EEF // Specifies whether to synchronize recognition of transitions in the signal to the internal timebase of the device.
 #define DAQmx_RefTrig_AutoTrigEnable                                     0x2EC1 // Specifies whether to send a software trigger to the device when a hardware trigger is no longer active in order to prevent a timeout.
 #define DAQmx_RefTrig_AutoTriggered                                      0x2EC2 // Indicates whether a completed acquisition was triggered by the auto trigger. If an acquisition has not completed after the task starts, this property returns FALSE. This property is only applicable when Enable  is TRUE.
+#define DAQmx_RefTrig_TimestampEnable                                    0x312E // Specifies whether the reference trigger timestamp is enabled. If the timestamp is enabled but no resources are available, an error will be returned at run time.
+#define DAQmx_RefTrig_TimestampTimescale                                 0x3130 // Specifies the reference trigger timestamp timescale.
+#define DAQmx_RefTrig_TimestampVal                                       0x312F // Indicates the reference trigger timestamp value.
 #define DAQmx_RefTrig_Delay                                              0x1483 // Specifies in seconds the time to wait after the device receives the Reference Trigger before switching from pretrigger to posttrigger samples.
-#define DAQmx_AdvTrig_Type                                               0x1365 // Specifies the type of trigger to use to advance to the next entry in a switch scan list.
-#define DAQmx_DigEdge_AdvTrig_Src                                        0x1362 // Specifies the name of a terminal where there is a digital signal to use as the source of the Advance Trigger.
-#define DAQmx_DigEdge_AdvTrig_Edge                                       0x1360 // Specifies on which edge of a digital signal to advance to the next entry in a scan list.
-#define DAQmx_DigEdge_AdvTrig_DigFltr_Enable                             0x2238 // Specifies whether to apply the pulse width filter to the signal.
+#define DAQmx_RefTrig_Retriggerable                                      0x311D // Specifies whether a finite task resets, acquires pretrigger samples, and waits for another Reference Trigger after the task completes. When you set this property to TRUE, the device will acquire post-trigger samples, reset, and acquire pretrigger samples each time the Reference Trigger occurs until the task stops. The device ignores a trigger if it is in the process of acquiring signals.
+#define DAQmx_RefTrig_TrigWin                                            0x311E // Specifies the duration in seconds after the task starts during which the device may trigger. Once the window has passed, the device stops detecting triggers, and the task will stop after the device finishes acquiring post-trigger samples that it already started. If no triggers are detected during the entire period, then no data will be returned. Specifying a Trigger Window of -1 causes the window to be infinite.
+#define DAQmx_RefTrig_RetriggerWin                                       0x311F // Specifies the duration in seconds after each trigger during which the device may trigger. Once the window has passed, the device stops detecting triggers, and the task will stop after the device finishes acquiring post-trigger samples that it already started. Specifying a Retrigger Window of -1 causes the window to be infinite.
+#define DAQmx_RefTrig_MaxNumTrigsToDetect                                0x3120 // Specifies the maximum number of times the task will detect a reference trigger during the task. The number of times a trigger is detected and acted upon by the module may be less than the specified amount if the task stops early because of trigger/retrigger window expiration. Specifying the Maximum Number of Triggers to Detect to be 0 causes the driver to automatically set this value to the maximum possible number...
+#define DAQmx_AdvTrig_Type                                               0x1365 // (Deprecated) Specifies the type of trigger to use to advance to the next entry in a switch scan list.
+#define DAQmx_DigEdge_AdvTrig_Src                                        0x1362 // (Deprecated) Specifies the name of a terminal where there is a digital signal to use as the source of the Advance Trigger.
+#define DAQmx_DigEdge_AdvTrig_Edge                                       0x1360 // (Deprecated) Specifies on which edge of a digital signal to advance to the next entry in a scan list.
+#define DAQmx_DigEdge_AdvTrig_DigFltr_Enable                             0x2238 // (Deprecated) Specifies whether to apply the pulse width filter to the signal.
 #define DAQmx_HshkTrig_Type                                              0x22B7 // Specifies the type of Handshake Trigger to use.
 #define DAQmx_Interlocked_HshkTrig_Src                                   0x22B8 // Specifies the source terminal of the Handshake Trigger.
 #define DAQmx_Interlocked_HshkTrig_AssertedLvl                           0x22B9 // Specifies the asserted level of the Handshake Trigger.
@@ -1140,6 +1192,11 @@ typedef uInt32             CalHandle;
 #define DAQmx_DigEdge_ArmStartTrig_DigFltr_TimebaseSrc                   0x222F // Specifies the input terminal of the signal to use as the timebase of the pulse width filter.
 #define DAQmx_DigEdge_ArmStartTrig_DigFltr_TimebaseRate                  0x2230 // Specifies in hertz the rate of the pulse width filter timebase. NI-DAQmx uses this value to compute settings for the filter.
 #define DAQmx_DigEdge_ArmStartTrig_DigSync_Enable                        0x2231 // Specifies whether to synchronize recognition of transitions in the signal to the internal timebase of the device.
+#define DAQmx_ArmStartTrig_TrigWhen                                      0x3131 // Specifies when to trigger the arm start trigger.
+#define DAQmx_ArmStartTrig_Timescale                                     0x3132 // Specifies the timescale to be used for timestamps used in an arm start time trigger.
+#define DAQmx_ArmStartTrig_TimestampEnable                               0x3133 // Specifies whether the arm start trigger timestamp is enabled. If the timestamp is enabled but no resources are available, an error will be returned at run time.
+#define DAQmx_ArmStartTrig_TimestampTimescale                            0x3135 // Specifies the arm start trigger timestamp timescale.
+#define DAQmx_ArmStartTrig_TimestampVal                                  0x3134 // Indicates the arm start trigger timestamp value.
 #define DAQmx_Trigger_SyncType                                           0x2F80 // Specifies the role of the device in a synchronized system. Setting this value to  DAQmx_Val_Master or  DAQmx_Val_Slave enables trigger skew correction. If you enable trigger skew correction, set this property to DAQmx_Val_Master on only one device, and set this property to DAQmx_Val_Slave on the other devices.
 
 //********** Watchdog Attributes **********
@@ -1171,6 +1228,8 @@ typedef uInt32             CalHandle;
 #define DAQmx_Write_OpenCurrentLoopChans                                 0x29EB // Indicates a list of names of any virtual channels in the task for which the device(s) detected an open current loop. You must read Open Current Loop Channels Exist before you read this property. Otherwise, you will receive an error.
 #define DAQmx_Write_PowerSupplyFaultChansExist                           0x29EC // Indicates if the device(s) detected a power supply fault for any channel in the task. Reading this property clears the power supply fault status for all channels in the task. You must read this property before you read Power Supply Fault Channels. Otherwise, you will receive an error.
 #define DAQmx_Write_PowerSupplyFaultChans                                0x29ED // Indicates a list of names of any virtual channels in the task that have a power supply fault. You must read Power Supply Fault Channels Exist before you read this property. Otherwise, you will receive an error.
+#define DAQmx_Write_Sync_UnlockedChansExist                              0x313F // Indicates whether the target is currently locked to the grand master. Devices may report PLL Unlock either during acquisition or after acquisition.
+#define DAQmx_Write_Sync_UnlockedChans                                   0x3140 // Indicates the channels from devices in an unlocked target.
 #define DAQmx_Write_SpaceAvail                                           0x1460 // Indicates in samples per channel the amount of available space in the buffer.
 #define DAQmx_Write_TotalSampPerChanGenerated                            0x192B // Indicates the total number of samples generated by each channel in the task. This value is identical for all channels in the task.
 #define DAQmx_Write_AccessoryInsertionOrRemovalDetected                  0x3053 // Indicates if any devices in the task detected the insertion or removal of an accessory since the task started. Reading this property clears the accessory change status for all channels in the task. You must read this property before you read Devices with Inserted or Removed Accessories. Otherwise, you will receive an error.
@@ -1304,6 +1363,12 @@ typedef uInt32             CalHandle;
 #define DAQmx_Val_Newtons                                                 15875 // Newtons
 #define DAQmx_Val_Pounds                                                  15876 // Pounds
 #define DAQmx_Val_FromCustomScale                                         10065 // From Custom Scale
+
+//*** Value set for DAQmxWaitForValidTimestamp ***
+#define DAQmx_Val_StartTrigger                                            12491 // Start Trigger
+#define DAQmx_Val_ReferenceTrigger                                        12490 // Reference Trigger
+#define DAQmx_Val_ArmStartTrigger                                         14641 // Arm Start Trigger
+#define DAQmx_Val_FirstSampleTimestamp                                    16130 // First Sample Timestamp
 
 //*** Value for the Terminal Config parameter of DAQmxCreateAIVoltageChan, DAQmxCreateAICurrentChan and DAQmxCreateAIVoltageChanWithExcit ***
 #define DAQmx_Val_Cfg_Default                                             -1 // Default
@@ -1601,8 +1666,10 @@ typedef uInt32             CalHandle;
 #define DAQmx_Val_GND                                                     10066 // GND
 
 //*** Values for DAQmx_AnlgEdge_StartTrig_Coupling ***
+//*** Values for DAQmx_AnlgMultiEdge_StartTrig_Couplings ***
 //*** Values for DAQmx_AnlgWin_StartTrig_Coupling ***
 //*** Values for DAQmx_AnlgEdge_RefTrig_Coupling ***
+//*** Values for DAQmx_AnlgMultiEdge_RefTrig_Couplings ***
 //*** Values for DAQmx_AnlgWin_RefTrig_Coupling ***
 //*** Values for DAQmx_AnlgLvl_PauseTrig_Coupling ***
 //*** Values for DAQmx_AnlgWin_PauseTrig_Coupling ***
@@ -2170,7 +2237,9 @@ typedef uInt32             CalHandle;
 #define DAQmx_Val_SampleClock                                             12487 // Sample Clock
 
 //*** Values for DAQmx_AnlgEdge_StartTrig_Slope ***
+//*** Values for DAQmx_AnlgMultiEdge_StartTrig_Slopes ***
 //*** Values for DAQmx_AnlgEdge_RefTrig_Slope ***
+//*** Values for DAQmx_AnlgMultiEdge_RefTrig_Slopes ***
 //*** Value set Slope1 ***
 #define DAQmx_Val_RisingSlope                                             10280 // Rising
 #define DAQmx_Val_FallingSlope                                            10171 // Falling
@@ -2230,11 +2299,22 @@ typedef uInt32             CalHandle;
 #define DAQmx_Val_Load                                                    10440 // Load
 #define DAQmx_Val_ReservedForRouting                                      10441 // Reserved for Routing
 
+//*** Values for DAQmx_SyncPulse_Type ***
+//*** Value set SyncPulseType ***
+#define DAQmx_Val_Onboard                                                 16128 // Onboard
+#define DAQmx_Val_DigEdge                                                 10150 // Digital Edge
+#define DAQmx_Val_Time                                                    15996 // Time
+
 //*** Values for DAQmx_Trigger_SyncType ***
 //*** Value set SyncType ***
 #define DAQmx_Val_None                                                    10230 // None
 #define DAQmx_Val_Master                                                  15888 // Master
 #define DAQmx_Val_Slave                                                   15889 // Slave
+
+//*** Values for DAQmx_Chan_SyncUnlockBehavior ***
+//*** Value set SyncUnlockBehavior ***
+#define DAQmx_Val_StopTaskAndError                                        15862 // Stop Task and Error
+#define DAQmx_Val_IgnoreLostSyncLock                                      16129 // Ignore Lost Sync Lock
 
 //*** Value set TEDSUnits ***
 #define DAQmx_Val_FromCustomScale                                         10065 // From Custom Scale
@@ -2258,6 +2338,17 @@ typedef uInt32             CalHandle;
 #define DAQmx_Val_T_Type_TC                                               10086 // T
 #define DAQmx_Val_B_Type_TC                                               10047 // B
 #define DAQmx_Val_E_Type_TC                                               10055 // E
+
+//*** Values for DAQmx_SyncPulse_Time_Timescale ***
+//*** Values for DAQmx_FirstSampTimestamp_Timescale ***
+//*** Values for DAQmx_StartTrig_Timescale ***
+//*** Values for DAQmx_StartTrig_TimestampTimescale ***
+//*** Values for DAQmx_RefTrig_TimestampTimescale ***
+//*** Values for DAQmx_ArmStartTrig_Timescale ***
+//*** Values for DAQmx_ArmStartTrig_TimestampTimescale ***
+//*** Value set Timescale2 ***
+#define DAQmx_Val_HostTime                                                16126 // Host Time
+#define DAQmx_Val_IODeviceTime                                            16127 // I/O Device Time
 
 //*** Values for DAQmx_CI_Timestamp_Units ***
 //*** Value set TimeUnits ***
@@ -2294,6 +2385,7 @@ typedef uInt32             CalHandle;
 //*** Values for DAQmx_WatchdogExpirTrig_Type ***
 //*** Value set TriggerType4 ***
 #define DAQmx_Val_DigEdge                                                 10150 // Digital Edge
+#define DAQmx_Val_Time                                                    15996 // Time
 #define DAQmx_Val_None                                                    10230 // None
 
 //*** Values for DAQmx_AdvTrig_Type ***
@@ -2313,9 +2405,11 @@ typedef uInt32             CalHandle;
 //*** Values for DAQmx_RefTrig_Type ***
 //*** Value set TriggerType8 ***
 #define DAQmx_Val_AnlgEdge                                                10099 // Analog Edge
+#define DAQmx_Val_AnlgMultiEdge                                           16108 // Analog Multi Edge
 #define DAQmx_Val_DigEdge                                                 10150 // Digital Edge
 #define DAQmx_Val_DigPattern                                              10398 // Digital Pattern
 #define DAQmx_Val_AnlgWin                                                 10103 // Analog Window
+#define DAQmx_Val_Time                                                    15996 // Time
 #define DAQmx_Val_None                                                    10230 // None
 
 //*** Values for DAQmx_HshkTrig_Type ***
@@ -2326,9 +2420,11 @@ typedef uInt32             CalHandle;
 //*** Values for DAQmx_StartTrig_Type ***
 //*** Value set TriggerType10 ***
 #define DAQmx_Val_AnlgEdge                                                10099 // Analog Edge
+#define DAQmx_Val_AnlgMultiEdge                                           16108 // Analog Multi Edge
 #define DAQmx_Val_DigEdge                                                 10150 // Digital Edge
 #define DAQmx_Val_DigPattern                                              10398 // Digital Pattern
 #define DAQmx_Val_AnlgWin                                                 10103 // Analog Window
+#define DAQmx_Val_Time                                                    15996 // Time
 #define DAQmx_Val_None                                                    10230 // None
 
 //*** Values for DAQmx_SampClk_UnderflowBehavior ***
@@ -2517,6 +2613,7 @@ int32 __CFUNC     DAQmxStopTask                  (TaskHandle taskHandle);
 int32 __CFUNC     DAQmxClearTask                 (TaskHandle taskHandle);
 
 int32 __CFUNC     DAQmxWaitUntilTaskDone         (TaskHandle taskHandle, float64 timeToWait);
+int32 __CFUNC     DAQmxWaitForValidTimestamp     (TaskHandle taskHandle, int32 timestampEvent, float64 timeout, CVIAbsoluteTime* timestamp);
 int32 __CFUNC     DAQmxIsTaskDone                (TaskHandle taskHandle, bool32 *isTaskDone);
 
 int32 __CFUNC     DAQmxTaskControl               (TaskHandle taskHandle, int32 action);
@@ -2679,23 +2776,21 @@ int32 __CFUNC     DAQmxResetTimingAttributeEx    (TaskHandle taskHandle, const c
 int32 __CFUNC     DAQmxDisableStartTrig          (TaskHandle taskHandle);
 int32 __CFUNC     DAQmxCfgDigEdgeStartTrig       (TaskHandle taskHandle, const char triggerSource[], int32 triggerEdge);
 int32 __CFUNC     DAQmxCfgAnlgEdgeStartTrig      (TaskHandle taskHandle, const char triggerSource[], int32 triggerSlope, float64 triggerLevel);
+int32 __CFUNC     DAQmxCfgAnlgMultiEdgeStartTrig (TaskHandle taskHandle, const char triggerSources[], int32 triggerSlopeArray[], float64 triggerLevelArray[], uInt32 arraySize);
 int32 __CFUNC     DAQmxCfgAnlgWindowStartTrig    (TaskHandle taskHandle, const char triggerSource[], int32 triggerWhen, float64 windowTop, float64 windowBottom);
+int32 __CFUNC     DAQmxCfgTimeStartTrig          (TaskHandle taskHandle, CVIAbsoluteTime when, int32 timescale);
 int32 __CFUNC     DAQmxCfgDigPatternStartTrig    (TaskHandle taskHandle, const char triggerSource[], const char triggerPattern[], int32 triggerWhen);
 
 int32 __CFUNC     DAQmxDisableRefTrig            (TaskHandle taskHandle);
 int32 __CFUNC     DAQmxCfgDigEdgeRefTrig         (TaskHandle taskHandle, const char triggerSource[], int32 triggerEdge, uInt32 pretriggerSamples);
 int32 __CFUNC     DAQmxCfgAnlgEdgeRefTrig        (TaskHandle taskHandle, const char triggerSource[], int32 triggerSlope, float64 triggerLevel, uInt32 pretriggerSamples);
+int32 __CFUNC     DAQmxCfgAnlgMultiEdgeRefTrig   (TaskHandle taskHandle, const char triggerSources[], int32 triggerSlopeArray[], float64 triggerLevelArray[], uInt32 pretriggerSamples, uInt32 arraySize);
 int32 __CFUNC     DAQmxCfgAnlgWindowRefTrig      (TaskHandle taskHandle, const char triggerSource[], int32 triggerWhen, float64 windowTop, float64 windowBottom, uInt32 pretriggerSamples);
 int32 __CFUNC     DAQmxCfgDigPatternRefTrig      (TaskHandle taskHandle, const char triggerSource[], const char triggerPattern[], int32 triggerWhen, uInt32 pretriggerSamples);
-
-int32 __CFUNC     DAQmxDisableAdvTrig            (TaskHandle taskHandle);
-int32 __CFUNC     DAQmxCfgDigEdgeAdvTrig         (TaskHandle taskHandle, const char triggerSource[], int32 triggerEdge);
 
 int32 __CFUNC_C   DAQmxGetTrigAttribute          (TaskHandle taskHandle, int32 attribute, void *value, ...);
 int32 __CFUNC_C   DAQmxSetTrigAttribute          (TaskHandle taskHandle, int32 attribute, ...);
 int32 __CFUNC     DAQmxResetTrigAttribute        (TaskHandle taskHandle, int32 attribute);
-
-int32 __CFUNC     DAQmxSendSoftwareTrigger       (TaskHandle taskHandle, int32 triggerID);
 
 
 /******************************************************/
@@ -3056,6 +3151,10 @@ int32 __CFUNC_C   DAQmxGetSwitchScanAttribute    (TaskHandle taskHandle, int32 a
 int32 __CFUNC_C   DAQmxSetSwitchScanAttribute    (TaskHandle taskHandle, int32 attribute, ...);
 int32 __CFUNC     DAQmxResetSwitchScanAttribute  (TaskHandle taskHandle, int32 attribute);
 
+int32 __CFUNC     DAQmxDisableAdvTrig            (TaskHandle taskHandle);
+int32 __CFUNC     DAQmxCfgDigEdgeAdvTrig         (TaskHandle taskHandle, const char triggerSource[], int32 triggerEdge);
+int32 __CFUNC     DAQmxSendSoftwareTrigger       (TaskHandle taskHandle, int32 triggerID);
+
 
 
 /******************************************************/
@@ -3175,6 +3274,8 @@ int32 __CFUNC     DAQmxAdjust4304Cal             (CalHandle calHandle, float64 r
 int32 __CFUNC     DAQmxSetup4305Cal              (CalHandle calHandle, const char channelNames[], float64 rangeMin, float64 rangeMax);
 int32 __CFUNC     DAQmxGet4305CalAdjustPoints    (CalHandle calHandle, float64* adjustmentPoints, uInt32 bufferSize);
 int32 __CFUNC     DAQmxAdjust4305Cal             (CalHandle calHandle, float64 refVoltage);
+int32 __CFUNC     DAQmxAdjust4309Cal             (CalHandle calHandle, float64 refVoltage);
+int32 __CFUNC     DAQmxAdjust4310Cal             (CalHandle calHandle, float64 refVoltage);
 int32 __CFUNC     DAQmxAdjust4353Cal             (CalHandle calHandle, const char channelNames[], float64 refVal);
 int32 __CFUNC     DAQmxAdjust4357Cal             (CalHandle calHandle, const char channelNames[], const float64 refVals[], int32 numRefVals);
 int32 __CFUNC     DAQmxSetup4322Cal              (CalHandle calHandle, const char channelNames[], int32 outputType, float64 outputVal);
@@ -3230,12 +3331,16 @@ int32 __CFUNC     DAQmxGet9222CalAdjustPoints(CalHandle calHandle, float64* adju
 int32 __CFUNC     DAQmxAdjust9222Cal(CalHandle calHandle, const char channelNames[], float64 value);
 int32 __CFUNC     DAQmxGet9223CalAdjustPoints(CalHandle calHandle, float64* adjustmentPoints, uInt32 bufferSize);
 int32 __CFUNC     DAQmxAdjust9223Cal(CalHandle calHandle, const char channelNames[], float64 value);
+int32 __CFUNC     DAQmxGet9224CalAdjustPoints(CalHandle calHandle, float64* adjustmentPoints, uInt32 bufferSize);
+int32 __CFUNC     DAQmxAdjust9224Cal(CalHandle calHandle, const char channelNames[], float64 value);
 int32 __CFUNC     DAQmxGet9225CalAdjustPoints(CalHandle calHandle, float64* adjustmentPoints, uInt32 bufferSize);
 int32 __CFUNC     DAQmxAdjust9225Cal(CalHandle calHandle, const char channelNames[], float64 value);
 int32 __CFUNC     DAQmxGet9226CalAdjustPoints(CalHandle calHandle, float64* adjustmentPoints, uInt32 bufferSize);
 int32 __CFUNC     DAQmxAdjust9226Cal(CalHandle calHandle, const char channelNames[], float64 value);
 int32 __CFUNC     DAQmxGet9227CalAdjustPoints(CalHandle calHandle, float64* adjustmentPoints, uInt32 bufferSize);
 int32 __CFUNC     DAQmxAdjust9227Cal(CalHandle calHandle, const char channelNames[], float64 value);
+int32 __CFUNC     DAQmxGet9228CalAdjustPoints(CalHandle calHandle, float64* adjustmentPoints, uInt32 bufferSize);
+int32 __CFUNC     DAQmxAdjust9228Cal(CalHandle calHandle, const char channelNames[], float64 value);
 int32 __CFUNC     DAQmxGet9229CalAdjustPoints(CalHandle calHandle, float64* adjustmentPoints, uInt32 bufferSize);
 int32 __CFUNC     DAQmxAdjust9229Cal(CalHandle calHandle, const char channelNames[], float64 value);
 int32 __CFUNC     DAQmxGet9230CalAdjustPoints(CalHandle calHandle, float64* adjustmentPoints, uInt32 bufferSize);
@@ -3259,6 +3364,8 @@ int32 __CFUNC     DAQmxGet9246CalAdjustPoints(CalHandle calHandle, float64* adju
 int32 __CFUNC     DAQmxAdjust9246Cal(CalHandle calHandle, const char channelNames[], float64 value);
 int32 __CFUNC     DAQmxGet9247CalAdjustPoints(CalHandle calHandle, float64* adjustmentPoints, uInt32 bufferSize);
 int32 __CFUNC     DAQmxAdjust9247Cal(CalHandle calHandle, const char channelNames[], float64 value);
+int32 __CFUNC     DAQmxGet9250CalAdjustPoints(CalHandle calHandle, float64* adjustmentPoints, uInt32 bufferSize);
+int32 __CFUNC     DAQmxAdjust9250Cal(CalHandle calHandle, const char channelNames[], float64 value);
 int32 __CFUNC     DAQmxGet9251CalAdjustPoints(CalHandle calHandle, float64* adjustmentPoints, uInt32 bufferSize);
 int32 __CFUNC     DAQmxAdjust9251Cal(CalHandle calHandle, const char channelNames[], float64 value);
 int32 __CFUNC     DAQmxGet9260CalAdjustPoints(CalHandle calHandle, int32* adjustmentPoints, uInt32 bufferSize);
@@ -3276,6 +3383,8 @@ int32 __CFUNC     DAQmxAdjust9265Cal(CalHandle calHandle, const char channelName
 int32 __CFUNC     DAQmxGet9269CalAdjustPoints(CalHandle calHandle, int32* adjustmentPoints, uInt32 bufferSize);
 int32 __CFUNC     DAQmxSetup9269Cal(CalHandle calHandle, const char channelNames[], int32 value);
 int32 __CFUNC     DAQmxAdjust9269Cal(CalHandle calHandle, const char channelNames[], float64 value);
+int32 __CFUNC     DAQmxGet9775CalAdjustPoints(CalHandle calHandle, uInt32 coupling, float64* adjustmentPoints, uInt32 bufferSize);
+int32 __CFUNC 		DAQmxAdjust9775Cal(CalHandle calHandle, const char channelNames[], float64 value, uInt32 coupling);
 
 int32 __CFUNC     DAQmxSetup1102Cal              (CalHandle calHandle, const char channelName[], float64 gain);
 int32 __CFUNC     DAQmxAdjust1102Cal             (CalHandle calHandle, float64 refVoltage, float64 measOutput);
@@ -4159,6 +4268,14 @@ int32 __CFUNC DAQmxResetAISampAndHoldEnable(TaskHandle taskHandle, const char ch
 int32 __CFUNC DAQmxGetAIAutoZeroMode(TaskHandle taskHandle, const char channel[], int32 *data);
 int32 __CFUNC DAQmxSetAIAutoZeroMode(TaskHandle taskHandle, const char channel[], int32 data);
 int32 __CFUNC DAQmxResetAIAutoZeroMode(TaskHandle taskHandle, const char channel[]);
+//*** Set/Get functions for DAQmx_AI_ChopEnable ***
+int32 __CFUNC DAQmxGetAIChopEnable(TaskHandle taskHandle, const char channel[], bool32 *data);
+int32 __CFUNC DAQmxSetAIChopEnable(TaskHandle taskHandle, const char channel[], bool32 data);
+int32 __CFUNC DAQmxResetAIChopEnable(TaskHandle taskHandle, const char channel[]);
+//*** Set/Get functions for DAQmx_AI_DataXferMaxRate ***
+int32 __CFUNC DAQmxGetAIDataXferMaxRate(TaskHandle taskHandle, const char channel[], float64 *data);
+int32 __CFUNC DAQmxSetAIDataXferMaxRate(TaskHandle taskHandle, const char channel[], float64 data);
+int32 __CFUNC DAQmxResetAIDataXferMaxRate(TaskHandle taskHandle, const char channel[]);
 //*** Set/Get functions for DAQmx_AI_DataXferMech ***
 // Uses value set DataTransferMechanism
 int32 __CFUNC DAQmxGetAIDataXferMech(TaskHandle taskHandle, const char channel[], int32 *data);
@@ -5672,6 +5789,11 @@ int32 __CFUNC DAQmxSetChanDescr(TaskHandle taskHandle, const char channel[], con
 int32 __CFUNC DAQmxResetChanDescr(TaskHandle taskHandle, const char channel[]);
 //*** Set/Get functions for DAQmx_ChanIsGlobal ***
 int32 __CFUNC DAQmxGetChanIsGlobal(TaskHandle taskHandle, const char channel[], bool32 *data);
+//*** Set/Get functions for DAQmx_Chan_SyncUnlockBehavior ***
+// Uses value set SyncUnlockBehavior
+int32 __CFUNC DAQmxGetChanSyncUnlockBehavior(TaskHandle taskHandle, const char channel[], int32 *data);
+int32 __CFUNC DAQmxSetChanSyncUnlockBehavior(TaskHandle taskHandle, const char channel[], int32 data);
+int32 __CFUNC DAQmxResetChanSyncUnlockBehavior(TaskHandle taskHandle, const char channel[]);
 
 //********** Device **********
 //*** Set/Get functions for DAQmx_Dev_IsSimulated ***
@@ -5699,6 +5821,8 @@ int32 __CFUNC DAQmxGetDevChassisModuleDevNames(const char device[], char *data, 
 int32 __CFUNC DAQmxGetDevAnlgTrigSupported(const char device[], bool32 *data);
 //*** Set/Get functions for DAQmx_Dev_DigTrigSupported ***
 int32 __CFUNC DAQmxGetDevDigTrigSupported(const char device[], bool32 *data);
+//*** Set/Get functions for DAQmx_Dev_TimeTrigSupported ***
+int32 __CFUNC DAQmxGetDevTimeTrigSupported(const char device[], bool32 *data);
 //*** Set/Get functions for DAQmx_Dev_AI_PhysicalChans ***
 int32 __CFUNC DAQmxGetDevAIPhysicalChans(const char device[], char *data, uInt32 bufferSize);
 //*** Set/Get functions for DAQmx_Dev_AI_SupportedMeasTypes ***
@@ -5854,6 +5978,10 @@ int32 __CFUNC DAQmxGetDevTCPIPEthernetIP(const char device[], char *data, uInt32
 int32 __CFUNC DAQmxGetDevTCPIPWirelessIP(const char device[], char *data, uInt32 bufferSize);
 //*** Set/Get functions for DAQmx_Dev_Terminals ***
 int32 __CFUNC DAQmxGetDevTerminals(const char device[], char *data, uInt32 bufferSize);
+//*** Set/Get functions for DAQmx_Dev_NumTimeTrigs ***
+int32 __CFUNC DAQmxGetDevNumTimeTrigs(const char device[], uInt32 *data);
+//*** Set/Get functions for DAQmx_Dev_NumTimestampEngines ***
+int32 __CFUNC DAQmxGetDevNumTimestampEngines(const char device[], uInt32 *data);
 
 //********** Export Signal **********
 //*** Set/Get functions for DAQmx_Exported_AIConvClk_OutputTerm ***
@@ -6276,6 +6404,14 @@ int32 __CFUNC DAQmxGetReadOpenThrmcplChans(TaskHandle taskHandle, char *data, uI
 int32 __CFUNC DAQmxGetReadOverloadedChansExist(TaskHandle taskHandle, bool32 *data);
 //*** Set/Get functions for DAQmx_Read_OverloadedChans ***
 int32 __CFUNC DAQmxGetReadOverloadedChans(TaskHandle taskHandle, char *data, uInt32 bufferSize);
+//*** Set/Get functions for DAQmx_Read_PLL_UnlockedChansExist ***
+int32 __CFUNC DAQmxGetReadPLLUnlockedChansExist(TaskHandle taskHandle, bool32 *data);
+//*** Set/Get functions for DAQmx_Read_PLL_UnlockedChans ***
+int32 __CFUNC DAQmxGetReadPLLUnlockedChans(TaskHandle taskHandle, char *data, uInt32 bufferSize);
+//*** Set/Get functions for DAQmx_Read_Sync_UnlockedChansExist ***
+int32 __CFUNC DAQmxGetReadSyncUnlockedChansExist(TaskHandle taskHandle, bool32 *data);
+//*** Set/Get functions for DAQmx_Read_Sync_UnlockedChans ***
+int32 __CFUNC DAQmxGetReadSyncUnlockedChans(TaskHandle taskHandle, char *data, uInt32 bufferSize);
 //*** Set/Get functions for DAQmx_Read_AccessoryInsertionOrRemovalDetected ***
 int32 __CFUNC DAQmxGetReadAccessoryInsertionOrRemovalDetected(TaskHandle taskHandle, bool32 *data);
 //*** Set/Get functions for DAQmx_Read_DevsWithInsertedOrRemovedAccessories ***
@@ -6705,10 +6841,24 @@ int32 __CFUNC DAQmxResetRefClkRate(TaskHandle taskHandle);
 int32 __CFUNC DAQmxGetRefClkSrc(TaskHandle taskHandle, char *data, uInt32 bufferSize);
 int32 __CFUNC DAQmxSetRefClkSrc(TaskHandle taskHandle, const char *data);
 int32 __CFUNC DAQmxResetRefClkSrc(TaskHandle taskHandle);
+//*** Set/Get functions for DAQmx_SyncPulse_Type ***
+// Uses value set SyncPulseType
+int32 __CFUNC DAQmxGetSyncPulseType(TaskHandle taskHandle, int32 *data);
+int32 __CFUNC DAQmxSetSyncPulseType(TaskHandle taskHandle, int32 data);
+int32 __CFUNC DAQmxResetSyncPulseType(TaskHandle taskHandle);
 //*** Set/Get functions for DAQmx_SyncPulse_Src ***
 int32 __CFUNC DAQmxGetSyncPulseSrc(TaskHandle taskHandle, char *data, uInt32 bufferSize);
 int32 __CFUNC DAQmxSetSyncPulseSrc(TaskHandle taskHandle, const char *data);
 int32 __CFUNC DAQmxResetSyncPulseSrc(TaskHandle taskHandle);
+//*** Set/Get functions for DAQmx_SyncPulse_Time_When ***
+int32 __CFUNC DAQmxGetSyncPulseTimeWhen(TaskHandle taskHandle, CVIAbsoluteTime *data);
+int32 __CFUNC DAQmxSetSyncPulseTimeWhen(TaskHandle taskHandle, CVIAbsoluteTime data);
+int32 __CFUNC DAQmxResetSyncPulseTimeWhen(TaskHandle taskHandle);
+//*** Set/Get functions for DAQmx_SyncPulse_Time_Timescale ***
+// Uses value set Timescale2
+int32 __CFUNC DAQmxGetSyncPulseTimeTimescale(TaskHandle taskHandle, int32 *data);
+int32 __CFUNC DAQmxSetSyncPulseTimeTimescale(TaskHandle taskHandle, int32 data);
+int32 __CFUNC DAQmxResetSyncPulseTimeTimescale(TaskHandle taskHandle);
 //*** Set/Get functions for DAQmx_SyncPulse_SyncTime ***
 int32 __CFUNC DAQmxGetSyncPulseSyncTime(TaskHandle taskHandle, float64 *data);
 //*** Set/Get functions for DAQmx_SyncPulse_MinDelayToStart ***
@@ -6731,6 +6881,17 @@ int32 __CFUNC DAQmxResetSyncClkInterval(TaskHandle taskHandle);
 int32 __CFUNC DAQmxGetSampTimingEngine(TaskHandle taskHandle, uInt32 *data);
 int32 __CFUNC DAQmxSetSampTimingEngine(TaskHandle taskHandle, uInt32 data);
 int32 __CFUNC DAQmxResetSampTimingEngine(TaskHandle taskHandle);
+//*** Set/Get functions for DAQmx_FirstSampTimestamp_Enable ***
+int32 __CFUNC DAQmxGetFirstSampTimestampEnable(TaskHandle taskHandle, bool32 *data);
+int32 __CFUNC DAQmxSetFirstSampTimestampEnable(TaskHandle taskHandle, bool32 data);
+int32 __CFUNC DAQmxResetFirstSampTimestampEnable(TaskHandle taskHandle);
+//*** Set/Get functions for DAQmx_FirstSampTimestamp_Timescale ***
+// Uses value set Timescale2
+int32 __CFUNC DAQmxGetFirstSampTimestampTimescale(TaskHandle taskHandle, int32 *data);
+int32 __CFUNC DAQmxSetFirstSampTimestampTimescale(TaskHandle taskHandle, int32 data);
+int32 __CFUNC DAQmxResetFirstSampTimestampTimescale(TaskHandle taskHandle);
+//*** Set/Get functions for DAQmx_FirstSampTimestamp_Val ***
+int32 __CFUNC DAQmxGetFirstSampTimestampVal(TaskHandle taskHandle, CVIAbsoluteTime *data);
 
 //********** Trigger **********
 //*** Set/Get functions for DAQmx_StartTrig_Type ***
@@ -6824,6 +6985,28 @@ int32 __CFUNC DAQmxResetAnlgEdgeStartTrigDigFltrTimebaseRate(TaskHandle taskHand
 int32 __CFUNC DAQmxGetAnlgEdgeStartTrigDigSyncEnable(TaskHandle taskHandle, bool32 *data);
 int32 __CFUNC DAQmxSetAnlgEdgeStartTrigDigSyncEnable(TaskHandle taskHandle, bool32 data);
 int32 __CFUNC DAQmxResetAnlgEdgeStartTrigDigSyncEnable(TaskHandle taskHandle);
+//*** Set/Get functions for DAQmx_AnlgMultiEdge_StartTrig_Srcs ***
+int32 __CFUNC DAQmxGetAnlgMultiEdgeStartTrigSrcs(TaskHandle taskHandle, char *data, uInt32 bufferSize);
+int32 __CFUNC DAQmxSetAnlgMultiEdgeStartTrigSrcs(TaskHandle taskHandle, const char *data);
+int32 __CFUNC DAQmxResetAnlgMultiEdgeStartTrigSrcs(TaskHandle taskHandle);
+//*** Set/Get functions for DAQmx_AnlgMultiEdge_StartTrig_Slopes ***
+// Uses value set Slope1
+int32 __CFUNC DAQmxGetAnlgMultiEdgeStartTrigSlopes(TaskHandle taskHandle, int32 *data, uInt32 arraySizeInElements);
+int32 __CFUNC DAQmxSetAnlgMultiEdgeStartTrigSlopes(TaskHandle taskHandle, int32 *data, uInt32 arraySizeInElements);
+int32 __CFUNC DAQmxResetAnlgMultiEdgeStartTrigSlopes(TaskHandle taskHandle);
+//*** Set/Get functions for DAQmx_AnlgMultiEdge_StartTrig_Lvls ***
+int32 __CFUNC DAQmxGetAnlgMultiEdgeStartTrigLvls(TaskHandle taskHandle, float64 *data, uInt32 arraySizeInElements);
+int32 __CFUNC DAQmxSetAnlgMultiEdgeStartTrigLvls(TaskHandle taskHandle, float64 *data, uInt32 arraySizeInElements);
+int32 __CFUNC DAQmxResetAnlgMultiEdgeStartTrigLvls(TaskHandle taskHandle);
+//*** Set/Get functions for DAQmx_AnlgMultiEdge_StartTrig_Hysts ***
+int32 __CFUNC DAQmxGetAnlgMultiEdgeStartTrigHysts(TaskHandle taskHandle, float64 *data, uInt32 arraySizeInElements);
+int32 __CFUNC DAQmxSetAnlgMultiEdgeStartTrigHysts(TaskHandle taskHandle, float64 *data, uInt32 arraySizeInElements);
+int32 __CFUNC DAQmxResetAnlgMultiEdgeStartTrigHysts(TaskHandle taskHandle);
+//*** Set/Get functions for DAQmx_AnlgMultiEdge_StartTrig_Couplings ***
+// Uses value set Coupling2
+int32 __CFUNC DAQmxGetAnlgMultiEdgeStartTrigCouplings(TaskHandle taskHandle, int32 *data, uInt32 arraySizeInElements);
+int32 __CFUNC DAQmxSetAnlgMultiEdgeStartTrigCouplings(TaskHandle taskHandle, int32 *data, uInt32 arraySizeInElements);
+int32 __CFUNC DAQmxResetAnlgMultiEdgeStartTrigCouplings(TaskHandle taskHandle);
 //*** Set/Get functions for DAQmx_AnlgWin_StartTrig_Src ***
 int32 __CFUNC DAQmxGetAnlgWinStartTrigSrc(TaskHandle taskHandle, char *data, uInt32 bufferSize);
 int32 __CFUNC DAQmxSetAnlgWinStartTrigSrc(TaskHandle taskHandle, const char *data);
@@ -6866,6 +7049,26 @@ int32 __CFUNC DAQmxResetAnlgWinStartTrigDigFltrTimebaseRate(TaskHandle taskHandl
 int32 __CFUNC DAQmxGetAnlgWinStartTrigDigSyncEnable(TaskHandle taskHandle, bool32 *data);
 int32 __CFUNC DAQmxSetAnlgWinStartTrigDigSyncEnable(TaskHandle taskHandle, bool32 data);
 int32 __CFUNC DAQmxResetAnlgWinStartTrigDigSyncEnable(TaskHandle taskHandle);
+//*** Set/Get functions for DAQmx_StartTrig_TrigWhen ***
+int32 __CFUNC DAQmxGetStartTrigTrigWhen(TaskHandle taskHandle, CVIAbsoluteTime *data);
+int32 __CFUNC DAQmxSetStartTrigTrigWhen(TaskHandle taskHandle, CVIAbsoluteTime data);
+int32 __CFUNC DAQmxResetStartTrigTrigWhen(TaskHandle taskHandle);
+//*** Set/Get functions for DAQmx_StartTrig_Timescale ***
+// Uses value set Timescale2
+int32 __CFUNC DAQmxGetStartTrigTimescale(TaskHandle taskHandle, int32 *data);
+int32 __CFUNC DAQmxSetStartTrigTimescale(TaskHandle taskHandle, int32 data);
+int32 __CFUNC DAQmxResetStartTrigTimescale(TaskHandle taskHandle);
+//*** Set/Get functions for DAQmx_StartTrig_TimestampEnable ***
+int32 __CFUNC DAQmxGetStartTrigTimestampEnable(TaskHandle taskHandle, bool32 *data);
+int32 __CFUNC DAQmxSetStartTrigTimestampEnable(TaskHandle taskHandle, bool32 data);
+int32 __CFUNC DAQmxResetStartTrigTimestampEnable(TaskHandle taskHandle);
+//*** Set/Get functions for DAQmx_StartTrig_TimestampTimescale ***
+// Uses value set Timescale2
+int32 __CFUNC DAQmxGetStartTrigTimestampTimescale(TaskHandle taskHandle, int32 *data);
+int32 __CFUNC DAQmxSetStartTrigTimestampTimescale(TaskHandle taskHandle, int32 data);
+int32 __CFUNC DAQmxResetStartTrigTimestampTimescale(TaskHandle taskHandle);
+//*** Set/Get functions for DAQmx_StartTrig_TimestampVal ***
+int32 __CFUNC DAQmxGetStartTrigTimestampVal(TaskHandle taskHandle, CVIAbsoluteTime *data);
 //*** Set/Get functions for DAQmx_StartTrig_Delay ***
 int32 __CFUNC DAQmxGetStartTrigDelay(TaskHandle taskHandle, float64 *data);
 int32 __CFUNC DAQmxSetStartTrigDelay(TaskHandle taskHandle, float64 data);
@@ -6879,6 +7082,18 @@ int32 __CFUNC DAQmxResetStartTrigDelayUnits(TaskHandle taskHandle);
 int32 __CFUNC DAQmxGetStartTrigRetriggerable(TaskHandle taskHandle, bool32 *data);
 int32 __CFUNC DAQmxSetStartTrigRetriggerable(TaskHandle taskHandle, bool32 data);
 int32 __CFUNC DAQmxResetStartTrigRetriggerable(TaskHandle taskHandle);
+//*** Set/Get functions for DAQmx_StartTrig_TrigWin ***
+int32 __CFUNC DAQmxGetStartTrigTrigWin(TaskHandle taskHandle, float64 *data);
+int32 __CFUNC DAQmxSetStartTrigTrigWin(TaskHandle taskHandle, float64 data);
+int32 __CFUNC DAQmxResetStartTrigTrigWin(TaskHandle taskHandle);
+//*** Set/Get functions for DAQmx_StartTrig_RetriggerWin ***
+int32 __CFUNC DAQmxGetStartTrigRetriggerWin(TaskHandle taskHandle, float64 *data);
+int32 __CFUNC DAQmxSetStartTrigRetriggerWin(TaskHandle taskHandle, float64 data);
+int32 __CFUNC DAQmxResetStartTrigRetriggerWin(TaskHandle taskHandle);
+//*** Set/Get functions for DAQmx_StartTrig_MaxNumTrigsToDetect ***
+int32 __CFUNC DAQmxGetStartTrigMaxNumTrigsToDetect(TaskHandle taskHandle, uInt32 *data);
+int32 __CFUNC DAQmxSetStartTrigMaxNumTrigsToDetect(TaskHandle taskHandle, uInt32 data);
+int32 __CFUNC DAQmxResetStartTrigMaxNumTrigsToDetect(TaskHandle taskHandle);
 //*** Set/Get functions for DAQmx_RefTrig_Type ***
 // Uses value set TriggerType8
 int32 __CFUNC DAQmxGetRefTrigType(TaskHandle taskHandle, int32 *data);
@@ -6974,6 +7189,28 @@ int32 __CFUNC DAQmxResetAnlgEdgeRefTrigDigFltrTimebaseRate(TaskHandle taskHandle
 int32 __CFUNC DAQmxGetAnlgEdgeRefTrigDigSyncEnable(TaskHandle taskHandle, bool32 *data);
 int32 __CFUNC DAQmxSetAnlgEdgeRefTrigDigSyncEnable(TaskHandle taskHandle, bool32 data);
 int32 __CFUNC DAQmxResetAnlgEdgeRefTrigDigSyncEnable(TaskHandle taskHandle);
+//*** Set/Get functions for DAQmx_AnlgMultiEdge_RefTrig_Srcs ***
+int32 __CFUNC DAQmxGetAnlgMultiEdgeRefTrigSrcs(TaskHandle taskHandle, char *data, uInt32 bufferSize);
+int32 __CFUNC DAQmxSetAnlgMultiEdgeRefTrigSrcs(TaskHandle taskHandle, const char *data);
+int32 __CFUNC DAQmxResetAnlgMultiEdgeRefTrigSrcs(TaskHandle taskHandle);
+//*** Set/Get functions for DAQmx_AnlgMultiEdge_RefTrig_Slopes ***
+// Uses value set Slope1
+int32 __CFUNC DAQmxGetAnlgMultiEdgeRefTrigSlopes(TaskHandle taskHandle, int32 *data, uInt32 arraySizeInElements);
+int32 __CFUNC DAQmxSetAnlgMultiEdgeRefTrigSlopes(TaskHandle taskHandle, int32 *data, uInt32 arraySizeInElements);
+int32 __CFUNC DAQmxResetAnlgMultiEdgeRefTrigSlopes(TaskHandle taskHandle);
+//*** Set/Get functions for DAQmx_AnlgMultiEdge_RefTrig_Lvls ***
+int32 __CFUNC DAQmxGetAnlgMultiEdgeRefTrigLvls(TaskHandle taskHandle, float64 *data, uInt32 arraySizeInElements);
+int32 __CFUNC DAQmxSetAnlgMultiEdgeRefTrigLvls(TaskHandle taskHandle, float64 *data, uInt32 arraySizeInElements);
+int32 __CFUNC DAQmxResetAnlgMultiEdgeRefTrigLvls(TaskHandle taskHandle);
+//*** Set/Get functions for DAQmx_AnlgMultiEdge_RefTrig_Hysts ***
+int32 __CFUNC DAQmxGetAnlgMultiEdgeRefTrigHysts(TaskHandle taskHandle, float64 *data, uInt32 arraySizeInElements);
+int32 __CFUNC DAQmxSetAnlgMultiEdgeRefTrigHysts(TaskHandle taskHandle, float64 *data, uInt32 arraySizeInElements);
+int32 __CFUNC DAQmxResetAnlgMultiEdgeRefTrigHysts(TaskHandle taskHandle);
+//*** Set/Get functions for DAQmx_AnlgMultiEdge_RefTrig_Couplings ***
+// Uses value set Coupling2
+int32 __CFUNC DAQmxGetAnlgMultiEdgeRefTrigCouplings(TaskHandle taskHandle, int32 *data, uInt32 arraySizeInElements);
+int32 __CFUNC DAQmxSetAnlgMultiEdgeRefTrigCouplings(TaskHandle taskHandle, int32 *data, uInt32 arraySizeInElements);
+int32 __CFUNC DAQmxResetAnlgMultiEdgeRefTrigCouplings(TaskHandle taskHandle);
 //*** Set/Get functions for DAQmx_AnlgWin_RefTrig_Src ***
 int32 __CFUNC DAQmxGetAnlgWinRefTrigSrc(TaskHandle taskHandle, char *data, uInt32 bufferSize);
 int32 __CFUNC DAQmxSetAnlgWinRefTrigSrc(TaskHandle taskHandle, const char *data);
@@ -7022,10 +7259,37 @@ int32 __CFUNC DAQmxSetRefTrigAutoTrigEnable(TaskHandle taskHandle, bool32 data);
 int32 __CFUNC DAQmxResetRefTrigAutoTrigEnable(TaskHandle taskHandle);
 //*** Set/Get functions for DAQmx_RefTrig_AutoTriggered ***
 int32 __CFUNC DAQmxGetRefTrigAutoTriggered(TaskHandle taskHandle, bool32 *data);
+//*** Set/Get functions for DAQmx_RefTrig_TimestampEnable ***
+int32 __CFUNC DAQmxGetRefTrigTimestampEnable(TaskHandle taskHandle, bool32 *data);
+int32 __CFUNC DAQmxSetRefTrigTimestampEnable(TaskHandle taskHandle, bool32 data);
+int32 __CFUNC DAQmxResetRefTrigTimestampEnable(TaskHandle taskHandle);
+//*** Set/Get functions for DAQmx_RefTrig_TimestampTimescale ***
+// Uses value set Timescale2
+int32 __CFUNC DAQmxGetRefTrigTimestampTimescale(TaskHandle taskHandle, int32 *data);
+int32 __CFUNC DAQmxSetRefTrigTimestampTimescale(TaskHandle taskHandle, int32 data);
+int32 __CFUNC DAQmxResetRefTrigTimestampTimescale(TaskHandle taskHandle);
+//*** Set/Get functions for DAQmx_RefTrig_TimestampVal ***
+int32 __CFUNC DAQmxGetRefTrigTimestampVal(TaskHandle taskHandle, CVIAbsoluteTime *data);
 //*** Set/Get functions for DAQmx_RefTrig_Delay ***
 int32 __CFUNC DAQmxGetRefTrigDelay(TaskHandle taskHandle, float64 *data);
 int32 __CFUNC DAQmxSetRefTrigDelay(TaskHandle taskHandle, float64 data);
 int32 __CFUNC DAQmxResetRefTrigDelay(TaskHandle taskHandle);
+//*** Set/Get functions for DAQmx_RefTrig_Retriggerable ***
+int32 __CFUNC DAQmxGetRefTrigRetriggerable(TaskHandle taskHandle, bool32 *data);
+int32 __CFUNC DAQmxSetRefTrigRetriggerable(TaskHandle taskHandle, bool32 data);
+int32 __CFUNC DAQmxResetRefTrigRetriggerable(TaskHandle taskHandle);
+//*** Set/Get functions for DAQmx_RefTrig_TrigWin ***
+int32 __CFUNC DAQmxGetRefTrigTrigWin(TaskHandle taskHandle, float64 *data);
+int32 __CFUNC DAQmxSetRefTrigTrigWin(TaskHandle taskHandle, float64 data);
+int32 __CFUNC DAQmxResetRefTrigTrigWin(TaskHandle taskHandle);
+//*** Set/Get functions for DAQmx_RefTrig_RetriggerWin ***
+int32 __CFUNC DAQmxGetRefTrigRetriggerWin(TaskHandle taskHandle, float64 *data);
+int32 __CFUNC DAQmxSetRefTrigRetriggerWin(TaskHandle taskHandle, float64 data);
+int32 __CFUNC DAQmxResetRefTrigRetriggerWin(TaskHandle taskHandle);
+//*** Set/Get functions for DAQmx_RefTrig_MaxNumTrigsToDetect ***
+int32 __CFUNC DAQmxGetRefTrigMaxNumTrigsToDetect(TaskHandle taskHandle, uInt32 *data);
+int32 __CFUNC DAQmxSetRefTrigMaxNumTrigsToDetect(TaskHandle taskHandle, uInt32 data);
+int32 __CFUNC DAQmxResetRefTrigMaxNumTrigsToDetect(TaskHandle taskHandle);
 //*** Set/Get functions for DAQmx_AdvTrig_Type ***
 // Uses value set TriggerType5
 int32 __CFUNC DAQmxGetAdvTrigType(TaskHandle taskHandle, int32 *data);
@@ -7227,6 +7491,26 @@ int32 __CFUNC DAQmxResetDigEdgeArmStartTrigDigFltrTimebaseRate(TaskHandle taskHa
 int32 __CFUNC DAQmxGetDigEdgeArmStartTrigDigSyncEnable(TaskHandle taskHandle, bool32 *data);
 int32 __CFUNC DAQmxSetDigEdgeArmStartTrigDigSyncEnable(TaskHandle taskHandle, bool32 data);
 int32 __CFUNC DAQmxResetDigEdgeArmStartTrigDigSyncEnable(TaskHandle taskHandle);
+//*** Set/Get functions for DAQmx_ArmStartTrig_TrigWhen ***
+int32 __CFUNC DAQmxGetArmStartTrigTrigWhen(TaskHandle taskHandle, CVIAbsoluteTime *data);
+int32 __CFUNC DAQmxSetArmStartTrigTrigWhen(TaskHandle taskHandle, CVIAbsoluteTime data);
+int32 __CFUNC DAQmxResetArmStartTrigTrigWhen(TaskHandle taskHandle);
+//*** Set/Get functions for DAQmx_ArmStartTrig_Timescale ***
+// Uses value set Timescale2
+int32 __CFUNC DAQmxGetArmStartTrigTimescale(TaskHandle taskHandle, int32 *data);
+int32 __CFUNC DAQmxSetArmStartTrigTimescale(TaskHandle taskHandle, int32 data);
+int32 __CFUNC DAQmxResetArmStartTrigTimescale(TaskHandle taskHandle);
+//*** Set/Get functions for DAQmx_ArmStartTrig_TimestampEnable ***
+int32 __CFUNC DAQmxGetArmStartTrigTimestampEnable(TaskHandle taskHandle, bool32 *data);
+int32 __CFUNC DAQmxSetArmStartTrigTimestampEnable(TaskHandle taskHandle, bool32 data);
+int32 __CFUNC DAQmxResetArmStartTrigTimestampEnable(TaskHandle taskHandle);
+//*** Set/Get functions for DAQmx_ArmStartTrig_TimestampTimescale ***
+// Uses value set Timescale2
+int32 __CFUNC DAQmxGetArmStartTrigTimestampTimescale(TaskHandle taskHandle, int32 *data);
+int32 __CFUNC DAQmxSetArmStartTrigTimestampTimescale(TaskHandle taskHandle, int32 data);
+int32 __CFUNC DAQmxResetArmStartTrigTimestampTimescale(TaskHandle taskHandle);
+//*** Set/Get functions for DAQmx_ArmStartTrig_TimestampVal ***
+int32 __CFUNC DAQmxGetArmStartTrigTimestampVal(TaskHandle taskHandle, CVIAbsoluteTime *data);
 //*** Set/Get functions for DAQmx_Trigger_SyncType ***
 // Uses value set SyncType
 int32 __CFUNC DAQmxGetTriggerSyncType(TaskHandle taskHandle, int32 *data);
@@ -7319,6 +7603,10 @@ int32 __CFUNC DAQmxGetWriteOpenCurrentLoopChans(TaskHandle taskHandle, char *dat
 int32 __CFUNC DAQmxGetWritePowerSupplyFaultChansExist(TaskHandle taskHandle, bool32 *data);
 //*** Set/Get functions for DAQmx_Write_PowerSupplyFaultChans ***
 int32 __CFUNC DAQmxGetWritePowerSupplyFaultChans(TaskHandle taskHandle, char *data, uInt32 bufferSize);
+//*** Set/Get functions for DAQmx_Write_Sync_UnlockedChansExist ***
+int32 __CFUNC DAQmxGetWriteSyncUnlockedChansExist(TaskHandle taskHandle, bool32 *data);
+//*** Set/Get functions for DAQmx_Write_Sync_UnlockedChans ***
+int32 __CFUNC DAQmxGetWriteSyncUnlockedChans(TaskHandle taskHandle, char *data, uInt32 bufferSize);
 //*** Set/Get functions for DAQmx_Write_SpaceAvail ***
 int32 __CFUNC DAQmxGetWriteSpaceAvail(TaskHandle taskHandle, uInt32 *data);
 //*** Set/Get functions for DAQmx_Write_TotalSampPerChanGenerated ***
@@ -7359,6 +7647,23 @@ int32 __CFUNC DAQmxResetSampClkTimingResponseMode(TaskHandle taskHandle);
 #define DAQmxFailed(error)                            ((error)<0)
 
 // Error and Warning Codes
+#define DAQmxErrorTimeStartTriggerBeforeArmStartTrigger                                 (-209849)
+#define DAQmxErrorTimeTriggerCannotBeSet                                                (-209848)
+#define DAQmxErrorInvalidTriggerWindowValue                                             (-209847)
+#define DAQmxErrorCannotQueryPropertyBeforeOrDuringAcquisition                          (-209846)
+#define DAQmxErrorSampleClockTimebaseNotSupported                                       (-209845)
+#define DAQmxErrorTimestampNotYetReceived                                               (-209844)
+#define DAQmxErrorTimeTriggerNotSupported                                               (-209843)
+#define DAQmxErrorTimestampNotEnabled                                                   (-209842)
+#define DAQmxErrorTimeTriggersInconsistent                                              (-209841)
+#define DAQmxErrorTriggerConfiguredIsInThePast                                          (-209840)
+#define DAQmxErrorTriggerConfiguredIsTooFarFromCurrentTime                              (-209839)
+#define DAQmxErrorSynchronizationLockLost                                               (-209838)
+#define DAQmxErrorInconsistentTimescales                                                (-209837)
+#define DAQmxErrorCannotSynchronizeDevices                                              (-209836)
+#define DAQmxErrorAssociatedChansHaveAttributeConflictWithMultipleMaxMinRanges          (-209835)
+#define DAQmxErrorSampleRateNumChansOrAttributeValues                                   (-209834)
+#define DAQmxErrorWaitForValidTimestampNotSupported                                     (-209833)
 #define DAQmxErrorTrigWinTimeoutExpired                                                 (-209832)
 #define DAQmxErrorInvalidTriggerCfgForDevice                                            (-209831)
 #define DAQmxErrorInvalidDataTransferMechanismForDevice                                 (-209830)
@@ -8952,6 +9257,7 @@ int32 __CFUNC DAQmxResetSampClkTimingResponseMode(TaskHandle taskHandle);
 #define DAQmxWarningWriteNotCompleteBeforeSampClk                                        (209801)
 #define DAQmxWarningWaitForNextSampClkDetectedMissedSampClk                              (209802)
 #define DAQmxWarningOutputDataTransferConditionNotSupported                              (209803)
+#define DAQmxWarningTimestampMayBeInvalid                                                (209804)
 #define DAQmxErrorRoutingDestTermPXIDStarXNotInSystemTimingSlot_Routing                  (-89167)
 #define DAQmxErrorRoutingSrcTermPXIDStarXNotInSystemTimingSlot_Routing                   (-89166)
 #define DAQmxErrorRoutingSrcTermPXIDStarInNonDStarTriggerSlot_Routing                    (-89165)
@@ -9119,124 +9425,6 @@ int32 __CFUNC DAQmxResetSampClkTimingResponseMode(TaskHandle taskHandle);
 #define DAQmxErrorPALBadDevice                                                           (-50002)
 #define DAQmxErrorPALIrrelevantAttribute                                                 (-50001)
 #define DAQmxErrorPALValueConflict                                                       (-50000)
-#define DAQmxErrorRetryCall                                                              (-26853)
-#define DAQmxErrorFileDoesNotExist                                                       (-26852)
-#define DAQmxErrorGenerationDisabled                                                     (-26851)
-#define DAQmxErrorAlreadyInitialized                                                     (-26850)
-#define DAQmxErrorPXISystemDescriptionParseError                                         (-26809)
-#define DAQmxErrorPXISAConfigurationLocked                                               (-26808)
-#define DAQmxErrorNotActiveResourceManager                                               (-26807)
-#define DAQmxErrorInvalidAttribute                                                       (-26806)
-#define DAQmxErrorInvalidHandle                                                          (-26805)
-#define DAQmxErrorServiceNotRunning                                                      (-26804)
-#define DAQmxErrorRecursiveCall                                                          (-26803)
-#define DAQmxErrorTimeout                                                                (-26802)
-#define DAQmxErrorUnspecifiedError                                                       (-26801)
-#define DAQmxErrorHandlerNotFound                                                        (-26657)
-#define DAQmxErrorIncorrectDataType                                                      (-26656)
-#define DAQmxErrorInconsistentFileFault                                                  (-26655)
-#define DAQmxErrorChildNotFound                                                          (-26654)
-#define DAQmxErrorAttributeNotFound                                                      (-26653)
-#define DAQmxErrorIOError                                                                (-26652)
-#define DAQmxErrorPxiResmanMxsPxiSystemNotFound                                          (-26600)
-#define DAQmxErrorPxiResmanPciDescriptionStringParseError                                (-26550)
-#define DAQmxErrorPxiResmanModuleParseError                                              (-26500)
-#define DAQmxErrorPxiResmanSystemDescriptionSpecLimitation                               (-26403)
-#define DAQmxErrorPxiResmanSystemDescriptionWriteError                                   (-26402)
-#define DAQmxErrorPxiResmanSystemDescriptionParseError                                   (-26401)
-#define DAQmxErrorPxiResmanSystemDescriptionFileNotFound                                 (-26400)
-#define DAQmxErrorPxiResmanControllerParseError                                          (-26302)
-#define DAQmxErrorPxiResmanControllerTypeInvalid                                         (-26301)
-#define DAQmxErrorPxiResmanControllerFileNotFound                                        (-26300)
-#define DAQmxErrorPxiResmanChassisTriggerParseError                                      (-26206)
-#define DAQmxErrorPxiResmanChassisBridgeParseError                                       (-26205)
-#define DAQmxErrorPxiResmanChassisSlotParseError                                         (-26204)
-#define DAQmxErrorPxiResmanChassisSegmentParseError                                      (-26203)
-#define DAQmxErrorPxiResmanChassisParseError                                             (-26202)
-#define DAQmxErrorPxiResmanChassisBridgeNotFound                                         (-26201)
-#define DAQmxErrorPxiResmanChassisFileNotFound                                           (-26200)
-#define DAQmxErrorInsufficientBuffer                                                     (-26113)
-#define DAQmxErrorDirCreateFault                                                         (-26112)
-#define DAQmxErrorAccessDenied                                                           (-26111)
-#define DAQmxErrorPathNotFound                                                           (-26110)
-#define DAQmxErrorFileExists                                                             (-26109)
-#define DAQmxErrorFileDeleteFault                                                        (-26107)
-#define DAQmxErrorFileCopyFault                                                          (-26106)
-#define DAQmxErrorFileCloseFault                                                         (-26105)
-#define DAQmxErrorFileNotFound                                                           (-26103)
-#define DAQmxErrorPxiResmanSystemNotInitialized                                          (-26102)
-#define DAQmxErrorPxiResmanInvalidConfiguration                                          (-26101)
-#define DAQmxErrorPxiResmanAllocationError                                               (-26100)
-#define DAQmxErrorTrigmanDisconnected                                                    (-26010)
-#define DAQmxErrorTrigmanInvalidClient                                                   (-26009)
-#define DAQmxErrorTrigmanConflictingRoute                                                (-26008)
-#define DAQmxErrorTrigmanConflictingRouteNoUnreserve                                     (-26007)
-#define DAQmxErrorTrigmanConflictingRouteGeneric                                         (-26006)
-#define DAQmxErrorTrigmanLineAlreadyReserved                                             (-26005)
-#define DAQmxErrorTrigmanLineNotReservedUnroutable                                       (-26004)
-#define DAQmxErrorTrigmanLineNotReserved                                                 (-26003)
-#define DAQmxErrorTrigmanInvalidParameter                                                (-26002)
-#define DAQmxErrorTrigmanUnsupportedOper                                                 (-26001)
-#define DAQmxErrorTrigmanUnknownError                                                    (-26000)
-#define DAQmxWarningTrigmanUnknownError                                                   (26000)
-#define DAQmxWarningTrigmanUnsupportedOper                                                (26001)
-#define DAQmxWarningTrigmanInvalidParameter                                               (26002)
-#define DAQmxWarningTrigmanLineNotReserved                                                (26003)
-#define DAQmxWarningTrigmanLineNotReservedUnroutable                                      (26004)
-#define DAQmxWarningTrigmanLineAlreadyReserved                                            (26005)
-#define DAQmxWarningTrigmanConflictingRouteGeneric                                        (26006)
-#define DAQmxWarningTrigmanConflictingRouteNoUnreserve                                    (26007)
-#define DAQmxWarningTrigmanConflictingRoute                                               (26008)
-#define DAQmxWarningTrigmanInvalidClient                                                  (26009)
-#define DAQmxWarningTrigmanDisconnected                                                   (26010)
-#define DAQmxWarningPxiResmanAllocationError                                              (26100)
-#define DAQmxWarningPxiResmanInvalidConfiguration                                         (26101)
-#define DAQmxWarningPxiResmanSystemNotInitialized                                         (26102)
-#define DAQmxWarningFileNotFound                                                          (26103)
-#define DAQmxWarningFileCloseFault                                                        (26105)
-#define DAQmxWarningFileCopyFault                                                         (26106)
-#define DAQmxWarningFileDeleteFault                                                       (26107)
-#define DAQmxWarningFileExists                                                            (26109)
-#define DAQmxWarningPathNotFound                                                          (26110)
-#define DAQmxWarningAccessDenied                                                          (26111)
-#define DAQmxWarningDirCreateFault                                                        (26112)
-#define DAQmxWarningInsufficientBuffer                                                    (26113)
-#define DAQmxWarningPxiResmanChassisFileNotFound                                          (26200)
-#define DAQmxWarningPxiResmanChassisBridgeNotFound                                        (26201)
-#define DAQmxWarningPxiResmanChassisParseError                                            (26202)
-#define DAQmxWarningPxiResmanChassisSegmentParseError                                     (26203)
-#define DAQmxWarningPxiResmanChassisSlotParseError                                        (26204)
-#define DAQmxWarningPxiResmanChassisBridgeParseError                                      (26205)
-#define DAQmxWarningPxiResmanChassisTriggerParseError                                     (26206)
-#define DAQmxWarningPxiResmanControllerFileNotFound                                       (26300)
-#define DAQmxWarningPxiResmanControllerTypeInvalid                                        (26301)
-#define DAQmxWarningPxiResmanControllerParseError                                         (26302)
-#define DAQmxWarningPxiResmanSystemDescriptionFileNotFound                                (26400)
-#define DAQmxWarningPxiResmanSystemDescriptionParseError                                  (26401)
-#define DAQmxWarningPxiResmanSystemDescriptionWriteError                                  (26402)
-#define DAQmxWarningPxiResmanSystemDescriptionSpecLimitation                              (26403)
-#define DAQmxWarningPxiResmanModuleParseError                                             (26500)
-#define DAQmxWarningPxiResmanPciDescriptionStringParseError                               (26550)
-#define DAQmxWarningPxiResmanMxsPxiSystemNotFound                                         (26600)
-#define DAQmxWarningIOError                                                               (26652)
-#define DAQmxWarningAttributeNotFound                                                     (26653)
-#define DAQmxWarningChildNotFound                                                         (26654)
-#define DAQmxWarningInconsistentFileFault                                                 (26655)
-#define DAQmxWarningIncorrectDataType                                                     (26656)
-#define DAQmxWarningHandlerNotFound                                                       (26657)
-#define DAQmxWarningUnspecifiedError                                                      (26801)
-#define DAQmxWarningTimeout                                                               (26802)
-#define DAQmxWarningRecursiveCall                                                         (26803)
-#define DAQmxWarningServiceNotRunning                                                     (26804)
-#define DAQmxWarningInvalidHandle                                                         (26805)
-#define DAQmxWarningInvalidAttribute                                                      (26806)
-#define DAQmxWarningNotActiveResourceManager                                              (26807)
-#define DAQmxWarningPXISAConfigurationLocked                                              (26808)
-#define DAQmxWarningPXISystemDescriptionParseError                                        (26809)
-#define DAQmxWarningAlreadyInitialized                                                    (26850)
-#define DAQmxWarningGenerationDisabled                                                    (26851)
-#define DAQmxWarningFileDoesNotExist                                                      (26852)
-#define DAQmxWarningRetryCall                                                             (26853)
 #define DAQmxWarningPALValueConflict                                                      (50000)
 #define DAQmxWarningPALIrrelevantAttribute                                                (50001)
 #define DAQmxWarningPALBadDevice                                                          (50002)
