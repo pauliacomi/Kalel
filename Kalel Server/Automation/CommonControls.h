@@ -28,8 +28,7 @@ public:
 
 	FileWriter fileWriter;													// The file writing class
 	ValveController valveControls{ instruments };							// The valve control/query class -> simplification for instruments
-
-	std::shared_ptr<Security> security;										// Pointer to the class that deals with security
+	Security security{ valveControls };										// Pointer to the class that deals with security
 
 	// Timers
 	timeh::timer timerExperiment;											// Class for measuring the time from the experiment start
@@ -49,7 +48,6 @@ inline Controls::Controls(Storage &h)
 	: storage{ h }
 	, instruments{*h.machineSettings}
 {
-	security			= std::make_shared<Security>(h.machineSettings->ActivationSecurite, valveControls);
 }
 
 inline Controls::~Controls(void)

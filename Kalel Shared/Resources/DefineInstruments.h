@@ -1,28 +1,43 @@
 #pragma once
 
+// Instruments
 #define NONE						0
-
-// type of instrument
+#define INSTRUMENT_UNDEF			100
 #define INSTRUMENT_KEITHLEY			1
 #define INSTRUMENT_MENSOR			2
 #define INSTRUMENT_NI_USB_9211A		3
 #define INSTRUMENT_NI_USB_6008		4
-#define INSTRUMENT_UNDEF			10
 
 // Readers 
 #define READER_PRESSURE				0b00010000
 #define READER_TEMPERATURE			0b00100000
 #define READER_CALO					0b00110000
 
-// identifiers 
-#define PRESSURE_LP					1
-#define PRESSURE_HP					2
-#define TEMPERATURE_CALO			1
-#define TEMPERATURE_CAGE			2
-#define TEMPERATURE_ROOM			3
-#define CALO						1
+// Reader identifiers 
+#define PRESSURE_LP					READER_PRESSURE + 1
+#define PRESSURE_HP					READER_PRESSURE + 2
+#define TEMPERATURE_CALO			READER_TEMPERATURE + 1
+#define TEMPERATURE_CAGE			READER_TEMPERATURE + 2
+#define TEMPERATURE_ROOM			READER_TEMPERATURE + 3
+#define CALO						READER_CALO + 1
 
-// Controlled instruments
-#define INSTRUMENT_VALVE			0b00010000
-#define INSTRUMENT_EV				0b00100000
-#define INSTRUMENT_PUMP				0b00110000
+// Controllers
+#define CONTROLLER_VALVE			0b00010000
+#define CONTROLLER_EV				0b00100000
+#define CONTROLLER_PUMP				0b00110000
+
+// Controller identifiers
+
+#define VALVE_1						CONTROLLER_VALVE + 0
+#define VALVE_2						CONTROLLER_VALVE + 1
+#define VALVE_3						CONTROLLER_VALVE + 2
+#define VALVE_4						CONTROLLER_VALVE + 3
+#define VALVE_5						CONTROLLER_VALVE + 4
+#define VALVE_6						CONTROLLER_VALVE + 5
+#define VALVE_7						CONTROLLER_VALVE + 6
+#define VALVE_8						CONTROLLER_VALVE + 7
+
+#define EV_1						CONTROLLER_EV + 0
+#define EV_2						CONTROLLER_EV + 1
+
+#define PUMP						CONTROLLER_PUMP + 1

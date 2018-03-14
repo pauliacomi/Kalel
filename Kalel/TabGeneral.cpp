@@ -72,7 +72,7 @@ BOOL TabGeneral::OnInitDialog()
 	gasExp = allSettings.gas;
 	userExp = allSettings.user;
 
-	StrCalo = settings->CaloEntete.c_str();
+	StrCalo = settings->CaloPrefix.c_str();
 	StrSurnom = userExp.surnom.c_str();
 	StrEchantillon = m_SampleName;
 	StrGaz = gasExp.symbole.c_str();
@@ -245,7 +245,7 @@ void TabGeneral::Reinitialisation(void)
 		}
 	}
 
-	StrCalo = settings->CaloEntete.c_str();
+	StrCalo = settings->CaloPrefix.c_str();
 	StrSurnom = userExp.surnom.c_str();
 	StrEchantillon = m_SampleName;
 	StrGaz = gasExp.symbole.c_str();
@@ -254,7 +254,7 @@ void TabGeneral::Reinitialisation(void)
 void TabGeneral::WriteData()
 {
 	MachineSettings newSettings;
-	newSettings.CheminFichierGeneral = m_Path.GetString();
+	newSettings.DefaultPath = m_Path.GetString();
 
 	allSettings.chemin = m_Path.GetBuffer();
 	allSettings.commentaires = m_Comments.GetBuffer();

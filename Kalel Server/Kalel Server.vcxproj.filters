@@ -141,9 +141,6 @@
     <ClInclude Include="Kalel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Kalel Shared\Resources\DefineAutomationSettings.h">
-      <Filter>Header Files\Common\Resources</Filter>
-    </ClInclude>
     <ClInclude Include="..\Kalel Shared\Resources\DefineInstruments.h">
       <Filter>Header Files\Common\Resources</Filter>
     </ClInclude>
@@ -348,7 +345,7 @@
       <Filter>Source Files\Common\Com Classes</Filter>
     </ClCompile>
     <ClCompile Include="Backend\Wrapper Classes\ValveController.cpp">
-      <Filter>Header Files\Backend\Wrapper Classes</Filter>
+      <Filter>Source Files\Backend</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

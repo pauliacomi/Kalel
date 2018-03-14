@@ -90,7 +90,7 @@ void ListOfInstrumentButtons::StartCommand(int instrumentType, int instrumentNum
 
 	switch (instrumentType)
 	{
-	case INSTRUMENT_VALVE:
+	case CONTROLLER_VALVE:
 	{
 		cTextboxID = idcValveTextBox[instrumentNumber - 1];
 
@@ -107,7 +107,7 @@ void ListOfInstrumentButtons::StartCommand(int instrumentType, int instrumentNum
 		break;
 	}
 
-	case INSTRUMENT_EV:
+	case CONTROLLER_EV:
 	{
 		cTextboxID = idcEVTextBox[instrumentNumber - 1];
 
@@ -124,7 +124,7 @@ void ListOfInstrumentButtons::StartCommand(int instrumentType, int instrumentNum
 		break;
 	}
 
-	case INSTRUMENT_PUMP:
+	case CONTROLLER_PUMP:
 	{
 		cTextboxID = idcPumpTextBox;
 
@@ -159,7 +159,7 @@ void ListOfInstrumentButtons::EndCommand(const ControlInstrumentStateData &data)
 
 	switch (data.instrumentType)
 	{
-	case INSTRUMENT_VALVE:
+	case CONTROLLER_VALVE:
 	{
 		localState.valves[data.instrumentNumber - 1] = data.instrumentState;
 
@@ -178,7 +178,7 @@ void ListOfInstrumentButtons::EndCommand(const ControlInstrumentStateData &data)
 		break;
 	}
 
-	case INSTRUMENT_EV:
+	case CONTROLLER_EV:
 	{
 		localState.EVs[data.instrumentNumber - 1] = data.instrumentState;
 
@@ -197,7 +197,7 @@ void ListOfInstrumentButtons::EndCommand(const ControlInstrumentStateData &data)
 		break;
 	}
 
-	case INSTRUMENT_PUMP:
+	case CONTROLLER_PUMP:
 	{
 		localState.pumps[data.instrumentNumber - 1] = data.instrumentState;
 

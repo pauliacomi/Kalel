@@ -70,9 +70,9 @@ void Automation::SubstepsDesorption()
 			controls.valveControls.EVActivate(1, true);
 			controls.valveControls.EVActivate(2, true);
 			controls.valveControls.PumpActivate(true);
-			WaitSeconds(TIME_WAIT_PUMP);
+			WaitSeconds(storage.machineSettings->TimeWaitPump);
 		}
-		WaitSeconds(TIME_WAIT_PUMP);
+		WaitSeconds(storage.machineSettings->TimeWaitPump);
 		
 		storage.experimentStatus->experimentSubstepStage = SUBSTEP_STATUS_REMOVAL;																		// Move to removal
 	}
@@ -85,7 +85,7 @@ void Automation::SubstepsDesorption()
 		LOG(logINFO) << MESSAGE_OUTGAS_ATTEMPT << storage.experimentStatus->injectionAttemptCounter;														// Tell GUI about current injection
 		
 		controls.valveControls.ValveOpen(8, true);
-		WaitSeconds(TIME_WAIT_VALVES_SHORT);
+		WaitSeconds(storage.machineSettings->TimeWaitValvesShort);
 		
 		storage.experimentStatus->experimentSubstepStage = SUBSTEP_STATUS_REMOVAL + 1;		
 	}
@@ -94,7 +94,7 @@ void Automation::SubstepsDesorption()
 		storage.experimentStatus->experimentWaiting == false)
 	{
 		controls.valveControls.ValveClose(8, true);
-		WaitSeconds(TIME_WAIT_VALVES_SHORT);
+		WaitSeconds(storage.machineSettings->TimeWaitValvesShort);
 		storage.experimentStatus->experimentSubstepStage = SUBSTEP_STATUS_REMOVAL + 2;
 	}
 
@@ -102,7 +102,7 @@ void Automation::SubstepsDesorption()
 		storage.experimentStatus->experimentWaiting == false)
 	{
 		controls.valveControls.ValveOpen(7, true);
-		WaitSeconds(TIME_WAIT_VALVES_SHORT);
+		WaitSeconds(storage.machineSettings->TimeWaitValvesShort);
 		storage.experimentStatus->experimentSubstepStage = SUBSTEP_STATUS_REMOVAL + 3;
 	}
 
@@ -110,7 +110,7 @@ void Automation::SubstepsDesorption()
 		storage.experimentStatus->experimentWaiting == false)
 	{
 		controls.valveControls.ValveClose(7, true);
-		WaitSeconds(TIME_WAIT_VALVES_SHORT);
+		WaitSeconds(storage.machineSettings->TimeWaitValvesShort);
 		storage.experimentStatus->experimentSubstepStage = SUBSTEP_STATUS_CHECK;					// Move to removal check
 	}
 
@@ -130,11 +130,11 @@ void Automation::SubstepsDesorption()
 		LOG(logINFO) << MESSAGE_OUTGAS_END << storage.experimentStatus->injectionAttemptCounter;
 
 		// Checks for removal succeess, else increment the counter and try again
-		if ((storage.experimentStatus->pressureHighOld - marge_injection < storage.currentData->pressureHigh) &&
-			(storage.currentData->pressureHigh < storage.experimentStatus->pressureHighOld + marge_injection))
+		if ((storage.experimentStatus->pressureHighOld - storage.machineSettings->InjectionMargin < storage.currentData->pressureHigh) &&
+			(storage.currentData->pressureHigh < storage.experimentStatus->pressureHighOld + storage.machineSettings->InjectionMargin))
 		{
 			// If too many injections have been tried and failed
-			if (storage.experimentStatus->injectionAttemptCounter >= nb_injection)
+			if (storage.experimentStatus->injectionAttemptCounter >= storage.machineSettings->InjectionAttemptNumber)
 			{
 				// Put the thread on stand-by
 				eventPause = true;
@@ -156,7 +156,7 @@ void Automation::SubstepsDesorption()
 		// If the removal succeeded
 		else
 		{	// Check if removal has overshot
-			if (storage.experimentStatus->pressureInitial - storage.experimentStatus->pressureFinal > marge_multiplicateur * (storage.experimentSettings->dataDesorption[storage.experimentStatus->desorptionCounter].delta_pression))
+			if (storage.experimentStatus->pressureInitial - storage.experimentStatus->pressureFinal > storage.machineSettings->InjectionMultiplier * (storage.experimentSettings->dataDesorption[storage.experimentStatus->desorptionCounter].delta_pression))
 			{
 				storage.experimentStatus->experimentSubstepStage = SUBSTEP_STATUS_ABORT;						// Add gas
 				LOG(logINFO) << (MESSAGE_INJECTION_ATTEMPT);
@@ -181,11 +181,11 @@ void Automation::SubstepsDesorption()
 	if (storage.experimentStatus->experimentSubstepStage == SUBSTEP_STATUS_ABORT &&
 		storage.experimentStatus->experimentWaiting == false)
 	{
-		if (storage.experimentStatus->pressureInitial - storage.experimentStatus->pressureFinal > marge_multiplicateur * (storage.experimentSettings->dataDesorption[storage.experimentStatus->desorptionCounter].delta_pression))
+		if (storage.experimentStatus->pressureInitial - storage.experimentStatus->pressureFinal > storage.machineSettings->InjectionMultiplier * (storage.experimentSettings->dataDesorption[storage.experimentStatus->desorptionCounter].delta_pression))
 		{
 			// Add some gas
 			controls.valveControls.ValveOpen(2, true);
-			WaitSeconds(TIME_WAIT_VALVES_SHORT);
+			WaitSeconds(storage.machineSettings->TimeWaitValvesShort);
 			storage.experimentStatus->experimentSubstepStage = SUBSTEP_STATUS_ABORT + 1;
 		}
 		else
@@ -199,7 +199,7 @@ void Automation::SubstepsDesorption()
 		storage.experimentStatus->experimentWaiting == false)
 	{
 		controls.valveControls.ValveClose(2, true);
-		WaitSeconds(TIME_WAIT_VALVES_SHORT);
+		WaitSeconds(storage.machineSettings->TimeWaitValvesShort);
 		storage.experimentStatus->experimentSubstepStage = SUBSTEP_STATUS_ABORT + 2;
 	}
 
@@ -207,7 +207,7 @@ void Automation::SubstepsDesorption()
 		storage.experimentStatus->experimentWaiting == false)
 	{
 		controls.valveControls.ValveOpen(3, true);
-		WaitSeconds(TIME_WAIT_VALVES_SHORT);
+		WaitSeconds(storage.machineSettings->TimeWaitValvesShort);
 		storage.experimentStatus->experimentSubstepStage = SUBSTEP_STATUS_ABORT + 3;
 	}
 
@@ -215,7 +215,7 @@ void Automation::SubstepsDesorption()
 		storage.experimentStatus->experimentWaiting == false)
 	{
 		controls.valveControls.ValveClose(3, true);
-		WaitSeconds(TIME_WAIT_VALVES_SHORT);
+		WaitSeconds(storage.machineSettings->TimeWaitValvesShort);
 		storage.experimentStatus->experimentSubstepStage = SUBSTEP_STATUS_ABORT + 4;
 	}
 
@@ -223,7 +223,7 @@ void Automation::SubstepsDesorption()
 		storage.experimentStatus->experimentWaiting == false)
 	{
 		controls.valveControls.ValveOpen(4, true);
-		WaitSeconds(TIME_WAIT_VALVES_SHORT);
+		WaitSeconds(storage.machineSettings->TimeWaitValvesShort);
 		storage.experimentStatus->experimentSubstepStage = SUBSTEP_STATUS_ABORT + 5;
 	}
 
@@ -231,7 +231,7 @@ void Automation::SubstepsDesorption()
 		storage.experimentStatus->experimentWaiting == false)
 	{
 		controls.valveControls.ValveClose(4, true);
-		WaitSeconds(TIME_WAIT_VALVES_SHORT);
+		WaitSeconds(storage.machineSettings->TimeWaitValvesShort);
 
 		storage.experimentStatus->SetpressureFinal( storage.currentData->GetpressureHigh());					// Save pressure after open/close
 		storage.experimentStatus->experimentSubstepStage = SUBSTEP_STATUS_ABORT;								// Move back to the start

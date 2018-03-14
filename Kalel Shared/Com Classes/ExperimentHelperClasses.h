@@ -52,6 +52,7 @@ public:
 	std::wstring chemin;
 	std::wstring fichier;
 	float temperature_experience;
+	float temperature_range_initial_check;
 	std::wstring date_experience;
 
 	data_general operator=(const data_general &general);
@@ -132,10 +133,11 @@ public:
 	unsigned int identifier = 0;		// Number low pressure, calo temperature
 	unsigned int channel = 0;			// channel 1/2 of the instrument
 	unsigned int instrument = 0;		// key of the instrument used
+	double safe_min = 0;				// Minimum safe value
+	double safe_max = 0;				// Maximum safe value
 	long double sensitivity = 1;		// sensitivity of measurement
 	std::function<double(void)>			readerfunction = []() {return 0; };
 
-	Reader operator=(const Reader &r);
 	bool operator==(const Reader &r);
 };
 

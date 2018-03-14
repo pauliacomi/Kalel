@@ -85,6 +85,7 @@ data_general data_general::operator=(const data_general &general)
 		chemin = general.chemin;
 		fichier = general.fichier;
 		temperature_experience = general.temperature_experience;
+		temperature_range_initial_check = general.temperature_range_initial_check;
 		date_experience = general.date_experience;
 	}
 	return *this;
@@ -100,6 +101,7 @@ bool data_general::operator!=(const data_general &general)
 			chemin != general.chemin ||
 			fichier != general.fichier ||
 			temperature_experience != general.temperature_experience ||
+			temperature_range_initial_check != general.temperature_range_initial_check ||
 			date_experience != general.date_experience)
 		return true;
 
@@ -248,21 +250,6 @@ bool Instrument::operator==(const Instrument & i) const
 	if (type == i.type && port == i.port)
 		return true;
 	return false;
-}
-
-Reader Reader::operator=(const Reader & r)
-{
-	if (this != &r)
-	{
-		type = r.type;							// Pressure / Temperature etc
-		identifier = r.identifier;				// Number low pressure, calo temperature
-		sensitivity = r.sensitivity;			// sensitivity of measurement
-		channel = r.channel;					// channel 1/2 of the instrument
-		instrument = r.instrument;				// key of the instrument used
-		readerfunction = r.readerfunction;
-	}
-	
-	return *this;    // Return ref for multiple assignment
 }
 
 bool Reader::operator==(const Reader & r)

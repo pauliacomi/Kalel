@@ -55,15 +55,30 @@ inline void from_json(const nlohmann::json &j, ControlInstrumentState &e);
 void to_json(nlohmann::json &j, const MachineSettings &m) {
 		
 	j["CaloName"							]	= stringh::ws2s(m.CaloName)					;
-	j["CaloEntete"							]	= stringh::ws2s(m.CaloEntete)				;
-	j["CheminFichierGeneral"				]	= stringh::ws2s(m.CheminFichierGeneral)		;
-	j["ActivationSecurite"					]	= m.ActivationSecurite						;
-	j["PressionSecuriteBassePression"		]	= m.PressionSecuriteBassePression			;
-	j["PressionSecuriteHautePression"		]	= m.PressionSecuriteHautePression			;
-	j["PressionLimiteVide"					]	= m.PressionLimiteVide						;
+	j["CaloPrefix"							]	= stringh::ws2s(m.CaloPrefix)				;
+	j["DefaultPath"				]	= stringh::ws2s(m.DefaultPath)		;
+	j["SafetyOn"							]	= m.SafetyOn								;
+
 	j["hasSonicNozzle"						]	= m.hasSonicNozzle							;
 	j["VolumeP6"							]	= m.VolumeP6								;
 	j["VolumeRef"							]	= m.VolumeRef								;
+	
+	j["PressurePumpVacuum"					]	= m.PressurePumpVacuum						;
+	j["PressureLimitVacuum"					]	= m.PressureLimitVacuum						;
+												 											
+	j["InjectionAttemptNumber"				]	= m.InjectionAttemptNumber					;
+	j["InjectionMargin"						]	= m.InjectionMargin							;
+	j["InjectionMultiplier"					]	= m.InjectionMultiplier						;
+												
+	j["TimeBetweenMeasurement"				]	= m.TimeBetweenMeasurement					;
+	j["TimeBetweenRecording"				]	= m.TimeBetweenRecording					;
+	j["TimeBetweenAutomation"				]	= m.TimeBetweenAutomation					;
+	j["TimeWaitValves"						]	= m.TimeWaitValves							;
+	j["TimeWaitValvesShort"					]	= m.TimeWaitValvesShort						;
+	j["TimeWaitPump"						]	= m.TimeWaitPump							;
+	j["TimeVacuumEmergency"					]	= m.TimeVacuumEmergency						;
+	j["TimeVacuumBottle"					]	= m.TimeVacuumBottle						;
+	j["TimeVacuumEndDefault"				]	= m.TimeVacuumEndDefault					;
 
 	nlohmann::json j1;
 	for (const auto& kv : m.instruments) {
@@ -87,15 +102,30 @@ void to_json(nlohmann::json &j, const MachineSettings &m) {
 inline void from_json(const nlohmann::json &j, MachineSettings &m) {
 
 	m.CaloName											= stringh::s2ws(j["CaloName"							]);
-	m.CaloEntete										= stringh::s2ws(j["CaloEntete"							]);
-	m.CheminFichierGeneral								= stringh::s2ws(j["CheminFichierGeneral"				]);
-	m.ActivationSecurite								=				j["ActivationSecurite"					];		
-	m.PressionSecuriteBassePression						=				j["PressionSecuriteBassePression"		];
-	m.PressionSecuriteHautePression						=				j["PressionSecuriteHautePression"		];
-	m.PressionLimiteVide								=				j["PressionLimiteVide"					];
+	m.CaloPrefix										= stringh::s2ws(j["CaloPrefix"							]);
+	m.DefaultPath								= stringh::s2ws(j["DefaultPath"				]);
+	m.SafetyOn											=				j["SafetyOn"							];	
+	
 	m.hasSonicNozzle									=				j["hasSonicNozzle"						];
 	m.VolumeP6											=				j["VolumeP6"							];
 	m.VolumeRef											=				j["VolumeRef"							];
+
+	m.PressurePumpVacuum								=				j["PressurePumpVacuum"					];
+	m.PressureLimitVacuum								=				j["PressureLimitVacuum"					];
+
+	m.InjectionAttemptNumber							=				j["InjectionAttemptNumber"				];
+	m.InjectionMargin									=				j["InjectionMargin"						];
+	m.InjectionMultiplier								=				j["InjectionMultiplier"					];
+
+	m.TimeBetweenMeasurement							=				j["TimeBetweenMeasurement"				];
+	m.TimeBetweenRecording								=				j["TimeBetweenRecording"				];
+	m.TimeBetweenAutomation								=				j["TimeBetweenAutomation"				];
+	m.TimeWaitValves									=				j["TimeWaitValves"						];
+	m.TimeWaitValvesShort								=				j["TimeWaitValvesShort"					];
+	m.TimeWaitPump										=				j["TimeWaitPump"						];
+	m.TimeVacuumEmergency								=				j["TimeVacuumEmergency"					];
+	m.TimeVacuumBottle									=				j["TimeVacuumBottle"					];
+	m.TimeVacuumEndDefault								=				j["TimeVacuumEndDefault"				];
 
 	nlohmann::json j1 = j["instruments"];
 	for (nlohmann::json::iterator it = j1.begin(); it != j1.end(); ++it) {
@@ -138,6 +168,8 @@ inline void to_json(nlohmann::json &j, const Reader &m) {
 	j["type"									]		= m.type														;
 	j["identifier"								]		= m.identifier													;
 	j["sensitivity"								]		= m.sensitivity													;
+	j["safe_min"								]		= m.safe_min													;
+	j["safe_max"								]		= m.safe_max													;
 	j["channel"									]		= m.channel														;
 	j["instrument"								]		= m.instrument													;
 }
@@ -146,6 +178,8 @@ inline void from_json(const nlohmann::json &j, Reader &m) {
 	m.type												=					j["type"									];
 	m.identifier										=					j["identifier"								];
 	m.sensitivity										=					j["sensitivity"								];
+	m.safe_min											=					j["safe_min"								];
+	m.safe_max											=					j["safe_max"								];
 	m.channel											=					j["channel"									];
 	m.instrument										=					j["instrument"								];
 }
@@ -305,9 +339,10 @@ inline void to_json(nlohmann::json &j, const data_general &m) {
 	j["comments"		]					= stringh::ws2s(m.commentaires				);
 	j["experimentDate"	]					= stringh::ws2s(m.date_experience			);
 	j["file"			]					= stringh::ws2s(m.fichier					);
-	j["sampleMass"		]					=					m.masse_echantillon			;
+	j["sampleMass"		]					=				m.masse_echantillon			;
 	j["sampleName"		]					= stringh::ws2s(m.nom_echantillon			);
-	j["temperature"		]					=					m.temperature_experience	;
+	j["temperature"		]					=					m.temperature_experience;
+	j["temperatureInitialCheck"]			=					m.temperature_range_initial_check;
 }
 
 void from_json(const nlohmann::json & j, data_general & m)
@@ -319,9 +354,10 @@ void from_json(const nlohmann::json & j, data_general & m)
 	m.commentaires							= stringh::s2ws(j["comments"				]);
 	m.date_experience						= stringh::s2ws(j["experimentDate"			]);
 	m.fichier								= stringh::s2ws(j["file"					]);
-	m.masse_echantillon						=					j["sampleMass"				];		 
+	m.masse_echantillon						=				j["sampleMass"				];		 
 	m.nom_echantillon						= stringh::s2ws(j["sampleName"				]);
-	m.temperature_experience				=					j["temperature"				];		
+	m.temperature_experience				=				j["temperature"				];	
+	m.temperature_range_initial_check				=	j["temperatureInitialCheck"	];	
 }																	
 
 

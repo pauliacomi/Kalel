@@ -339,13 +339,13 @@ void Kalel::InstrumentStateSync(http_request* req, http_response* resp)
 		{
 			int instrumentType;
 			if (req->params_.at("type") == "valve") {
-				instrumentType = INSTRUMENT_VALVE;
+				instrumentType = CONTROLLER_VALVE;
 			}
 			else if (req->params_.at("type") == "ev") {
-				instrumentType = INSTRUMENT_EV;
+				instrumentType = CONTROLLER_EV;
 			}
 			else if (req->params_.at("type") == "pump") {
-				instrumentType = INSTRUMENT_PUMP;
+				instrumentType = CONTROLLER_PUMP;
 			}
 			else {
 				instrumentType = stringh::To<int>(req->params_.at("type"));

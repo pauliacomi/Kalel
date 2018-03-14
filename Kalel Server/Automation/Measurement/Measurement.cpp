@@ -2,7 +2,6 @@
 
 // Resources
 #include "../../../Kalel Shared/Resources/DefineText.h"						// Definitions for the text in the messages
-#include "../../../Kalel Shared/Resources/DefineAutomationSettings.h"		// All settings for automation are stored here
 #include "../../../Kalel Shared/Resources/DefineInstruments.h"				// All settings for automation are stored here
 
 // Synchronization classes
@@ -71,19 +70,8 @@ void Measurement::Execution()
 		*/
 
 		// Do the security checks
-		controls.security->SecurityTemperatures(
-			storage.experimentSettings->experimentType,											// Experiment type to ensure proper response
-			storage.currentData->temperatureCalo + securite_temperature,						// Maximum temperature limit
-			storage.currentData->temperatureCalo - securite_temperature,						// Minimum temperature limit
-			*storage.currentData																// Current data recorded to do the checks
-			);
-
-		controls.security->SecurityOverPressure(
-			storage.experimentSettings->experimentType,											// Experiment type to ensure proper response
-			storage.machineSettings->PressionSecuriteBassePression,								// LP transmitter pressure limit
-			storage.machineSettings->PressionSecuriteHautePression,								// HP transmitter pressure limit
-			*storage.currentData																// Current data recorded to do the checks
-		);
+		controls.security.SecurityTemperatures(storage);
+		controls.security.SecurityOverPressure(storage);
 
 		/*
 		*
@@ -92,9 +80,9 @@ void Measurement::Execution()
 		*/
 
 		// Write data
-		if (storage.experimentStatus->experimentRecording)												// If we started recording
+		if (storage.experimentStatus->experimentRecording)													// If we started recording
 		{
-			if (controls.timerMeasurement.TimeSeconds() > T_BETWEEN_RECORD)								// If enough time between measurements
+			if (controls.timerMeasurement.TimeMilliseconds() > storage.machineSettings->TimeBetweenRecording)// If enough time between measurements
 			{
 				// Save the data to the file
 				bool err = controls.fileWriter.FileMeasurementRecord(
@@ -127,7 +115,7 @@ void Measurement::Execution()
 		*
 		*/
 
-		std::this_thread::sleep_for(std::chrono::milliseconds(T_BETWEEN_MEASURE));
+		std::this_thread::sleep_for(std::chrono::milliseconds(storage.machineSettings->TimeBetweenMeasurement));
 	}
 }
 
@@ -180,8 +168,8 @@ void Measurement::ReadPressure()
 
 	// Read the value from the pressure transmitter
 	// Write it in the shared object - NO need for mutex
-	storage.currentData->pressureLow = controls.instruments.MeasureReader(READER_PRESSURE + PRESSURE_LP);
-	storage.currentData->pressureHigh = controls.instruments.MeasureReader(READER_PRESSURE + PRESSURE_HP);
+	storage.currentData->pressureLow = controls.instruments.MeasureReader(PRESSURE_LP);
+	storage.currentData->pressureHigh = controls.instruments.MeasureReader(PRESSURE_HP);
 }
 
 void Measurement::ReadTemperatures()
@@ -192,7 +180,7 @@ void Measurement::ReadTemperatures()
 
 	// Read the value from the temperatures
 	// Write it in the shared object - NO need for mutex
-	storage.currentData->temperatureCalo = controls.instruments.MeasureReader(READER_TEMPERATURE + TEMPERATURE_CALO);
-	storage.currentData->temperatureCage = controls.instruments.MeasureReader(READER_TEMPERATURE + TEMPERATURE_CAGE);
-	storage.currentData->temperatureRoom = controls.instruments.MeasureReader(READER_TEMPERATURE + TEMPERATURE_ROOM);
+	storage.currentData->temperatureCalo = controls.instruments.MeasureReader(TEMPERATURE_CALO);
+	storage.currentData->temperatureCage = controls.instruments.MeasureReader(TEMPERATURE_CAGE);
+	storage.currentData->temperatureRoom = controls.instruments.MeasureReader(TEMPERATURE_ROOM);
 }

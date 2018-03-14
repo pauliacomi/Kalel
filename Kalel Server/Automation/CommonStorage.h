@@ -118,7 +118,7 @@ inline Storage::Storage(void)
 	}
 
 	// Set path
-	experimentSettings->dataGeneral.chemin = machineSettings->CheminFichierGeneral;
+	experimentSettings->dataGeneral.chemin = machineSettings->DefaultPath;
 }
 
 inline Storage::~Storage(void)

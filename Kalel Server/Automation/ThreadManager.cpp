@@ -224,13 +224,13 @@ ControlInstrumentState ThreadManager::GetInstrumentStates()
 	{
 		switch (i.second.type)
 		{
-		case INSTRUMENT_VALVE:
+		case CONTROLLER_VALVE:
 			state.valves[i.second.identifier -1] = i.second.readerfunction();
 			break;
-		case INSTRUMENT_EV:
+		case CONTROLLER_EV:
 			state.EVs[i.second.identifier - 1] = i.second.readerfunction();
 			break;
-		case INSTRUMENT_PUMP:
+		case CONTROLLER_PUMP:
 			state.pumps[i.second.identifier - 1] = i.second.readerfunction();
 			break;
 		default:

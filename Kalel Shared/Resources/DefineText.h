@@ -60,6 +60,7 @@
 #define MESSAGE_WARNING_PHIGH				"High range PT above pressure limit \t\n Veuillez la mettre en dessous de : %f bar \t\n"
 #define MESSAGE_WARNING_PHNORMAL			"High range PT pressure back to normal."
 #define MESSAGE_WARNING_PHIGH_V6			"HAUTE PRESSION (%f) DEPASSANT LA SECURITE DE LA BASSE PRESSION (%f)\r\n PAR MESURE DE SECURITE, FERMETURE DE LA VANNE 6\r\n"
+#define MESSAGE_WARNING_PHNORMAL_V6			"Low range PT pressure back to normal."
 
 #define MESSAGE_WARNING_CALOT_HIGH			"Calorimeter temperature too high"
 #define MESSAGE_WARNING_CALOT_LOW			"Calorimeter temperature too low"

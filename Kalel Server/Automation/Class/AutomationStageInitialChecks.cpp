@@ -51,7 +51,7 @@ void Automation::Verifications()
 
 bool Automation::VerificationSecurity()
 {
-	if (!storage.machineSettings->ActivationSecurite)
+	if (!storage.machineSettings->SafetyOn)
 	{
 		// Ask user if they want to continue
 		LOG(logEVENT) << MESSAGE_NOSECURITY;
@@ -97,7 +97,7 @@ bool Automation::VerificationResidualPressure()
 		// Display initial message
 		LOG(logINFO) << MESSAGE_CHECK_INITIAL_PRESSURE;
 
-		if (storage.currentData->pressureHigh < storage.machineSettings->PressionSecuriteBassePression)
+		if (storage.currentData->pressureHigh < storage.machineSettings->readers.find(PRESSURE_LP)->second.safe_max)
 		{
 			// Tell GUI we are opening valve 6
 			LOG(logINFO) << MESSAGE_CHECK_OPENV6_POSSIB << storage.currentData->pressureHigh;
@@ -106,10 +106,10 @@ bool Automation::VerificationResidualPressure()
 			controls.valveControls.ValveOpen(6, true);
 
 			// Tell GUI we are waiting
-			LOG(logINFO) << MESSAGE_WAIT_TIME << TIME_WAIT_VALVES;
+			LOG(logINFO) << MESSAGE_WAIT_TIME << storage.machineSettings->TimeWaitValves;
 
 			// Set the time to wait
-			WaitSeconds(TIME_WAIT_VALVES);
+			WaitSeconds(storage.machineSettings->TimeWaitValves);
 		}
 		// Continue to next step
 		storage.experimentStatus->experimentStepStatus = STEP_STATUS_INPROGRESS;
@@ -122,10 +122,10 @@ bool Automation::VerificationResidualPressure()
 		controls.valveControls.ValveOpen(5, true);
 
 		// Tell GUI we are waiting
-		LOG(logINFO) << MESSAGE_WAIT_TIME, TIME_WAIT_VALVES;
+		LOG(logINFO) << MESSAGE_WAIT_TIME, storage.machineSettings->TimeWaitValves;
 
 		// Set the time to wait
-		WaitSeconds(TIME_WAIT_VALVES);
+		WaitSeconds(storage.machineSettings->TimeWaitValves);
 
 		// Continue to next step
 		storage.experimentStatus->experimentStepStatus = STEP_STATUS_END;
@@ -135,9 +135,9 @@ bool Automation::VerificationResidualPressure()
 		&& storage.experimentStatus->experimentWaiting == false)							// If waiting is done
 	{
 		// Check residual pressure
-		if (storage.currentData->pressureHigh >= storage.machineSettings->PressionLimiteVide)
+		if (storage.currentData->pressureHigh >= storage.machineSettings->PressureLimitVacuum)
 		{
-			LOG(logWARNING) << MESSAGE_WARNING_INITIAL_PRESSURE << storage.currentData->pressureHigh << storage.machineSettings->PressionLimiteVide;
+			LOG(logWARNING) << MESSAGE_WARNING_INITIAL_PRESSURE << storage.currentData->pressureHigh << storage.machineSettings->PressureLimitVacuum;
 			eventPause = true;
 			storage.automationControl.notify_all();
 		}
@@ -156,12 +156,14 @@ bool Automation::VerificationTemperature()
 		// Display initial message
 		LOG(logINFO) << MESSAGE_CHECK_INITIAL_TEMPERATURE;
 
-		if ((storage.currentData->temperatureCalo < storage.experimentSettings->dataGeneral.temperature_experience - security_temperature_initial) || (storage.currentData->temperatureCalo > storage.experimentSettings->dataGeneral.temperature_experience + security_temperature_initial) ||
-			(storage.currentData->temperatureCage < storage.experimentSettings->dataGeneral.temperature_experience - security_temperature_initial) || (storage.currentData->temperatureCage > storage.experimentSettings->dataGeneral.temperature_experience + security_temperature_initial))
+		if ((storage.currentData->temperatureCalo < storage.experimentSettings->dataGeneral.temperature_experience - storage.experimentSettings->dataGeneral.temperature_range_initial_check) ||
+			(storage.currentData->temperatureCalo > storage.experimentSettings->dataGeneral.temperature_experience + storage.experimentSettings->dataGeneral.temperature_range_initial_check) ||
+			(storage.currentData->temperatureCage < storage.experimentSettings->dataGeneral.temperature_experience - storage.experimentSettings->dataGeneral.temperature_range_initial_check) || 
+			(storage.currentData->temperatureCage > storage.experimentSettings->dataGeneral.temperature_experience + storage.experimentSettings->dataGeneral.temperature_range_initial_check))
 		{
 			// Tell GUI we are waiting
 			LOG(logINFO) << MESSAGE_WAIT_TEMP_EQUILIBRATION;
-			LOG(logWARNING) << MESSAGE_CHECK_TEMPERATURE_DIFF << storage.currentData->temperatureCalo << storage.experimentSettings->dataGeneral.temperature_experience - security_temperature_initial;
+			LOG(logWARNING) << MESSAGE_CHECK_TEMPERATURE_DIFF << storage.currentData->temperatureCalo << storage.experimentSettings->dataGeneral.temperature_experience - storage.experimentSettings->dataGeneral.temperature_range_initial_check;
 
 			// Pause
 			eventPause = true;
@@ -184,8 +186,10 @@ bool Automation::VerificationTemperature()
 		else
 		{
 			// Loop until the temperature is stable
-			if (!(storage.currentData->temperatureCalo < storage.experimentSettings->dataGeneral.temperature_experience - security_temperature_initial) && !(storage.currentData->temperatureCalo > storage.experimentSettings->dataGeneral.temperature_experience + security_temperature_initial) &&
-				!(storage.currentData->temperatureCage < storage.experimentSettings->dataGeneral.temperature_experience - security_temperature_initial) && !(storage.currentData->temperatureCage > storage.experimentSettings->dataGeneral.temperature_experience + security_temperature_initial))
+			if (!(storage.currentData->temperatureCalo < storage.experimentSettings->dataGeneral.temperature_experience - storage.experimentSettings->dataGeneral.temperature_range_initial_check) && 
+				!(storage.currentData->temperatureCalo > storage.experimentSettings->dataGeneral.temperature_experience + storage.experimentSettings->dataGeneral.temperature_range_initial_check) &&
+				!(storage.currentData->temperatureCage < storage.experimentSettings->dataGeneral.temperature_experience - storage.experimentSettings->dataGeneral.temperature_range_initial_check) && 
+				!(storage.currentData->temperatureCage > storage.experimentSettings->dataGeneral.temperature_experience + storage.experimentSettings->dataGeneral.temperature_range_initial_check))
 			{
 				storage.experimentStatus->experimentStepStatus = STEP_STATUS_END;
 			}

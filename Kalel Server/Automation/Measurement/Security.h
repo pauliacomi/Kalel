@@ -6,23 +6,21 @@
 *
 ***********************************************************************************************************************************/
 class ValveController;
-class ExperimentData;
+class Storage;
 
 class Security {
 
 public:
-	Security(bool activated, ValveController & valveControl);
+	Security(ValveController & valveControl);
 	~Security();
 
-	void SecurityOverPressure(int experimentType, double maxPlow, double maxPhigh, const ExperimentData &expData);
-	void SecurityTemperatures(int experimentType, double maxPlow, double maxPhigh, const ExperimentData &expData);
+	void SecurityOverPressure(const Storage & storage);
+	void SecurityTemperatures(const Storage & storage);
 
 private:
 	ValveController & valveController;
 
 protected:
-
-	bool securityActivated;
 
 	// Bool flags to keep track of security
 	bool security_PressureHigh_flag = false;
@@ -30,9 +28,9 @@ protected:
 	bool security_TemperatureLow_flag = false;
 
 
-	void SecurityHighPressureManual(double maxPlow, double maxPhigh, const ExperimentData &expData);
-	void SecurityHighPressureAuto(double maxPlow, double maxPhigh, const ExperimentData &expData);
+	void SecurityHighPressureManual(const Storage & storage);
+	void SecurityHighPressureAuto(const Storage & storage);
 
-	void SecurityTemperaturesManual(double maximumT, double minimumT, const ExperimentData &expDat);
-	void SecuriteTemperaturesAuto(double maximumT, double minimumT, const ExperimentData &expDat);
+	void SecurityTemperaturesManual(const Storage & storage);
+	void SecuriteTemperaturesAuto(const Storage & storage);
 };

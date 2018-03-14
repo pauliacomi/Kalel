@@ -863,15 +863,15 @@ unsigned CommHandler::SetInstrumentState_req(http_request * r)
 
 	switch (localInstrumentState.instrumentType)
 	{
-	case INSTRUMENT_VALVE:
+	case CONTROLLER_VALVE:
 		localInstrumentType = "valve";
 		break;
 
-	case INSTRUMENT_EV:
+	case CONTROLLER_EV:
 		localInstrumentType = "ev";
 		break;
 
-	case INSTRUMENT_PUMP:
+	case CONTROLLER_PUMP:
 		localInstrumentType = "pump";
 		break;
 	default:

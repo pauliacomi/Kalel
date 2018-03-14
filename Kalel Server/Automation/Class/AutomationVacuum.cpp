@@ -52,7 +52,7 @@ void Automation::BottleVacuum()
 		controls.valveControls.ValveOpen(2, true);										// Open valve 2
 		controls.valveControls.ValveOpen(3, true);										// Open valve 3
 		controls.valveControls.ValveOpen(4, true);										// Open valve 4
-		WaitSeconds(TIME_WAIT_PUMP);
+		WaitSeconds(storage.machineSettings->TimeWaitPump);
 	}
 
 
@@ -62,11 +62,11 @@ void Automation::BottleVacuum()
 		&& storage.experimentStatus->experimentWaiting == false)
 	{
 		if (storage.experimentStatus->experimentWaiting == false) {
-			if (storage.currentData->pressureHigh > storage.machineSettings->PressionSecuriteBassePression) {
+			if (storage.currentData->pressureHigh > storage.machineSettings->readers.find(PRESSURE_LP)->second.safe_max) {
 
 				// Open, then close v8 and v7
 				controls.valveControls.ValveOpen(8, true);
-				WaitSeconds(TIME_WAIT_VALVES_SHORT);
+				WaitSeconds(storage.machineSettings->TimeWaitValvesShort);
 				storage.experimentStatus->experimentStepStatus = STEP_STATUS_INPROGRESS + 1;
 			}
 			else
@@ -74,7 +74,7 @@ void Automation::BottleVacuum()
 				LOG(logINFO) << MESSAGE_VACUUM_HIGHPRESSURE_END;
 				LOG(logINFO) << MESSAGE_VACUUM_LOWPRESSURE_START;
 				controls.valveControls.ValveOpen(4, true);
-				WaitSeconds(TIME_WAIT_VALVES);
+				WaitSeconds(storage.machineSettings->TimeWaitValves);
 
 				storage.experimentStatus->experimentStepStatus = STEP_STATUS_INPROGRESS + 4;
 			}
@@ -85,7 +85,7 @@ void Automation::BottleVacuum()
 		storage.experimentStatus->experimentWaiting == false)
 	{
 		controls.valveControls.ValveClose(8, true);
-		WaitSeconds(TIME_WAIT_VALVES_SHORT);
+		WaitSeconds(storage.machineSettings->TimeWaitValvesShort);
 		storage.experimentStatus->experimentSubstepStage = STEP_STATUS_INPROGRESS + 2;
 	}
 
@@ -93,7 +93,7 @@ void Automation::BottleVacuum()
 		storage.experimentStatus->experimentWaiting == false)
 	{
 		controls.valveControls.ValveOpen(7, true);
-		WaitSeconds(TIME_WAIT_VALVES_SHORT);
+		WaitSeconds(storage.machineSettings->TimeWaitValvesShort);
 		storage.experimentStatus->experimentSubstepStage = STEP_STATUS_INPROGRESS + 3;
 	}
 
@@ -101,7 +101,7 @@ void Automation::BottleVacuum()
 		storage.experimentStatus->experimentWaiting == false)
 	{
 		controls.valveControls.ValveClose(7, true);
-		WaitSeconds(TIME_WAIT_VALVES_SHORT);
+		WaitSeconds(storage.machineSettings->TimeWaitValvesShort);
 		storage.experimentStatus->experimentSubstepStage = STEP_STATUS_INPROGRESS;					// Go back to the start
 	}
 
@@ -112,11 +112,11 @@ void Automation::BottleVacuum()
 		&& storage.experimentStatus->experimentWaiting == false)
 	{
 		if (storage.experimentStatus->experimentWaiting == false) {
-			if (storage.currentData->pressureHigh > pression_pompe) {
+			if (storage.currentData->pressureHigh > storage.machineSettings->PressurePumpVacuum) {
 
 				// Open, then close v8 and v7
 				controls.valveControls.ValveOpen(8, true);
-				WaitSeconds(TIME_WAIT_VALVES_SHORT);
+				WaitSeconds(storage.machineSettings->TimeWaitValvesShort);
 				storage.experimentStatus->experimentStepStatus = STEP_STATUS_INPROGRESS + 5;
 			}
 			else
@@ -125,7 +125,7 @@ void Automation::BottleVacuum()
 
 				controls.valveControls.ValveOpen(8, true);
 				controls.valveControls.ValveOpen(7, true);
-				WaitSeconds(TIME_WAIT_VALVES);
+				WaitSeconds(storage.machineSettings->TimeWaitValves);
 
 				storage.experimentStatus->experimentStepStatus = STEP_STATUS_INPROGRESS + 8;
 			}
@@ -136,7 +136,7 @@ void Automation::BottleVacuum()
 		storage.experimentStatus->experimentWaiting == false)
 	{
 		controls.valveControls.ValveClose(8, true);
-		WaitSeconds(TIME_WAIT_VALVES_SHORT);
+		WaitSeconds(storage.machineSettings->TimeWaitValvesShort);
 		storage.experimentStatus->experimentSubstepStage = STEP_STATUS_INPROGRESS + 6;
 	}
 
@@ -144,7 +144,7 @@ void Automation::BottleVacuum()
 		storage.experimentStatus->experimentWaiting == false)
 	{
 		controls.valveControls.ValveOpen(7, true);
-		WaitSeconds(TIME_WAIT_VALVES_SHORT);
+		WaitSeconds(storage.machineSettings->TimeWaitValvesShort);
 		storage.experimentStatus->experimentSubstepStage = STEP_STATUS_INPROGRESS + 7;
 	}
 
@@ -152,7 +152,7 @@ void Automation::BottleVacuum()
 		storage.experimentStatus->experimentWaiting == false)
 	{
 		controls.valveControls.ValveClose(7, true);
-		WaitSeconds(TIME_WAIT_VALVES_SHORT);
+		WaitSeconds(storage.machineSettings->TimeWaitValvesShort);
 		storage.experimentStatus->experimentSubstepStage = STEP_STATUS_INPROGRESS + 4;					// Go back to the start
 	}
 
@@ -165,7 +165,7 @@ void Automation::BottleVacuum()
 		&& storage.experimentStatus->experimentWaiting == false)
 	{
 		LOG(logINFO) << MESSAGE_VACUUM_FINALOUTGAS_START;
-		WaitMinutes(temps_bouteille);
+		WaitMinutes(storage.machineSettings->TimeVacuumBottle);
 		storage.experimentStatus->experimentStepStatus = STEP_STATUS_END;
 	}
 

@@ -24,11 +24,11 @@ void ApparatusParameters::PassSettings(MachineSettings* machineSettings)
 {
 	settings = machineSettings;
 
-	m_bSecurite								= settings->ActivationSecurite;
+	m_bSecurite								= settings->SafetyOn;
 
 	m_fPressionSecuriteBassePression		= settings->PressionSecuriteBassePression;
 	m_fPressionSecuriteHautePression		= settings->PressionSecuriteHautePression;
-	m_fPressionLimiteVide					= settings->PressionLimiteVide;
+	m_fPressionLimiteVide					= settings->PressureLimitVacuum;
 
 	m_bTuyere								= settings->hasSonicNozzle;
 
@@ -36,7 +36,7 @@ void ApparatusParameters::PassSettings(MachineSettings* machineSettings)
 	m_fVolumeP6								= settings->VolumeP6;
 
 	m_StrNomCalo.Format(_T("%s"), settings->CaloName.c_str());
-	m_StrEnteteFichier.Format(_T("%s"), settings->CaloEntete.c_str());
+	m_StrEnteteFichier.Format(_T("%s"), settings->CaloPrefix.c_str());
 }
 
 ApparatusParameters::~ApparatusParameters()
@@ -149,15 +149,15 @@ void ApparatusParameters::OnBnClickedOk()
 	if (modified) {
 		localSettings = std::make_shared<MachineSettings>(*settings);
 
-		localSettings->ActivationSecurite = m_bSecurite;
+		localSettings->SafetyOn = m_bSecurite;
 		localSettings->PressionSecuriteBassePression = m_fPressionSecuriteBassePression;
 		localSettings->PressionSecuriteHautePression = m_fPressionSecuriteHautePression;
-		localSettings->PressionLimiteVide = m_fPressionLimiteVide;
+		localSettings->PressureLimitVacuum = m_fPressionLimiteVide;
 		localSettings->hasSonicNozzle = m_bTuyere;
 		localSettings->VolumeRef = m_fVolumeRef;
 		localSettings->VolumeP6 = m_fVolumeP6;
 		localSettings->CaloName = m_StrNomCalo.GetBuffer();
-		localSettings->CaloEntete = m_StrEnteteFichier.GetBuffer();			 
+		localSettings->CaloPrefix = m_StrEnteteFichier.GetBuffer();			 
 	}	
 
 	OnOK();

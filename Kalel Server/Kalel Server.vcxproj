@@ -168,7 +168,6 @@
     <ClInclude Include="..\Kalel Shared\Netcode\Server.h" />
     <ClInclude Include="..\Kalel Shared\Netcode\Socket.h" />
     <ClInclude Include="..\Kalel Shared\Netcode\URLHelper.h" />
-    <ClInclude Include="..\Kalel Shared\Resources\DefineAutomationSettings.h" />
     <ClInclude Include="..\Kalel Shared\Resources\DefineInstruments.h" />
     <ClInclude Include="..\Kalel Shared\Resources\DefineStages.h" />
     <ClInclude Include="..\Kalel Shared\Resources\DefineText.h" />

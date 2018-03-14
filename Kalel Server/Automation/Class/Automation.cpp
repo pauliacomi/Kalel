@@ -100,7 +100,7 @@ void Automation::Execution()
 		// Now run through the possible events
 		// Wait until called
 		std::unique_lock<std::mutex> lock(storage.automationMutex);
-		auto notified = storage.automationControl.wait_for(lock, std::chrono::milliseconds(T_BETWEEN_AUTOMATION), [&] () 
+		auto notified = storage.automationControl.wait_for(lock, std::chrono::milliseconds(storage.machineSettings->TimeBetweenAutomation), [&] () 
 		{
 			return (eventShutdown || eventPause || eventResume || eventReset || eventUserInput);
 		});
