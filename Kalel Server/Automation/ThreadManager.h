@@ -35,11 +35,11 @@ public:
 	unsigned ShutdownMeasurement();
 
 	unsigned StartAutomation();
-	unsigned ResumeAutomation();
 	unsigned PauseAutomation();
+	unsigned ResumeAutomation();
 	unsigned ResetAutomation();
-	unsigned SetUserContinue();
 	unsigned ShutdownAutomation();
+	unsigned SetUserChoice(unsigned int choice);
 
 	unsigned ThreadManualAction(int instrumentType, int instrumentNumber, bool state);		// When a manual command is issued
 	void ManualAction(int instrumentType, int instrumentNumber, bool state);

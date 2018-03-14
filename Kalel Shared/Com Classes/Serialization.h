@@ -367,7 +367,7 @@ inline void to_json(nlohmann::json &j, const data_other &m) {
 	to_json(j["cell"], m.cell);
 
 	j["endUnderVacuum"]						= m.mise_sous_vide_fin_experience	;
-	j["baselineTime"]						= m.temps_ligne_base				;
+	j["baselineTime"]						= m.time_baseline				;
 	j["vacuumTime"]							= m.temps_vide						;
 }
 
@@ -376,7 +376,7 @@ inline void from_json(const nlohmann::json & j, data_other & m)
 	from_json(j["cell"]			, m.cell);
 
 	m.mise_sous_vide_fin_experience			= j["endUnderVacuum"				];
-	m.temps_ligne_base						= j["baselineTime"					];
+	m.time_baseline						= j["baselineTime"					];
 	m.temps_vide							= j["vacuumTime"					];
 }
 

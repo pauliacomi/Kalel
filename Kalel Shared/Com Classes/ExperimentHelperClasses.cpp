@@ -116,7 +116,7 @@ data_other data_other::operator=(const data_other &divers)
 	if (this != &divers)
 	{
 		cell = divers.cell;
-		temps_ligne_base = divers.temps_ligne_base;
+		time_baseline = divers.time_baseline;
 		mise_sous_vide_fin_experience = divers.mise_sous_vide_fin_experience;
 		temps_vide = divers.temps_vide;
 	}
@@ -126,7 +126,7 @@ data_other data_other::operator=(const data_other &divers)
 bool data_other::operator!=(const data_other &divers)
 {
 	if (cell != divers.cell ||
-			temps_ligne_base != divers.temps_ligne_base ||
+			time_baseline != divers.time_baseline ||
 			mise_sous_vide_fin_experience != divers.mise_sous_vide_fin_experience ||
 			temps_vide != divers.temps_vide)
 		return true;

@@ -46,9 +46,10 @@ protected:
 	// Otherwise the flag will be changed from inside the code
 	volatile int shutdownReason = STOP_CANCEL;
 	std::atomic_bool running = true;
+	std::atomic_bool waitingUser = false;
 
 public:
-	std::atomic_bool sb_userContinue;						// Atomic variable 
+	std::atomic_uint userChoice;							// Atomic uint for user choice
 
 	std::atomic_bool eventShutdown = false;					// Bool for shutting down the thread
 	std::atomic_bool eventResume = false;					// Bool for resuming the thread
@@ -84,8 +85,8 @@ protected:
 
 protected:
 
-	void WaitMinutes(int nbminutes);
-	void WaitSeconds(int nbsecondes);
+	void WaitMinutes(int nbminutes, bool verbose = false);
+	void WaitSeconds(int nbsecondes, bool verbose = false);
 
 
 	/**********************************************************************************************************************************

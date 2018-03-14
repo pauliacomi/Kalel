@@ -350,7 +350,7 @@ void CommHandler::ResumeClient()
 	ThreadCommand();
 }
 
-void CommHandler::SetUserContinue()
+void CommHandler::SetUserChoice()
 {
 }
 

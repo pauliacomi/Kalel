@@ -227,7 +227,7 @@ std::wstring FileWriter::EnteteDivers(bool csv, const data_other &divers)
 	text << L"Numéro de Cellule"			<< divider		<< divers.cell.numero									<< std::endl;
 	text << L"Volume du calo"				<< divider		<< divers.cell.volume_calo			<< divider << "cm3"		<< std::endl;
 	text << L"Volume total"					<< divider		<< divers.cell.volume_total			<< divider << "cm3"		<< std::endl;
-	text << L"Baseline time"				<< divider		<< divers.temps_ligne_base			<< divider << "min"		<< std::endl;
+	text << L"Baseline time"				<< divider		<< divers.time_baseline			<< divider << "min"		<< std::endl;
 	text << L"Experiment end vacuum"		<< divider		<< divers.mise_sous_vide_fin_experience						<< std::endl;
 	text << L"Vacuum time"					<< divider		<< divers.temps_vide				<< divider << "min"		<< std::endl;
 	text																												<< std::endl;							

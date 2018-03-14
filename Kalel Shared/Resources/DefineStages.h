@@ -68,6 +68,11 @@
 #define STOP_COMPLETE		22014
 #define STOP_INPROGRESS		22015
 
+#define CHOICE_NONE			0
+#define CHOICE_YES			1
+#define CHOICE_NO			2
+#define CHOICE_WAIT			3
+
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED

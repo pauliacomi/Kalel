@@ -19,30 +19,35 @@ void Automation::Verifications()
 	case STEP_VERIFICATIONS_SECURITY:
 		if (VerificationSecurity()) {
 			storage.experimentStatus->verificationStep = STEP_VERIFICATIONS_VALVES;
+			storage.experimentStatus->experimentStepStatus = STEP_STATUS_START;
 		}
 		break;
 
 	case STEP_VERIFICATIONS_VALVES:
 		if (VerificationValves()){
 			storage.experimentStatus->verificationStep = STEP_VERIFICATIONS_PRESSURE;
+			storage.experimentStatus->experimentStepStatus = STEP_STATUS_START;
 		}
 		break;
 
 	case STEP_VERIFICATIONS_PRESSURE:
 		if (VerificationResidualPressure()){
 			storage.experimentStatus->verificationStep = STEP_VERIFICATIONS_TEMPERATURE;
+			storage.experimentStatus->experimentStepStatus = STEP_STATUS_START;
 		}
 		break;
 
 	case STEP_VERIFICATIONS_TEMPERATURE:
 		if (VerificationTemperature()) {
 			storage.experimentStatus->verificationStep = STEP_VERIFICATIONS_COMPLETE;
+			storage.experimentStatus->experimentStepStatus = STEP_STATUS_START;
 		}
 		break;
 
 	case STEP_VERIFICATIONS_COMPLETE:
 		if (VerificationComplete()) {
-			storage.experimentStatus->verificationStep = STEP_VERIFICATIONS_SECURITY;
+			storage.experimentStatus->experimentStage = STAGE_EQUILIBRATION;
+			storage.experimentStatus->experimentStepStatus = STEP_STATUS_START;
 		}
 		break;
 	}
@@ -53,10 +58,37 @@ bool Automation::VerificationSecurity()
 {
 	if (!storage.machineSettings->SafetyOn)
 	{
-		// Ask user if they want to continue
-		LOG(logEVENT) << MESSAGE_NOSECURITY;
-		eventPause = true;
-		storage.automationControl.notify_all();
+		if (!waitingUser) {
+			// Ask user if they want to continue
+			LOG(logEVENT) << MESSAGE_NOSECURITY;
+
+			waitingUser = true;
+			eventUserInput = true;
+			storage.automationControl.notify_all();
+
+			return false;
+		}
+		else
+		{
+			switch (userChoice)
+			{
+			case CHOICE_NONE:									// Do nothing yet
+				return false;
+				break;
+			case CHOICE_YES:									// Signal that it's good
+				return true;
+				break;
+			case CHOICE_NO:										// Stop experiment
+
+				shutdownReason = STOP_CANCEL;
+				eventShutdown = true;
+				storage.automationControl.notify_all();
+				return false;
+				break;
+			default:
+				break;
+			}
+		}
 	}
 
 	return true;
@@ -65,28 +97,39 @@ bool Automation::VerificationSecurity()
 
 bool Automation::VerificationValves()
 {
-	if (storage.experimentStatus->experimentStepStatus == STEP_STATUS_START)
-	{
+	if (!waitingUser) {
 		// Ask user to check the valves
 		LOG(logINFO) << MESSAGE_CHECK_INITIAL_STATE;
 		LOG(logEVENT) << MESSAGE_CHECK_VALVES_OPEN;
 
-		// Pause
-		eventPause = true;
+		// Set wait
+		waitingUser = true;
+		eventUserInput = true;
 		storage.automationControl.notify_all();
 
-		// Continue to next step
-		storage.experimentStatus->experimentStepStatus = STEP_STATUS_END;
 		return false;
 	}
+	else {
+		switch (userChoice)
+		{
+		case CHOICE_NONE:									// Do nothing yet
+			return false;
+			break;
+		case CHOICE_YES:									// Signal that it's good
+			return true;
+			break;
 
-	if (storage.experimentStatus->experimentStepStatus == STEP_STATUS_END)
-	{
-		storage.experimentStatus->experimentStepStatus = STEP_STATUS_START;
-		return true;
+		case CHOICE_NO:										// Stop experiment
+
+			shutdownReason = STOP_CANCEL;
+			eventShutdown = true;
+			storage.automationControl.notify_all();
+			return false;
+			break;
+		default:
+			break;
+		}
 	}
-
-	return false;
 }
 
 
@@ -103,46 +146,71 @@ bool Automation::VerificationResidualPressure()
 			LOG(logINFO) << MESSAGE_CHECK_OPENV6_POSSIB << storage.currentData->pressureHigh;
 
 			// Open valve 6
-			controls.valveControls.ValveOpen(6, true);
-
-			// Tell GUI we are waiting
-			LOG(logINFO) << MESSAGE_WAIT_TIME << storage.machineSettings->TimeWaitValves;
+			controls.valveControls.ValveOpen(VALVE_6, true);
 
 			// Set the time to wait
-			WaitSeconds(storage.machineSettings->TimeWaitValves);
+			WaitSeconds(storage.machineSettings->TimeWaitValves, true);
 		}
 		// Continue to next step
 		storage.experimentStatus->experimentStepStatus = STEP_STATUS_INPROGRESS;
+		return false;
 	}
 
 	if (storage.experimentStatus->experimentStepStatus == STEP_STATUS_INPROGRESS
 		&& storage.experimentStatus->experimentWaiting == false)							// If waiting is done
 	{
 		// Open valve 5
-		controls.valveControls.ValveOpen(5, true);
-
-		// Tell GUI we are waiting
-		LOG(logINFO) << MESSAGE_WAIT_TIME, storage.machineSettings->TimeWaitValves;
+		controls.valveControls.ValveOpen(VALVE_5, true);
 
 		// Set the time to wait
-		WaitSeconds(storage.machineSettings->TimeWaitValves);
+		WaitSeconds(storage.machineSettings->TimeWaitValves, true);
 
 		// Continue to next step
 		storage.experimentStatus->experimentStepStatus = STEP_STATUS_END;
+		return false;
 	}
 
 	if (storage.experimentStatus->experimentStepStatus == STEP_STATUS_END
 		&& storage.experimentStatus->experimentWaiting == false)							// If waiting is done
 	{
-		// Check residual pressure
 		if (storage.currentData->pressureHigh >= storage.machineSettings->PressureLimitVacuum)
 		{
-			LOG(logWARNING) << MESSAGE_WARNING_INITIAL_PRESSURE << storage.currentData->pressureHigh << storage.machineSettings->PressureLimitVacuum;
-			eventPause = true;
-			storage.automationControl.notify_all();
+			if (!waitingUser) {
+				// Ask user if they want to continue
+				LOG(logEVENT) << MESSAGE_WARNING_INITIAL_PRESSURE << storage.currentData->pressureHigh << storage.machineSettings->PressureLimitVacuum;
+
+				waitingUser = true;
+				eventUserInput = true;
+				storage.automationControl.notify_all();
+
+				return false;
+			}
+			else
+			{
+				switch (userChoice)
+				{
+				case CHOICE_NONE:									// Do nothing yet
+					return false;
+					break;
+				case CHOICE_YES:									// Signal that it's good
+					return true;
+					break;
+				case CHOICE_NO:										// Stop experiment
+
+					shutdownReason = STOP_CANCEL;
+					eventShutdown = true;
+					storage.automationControl.notify_all();
+					return false;
+					break;
+				default:
+					break;
+				}
+			}
 		}
-		storage.experimentStatus->experimentStepStatus = STEP_STATUS_START;
-		return true;
+		else
+		{
+			return true;
+		}
 	}
 
 	return false;
@@ -161,45 +229,57 @@ bool Automation::VerificationTemperature()
 			(storage.currentData->temperatureCage < storage.experimentSettings->dataGeneral.temperature_experience - storage.experimentSettings->dataGeneral.temperature_range_initial_check) || 
 			(storage.currentData->temperatureCage > storage.experimentSettings->dataGeneral.temperature_experience + storage.experimentSettings->dataGeneral.temperature_range_initial_check))
 		{
-			// Tell GUI we are waiting
-			LOG(logINFO) << MESSAGE_WAIT_TEMP_EQUILIBRATION;
-			LOG(logWARNING) << MESSAGE_CHECK_TEMPERATURE_DIFF << storage.currentData->temperatureCalo << storage.experimentSettings->dataGeneral.temperature_experience - storage.experimentSettings->dataGeneral.temperature_range_initial_check;
+			if (!waitingUser) {
 
-			// Pause
-			eventPause = true;
-			storage.automationControl.notify_all();
-			storage.experimentStatus->experimentStepStatus = STEP_STATUS_INPROGRESS;
+				LOG(logWARNING) << MESSAGE_CHECK_TEMPERATURE_DIFF << storage.currentData->temperatureCalo << storage.experimentSettings->dataGeneral.temperature_experience - storage.experimentSettings->dataGeneral.temperature_range_initial_check;
+
+				waitingUser = true;
+				eventUserInput = true;
+				storage.automationControl.notify_all();
+
+				return false;
+			}
+			else {
+				switch (userChoice)
+				{
+				case CHOICE_NONE:									// Do nothing yet
+					return false;
+					break;
+				case CHOICE_YES:									// Signal that it's good
+					return true;
+					break;
+				case CHOICE_WAIT:									// Go to wait step
+					LOG(logINFO) << MESSAGE_WAIT_TEMP_EQUILIBRATION;
+					storage.experimentStatus->experimentStepStatus = STEP_STATUS_INPROGRESS;
+					return false;
+					break;
+				case CHOICE_NO:										// Stop experiment
+
+					shutdownReason = STOP_CANCEL;
+					eventShutdown = true;
+					storage.automationControl.notify_all();
+					return false;
+					break;
+				default:
+					break;
+				}
+			}
 		}
-		else
-		{
-			storage.experimentStatus->experimentStepStatus = STEP_STATUS_END;
-		}
+		else return true;
+	
 	}
 
 	if (storage.experimentStatus->experimentStepStatus == STEP_STATUS_INPROGRESS)
 	{
-		if (sb_userContinue)
+		// Loop until the temperature is stable
+		if ((storage.currentData->temperatureCalo < storage.experimentSettings->dataGeneral.temperature_experience - storage.experimentSettings->dataGeneral.temperature_range_initial_check) ||
+			(storage.currentData->temperatureCalo > storage.experimentSettings->dataGeneral.temperature_experience + storage.experimentSettings->dataGeneral.temperature_range_initial_check) ||
+			(storage.currentData->temperatureCage < storage.experimentSettings->dataGeneral.temperature_experience - storage.experimentSettings->dataGeneral.temperature_range_initial_check) ||
+			(storage.currentData->temperatureCage > storage.experimentSettings->dataGeneral.temperature_experience + storage.experimentSettings->dataGeneral.temperature_range_initial_check))
 		{
-			sb_userContinue = false;
-			storage.experimentStatus->experimentStepStatus = STEP_STATUS_END;
+			return false;
 		}
-		else
-		{
-			// Loop until the temperature is stable
-			if (!(storage.currentData->temperatureCalo < storage.experimentSettings->dataGeneral.temperature_experience - storage.experimentSettings->dataGeneral.temperature_range_initial_check) && 
-				!(storage.currentData->temperatureCalo > storage.experimentSettings->dataGeneral.temperature_experience + storage.experimentSettings->dataGeneral.temperature_range_initial_check) &&
-				!(storage.currentData->temperatureCage < storage.experimentSettings->dataGeneral.temperature_experience - storage.experimentSettings->dataGeneral.temperature_range_initial_check) && 
-				!(storage.currentData->temperatureCage > storage.experimentSettings->dataGeneral.temperature_experience + storage.experimentSettings->dataGeneral.temperature_range_initial_check))
-			{
-				storage.experimentStatus->experimentStepStatus = STEP_STATUS_END;
-			}
-		}
-	}
-
-	if (storage.experimentStatus->experimentStepStatus == STEP_STATUS_END)
-	{
-		storage.experimentStatus->experimentStepStatus = STEP_STATUS_START;
-		return true;
+		else return true;
 	}
 
 	return false;
@@ -207,9 +287,8 @@ bool Automation::VerificationTemperature()
 
 bool Automation::VerificationComplete()
 {
-	// Go to the next step
-	storage.experimentStatus->experimentStage = STAGE_EQUILIBRATION;
-	storage.experimentStatus->experimentStepStatus = STEP_STATUS_START;
+	// Log complete
+	LOG(logINFO) << MESSAGE_VERIFICATIONS_COMPLETE;
 
 	return true;
 }
