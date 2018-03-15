@@ -15,8 +15,9 @@
 #define ERR_IP_CONVERT			"Error translating IP to readable form: "
 
 #define ERR_HTTP_CODE			"Error: Bad http status code"
+#define ERR_HTTP_RECEIVE		"The HTTP request was not received well"
 
-#define LOG_LISTENING			" listening on socket: "
+#define LOG_LISTENING			"Listening on socket: "
 #define LOG_ACCEPT_ENTER		"Entering accept loop"
 #define LOG_ACCEPT_LEAVE		"Leaving accept loop"
 #define LOG_PROCESS_ENTER		"Enter thread for socket: "

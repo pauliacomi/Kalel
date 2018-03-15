@@ -90,23 +90,23 @@ unsigned Client::Process(std::string ip, std::string port, std::function<void(ht
 	request_func_(&request);													// Populate request from function
 
 	std::string reqUrl;															// Build URL
-	URLHelper::BuildReq(reqUrl, request.path_, request.params_);
+	URLHelper::BuildReq(reqUrl, request.path, request.params);
 
-	request.content_length_ = stringh::StringFrom(request.entity_.size());
+	request.content_length = stringh::StringFrom(request.body.size());
 
 	// Build string request and send it
 	std::string requestString;
 
 	try	{
-		requestString += l_sock.SendLine(request.method_ + " " + reqUrl + " " + "HTTP/1.1");
-		requestString += l_sock.SendLine(http::header::accept + request.accept_);
-		if (!request.entity_.empty()) {
-			requestString += l_sock.SendLine(http::header::content_length + request.content_length_);
-			requestString += l_sock.SendLine(http::header::content_type + request.content_type_);
+		requestString += l_sock.SendLine(request.method + " " + reqUrl + " " + "HTTP/1.1");
+		requestString += l_sock.SendLine(http::header::accept + request.accept);
+		if (!request.body.empty()) {
+			requestString += l_sock.SendLine(http::header::content_length + request.content_length);
+			requestString += l_sock.SendLine(http::header::content_type + request.content_type);
 		}
 		requestString += l_sock.SendLine("");
-		if (!request.entity_.empty()) {
-			requestString += l_sock.Send(request.entity_);
+		if (!request.body.empty()) {
+			requestString += l_sock.Send(request.body);
 		}
 	}
 	catch (const std::exception& e)
@@ -146,10 +146,10 @@ unsigned Client::Process(std::string ip, std::string port, std::function<void(ht
 	// Parse the first line of the response
 	size_t posSpace = responseString.find_first_of(" ");
 
-	response.http_version_	= responseString.substr(0, posSpace);
-	response.status_		= ParseStatusCode(responseString.substr(posSpace + 1, 3));
+	response.http_version	= responseString.substr(0, posSpace);
+	response.status			= ParseStatusCode(responseString.substr(posSpace + 1, 3));
 
-	if (response.status_.empty()){
+	if (response.status.empty()){
 		ErrorCaught(ERR_HTTP_CODE, response_func_);
 		return 1;
 	}
@@ -176,7 +176,7 @@ unsigned Client::Process(std::string ip, std::string port, std::function<void(ht
 		if (pos_cr_lf == 0) {
 			if (messageToReceive)		// a message body is specified using "Content-Length" header, will receive the required number of bytes
 			{						
-				u_long bytes = stringh::To<u_long>(response.content_length_);
+				u_long bytes = stringh::To<u_long>(response.content_length);
 				try
 				{
 					line = l_sock.ReceiveBytes(bytes);
@@ -187,10 +187,10 @@ unsigned Client::Process(std::string ip, std::string port, std::function<void(ht
 				}
 
 				if (line.empty()) {
-					response.status_ = http::responses::bad_request;
+					response.status = http::responses::bad_request;
 				}
 				else {
-					response.answer_ = line;
+					response.body = line;
 				}
 				responseString += line;
 			}
@@ -200,23 +200,23 @@ unsigned Client::Process(std::string ip, std::string port, std::function<void(ht
 		line = line.substr(0, pos_cr_lf);
 
 		if (line.substr(0, http::header::server.size()) == http::header::server) {
-			response.server_ = line.substr(http::header::server.size());
+			response.server = line.substr(http::header::server.size());
 		}
 		else if (line.substr(0, http::header::date.size()) == http::header::date) {
-			response.date_ = line.substr(http::header::date.size());
+			response.date = line.substr(http::header::date.size());
 		}
 		else if (line.substr(0, http::header::connection.size()) == http::header::connection) {
-			response.connection_ = line.substr(http::header::connection.size());
+			response.connection = line.substr(http::header::connection.size());
 		}
 		else if (line.substr(0, http::header::content_length.size()) == http::header::content_length) {
-			response.content_length_ = line.substr(http::header::content_length.size());
-			if (response.content_length_ != "0")
+			response.content_length = line.substr(http::header::content_length.size());
+			if (response.content_length != "0")
 			{
 				messageToReceive = true;
 			}
 		}
 		else if (line.substr(0, http::header::content_type.size()) == http::header::content_type) {
-			response.content_type_ = line.substr(http::header::content_type.size());
+			response.content_type = line.substr(http::header::content_type.size());
 		}
 	}
 
@@ -254,8 +254,8 @@ inline void Client::ErrorCaught(std::string err_str, std::function<void(http_res
 #endif // FILE_LOGGING
 
 	http_response response;
-	response.disconnected_ = true;
-	response.error_ = true;
-	response.error_str_ = err_str;
+	response.disconnected = true;
+	response.error = true;
+	response.error_str = err_str;
 	response_func_(&response);
 }

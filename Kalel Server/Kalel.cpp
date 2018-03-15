@@ -118,12 +118,12 @@ Kalel::~Kalel()
 *********************************/
 void Kalel::Ping(http_request* req, http_response* resp)
 {
-	LOG(logDEBUG) << "Handshake " << req->method_;
-	if (req->method_ == http::method::get)
+	LOG(logDEBUG) << "Handshake " << req->method;
+	if (req->method == http::method::get)
 	{
-		resp->status_ = http::responses::ok;
-		resp->content_type_ = http::mimetype::texthtml;
-		resp->answer_ = R"(<!DOCTYPE html PUBLIC " -//IETF//DTD HTML 2.0//EN">
+		resp->status = http::responses::ok;
+		resp->content_type = http::mimetype::texthtml;
+		resp->body = R"(<!DOCTYPE html PUBLIC " -//IETF//DTD HTML 2.0//EN">
 					<html>
 						<head>
 							<title>Kalel Server</title>
@@ -141,9 +141,9 @@ void Kalel::Ping(http_request* req, http_response* resp)
 *********************************/
 void Kalel::Sync(http_request* req, http_response* resp)
 {
-	if (req->method_ == http::method::get)
+	if (req->method == http::method::get)
 	{
-		if (!req->params_.empty())
+		if (!req->params.empty())
 		{
 			bool timeMS = false;					// MachineSettings
 			bool timeES = false;					// ExperimentSettings
@@ -151,26 +151,26 @@ void Kalel::Sync(http_request* req, http_response* resp)
 			bool timeCS = false;					// ControlState
 
 			// MachineSettings
-			if (!req->params_.at("MS").empty()) {
-				if (timeh::StringToTimePoint(req->params_.at("MS")) > storageVectors.machineSettings->timeChanged)
+			if (!req->params.at("MS").empty()) {
+				if (timeh::StringToTimePoint(req->params.at("MS")) > storageVectors.machineSettings->timeChanged)
 					timeMS = true;
 			}
 
 			// ExperimentSettings
-			if (!req->params_.at("ES").empty()) {
-				if (timeh::StringToTimePoint(req->params_.at("ES")) > storageVectors.experimentSettings->timeChanged)
+			if (!req->params.at("ES").empty()) {
+				if (timeh::StringToTimePoint(req->params.at("ES")) > storageVectors.experimentSettings->timeChanged)
 					timeES = true;
 			}
 
 			// ExperimentState
-			if (!req->params_.at("ESt").empty()) {
-				if (timeh::StringToTimePoint(req->params_.at("ESt")) > storageVectors.experimentStatus->timeChanged)
+			if (!req->params.at("ESt").empty()) {
+				if (timeh::StringToTimePoint(req->params.at("ESt")) > storageVectors.experimentStatus->timeChanged)
 					timeES = true;
 			}
 
 			// ControlState
-			if (!req->params_.at("CS").empty()) {
-				if (timeh::StringToTimePoint(req->params_.at("CS")) > storageVectors.controlStateChanged)
+			if (!req->params.at("CS").empty()) {
+				if (timeh::StringToTimePoint(req->params.at("CS")) > storageVectors.controlStateChanged)
 					timeCS = true;
 			}
 
@@ -180,9 +180,9 @@ void Kalel::Sync(http_request* req, http_response* resp)
 			j2["ESt"] = timeESt;
 			j2["CS"] = timeCS;
 
-			resp->status_		= http::responses::ok;
-			resp->content_type_ = http::mimetype::appjson;
-			resp->answer_		= j2.dump();
+			resp->status		= http::responses::ok;
+			resp->content_type = http::mimetype::appjson;
+			resp->body		= j2.dump();
 		}
 	}
 }
@@ -195,26 +195,26 @@ void Kalel::Sync(http_request* req, http_response* resp)
 void Kalel::MachineSettingsSync(http_request* req, http_response* resp)
 {
 	timeh::timer t;
-	LOG(logDEBUG) << "Machine Settings " << req->method_;
+	LOG(logDEBUG) << "Machine Settings " << req->method;
 	t.Start();
 
 	// GET
-	if (req->method_ == http::method::get)
+	if (req->method == http::method::get)
 	{
 		json j = *storageVectors.machineSettings;
 		
-		resp->status_		= http::responses::ok;
-		resp->content_type_ = http::mimetype::appjson;
-		resp->answer_		= j.dump();
+		resp->status		= http::responses::ok;
+		resp->content_type = http::mimetype::appjson;
+		resp->body		= j.dump();
 	}
 
 	// SET
-	if (req->method_ == http::method::post)
+	if (req->method == http::method::post)
 	{
-		if (req->content_type_ == http::mimetype::appjson) {
+		if (req->content_type == http::mimetype::appjson) {
 
 			// Parse the input
-			auto j = json::parse(req->entity_);
+			auto j = json::parse(req->body);
 			
 			// Create new settings
 			storageVectors.setmachineSettings(std::make_shared<MachineSettings>(j));
@@ -225,10 +225,10 @@ void Kalel::MachineSettingsSync(http_request* req, http_response* resp)
 			// Save to file
 			ParametersSet(*storageVectors.machineSettings);
 
-			resp->status_ = http::responses::ok;
+			resp->status = http::responses::ok;
 		}
 		else {
-			resp->status_ = http::responses::bad_request;
+			resp->status = http::responses::bad_request;
 		}
 	}
 
@@ -242,26 +242,26 @@ void Kalel::MachineSettingsSync(http_request* req, http_response* resp)
 void Kalel::ExperimentSettingsSync(http_request* req, http_response* resp)
 {
 	timeh::timer t;
-	LOG(logDEBUG) << "ExpSettings" << req->method_;
+	LOG(logDEBUG) << "ExpSettings" << req->method;
 	t.Start();
 
 	// GET
-	if (req->method_ == http::method::get)
+	if (req->method == http::method::get)
 	{
 		json j = *storageVectors.experimentSettings;
 
-		resp->status_ = http::responses::ok;
-		resp->content_type_ = http::mimetype::appjson;
-		resp->answer_ = j.dump();
+		resp->status = http::responses::ok;
+		resp->content_type = http::mimetype::appjson;
+		resp->body = j.dump();
 	}
 
 	// SET
-	if (req->method_ == http::method::post)
+	if (req->method == http::method::post)
 	{
-		if (req->content_type_ == http::mimetype::appjson) {
+		if (req->content_type == http::mimetype::appjson) {
 
 			// Parse the input
-			auto j = json::parse(req->entity_);
+			auto j = json::parse(req->body);
 			auto newSettings = std::make_shared<ExperimentSettings>(j);
 
 			// Create new experiment settings, logging change if experiment is running
@@ -276,10 +276,10 @@ void Kalel::ExperimentSettingsSync(http_request* req, http_response* resp)
 
 			storageVectors.setExperimentSettings(newSettings);
 
-			resp->status_ = http::responses::ok;
+			resp->status = http::responses::ok;
 		}
 		else {
-			resp->status_ = http::responses::bad_request;
+			resp->status = http::responses::bad_request;
 		}
 	}
 
@@ -293,17 +293,17 @@ void Kalel::ExperimentSettingsSync(http_request* req, http_response* resp)
 void Kalel::ExperimentStatusSync(http_request* req, http_response* resp)
 {
 	timeh::timer t;
-	LOG(logDEBUG) << "Experiment Status" << req->method_;
+	LOG(logDEBUG) << "Experiment Status" << req->method;
 	t.Start();
 
 	// GET
-	if (req->method_ == http::method::get)
+	if (req->method == http::method::get)
 	{
 		json j = *storageVectors.experimentStatus;
 
-		resp->status_ = http::responses::ok;
-		resp->content_type_ = http::mimetype::appjson;
-		resp->answer_ = j.dump();
+		resp->status = http::responses::ok;
+		resp->content_type = http::mimetype::appjson;
+		resp->body = j.dump();
 	}
 
 	LOG(logDEBUG) << "Experiment Status took " << std::to_string(t.TimeMilliseconds());
@@ -316,56 +316,56 @@ void Kalel::ExperimentStatusSync(http_request* req, http_response* resp)
 void Kalel::InstrumentStateSync(http_request* req, http_response* resp)
 {
 	timeh::timer t;
-	LOG(logDEBUG) << "Instrument state" << req->method_;
+	LOG(logDEBUG) << "Instrument state" << req->method;
 	t.Start();
 
 	// GET
-	if (req->method_ == http::method::get)
+	if (req->method == http::method::get)
 	{
 		json j = threadManager.GetInstrumentStates();
 
-		resp->status_ = http::responses::ok;
-		resp->content_type_ = http::mimetype::appjson;
-		resp->answer_ = j.dump();
+		resp->status = http::responses::ok;
+		resp->content_type = http::mimetype::appjson;
+		resp->body = j.dump();
 	}
 
 	// SET
-	if (req->method_ == http::method::post)
+	if (req->method == http::method::post)
 	{
-		if (!req->params_.empty() ||
-			!req->params_.at("type").empty() ||
-			!req->params_.at("number").empty() ||
-			!req->params_.at("active").empty())
+		if (!req->params.empty() ||
+			!req->params.at("type").empty() ||
+			!req->params.at("number").empty() ||
+			!req->params.at("active").empty())
 		{
 			int instrumentType;
-			if (req->params_.at("type") == "valve") {
+			if (req->params.at("type") == "valve") {
 				instrumentType = CONTROLLER_VALVE;
 			}
-			else if (req->params_.at("type") == "ev") {
+			else if (req->params.at("type") == "ev") {
 				instrumentType = CONTROLLER_EV;
 			}
-			else if (req->params_.at("type") == "pump") {
+			else if (req->params.at("type") == "pump") {
 				instrumentType = CONTROLLER_PUMP;
 			}
 			else {
-				instrumentType = stringh::To<int>(req->params_.at("type"));
+				instrumentType = stringh::To<int>(req->params.at("type"));
 			}
 
-			auto instrumentNumber = stringh::To<int>(req->params_.at("number"));
-			auto instrumentState = stringh::To<bool>(req->params_.at("active"));
+			auto instrumentNumber = stringh::To<int>(req->params.at("number"));
+			auto instrumentState = stringh::To<bool>(req->params.at("active"));
 
 
 			threadManager.ThreadManualAction(instrumentType, instrumentNumber, instrumentState);		// TODO: Should have a better way
 
 			json j = threadManager.GetInstrumentStates();
 			
-			resp->status_ = http::responses::ok;
-			resp->content_type_ = http::mimetype::appjson;
-			resp->answer_ = j.dump();
+			resp->status = http::responses::ok;
+			resp->content_type = http::mimetype::appjson;
+			resp->body = j.dump();
 		}
 		else
 		{
-			resp->status_ = http::responses::conflict;
+			resp->status = http::responses::conflict;
 		}
 	}
 
@@ -382,21 +382,21 @@ void Kalel::DataSync(http_request* req, http_response* resp)
 	LOG(logDEBUG) << "Data sync";
 	t.Start();
 
-	if (req->method_ == http::method::get)
+	if (req->method == http::method::get)
 	{
 		// Figure out which range of data to send by looking at the time requested
 
 		std::unique_ptr<ExperimentDataStorageArray> localCollection;
 
-		if (req->params_.empty() ||
-			req->params_.at("time").empty() ||
-			req->params_.at("time") == "start")
+		if (req->params.empty() ||
+			req->params.at("time").empty() ||
+			req->params.at("time") == "start")
 		{
 			localCollection = std::make_unique<ExperimentDataStorageArray>(storageVectors.dataCollection.get());
 		}
 		else
 		{
-			localCollection = std::make_unique<ExperimentDataStorageArray>(storageVectors.dataCollection.get(timeh::StringToTimePoint(req->params_.at("time"))));
+			localCollection = std::make_unique<ExperimentDataStorageArray>(storageVectors.dataCollection.get(timeh::StringToTimePoint(req->params.at("time"))));
 		}
 
 		if (localCollection->size() != 0)						// If any exist
@@ -412,13 +412,13 @@ void Kalel::DataSync(http_request* req, http_response* resp)
 
 			LOG(logDEBUG) << "Serialisation took " << std::to_string(t.TimeMilliseconds());
 
-			resp->status_ = http::responses::ok;
-			resp->content_type_ = http::mimetype::appjson;
-			resp->answer_ = j.dump();
+			resp->status = http::responses::ok;
+			resp->content_type = http::mimetype::appjson;
+			resp->body = j.dump();
 		}
 		else
 		{
-			resp->status_ = http::responses::no_content;
+			resp->status = http::responses::no_content;
 		}
 	}
 
@@ -432,24 +432,30 @@ void Kalel::DataSync(http_request* req, http_response* resp)
 void Kalel::LogSync(http_request* req, http_response* resp)
 {
 	timeh::timer t;
-	LOG(logDEBUG) << "Log sync";
+	LOG(logDEBUG) << "Log sync " << req->method;
 	t.Start();
 
-	if (req->method_ == http::method::get)
+	if (req->method == http::method::del)
+	{
+		storageVectors.infoLogs.del();
+		resp->status = http::responses::ok;
+	}
+
+	if (req->method == http::method::get)
 	{
 		// Figure out which range of logs to send by finding the requested timestamp
 
 		std::unique_ptr<TextStorage> localCollection;
 
-		if (req->params_.empty() ||									// If parameters don't exist, send all the logs
-			req->params_.at("time").empty() ||
-			req->params_.at("time") == "start")
+		if (req->params.empty() ||									// If parameters don't exist, send all the logs
+			req->params.at("time").empty() ||
+			req->params.at("time") == "start")
 		{
 			localCollection = std::make_unique<TextStorage>(storageVectors.infoLogs.get());
 		}
 		else
 		{
-			localCollection = std::make_unique<TextStorage>(storageVectors.infoLogs.get(timeh::StringToTimePoint(req->params_.at("time"))));
+			localCollection = std::make_unique<TextStorage>(storageVectors.infoLogs.get(timeh::StringToTimePoint(req->params.at("time"))));
 		}
 
 		if (localCollection->size() != 0)							// If any exist
@@ -460,13 +466,13 @@ void Kalel::LogSync(http_request* req, http_response* resp)
 				j[timeh::TimePointToString(kv.first)] = kv.second;
 			}
 
-			resp->status_ = http::responses::ok;
-			resp->content_type_ = http::mimetype::appjson;
-			resp->answer_ = j.dump();
+			resp->status = http::responses::ok;
+			resp->content_type = http::mimetype::appjson;
+			resp->body = j.dump();
 		}
 		else
 		{
-			resp->status_ = http::responses::no_content;
+			resp->status = http::responses::no_content;
 		}
 	}
 
@@ -480,24 +486,30 @@ void Kalel::LogSync(http_request* req, http_response* resp)
 void Kalel::RequestSync(http_request* req, http_response* resp)
 {
 	timeh::timer t;
-	LOG(logDEBUG) << "Request sync";
+	LOG(logDEBUG) << "Request sync " << req->method;
 	t.Start();
 
-	if (req->method_ == http::method::get)
+	if (req->method == http::method::del)
+	{
+		storageVectors.eventLogs.del();
+		resp->status = http::responses::ok;
+	}
+
+	if (req->method == http::method::get)
 	{
 		// Figure out which range of logs to send by finding the requested timestamp
 
 		std::unique_ptr<TextStorage> localCollection;
 
-		if (req->params_.empty() ||									// If parameters don't exist, send all the logs
-			req->params_.at("time").empty() ||
-			req->params_.at("time") == "start")
+		if (req->params.empty() ||									// If parameters don't exist, send all the logs
+			req->params.at("time").empty() ||
+			req->params.at("time") == "start")
 		{
 			localCollection = std::make_unique<TextStorage>(storageVectors.eventLogs.get());
 		}
 		else
 		{
-			localCollection = std::make_unique<TextStorage>(storageVectors.eventLogs.get(timeh::StringToTimePoint(req->params_.at("time"))));
+			localCollection = std::make_unique<TextStorage>(storageVectors.eventLogs.get(timeh::StringToTimePoint(req->params.at("time"))));
 		}
 
 		if (localCollection->size() != 0)							// If any exist
@@ -508,13 +520,13 @@ void Kalel::RequestSync(http_request* req, http_response* resp)
 				j[timeh::TimePointToString(kv.first)] = kv.second;
 			}
 
-			resp->status_ = http::responses::ok;
-			resp->content_type_ = http::mimetype::appjson;
-			resp->answer_ = j.dump();
+			resp->status = http::responses::ok;
+			resp->content_type = http::mimetype::appjson;
+			resp->body = j.dump();
 		}
 		else
 		{
-			resp->status_ = http::responses::no_content;
+			resp->status = http::responses::no_content;
 		}
 	}
 
@@ -528,24 +540,30 @@ void Kalel::RequestSync(http_request* req, http_response* resp)
 void Kalel::DebugSync(http_request* req, http_response* resp)
 {
 	timeh::timer t;
-	LOG(logDEBUG) << "Debug sync";
+	LOG(logDEBUG) << "Debug sync " << req->method;
 	t.Start();
 
-	if (req->method_ == http::method::get)
+	if (req->method == http::method::del)
+	{
+		storageVectors.debugLogs.del();
+		resp->status = http::responses::ok;
+	}
+
+	if (req->method == http::method::get)
 	{
 		// Figure out which range of logs to send by finding the requested timestamp
 
 		std::unique_ptr<TextStorage> localCollection;
 
-		if (req->params_.empty() ||									// If parameters don't exist, send all the logs
-			req->params_.at("time").empty() ||
-			req->params_.at("time") == "start")
+		if (req->params.empty() ||									// If parameters don't exist, send all the logs
+			req->params.at("time").empty() ||
+			req->params.at("time") == "start")
 		{
 			localCollection = std::make_unique<TextStorage>(storageVectors.debugLogs.get());
 		}
 		else
 		{
-			localCollection = std::make_unique<TextStorage>(storageVectors.debugLogs.get(timeh::StringToTimePoint(req->params_.at("time"))));
+			localCollection = std::make_unique<TextStorage>(storageVectors.debugLogs.get(timeh::StringToTimePoint(req->params.at("time"))));
 		}
 
 		if (localCollection->size() != 0)							// If any exist
@@ -556,13 +574,13 @@ void Kalel::DebugSync(http_request* req, http_response* resp)
 				j[timeh::TimePointToString(kv.first)] = kv.second;
 			}
 
-			resp->status_ = http::responses::ok;
-			resp->content_type_ = http::mimetype::appjson;
-			resp->answer_ = j.dump();
+			resp->status = http::responses::ok;
+			resp->content_type = http::mimetype::appjson;
+			resp->body = j.dump();
 		}
 		else
 		{
-			resp->status_ = http::responses::no_content;
+			resp->status = http::responses::no_content;
 		}
 	}
 
@@ -576,35 +594,35 @@ void Kalel::DebugSync(http_request* req, http_response* resp)
 *********************************/
 void Kalel::AutomationControl(http_request* req, http_response* resp)
 {
-	if (req->method_ == http::method::post)
+	if (req->method == http::method::post)
 	{
-		if (!req->params_.empty() ||
-			!req->params_.at("action").empty())
+		if (!req->params.empty() ||
+			!req->params.at("action").empty())
 		{
-			if (req->params_.at("action") == "start") {
+			if (req->params.at("action") == "start") {
 				threadManager.StartAutomation();
 			}
-			else if (req->params_.at("action") == "shutdown") {
+			else if (req->params.at("action") == "shutdown") {
 				threadManager.ShutdownAutomation();
 			}
-			else if (req->params_.at("action") == "restart") {
+			else if (req->params.at("action") == "restart") {
 				//threadManager.ResetThread();
 			}
-			else if (req->params_.at("action") == "reset") {
+			else if (req->params.at("action") == "reset") {
 				threadManager.ResetAutomation();
 			}
-			else if (req->params_.at("action") == "pause") {
+			else if (req->params.at("action") == "pause") {
 				threadManager.PauseAutomation();
 			}
-			else if (req->params_.at("action") == "resume") {
+			else if (req->params.at("action") == "resume") {
 				threadManager.ResumeAutomation();
 			}
 
-			resp->status_ = http::responses::ok;
+			resp->status = http::responses::ok;
 		}
 		else
 		{
-			resp->status_ = http::responses::conflict;
+			resp->status = http::responses::conflict;
 		}
 	}
 }
@@ -616,7 +634,7 @@ void Kalel::AutomationControl(http_request* req, http_response* resp)
 void Kalel::ReloadParameters(http_request * req, http_response * resp)
 {
 	// SET
-	if (req->method_ == http::method::post)
+	if (req->method == http::method::post)
 	{
 
 	}

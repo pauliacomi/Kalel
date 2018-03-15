@@ -53,7 +53,7 @@ namespace http
 		static const std::string get			= "GET"						;
 		static const std::string put			= "PUT"						;
 		static const std::string post			= "POST"					;
-		static const std::string del			= "DEL"						;
+		static const std::string del			= "DELETE"					;
 		static const std::string options		= "OPTIONS"					;
 		static const std::string head			= "HEAD"					;
 		static const std::string trace			= "TRACE"					;
@@ -102,7 +102,7 @@ namespace http
 		const std::string vary					= "Vary: "					;
 		const std::string www_authenticate		= "WWW-Authenticate: "		;
 
-		// entity-specific
+		// body-specific
 		const std::string allow					= "Allow: "					;
 		const std::string content_encoding		= "Content-Encoding: "		;
 		const std::string content_language		= "Content-Language: "		;

@@ -41,7 +41,7 @@ bool URLHelper::RemoveProtocolFromUrl(std::string const& url, std::string& proto
 	return true;
 }
 
-void URLHelper::SplitGetReq(std::string get_req, std::string& path, std::map<std::string, std::string>& params) {
+void URLHelper::SplitGetReq(std::string get_req, std::string& path, std::map<std::string, std::string>& params, std::string& http) {
 
 	// Remove trailing newlines
 	if (get_req[get_req.size() - 1] == '\x0d' ||
@@ -54,7 +54,8 @@ void URLHelper::SplitGetReq(std::string get_req, std::string& path, std::map<std
 
 	// Remove potential Trailing HTTP/1.x
 	if (get_req.size() > 7) {
-		if (get_req.substr(get_req.size() - 8, 7) == "HTTP/1.") {
+		if (get_req.substr(get_req.size() - 8, 5) == "HTTP/") {
+			http = get_req.substr(get_req.size() - 8, 8);
 			get_req = get_req.substr(0, get_req.size() - 9);
 		}
 	}
@@ -66,7 +67,7 @@ void URLHelper::SplitGetReq(std::string get_req, std::string& path, std::map<std
 		path = get_req.substr(0, qm);
 
 		// Appending a '&' so that there are as many '&' as name-value pairs.
-		// It makes it easier to split the url for name value pairs, he he he
+		// It makes it easier to split the url for name value pairs
 		url_params += "&";
 
 		std::string::size_type next_amp = url_params.find("&");

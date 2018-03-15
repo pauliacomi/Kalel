@@ -428,23 +428,23 @@ void CommHandler::TestConn()
 // Ping
 *********************************/
 unsigned CommHandler::Handshake_req(http_request* r) {
-	r->method_ = http::method::get;
-	r->path_ = "/api/handshake";
+	r->method = http::method::get;
+	r->path = "/api/handshake";
 	return 0;
 }
 
 unsigned CommHandler::Handshake_resp(http_response* r) {
 
-	if (r->status_ == http::responses::ok)
+	if (r->status == http::responses::ok)
 	{
 		messageHandler.ConnectionComplete();
 	}
-	else if (r->status_ == http::responses::not_found)
+	else if (r->status == http::responses::not_found)
 	{
 		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server not found"));
 		return 1;
 	}
-	else if(r->disconnected_)
+	else if(r->disconnected)
 	{
 		messageHandler.Disconnection();
 		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server disconnected"));
@@ -459,14 +459,14 @@ unsigned CommHandler::Handshake_resp(http_response* r) {
 // Sync
 *********************************/
 unsigned CommHandler::Sync_req(http_request* r) {
-	r->method_ = http::method::get;
-	r->accept_ = http::mimetype::appjson;
-	r->path_ = "/api/sync";
+	r->method = http::method::get;
+	r->accept = http::mimetype::appjson;
+	r->path = "/api/sync";
 
-	r->params_.emplace("MS", localMachineSettingsTime);
-	r->params_.emplace("ES", localExperimentSettingsTime);
-	r->params_.emplace("ESt", localExperimentStatusTime);
-	r->params_.emplace("CS", localControlStateTime);
+	r->params.emplace("MS", localMachineSettingsTime);
+	r->params.emplace("ES", localExperimentSettingsTime);
+	r->params.emplace("ESt", localExperimentStatusTime);
+	r->params.emplace("CS", localControlStateTime);
 
 	return 0;
 }
@@ -475,14 +475,14 @@ unsigned CommHandler::Sync_resp(http_response* r) {
 
 	flagSyncRequest = false;
 
-	if (r->status_ == http::responses::ok)
+	if (r->status == http::responses::ok)
 	{
 		// Parse JSON
 		//////////////////////////////////////////////
 		json j;
 		try
 		{
-			j = json::parse(r->answer_.c_str());
+			j = json::parse(r->body.c_str());
 		}
 		catch (const std::exception& e)
 		{
@@ -506,12 +506,12 @@ unsigned CommHandler::Sync_resp(http_response* r) {
 		}
 
 	}
-	else if (r->status_ == http::responses::not_found)
+	else if (r->status == http::responses::not_found)
 	{
 		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Sync failed"));
 		return 1;
 	}
-	else if (r->disconnected_)
+	else if (r->disconnected)
 	{
 		messageHandler.Disconnection();
 		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server disconnected"));
@@ -525,24 +525,24 @@ unsigned CommHandler::Sync_resp(http_response* r) {
 // Get MachineSettings
 *********************************/
 unsigned CommHandler::GetMachineSettings_req(http_request* r) {
-	r->method_ = http::method::get;
-	r->accept_ = http::mimetype::appjson;
-	r->path_ = "/api/machinesettings";
+	r->method = http::method::get;
+	r->accept = http::mimetype::appjson;
+	r->path = "/api/machinesettings";
 	return 0;
 }
 
 unsigned CommHandler::GetMachineSettings_resp(http_response* r) {
 
-	if (r->status_ == http::responses::ok)
+	if (r->status == http::responses::ok)
 	{
-		if (r->content_type_.find(http::mimetype::appjson) != std::string::npos) {
+		if (r->content_type.find(http::mimetype::appjson) != std::string::npos) {
 
 			// Parse JSON
 			//////////////////////////////////////////////
 			json j;
 			try
 			{
-				j = json::parse(r->answer_.c_str());
+				j = json::parse(r->body.c_str());
 			}
 			catch (const std::exception& e)
 			{
@@ -575,7 +575,7 @@ unsigned CommHandler::GetMachineSettings_resp(http_response* r) {
 			return 1;
 		}
 	}
-	else if (r->status_ == http::responses::not_found)
+	else if (r->status == http::responses::not_found)
 	{
 		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server cannot get Machine Settings"));
 		return 1;
@@ -589,9 +589,9 @@ unsigned CommHandler::GetMachineSettings_resp(http_response* r) {
 // Set MachineSettings
 *********************************/
 unsigned CommHandler::SetMachineSettings_req(http_request* r) {
-	r->method_			= http::method::post;
-	r->content_type_	= http::mimetype::appjson;
-	r->path_			= "/api/machinesettings";
+	r->method			= http::method::post;
+	r->content_type	= http::mimetype::appjson;
+	r->path			= "/api/machinesettings";
 
 	json j;
 	try
@@ -604,19 +604,19 @@ unsigned CommHandler::SetMachineSettings_req(http_request* r) {
 		return 1;
 	}
 
-	r->entity_ = j.dump();
+	r->body = j.dump();
 
 	return 0;
 }
 
 unsigned CommHandler::SetMachineSettings_resp(http_response* r) {
 	
-	if (r->status_ == http::responses::ok)
+	if (r->status == http::responses::ok)
 	{
 		localMachineSettings.reset();
 		messageHandler.OnSetMachineSettings();
 	}
-	else if (r->status_ == http::responses::internal_err)
+	else if (r->status == http::responses::internal_err)
 	{
 		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server error, could not update settings"));
 		return 1;
@@ -630,24 +630,24 @@ unsigned CommHandler::SetMachineSettings_resp(http_response* r) {
 // Get ExperimentSettings
 *********************************/
 unsigned CommHandler::GetExperimentSettings_req(http_request* r) {
-	r->method_ = http::method::get;
-	r->accept_ = http::mimetype::appjson;
-	r->path_ = "/api/experimentsettings";
+	r->method = http::method::get;
+	r->accept = http::mimetype::appjson;
+	r->path = "/api/experimentsettings";
 	return 0;
 }
 
 unsigned CommHandler::GetExperimentSettings_resp(http_response* r) {
 
-	if (r->status_ == http::responses::ok)
+	if (r->status == http::responses::ok)
 	{
-		if (r->content_type_.find(http::mimetype::appjson) != std::string::npos) {
+		if (r->content_type.find(http::mimetype::appjson) != std::string::npos) {
 
 			// Parse JSON
 			//////////////////////////////////////////////
 			json j;
 			try
 			{
-				j = json::parse(r->answer_.c_str());
+				j = json::parse(r->body.c_str());
 			}
 			catch (const std::exception& e)
 			{
@@ -680,7 +680,7 @@ unsigned CommHandler::GetExperimentSettings_resp(http_response* r) {
 			return 1;
 		}
 	}
-	else if (r->status_ == http::responses::not_found)
+	else if (r->status == http::responses::not_found)
 	{
 		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server cannot get Experiment Settings"));
 		return 1;
@@ -694,9 +694,9 @@ unsigned CommHandler::GetExperimentSettings_resp(http_response* r) {
 // Set ExperimentSettings
 *********************************/
 unsigned CommHandler::SetExperimentSettings_req(http_request* r) {
-	r->method_ = http::method::post;
-	r->content_type_ = http::mimetype::appjson;
-	r->path_ = "/api/experimentsettings";
+	r->method = http::method::post;
+	r->content_type = http::mimetype::appjson;
+	r->path = "/api/experimentsettings";
 
 	json j;
 	try
@@ -709,19 +709,19 @@ unsigned CommHandler::SetExperimentSettings_req(http_request* r) {
 		return 1;
 	}
 
-	r->entity_ = j.dump();
+	r->body = j.dump();
 
 	return 0;
 }
 
 unsigned CommHandler::SetExperimentSettings_resp(http_response* r) {
 
-	if (r->status_ == http::responses::ok)
+	if (r->status == http::responses::ok)
 	{
 		localExperimentSettings.reset();
 		messageHandler.OnSetExperimentSettings();
 	}
-	else if (r->status_ == http::responses::internal_err)
+	else if (r->status == http::responses::internal_err)
 	{
 		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server error, could not start a new experiment"));
 		return 1;
@@ -735,24 +735,24 @@ unsigned CommHandler::SetExperimentSettings_resp(http_response* r) {
 // Get ExperimentStatus
 *********************************/
 unsigned CommHandler::GetExperimentStatus_req(http_request* r) {
-	r->method_ = http::method::get;
-	r->accept_ = http::mimetype::appjson;
-	r->path_ = "/api/experimentstatus";
+	r->method = http::method::get;
+	r->accept = http::mimetype::appjson;
+	r->path = "/api/experimentstatus";
 	return 0;
 }
 
 unsigned CommHandler::GetExperimentStatus_resp(http_response* r) {
 
-	if (r->status_ == http::responses::ok)
+	if (r->status == http::responses::ok)
 	{
-		if (r->content_type_.find(http::mimetype::appjson) != std::string::npos) {
+		if (r->content_type.find(http::mimetype::appjson) != std::string::npos) {
 
 			// Parse JSON
 			//////////////////////////////////////////////
 			json j;
 			try
 			{
-				j = json::parse(r->answer_.c_str());
+				j = json::parse(r->body.c_str());
 			}
 			catch (const std::exception& e)
 			{
@@ -785,7 +785,7 @@ unsigned CommHandler::GetExperimentStatus_resp(http_response* r) {
 			return 1;
 		}
 	}
-	else if (r->status_ == http::responses::not_found)
+	else if (r->status == http::responses::not_found)
 	{
 		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server cannot get Experiment Status"));
 		return 1;
@@ -798,15 +798,15 @@ unsigned CommHandler::GetExperimentStatus_resp(http_response* r) {
 *********************************/
 unsigned CommHandler::GetInstrumentState_req(http_request * r)
 {
-	r->method_ = http::method::get;
-	r->path_ = "/api/instrument";
+	r->method = http::method::get;
+	r->path = "/api/instrument";
 
 	return 0;
 }
 
 unsigned CommHandler::GetInstrumentState_resp(http_response * r)
 {
-	if (r->status_ == http::responses::ok)
+	if (r->status == http::responses::ok)
 	{
 		json j;
 
@@ -814,7 +814,7 @@ unsigned CommHandler::GetInstrumentState_resp(http_response * r)
 		//////////////////////////////////////////////
 		try
 		{
-			j = json::parse(r->answer_.c_str());
+			j = json::parse(r->body.c_str());
 		}
 		catch (const std::exception& e)
 		{
@@ -841,7 +841,7 @@ unsigned CommHandler::GetInstrumentState_resp(http_response * r)
 		// Confirm sync
 		CheckSync();
 	}
-	else if (r->status_ == http::responses::not_found) {
+	else if (r->status == http::responses::not_found) {
 		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server cannot get Instrument State"));
 		return 1;
 	}
@@ -854,8 +854,8 @@ unsigned CommHandler::GetInstrumentState_resp(http_response * r)
 *********************************/
 unsigned CommHandler::SetInstrumentState_req(http_request * r)
 {
-	r->method_ = http::method::post;
-	r->path_ = "/api/instrument";
+	r->method = http::method::post;
+	r->path = "/api/instrument";
 
 	std::string localInstrumentType;
 	std::string localInstrumentNumber;
@@ -881,32 +881,32 @@ unsigned CommHandler::SetInstrumentState_req(http_request * r)
 	localInstrumentNumber = std::to_string(localInstrumentState.instrumentNumber);
 	localShouldBeActivated = std::to_string(localInstrumentState.instrumentState);
 
-	r->params_.emplace("type", localInstrumentType);
-	r->params_.emplace("number", localInstrumentNumber);
-	r->params_.emplace("active", localShouldBeActivated);
+	r->params.emplace("type", localInstrumentType);
+	r->params.emplace("number", localInstrumentNumber);
+	r->params.emplace("active", localShouldBeActivated);
 
 	return 0;
 }
 
 unsigned CommHandler::SetInstrumentState_resp(http_response * r)
 {
-	if (r->status_ == http::responses::ok)
+	if (r->status == http::responses::ok)
 	{
 		messageHandler.ExchangeControlStateSpecific(localInstrumentState);
 
 		return 1;
 	}
-	else if (r->status_ == http::responses::conflict)
+	else if (r->status == http::responses::conflict)
 	{
 		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server cannot process thread command"));
 		return 1;
 	}
-	else if (r->status_ == http::responses::bad_request)
+	else if (r->status == http::responses::bad_request)
 	{
 		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Bad request"));
 		return 1;
 	}
-	else if (r->status_ == http::responses::not_found) {
+	else if (r->status == http::responses::not_found) {
 		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server cannot set Instrument State"));
 		return 1;
 	}
@@ -918,10 +918,10 @@ unsigned CommHandler::SetInstrumentState_resp(http_response * r)
 // Get Data
 *********************************/
 unsigned CommHandler::GetData_req(http_request* r) {
-	r->method_ = http::method::get;
-	r->accept_ = http::mimetype::appjson;
-	r->path_ = "/api/experimentdata";
-	r->params_.emplace("time", localExperimentTime);
+	r->method = http::method::get;
+	r->accept = http::mimetype::appjson;
+	r->path = "/api/experimentdata";
+	r->params.emplace("time", localExperimentTime);
 	return 0;
 }
 
@@ -929,9 +929,9 @@ unsigned CommHandler::GetData_resp(http_response* r) {
 
 	flagExperimentRequest = false;
 
-	if (r->status_ == http::responses::ok)
+	if (r->status == http::responses::ok)
 	{
-		if (r->content_type_.find(http::mimetype::appjson) != std::string::npos) {
+		if (r->content_type.find(http::mimetype::appjson) != std::string::npos) {
 			
 			json j;
 
@@ -939,7 +939,7 @@ unsigned CommHandler::GetData_resp(http_response* r) {
 			//////////////////////////////////////////////
 			try
 			{
-				j = json::parse(r->answer_.c_str());
+				j = json::parse(r->body.c_str());
 			}
 			catch (const std::exception& e)
 			{
@@ -979,12 +979,12 @@ unsigned CommHandler::GetData_resp(http_response* r) {
 			return 1;
 		}
 	}
-	else if (r->status_ == http::responses::not_found)
+	else if (r->status == http::responses::not_found)
 	{
 		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server cannot get Experiment Data"));
 		return 1;
 	}
-	else if (r->disconnected_)
+	else if (r->disconnected)
 	{
 		messageHandler.Disconnection();
 		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server disconnected"));
@@ -999,10 +999,10 @@ unsigned CommHandler::GetData_resp(http_response* r) {
 *********************************/
 unsigned CommHandler::GetLogs_req(http_request * r)
 {
-	r->method_ = http::method::get;
-	r->accept_ = http::mimetype::appjson;
-	r->path_ = "/api/experimentlogs";
-	r->params_.emplace("time", localLogsTime);
+	r->method = http::method::get;
+	r->accept = http::mimetype::appjson;
+	r->path = "/api/experimentlogs";
+	r->params.emplace("time", localLogsTime);
 	return 0;
 }
 
@@ -1011,9 +1011,9 @@ unsigned CommHandler::GetLogs_resp(http_response * r)
 	
 	flagLogsRequest = false;
 
-	if (r->status_ == http::responses::ok)
+	if (r->status == http::responses::ok)
 	{
-		if (r->content_type_.find(http::mimetype::appjson) != std::string::npos) {
+		if (r->content_type.find(http::mimetype::appjson) != std::string::npos) {
 
 			json j;
 
@@ -1021,7 +1021,7 @@ unsigned CommHandler::GetLogs_resp(http_response * r)
 			//////////////////////////////////////////////
 			try
 			{
-				j = json::parse(r->answer_.c_str());
+				j = json::parse(r->body.c_str());
 			}
 			catch (const std::exception& e)
 			{
@@ -1059,7 +1059,7 @@ unsigned CommHandler::GetLogs_resp(http_response * r)
 			return 1;
 		}
 	}
-	else if (r->status_ == http::responses::not_found)
+	else if (r->status == http::responses::not_found)
 	{
 		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server cannot get Experiment Log"));
 		return 1;
@@ -1074,10 +1074,10 @@ unsigned CommHandler::GetLogs_resp(http_response * r)
 
 unsigned CommHandler::GetRequest_req(http_request * r)
 {
-	r->method_ = http::method::get;
-	r->accept_ = http::mimetype::appjson;
-	r->path_ = "/api/experimentrequests";
-	r->params_.emplace("time", localReqTime);
+	r->method = http::method::get;
+	r->accept = http::mimetype::appjson;
+	r->path = "/api/experimentrequests";
+	r->params.emplace("time", localReqTime);
 	return 0;
 }
 
@@ -1086,9 +1086,9 @@ unsigned CommHandler::GetRequest_resp(http_response * r)
 
 	flagReqRequest = false;
 
-	if (r->status_ == http::responses::ok)
+	if (r->status == http::responses::ok)
 	{
-		if (r->content_type_.find(http::mimetype::appjson) != std::string::npos) {
+		if (r->content_type.find(http::mimetype::appjson) != std::string::npos) {
 
 			json j;
 
@@ -1096,7 +1096,7 @@ unsigned CommHandler::GetRequest_resp(http_response * r)
 			//////////////////////////////////////////////
 			try
 			{
-				j = json::parse(r->answer_.c_str());
+				j = json::parse(r->body.c_str());
 			}
 			catch (const std::exception& e)
 			{
@@ -1133,7 +1133,7 @@ unsigned CommHandler::GetRequest_resp(http_response * r)
 			return 1;
 		}
 	}
-	else if (r->status_ == http::responses::not_found)
+	else if (r->status == http::responses::not_found)
 	{
 		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server cannot Get Experiment Request"));
 		return 1;
@@ -1148,8 +1148,8 @@ unsigned CommHandler::GetRequest_resp(http_response * r)
 *********************************/
 unsigned CommHandler::ThreadCommand_req(http_request * r)
 {
-	r->method_ = http::method::post;
-	r->path_ = "/api/thread";
+	r->method = http::method::post;
+	r->path = "/api/thread";
 
 	std::string action;
 	switch (localThreadCommand)
@@ -1176,28 +1176,28 @@ unsigned CommHandler::ThreadCommand_req(http_request * r)
 		break;
 	}
 
-	r->params_.emplace("action", action);
+	r->params.emplace("action", action);
 	return 0;
 }
 
 unsigned CommHandler::ThreadCommand_resp(http_response * r)
 {
-	if (r->status_ == http::responses::ok)
+	if (r->status == http::responses::ok)
 	{
 		messageHandler.SyncComplete();
 		return 1;
 	}
-	else if (r->status_ == http::responses::conflict)
+	else if (r->status == http::responses::conflict)
 	{
 		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server cannot process thread command"));
 		return 1;
 	}
-	else if (r->status_ == http::responses::bad_request)
+	else if (r->status == http::responses::bad_request)
 	{
 
 		return 1;
 	}
-	else if (r->status_ == http::responses::not_found) {
+	else if (r->status == http::responses::not_found) {
 		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server cannot find thread function"));
 		return 1;
 	}
@@ -1206,8 +1206,8 @@ unsigned CommHandler::ThreadCommand_resp(http_response * r)
 
 unsigned CommHandler::FunctionalityCommand_req(http_request* r)
 {
-	r->method_ = http::method::post;
-	r->path_ = "/api/functionality";
+	r->method = http::method::post;
+	r->path = "/api/functionality";
 
 	std::string action;
 	switch (localFunctionalityCommand)
@@ -1225,28 +1225,28 @@ unsigned CommHandler::FunctionalityCommand_req(http_request* r)
 		break;
 	}
 		
-	r->params_.emplace("action", action);
+	r->params.emplace("action", action);
 	return 0;
 }
 
 unsigned CommHandler::FunctionalityCommand_resp(http_response* r)
 {
-	if (r->status_ == http::responses::ok)
+	if (r->status == http::responses::ok)
 	{
 
 		return 1;
 	}
-	else if (r->status_ == http::responses::conflict)
+	else if (r->status == http::responses::conflict)
 	{
 		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server cannot process functionality"));
 		return 1;
 	}
-	else if (r->status_ == http::responses::bad_request)
+	else if (r->status == http::responses::bad_request)
 	{
 
 		return 1;
 	}
-	else if (r->status_ == http::responses::not_found) {
+	else if (r->status == http::responses::not_found) {
 		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server cannot find functionality"));
 		return 1;
 	}
@@ -1258,19 +1258,19 @@ unsigned CommHandler::FunctionalityCommand_resp(http_response* r)
 *********************************/
 
 unsigned CommHandler::TestConn_req(http_request* r) {
-	r->method_ = http::method::get;
-	r->path_ = "/api/debug/testconnection";
-	r->params_.emplace("return", "500");
+	r->method = http::method::get;
+	r->path = "/api/debug/testconnection";
+	r->params.emplace("return", "500");
 	return 0;
 }
 
 unsigned CommHandler::TestConn_resp(http_response* r) {
 
-	if (r->status_ == http::responses::ok)
+	if (r->status == http::responses::ok)
 	{
 		debug_success++;
 	}
-	else if (r->status_ == http::responses::bad_request)
+	else if (r->status == http::responses::bad_request)
 	{
 		debug_fails++;
 	}
