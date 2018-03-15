@@ -21,7 +21,26 @@
 #include <vector>
 #include <string>
 
-#define LOG_LEVEL		logDEBUG4			// Change the level of logging here
+// Change the level of logging here
+
+#define LOG_LEVEL		logDEBUG3
+
+//
+//
+//		logDEBUG
+//			- Instruments log errors in reading and writing
+//		logDEBUG1
+//			- Instruments log errors in port and connections
+//			- HTTPServer logs errors in socket and http requests
+//		logDEBUG2
+//			- Instruments log connections and reading
+//			- HTTPServer logs request type and completion time
+//		logDEBUG3
+//			- HTTPServer logs connections
+//		logDEBUG4
+//			- HTTPServer logs all requests and responses
+//
+
 
 using json = nlohmann::json;
 
@@ -118,7 +137,7 @@ Kalel::~Kalel()
 *********************************/
 void Kalel::Ping(http_request* req, http_response* resp)
 {
-	LOG(logDEBUG) << "Handshake " << req->method;
+	LOG(logDEBUG2) << "Handshake " << req->method;
 	if (req->method == http::method::get)
 	{
 		resp->status = http::responses::ok;
@@ -195,7 +214,7 @@ void Kalel::Sync(http_request* req, http_response* resp)
 void Kalel::MachineSettingsSync(http_request* req, http_response* resp)
 {
 	timeh::timer t;
-	LOG(logDEBUG) << "Machine Settings " << req->method;
+	LOG(logDEBUG2) << "Machine Settings " << req->method;
 	t.Start();
 
 	// GET
@@ -232,7 +251,7 @@ void Kalel::MachineSettingsSync(http_request* req, http_response* resp)
 		}
 	}
 
-	LOG(logDEBUG) << "Machine Settings took " << std::to_string(t.TimeMilliseconds());
+	LOG(logDEBUG2) << "Machine Settings took " << std::to_string(t.TimeMilliseconds());
 }
 
 
@@ -242,7 +261,7 @@ void Kalel::MachineSettingsSync(http_request* req, http_response* resp)
 void Kalel::ExperimentSettingsSync(http_request* req, http_response* resp)
 {
 	timeh::timer t;
-	LOG(logDEBUG) << "ExpSettings" << req->method;
+	LOG(logDEBUG2) << "ExpSettings" << req->method;
 	t.Start();
 
 	// GET
@@ -283,7 +302,7 @@ void Kalel::ExperimentSettingsSync(http_request* req, http_response* resp)
 		}
 	}
 
-	LOG(logDEBUG) << "Experiment settings took " << std::to_string(t.TimeMilliseconds());
+	LOG(logDEBUG2) << "Experiment settings took " << std::to_string(t.TimeMilliseconds());
 }
 
 
@@ -293,7 +312,7 @@ void Kalel::ExperimentSettingsSync(http_request* req, http_response* resp)
 void Kalel::ExperimentStatusSync(http_request* req, http_response* resp)
 {
 	timeh::timer t;
-	LOG(logDEBUG) << "Experiment Status" << req->method;
+	LOG(logDEBUG2) << "Experiment Status" << req->method;
 	t.Start();
 
 	// GET
@@ -306,7 +325,7 @@ void Kalel::ExperimentStatusSync(http_request* req, http_response* resp)
 		resp->body = j.dump();
 	}
 
-	LOG(logDEBUG) << "Experiment Status took " << std::to_string(t.TimeMilliseconds());
+	LOG(logDEBUG2) << "Experiment Status took " << std::to_string(t.TimeMilliseconds());
 }
 
 
@@ -316,7 +335,7 @@ void Kalel::ExperimentStatusSync(http_request* req, http_response* resp)
 void Kalel::InstrumentStateSync(http_request* req, http_response* resp)
 {
 	timeh::timer t;
-	LOG(logDEBUG) << "Instrument state" << req->method;
+	LOG(logDEBUG2) << "Instrument state" << req->method;
 	t.Start();
 
 	// GET
@@ -369,7 +388,7 @@ void Kalel::InstrumentStateSync(http_request* req, http_response* resp)
 		}
 	}
 
-	LOG(logDEBUG) << "Instrument state took " << std::to_string(t.TimeMilliseconds());
+	LOG(logDEBUG2) << "Instrument state took " << std::to_string(t.TimeMilliseconds());
 }
 
 
@@ -379,7 +398,7 @@ void Kalel::InstrumentStateSync(http_request* req, http_response* resp)
 void Kalel::DataSync(http_request* req, http_response* resp)
 {
 	timeh::timer t;
-	LOG(logDEBUG) << "Data sync";
+	LOG(logDEBUG2) << "Data sync";
 	t.Start();
 
 	if (req->method == http::method::get)
@@ -422,7 +441,7 @@ void Kalel::DataSync(http_request* req, http_response* resp)
 		}
 	}
 
-	LOG(logDEBUG) << std::to_string(t.TimeMilliseconds());
+	LOG(logDEBUG2) << std::to_string(t.TimeMilliseconds());
 }
 
 
@@ -432,7 +451,7 @@ void Kalel::DataSync(http_request* req, http_response* resp)
 void Kalel::LogSync(http_request* req, http_response* resp)
 {
 	timeh::timer t;
-	LOG(logDEBUG) << "Log sync " << req->method;
+	LOG(logDEBUG2) << "Log sync " << req->method;
 	t.Start();
 
 	if (req->method == http::method::del)
@@ -476,7 +495,7 @@ void Kalel::LogSync(http_request* req, http_response* resp)
 		}
 	}
 
-	LOG(logDEBUG) << "Logs took " << std::to_string(t.TimeMilliseconds());
+	LOG(logDEBUG2) << "Logs took " << std::to_string(t.TimeMilliseconds());
 }
 
 
@@ -486,7 +505,7 @@ void Kalel::LogSync(http_request* req, http_response* resp)
 void Kalel::RequestSync(http_request* req, http_response* resp)
 {
 	timeh::timer t;
-	LOG(logDEBUG) << "Request sync " << req->method;
+	LOG(logDEBUG2) << "Request sync " << req->method;
 	t.Start();
 
 	if (req->method == http::method::del)
@@ -530,7 +549,7 @@ void Kalel::RequestSync(http_request* req, http_response* resp)
 		}
 	}
 
-	LOG(logDEBUG) << "Requests took " << std::to_string(t.TimeMilliseconds());
+	LOG(logDEBUG2) << "Requests took " << std::to_string(t.TimeMilliseconds());
 }
 
 
@@ -540,7 +559,7 @@ void Kalel::RequestSync(http_request* req, http_response* resp)
 void Kalel::DebugSync(http_request* req, http_response* resp)
 {
 	timeh::timer t;
-	LOG(logDEBUG) << "Debug sync " << req->method;
+	LOG(logDEBUG2) << "Debug sync " << req->method;
 	t.Start();
 
 	if (req->method == http::method::del)
@@ -584,7 +603,7 @@ void Kalel::DebugSync(http_request* req, http_response* resp)
 		}
 	}
 
-	LOG(logDEBUG) << "Debug took " << std::to_string(t.TimeMilliseconds());
+	LOG(logDEBUG2) << "Debug took " << std::to_string(t.TimeMilliseconds());
 }
 
 

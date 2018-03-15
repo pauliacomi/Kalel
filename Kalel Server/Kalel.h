@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Kalel Shared/Netcode/Server.h"
+#include "../Kalel Shared/Netcode/http_server.h"
 #include "Automation/ThreadManager.h"
 #include "Automation/CommonControls.h"
 #include "Automation/CommonStorage.h"
@@ -11,7 +11,7 @@ public:
 	Kalel();
 	~Kalel();
 
-	Server server;								// Http server for REST
+	HTTPServer server;								// Http server for REST
 	Storage storageVectors;						// Stores all settings, experiment data, logs etc
 	Controls controlMechanisms;					// Controls all machines
 	ThreadManager threadManager;	

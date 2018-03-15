@@ -105,7 +105,7 @@ Error:
 	if (DAQmxFailed(error))
 	{
 		DAQmxGetExtendedErrorInfo(errBuff, 2048);
-		LOG(logERROR) << errBuff;
+		LOG(logDEBUG) << errBuff;
 	}
 
 	// Clear task to free memory
@@ -161,7 +161,7 @@ Error:
 	if (DAQmxFailed(error))
 	{
 		DAQmxGetExtendedErrorInfo(errBuff, 2048);
-		LOG(logERROR) << errBuff;
+		LOG(logDEBUG) << errBuff;
 	}
 
 	// Clear task to free memory

@@ -1,4 +1,4 @@
-#include "Server.h"
+#include "http_server.h"
 
 #include "http_helpers.h"
 #include "URLHelper.h"
@@ -11,18 +11,18 @@
 
 
 
-Server::Server(PCSTR port)
+HTTPServer::HTTPServer(PCSTR port)
 	: accepting{ false }
 {
 	// Listen on the socket
 	listeningSocket.Listen(port);
 
-	LOG(logDEBUG) << LOG_LISTENING << listeningSocket.GetSocket();
-	FILE_LOG(logDEBUG) << LOG_LISTENING << listeningSocket.GetSocket();
+	LOG(logDEBUG3) << LOG_LISTENING << listeningSocket.GetSocket();
+	FILE_LOG(logDEBUG3) << LOG_LISTENING << listeningSocket.GetSocket();
 }
 
 
-Server::~Server()
+HTTPServer::~HTTPServer()
 {
 	// Terminate the accepting thread 
 	accepting = false;
@@ -33,28 +33,28 @@ Server::~Server()
 }
 
 
-void Server::AddMethod(std::function<void(http_request*, http_response*)> r, std::string url)
+void HTTPServer::AddMethod(std::function<void(http_request*, http_response*)> r, std::string url)
 {
 	funcMap.emplace(std::make_pair(url, r));
 }
 
 
 
-void Server::Start()
+void HTTPServer::Start()
 {
 	if (accepting == false)
 	{
 		accepting = true;
-		acceptThread = std::thread(&Server::AcceptLoop, this);
+		acceptThread = std::thread(&HTTPServer::AcceptLoop, this);
 	}
 }
 
 
 
-unsigned Server::AcceptLoop()
+unsigned HTTPServer::AcceptLoop()
 {
-	LOG(logDEBUG1) << LOG_ACCEPT_ENTER;
-	FILE_LOG(logDEBUG1) << LOG_ACCEPT_ENTER;
+	LOG(logDEBUG3) << LOG_ACCEPT_ENTER;
+	FILE_LOG(logDEBUG3) << LOG_ACCEPT_ENTER;
 
 	listeningSocket.Accept_PrimeSelect();
 	
@@ -71,36 +71,45 @@ unsigned Server::AcceptLoop()
 		{
 			theirIP = listeningSocket.Accept(s, tv);
 			if (theirIP.empty()) {
+				auto it = threadPool.begin();											// If we time out we can also do thread cleanup here
+				while (it != threadPool.end()) {
+					if (it->joinable()) {
+						it->join();
+						it = threadPool.erase(it);
+						if (it == threadPool.end()) break;
+						else ++it;;
+					}
+				}
 				continue;
 			}
 		}
 		catch (const std::exception& e)
 		{
-			LOG(logDEBUG) << e.what();
-			FILE_LOG(logERROR) << e.what();
+			LOG(logDEBUG1) << e.what();
+			FILE_LOG(logDEBUG1) << e.what();
 			return 1;
 		}
 
-		LOG(logDEBUG1) << LOG_ACCEPTED_SOCK << theirIP;
-		FILE_LOG(logDEBUG1) << LOG_ACCEPTED_SOCK << theirIP;
+		LOG(logDEBUG3) << LOG_ACCEPTED_SOCK << theirIP;
+		FILE_LOG(logDEBUG3) << LOG_ACCEPTED_SOCK << theirIP;
 
 		std::unique_ptr<Socket> acceptedSocket = std::make_unique<Socket>(s);			// Create a client socket pointer from the accepted SOCKET
 		acceptedSocket->SetNagle(false);												// Disable Nagle's algorithm, should lead to improved latency
-		std::thread(&Server::Process, this, std::move(acceptedSocket)).detach();		// Start the request processing thread
+		threadPool.emplace_back(&HTTPServer::Process, this, std::move(acceptedSocket));		// Start the request processing thread
 	}
 
-	LOG(logDEBUG1) << LOG_ACCEPT_LEAVE;
-	FILE_LOG(logDEBUG1) << LOG_ACCEPT_LEAVE;
+	LOG(logDEBUG3) << LOG_ACCEPT_LEAVE;
+	FILE_LOG(logDEBUG3) << LOG_ACCEPT_LEAVE;
 
 	return 0;
 }
 
 
-unsigned Server::Process(std::unique_ptr<Socket> sock)
+unsigned HTTPServer::Process(std::unique_ptr<Socket> sock)
 {
 
-	LOG(logDEBUG2) << LOG_PROCESS_ENTER << sock->GetSocket();
-	FILE_LOG(logDEBUG2) << LOG_PROCESS_ENTER << sock->GetSocket();
+	LOG(logDEBUG3) << LOG_PROCESS_ENTER << sock->GetSocket();
+	FILE_LOG(logDEBUG3) << LOG_PROCESS_ENTER << sock->GetSocket();
 
 
 	//*************************************************************************************************************************
@@ -113,9 +122,9 @@ unsigned Server::Process(std::unique_ptr<Socket> sock)
 
 	if (ReceiveRequest(*sock, request, response) != 0)		// We try to receive
 	{														// But exit if an error
-		LOG(logDEBUG2) << ERR_HTTP_RECEIVE;
-		LOG(logDEBUG2) << LOG_PROCESS_EXIT << sock->GetSocket();
-		FILE_LOG(logDEBUG2) << LOG_PROCESS_EXIT << sock->GetSocket();
+		LOG(logDEBUG1) << ERR_HTTP_RECEIVE;
+		LOG(logDEBUG1) << LOG_PROCESS_EXIT << sock->GetSocket();
+		FILE_LOG(logDEBUG1) << LOG_PROCESS_EXIT << sock->GetSocket();
 		
 		return 1;											
 	}
@@ -153,8 +162,8 @@ unsigned Server::Process(std::unique_ptr<Socket> sock)
 
 			response.status = http::responses::internal_err;
 
-			LOG(logDEBUG) << e.what();
-			FILE_LOG(logERROR) << e.what();
+			LOG(logDEBUG1) << e.what();
+			FILE_LOG(logDEBUG1) << e.what();
 		}
 
 		if (response.status.empty())								// If the response is not set, then there's an error in the function
@@ -181,8 +190,8 @@ unsigned Server::Process(std::unique_ptr<Socket> sock)
 	// Make sure all data will get sent before socket is closed
 	// sock->SetLinger(true);
 
-	LOG(logDEBUG2) << LOG_PROCESS_EXIT << sock->GetSocket();
-	FILE_LOG(logDEBUG2) << LOG_PROCESS_EXIT << sock->GetSocket();
+	LOG(logDEBUG3) << LOG_PROCESS_EXIT << sock->GetSocket();
+	FILE_LOG(logDEBUG3) << LOG_PROCESS_EXIT << sock->GetSocket();
 
 	return 0;
 }
@@ -194,7 +203,7 @@ unsigned Server::Process(std::unique_ptr<Socket> sock)
 //		If exits with 1 - there was an error in the receiving process -> no responses to send back
 //
 //***********************************
-unsigned Server::ReceiveRequest(Socket & sock, http_request & req, http_response & resp)
+unsigned HTTPServer::ReceiveRequest(Socket & sock, http_request & req, http_response & resp)
 {
 	std::string requestString;										// This is where we will store the entire request
 
@@ -205,8 +214,8 @@ unsigned Server::ReceiveRequest(Socket & sock, http_request & req, http_response
 		requestString = sock.ReceiveLine();							// Get the first line
 	}
 	catch (const std::exception& e) {
-		LOG(logDEBUG) << e.what();
-		FILE_LOG(logERROR) << e.what();
+		LOG(logDEBUG1) << e.what();
+		FILE_LOG(logDEBUG1) << e.what();
 		return 1;
 	}
 
@@ -217,8 +226,8 @@ unsigned Server::ReceiveRequest(Socket & sock, http_request & req, http_response
 	req.method = ParseMethod(requestString.substr(0, posSpace));	// Get and store the method
 	if (req.method.empty()) {										// Method might not be implemented
 
-		LOG(logDEBUG2) << LOG_METHOD_UNKNOWN << sock.GetSocket();
-		FILE_LOG(logWARNING) << LOG_METHOD_UNKNOWN << sock.GetSocket();
+		LOG(logDEBUG1) << LOG_METHOD_UNKNOWN << sock.GetSocket();
+		FILE_LOG(logDEBUG1) << LOG_METHOD_UNKNOWN << sock.GetSocket();
 		
 		resp.error = true;
 		resp.status = http::responses::not_impl;
@@ -242,8 +251,8 @@ unsigned Server::ReceiveRequest(Socket & sock, http_request & req, http_response
 		}
 		catch (const std::exception& e)
 		{
-			LOG(logDEBUG) << e.what();
-			FILE_LOG(logERROR) << e.what();
+			LOG(logDEBUG1) << e.what();
+			FILE_LOG(logDEBUG1) << e.what();
 		}
 
 		if (line.empty()) {									// if line is empty, there's an error
@@ -299,8 +308,8 @@ unsigned Server::ReceiveRequest(Socket & sock, http_request & req, http_response
 		}
 		catch (const std::exception& e)								// If there's an error we exit
 		{
-			LOG(logDEBUG) << e.what();
-			FILE_LOG(logERROR) << e.what();
+			LOG(logDEBUG1) << e.what();
+			FILE_LOG(logDEBUG1) << e.what();
 			return 1;
 		}
 
@@ -310,8 +319,8 @@ unsigned Server::ReceiveRequest(Socket & sock, http_request & req, http_response
 
 	//*************** Request is now received
 
-	LOG(logDEBUG3) << sock.GetSocket() << LOG_REQUEST << requestString;
-	FILE_LOG(logDEBUG3) << sock.GetSocket() << LOG_REQUEST << requestString;
+	LOG(logDEBUG4) << sock.GetSocket() << LOG_REQUEST << requestString;
+	FILE_LOG(logDEBUG4) << sock.GetSocket() << LOG_REQUEST << requestString;
 
 	return 0;
 }
@@ -324,7 +333,7 @@ unsigned Server::ReceiveRequest(Socket & sock, http_request & req, http_response
 //		If exits with 1 - there was an error in the receiving process -> no responses to send back
 //
 //***********************************
-unsigned Server::SendResponse(Socket & sock, const http_response & resp)
+unsigned HTTPServer::SendResponse(Socket & sock, const http_response & resp)
 {
 
 	std::string responseString;
@@ -368,8 +377,8 @@ unsigned Server::SendResponse(Socket & sock, const http_response & resp)
 		return 1;
 	}
 
-	LOG(logDEBUG3) << sock.GetSocket() << LOG_RESPONSE << responseString;
-	FILE_LOG(logDEBUG3) << sock.GetSocket() << LOG_RESPONSE << responseString;
+	LOG(logDEBUG4) << sock.GetSocket() << LOG_RESPONSE << responseString;
+	FILE_LOG(logDEBUG4) << sock.GetSocket() << LOG_RESPONSE << responseString;
 
 
 	return 0;

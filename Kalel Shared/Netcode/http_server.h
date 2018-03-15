@@ -8,14 +8,15 @@
 #include <atomic>
 #include <thread>
 #include <functional>
+#include <vector>
 #include <unordered_map>
 
-class Server
+class HTTPServer
 {
 public:
 	// If no port specified, server defaults to http (80)
-	Server(PCSTR port = "http");
-	~Server();
+	HTTPServer(PCSTR port = "http");
+	~HTTPServer();
 
 	void AddMethod(std::function<void(http_request*, http_response*)> r, std::string url);
 	void Start();
@@ -23,6 +24,7 @@ public:
 protected:
 	Socket listeningSocket;
 	std::thread acceptThread;
+	std::vector<std::thread> threadPool;
 	std::unordered_map<std::string, std::function<void(http_request*, http_response*)>> funcMap;	// Map of different assigned functions for custom request processing
 	
 	std::atomic_bool accepting;							// Powers the main loop
@@ -31,4 +33,5 @@ protected:
 
 	unsigned ReceiveRequest(Socket & sock, http_request & req, http_response & resp);
 	unsigned SendResponse(Socket & sock, const http_response & resp);
+
 };

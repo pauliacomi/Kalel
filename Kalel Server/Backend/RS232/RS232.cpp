@@ -75,7 +75,7 @@ bool RS232::OpenCOM(int pnId)
 	// Error check
     if(g_hCOM == INVALID_HANDLE_VALUE)
     {
-		LOG(logERROR) << "Error opening port COM" << std::to_string(pnId);
+		LOG(logDEBUG1) << "Error opening port COM" << std::to_string(pnId);
 		g_hCOM = NULL;
         return false;
     }
@@ -83,7 +83,7 @@ bool RS232::OpenCOM(int pnId)
     // Configure port
     if(!SetCommTimeouts(g_hCOM, &g_cto) || !SetCommState(g_hCOM, &g_dcb))
     {
-		LOG(logERROR) << "Error configuring port COM" << std::to_string(pnId);
+		LOG(logDEBUG1) << "Error configuring port COM" << std::to_string(pnId);
         CloseHandle(g_hCOM);
         return false;
     }
@@ -105,7 +105,7 @@ bool RS232::ReadCOM(char *buffer, int nBytesToRead)
 {
 	// Start by checking if port is open
 	if (!g_hCOM) {
-		LOG(logDEBUG) << "Port must be opened first";
+		LOG(logDEBUG1) << "Port must be opened first";
 		return false;
 	}
 
@@ -122,7 +122,7 @@ bool RS232::ReadCOM(char *buffer, int nBytesToRead)
 
 	if (osReader.hEvent == NULL) {
 		// Error creating overlapped event; abort.
-		LOG(logWARNING) << "Error creating COM read overlapped event";
+		LOG(logDEBUG1) << "Error creating COM read overlapped event";
 		noErrors = false;
 	}
 
@@ -140,7 +140,7 @@ bool RS232::ReadCOM(char *buffer, int nBytesToRead)
 
 		if (!ok) {
 			if (GetLastError() != ERROR_IO_PENDING) {	// read not delayed?					
-				LOG(logWARNING) << "Error issuing read command";
+				LOG(logDEBUG1) << "Error issuing read command";
 				noErrors = false;
 			}
 			else
@@ -164,9 +164,9 @@ bool RS232::ReadCOM(char *buffer, int nBytesToRead)
 			case WAIT_OBJECT_0:
 				if (!GetOverlappedResult(g_hCOM, &osReader, &dwRead, FALSE)) {
 					if (GetLastError() == ERROR_OPERATION_ABORTED)
-						LOG(logERROR) << "Read aborted";
+						LOG(logDEBUG1) << "Read aborted";
 					else
-						LOG(logERROR) << "GetOverlappedResult (in Reader)";
+						LOG(logDEBUG1) << "GetOverlappedResult (in Reader)";
 
 					noErrors = false;
 				}
@@ -187,7 +187,7 @@ bool RS232::ReadCOM(char *buffer, int nBytesToRead)
 
 			default:
 				// Error in the WaitForSingleObject; abort.
-				LOG(logERROR) << "WaitForMultipleObjects reader";
+				LOG(logDEBUG1) << "WaitForMultipleObjects reader";
 				noErrors = false;
 				break;
 		}
@@ -213,7 +213,7 @@ bool RS232::WriteCOM(void* buffer, int nBytesToWrite, int* pBytesWritten)
 {
 	// Start by checking if port is open
 	if (!g_hCOM) {
-		LOG(logWARNING) << "Port must be opened first";
+		LOG(logDEBUG1) << "Port must be opened first";
 		return false;
 	}
 
@@ -227,7 +227,7 @@ bool RS232::WriteCOM(void* buffer, int nBytesToWrite, int* pBytesWritten)
 
 	if (osWrite.hEvent == NULL) {
 		// Error creating overlapped event; abort.
-		LOG(logERROR) << "Error creating COM write overlapped event";
+		LOG(logDEBUG1) << "Error creating COM write overlapped event";
 		return false;
 	}
 
@@ -242,7 +242,7 @@ bool RS232::WriteCOM(void* buffer, int nBytesToWrite, int* pBytesWritten)
 	if (!ok) {
 		if (GetLastError() != ERROR_IO_PENDING) {
 			// WriteFile failed, but isn't delayed. Report error and abort.
-			LOG(logERROR) << "Error writing to COM";
+			LOG(logDEBUG1) << "Error writing to COM";
 			fRes = false;
 		}
 		else {
@@ -253,7 +253,7 @@ bool RS232::WriteCOM(void* buffer, int nBytesToWrite, int* pBytesWritten)
 				// OVERLAPPED structure's event has been signaled. 
 			case WAIT_OBJECT_0:
 				if (!GetOverlappedResult(g_hCOM, &osWrite, (LPDWORD)pBytesWritten, FALSE)) {
-					LOG(logERROR) << "Error writing to COM";
+					LOG(logDEBUG1) << "Error writing to COM";
 					fRes = false;
 				}
 				else
@@ -265,7 +265,7 @@ bool RS232::WriteCOM(void* buffer, int nBytesToWrite, int* pBytesWritten)
 				// An error has occurred in WaitForSingleObject.
 				// This usually indicates a problem with the
 				// OVERLAPPED structure's event handle.
-				LOG(logERROR) << "WaitForMultipleObjects writer";
+				LOG(logDEBUG1) << "WaitForMultipleObjects writer";
 				fRes = false;
 				break;
 			}

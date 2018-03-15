@@ -1,5 +1,5 @@
 #include "../Forcelib.h"
-#include "Client.h"
+#include "http_client.h"
 
 #include "http_helpers.h"
 #include "URLHelper.h"

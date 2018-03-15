@@ -49,12 +49,12 @@ bool Keithley::OpenCOM(int nId)
 
 	if (connectionOpen)
 	{
-		LOG(logDEBUG) << "Keithley open: COM" << std::to_string(nId);
+		LOG(logDEBUG2) << "Keithley open: COM" << std::to_string(nId);
 		return true;
 	}
 	else
 	{
-		LOG(logERROR) << "Keithley opening failed: COM" << std::to_string(nId);
+		LOG(logDEBUG1) << "Keithley opening failed: COM" << std::to_string(nId);
 		return false;
 	}
 }
@@ -65,12 +65,12 @@ bool Keithley::CloseCOM()
 
 	if (fermeture)
 	{
-		LOG(logDEBUG) << "Keithley closed";
+		LOG(logDEBUG2) << "Keithley closed";
 		return true;
 	}
 	else
 	{
-		LOG(logERROR) << "Keithley closing failed";
+		LOG(logDEBUG1) << "Keithley closing failed";
 		return false;
 	}
 }
@@ -133,12 +133,12 @@ bool Keithley::InitKeithley()
 
 	if(success)
 	{
-		LOG(logDEBUG) << "Keithley initialised";
+		LOG(logDEBUG2) << "Keithley initialised";
 		return true;
 	}
 	else
 	{
-		LOG(logERROR) << "Keithley initialisation failure";
+		LOG(logDEBUG1) << "Keithley initialisation failure";
 		return false;
 	}
 }
@@ -223,7 +223,7 @@ bool Keithley::ReadChan(int chanNo, double* result)
 	temp = temp.substr(0,15);
 	*result = atof(temp.c_str());
 
-	LOG(logDEBUG1) << "Keithley channel " + std::to_string(chanNo) + " read";
+	LOG(logDEBUG2) << "Keithley channel " + std::to_string(chanNo) + " read";
 	return true;
 }
 

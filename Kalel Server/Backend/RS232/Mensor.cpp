@@ -42,12 +42,12 @@ bool Mensor::OpenCOM(int nId)
 	
 	if (connectionOpen)
 	{
-		LOG(logDEBUG) << "Mensor open: COM" << std::to_string(nId);
+		LOG(logDEBUG2) << "Mensor open: COM" << std::to_string(nId);
 		return true;
 	}
 	else
 	{
-		LOG(logERROR) << "\nMensor opening failed: COM" << std::to_string(nId);
+		LOG(logDEBUG1) << "\nMensor opening failed: COM" << std::to_string(nId);
 		return false;
 	}
 }
@@ -58,12 +58,12 @@ bool Mensor::CloseCOM()
 
 	if (fermeture)
 	{
-		LOG(logDEBUG) << "Mensor closed";
+		LOG(logDEBUG2) << "Mensor closed";
 		return true;
 	}
 	else
 	{
-		LOG(logDEBUG) << "Mensor closing failed";
+		LOG(logDEBUG1) << "Mensor closing failed";
 		return false;
 	}
 }
@@ -124,7 +124,7 @@ double Mensor::Read()
 	std::string resultat = buffer;
 	resultat = resultat.substr(4, nbOctetsLus - 6);
 
-	LOG(logDEBUG1) << "Mensor read";
+	LOG(logDEBUG2) << "Mensor read";
 
 	return atof(resultat.c_str()); //conversion du string en float;
 }

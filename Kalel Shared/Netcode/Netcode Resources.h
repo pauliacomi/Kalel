@@ -23,6 +23,6 @@
 #define LOG_PROCESS_ENTER		"Enter thread for socket: "
 #define LOG_PROCESS_EXIT		"Exit thread for socket: "
 #define LOG_METHOD_UNKNOWN		"Request method unknown: "
-#define LOG_ACCEPTED_SOCK		" accepted new socket: "
+#define LOG_ACCEPTED_SOCK		"Accepted new socket: "
 #define LOG_REQUEST				" request was: \n"
 #define LOG_RESPONSE			" response sent: \n"

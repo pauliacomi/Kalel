@@ -50,7 +50,7 @@ Error:
     if (DAQmxFailed (error))
 	{
 		DAQmxGetExtendedErrorInfo (errBuff, 2048);
-		LOG(logERROR) << errBuff;
+		LOG(logDEBUG) << errBuff;
 		for (size_t i = 0; i < bufferSize; i++)
 		{
 			data[i] = error;
