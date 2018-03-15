@@ -1,0 +1,190 @@
+{
+    "CaloName": "name",
+    "CaloPrefix": "entete",
+    "DefaultPath": "C:",
+
+    "SafetyOn": true,
+    "hasSonicNozzle": false,
+    "VolumeP6": 1.0,
+    "VolumeRef": 1.0,
+
+    "InjectionAttemptNumber": 5,
+    "InjectionMargin": 0.01,
+    "InjectionMultiplier": 1.2,
+
+    "TimeBetweenMeasurement": 4000,
+    "TimeBetweenRecording": 500,
+    "TimeBetweenAutomation": 10,
+    "TimeWaitValves": 5,
+    "TimeWaitValvesShort": 2,
+    "TimeWaitPump": 10,
+    "TimeVacuumEmergency": 6000,
+    "TimeVacuumBottle": 300,
+    "TimeVacuumEndDefault": 12000,
+
+    "PressurePumpVacuum": 0.5,
+    "PressureLimitVacuum": 0.01,
+    
+    "instruments": {
+        "1": {
+            "type": 1,
+            "portType": "RS232",
+            "port": 1
+        },
+        "2": {
+            "type": 2,
+            "portType": "RS232",
+            "port": 2
+        },
+        "3": {
+            "type": 2,
+            "portType": "RS232",
+            "port": 3
+        },
+        "4": {
+            "type": 3,
+            "portType": "USB",
+            "port": 1
+        },
+        "5": {
+            "type": 4,
+            "portType": "USB",
+            "port": 2
+        }
+    },
+    "readers": {
+        "33": {
+            "type": 32,
+            "identifier": 1,
+            "instrument": 4,
+            "channel": 1,
+            "sensitivity": 1.0,
+            "safe_min": 5,
+            "safe_max": 5
+        },
+        "34": {
+            "type": 32,
+            "identifier": 2,
+            "instrument": 4,
+            "channel": 1,
+            "sensitivity": 1.0,
+            "safe_min": 5,
+            "safe_max": 5
+        },
+        "35": {
+            "type": 32,
+            "identifier": 3,
+            "instrument": 4,
+            "channel": 1,
+            "sensitivity": 1.0,
+            "safe_min": 5,
+            "safe_max": 5
+        },
+        "18": {
+            "type": 16,
+            "identifier": 2,
+            "instrument": 3,
+            "channel": 1,
+            "sensitivity": 1.0,
+            "safe_min": -1,
+            "safe_max": 5
+        },
+        "17": {
+            "type": 16,
+            "identifier": 1,
+            "instrument": 2,
+            "channel": 1,
+            "sensitivity": 1.0,
+            "safe_min": -1,
+            "safe_max": 1
+        },
+        "49": {
+            "type": 48,
+            "identifier": 1,
+            "instrument": 1,
+            "channel": 1,
+            "sensitivity": 0.05,
+            "safe_min": -10,
+            "safe_max": 10
+        }
+    },
+    "controllers": {
+        "17": {
+            "type": 16,
+            "identifier": 1,
+            "instrument": 5,
+            "channel": 0,
+            "subchannel": 0
+        },
+        "18": {
+            "type": 16,
+            "identifier": 2,
+            "instrument": 5,
+            "channel": 0,
+            "subchannel": 1
+        },
+        "19": {
+            "type": 16,
+            "identifier": 3,
+            "instrument": 5,
+            "channel": 0,
+            "subchannel": 2
+        },
+        "20": {
+            "type": 16,
+            "identifier": 4,
+            "instrument": 5,
+            "channel": 0,
+            "subchannel": 3
+        },
+        "21": {
+            "type": 16,
+            "identifier": 5,
+            "instrument": 5,
+            "channel": 0,
+            "subchannel": 4
+        },
+        "22": {
+            "type": 16,
+            "identifier": 6,
+            "instrument": 5,
+            "channel": 0,
+            "subchannel": 5
+        },
+        "23": {
+            "type": 16,
+            "identifier": 7,
+            "instrument": 5,
+            "channel": 0,
+            "subchannel": 6
+        },
+        "24": {
+            "type": 16,
+            "identifier": 8,
+            "instrument": 5,
+            "channel": 0,
+            "subchannel": 7
+        },
+        "33": {
+            "type": 32,
+            "identifier": 1,
+            "instrument": 5,
+            "channel": 1,
+            "subchannel": 0
+        },
+        "34": {
+            "type": 32,
+            "identifier": 2,
+            "instrument": 5,
+            "channel": 1,
+            "subchannel": 1
+        },
+        "49": {
+            "type": 48,
+            "identifier": 1,
+            "instrument": 5,
+            "channel": 1,
+            "subchannel": 2
+        }
+    }
+}

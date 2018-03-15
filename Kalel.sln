@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.27428.2002
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Kalel Client", "Kalel\Kalel.vcxproj", "{DA8012D6-5479-45D1-ABA7-F4564E6ABDB3}"
 EndProject
@@ -11,6 +11,8 @@ Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
 		Debug|x86 = Debug|x86
+		Release XP|x64 = Release XP|x64
+		Release XP|x86 = Release XP|x86
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
 	EndGlobalSection
@@ -19,6 +21,10 @@ Global
 		{DA8012D6-5479-45D1-ABA7-F4564E6ABDB3}.Debug|x64.Build.0 = Debug|x64
 		{DA8012D6-5479-45D1-ABA7-F4564E6ABDB3}.Debug|x86.ActiveCfg = Debug|Win32
 		{DA8012D6-5479-45D1-ABA7-F4564E6ABDB3}.Debug|x86.Build.0 = Debug|Win32
+		{DA8012D6-5479-45D1-ABA7-F4564E6ABDB3}.Release XP|x64.ActiveCfg = Release|x64
+		{DA8012D6-5479-45D1-ABA7-F4564E6ABDB3}.Release XP|x64.Build.0 = Release|x64
+		{DA8012D6-5479-45D1-ABA7-F4564E6ABDB3}.Release XP|x86.ActiveCfg = Release|Win32
+		{DA8012D6-5479-45D1-ABA7-F4564E6ABDB3}.Release XP|x86.Build.0 = Release|Win32
 		{DA8012D6-5479-45D1-ABA7-F4564E6ABDB3}.Release|x64.ActiveCfg = Release|x64
 		{DA8012D6-5479-45D1-ABA7-F4564E6ABDB3}.Release|x64.Build.0 = Release|x64
 		{DA8012D6-5479-45D1-ABA7-F4564E6ABDB3}.Release|x86.ActiveCfg = Release|Win32
@@ -27,6 +33,10 @@ Global
 		{0551D17D-E2F2-49BF-A2A7-02B3A15A0C7D}.Debug|x64.Build.0 = Debug|x64
 		{0551D17D-E2F2-49BF-A2A7-02B3A15A0C7D}.Debug|x86.ActiveCfg = Debug|Win32
 		{0551D17D-E2F2-49BF-A2A7-02B3A15A0C7D}.Debug|x86.Build.0 = Debug|Win32
+		{0551D17D-E2F2-49BF-A2A7-02B3A15A0C7D}.Release XP|x64.ActiveCfg = Release XP|x64
+		{0551D17D-E2F2-49BF-A2A7-02B3A15A0C7D}.Release XP|x64.Build.0 = Release XP|x64
+		{0551D17D-E2F2-49BF-A2A7-02B3A15A0C7D}.Release XP|x86.ActiveCfg = Release XP|Win32
+		{0551D17D-E2F2-49BF-A2A7-02B3A15A0C7D}.Release XP|x86.Build.0 = Release XP|Win32
 		{0551D17D-E2F2-49BF-A2A7-02B3A15A0C7D}.Release|x64.ActiveCfg = Release|x64
 		{0551D17D-E2F2-49BF-A2A7-02B3A15A0C7D}.Release|x64.Build.0 = Release|x64
 		{0551D17D-E2F2-49BF-A2A7-02B3A15A0C7D}.Release|x86.ActiveCfg = Release|Win32
@@ -34,5 +44,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F7405AB8-712C-4745-9A4A-BF65A230DE3E}
 	EndGlobalSection
 EndGlobal
