@@ -86,6 +86,7 @@ bool Automation::VerificationSecurity()
 				return false;
 				break;
 			default:
+				return false;
 				break;
 			}
 		}
@@ -127,6 +128,7 @@ bool Automation::VerificationValves()
 			return false;
 			break;
 		default:
+			return false;
 			break;
 		}
 	}

@@ -35,7 +35,7 @@ public:
 	// Data
 	//******************************************************************************************
 public:
-	StampedSafeStorage<std::shared_ptr<ExperimentData>>  dataCollection;										// The collection of data from an experiment
+	StampedSafeStorage<ExperimentData>  dataCollection;										// The collection of data from an experiment
 
 public:
 	std::unique_ptr<ExperimentData> currentData;

@@ -405,28 +405,28 @@ void Kalel::DataSync(http_request* req, http_response* resp)
 	{
 		// Figure out which range of data to send by looking at the time requested
 
-		std::unique_ptr<ExperimentDataStorageArray> localCollection;
+		std::map<std::chrono::system_clock::time_point, ExperimentData> localCollection;
 
 		if (req->params.empty() ||
 			req->params.at("time").empty() ||
 			req->params.at("time") == "start")
 		{
-			localCollection = std::make_unique<ExperimentDataStorageArray>(storageVectors.dataCollection.get());
+			localCollection = storageVectors.dataCollection.get();
 		}
 		else
 		{
-			localCollection = std::make_unique<ExperimentDataStorageArray>(storageVectors.dataCollection.get(timeh::StringToTimePoint(req->params.at("time"))));
+			localCollection = storageVectors.dataCollection.get(timeh::StringToTimePoint(req->params.at("time")));
 		}
 
-		if (localCollection->size() != 0)						// If any exist
+		if (localCollection.size() != 0)						// If any exist
 		{
 			json j;
 
-			LOG(logDEBUG) << "Serialisation of " << std::to_string(localCollection->size());
+			LOG(logDEBUG) << "Serialisation of " << std::to_string(localCollection.size());
 			t.Start();
 			
-			for (const auto& kv : *localCollection) {
-				j.push_back(json::object_t::value_type({ timeh::TimePointToString(kv.first), *(kv.second) }));
+			for (const auto& kv : localCollection) {
+				j.push_back(json::object_t::value_type({ timeh::TimePointToString(kv.first), kv.second }));
 			}
 
 			LOG(logDEBUG) << "Serialisation took " << std::to_string(t.TimeMilliseconds());
@@ -464,24 +464,24 @@ void Kalel::LogSync(http_request* req, http_response* resp)
 	{
 		// Figure out which range of logs to send by finding the requested timestamp
 
-		std::unique_ptr<TextStorage> localCollection;
+		TextStorage localCollection;
 
 		if (req->params.empty() ||									// If parameters don't exist, send all the logs
 			req->params.at("time").empty() ||
 			req->params.at("time") == "start")
 		{
-			localCollection = std::make_unique<TextStorage>(storageVectors.infoLogs.get());
+			localCollection = storageVectors.infoLogs.get();
 		}
 		else
 		{
-			localCollection = std::make_unique<TextStorage>(storageVectors.infoLogs.get(timeh::StringToTimePoint(req->params.at("time"))));
+			localCollection = storageVectors.infoLogs.get(timeh::StringToTimePoint(req->params.at("time")));
 		}
 
-		if (localCollection->size() != 0)							// If any exist
+		if (localCollection.size() != 0)							// If any exist
 		{
 			json j;
 
-			for (const auto& kv : *localCollection) {
+			for (const auto& kv : localCollection) {
 				j[timeh::TimePointToString(kv.first)] = kv.second;
 			}
 
@@ -518,24 +518,24 @@ void Kalel::RequestSync(http_request* req, http_response* resp)
 	{
 		// Figure out which range of logs to send by finding the requested timestamp
 
-		std::unique_ptr<TextStorage> localCollection;
+		TextStorage localCollection;
 
 		if (req->params.empty() ||									// If parameters don't exist, send all the logs
 			req->params.at("time").empty() ||
 			req->params.at("time") == "start")
 		{
-			localCollection = std::make_unique<TextStorage>(storageVectors.eventLogs.get());
+			localCollection = storageVectors.eventLogs.get();
 		}
 		else
 		{
-			localCollection = std::make_unique<TextStorage>(storageVectors.eventLogs.get(timeh::StringToTimePoint(req->params.at("time"))));
+			localCollection = storageVectors.eventLogs.get(timeh::StringToTimePoint(req->params.at("time")));
 		}
 
-		if (localCollection->size() != 0)							// If any exist
+		if (localCollection.size() != 0)							// If any exist
 		{
 			json j;
 
-			for (const auto& kv : *localCollection) {
+			for (const auto& kv : localCollection) {
 				j[timeh::TimePointToString(kv.first)] = kv.second;
 			}
 
@@ -572,24 +572,24 @@ void Kalel::DebugSync(http_request* req, http_response* resp)
 	{
 		// Figure out which range of logs to send by finding the requested timestamp
 
-		std::unique_ptr<TextStorage> localCollection;
+		TextStorage localCollection;
 
 		if (req->params.empty() ||									// If parameters don't exist, send all the logs
 			req->params.at("time").empty() ||
 			req->params.at("time") == "start")
 		{
-			localCollection = std::make_unique<TextStorage>(storageVectors.debugLogs.get());
+			localCollection = storageVectors.debugLogs.get();
 		}
 		else
 		{
-			localCollection = std::make_unique<TextStorage>(storageVectors.debugLogs.get(timeh::StringToTimePoint(req->params.at("time"))));
+			localCollection = storageVectors.debugLogs.get(timeh::StringToTimePoint(req->params.at("time")));
 		}
 
-		if (localCollection->size() != 0)							// If any exist
+		if (localCollection.size() != 0)							// If any exist
 		{
 			json j;
 
-			for (const auto& kv : *localCollection) {
+			for (const auto& kv : localCollection) {
 				j[timeh::TimePointToString(kv.first)] = kv.second;
 			}
 

@@ -107,7 +107,7 @@ void Measurement::Execution()
 		*/
 
 		// Send the data out
-		storage.dataCollection.push(measurementTime, std::make_shared<ExperimentData>(*storage.currentData));
+		storage.dataCollection.push(measurementTime, ExperimentData(*storage.currentData));
 
 		// If no experiment running do not keep too many points
 		if (!storage.experimentStatus->experimentInProgress && storage.dataCollection.size() > 500)
