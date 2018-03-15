@@ -27,28 +27,28 @@ Security::~Security()
 
 void Security::SecurityOverPressure(const Storage & storage)
 {
-	if (storage.experimentSettings->experimentType == EXPERIMENT_TYPE_MANUAL)
+	if (storage.experimentSettings.experimentType == EXPERIMENT_TYPE_MANUAL)
 		SecurityHighPressureManual(storage);
-	if (storage.experimentSettings->experimentType == EXPERIMENT_TYPE_AUTO)
+	if (storage.experimentSettings.experimentType == EXPERIMENT_TYPE_AUTO)
 		SecurityHighPressureAuto(storage);
 }
 
 void Security::SecurityTemperatures(const Storage & storage)
 {
-	if (storage.experimentSettings->experimentType == EXPERIMENT_TYPE_MANUAL)
+	if (storage.experimentSettings.experimentType == EXPERIMENT_TYPE_MANUAL)
 		SecurityTemperaturesManual(storage);
-	if (storage.experimentSettings->experimentType == EXPERIMENT_TYPE_AUTO)
+	if (storage.experimentSettings.experimentType == EXPERIMENT_TYPE_AUTO)
 		SecuriteTemperaturesAuto(storage);
 }
 
 
 void Security::SecurityHighPressureManual(const Storage & storage)
 {
-	auto maxPlow = storage.machineSettings->readers.find(PRESSURE_LP)->second.safe_max;
-	auto maxPhigh = storage.machineSettings->readers.find(PRESSURE_HP)->second.safe_max;
+	auto maxPlow = storage.machineSettings.readers.find(PRESSURE_LP)->second.safe_max;
+	auto maxPhigh = storage.machineSettings.readers.find(PRESSURE_HP)->second.safe_max;
 
 	// Check for the pressure being higher than low pressure limit
-	if (storage.currentData->pressureLow > maxPlow)
+	if (storage.currentData.pressureLow > maxPlow)
 	{
 		// If valve 6 is open and pressure is higher than specified, close valve 6
 		if (valveController.ValveIsOpen(VALVE_6))
@@ -56,7 +56,7 @@ void Security::SecurityHighPressureManual(const Storage & storage)
 			// Set the flag
 			security_PressureHigh_flag = true;
 
-			LOG(logINFO) << MESSAGE_WARNING_PHIGH_V6 << storage.currentData->pressureLow << maxPlow;
+			LOG(logINFO) << MESSAGE_WARNING_PHIGH_V6 << storage.currentData.pressureLow << maxPlow;
 			valveController.ValveClose(VALVE_6, true);
 
 			// Play a sound
@@ -78,7 +78,7 @@ void Security::SecurityHighPressureManual(const Storage & storage)
 	}
 
 	// Check the result
-	if (storage.currentData->pressureHigh > maxPhigh)
+	if (storage.currentData.pressureHigh > maxPhigh)
 	{
 		if (!security_PressureHigh_flag) {
 
@@ -86,7 +86,7 @@ void Security::SecurityHighPressureManual(const Storage & storage)
 			security_PressureHigh_flag = true;
 
 			// Alert user
-			LOG(logWARNING) << MESSAGE_WARNING_PHIGH << storage.currentData->pressureHigh << maxPhigh;
+			LOG(logWARNING) << MESSAGE_WARNING_PHIGH << storage.currentData.pressureHigh << maxPhigh;
 
 			// Play a sound
 			soundh::beep::error();
@@ -104,13 +104,13 @@ void Security::SecurityHighPressureManual(const Storage & storage)
 
 void Security::SecurityHighPressureAuto(const Storage & storage)
 {
-	if (storage.machineSettings->SafetyOn)
+	if (storage.machineSettings.SafetyOn)
 	{
-		auto maxPlow = storage.machineSettings->readers.find(PRESSURE_LP)->second.safe_max;
-		auto maxPhigh = storage.machineSettings->readers.find(PRESSURE_HP)->second.safe_max;
+		auto maxPlow = storage.machineSettings.readers.find(PRESSURE_LP)->second.safe_max;
+		auto maxPhigh = storage.machineSettings.readers.find(PRESSURE_HP)->second.safe_max;
 
 		// Check for the pressure being higher than low pressure limit
-		if (storage.currentData->pressureLow > maxPlow)
+		if (storage.currentData.pressureLow > maxPlow)
 		{
 			// If valve 6 is open and pressure is higher than specified, close valve 6
 			if (valveController.ValveIsOpen(VALVE_6))
@@ -118,7 +118,7 @@ void Security::SecurityHighPressureAuto(const Storage & storage)
 				// Set the flag
 				security_PressureHigh_flag = true;
 
-				LOG(logINFO) << MESSAGE_WARNING_PHIGH_V6 << storage.currentData->pressureLow << maxPlow;
+				LOG(logINFO) << MESSAGE_WARNING_PHIGH_V6 << storage.currentData.pressureLow << maxPlow;
 				valveController.ValveClose(VALVE_6, true);
 			}
 		}
@@ -134,7 +134,7 @@ void Security::SecurityHighPressureAuto(const Storage & storage)
 		}
 
 		// Check for the pressure being higher than high pressure limit
-		if (storage.currentData->pressureHigh >= maxPhigh) {
+		if (storage.currentData.pressureHigh >= maxPhigh) {
 			//g_flagState = ARRET_URGENCE_HP;
 		}
 	}
@@ -143,11 +143,11 @@ void Security::SecurityHighPressureAuto(const Storage & storage)
 
 void Security::SecurityTemperaturesManual(const Storage & storage)
 {
-	auto minimumT = storage.machineSettings->readers.find(TEMPERATURE_CALO)->second.safe_min;
-	auto maximumT = storage.machineSettings->readers.find(TEMPERATURE_CALO)->second.safe_max;
+	auto minimumT = storage.machineSettings.readers.find(TEMPERATURE_CALO)->second.safe_min;
+	auto maximumT = storage.machineSettings.readers.find(TEMPERATURE_CALO)->second.safe_max;
 
 	// Check calorimeter temperature high
-	if (storage.currentData->temperatureCalo >= maximumT)
+	if (storage.currentData.temperatureCalo >= maximumT)
 	{
 		if (!security_TemperatureHigh_flag) {
 			// Set the flag
@@ -169,7 +169,7 @@ void Security::SecurityTemperaturesManual(const Storage & storage)
 		}
 
 	// Check calorimeter temperature low
-	if (storage.currentData->temperatureCalo <= minimumT)
+	if (storage.currentData.temperatureCalo <= minimumT)
 	{
 		if (!security_TemperatureLow_flag) {
 			// Set the flag
@@ -196,17 +196,17 @@ void Security::SecurityTemperaturesManual(const Storage & storage)
 
 void Security::SecuriteTemperaturesAuto(const Storage & storage)
 {
-	if (storage.machineSettings->SafetyOn)
+	if (storage.machineSettings.SafetyOn)
 	{
-		auto minimumT = storage.machineSettings->readers.find(TEMPERATURE_CALO)->second.safe_min;
-		auto maximumT = storage.machineSettings->readers.find(TEMPERATURE_CALO)->second.safe_max;
+		auto minimumT = storage.machineSettings.readers.find(TEMPERATURE_CALO)->second.safe_min;
+		auto maximumT = storage.machineSettings.readers.find(TEMPERATURE_CALO)->second.safe_max;
 
-		if (storage.currentData->temperatureCalo >= maximumT)
+		if (storage.currentData.temperatureCalo >= maximumT)
 		{
 			LOG(logINFO) << MESSAGE_WARNING_THIGH_STOP << maximumT;
 			//g_flagState = ARRET_URGENCE_TCH;
 		}
-		if (storage.currentData->temperatureCalo <= minimumT)
+		if (storage.currentData.temperatureCalo <= minimumT)
 		{
 			LOG(logINFO) << MESSAGE_WARNING_TLOW_STOP << minimumT;
 			//g_flagState = ARRET_URGENCE_TCB;

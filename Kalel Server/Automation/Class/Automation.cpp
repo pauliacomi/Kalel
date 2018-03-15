@@ -9,7 +9,7 @@ Automation::Automation(Storage &s, Controls &c)
 {
 	// Time
 	controls.timerExperiment.Start();				// Start global experiment timer	
-	storage.experimentStatus->timeStart = time(0);
+	storage.experimentStatus.timeStart = time(0);
 }
 
 
@@ -49,8 +49,8 @@ void Automation::Execution()
 		*/
 
 		// Go through any functionality
-		if (storage.experimentStatus->experimentCommandsRequested) {
-			switch (storage.experimentSettings->experimentType)		// We look at the type of experiment
+		if (storage.experimentStatus.experimentCommandsRequested) {
+			switch (storage.experimentSettings.experimentType)		// We look at the type of experiment
 			{
 			case EXPERIMENT_TYPE_MANUAL:						// in case it is manual
 				ExecutionManual();								// run the manual loop
@@ -81,14 +81,14 @@ void Automation::Execution()
 		*/
 
 		// If waiting complete
-		if (storage.experimentStatus->experimentWaiting &&															// If the wait functionality is requested																					
-			controls.timerWaiting.TimeSeconds() > storage.experimentStatus->timeToEquilibrate) {					// and the time has been completed
+		if (storage.experimentStatus.experimentWaiting &&															// If the wait functionality is requested																					
+			controls.timerWaiting.TimeSeconds() > storage.experimentStatus.timeToEquilibrate) {					// and the time has been completed
 
 			// Stop the timer
 			controls.timerWaiting.Pause();
 
 			// Reset the flag
-			storage.experimentStatus->experimentWaiting = false;
+			storage.experimentStatus.experimentWaiting = false;
 		}
 		
 		/*
@@ -101,7 +101,7 @@ void Automation::Execution()
 		std::unique_lock<std::mutex> lock(storage.automationMutex);
 
 		// Wait until called or until timeout
-		bool notified = storage.automationControl.wait_for(lock, std::chrono::milliseconds(storage.machineSettings->TimeBetweenAutomation), [&] () 
+		bool notified = storage.automationControl.wait_for(lock, std::chrono::milliseconds(storage.machineSettings.TimeBetweenAutomation), [&] () 
 		{
 			return (eventShutdown || eventPause || eventResume || eventReset || eventUserInput);
 		});
@@ -156,7 +156,7 @@ void Automation::Execution()
 
 void Automation::ExecutionManual()
 {
-	if (storage.experimentStatus->experimentStepStatus == STEP_STATUS_UNDEF) {
+	if (storage.experimentStatus.experimentStepStatus == STEP_STATUS_UNDEF) {
 
 		// Send start message
 		LOG(logINFO) << MESSAGE_EXPSTART;
@@ -164,14 +164,14 @@ void Automation::ExecutionManual()
 		ResetAutomation();
 
 		// Record start
-		storage.experimentStatus->experimentInProgress = true;
-		storage.experimentStatus->experimentRecording = true;
+		storage.experimentStatus.experimentInProgress = true;
+		storage.experimentStatus.experimentRecording = true;
 
 		// Create open and write the columns in the file
 		bool err = false;
-		err = err || controls.fileWriter.EnteteCreate(*storage.experimentSettings, *storage.machineSettings);				// Entete TXT
-		err = err || controls.fileWriter.EnteteCSVCreate(*storage.experimentSettings, *storage.machineSettings);			// Entete CSV
-		err = err || controls.fileWriter.FileMeasurementCreate(storage.experimentSettings->dataGeneral);					// Measurement file
+		err = err || controls.fileWriter.EnteteCreate(storage.experimentSettings, storage.machineSettings);				// Entete TXT
+		err = err || controls.fileWriter.EnteteCSVCreate(storage.experimentSettings, storage.machineSettings);			// Entete CSV
+		err = err || controls.fileWriter.FileMeasurementCreate(storage.experimentSettings.dataGeneral);					// Measurement file
 		if (err) {																											// No point in starting experiment then
 			shutdownReason = STOP;
 			eventShutdown = true;
@@ -180,8 +180,8 @@ void Automation::ExecutionManual()
 		}
 
 		// Continue experiment
-		storage.experimentStatus->experimentStage = STAGE_MANUAL;
-		storage.experimentStatus->experimentStepStatus = STEP_STATUS_INPROGRESS;
+		storage.experimentStatus.experimentStage = STAGE_MANUAL;
+		storage.experimentStatus.experimentStepStatus = STEP_STATUS_INPROGRESS;
 	}
 }
 
@@ -190,7 +190,7 @@ void Automation::ExecutionManual()
 void Automation::ExecutionAuto()
 {
 	// First time running command
-	if (storage.experimentStatus->experimentStepStatus == STEP_STATUS_UNDEF){
+	if (storage.experimentStatus.experimentStepStatus == STEP_STATUS_UNDEF){
 
 		// Send start message
 		LOG(logINFO) << MESSAGE_EXPSTART;
@@ -199,9 +199,9 @@ void Automation::ExecutionAuto()
 
 		// Create, open and write the columns in the file
 		bool err = false;
-		err = err || controls.fileWriter.EnteteCreate(*storage.experimentSettings, *storage.machineSettings);				// Entete TXT
-		err = err || controls.fileWriter.EnteteCSVCreate(*storage.experimentSettings, *storage.machineSettings);			// Entete CSV
-		err = err || controls.fileWriter.FileMeasurementCreate(storage.experimentSettings->dataGeneral);					// Measurement file
+		err = err || controls.fileWriter.EnteteCreate(storage.experimentSettings, storage.machineSettings);				// Entete TXT
+		err = err || controls.fileWriter.EnteteCSVCreate(storage.experimentSettings, storage.machineSettings);			// Entete CSV
+		err = err || controls.fileWriter.FileMeasurementCreate(storage.experimentSettings.dataGeneral);					// Measurement file
 		if (err) {																											// No point in starting experiment then
 			shutdownReason = STOP;
 			eventShutdown = true;
@@ -210,15 +210,15 @@ void Automation::ExecutionAuto()
 		}
 
 		// Write variables to starting position
-		storage.experimentStatus->experimentInProgress = true;
-		storage.experimentStatus->experimentStage = STAGE_VERIFICATIONS;
-		storage.experimentStatus->experimentStepStatus = STEP_STATUS_START;
-		storage.experimentStatus->experimentSubstepStage = SUBSTEP_STATUS_START;
-		storage.experimentStatus->verificationStep = STEP_VERIFICATIONS_SECURITY;
+		storage.experimentStatus.experimentInProgress = true;
+		storage.experimentStatus.experimentStage = STAGE_VERIFICATIONS;
+		storage.experimentStatus.experimentStepStatus = STEP_STATUS_START;
+		storage.experimentStatus.experimentSubstepStage = SUBSTEP_STATUS_START;
+		storage.experimentStatus.verificationStep = STEP_VERIFICATIONS_SECURITY;
 	}
 
 	// Stages of automatic experiment
-	switch (storage.experimentStatus->experimentStage)
+	switch (storage.experimentStatus.experimentStage)
 	{
 	case STAGE_VERIFICATIONS:
 		Verifications();
@@ -254,7 +254,7 @@ void Automation::ExecutionAuto()
 void Automation::ResetAutomation()
 {
 	// Reset all data from the experiment
-	storage.experimentStatus->ResetData();
+	storage.experimentStatus.ResetData();
 
 	// If the shutdown event is called externally, it will default to a cancel
 	// Otherwise the flag will be changed from inside the code
@@ -264,6 +264,6 @@ void Automation::ResetAutomation()
 	storage.dataCollection.del();
 
 	// Time
-	storage.experimentStatus->timeStart = time(0);
+	storage.experimentStatus.timeStart = time(0);
 	controls.timerExperiment.Start();	// Start global experiment timer
 }

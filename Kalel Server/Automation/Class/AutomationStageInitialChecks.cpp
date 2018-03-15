@@ -14,40 +14,40 @@
 
 void Automation::Verifications()
 {
-	switch (storage.experimentStatus->verificationStep)
+	switch (storage.experimentStatus.verificationStep)
 	{
 	case STEP_VERIFICATIONS_SECURITY:
 		if (VerificationSecurity()) {
-			storage.experimentStatus->verificationStep = STEP_VERIFICATIONS_VALVES;
-			storage.experimentStatus->experimentStepStatus = STEP_STATUS_START;
+			storage.experimentStatus.verificationStep = STEP_VERIFICATIONS_VALVES;
+			storage.experimentStatus.experimentStepStatus = STEP_STATUS_START;
 		}
 		break;
 
 	case STEP_VERIFICATIONS_VALVES:
 		if (VerificationValves()){
-			storage.experimentStatus->verificationStep = STEP_VERIFICATIONS_PRESSURE;
-			storage.experimentStatus->experimentStepStatus = STEP_STATUS_START;
+			storage.experimentStatus.verificationStep = STEP_VERIFICATIONS_PRESSURE;
+			storage.experimentStatus.experimentStepStatus = STEP_STATUS_START;
 		}
 		break;
 
 	case STEP_VERIFICATIONS_PRESSURE:
 		if (VerificationResidualPressure()){
-			storage.experimentStatus->verificationStep = STEP_VERIFICATIONS_TEMPERATURE;
-			storage.experimentStatus->experimentStepStatus = STEP_STATUS_START;
+			storage.experimentStatus.verificationStep = STEP_VERIFICATIONS_TEMPERATURE;
+			storage.experimentStatus.experimentStepStatus = STEP_STATUS_START;
 		}
 		break;
 
 	case STEP_VERIFICATIONS_TEMPERATURE:
 		if (VerificationTemperature()) {
-			storage.experimentStatus->verificationStep = STEP_VERIFICATIONS_COMPLETE;
-			storage.experimentStatus->experimentStepStatus = STEP_STATUS_START;
+			storage.experimentStatus.verificationStep = STEP_VERIFICATIONS_COMPLETE;
+			storage.experimentStatus.experimentStepStatus = STEP_STATUS_START;
 		}
 		break;
 
 	case STEP_VERIFICATIONS_COMPLETE:
 		if (VerificationComplete()) {
-			storage.experimentStatus->experimentStage = STAGE_EQUILIBRATION;
-			storage.experimentStatus->experimentStepStatus = STEP_STATUS_START;
+			storage.experimentStatus.experimentStage = STAGE_EQUILIBRATION;
+			storage.experimentStatus.experimentStepStatus = STEP_STATUS_START;
 		}
 		break;
 	}
@@ -56,7 +56,7 @@ void Automation::Verifications()
 
 bool Automation::VerificationSecurity()
 {
-	if (!storage.machineSettings->SafetyOn)
+	if (!storage.machineSettings.SafetyOn)
 	{
 		if (!waitingUser) {
 			// Ask user if they want to continue
@@ -137,49 +137,49 @@ bool Automation::VerificationValves()
 
 bool Automation::VerificationResidualPressure()
 {
-	if (storage.experimentStatus->experimentStepStatus == STEP_STATUS_START)
+	if (storage.experimentStatus.experimentStepStatus == STEP_STATUS_START)
 	{
 		// Display initial message
 		LOG(logINFO) << MESSAGE_CHECK_INITIAL_PRESSURE;
 
-		if (storage.currentData->pressureHigh < storage.machineSettings->readers.find(PRESSURE_LP)->second.safe_max)
+		if (storage.currentData.pressureHigh < storage.machineSettings.readers.find(PRESSURE_LP)->second.safe_max)
 		{
 			// Tell GUI we are opening valve 6
-			LOG(logINFO) << MESSAGE_CHECK_OPENV6_POSSIB << storage.currentData->pressureHigh;
+			LOG(logINFO) << MESSAGE_CHECK_OPENV6_POSSIB << storage.currentData.pressureHigh;
 
 			// Open valve 6
 			controls.valveControls.ValveOpen(VALVE_6, true);
 
 			// Set the time to wait
-			WaitSeconds(storage.machineSettings->TimeWaitValves, true);
+			WaitSeconds(storage.machineSettings.TimeWaitValves, true);
 		}
 		// Continue to next step
-		storage.experimentStatus->experimentStepStatus = STEP_STATUS_INPROGRESS;
+		storage.experimentStatus.experimentStepStatus = STEP_STATUS_INPROGRESS;
 		return false;
 	}
 
-	if (storage.experimentStatus->experimentStepStatus == STEP_STATUS_INPROGRESS
-		&& storage.experimentStatus->experimentWaiting == false)							// If waiting is done
+	if (storage.experimentStatus.experimentStepStatus == STEP_STATUS_INPROGRESS
+		&& storage.experimentStatus.experimentWaiting == false)							// If waiting is done
 	{
 		// Open valve 5
 		controls.valveControls.ValveOpen(VALVE_5, true);
 
 		// Set the time to wait
-		WaitSeconds(storage.machineSettings->TimeWaitValves, true);
+		WaitSeconds(storage.machineSettings.TimeWaitValves, true);
 
 		// Continue to next step
-		storage.experimentStatus->experimentStepStatus = STEP_STATUS_END;
+		storage.experimentStatus.experimentStepStatus = STEP_STATUS_END;
 		return false;
 	}
 
-	if (storage.experimentStatus->experimentStepStatus == STEP_STATUS_END
-		&& storage.experimentStatus->experimentWaiting == false)							// If waiting is done
+	if (storage.experimentStatus.experimentStepStatus == STEP_STATUS_END
+		&& storage.experimentStatus.experimentWaiting == false)							// If waiting is done
 	{
-		if (storage.currentData->pressureHigh >= storage.machineSettings->PressureLimitVacuum)
+		if (storage.currentData.pressureHigh >= storage.machineSettings.PressureLimitVacuum)
 		{
 			if (!waitingUser) {
 				// Ask user if they want to continue
-				LOG(logEVENT) << MESSAGE_WARNING_INITIAL_PRESSURE << storage.currentData->pressureHigh << storage.machineSettings->PressureLimitVacuum;
+				LOG(logEVENT) << MESSAGE_WARNING_INITIAL_PRESSURE << storage.currentData.pressureHigh << storage.machineSettings.PressureLimitVacuum;
 
 				waitingUser = true;
 				eventUserInput = true;
@@ -221,19 +221,19 @@ bool Automation::VerificationResidualPressure()
 
 bool Automation::VerificationTemperature()
 {
-	if (storage.experimentStatus->experimentStepStatus == STEP_STATUS_START)
+	if (storage.experimentStatus.experimentStepStatus == STEP_STATUS_START)
 	{
 		// Display initial message
 		LOG(logINFO) << MESSAGE_CHECK_INITIAL_TEMPERATURE;
 
-		if ((storage.currentData->temperatureCalo < storage.experimentSettings->dataGeneral.temperature_experience - storage.experimentSettings->dataGeneral.temperature_range_initial_check) ||
-			(storage.currentData->temperatureCalo > storage.experimentSettings->dataGeneral.temperature_experience + storage.experimentSettings->dataGeneral.temperature_range_initial_check) ||
-			(storage.currentData->temperatureCage < storage.experimentSettings->dataGeneral.temperature_experience - storage.experimentSettings->dataGeneral.temperature_range_initial_check) || 
-			(storage.currentData->temperatureCage > storage.experimentSettings->dataGeneral.temperature_experience + storage.experimentSettings->dataGeneral.temperature_range_initial_check))
+		if ((storage.currentData.temperatureCalo < storage.experimentSettings.dataGeneral.temperature_experience - storage.experimentSettings.dataGeneral.temperature_range_initial_check) ||
+			(storage.currentData.temperatureCalo > storage.experimentSettings.dataGeneral.temperature_experience + storage.experimentSettings.dataGeneral.temperature_range_initial_check) ||
+			(storage.currentData.temperatureCage < storage.experimentSettings.dataGeneral.temperature_experience - storage.experimentSettings.dataGeneral.temperature_range_initial_check) || 
+			(storage.currentData.temperatureCage > storage.experimentSettings.dataGeneral.temperature_experience + storage.experimentSettings.dataGeneral.temperature_range_initial_check))
 		{
 			if (!waitingUser) {
 
-				LOG(logWARNING) << MESSAGE_CHECK_TEMPERATURE_DIFF << storage.currentData->temperatureCalo << storage.experimentSettings->dataGeneral.temperature_experience - storage.experimentSettings->dataGeneral.temperature_range_initial_check;
+				LOG(logWARNING) << MESSAGE_CHECK_TEMPERATURE_DIFF << storage.currentData.temperatureCalo << storage.experimentSettings.dataGeneral.temperature_experience - storage.experimentSettings.dataGeneral.temperature_range_initial_check;
 
 				waitingUser = true;
 				eventUserInput = true;
@@ -252,7 +252,7 @@ bool Automation::VerificationTemperature()
 					break;
 				case CHOICE_WAIT:									// Go to wait step
 					LOG(logINFO) << MESSAGE_WAIT_TEMP_EQUILIBRATION;
-					storage.experimentStatus->experimentStepStatus = STEP_STATUS_INPROGRESS;
+					storage.experimentStatus.experimentStepStatus = STEP_STATUS_INPROGRESS;
 					return false;
 					break;
 				case CHOICE_NO:										// Stop experiment
@@ -271,13 +271,13 @@ bool Automation::VerificationTemperature()
 	
 	}
 
-	if (storage.experimentStatus->experimentStepStatus == STEP_STATUS_INPROGRESS)
+	if (storage.experimentStatus.experimentStepStatus == STEP_STATUS_INPROGRESS)
 	{
 		// Loop until the temperature is stable
-		if ((storage.currentData->temperatureCalo < storage.experimentSettings->dataGeneral.temperature_experience - storage.experimentSettings->dataGeneral.temperature_range_initial_check) ||
-			(storage.currentData->temperatureCalo > storage.experimentSettings->dataGeneral.temperature_experience + storage.experimentSettings->dataGeneral.temperature_range_initial_check) ||
-			(storage.currentData->temperatureCage < storage.experimentSettings->dataGeneral.temperature_experience - storage.experimentSettings->dataGeneral.temperature_range_initial_check) ||
-			(storage.currentData->temperatureCage > storage.experimentSettings->dataGeneral.temperature_experience + storage.experimentSettings->dataGeneral.temperature_range_initial_check))
+		if ((storage.currentData.temperatureCalo < storage.experimentSettings.dataGeneral.temperature_experience - storage.experimentSettings.dataGeneral.temperature_range_initial_check) ||
+			(storage.currentData.temperatureCalo > storage.experimentSettings.dataGeneral.temperature_experience + storage.experimentSettings.dataGeneral.temperature_range_initial_check) ||
+			(storage.currentData.temperatureCage < storage.experimentSettings.dataGeneral.temperature_experience - storage.experimentSettings.dataGeneral.temperature_range_initial_check) ||
+			(storage.currentData.temperatureCage > storage.experimentSettings.dataGeneral.temperature_experience + storage.experimentSettings.dataGeneral.temperature_range_initial_check))
 		{
 			return false;
 		}

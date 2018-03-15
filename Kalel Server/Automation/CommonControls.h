@@ -38,7 +38,7 @@ public:
 	// TODO: why?
 	// On machine settings change
 	void on_setmachineSettings() {
-		instruments.Reset(*storage.machineSettings);
+		instruments.Reset(storage.machineSettings);
 	}
 };
 
@@ -46,7 +46,7 @@ public:
 
 inline Controls::Controls(Storage &h)
 	: storage{ h }
-	, instruments{*h.machineSettings}
+	, instruments{h.machineSettings}
 {
 }
 

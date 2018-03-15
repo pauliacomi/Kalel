@@ -171,19 +171,19 @@ void Kalel::Sync(http_request* req, http_response* resp)
 
 			// MachineSettings
 			if (!req->params.at("MS").empty()) {
-				if (timeh::StringToTimePoint(req->params.at("MS")) > storageVectors.machineSettings->timeChanged)
+				if (timeh::StringToTimePoint(req->params.at("MS")) > storageVectors.machineSettings.timeChanged)
 					timeMS = true;
 			}
 
 			// ExperimentSettings
 			if (!req->params.at("ES").empty()) {
-				if (timeh::StringToTimePoint(req->params.at("ES")) > storageVectors.experimentSettings->timeChanged)
+				if (timeh::StringToTimePoint(req->params.at("ES")) > storageVectors.experimentSettings.timeChanged)
 					timeES = true;
 			}
 
 			// ExperimentState
 			if (!req->params.at("ESt").empty()) {
-				if (timeh::StringToTimePoint(req->params.at("ESt")) > storageVectors.experimentStatus->timeChanged)
+				if (timeh::StringToTimePoint(req->params.at("ESt")) > storageVectors.experimentStatus.timeChanged)
 					timeES = true;
 			}
 
@@ -220,7 +220,7 @@ void Kalel::MachineSettingsSync(http_request* req, http_response* resp)
 	// GET
 	if (req->method == http::method::get)
 	{
-		json j = *storageVectors.machineSettings;
+		json j = storageVectors.machineSettings;
 		
 		resp->status		= http::responses::ok;
 		resp->content_type = http::mimetype::appjson;
@@ -236,13 +236,13 @@ void Kalel::MachineSettingsSync(http_request* req, http_response* resp)
 			auto j = json::parse(req->body);
 			
 			// Create new settings
-			storageVectors.setmachineSettings(std::make_shared<MachineSettings>(j));
+			storageVectors.setmachineSettings(MachineSettings(j));
 
 			// Ensure all changes
 			controlMechanisms.on_setmachineSettings();
 
 			// Save to file
-			ParametersSet(*storageVectors.machineSettings);
+			ParametersSet(storageVectors.machineSettings);
 
 			resp->status = http::responses::ok;
 		}
@@ -267,7 +267,7 @@ void Kalel::ExperimentSettingsSync(http_request* req, http_response* resp)
 	// GET
 	if (req->method == http::method::get)
 	{
-		json j = *storageVectors.experimentSettings;
+		json j = storageVectors.experimentSettings;
 
 		resp->status = http::responses::ok;
 		resp->content_type = http::mimetype::appjson;
@@ -281,16 +281,16 @@ void Kalel::ExperimentSettingsSync(http_request* req, http_response* resp)
 
 			// Parse the input
 			auto j = json::parse(req->body);
-			auto newSettings = std::make_shared<ExperimentSettings>(j);
+			auto newSettings = ExperimentSettings(j);
 
 			// Create new experiment settings, logging change if experiment is running
-			if (storageVectors.experimentStatus->experimentInProgress == true) {
+			if (storageVectors.experimentStatus.experimentInProgress == true) {
 				controlMechanisms.fileWriter.RecordDataChange(false, 
-					*newSettings, *storageVectors.experimentSettings,
-					*storageVectors.experimentStatus, *storageVectors.currentData);						// non-CSV
+					newSettings, storageVectors.experimentSettings,
+					storageVectors.experimentStatus, storageVectors.currentData);						// non-CSV
 				controlMechanisms.fileWriter.RecordDataChange(true,
-					*newSettings, *storageVectors.experimentSettings,
-					*storageVectors.experimentStatus, *storageVectors.currentData);						// CSV
+					newSettings, storageVectors.experimentSettings,
+					storageVectors.experimentStatus, storageVectors.currentData);						// CSV
 			}
 
 			storageVectors.setExperimentSettings(newSettings);
@@ -318,7 +318,7 @@ void Kalel::ExperimentStatusSync(http_request* req, http_response* resp)
 	// GET
 	if (req->method == http::method::get)
 	{
-		json j = *storageVectors.experimentStatus;
+		json j = storageVectors.experimentStatus;
 
 		resp->status = http::responses::ok;
 		resp->content_type = http::mimetype::appjson;

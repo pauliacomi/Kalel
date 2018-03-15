@@ -37,7 +37,7 @@ void Automation::Shutdown()
 		controls.timerWaiting.Pause();
 
 		// Reset all data from the experiment
-		storage.experimentStatus->ResetData();
+		storage.experimentStatus.ResetData();
 
 		// Run reset funtion
 		ResetAutomation();
@@ -64,31 +64,31 @@ void Automation::Shutdown()
 
 void Automation::Pause()
 {
-	if (storage.experimentStatus->experimentInProgress)
+	if (storage.experimentStatus.experimentInProgress)
 	{
 		controls.timerWaiting.Pause();
-		storage.experimentStatus->experimentRecording = false;
+		storage.experimentStatus.experimentRecording = false;
 
 		// Log the pause
 		LOG(logINFO) << MESSAGE_EXPPAUSE;
 	}
 	controls.timerExperiment.Pause();
 	controls.timerMeasurement.Pause();
-	storage.experimentStatus->experimentCommandsRequested = false;
+	storage.experimentStatus.experimentCommandsRequested = false;
 }
 
 
 void Automation::Resume()
 {
-	if (storage.experimentStatus->experimentInProgress)
+	if (storage.experimentStatus.experimentInProgress)
 	{
 		controls.timerWaiting.Resume();
-		storage.experimentStatus->experimentRecording = true;
+		storage.experimentStatus.experimentRecording = true;
 
 		// Log the resume
 		LOG(logINFO) << MESSAGE_EXPRESUME;
 	}
 	controls.timerExperiment.Resume();
 	controls.timerMeasurement.Resume();
-	storage.experimentStatus->experimentCommandsRequested = true;
+	storage.experimentStatus.experimentCommandsRequested = true;
 }

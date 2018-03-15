@@ -80,16 +80,16 @@ void Measurement::Execution()
 		*/
 
 		// Write data
-		if (storage.experimentStatus->experimentRecording)													// If we started recording
+		if (storage.experimentStatus.experimentRecording)													// If we started recording
 		{
-			if (controls.timerMeasurement.TimeMilliseconds() > storage.machineSettings->TimeBetweenRecording)// If enough time between measurements
+			if (controls.timerMeasurement.TimeMilliseconds() > storage.machineSettings.TimeBetweenRecording)// If enough time between measurements
 			{
 				// Save the data to the file
 				bool err = controls.fileWriter.FileMeasurementRecord(
 					timeh::TimePointToWString(measurementTime),
-					storage.experimentSettings->dataGeneral ,
-					*storage.currentData, 
-					*storage.experimentStatus, 
+					storage.experimentSettings.dataGeneral ,
+					storage.currentData, 
+					storage.experimentStatus, 
 					controls.valveControls.ValveIsOpen(VALVE_6));
 				if (err) {
 					LOG(logERROR) << MESSAGE_WARNING_FILE;
@@ -107,10 +107,10 @@ void Measurement::Execution()
 		*/
 
 		// Send the data out
-		storage.dataCollection.push(measurementTime, ExperimentData(*storage.currentData));
+		storage.dataCollection.push(measurementTime, ExperimentData(storage.currentData));
 
 		// If no experiment running do not keep too many points
-		if (!storage.experimentStatus->experimentInProgress && storage.dataCollection.size() > 500)
+		if (!storage.experimentStatus.experimentInProgress && storage.dataCollection.size() > 500)
 		{
 			storage.dataCollection.del_first();
 		}
@@ -120,7 +120,7 @@ void Measurement::Execution()
 		*
 		*/
 
-		std::this_thread::sleep_for(std::chrono::milliseconds(storage.machineSettings->TimeBetweenMeasurement));
+		std::this_thread::sleep_for(std::chrono::milliseconds(storage.machineSettings.TimeBetweenMeasurement));
 	}
 }
 
@@ -161,7 +161,7 @@ void Measurement::ReadCalorimeter()
 
 	// Read the value from the calorimeter
 	// Write it in the shared object - NO need for mutex
-	storage.currentData->resultCalorimeter = controls.instruments.MeasureReader(CALO);
+	storage.currentData.resultCalorimeter = controls.instruments.MeasureReader(CALO);
 
 }
 
@@ -173,8 +173,8 @@ void Measurement::ReadPressure()
 
 	// Read the value from the pressure transmitter
 	// Write it in the shared object - NO need for mutex
-	storage.currentData->pressureLow = controls.instruments.MeasureReader(PRESSURE_LP);
-	storage.currentData->pressureHigh = controls.instruments.MeasureReader(PRESSURE_HP);
+	storage.currentData.pressureLow = controls.instruments.MeasureReader(PRESSURE_LP);
+	storage.currentData.pressureHigh = controls.instruments.MeasureReader(PRESSURE_HP);
 }
 
 void Measurement::ReadTemperatures()
@@ -185,7 +185,7 @@ void Measurement::ReadTemperatures()
 
 	// Read the value from the temperatures
 	// Write it in the shared object - NO need for mutex
-	storage.currentData->temperatureCalo = controls.instruments.MeasureReader(TEMPERATURE_CALO);
-	storage.currentData->temperatureCage = controls.instruments.MeasureReader(TEMPERATURE_CAGE);
-	storage.currentData->temperatureRoom = controls.instruments.MeasureReader(TEMPERATURE_ROOM);
-}
+	storage.currentData.temperatureCalo = controls.instruments.MeasureReader(TEMPERATURE_CALO);
+	storage.currentData.temperatureCage = controls.instruments.MeasureReader(TEMPERATURE_CAGE);
+	storage.currentData.temperatureRoom = controls.instruments.MeasureReader(TEMPERATURE_ROOM);
+}					   

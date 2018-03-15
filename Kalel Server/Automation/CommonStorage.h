@@ -21,7 +21,7 @@ public:
 	//******************************************************************************************
 	// Logs
 	//******************************************************************************************
-
+public:
 	// Debug logs
 	StampedSafeStorage<std::string> debugLogs;
 	
@@ -31,58 +31,58 @@ public:
 	// Requests and interactions
 	StampedSafeStorage<std::string> eventLogs;
 
-	//******************************************************************************************
-	// Data
-	//******************************************************************************************
-public:
-	StampedSafeStorage<ExperimentData>  dataCollection;										// The collection of data from an experiment
-
-public:
-	std::unique_ptr<ExperimentData> currentData;
 
 	//******************************************************************************************
 	// Machine Settings
 	//******************************************************************************************
 
 	std::mutex machineSettingsMutex;
-	std::shared_ptr<MachineSettings> machineSettings;															// The machine settings are here
+	MachineSettings machineSettings;															// The machine settings are here
 
 public:
-	void setmachineSettings(std::shared_ptr<MachineSettings> i) {
+	void setmachineSettings(MachineSettings m) {
 		std::unique_lock<std::mutex> lock(machineSettingsMutex);
-		machineSettings = i;
+		machineSettings = m;
 	}
 
-	
-	//******************************************************************************************
-	// Experiment Status
-	//******************************************************************************************
-
-	std::shared_ptr<ExperimentStatus> experimentStatus;
 
 	//******************************************************************************************
 	// Experiment Settings
 	//******************************************************************************************
 
 	std::mutex experimentSettingsMutex;																			// Synchronisation class, should be used whenever there are writes
-	std::shared_ptr<ExperimentSettings> experimentSettings;														// The experiment settings are here
+	ExperimentSettings experimentSettings;														// The experiment settings are here
 
 public:
-	void setExperimentSettings(std::shared_ptr<ExperimentSettings> i) {
+	void setExperimentSettings(ExperimentSettings es) {
 		std::unique_lock<std::mutex> lock(experimentSettingsMutex);
-		experimentSettings = i;
+		experimentSettings = es;
 	}
 
 	void resetExperimentSettings() {
 		std::unique_lock<std::mutex> lock(experimentSettingsMutex);
-		experimentSettings->ResetData();
+		experimentSettings.ResetData();
 	}
+
+	//******************************************************************************************
+	// Data
+	//******************************************************************************************
+public:
+	StampedSafeStorage<ExperimentData>  dataCollection;															// The collection of data from an experiment
+
+	ExperimentData currentData;
+
+	//******************************************************************************************
+	// Experiment Status
+	//******************************************************************************************
+public:																											// A collection of info about the experiment progress 
+	ExperimentStatus experimentStatus;
 
 	//******************************************************************************************
 	// Control State
 	//******************************************************************************************
 
-	std::chrono::system_clock::time_point controlStateChanged = timeh::NowTime();					// Time when control state changed
+	std::chrono::system_clock::time_point controlStateChanged = timeh::NowTime();								// Time when control state changed
 
 	//******************************************************************************************
 	// Automation control
@@ -97,26 +97,18 @@ public:
 inline Storage::Storage(void)
 {
 	//
-	// Make classes
-	machineSettings = std::make_shared<MachineSettings>();
-	experimentStatus = std::make_shared<ExperimentStatus>();
-	experimentSettings = std::make_shared<ExperimentSettings>();
-
-	currentData = std::make_unique<ExperimentData>();
-
-	//
 	// Check to see whether the parameters file has been created
 	if (!ParametersCheck())
 	{
-		ParametersSet(*machineSettings);		// If not, create it
+		ParametersSet(machineSettings);		// If not, create it
 	}
 	else
 	{
-		ParametersGet(*machineSettings);		// Or get it
+		ParametersGet(machineSettings);		// Or get it
 	}
 
 	// Set path
-	experimentSettings->dataGeneral.chemin = machineSettings->DefaultPath;
+	experimentSettings.dataGeneral.chemin = machineSettings.DefaultPath;
 }
 
 inline Storage::~Storage(void)
