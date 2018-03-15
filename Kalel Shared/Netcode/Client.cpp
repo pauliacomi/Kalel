@@ -126,112 +126,16 @@ unsigned Client::Process(std::string ip, std::string port, std::function<void(ht
 	//						INCOMING RESPONSE
 	//*************************************************************************************************************************
 
-	std::string responseString;
-
-	try {
-		responseString = l_sock.ReceiveLine();
-	}
-	catch (const std::exception& e)	{
-		ErrorCaught(e.what(), response_func_);
-		return 1;
-	}
-
-	// Check if initial line is empty
-	if (responseString.empty()) {
-		return 1;
-	}
-
 	http_response response;
 
-	// Parse the first line of the response
-	size_t posSpace = responseString.find_first_of(" ");
-
-	response.http_version	= responseString.substr(0, posSpace);
-	response.status			= ParseStatusCode(responseString.substr(posSpace + 1, 3));
-
-	if (response.status.empty()){
-		ErrorCaught(ERR_HTTP_CODE, response_func_);
-		return 1;
+	if (ReceiveResponse(l_sock, response) != 0)
+	{
+		response_func_(&response);
 	}
-
-	std::string line;
-	bool messageToReceive = false;		// not expecting a message
-
-	while (true) {
-		try	
-		{
-			line = l_sock.ReceiveLine();	// no message body is to be received, regular line-based receive 
-		}
-		catch (const std::exception& e)
-		{
-			ErrorCaught(e.what(), response_func_);
-		}
-
-		if (line.empty())
-			break;
-
-		responseString += line;
-
-		size_t pos_cr_lf = line.find_first_of("\x0a\x0d");
-		if (pos_cr_lf == 0) {
-			if (messageToReceive)		// a message body is specified using "Content-Length" header, will receive the required number of bytes
-			{						
-				u_long bytes = stringh::To<u_long>(response.content_length);
-				try
-				{
-					line = l_sock.ReceiveBytes(bytes);
-				}
-				catch (const std::exception& e)
-				{
-					ErrorCaught(e.what(), response_func_);
-				}
-
-				if (line.empty()) {
-					response.status = http::responses::bad_request;
-				}
-				else {
-					response.body = line;
-				}
-				responseString += line;
-			}
-			break;
-		}
-
-		line = line.substr(0, pos_cr_lf);
-
-		if (line.substr(0, http::header::server.size()) == http::header::server) {
-			response.server = line.substr(http::header::server.size());
-		}
-		else if (line.substr(0, http::header::date.size()) == http::header::date) {
-			response.date = line.substr(http::header::date.size());
-		}
-		else if (line.substr(0, http::header::connection.size()) == http::header::connection) {
-			response.connection = line.substr(http::header::connection.size());
-		}
-		else if (line.substr(0, http::header::content_length.size()) == http::header::content_length) {
-			response.content_length = line.substr(http::header::content_length.size());
-			if (response.content_length != "0")
-			{
-				messageToReceive = true;
-			}
-		}
-		else if (line.substr(0, http::header::content_type.size()) == http::header::content_type) {
-			response.content_type = line.substr(http::header::content_type.size());
-		}
+	else
+	{
+		ErrorCaught(response.error_str, response_func_);
 	}
-
-	STREAM_LOG(logDEBUG) << l_sock.GetSocket() << LOG_RESPONSE << responseString;
-#ifdef FILE_LOGGING
-	FILE_LOG(logDEBUG) << l_sock.GetSocket() << LOG_RESPONSE << responseString;
-#endif // FILE_LOGGING
-
-	//*************************************************************************************************************************
-	//						CALLBACK AND EXIT
-	//*************************************************************************************************************************
-
-	response_func_(&response);
-
-	/////
 
 	//
 	// Exit
@@ -258,4 +162,118 @@ inline void Client::ErrorCaught(std::string err_str, std::function<void(http_res
 	response.error = true;
 	response.error_str = err_str;
 	response_func_(&response);
+}
+
+
+unsigned Client::ReceiveResponse(Socket & sock, http_response & resp)
+{
+
+	std::string responseString;
+
+	try {
+		responseString = sock.ReceiveLine();
+	}
+	catch (const std::exception& e) {
+		resp.error_str = e.what();
+		return 1;
+	}
+
+	// Check if initial line is empty
+	if (responseString.empty()) {
+		return 1;
+	}
+
+
+	// Parse the first line of the resp
+	size_t posSpace = responseString.find_first_of(" ");
+
+	resp.http_version = responseString.substr(0, posSpace);
+	resp.status = ParseStatusCode(responseString.substr(posSpace + 1, 3));
+
+	if (resp.status.empty()) {
+		resp.error_str = ERR_HTTP_CODE;
+		return 1;
+	}
+
+	//*************** Now process headers
+
+	std::string line;										// Start receiving the rest of the request
+	bool messageToReceive = false;							// not expecting a message
+
+	while (true) {
+		try
+		{
+			line = sock.ReceiveLine();	// no message body is to be received, regular line-based receive 
+		}
+		catch (const std::exception& e)
+		{
+			resp.error_str = e.what();
+			return 1;
+		}
+
+		if (line.empty()) {									// if line is empty, there's an error
+			return 1;
+		}
+
+		responseString += line;
+
+		// Check for CRLF position
+		size_t pos_cr_lf = line.find_first_of("\x0a\x0d");
+		if (pos_cr_lf == 0) {								// If we find an empty line, it's the end of the headers
+			break;
+		}
+
+		line = line.substr(0, pos_cr_lf);					// Otherwise we remove the CLRF and see what kind of header it is
+
+		if (line.substr(0, http::header::server.size()) == http::header::server) {
+			resp.server = line.substr(http::header::server.size());
+		}
+		else if (line.substr(0, http::header::date.size()) == http::header::date) {
+			resp.date = line.substr(http::header::date.size());
+		}
+		else if (line.substr(0, http::header::connection.size()) == http::header::connection) {
+			resp.connection = line.substr(http::header::connection.size());
+		}
+		else if (line.substr(0, http::header::content_type.size()) == http::header::content_type) {
+			resp.content_type = line.substr(http::header::content_type.size());
+		}
+		else if (line.substr(0, http::header::content_length.size()) == http::header::content_length) {
+			resp.content_length = line.substr(http::header::content_length.size());
+			if (resp.content_length != "0") { messageToReceive = true; }
+		}
+	}
+
+	//*************** Receive response body (if applicable)
+
+	if (messageToReceive)												// If we are expecting a message body then 
+	{
+		u_long bytes = stringh::To<u_long>(resp.content_length);		// We will receive the amount of bytes specified by the header
+
+		try
+		{
+			line = sock.ReceiveBytes(bytes);
+		}
+		catch (const std::exception& e)
+		{
+			resp.error_str = e.what();
+			return 1;
+		}
+
+		if (line.empty()) {
+			resp.status = http::responses::bad_request;
+		}
+		else {
+			resp.body = line;
+		}
+		responseString += line;
+	}
+
+	//*************** Response is now received
+
+	STREAM_LOG(logDEBUG) << sock.GetSocket() << LOG_RESPONSE << responseString;
+#ifdef FILE_LOGGING
+	FILE_LOG(logDEBUG) << sock.GetSocket() << LOG_RESPONSE << responseString;
+#endif // FILE_LOGGING
+
+	return 0;
 }

@@ -230,7 +230,7 @@ unsigned Server::ReceiveRequest(Socket & sock, http_request & req, http_response
 	URLHelper::SplitGetReq(requestString.substr(posSpace + 1), req.path, req.params, req.http_version);
 
 
-	//*************** Now process remaining headers
+	//*************** Now process headers
 
 	std::string line;										// Start receiving the rest of the request
 	bool messageToReceive = false;							// not expecting a message body
@@ -283,8 +283,7 @@ unsigned Server::ReceiveRequest(Socket & sock, http_request & req, http_response
 		}
 		else if (line.substr(0, http::header::content_length.size()) == http::header::content_length) {
 			req.content_length = line.substr(http::header::content_length.size());
-			if (req.content_length == "0") { continue; }
-			else messageToReceive = true;
+			if (req.content_length != "0") { messageToReceive = true; }
 		}
 	}
 
