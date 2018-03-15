@@ -262,9 +262,9 @@ unsigned Server::ReceiveRequest(Socket & sock, http_request & req, http_response
 
 		if (line.substr(0, http::header::authorization.size()) == http::header::authorization) {
 			std::string authline = line.substr(http::header::authorization.size());
-			size_t pos_space = authline.find_first_of(" ");
-			req.authentication_method = authline.substr(0, pos_space);
-			req.authentication = authline.substr(posSpace);
+			size_t posSpace = authline.find_first_of(" ");
+			req.authentication_method = authline.substr(0, posSpace);
+			req.authentication = authline.substr(posSpace + 1);
 		}
 		else if (line.substr(0, http::header::accept.size()) == http::header::accept) {
 			req.accept = line.substr(http::header::accept.size());
