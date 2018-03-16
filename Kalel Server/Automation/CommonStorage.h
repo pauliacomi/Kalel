@@ -41,7 +41,7 @@ public:
 	// Changes		- it can be changed by modifying parameters file and restarting
 	//				- or by sending a full replacement from a client
 	//
-	// Warnings		- when changed the settings file should be update
+	// Warnings		- when changed the settings file should be updated
 	//				- when changed the instruments might change (see CommonControls)
 	//				- when changed the threads might clash unless properly signaled
 	//
@@ -67,11 +67,12 @@ public:
 	// Access		- it is accessed both by the measurement and automation threads continuously 
 	//
 	// Changes		- it can be changed by sending a full replacement from a client
+	//				- it is reset at the end of an experiment
 	//
 	// Warnings		- when changed the measurement files should be updated with the changed settings
 	//				- when changed the threads might clash unless properly signaled
 	//
-	// Solutions	- 
+	// Solutions	- a mutex and two functions are provided for setting and resetting
 	//
 	//******************************************************************************************
 

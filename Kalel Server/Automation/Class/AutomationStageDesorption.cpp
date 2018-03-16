@@ -14,7 +14,7 @@
 
 void Automation::StageDesorption()
 {
-	switch (storage.experimentStatus.experimentStepStatus)
+	switch (storage.experimentStatus.experimentStepStatus.get())
 	{
 	case STEP_STATUS_START:
 		storage.experimentStatus.experimentStepStatus = STEP_STATUS_INPROGRESS;										// Set next step
@@ -30,7 +30,7 @@ void Automation::StageDesorption()
 		SubstepsDesorption();
 
 		// Check if the pressure for this desorption stage has been reached
-		if (storage.experimentStatus.pressureFinal < storage.experimentSettings.dataDesorption[storage.experimentStatus.desorptionCounter].pression_finale) {
+		if (storage.experimentStatus.pressureFinal < storage.experimentSettings.dataDesorption[storage.experimentStatus.desorptionCounter.get()].pression_finale) {
 			storage.experimentStatus.experimentStepStatus = STEP_STATUS_END;
 		}
 		break;
@@ -38,9 +38,9 @@ void Automation::StageDesorption()
 	case STEP_STATUS_END:
 		storage.experimentStatus.experimentStepStatus = STEP_STATUS_START;														// Reset substep
 		
-		LOG(logINFO) << MESSAGE_DESORPTION_STAGE_END << storage.experimentStatus.desorptionCounter;							// Log the step change
+		LOG(logINFO) << MESSAGE_DESORPTION_STAGE_END << storage.experimentStatus.desorptionCounter.get();						// Log the step change
 
-		if (storage.experimentStatus.desorptionCounter < storage.experimentSettings.dataDesorption.size())
+		if (storage.experimentStatus.desorptionCounter.get() < storage.experimentSettings.dataDesorption.size())
 		{
 			storage.experimentStatus.desorptionCounter++;
 		}
@@ -61,8 +61,8 @@ void Automation::SubstepsDesorption()
 		storage.experimentStatus.experimentWaiting == false)
 	{
 		storage.experimentStatus.injectionAttemptCounter = 0;																							// Reset desorption attempt counter
-		storage.experimentStatus.SetpressureInitial (storage.currentData.pressureHigh);																	// Set the initial pressure
-		storage.experimentStatus.SetpressureHighOld (storage.currentData.pressureHigh);																	// Save the injection pressure for later
+		storage.experimentStatus.pressureInitial.set(storage.currentData.pressureHigh);																	// Set the initial pressure
+		storage.experimentStatus.pressureHighOld.set(storage.currentData.pressureHigh);																	// Save the injection pressure for later
 		
 		LOG(logINFO) << MESSAGE_DESORPTION_DOSE_START << storage.experimentStatus.desorptionCounter << storage.experimentStatus.experimentDose;			// Log about current dose
 		
@@ -234,7 +234,7 @@ void Automation::SubstepsDesorption()
 		controls.valveControls.ValveClose(VALVE_4, true);
 		WaitSeconds(storage.machineSettings.TimeWaitValvesShort);
 
-		storage.experimentStatus.SetpressureFinal( storage.currentData.pressureHigh);						// Save pressure after open/close
+		storage.experimentStatus.pressureFinal.set(storage.currentData.pressureHigh);						// Save pressure after open/close
 		storage.experimentStatus.experimentSubstepStage = SUBSTEP_STATUS_ABORT;								// Move back to the start
 	}
 
@@ -265,7 +265,7 @@ void Automation::SubstepsDesorption()
 		controls.valveControls.ValveClose(VALVE_5, true);
 
 		// Display message
-		LOG(logINFO) << MESSAGE_DESORPTION_DOSE_END << storage.experimentStatus.experimentDose;
+		LOG(logINFO) << MESSAGE_DESORPTION_DOSE_END << storage.experimentStatus.experimentDose.get();
 
 		// Reset things
 		storage.experimentStatus.experimentSubstepStage = SUBSTEP_STATUS_START;

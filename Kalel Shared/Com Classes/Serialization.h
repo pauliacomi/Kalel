@@ -56,20 +56,16 @@ void to_json(nlohmann::json &j, const MachineSettings &m) {
 		
 	j["CaloName"							]	= stringh::ws2s(m.CaloName)					;
 	j["CaloPrefix"							]	= stringh::ws2s(m.CaloPrefix)				;
-	j["DefaultPath"				]	= stringh::ws2s(m.DefaultPath)		;
+	j["DefaultPath"							]	= stringh::ws2s(m.DefaultPath)		;
 	j["SafetyOn"							]	= m.SafetyOn								;
-
 	j["hasSonicNozzle"						]	= m.hasSonicNozzle							;
 	j["VolumeP6"							]	= m.VolumeP6								;
 	j["VolumeRef"							]	= m.VolumeRef								;
-	
 	j["PressurePumpVacuum"					]	= m.PressurePumpVacuum						;
 	j["PressureLimitVacuum"					]	= m.PressureLimitVacuum						;
-												 											
 	j["InjectionAttemptNumber"				]	= m.InjectionAttemptNumber					;
 	j["InjectionMargin"						]	= m.InjectionMargin							;
 	j["InjectionMultiplier"					]	= m.InjectionMultiplier						;
-												
 	j["TimeBetweenMeasurement"				]	= m.TimeBetweenMeasurement					;
 	j["TimeBetweenRecording"				]	= m.TimeBetweenRecording					;
 	j["TimeBetweenAutomation"				]	= m.TimeBetweenAutomation					;
@@ -101,48 +97,44 @@ void to_json(nlohmann::json &j, const MachineSettings &m) {
 
 inline void from_json(const nlohmann::json &j, MachineSettings &m) {
 
-	m.CaloName											= stringh::s2ws(j["CaloName"							]);
-	m.CaloPrefix										= stringh::s2ws(j["CaloPrefix"							]);
-	m.DefaultPath								= stringh::s2ws(j["DefaultPath"				]);
-	m.SafetyOn											=				j["SafetyOn"							];	
-	
-	m.hasSonicNozzle									=				j["hasSonicNozzle"						];
-	m.VolumeP6											=				j["VolumeP6"							];
-	m.VolumeRef											=				j["VolumeRef"							];
-
-	m.PressurePumpVacuum								=				j["PressurePumpVacuum"					];
-	m.PressureLimitVacuum								=				j["PressureLimitVacuum"					];
-
-	m.InjectionAttemptNumber							=				j["InjectionAttemptNumber"				];
-	m.InjectionMargin									=				j["InjectionMargin"						];
-	m.InjectionMultiplier								=				j["InjectionMultiplier"					];
-
-	m.TimeBetweenMeasurement							=				j["TimeBetweenMeasurement"				];
-	m.TimeBetweenRecording								=				j["TimeBetweenRecording"				];
-	m.TimeBetweenAutomation								=				j["TimeBetweenAutomation"				];
-	m.TimeWaitValves									=				j["TimeWaitValves"						];
-	m.TimeWaitValvesShort								=				j["TimeWaitValvesShort"					];
-	m.TimeWaitPump										=				j["TimeWaitPump"						];
-	m.TimeVacuumEmergency								=				j["TimeVacuumEmergency"					];
-	m.TimeVacuumBottle									=				j["TimeVacuumBottle"					];
-	m.TimeVacuumEndDefault								=				j["TimeVacuumEndDefault"				];
+	m.set_CaloName										( stringh::s2ws(j["CaloName"							]));
+	m.set_CaloPrefix									( stringh::s2ws(j["CaloPrefix"							]));
+	m.set_DefaultPath									( stringh::s2ws(j["DefaultPath"							]));
+	m.set_SafetyOn										(				j["SafetyOn"							]) ;	
+	m.set_hasSonicNozzle								(				j["hasSonicNozzle"						]) ;
+	m.set_VolumeP6										(				j["VolumeP6"							]) ;
+	m.set_VolumeRef										(				j["VolumeRef"							]) ;
+	m.set_PressurePumpVacuum							(				j["PressurePumpVacuum"					]) ;
+	m.set_PressureLimitVacuum							(				j["PressureLimitVacuum"					]) ;
+	m.set_InjectionAttemptNumber						(				j["InjectionAttemptNumber"				]) ;
+	m.set_InjectionMargin								(				j["InjectionMargin"						]) ;
+	m.set_InjectionMultiplier							(				j["InjectionMultiplier"					]) ;
+	m.set_TimeBetweenMeasurement						(				j["TimeBetweenMeasurement"				]) ;
+	m.set_TimeBetweenRecording							(				j["TimeBetweenRecording"				]) ;
+	m.set_TimeBetweenAutomation							(				j["TimeBetweenAutomation"				]) ;
+	m.set_TimeWaitValves								(				j["TimeWaitValves"						]) ;
+	m.set_TimeWaitValvesShort							(				j["TimeWaitValvesShort"					]) ;
+	m.set_TimeWaitPump									(				j["TimeWaitPump"						]) ;
+	m.set_TimeVacuumEmergency							(				j["TimeVacuumEmergency"					]) ;
+	m.set_TimeVacuumBottle								(				j["TimeVacuumBottle"					]) ;
+	m.set_TimeVacuumEndDefault							(				j["TimeVacuumEndDefault"				]) ;
 
 	nlohmann::json j1 = j["instruments"];
 	for (nlohmann::json::iterator it = j1.begin(); it != j1.end(); ++it) {
 
-		m.instruments.emplace(atoi(it.key().c_str()), it.value());
+		m.AddInstrument(it.value(), atoi(it.key().c_str()));
 	}
 
 	nlohmann::json j2 = j["readers"];
 	for (nlohmann::json::iterator it = j2.begin(); it != j2.end(); ++it) {
 
-		m.readers.emplace(atoi(it.key().c_str()), it.value());
+		m.AddReader(it.value(), atoi(it.key().c_str()));
 	}
 
 	nlohmann::json j3 = j["controllers"];
 	for (nlohmann::json::iterator it = j3.begin(); it != j3.end(); ++it) {
 
-		m.controllers.emplace(atoi(it.key().c_str()), it.value());
+		m.AddController(it.value(), atoi(it.key().c_str()));
 	}
 }
 
