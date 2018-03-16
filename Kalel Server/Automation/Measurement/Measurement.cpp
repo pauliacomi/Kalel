@@ -85,7 +85,7 @@ void Measurement::Execution()
 			if (controls.timerMeasurement.TimeMilliseconds() > storage.machineSettings.TimeBetweenRecording)// If enough time between measurements
 			{
 				// Save the data to the file
-				bool err = controls.fileWriter.FileMeasurementRecord(
+				bool err = controls.fileWriter.RecordMeasurement(
 					timeh::TimePointToWString(measurementTime),
 					storage.experimentSettings.dataGeneral ,
 					storage.currentData, 

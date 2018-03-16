@@ -37,6 +37,8 @@ private:
 
 public:
 
+	bool CreateFiles(const ExperimentSettings &expSettings, const MachineSettings &machSettings);
+
 	/**********************************************************************
 	* Write the first section of an entete and save it
 	* Inputs: 
@@ -77,7 +79,7 @@ public:
 	*		Reference to the experimentSettings which generates the entete
 	*		bool valveOpen6: records if valve number 6 is open or not
 	***********************************************************************/
-	bool FileMeasurementRecord(std::wstring time, const data_general &general, const ExperimentData &data, const ExperimentStatus &status, bool valveOpen6);
+	bool RecordMeasurement(std::wstring time, const data_general &general, const ExperimentData &data, const ExperimentStatus &status, bool valveOpen6);
 
 
 	/**********************************************************************

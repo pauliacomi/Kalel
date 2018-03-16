@@ -168,11 +168,8 @@ void Automation::ExecutionManual()
 		storage.experimentStatus.experimentRecording = true;
 
 		// Create open and write the columns in the file
-		bool err = false;
-		err = err || controls.fileWriter.EnteteCreate(storage.experimentSettings, storage.machineSettings);				// Entete TXT
-		err = err || controls.fileWriter.EnteteCSVCreate(storage.experimentSettings, storage.machineSettings);			// Entete CSV
-		err = err || controls.fileWriter.FileMeasurementCreate(storage.experimentSettings.dataGeneral);					// Measurement file
-		if (err) {																											// No point in starting experiment then
+		bool err = controls.fileWriter.CreateFiles(storage.experimentSettings, storage.machineSettings);
+		if (err) {								// No point in starting experiment then																										
 			shutdownReason = STOP;
 			eventShutdown = true;
 			storage.automationControl.notify_all();
@@ -198,11 +195,8 @@ void Automation::ExecutionAuto()
 		ResetAutomation();
 
 		// Create, open and write the columns in the file
-		bool err = false;
-		err = err || controls.fileWriter.EnteteCreate(storage.experimentSettings, storage.machineSettings);				// Entete TXT
-		err = err || controls.fileWriter.EnteteCSVCreate(storage.experimentSettings, storage.machineSettings);			// Entete CSV
-		err = err || controls.fileWriter.FileMeasurementCreate(storage.experimentSettings.dataGeneral);					// Measurement file
-		if (err) {																											// No point in starting experiment then
+		bool err = controls.fileWriter.CreateFiles(storage.experimentSettings, storage.machineSettings);
+		if (err) {							// No point in starting experiment then																							
 			shutdownReason = STOP;
 			eventShutdown = true;
 			storage.automationControl.notify_all();

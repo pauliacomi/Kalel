@@ -51,7 +51,7 @@ public:
 	//******************************************************************************************
 
 	std::mutex experimentSettingsMutex;																			// Synchronisation class, should be used whenever there are writes
-	ExperimentSettings experimentSettings;														// The experiment settings are here
+	ExperimentSettings experimentSettings;																		// The experiment settings are here
 
 public:
 	void setExperimentSettings(ExperimentSettings es) {

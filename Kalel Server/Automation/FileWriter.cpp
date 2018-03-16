@@ -39,6 +39,15 @@ bool FileWriter::writeFile(const std::wstring &filename, const std::wstring & st
 	return false;
 }
 
+bool FileWriter::CreateFiles(const ExperimentSettings & expSettings, const MachineSettings & machSettings)
+{
+	bool err = false;
+	err = err || EnteteCreate(expSettings, machSettings);				// Entete TXT
+	err = err || EnteteCSVCreate(expSettings, machSettings);			// Entete CSV
+	err = err || FileMeasurementCreate(expSettings.dataGeneral);		// Measurement file
+	return err;
+}
+
 
 /**********************************************************************
 * Write the first section of an entete and save it
@@ -127,7 +136,7 @@ bool FileWriter::FileMeasurementCreate(const data_general &general)
 *		Reference to the experimentSettings which generates the entete
 *		bool valveOpen6: records if valve number 6 is open or not
 ***********************************************************************/
-bool FileWriter::FileMeasurementRecord(std::wstring time, const data_general &general, const ExperimentData &data, const ExperimentStatus &status, bool valveOpen6)
+bool FileWriter::RecordMeasurement(std::wstring time, const data_general &general, const ExperimentData &data, const ExperimentStatus &status, bool valveOpen6)
 {
 	std::wostringstream stream;
 	char char_resultat_calo[20];
