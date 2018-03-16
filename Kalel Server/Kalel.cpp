@@ -654,6 +654,12 @@ void Kalel::AutomationControl(http_request* req, http_response* resp)
 			else if (req->params.at("action") == "resume") {
 				threadManager.ResumeAutomation();
 			}
+			else if (req->params.at("action") == "nextstage") {
+			}
+			else if (req->params.at("action") == "nextstep") {
+			}
+			else if (req->params.at("action") == "nextdose") {
+			}
 
 			resp->status = http::responses::ok;
 		}

@@ -28,7 +28,7 @@ public:
 		// Set path
 		experimentSettings.dataGeneral.chemin = machineSettings.DefaultPath;
 	}
-	~Storage(void);
+	~Storage(void) {};
 
 
 	//******************************************************************************************
