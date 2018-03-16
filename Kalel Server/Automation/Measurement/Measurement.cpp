@@ -87,7 +87,7 @@ void Measurement::Execution()
 				// Save the data to the file
 				bool err = controls.fileWriter.RecordMeasurement(
 					timeh::TimePointToWString(measurementTime),
-					storage.experimentSettings.dataGeneral ,
+					storage.experimentSettings.dataGeneral,
 					storage.currentData, 
 					storage.experimentStatus, 
 					controls.valveControls.ValveIsOpen(VALVE_6));
