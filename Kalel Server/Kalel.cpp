@@ -2,6 +2,8 @@
 
 // Helpers
 #include "../Kalel Shared/stringHelpers.h"
+#include "../Kalel Shared/log.h"
+#include "../Kalel Shared/Resources/DefineStages.h"
 
 // JSON
 #include "../Kalel Shared/Netcode/json.hpp"
@@ -15,7 +17,7 @@
 #include "../Kalel Shared/Com Classes/ExperimentData.h"
 #include "../Kalel Shared/Com Classes/ExperimentSettings.h"
 #include "../Kalel Shared/Com Classes/MachineSettings.h"
-#include "../Kalel Shared/log.h"
+
 
 // Std
 #include <vector>
@@ -27,6 +29,22 @@
 
 //
 //
+//eventLOGS : critical logging, that needs to be displayed to user
+//
+//		logEVENT
+//			- an event that requires a user input
+//		logERROR
+//			- a critical error which requires user attention
+//		logWARNING
+//			- a warning which could impact functionality
+//
+//infoLOGS : logging regarding operation and automation
+//
+//		logINFO
+//			- describes the status of the machine and the progress
+//			- of automation functionality
+//
+//debugLOGS : debug information which may be useful
 //		logDEBUG
 //			- Instruments log errors in reading and writing
 //		logDEBUG1
@@ -94,8 +112,8 @@ Kalel::Kalel()
 		std::bind(&Kalel::AutomationControl,		this, std::placeholders::_1, std::placeholders::_2),
 													"/api/thread");
 	server.AddMethod(
-		std::bind(&Kalel::ReloadParameters,			this, std::placeholders::_1, std::placeholders::_2), 
-													"/api/reloadparameters");
+		std::bind(&Kalel::UserInput,				this, std::placeholders::_1, std::placeholders::_2),
+													"/api/input");
 
 	server.Start();
 
@@ -648,13 +666,31 @@ void Kalel::AutomationControl(http_request* req, http_response* resp)
 
 
 /*******************************************
-// Reload of parameters file into settings
+// User input functionality
 *******************************************/
-void Kalel::ReloadParameters(http_request * req, http_response * resp)
+
+void Kalel::UserInput(http_request * req, http_response * resp)
 {
 	// SET
 	if (req->method == http::method::post)
 	{
-
+		if (!req->params.empty() ||
+			!req->params.at("input").empty())
+		{
+			int choice = stringh::To<int>(req->params.at("action"));
+			switch (choice)
+			{
+			case CHOICE_NONE:
+			case CHOICE_YES:
+			case CHOICE_NO:
+			case CHOICE_WAIT:
+				resp->status = http::responses::ok;
+				threadManager.SetUserChoice(choice);
+				break;
+			default:
+				resp->status = http::responses::not_acceptable;
+				break;
+			}
+		}
 	}
 }

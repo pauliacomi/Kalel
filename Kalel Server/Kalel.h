@@ -29,5 +29,5 @@ protected:
 	void RequestSync(http_request* req, http_response* resp);
 	void DebugSync(http_request * req, http_response * resp);
 	void AutomationControl(http_request* req, http_response* resp);
-	void ReloadParameters(http_request* req, http_response* resp);
+	void UserInput(http_request* req, http_response* resp);
 };
