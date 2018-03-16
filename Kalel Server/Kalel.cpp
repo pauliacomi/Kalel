@@ -242,7 +242,7 @@ void Kalel::MachineSettingsSync(http_request* req, http_response* resp)
 		
 		resp->status		= http::responses::ok;
 		resp->content_type = http::mimetype::appjson;
-		resp->body		= j.dump();
+		resp->body			= j.dump();
 	}
 
 	// SET
@@ -254,7 +254,7 @@ void Kalel::MachineSettingsSync(http_request* req, http_response* resp)
 			auto j = json::parse(req->body);
 			
 			// Create new settings
-			storageVectors.setmachineSettings(MachineSettings(j));
+			storageVectors.machineSettings = MachineSettings(j);
 
 			// Ensure all changes
 			controlMechanisms.on_setmachineSettings();

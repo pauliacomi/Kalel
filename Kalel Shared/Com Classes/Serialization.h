@@ -103,7 +103,7 @@ inline void from_json(const nlohmann::json &j, MachineSettings &m) {
 
 	m.CaloName											= stringh::s2ws(j["CaloName"							]);
 	m.CaloPrefix										= stringh::s2ws(j["CaloPrefix"							]);
-	m.DefaultPath								= stringh::s2ws(j["DefaultPath"				]);
+	m.DefaultPath										= stringh::s2ws(j["DefaultPath"							]);
 	m.SafetyOn											=				j["SafetyOn"							];	
 	
 	m.hasSonicNozzle									=				j["hasSonicNozzle"						];
@@ -232,48 +232,48 @@ inline void from_json(const nlohmann::json &j, ExperimentData &e) {
 //*************************************************************************************************************************
 inline void to_json(nlohmann::json &j, const ExperimentStatus &e) {
 
-	j[	"EP"	]	= e.GetexperimentInProgress					();
-	j[	"ER"	]	= e.GetexperimentRecording					();
-	j[	"EW"	]	= e.GetexperimentWaiting					();
-	j[	"ECR"	]	= e.GetexperimentCommandsRequested			();
-	j[	"ES"	]	= e.GetexperimentStage						();
-	j[	"VS"	]	= e.GetverificationStep						();
-	j[	"SSs"	]	= e.GetexperimentStepStatus					();
-	j[	"SSg"	]	= e.GetexperimentSubstepStage				();
-	j[	"ED"	]	= e.GetexperimentDose						();
-	j[	"EpS"	]	= e.GetexperimentPreviousStage				();
-	j[	"tS"	]	= e.GettimeStart							();
-	j[	"tEq"	]	= e.GettimeToEquilibrate					();
-	j[	"tEqS"	]	= e.GettimeEquilibrateStart					();
-	j[	"CIa"	]	= e.GetinjectionAttemptCounter				();
-	j[	"CA"	]	= e.GetadsorptionCounter					();
-	j[	"CD"	]	= e.GetdesorptionCounter					();
-	j[	"PI"	]	= e.GetpressureInitial						();
-	j[	"PF"	]	= e.GetpressureFinal						();
-	j[	"PHo"	]	= e.GetpressureHighOld						();
+	j[	"EP"	]	= e.experimentInProgress				.get();
+	j[	"ER"	]	= e.experimentRecording					.get();
+	j[	"EW"	]	= e.experimentWaiting					.get();
+	j[	"ECR"	]	= e.experimentCommandsRequested			.get();
+	j[	"ES"	]	= e.experimentStage						.get();
+	j[	"VS"	]	= e.verificationStep					.get();
+	j[	"SSs"	]	= e.experimentStepStatus				.get();
+	j[	"SSg"	]	= e.experimentSubstepStage				.get();
+	j[	"ED"	]	= e.experimentDose						.get();
+	j[	"EpS"	]	= e.experimentPreviousStage				.get();
+	j[	"tS"	]	= e.timeStart							.get();
+	j[	"tEq"	]	= e.timeToEquilibrate					.get();
+	j[	"tEqS"	]	= e.timeEquilibrationStart				.get();
+	j[	"CIa"	]	= e.injectionAttemptCounter				.get();
+	j[	"CA"	]	= e.adsorptionCounter					.get();
+	j[	"CD"	]	= e.desorptionCounter					.get();
+	j[	"PI"	]	= e.pressureInitial						.get();
+	j[	"PF"	]	= e.pressureFinal						.get();
+	j[	"PHo"	]	= e.pressureHighOld						.get();
 }
 
 inline void from_json(const nlohmann::json &j, ExperimentStatus &e) {
 
-	e.SetexperimentInProgress								( j[	"EP"	]);
-	e.SetexperimentRecording								( j[	"ER"	]);
-	e.SetexperimentWaiting									( j[	"EW"	]);
-	e.SetexperimentCommandsRequested						( j[	"ECR"	]);
-	e.SetexperimentStage									( j[	"ES"	]);
-	e.SetverificationStep									( j[	"VS"	]);
-	e.SetexperimentStepStatus								( j[	"SSs"	]);
-	e.SetexperimentSubstepStage								( j[	"SSg"	]);	  
-	e.SetexperimentDose										( j[	"ED"	]);	  
-	e.SetexperimentPreviousStage							( j[	"EpS"	]);
-	e.SettimeStart											( j[	"tS"	]);
-	e.SettimeToEquilibrate									( j[	"tEq"	]);
-	e.SettimeEquilibrateStart								( j[	"tEqS"	]);
-	e.SetinjectionAttemptCounter							( j[	"CIa"	]);
-	e.SetadsorptionCounter									( j[	"CA"	]);
-	e.SetdesorptionCounter									( j[	"CD"	]);
-	e.SetpressureInitial									( j[	"PI"	]);
-	e.SetpressureFinal										( j[	"PF"	]);
-	e.SetpressureHighOld									( j[	"PHo"	]);
+	e.experimentInProgress								= j[	"EP"	].get<bool>();
+	e.experimentRecording								= j[	"ER"	].get<bool>();
+	e.experimentWaiting									= j[	"EW"	].get<bool>();
+	e.experimentCommandsRequested						= j[	"ECR"	].get<bool>();
+	e.experimentStage									= j[	"ES"	].get<int>();
+	e.verificationStep									= j[	"VS"	].get<int>();
+	e.experimentStepStatus								= j[	"SSs"	].get<int>();
+	e.experimentSubstepStage							= j[	"SSg"	].get<int>();
+	e.experimentDose									= j[	"ED"	].get<int>();
+	e.experimentPreviousStage							= j[	"EpS"	].get<int>();
+	e.timeStart											= j[	"tS"	].get<unsigned long long>();
+	e.timeToEquilibrate									= j[	"tEq"	].get<double>();
+	e.timeEquilibrationStart							= j[	"tEqS"	].get<unsigned long long>();
+	e.injectionAttemptCounter							= j[	"CIa"	].get<int>();
+	e.adsorptionCounter									= j[	"CA"	].get<int>();
+	e.desorptionCounter									= j[	"CD"	].get<int>();
+	e.pressureInitial									= j[	"PI"	].get<double>();
+	e.pressureFinal										= j[	"PF"	].get<double>();
+	e.pressureHighOld									= j[	"PHo"	].get<double>();
 }
 
 

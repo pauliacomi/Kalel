@@ -17,8 +17,7 @@ namespace timeh {
 
 	std::chrono::system_clock::time_point NowTime()
 	{
-		auto now_ms = std::chrono::time_point_cast<std::chrono::milliseconds>(std::chrono::system_clock::now());
-		return now_ms;
+		return std::chrono::time_point_cast<std::chrono::milliseconds>(std::chrono::system_clock::now());
 	}
 
 

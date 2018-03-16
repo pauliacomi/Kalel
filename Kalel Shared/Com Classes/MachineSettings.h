@@ -4,19 +4,25 @@
 #include <vector>
 #include <map>
 #include <chrono>		// for timepoint
- 
+#include <mutex>		// for mutex
+
 #include "ExperimentHelperClasses.h"
 
 class MachineSettings
 {
 public:
 	MachineSettings();
+	MachineSettings(const MachineSettings&);
 	~MachineSettings();
 
+	MachineSettings & operator=(const MachineSettings & p);
+
+public:
 	///*******************
 	///		Sync tools
 	///*******************
 
+	std::mutex mtx;											// Synchronisation mutex
 	std::chrono::system_clock::time_point timeChanged;		// Time when machine settings changed
 
 	///*******************
@@ -48,11 +54,10 @@ public:
 
 	float PressurePumpVacuum = 0.5f;
 	float PressureLimitVacuum = 0.01f;						// Used for determining the pressure considered "good vacuum"
-	
+
 	std::map<unsigned int, Instrument> instruments;			// The instruments in the machine
 	std::map<unsigned int, Reader>	readers;				// The readers which are available
 	std::map<unsigned int, Controller>	controllers;		// The controllers which are available
-
 
 	// Functions to easily create instruments or readers
 	void AddInstrument(Instrument i, unsigned int position = 0);
