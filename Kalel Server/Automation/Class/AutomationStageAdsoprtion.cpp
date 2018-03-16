@@ -61,9 +61,9 @@ void Automation::SubstepsAdsorption()
 		storage.experimentStatus.experimentWaiting == false)
 	{
 		storage.experimentStatus.injectionAttemptCounter = 0;																							// Reset adsorption attempt counter
-		storage.experimentStatus.SetpressureInitial( storage.currentData.GetpressureHigh());															// Set the initial pressure
-		storage.experimentStatus.SetpressureHighOld( storage.currentData.GetpressureHigh());															// Save the injection pressure for later
-		LOG(logINFO) << MESSAGE_ADSORPTION_DOSE_START << storage.experimentStatus.adsorptionCounter << storage.experimentStatus.experimentDose;				// Log current dose
+		storage.experimentStatus.SetpressureInitial( storage.currentData.pressureHigh);																	// Set the initial pressure
+		storage.experimentStatus.SetpressureHighOld( storage.currentData.pressureHigh);																	// Save the injection pressure for later
+		LOG(logINFO) << MESSAGE_ADSORPTION_DOSE_START << storage.experimentStatus.adsorptionCounter << storage.experimentStatus.experimentDose;			// Log current dose
 		storage.experimentStatus.experimentSubstepStage = SUBSTEP_STATUS_INJECTION;																		// Move to injection
 	}
 	
@@ -124,7 +124,7 @@ void Automation::SubstepsAdsorption()
 		storage.experimentStatus.experimentWaiting == false)
 	{
 		// Set the final pressure after injection
-		storage.experimentStatus.SetpressureFinal( storage.currentData.GetpressureHigh());
+		storage.experimentStatus.SetpressureFinal( storage.currentData.pressureHigh);
 
 		// Display
 		LOG(logINFO) << MESSAGE_PRESSURE_D_PI << storage.experimentStatus.pressureInitial;
@@ -237,7 +237,7 @@ void Automation::SubstepsAdsorption()
 		controls.valveControls.ValveClose(VALVE_7, true);
 		WaitSeconds(storage.machineSettings.TimeWaitValvesShort);
 
-		storage.experimentStatus.SetpressureFinal( storage.currentData.GetpressureHigh());			// Save pressure after open/close
+		storage.experimentStatus.SetpressureFinal( storage.currentData.pressureHigh);			// Save pressure after open/close
 		storage.experimentStatus.experimentSubstepStage = SUBSTEP_STATUS_ABORT + 1;					// Go back to the start
 	}
 

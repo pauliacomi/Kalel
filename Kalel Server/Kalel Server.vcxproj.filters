@@ -290,9 +290,6 @@
     <ClCompile Include="..\Kalel Shared\Netcode\URLHelper.cpp">
       <Filter>Source Files\Common\Netcode</Filter>
     </ClCompile>
-    <ClCompile Include="..\Kalel Shared\Com Classes\ExperimentData.cpp">
-      <Filter>Source Files\Common\Com Classes</Filter>
-    </ClCompile>
     <ClCompile Include="..\Kalel Shared\Com Classes\ExperimentSettings.cpp">
       <Filter>Source Files\Common\Com Classes</Filter>
     </ClCompile>

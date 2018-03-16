@@ -207,22 +207,22 @@ inline void from_json(const nlohmann::json &j, Controller &m) {
 //*************************************************************************************************************************
 inline void to_json(nlohmann::json &j, const ExperimentData &e) {
 
-	j[	"Cl"	]	= e.GetresultCalorimeter					();
-	j[	"PL"	]	= e.GetpressureLow							();
-	j[	"PH"	]	= e.GetpressureHigh							();
-	j[	"TCl"	]	= e.GettemperatureCalo						();
-	j[	"TCg"	]	= e.GettemperatureCage						();
-	j[	"TR"	]	= e.GettemperatureRoom						();
+	j[	"Cl"	]	= e.resultCalorimeter					;
+	j[	"PL"	]	= e.pressureLow							;
+	j[	"PH"	]	= e.pressureHigh						;
+	j[	"TCl"	]	= e.temperatureCalo						;
+	j[	"TCg"	]	= e.temperatureCage						;
+	j[	"TR"	]	= e.temperatureRoom						;
 }
 
 inline void from_json(const nlohmann::json &j, ExperimentData &e) {
 
-	e.SetresultCalorimeter									( j[	"Cl"	]);
-	e.SetpressureLow										( j[	"PL"	]);
-	e.SetpressureHigh										( j[	"PH"	]);
-	e.SettemperatureCalo									( j[	"TCl"	]);
-	e.SettemperatureCage									( j[	"TCg"	]);
-	e.SettemperatureRoom									( j[	"TR"	]);
+	e.resultCalorimeter										= j[	"Cl"	];
+	e.pressureLow											= j[	"PL"	];
+	e.pressureHigh											= j[	"PH"	];
+	e.temperatureCalo										= j[	"TCl"	];
+	e.temperatureCage										= j[	"TCg"	];
+	e.temperatureRoom										= j[	"TR"	];
 
 }
 

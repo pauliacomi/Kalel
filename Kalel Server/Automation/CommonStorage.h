@@ -70,7 +70,7 @@ public:
 public:
 	StampedSafeStorage<ExperimentData>  dataCollection;															// The collection of data from an experiment
 
-	ExperimentData currentData;
+	ExperimentAtomicData currentData;
 
 	//******************************************************************************************
 	// Experiment Status

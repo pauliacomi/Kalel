@@ -61,10 +61,10 @@ void Automation::SubstepsDesorption()
 		storage.experimentStatus.experimentWaiting == false)
 	{
 		storage.experimentStatus.injectionAttemptCounter = 0;																							// Reset desorption attempt counter
-		storage.experimentStatus.SetpressureInitial (storage.currentData.GetpressureHigh());															// Set the initial pressure
-		storage.experimentStatus.SetpressureHighOld (storage.currentData.GetpressureHigh());															// Save the injection pressure for later
+		storage.experimentStatus.SetpressureInitial (storage.currentData.pressureHigh);																	// Set the initial pressure
+		storage.experimentStatus.SetpressureHighOld (storage.currentData.pressureHigh);																	// Save the injection pressure for later
 		
-		LOG(logINFO) << MESSAGE_DESORPTION_DOSE_START << storage.experimentStatus.desorptionCounter << storage.experimentStatus.experimentDose;				// Tell GUI about current dose
+		LOG(logINFO) << MESSAGE_DESORPTION_DOSE_START << storage.experimentStatus.desorptionCounter << storage.experimentStatus.experimentDose;			// Log about current dose
 		
 		// Turn on pump
 		if (!controls.valveControls.PumpIsActive()) {
@@ -121,7 +121,7 @@ void Automation::SubstepsDesorption()
 		storage.experimentStatus.experimentWaiting == false)
 	{
 		// Set the final pressure after gas removal
-		storage.experimentStatus.SetpressureFinal( storage.currentData.GetpressureHigh());
+		storage.experimentStatus.SetpressureFinal( storage.currentData.pressureHigh);
 
 		// Display
 		LOG(logINFO) << MESSAGE_PRESSURE_D_PI << storage.experimentStatus.pressureInitial;
@@ -234,7 +234,7 @@ void Automation::SubstepsDesorption()
 		controls.valveControls.ValveClose(VALVE_4, true);
 		WaitSeconds(storage.machineSettings.TimeWaitValvesShort);
 
-		storage.experimentStatus.SetpressureFinal( storage.currentData.GetpressureHigh());					// Save pressure after open/close
+		storage.experimentStatus.SetpressureFinal( storage.currentData.pressureHigh);						// Save pressure after open/close
 		storage.experimentStatus.experimentSubstepStage = SUBSTEP_STATUS_ABORT;								// Move back to the start
 	}
 

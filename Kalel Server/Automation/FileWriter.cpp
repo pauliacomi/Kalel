@@ -131,7 +131,7 @@ bool FileWriter::FileMeasurementRecord(std::wstring time, const data_general &ge
 {
 	std::wostringstream stream;
 	char char_resultat_calo[20];
-	sprintf_s(char_resultat_calo, "%.8E", data.GetresultCalorimeter());
+	sprintf_s(char_resultat_calo, "%.8E", data.resultCalorimeter);
 	
 	stream << time									<< ";";				// Experiment time
 	stream << status.experimentDose					<< ";";				// Experiment dose
