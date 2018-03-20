@@ -111,6 +111,9 @@ Kalel::Kalel()
 	server.AddMethod(
 		std::bind(&Kalel::UserInput,				this, std::placeholders::_1, std::placeholders::_2),
 													"/api/input");
+	server.AddMethod(
+		std::bind(&Kalel::UserInput,				this, std::placeholders::_1, std::placeholders::_2),
+													"/api/functionality");
 
 	server.Start();
 
@@ -626,9 +629,9 @@ void Kalel::UserInput(http_request * req, http_response * resp)
 	if (req->method == http::method::post)
 	{
 		if (!req->params.empty() ||
-			!req->params.at("input").empty())
+			!req->params.at("i").empty())
 		{
-			int choice = stringh::To<int>(req->params.at("action"));
+			int choice = stringh::To<int>(req->params.at("i"));
 			switch (choice)
 			{
 			case CHOICE_NONE:

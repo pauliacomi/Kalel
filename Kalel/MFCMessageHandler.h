@@ -37,17 +37,17 @@ public:
 	bool SyncComplete();
 
 	bool OnSetMachineSettings();
-	bool ExchangeMachineSettings(const MachineSettings &pParam);
+	bool ExchangeMachineSettings(MachineSettings *pParam);
 
 	bool OnSetExperimentSettings();
-	bool ExchangeExperimentSettings(const ExperimentSettings &pParam);
-	bool ExchangeExperimentStatus(const ExperimentStatus &pParam);
+	bool ExchangeExperimentSettings(ExperimentSettings *pParam);
+	bool ExchangeExperimentStatus(ExperimentStatus *pParam);
 
-	bool ExchangeData(ExperimentDataStorageArray* pParam);
+	bool ExchangeData(std::map<std::chrono::system_clock::time_point, ExperimentData> * pParam);
 	bool ExchangeLogs(std::map<std::chrono::system_clock::time_point, std::wstring> * pParam);
 	bool ExchangeRequests(std::map<std::chrono::system_clock::time_point, std::wstring> * pParam);
 
-	bool ExchangeControlState(const ControlInstrumentState &pParam);
+	bool ExchangeControlState(ControlInstrumentState *pParam);
 	bool ExchangeControlStateSpecific(const ControlInstrumentStateData& pParam);
 
 	bool ExperimentStart();

@@ -68,69 +68,11 @@ void CommHandler::SaveAddress(std::wstring address)
 }
 
 /*********************************
-// Sync
-*********************************/
-void CommHandler::Sync(bool initialSync, std::string fromTimeES, std::string fromTimeMS, std::string fromTimeCS, std::string fromTimeESt)
-{
-	if (!flagSyncRequest) {
-
-		flagSyncRequest = true;
-
-		if (initialSync)
-		{
-			sync = 7;
-
-			GetMachineSettings();
-			GetControlInstrumentState();
-			GetExperimentSettings();
-			GetExperimentStatus();
-			GetData();
-			GetLog();
-			GetRequests();
-		}
-		else
-		{
-			localExperimentSettingsTime = fromTimeES;
-			localExperimentStatusTime = fromTimeESt;
-			localMachineSettingsTime = fromTimeMS;
-			localControlStateTime = fromTimeCS;
-
-			auto request = std::bind(&CommHandler::Sync_req, this, std::placeholders::_1);
-			auto callback = std::bind(&CommHandler::Sync_resp, this, std::placeholders::_1);
-
-			try {
-				client.Request(request, callback, localAddress);
-			}
-			catch (const std::exception& e) {
-				messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, stringh::s2ws(e.what()));
-			}
-		}
-	}
-}
-
-unsigned int CommHandler::CheckSync()
-{
-	// Confirm sync
-	if (sync < 0) {
-		return 0;
-	}
-	else if (sync == 0) {
-		messageHandler.SyncComplete();
-		flagSyncRequest = false;
-		--sync;
-	}
-	else
-		--sync;
-
-	return 1;
-}
-
-/*********************************
 // MachineSettings
 *********************************/
 void CommHandler::GetMachineSettings(std::string fromTime)
 {
-	auto request = std::bind(&CommHandler::GetMachineSettings_req, this, std::placeholders::_1);
+	auto request = std::bind(&CommHandler::GetMachineSettings_req, this, std::placeholders::_1, fromTime);
 	auto callback = std::bind(&CommHandler::GetMachineSettings_resp, this, std::placeholders::_1);
 
 	try	{
@@ -141,11 +83,9 @@ void CommHandler::GetMachineSettings(std::string fromTime)
 	}
 }
 
-void CommHandler::SetMachineSettings(std::shared_ptr<const MachineSettings> ptr)
+void CommHandler::SetMachineSettings(const MachineSettings &ptr)
 {
-	localMachineSettings = ptr;
-
-	auto request = std::bind(&CommHandler::SetMachineSettings_req, this, std::placeholders::_1);
+	auto request = std::bind(&CommHandler::SetMachineSettings_req, this, std::placeholders::_1, MachineSettings(ptr));
 	auto callback = std::bind(&CommHandler::SetMachineSettings_resp, this, std::placeholders::_1);
 
 	try {
@@ -162,7 +102,7 @@ void CommHandler::SetMachineSettings(std::shared_ptr<const MachineSettings> ptr)
 *********************************/
 void CommHandler::GetExperimentSettings(std::string fromTime)
 {
-	auto request = std::bind(&CommHandler::GetExperimentSettings_req, this, std::placeholders::_1);
+	auto request = std::bind(&CommHandler::GetExperimentSettings_req, this, std::placeholders::_1, fromTime);
 	auto callback = std::bind(&CommHandler::GetExperimentSettings_resp, this, std::placeholders::_1);
 
 	try {
@@ -173,11 +113,9 @@ void CommHandler::GetExperimentSettings(std::string fromTime)
 	}
 }
 
-void CommHandler::SetExperimentSettings(std::shared_ptr<const ExperimentSettings> ptr)
+void CommHandler::SetExperimentSettings(const ExperimentSettings &ptr)
 {
-	localExperimentSettings = ptr;
-
-	auto request = std::bind(&CommHandler::SetExperimentSettings_req, this, std::placeholders::_1);
+	auto request = std::bind(&CommHandler::SetExperimentSettings_req, this, std::placeholders::_1, ExperimentSettings(ptr));
 	auto callback = std::bind(&CommHandler::SetExperimentSettings_resp, this, std::placeholders::_1);
 
 	try {
@@ -193,7 +131,7 @@ void CommHandler::SetExperimentSettings(std::shared_ptr<const ExperimentSettings
 *********************************/
 void CommHandler::GetExperimentStatus(std::string fromTime)
 {
-	auto request = std::bind(&CommHandler::GetExperimentStatus_req, this, std::placeholders::_1);
+	auto request = std::bind(&CommHandler::GetExperimentStatus_req, this, std::placeholders::_1, fromTime);
 	auto callback = std::bind(&CommHandler::GetExperimentStatus_resp, this, std::placeholders::_1);
 
 	try {
@@ -209,7 +147,7 @@ void CommHandler::GetExperimentStatus(std::string fromTime)
 *********************************/
 void CommHandler::GetControlInstrumentState(std::string fromTime)
 {
-	auto request = std::bind(&CommHandler::GetInstrumentState_req, this, std::placeholders::_1);
+	auto request = std::bind(&CommHandler::GetInstrumentState_req, this, std::placeholders::_1, fromTime);
 	auto callback = std::bind(&CommHandler::GetInstrumentState_resp, this, std::placeholders::_1);
 
 	try {
@@ -221,13 +159,9 @@ void CommHandler::GetControlInstrumentState(std::string fromTime)
 }
 
 
-void CommHandler::ManualCommand(int instrumentType, int instrumentNumber, bool shouldBeActivated)
+void CommHandler::ManualCommand(int instrumentType, int instrumentNumber, bool instrumentState)
 {
-	localInstrumentState.instrumentType = instrumentType;
-	localInstrumentState.instrumentNumber = instrumentNumber;
-	localInstrumentState.instrumentState = shouldBeActivated;
-
-	auto request = std::bind(&CommHandler::SetInstrumentState_req, this, std::placeholders::_1);
+	auto request = std::bind(&CommHandler::SetInstrumentState_req, this, std::placeholders::_1, instrumentType, instrumentNumber, instrumentState);
 	auto callback = std::bind(&CommHandler::SetInstrumentState_resp, this, std::placeholders::_1);
 
 	try {
@@ -248,9 +182,7 @@ void CommHandler::GetData(std::string fromTime)
 	{
 		flagExperimentRequest = true;
 
-		localExperimentTime = fromTime;
-
-		auto request = std::bind(&CommHandler::GetData_req, this, std::placeholders::_1);
+		auto request = std::bind(&CommHandler::GetData_req, this, std::placeholders::_1, fromTime);
 		auto callback = std::bind(&CommHandler::GetData_resp, this, std::placeholders::_1);
 
 		try {
@@ -258,6 +190,7 @@ void CommHandler::GetData(std::string fromTime)
 		}
 		catch (const std::exception& e) {
 			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, stringh::s2ws(e.what()));
+			flagExperimentRequest = false;
 		}
 	}
 }
@@ -272,9 +205,7 @@ void CommHandler::GetLog(std::string fromTime)
 	{
 		flagLogsRequest = true;
 
-		localLogsTime = fromTime;
-
-		auto request = std::bind(&CommHandler::GetLogs_req, this, std::placeholders::_1);
+		auto request = std::bind(&CommHandler::GetLogs_req, this, std::placeholders::_1, fromTime);
 		auto callback = std::bind(&CommHandler::GetLogs_resp, this, std::placeholders::_1);
 
 		try {
@@ -282,6 +213,7 @@ void CommHandler::GetLog(std::string fromTime)
 		}
 		catch (const std::exception& e) {
 			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, stringh::s2ws(e.what()));
+			flagLogsRequest = false;
 		}
 	}
 }
@@ -296,9 +228,7 @@ void CommHandler::GetRequests(std::string fromTime)
 	{
 		flagReqRequest = true;
 
-		localReqTime = fromTime;
-
-		auto request = std::bind(&CommHandler::GetRequest_req, this, std::placeholders::_1);
+		auto request = std::bind(&CommHandler::GetRequest_req, this, std::placeholders::_1, fromTime);
 		auto callback = std::bind(&CommHandler::GetRequest_resp, this, std::placeholders::_1);
 
 		try {
@@ -306,6 +236,7 @@ void CommHandler::GetRequests(std::string fromTime)
 		}
 		catch (const std::exception& e) {
 			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, stringh::s2ws(e.what()));
+			flagReqRequest = false;
 		}
 	}
 }
@@ -314,49 +245,25 @@ void CommHandler::GetRequests(std::string fromTime)
 /*********************************
 // Automation control
 *********************************/
-void CommHandler::StartClient()
-{
-	localThreadCommand = START;
-	ThreadCommand();
-}
+void CommHandler::StartClient() { ThreadCommand(START); }
 
-void CommHandler::ShutdownClient()
-{
-	localThreadCommand = SHUTDOWN;
-	ThreadCommand();
-}
+void CommHandler::ShutdownClient() { ThreadCommand(SHUTDOWN); }
 
-void CommHandler::RestartClient()
-{
-	localThreadCommand = RESTART;
-	ThreadCommand();
-}
+void CommHandler::RestartClient() {	ThreadCommand(RESTART); }
 
-void CommHandler::ResetClient()
-{
-	localThreadCommand = RESET;
-	ThreadCommand();
-}
+void CommHandler::ResetClient() { ThreadCommand(RESET); }
 
-void CommHandler::PauseClient()
-{
-	localThreadCommand = PAUSE;
-	ThreadCommand();
-}
+void CommHandler::PauseClient() { ThreadCommand(PAUSE); }
 
-void CommHandler::ResumeClient()
-{
-	localThreadCommand = RESUME;
-	ThreadCommand();
-}
+void CommHandler::ResumeClient() { ThreadCommand(RESUME); }
 
 void CommHandler::SetUserChoice()
 {
 }
 
-void CommHandler::ThreadCommand()
+void CommHandler::ThreadCommand(int command)
 {
-	auto request = std::bind(&CommHandler::ThreadCommand_req, this, std::placeholders::_1);
+	auto request = std::bind(&CommHandler::ThreadCommand_req, this, std::placeholders::_1, command);
 	auto callback = std::bind(&CommHandler::ThreadCommand_resp, this, std::placeholders::_1);
 
 	try {
@@ -367,28 +274,19 @@ void CommHandler::ThreadCommand()
 	}
 }
 
-void CommHandler::FunctionSampleVacuum()
-{
-	localFunctionalityCommand = SAMPLEVACUUM;
-	FunctionalityCommand();
-}
+/*********************************
+// Automation control
+*********************************/
+void CommHandler::FunctionSampleVacuum() { FunctionalityCommand(SAMPLEVACUUM); }
 
-void CommHandler::FunctionBottleVacuum()
-{
-	localFunctionalityCommand = BOTTLEVACUUM;
-	FunctionalityCommand();
-}
+void CommHandler::FunctionBottleVacuum() { FunctionalityCommand(BOTTLEVACUUM); }
 
-void CommHandler::FunctionChangeBottle()
-{
-	localFunctionalityCommand = BOTTLECHANGE;
-	FunctionalityCommand();
-}
+void CommHandler::FunctionChangeBottle() { FunctionalityCommand(BOTTLECHANGE); }
 
 
-void CommHandler::FunctionalityCommand()
+void CommHandler::FunctionalityCommand(int functionality)
 {
-	auto request = std::bind(&CommHandler::FunctionalityCommand_req, this, std::placeholders::_1);
+	auto request = std::bind(&CommHandler::FunctionalityCommand_req, this, std::placeholders::_1, functionality);
 	auto callback = std::bind(&CommHandler::FunctionalityCommand_resp, this, std::placeholders::_1);
 
 	try {
@@ -400,12 +298,13 @@ void CommHandler::FunctionalityCommand()
 }
 
 /*********************************
-// Debugging
+// User choice
 *********************************/
-void CommHandler::TestConn()
+
+void CommHandler::UserChoice(int choice)
 {
-	auto request = std::bind(&CommHandler::TestConn_req, this, std::placeholders::_1);
-	auto callback = std::bind(&CommHandler::TestConn_resp, this, std::placeholders::_1);
+	auto request = std::bind(&CommHandler::UserChoice_req, this, std::placeholders::_1, choice);
+	auto callback = std::bind(&CommHandler::UserChoice_resp, this, std::placeholders::_1);
 
 	try {
 		client.Request(request, callback, localAddress);
@@ -414,7 +313,6 @@ void CommHandler::TestConn()
 		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, stringh::s2ws(e.what()));
 	}
 }
-
 
 /**********************************************************************************************************************************
 //
@@ -456,78 +354,13 @@ unsigned CommHandler::Handshake_resp(http_response* r) {
 
 
 /*********************************
-// Sync
-*********************************/
-unsigned CommHandler::Sync_req(http_request* r) {
-	r->method = http::method::get;
-	r->accept = http::mimetype::appjson;
-	r->path = "/api/sync";
-
-	r->params.emplace("MS", localMachineSettingsTime);
-	r->params.emplace("ES", localExperimentSettingsTime);
-	r->params.emplace("ESt", localExperimentStatusTime);
-	r->params.emplace("CS", localControlStateTime);
-
-	return 0;
-}
-
-unsigned CommHandler::Sync_resp(http_response* r) {
-
-	flagSyncRequest = false;
-
-	if (r->status == http::responses::ok)
-	{
-		// Parse JSON
-		//////////////////////////////////////////////
-		json j;
-		try
-		{
-			j = json::parse(r->body.c_str());
-		}
-		catch (const std::exception& e)
-		{
-			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, stringh::s2ws(e.what()));
-			return 1;
-		}
-
-		// Check changes and request updates if needed
-		//////////////////////////////////////////////
-		if (j["MS"] == false) {
-			GetMachineSettings();
-		}
-		if (j["ES"] == false) {
-			GetExperimentSettings();
-		}
-		if (j["ESt"] == false) {
-			GetExperimentStatus();
-		}
-		if (j["CS"] == false) {
-			GetControlInstrumentState();
-		}
-
-	}
-	else if (r->status == http::responses::not_found)
-	{
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Sync failed"));
-		return 1;
-	}
-	else if (r->disconnected)
-	{
-		messageHandler.Disconnection();
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server disconnected"));
-	}
-
-	return 0;
-}
-
-
-/*********************************
 // Get MachineSettings
 *********************************/
-unsigned CommHandler::GetMachineSettings_req(http_request* r) {
+unsigned CommHandler::GetMachineSettings_req(http_request* r, std::string fromTime) {
 	r->method = http::method::get;
 	r->accept = http::mimetype::appjson;
 	r->path = "/api/machinesettings";
+	r->params.emplace("time", fromTime);
 	return 0;
 }
 
@@ -537,26 +370,13 @@ unsigned CommHandler::GetMachineSettings_resp(http_response* r) {
 	{
 		if (r->content_type.find(http::mimetype::appjson) != std::string::npos) {
 
-			// Parse JSON
-			//////////////////////////////////////////////
-			json j;
-			try
-			{
-				j = json::parse(r->body.c_str());
-			}
-			catch (const std::exception& e)
-			{
-				messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, stringh::s2ws(e.what()));
-				return 1;
-			}
-
 			// Deserisalise data
 			//////////////////////////////////////////////
-			MachineSettings receivedSettings;
+			MachineSettings * receivedSettings;
 
 			try
 			{
-				receivedSettings = j;
+				*receivedSettings = json::parse(r->body.c_str());
 			}
 			catch (const std::exception& e)
 			{
@@ -565,9 +385,6 @@ unsigned CommHandler::GetMachineSettings_resp(http_response* r) {
 			}
 
 			messageHandler.ExchangeMachineSettings(receivedSettings);
-
-			// Confirm sync
-			CheckSync();
 		}
 		else
 		{
@@ -577,7 +394,7 @@ unsigned CommHandler::GetMachineSettings_resp(http_response* r) {
 	}
 	else if (r->status == http::responses::not_found)
 	{
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server cannot get Machine Settings"));
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server does not support Machine Settings send"));
 		return 1;
 	}
 
@@ -588,7 +405,9 @@ unsigned CommHandler::GetMachineSettings_resp(http_response* r) {
 /*********************************
 // Set MachineSettings
 *********************************/
-unsigned CommHandler::SetMachineSettings_req(http_request* r) {
+
+unsigned CommHandler::SetMachineSettings_req(http_request* r, MachineSettings ms) {
+
 	r->method			= http::method::post;
 	r->content_type	= http::mimetype::appjson;
 	r->path			= "/api/machinesettings";
@@ -596,7 +415,7 @@ unsigned CommHandler::SetMachineSettings_req(http_request* r) {
 	json j;
 	try
 	{
-		j = *localMachineSettings;
+		j = ms;
 	}
 	catch (const std::exception& e)
 	{
@@ -613,7 +432,6 @@ unsigned CommHandler::SetMachineSettings_resp(http_response* r) {
 	
 	if (r->status == http::responses::ok)
 	{
-		localMachineSettings.reset();
 		messageHandler.OnSetMachineSettings();
 	}
 	else if (r->status == http::responses::internal_err)
@@ -629,10 +447,11 @@ unsigned CommHandler::SetMachineSettings_resp(http_response* r) {
 /*********************************
 // Get ExperimentSettings
 *********************************/
-unsigned CommHandler::GetExperimentSettings_req(http_request* r) {
+unsigned CommHandler::GetExperimentSettings_req(http_request* r, std::string fromTime) {
 	r->method = http::method::get;
 	r->accept = http::mimetype::appjson;
 	r->path = "/api/experimentsettings";
+	r->params.emplace("time", fromTime);
 	return 0;
 }
 
@@ -642,26 +461,13 @@ unsigned CommHandler::GetExperimentSettings_resp(http_response* r) {
 	{
 		if (r->content_type.find(http::mimetype::appjson) != std::string::npos) {
 
-			// Parse JSON
-			//////////////////////////////////////////////
-			json j;
-			try
-			{
-				j = json::parse(r->body.c_str());
-			}
-			catch (const std::exception& e)
-			{
-				messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, stringh::s2ws(e.what()));
-				return 1;
-			}
-
 			// Deserisalise data
 			//////////////////////////////////////////////
-			ExperimentSettings receivedSettings;
+			ExperimentSettings * receivedSettings;
 
 			try
 			{
-				receivedSettings = j;
+				*receivedSettings = json::parse(r->body.c_str());
 			}
 			catch (const std::exception& e)
 			{
@@ -670,9 +476,6 @@ unsigned CommHandler::GetExperimentSettings_resp(http_response* r) {
 			}
 
 			messageHandler.ExchangeExperimentSettings(receivedSettings);
-
-			// Confirm sync
-			CheckSync();
 		}
 		else
 		{
@@ -693,7 +496,7 @@ unsigned CommHandler::GetExperimentSettings_resp(http_response* r) {
 /*********************************
 // Set ExperimentSettings
 *********************************/
-unsigned CommHandler::SetExperimentSettings_req(http_request* r) {
+unsigned CommHandler::SetExperimentSettings_req(http_request* r, ExperimentSettings es) {
 	r->method = http::method::post;
 	r->content_type = http::mimetype::appjson;
 	r->path = "/api/experimentsettings";
@@ -701,7 +504,7 @@ unsigned CommHandler::SetExperimentSettings_req(http_request* r) {
 	json j;
 	try
 	{
-		j = *localExperimentSettings;
+		j = es;
 	}
 	catch (const std::exception& e)
 	{
@@ -718,7 +521,6 @@ unsigned CommHandler::SetExperimentSettings_resp(http_response* r) {
 
 	if (r->status == http::responses::ok)
 	{
-		localExperimentSettings.reset();
 		messageHandler.OnSetExperimentSettings();
 	}
 	else if (r->status == http::responses::internal_err)
@@ -734,10 +536,11 @@ unsigned CommHandler::SetExperimentSettings_resp(http_response* r) {
 /*********************************
 // Get ExperimentStatus
 *********************************/
-unsigned CommHandler::GetExperimentStatus_req(http_request* r) {
+unsigned CommHandler::GetExperimentStatus_req(http_request* r, std::string fromTime) {
 	r->method = http::method::get;
 	r->accept = http::mimetype::appjson;
 	r->path = "/api/experimentstatus";
+	r->params.emplace("time", fromTime);
 	return 0;
 }
 
@@ -747,26 +550,13 @@ unsigned CommHandler::GetExperimentStatus_resp(http_response* r) {
 	{
 		if (r->content_type.find(http::mimetype::appjson) != std::string::npos) {
 
-			// Parse JSON
-			//////////////////////////////////////////////
-			json j;
-			try
-			{
-				j = json::parse(r->body.c_str());
-			}
-			catch (const std::exception& e)
-			{
-				messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, stringh::s2ws(e.what()));
-				return 1;
-			}
-
 			// Deserisalise data
 			//////////////////////////////////////////////
-			ExperimentStatus receivedStatus;
+			ExperimentStatus * receivedStatus;
 
 			try
 			{
-				ExperimentStatus receivedStatus(j);
+				*receivedStatus = json::parse(r->body.c_str());
 			}
 			catch (const std::exception& e)
 			{
@@ -775,9 +565,6 @@ unsigned CommHandler::GetExperimentStatus_resp(http_response* r) {
 			}
 
 			messageHandler.ExchangeExperimentStatus(receivedStatus);
-
-			// Confirm sync
-			CheckSync();
 		}
 		else
 		{
@@ -793,14 +580,17 @@ unsigned CommHandler::GetExperimentStatus_resp(http_response* r) {
 
 	return 0;
 }
+
+
 /*********************************
 // Get machine Instrument State
 *********************************/
-unsigned CommHandler::GetInstrumentState_req(http_request * r)
+unsigned CommHandler::GetInstrumentState_req(http_request * r, std::string fromTime)
 {
 	r->method = http::method::get;
+	r->accept = http::mimetype::appjson;
 	r->path = "/api/instrument";
-
+	r->params.emplace("time", fromTime);
 	return 0;
 }
 
@@ -808,38 +598,19 @@ unsigned CommHandler::GetInstrumentState_resp(http_response * r)
 {
 	if (r->status == http::responses::ok)
 	{
-		json j;
-
-		// Parse JSON
-		//////////////////////////////////////////////
-		try
-		{
-			j = json::parse(r->body.c_str());
-		}
-		catch (const std::exception& e)
-		{
-			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, stringh::s2ws(e.what()));
-			return 1;
-		}
-
-		ControlInstrumentState instrumentState;
-
 		// Deserialise Data
-		//////////////////////////////////////////////
+		ControlInstrumentState * instrumentState;
 		try
 		{
-			instrumentState = j;
+			*instrumentState = json::parse(r->body.c_str());
 		}
 		catch (const std::exception& e)
 		{
 			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, stringh::s2ws(e.what()));
 			return 1;
 		}
-
+		// Exchange
 		messageHandler.ExchangeControlState(instrumentState);
-
-		// Confirm sync
-		CheckSync();
 	}
 	else if (r->status == http::responses::not_found) {
 		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server cannot get Instrument State"));
@@ -852,16 +623,14 @@ unsigned CommHandler::GetInstrumentState_resp(http_response * r)
 /*********************************
 // Set machine Instrument State
 *********************************/
-unsigned CommHandler::SetInstrumentState_req(http_request * r)
+unsigned CommHandler::SetInstrumentState_req(http_request * r, int instrumentType, int instrumentNumber, int instrumentState)
 {
 	r->method = http::method::post;
 	r->path = "/api/instrument";
 
 	std::string localInstrumentType;
-	std::string localInstrumentNumber;
-	std::string localShouldBeActivated;
 
-	switch (localInstrumentState.instrumentType)
+	switch (instrumentType)
 	{
 	case CONTROLLER_VALVE:
 		localInstrumentType = "valve";
@@ -878,12 +647,13 @@ unsigned CommHandler::SetInstrumentState_req(http_request * r)
 		break;
 	}
 
-	localInstrumentNumber = std::to_string(localInstrumentState.instrumentNumber);
-	localShouldBeActivated = std::to_string(localInstrumentState.instrumentState);
-
 	r->params.emplace("type", localInstrumentType);
-	r->params.emplace("number", localInstrumentNumber);
-	r->params.emplace("active", localShouldBeActivated);
+	r->params.emplace("number", instrumentNumber);
+	r->params.emplace("active", instrumentState);
+
+	localInstrumentState.instrumentType = instrumentType;
+	localInstrumentState.instrumentNumber = instrumentNumber;
+	localInstrumentState.instrumentState = instrumentState;
 
 	return 0;
 }
@@ -917,11 +687,11 @@ unsigned CommHandler::SetInstrumentState_resp(http_response * r)
 /*********************************
 // Get Data
 *********************************/
-unsigned CommHandler::GetData_req(http_request* r) {
+unsigned CommHandler::GetData_req(http_request* r, std::string fromTime) {
 	r->method = http::method::get;
 	r->accept = http::mimetype::appjson;
 	r->path = "/api/experimentdata";
-	r->params.emplace("time", localExperimentTime);
+	r->params.emplace("time", fromTime);
 	return 0;
 }
 
@@ -949,7 +719,7 @@ unsigned CommHandler::GetData_resp(http_response* r) {
 
 			// Deserialise Data
 			//////////////////////////////////////////////
-			auto receivedDataArray = new ExperimentDataStorageArray();
+			auto receivedDataArray = new std::map<std::chrono::system_clock::time_point, ExperimentData>();
 
 			for (json::iterator i = j.begin(); i != j.end(); ++i)
 			{
@@ -965,13 +735,10 @@ unsigned CommHandler::GetData_resp(http_response* r) {
 					delete receivedDataArray;
 					return 1;
 				}
-				receivedDataArray->insert(std::make_pair(timeh::StringToTimePoint(i.key()), receivedData));
+				receivedDataArray->insert(std::make_pair(timeh::StringToTimePoint(i.key()), *receivedData));
 			}																													 
 
 			messageHandler.ExchangeData(receivedDataArray);
-
-			// Confirm sync
-			CheckSync();
 		}
 		else
 		{
@@ -997,12 +764,12 @@ unsigned CommHandler::GetData_resp(http_response* r) {
 /*********************************
 // Get Logs
 *********************************/
-unsigned CommHandler::GetLogs_req(http_request * r)
+unsigned CommHandler::GetLogs_req(http_request * r, std::string fromTime)
 {
 	r->method = http::method::get;
 	r->accept = http::mimetype::appjson;
 	r->path = "/api/experimentlogs";
-	r->params.emplace("time", localLogsTime);
+	r->params.emplace("time", fromTime);
 	return 0;
 }
 
@@ -1049,9 +816,6 @@ unsigned CommHandler::GetLogs_resp(http_response * r)
 			}
 
 			messageHandler.ExchangeLogs(receivedLogArray);
-
-			// Confirm sync
-			CheckSync();
 		}
 		else
 		{
@@ -1072,12 +836,12 @@ unsigned CommHandler::GetLogs_resp(http_response * r)
 // Get Requests / Errors
 *********************************/
 
-unsigned CommHandler::GetRequest_req(http_request * r)
+unsigned CommHandler::GetRequest_req(http_request * r, std::string fromTime)
 {
 	r->method = http::method::get;
 	r->accept = http::mimetype::appjson;
 	r->path = "/api/experimentrequests";
-	r->params.emplace("time", localReqTime);
+	r->params.emplace("time", fromTime);
 	return 0;
 }
 
@@ -1123,9 +887,6 @@ unsigned CommHandler::GetRequest_resp(http_response * r)
 				receivedReqArray->insert(std::make_pair(timeh::StringToTimePoint(i.key()), receivedReq));
 			}
 			messageHandler.ExchangeRequests(receivedReqArray);
-
-			// Confirm sync
-			CheckSync();
 		}
 		else
 		{
@@ -1146,13 +907,13 @@ unsigned CommHandler::GetRequest_resp(http_response * r)
 /*********************************
 // Thread Commands
 *********************************/
-unsigned CommHandler::ThreadCommand_req(http_request * r)
+unsigned CommHandler::ThreadCommand_req(http_request * r, int command)
 {
 	r->method = http::method::post;
 	r->path = "/api/thread";
 
 	std::string action;
-	switch (localThreadCommand)
+	switch (command)
 	{
 	case START:
 		action = "start";
@@ -1184,7 +945,7 @@ unsigned CommHandler::ThreadCommand_resp(http_response * r)
 {
 	if (r->status == http::responses::ok)
 	{
-		messageHandler.SyncComplete();
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Command executed"));
 		return 1;
 	}
 	else if (r->status == http::responses::conflict)
@@ -1204,13 +965,17 @@ unsigned CommHandler::ThreadCommand_resp(http_response * r)
 	return 0;
 }
 
-unsigned CommHandler::FunctionalityCommand_req(http_request* r)
+/*********************************
+// Functionality Commands
+*********************************/
+
+unsigned CommHandler::FunctionalityCommand_req(http_request* r, int functionality)
 {
 	r->method = http::method::post;
 	r->path = "/api/functionality";
 
 	std::string action;
-	switch (localFunctionalityCommand)
+	switch (functionality)
 	{
 	case SAMPLEVACUUM:
 		action = "cell_vacuum";
@@ -1233,7 +998,7 @@ unsigned CommHandler::FunctionalityCommand_resp(http_response* r)
 {
 	if (r->status == http::responses::ok)
 	{
-
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Functionality requested"));
 		return 1;
 	}
 	else if (r->status == http::responses::conflict)
@@ -1253,31 +1018,38 @@ unsigned CommHandler::FunctionalityCommand_resp(http_response* r)
 	return 0;
 }
 
+
 /*********************************
-// Debugging
+// User Choice
 *********************************/
 
-unsigned CommHandler::TestConn_req(http_request* r) {
-	r->method = http::method::get;
-	r->path = "/api/debug/testconnection";
-	r->params.emplace("return", "500");
+unsigned CommHandler::UserChoice_req(http_request* r, int choice)
+{
+	r->method = http::method::post;
+	r->path = "/api/input";
+	r->params.emplace("i", choice);
 	return 0;
 }
 
-unsigned CommHandler::TestConn_resp(http_response* r) {
-
+unsigned CommHandler::UserChoice_resp(http_response* r)
+{
 	if (r->status == http::responses::ok)
 	{
-		debug_success++;
+		return 1;
+	}
+	else if (r->status == http::responses::conflict)
+	{
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server cannot process functionality"));
+		return 1;
 	}
 	else if (r->status == http::responses::bad_request)
 	{
-		debug_fails++;
-	}
-	
-	std::wstring s = _T("Success: ") + std::to_wstring(debug_success) ;
-	s += _T(" Fail: ") + std::to_wstring(debug_fails);
-	messageHandler.DisplayMessage(GENERIC_STRING, s);
 
+		return 1;
+	}
+	else if (r->status == http::responses::not_found) {
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server cannot find functionality"));
+		return 1;
+	}
 	return 0;
 }

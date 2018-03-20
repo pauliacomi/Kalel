@@ -61,15 +61,12 @@ bool MFCMessageHandler::OnSetMachineSettings()
 	return true;
 }
 
-bool MFCMessageHandler::ExchangeMachineSettings(const MachineSettings &pParam)
+bool MFCMessageHandler::ExchangeMachineSettings(MachineSettings * pParam)
 {
-	// Create a new instance of the storage class and equate it to the local class
-	MachineSettings * newData = new MachineSettings(pParam);
-
 	// Post the required message, now the main thread is responsible for deleting the new class
-	if (::PostMessage(windowHandle, UWM_EXCHANGE_MACHINESETTINGS, NULL, (LPARAM)newData) == 0)
+	if (::PostMessage(windowHandle, UWM_EXCHANGE_MACHINESETTINGS, NULL, (LPARAM)pParam) == 0)
 	{
-		delete newData;
+		delete pParam;
 		return false;
 	}
 	return true;
@@ -84,36 +81,30 @@ bool MFCMessageHandler::OnSetExperimentSettings()
 	return true;
 }
 
-bool MFCMessageHandler::ExchangeExperimentSettings(const ExperimentSettings &pParam)
+bool MFCMessageHandler::ExchangeExperimentSettings(ExperimentSettings * pParam)
 {
-	// Create a new instance of the storage class and equate it to the local class
-	ExperimentSettings * newData = new ExperimentSettings(pParam);
-
 	// Post the required message, now the main thread is responsible for deleting the new class
-	if (::PostMessage(windowHandle, UWM_EXCHANGE_EXPERIMENTSETTINGS, NULL, (LPARAM)newData) == 0)
+	if (::PostMessage(windowHandle, UWM_EXCHANGE_EXPERIMENTSETTINGS, NULL, (LPARAM)pParam) == 0)
 	{
-		delete newData;
+		delete pParam;
 		return false;
 	}
 	return true;
 }
 
-bool MFCMessageHandler::ExchangeExperimentStatus(const ExperimentStatus &pParam)
+bool MFCMessageHandler::ExchangeExperimentStatus(ExperimentStatus * pParam)
 {
-	// Create a new instance of the storage class and equate it to the local class
-	ExperimentStatus * newData = new ExperimentStatus(pParam);
-
 	// Post the required message, now the main thread is responsible for deleting the new class
-	if (::PostMessage(windowHandle, UWM_EXCHANGE_EXPERIMENTSTATUS, NULL, (LPARAM)newData) == 0)
+	if (::PostMessage(windowHandle, UWM_EXCHANGE_EXPERIMENTSTATUS, NULL, (LPARAM)pParam) == 0)
 	{
-		delete newData;
+		delete pParam;
 		return false;
 	}
 	return true;
 }
 
 
-bool MFCMessageHandler::ExchangeData(ExperimentDataStorageArray * pParam)
+bool MFCMessageHandler::ExchangeData(std::map<std::chrono::system_clock::time_point, ExperimentData> * pParam)
 {
 	// Post the required message, now the main thread is responsible for deleting the new class
 	if (::PostMessage(windowHandle, UWM_EXCHANGEDATA, NULL, (LPARAM)pParam) == 0 ) 
@@ -146,15 +137,12 @@ bool MFCMessageHandler::ExchangeRequests(std::map<std::chrono::system_clock::tim
 	return true;
 }
 
-bool MFCMessageHandler::ExchangeControlState(const ControlInstrumentState &pParam)
+bool MFCMessageHandler::ExchangeControlState(ControlInstrumentState * pParam)
 {
-	// Create a new instance of the storage class and equate it to the local class
-	ControlInstrumentState * newData = new ControlInstrumentState(pParam);
-
 	// Post the required message, now the main thread is responsible for deleting the new class
-	if (::PostMessage(windowHandle, UWM_EXCHANGESTATE, NULL, (LPARAM)newData) == 0)
+	if (::PostMessage(windowHandle, UWM_EXCHANGESTATE, NULL, (LPARAM)pParam) == 0)
 	{
-		delete newData;
+		delete pParam;
 		return false;
 	}
 	return true;

@@ -20,14 +20,11 @@ public:
 	void Connect(std::wstring address);
 	void SaveAddress(std::wstring address);
 
-	void Sync(bool initialSync, std::string fromTimeES = R"()", std::string fromTimeMS = R"()", std::string fromTimeCS = R"()", std::string fromTimeESt = R"()");
-	unsigned int CheckSync();
-
 	void GetMachineSettings(std::string fromTime = R"()");
-	void SetMachineSettings(std::shared_ptr<const MachineSettings> ptr);
+	void SetMachineSettings(const MachineSettings &ptr);
 	
 	void GetExperimentSettings(std::string fromTime = R"()");
-	void SetExperimentSettings(std::shared_ptr<const ExperimentSettings> ptr);
+	void SetExperimentSettings(const ExperimentSettings &ptr);
 	
 	void GetControlInstrumentState(std::string fromTime = R"()");
 	void ManualCommand(int instrumentType, int instrumentNumber, bool shouldBeActivated);
@@ -35,7 +32,7 @@ public:
 	void GetExperimentStatus(std::string fromTime = R"()");
 	void GetData(std::string fromTime = R"()");
 	void GetLog(std::string fromTime = R"()");
-	void GetRequests(std::string fromTime = R"()");;
+	void GetRequests(std::string fromTime = R"()");
 
 	void StartClient();
 	void ShutdownClient();
@@ -49,14 +46,13 @@ public:
 	void FunctionBottleVacuum();
 	void FunctionChangeBottle();
 
-	void TestConn();
-
 private:
 	Client client;
 	MFCMessageHandler messageHandler;
 	
-	void ThreadCommand();
-	void FunctionalityCommand();
+	void ThreadCommand(int command);
+	void FunctionalityCommand(int functionality);
+	void UserChoice(int choice);
 
 	/**********************************************************************************************************************************
 	// Local variables: don't like these
@@ -64,22 +60,9 @@ private:
 
 	std::string localAddress;								// Server address
 
-	std::string localExperimentTime;						// Start time requested for experiment data 
-	std::string localLogsTime;								// Start time requested for logs 
-	std::string localReqTime;								// Start time requested for requests 
-	std::string localExperimentSettingsTime;				// Start time requested for experiment data 
-	std::string	localExperimentStatusTime;					// Start time requested for expeirment status
-	std::string localMachineSettingsTime;					// Start time requested for logs 
-	std::string localControlStateTime;						// Start time requested for requests 
-
 	ControlInstrumentStateData localInstrumentState;
 
-	std::shared_ptr<const MachineSettings> localMachineSettings;
-	std::shared_ptr<const ExperimentSettings> localExperimentSettings;
-	int localThreadCommand = 0;
-	int localFunctionalityCommand = 0;
-
-	// TODO: worst way of doing this
+	// Sync flags
 	std::atomic_bool flagSyncRequest = false;
 	std::atomic_bool flagReqRequest = false;
 	std::atomic_bool flagLogsRequest = false;
@@ -88,12 +71,6 @@ private:
 	std::atomic_bool flagExperimentSettingsRequest = false;
 	std::atomic_bool flagInstrumentStateRequest = false;
 
-	std::atomic_int sync = 0;
-
-	// Debugging
-	int debug_success = 0;
-	int debug_fails = 0;
-
 	/**********************************************************************************************************************************
 	// Request and response functions
 	**********************************************************************************************************************************/
@@ -101,59 +78,55 @@ private:
 	unsigned Handshake_req(http_request* r);
 	unsigned Handshake_resp(http_response * r);
 
-	// Sync timers
-	unsigned Sync_req(http_request * r);
-	unsigned Sync_resp(http_response * r);
-	
 	// Machine settings set
-	unsigned GetMachineSettings_req(http_request * r);
+	unsigned GetMachineSettings_req(http_request * r, std::string fromTime);
 	unsigned GetMachineSettings_resp(http_response * r);
 
 	// Machine settings get
-	unsigned SetMachineSettings_req(http_request * r);
+	unsigned SetMachineSettings_req(http_request * r, MachineSettings ms);
 	unsigned SetMachineSettings_resp(http_response * r);
 
 	// Experiment Settings Gets
-	unsigned GetExperimentSettings_req(http_request * r);
+	unsigned GetExperimentSettings_req(http_request * r, std::string fromTime);
 	unsigned GetExperimentSettings_resp(http_response * r);
 
 	// Experiment Settings Set
-	unsigned SetExperimentSettings_req(http_request * r);
+	unsigned SetExperimentSettings_req(http_request * r, ExperimentSettings ms);
 	unsigned SetExperimentSettings_resp(http_response * r);
 
 	// Experiment Status Gets
-	unsigned GetExperimentStatus_req(http_request * r);
+	unsigned GetExperimentStatus_req(http_request * r, std::string fromTime);
 	unsigned GetExperimentStatus_resp(http_response * r);
 
 	// Instrument state get
-	unsigned GetInstrumentState_req(http_request * r);
+	unsigned GetInstrumentState_req(http_request * r, std::string fromTime);
 	unsigned GetInstrumentState_resp(http_response * r);
 
 	// Instrument state set
-	unsigned SetInstrumentState_req(http_request * r);
+	unsigned SetInstrumentState_req(http_request * r, int instrumentType, int instrumentNumber, int instrumentState);
 	unsigned SetInstrumentState_resp(http_response * r);
 	
 	// Data sync
-	unsigned GetData_req(http_request * r);
+	unsigned GetData_req(http_request * r, std::string fromTime);
 	unsigned GetData_resp(http_response * r);
 
 	// Logs sync
-	unsigned GetLogs_req(http_request * r);
+	unsigned GetLogs_req(http_request * r, std::string fromTime);
 	unsigned GetLogs_resp(http_response * r);
 
 	// Request/Error sync
-	unsigned GetRequest_req(http_request * r);
+	unsigned GetRequest_req(http_request * r, std::string fromTime);
 	unsigned GetRequest_resp(http_response * r);
 	
 	// Automation/experiment commands
-	unsigned ThreadCommand_req(http_request * r);
+	unsigned ThreadCommand_req(http_request * r, int command);
 	unsigned ThreadCommand_resp(http_response * r);
 	
 	// Functionality commands
-	unsigned FunctionalityCommand_req(http_request * r);
+	unsigned FunctionalityCommand_req(http_request * r, int functionality);
 	unsigned FunctionalityCommand_resp(http_response * r);
 
-	// Debugging
-	unsigned TestConn_req(http_request * r);
-	unsigned TestConn_resp(http_response * r);
+	// User choice commands
+	unsigned UserChoice_req(http_request * r, int choice);
+	unsigned UserChoice_resp(http_response * r);
 };
