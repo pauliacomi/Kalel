@@ -3,8 +3,7 @@
 // used to sent PostMessage commends to the specified window
 
 #pragma once
-#ifndef MFCMESSAGEHANDLER_H
-#define MFCMESSAGEHANDLER_H
+#include "stdafx.h"
 
 #define default_val -1	// This value is used as the default value for the optional parameters of the message display function. 
 						// Make sure that it is set to a value that the actual parameters can never take
@@ -63,6 +62,3 @@ public:
 	bool DisplayMessageBox(int message, UINT nType, bool blocksProgram, double pDouble1 = default_val, double pDouble2 = default_val);
 	bool DisplayMessageBox(int pParam, UINT nType, bool blocksProgram, std::wstring pString);
 };
-
-
-#endif // !MFCMESSAGEHANDLER_H

@@ -114,9 +114,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="targetver.h">
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
@@ -222,9 +219,6 @@
     <ClInclude Include="..\Kalel Shared\Netcode\base64.h">
       <Filter>Header Files\Commmon\Netcode</Filter>
     </ClInclude>
-    <ClInclude Include="..\Kalel Shared\Netcode\Client.h">
-      <Filter>Header Files\Commmon\Netcode</Filter>
-    </ClInclude>
     <ClInclude Include="..\Kalel Shared\Netcode\http_request.h">
       <Filter>Header Files\Commmon\Netcode</Filter>
     </ClInclude>
@@ -315,6 +309,9 @@
     <ClInclude Include="DialogConnectionPort.h">
       <Filter>Header Files\GUI\Dialogs\Machine Parameters</Filter>
     </ClInclude>
+    <ClInclude Include="..\Kalel Shared\Netcode\http_client.h">
+      <Filter>Header Files\Commmon\Netcode</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainFrm.cpp">
@@ -404,9 +401,6 @@
     <ClCompile Include="..\Kalel Shared\Netcode\base64.cpp">
       <Filter>Source Files\Commmon\Netcode</Filter>
     </ClCompile>
-    <ClCompile Include="..\Kalel Shared\Netcode\Client.cpp">
-      <Filter>Source Files\Commmon\Netcode</Filter>
-    </ClCompile>
     <ClCompile Include="..\Kalel Shared\Netcode\Server.cpp">
       <Filter>Source Files\Commmon\Netcode</Filter>
     </ClCompile>
@@ -420,9 +414,6 @@
       <Filter>Source Files\Commmon\Com Classes</Filter>
     </ClCompile>
     <ClCompile Include="..\Kalel Shared\Com Classes\ExperimentSettings.cpp">
-      <Filter>Source Files\Commmon\Com Classes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Kalel Shared\Com Classes\ExperimentData.cpp">
       <Filter>Source Files\Commmon\Com Classes</Filter>
     </ClCompile>
     <ClCompile Include="..\Kalel Shared\Com Classes\ExperimentHelperClasses.cpp">
@@ -454,6 +445,9 @@
     </ClCompile>
     <ClCompile Include="DialogMachineParameters.cpp">
       <Filter>Source Files\GUI\Dialogs\Machine Parameters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Kalel Shared\Netcode\http_client.cpp">
+      <Filter>Source Files\Commmon\Netcode</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

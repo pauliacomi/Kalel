@@ -128,7 +128,7 @@ unsigned int CommHandler::CheckSync()
 /*********************************
 // MachineSettings
 *********************************/
-void CommHandler::GetMachineSettings()
+void CommHandler::GetMachineSettings(std::string fromTime)
 {
 	auto request = std::bind(&CommHandler::GetMachineSettings_req, this, std::placeholders::_1);
 	auto callback = std::bind(&CommHandler::GetMachineSettings_resp, this, std::placeholders::_1);
@@ -160,7 +160,7 @@ void CommHandler::SetMachineSettings(std::shared_ptr<const MachineSettings> ptr)
 /*********************************
 // ExperimentSettings
 *********************************/
-void CommHandler::GetExperimentSettings()
+void CommHandler::GetExperimentSettings(std::string fromTime)
 {
 	auto request = std::bind(&CommHandler::GetExperimentSettings_req, this, std::placeholders::_1);
 	auto callback = std::bind(&CommHandler::GetExperimentSettings_resp, this, std::placeholders::_1);
@@ -191,7 +191,7 @@ void CommHandler::SetExperimentSettings(std::shared_ptr<const ExperimentSettings
 /*********************************
 // ExperimentStatus
 *********************************/
-void CommHandler::GetExperimentStatus()
+void CommHandler::GetExperimentStatus(std::string fromTime)
 {
 	auto request = std::bind(&CommHandler::GetExperimentStatus_req, this, std::placeholders::_1);
 	auto callback = std::bind(&CommHandler::GetExperimentStatus_resp, this, std::placeholders::_1);
@@ -207,7 +207,7 @@ void CommHandler::GetExperimentStatus()
 /*********************************
 // Instrument State / Instrument control
 *********************************/
-void CommHandler::GetControlInstrumentState()
+void CommHandler::GetControlInstrumentState(std::string fromTime)
 {
 	auto request = std::bind(&CommHandler::GetInstrumentState_req, this, std::placeholders::_1);
 	auto callback = std::bind(&CommHandler::GetInstrumentState_resp, this, std::placeholders::_1);

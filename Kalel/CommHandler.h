@@ -1,10 +1,8 @@
-#ifndef COMMHANDLER_H
-#define COMMHANDLER_H
 #pragma once
 
 #include "MFCMessageHandler.h"
 
-#include "../Kalel Shared/Netcode/Client.h"
+#include "../Kalel Shared/Netcode/http_client.h"
 #include "../Kalel Shared/Com Classes/MachineSettings.h"
 #include "../Kalel Shared/Com Classes/ExperimentSettings.h"
 
@@ -25,16 +23,16 @@ public:
 	void Sync(bool initialSync, std::string fromTimeES = R"()", std::string fromTimeMS = R"()", std::string fromTimeCS = R"()", std::string fromTimeESt = R"()");
 	unsigned int CheckSync();
 
-	void GetMachineSettings();
+	void GetMachineSettings(std::string fromTime = R"()");
 	void SetMachineSettings(std::shared_ptr<const MachineSettings> ptr);
 	
-	void GetExperimentSettings();
+	void GetExperimentSettings(std::string fromTime = R"()");
 	void SetExperimentSettings(std::shared_ptr<const ExperimentSettings> ptr);
 	
-	void GetControlInstrumentState();
+	void GetControlInstrumentState(std::string fromTime = R"()");
 	void ManualCommand(int instrumentType, int instrumentNumber, bool shouldBeActivated);
 	
-	void GetExperimentStatus();
+	void GetExperimentStatus(std::string fromTime = R"()");
 	void GetData(std::string fromTime = R"()");
 	void GetLog(std::string fromTime = R"()");
 	void GetRequests(std::string fromTime = R"()");;
@@ -159,6 +157,3 @@ private:
 	unsigned TestConn_req(http_request * r);
 	unsigned TestConn_resp(http_response * r);
 };
-
-
-#endif

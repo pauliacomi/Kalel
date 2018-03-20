@@ -7,6 +7,7 @@
 #include "KalelDoc.h"															// For the document pointer
 #include "../Kalel Shared/Resources/StringTable.h"								// Error message strings
 #include <algorithm>
+#include <chrono>
 
 static const int	BORDER_WIDTH		= 15;
 static const int	LEGEND_HEIGHT		= 30;

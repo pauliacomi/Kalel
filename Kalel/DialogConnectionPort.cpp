@@ -103,7 +103,7 @@ void ConnectionPort::PassSettings(MachineSettings * machineSettings)
 	{
 		switch (i.second.type)
 		{
-		case CONTROLLER_VALVES:
+		case CONTROLLER_VALVE:
 			valvecontroller = i.second.instrument;
 		default:
 			break;
@@ -395,8 +395,8 @@ void ConnectionPort::SaveModifications(MachineSettings& newSettings)
 
 	// Save controllers
 	Controller c;
-	c.type = CONTROLLER_VALVES;
-	c.identifier = ID_CONTROLLER_VALVES;
+	c.type = CONTROLLER_VALVE;
+	c.identifier = CONTROLLER_VALVE;
 	c.channel = 1;
 	c.instrument = valvecontroller;
 
