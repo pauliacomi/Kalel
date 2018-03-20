@@ -19,13 +19,6 @@ public:
 
 public:
 	///*******************
-	///		Sync tools
-	///*******************
-
-	std::mutex mtx;											// Synchronisation mutex
-	std::chrono::system_clock::time_point timeChanged;		// Time when machine settings changed
-
-	///*******************
 	///		Settings
 	///*******************
 

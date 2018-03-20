@@ -49,7 +49,7 @@ void Automation::Execution()
 		*/
 
 		// Go through any functionality
-		if (storage.experimentStatus.experimentCommandsRequested.get()) {
+		if (storage.experimentStatus.experimentCommandsRequested) {
 			switch (storage.experimentSettings.experimentType)		// We look at the type of experiment
 			{
 			case EXPERIMENT_TYPE_MANUAL:						// in case it is manual
@@ -81,8 +81,8 @@ void Automation::Execution()
 		*/
 
 		// If waiting complete
-		if (storage.experimentStatus.experimentWaiting.get() &&															// If the wait functionality is requested																					
-			controls.timerWaiting.TimeSeconds() > storage.experimentStatus.timeToEquilibrate.get()) {					// and the time has been completed
+		if (storage.experimentStatus.experimentWaiting &&															// If the wait functionality is requested																					
+			controls.timerWaiting.TimeSeconds() > storage.experimentStatus.timeToEquilibrate) {					// and the time has been completed
 
 			// Stop the timer
 			controls.timerWaiting.Pause();
@@ -212,7 +212,7 @@ void Automation::ExecutionAuto()
 	}
 
 	// Stages of automatic experiment
-	switch (storage.experimentStatus.experimentStage.get())
+	switch (storage.experimentStatus.experimentStage)
 	{
 	case STAGE_VERIFICATIONS:
 		Verifications();

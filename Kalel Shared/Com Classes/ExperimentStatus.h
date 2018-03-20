@@ -2,9 +2,6 @@
 
 #include <atomic>
 #include <chrono>	// for timepoint
-#include <mutex>
-
-#include "../classHelpers.h"
 
 class ExperimentStatus
 {
@@ -14,54 +11,50 @@ class ExperimentStatus
 	//
 
 public:
-	ExperimentStatus(); 
-	~ExperimentStatus(void);
+	ExperimentStatus();
+	ExperimentStatus(const ExperimentStatus & p);
+	~ExperimentStatus();
 
 	void ResetData();
 	
-	///*******************
-	///		Sync tools
-	///*******************
 
-private:
-	std::mutex mtx;															// Synchronisation mutex
-public:
-	std::chrono::system_clock::time_point timeChanged;						// Time when experiment status changed
+	// Overload equals function
+	ExperimentStatus & ExperimentStatus::operator=(const ExperimentStatus & p);
 
-public:
 	///*******************
 	///		Global flags
 	///*******************
 
-	Attribute<bool> experimentInProgress{ mtx, timeChanged };					// Boolean stating whether the experiment is started or not
-	Attribute<bool> experimentRecording{ mtx, timeChanged };					// Boolean stating whether the data is being recorded at each measurement
-	Attribute<bool> experimentWaiting{ mtx, timeChanged };						// Boolean stating the experiment is currently waiting
-	Attribute<bool> experimentCommandsRequested{ mtx, timeChanged };			// Boolean stating that any automation is requested (manual,automatic etc)
+	std::atomic_bool experimentInProgress;							// Boolean stating whether the experiment is started or not
+	std::atomic_bool experimentRecording;							// Boolean stating whether the data is being recorded at each measurement
+	std::atomic_bool experimentWaiting;								// Boolean stating the experiment is currently waiting
+	std::atomic_bool experimentCommandsRequested;					// Boolean stating that any automation is requested (manual,automatic etc)
 
 	
 	///*******************
 	///		Parameters for storing where program has reached
 	///*******************
 
-	Attribute<int> experimentStage{ mtx, timeChanged };							// Current experiment stage, the main part of the program (verification, equilibration, adsorption, desorption etc.)
-	Attribute<int> verificationStep{ mtx, timeChanged };						// The security check steps
-	Attribute<int> experimentStepStatus{ mtx, timeChanged };					// Current step status, for each step this can be STARTING, ENDING or IN_PROGRESS
-	Attribute<int> experimentSubstepStage{ mtx, timeChanged };					// Current dose substep, can be at injection, equilibration etc
-	Attribute<int> experimentDose{ mtx, timeChanged };							// Current experiment dose that is currently underway (ex: 2nd dose of adsorption step 1)
-	Attribute<int> experimentPreviousStage{ mtx, timeChanged };					// Previous experiment stage
+	std::atomic_int experimentStage;								// Current experiment stage, the main part of the program (verification, equilibration, adsorption, desorption etc.)
+	std::atomic_int verificationStep;								// The security check steps
+	std::atomic_int experimentStepStatus;							// Current step status, for each step this can be STARTING, ENDING or IN_PROGRESS
+	std::atomic_int experimentSubstepStage;							// Current dose substep, can be at injection, equilibration etc
+	std::atomic_int experimentDose;									// Current experiment dose that is currently underway (ex: 2nd dose of adsorption step 1)
+	std::atomic_int experimentPreviousStage;						// Previous experiment stage
 
 	// Time
-	Attribute<unsigned long long> timeStart{ mtx, timeChanged };				// When the experiment started
-	Attribute<unsigned long long> timeEquilibrationStart{ mtx, timeChanged };	// Time equilibration started
-	Attribute<double> timeToEquilibrate{ mtx, timeChanged };					// The amount of time that the waiting + recording functionality will run before returning to an active state
+	std::atomic_ullong timeStart;									// When the experiment started
+	std::atomic_ullong timeEquilibrationStart;						// Time equilibration started
+	std::atomic<double> timeToEquilibrate;							// The amount of time that the waiting + recording functionality will run before returning to an active state
 	
 	// Counters
-	Attribute<int> injectionAttemptCounter{ mtx, timeChanged };					// Counter for the injections
-	Attribute<int> adsorptionCounter{ mtx, timeChanged };						// Counter for the number of adsorption settings (small, medium, large etc) inputted by the user, starts at 0
-	Attribute<int> desorptionCounter{ mtx, timeChanged };						// Counter for the number of desorption settings (small, medium, large etc) inputted by the user, starts at 0
+	std::atomic_int injectionAttemptCounter;						// Counter for the injections
+	std::atomic_int adsorptionCounter;								// Counter for the number of adsorption settings (small, medium, large etc) inputted by the user, starts at 0
+	std::atomic_int desorptionCounter;								// Counter for the number of desorption settings (small, medium, large etc) inputted by the user, starts at 0
 	
 	// Pressures used as benchmarks
-	Attribute<double> pressureInitial{ mtx, timeChanged };						// Pressure set as an initial pressure in injections
-	Attribute<double> pressureFinal{ mtx, timeChanged };						// Pressure set as the final pressure in injections
-	Attribute<double> pressureHighOld{ mtx, timeChanged };						// Previous pressure stored for injection checks
+	std::atomic<double> pressureInitial;							// Pressure set as an initial pressure in injections
+	std::atomic<double> pressureFinal;								// Pressure set as the final pressure in injections
+	std::atomic<double> pressureHighOld;							// Previous pressure stored for injection checks
+
 };

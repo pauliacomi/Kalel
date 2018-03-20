@@ -80,7 +80,7 @@ void Measurement::Execution()
 		*/
 
 		// Write data
-		if (storage.experimentStatus.experimentRecording.get())													// If we started recording
+		if (storage.experimentStatus.experimentRecording)													// If we started recording
 		{
 			if (controls.timerMeasurement.TimeMilliseconds() > storage.machineSettings.TimeBetweenRecording)	// If enough time between measurements
 			{
@@ -110,7 +110,7 @@ void Measurement::Execution()
 		storage.dataCollection.push(measurementTime, ExperimentData(storage.currentData));
 
 		// If no experiment running do not keep too many points
-		if (!storage.experimentStatus.experimentInProgress.get() && storage.dataCollection.size() > 500)
+		if (!storage.experimentStatus.experimentInProgress && storage.dataCollection.size() > 500)
 		{
 			storage.dataCollection.del_first();
 		}

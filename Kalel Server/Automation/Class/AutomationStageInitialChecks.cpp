@@ -14,7 +14,7 @@
 
 void Automation::Verifications()
 {
-	switch (storage.experimentStatus.verificationStep.get())
+	switch (storage.experimentStatus.verificationStep)
 	{
 	case STEP_VERIFICATIONS_SECURITY:
 		if (VerificationSecurity()) {

@@ -19,7 +19,6 @@ public:
 protected:
 
 	void Ping(http_request* req, http_response* resp);
-	void Sync(http_request * req, http_response * resp);
 	void MachineSettingsSync(http_request* req, http_response* resp);
 	void ExperimentSettingsSync(http_request* req, http_response* resp);
 	void ExperimentStatusSync(http_request* req, http_response* resp);

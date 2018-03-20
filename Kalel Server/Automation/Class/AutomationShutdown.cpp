@@ -64,7 +64,7 @@ void Automation::Shutdown()
 
 void Automation::Pause()
 {
-	if (storage.experimentStatus.experimentInProgress.get())
+	if (storage.experimentStatus.experimentInProgress)
 	{
 		controls.timerWaiting.Pause();
 		storage.experimentStatus.experimentRecording = false;
@@ -80,7 +80,7 @@ void Automation::Pause()
 
 void Automation::Resume()
 {
-	if (storage.experimentStatus.experimentInProgress.get())
+	if (storage.experimentStatus.experimentInProgress)
 	{
 		controls.timerWaiting.Resume();
 		storage.experimentStatus.experimentRecording = true;

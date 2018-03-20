@@ -232,48 +232,48 @@ inline void from_json(const nlohmann::json &j, ExperimentData &e) {
 //*************************************************************************************************************************
 inline void to_json(nlohmann::json &j, const ExperimentStatus &e) {
 
-	j[	"EP"	]	= e.experimentInProgress				.get();
-	j[	"ER"	]	= e.experimentRecording					.get();
-	j[	"EW"	]	= e.experimentWaiting					.get();
-	j[	"ECR"	]	= e.experimentCommandsRequested			.get();
-	j[	"ES"	]	= e.experimentStage						.get();
-	j[	"VS"	]	= e.verificationStep					.get();
-	j[	"SSs"	]	= e.experimentStepStatus				.get();
-	j[	"SSg"	]	= e.experimentSubstepStage				.get();
-	j[	"ED"	]	= e.experimentDose						.get();
-	j[	"EpS"	]	= e.experimentPreviousStage				.get();
-	j[	"tS"	]	= e.timeStart							.get();
-	j[	"tEq"	]	= e.timeToEquilibrate					.get();
-	j[	"tEqS"	]	= e.timeEquilibrationStart				.get();
-	j[	"CIa"	]	= e.injectionAttemptCounter				.get();
-	j[	"CA"	]	= e.adsorptionCounter					.get();
-	j[	"CD"	]	= e.desorptionCounter					.get();
-	j[	"PI"	]	= e.pressureInitial						.get();
-	j[	"PF"	]	= e.pressureFinal						.get();
-	j[	"PHo"	]	= e.pressureHighOld						.get();
+	j[	"EP"	]	= e.experimentInProgress				.load();
+	j[	"ER"	]	= e.experimentRecording					.load();
+	j[	"EW"	]	= e.experimentWaiting					.load();
+	j[	"ECR"	]	= e.experimentCommandsRequested			.load();
+	j[	"ES"	]	= e.experimentStage						.load();
+	j[	"VS"	]	= e.verificationStep					.load();
+	j[	"SSs"	]	= e.experimentStepStatus				.load();
+	j[	"SSg"	]	= e.experimentSubstepStage				.load();
+	j[	"ED"	]	= e.experimentDose						.load();
+	j[	"EpS"	]	= e.experimentPreviousStage				.load();
+	j[	"tS"	]	= e.timeStart							.load();
+	j[	"tEq"	]	= e.timeToEquilibrate					.load();
+	j[	"tEqS"	]	= e.timeEquilibrationStart				.load();
+	j[	"CIa"	]	= e.injectionAttemptCounter				.load();
+	j[	"CA"	]	= e.adsorptionCounter					.load();
+	j[	"CD"	]	= e.desorptionCounter					.load();
+	j[	"PI"	]	= e.pressureInitial						.load();
+	j[	"PF"	]	= e.pressureFinal						.load();
+	j[	"PHo"	]	= e.pressureHighOld						.load();
 }
 
 inline void from_json(const nlohmann::json &j, ExperimentStatus &e) {
 
-	e.experimentInProgress								= j[	"EP"	].get<bool>();
-	e.experimentRecording								= j[	"ER"	].get<bool>();
-	e.experimentWaiting									= j[	"EW"	].get<bool>();
-	e.experimentCommandsRequested						= j[	"ECR"	].get<bool>();
-	e.experimentStage									= j[	"ES"	].get<int>();
-	e.verificationStep									= j[	"VS"	].get<int>();
-	e.experimentStepStatus								= j[	"SSs"	].get<int>();
-	e.experimentSubstepStage							= j[	"SSg"	].get<int>();
-	e.experimentDose									= j[	"ED"	].get<int>();
-	e.experimentPreviousStage							= j[	"EpS"	].get<int>();
-	e.timeStart											= j[	"tS"	].get<unsigned long long>();
-	e.timeToEquilibrate									= j[	"tEq"	].get<double>();
-	e.timeEquilibrationStart							= j[	"tEqS"	].get<unsigned long long>();
-	e.injectionAttemptCounter							= j[	"CIa"	].get<int>();
-	e.adsorptionCounter									= j[	"CA"	].get<int>();
-	e.desorptionCounter									= j[	"CD"	].get<int>();
-	e.pressureInitial									= j[	"PI"	].get<double>();
-	e.pressureFinal										= j[	"PF"	].get<double>();
-	e.pressureHighOld									= j[	"PHo"	].get<double>();
+	e.experimentInProgress								.store(j[	"EP"	]);
+	e.experimentRecording								.store(j[	"ER"	]);
+	e.experimentWaiting									.store(j[	"EW"	]);
+	e.experimentCommandsRequested						.store(j[	"ECR"	]);
+	e.experimentStage									.store(j[	"ES"	]);
+	e.verificationStep									.store(j[	"VS"	]);
+	e.experimentStepStatus								.store(j[	"SSs"	]);
+	e.experimentSubstepStage							.store(j[	"SSg"	]);
+	e.experimentDose									.store(j[	"ED"	]);
+	e.experimentPreviousStage							.store(j[	"EpS"	]);
+	e.timeStart											.store(j[	"tS"	]);
+	e.timeToEquilibrate									.store(j[	"tEq"	]);
+	e.timeEquilibrationStart							.store(j[	"tEqS"	]);
+	e.injectionAttemptCounter							.store(j[	"CIa"	]);
+	e.adsorptionCounter									.store(j[	"CA"	]);
+	e.desorptionCounter									.store(j[	"CD"	]);
+	e.pressureInitial									.store(j[	"PI"	]);
+	e.pressureFinal										.store(j[	"PF"	]);
+	e.pressureHighOld									.store(j[	"PHo"	]);
 }
 
 

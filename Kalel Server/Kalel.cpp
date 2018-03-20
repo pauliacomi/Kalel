@@ -82,9 +82,6 @@ Kalel::Kalel()
 		std::bind(&Kalel::Ping,						this, std::placeholders::_1, std::placeholders::_2), 
 													"/api/handshake");
 	server.AddMethod(
-		std::bind(&Kalel::Sync,						this, std::placeholders::_1, std::placeholders::_2),
-													"/api/sync");
-	server.AddMethod(
 		std::bind(&Kalel::MachineSettingsSync,		this, std::placeholders::_1, std::placeholders::_2), 
 													"/api/machinesettings");
 	server.AddMethod(
@@ -169,58 +166,6 @@ void Kalel::Ping(http_request* req, http_response* resp)
 						<h1>Ping OK</h1>
 					</body>
 					</html>)";
-	}
-}
-
-
-/*********************************
-// Sync
-*********************************/
-void Kalel::Sync(http_request* req, http_response* resp)
-{
-	if (req->method == http::method::get)
-	{
-		if (!req->params.empty())
-		{
-			bool timeMS = false;					// MachineSettings
-			bool timeES = false;					// ExperimentSettings
-			bool timeESt = false;					// ExperimentStatus
-			bool timeCS = false;					// ControlState
-
-			// MachineSettings
-			if (!req->params.at("MS").empty()) {
-				if (timeh::StringToTimePoint(req->params.at("MS")) > storageVectors.machineSettings.timeChanged)
-					timeMS = true;
-			}
-
-			// ExperimentSettings
-			if (!req->params.at("ES").empty()) {
-				if (timeh::StringToTimePoint(req->params.at("ES")) > storageVectors.experimentSettings.timeChanged)
-					timeES = true;
-			}
-
-			// ExperimentState
-			if (!req->params.at("ESt").empty()) {
-				if (timeh::StringToTimePoint(req->params.at("ESt")) > storageVectors.experimentStatus.timeChanged)
-					timeES = true;
-			}
-
-			// ControlState
-			if (!req->params.at("CS").empty()) {
-				if (timeh::StringToTimePoint(req->params.at("CS")) > storageVectors.controlStateChanged)
-					timeCS = true;
-			}
-
-			json j2;
-			j2["MS"] = timeMS;
-			j2["ES"] = timeES;
-			j2["ESt"] = timeESt;
-			j2["CS"] = timeCS;
-
-			resp->status		= http::responses::ok;
-			resp->content_type = http::mimetype::appjson;
-			resp->body		= j2.dump();
-		}
 	}
 }
 
