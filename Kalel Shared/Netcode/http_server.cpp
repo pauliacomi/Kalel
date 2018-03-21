@@ -93,8 +93,8 @@ unsigned HTTPServer::AcceptLoop()
 		LOG(logDEBUG3) << LOG_ACCEPTED_SOCK << theirIP;
 		FILE_LOG(logDEBUG3) << LOG_ACCEPTED_SOCK << theirIP;
 
-		std::unique_ptr<Socket> acceptedSocket = std::make_unique<Socket>(s);			// Create a client socket pointer from the accepted SOCKET
-		acceptedSocket->SetNagle(false);												// Disable Nagle's algorithm, should lead to improved latency
+		std::unique_ptr<Socket> acceptedSocket = std::make_unique<Socket>(s);				// Create a client socket pointer from the accepted SOCKET
+		acceptedSocket->SetNagle(false);													// Disable Nagle's algorithm, should lead to improved latency
 		threadPool.emplace_back(&HTTPServer::Process, this, std::move(acceptedSocket));		// Start the request processing thread
 	}
 

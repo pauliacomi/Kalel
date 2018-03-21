@@ -44,8 +44,17 @@ void Client::SetLogs(std::vector<std::string> & vct)
 
 void Client::Request(std::function<void(http_request*)> req, std::function<void(http_response*)> resp, std::string ip, std::string port)
 {
-	auto processThread = std::make_shared<std::thread>(std::thread(&Client::Process, this, ip, port, req, resp));
-	processThread->detach();
+	threadPool.emplace_back(&Client::Process, this, ip, port, req, resp);
+
+	auto it = threadPool.begin();											// We can also do thread cleanup here
+	while (it != threadPool.end()) {
+		if (it->joinable()) {
+			it->join();
+			it = threadPool.erase(it);
+			if (it == threadPool.end()) break;
+			else ++it;;
+		}
+	}
 }
 
 
@@ -130,11 +139,11 @@ unsigned Client::Process(std::string ip, std::string port, std::function<void(ht
 
 	if (ReceiveResponse(l_sock, response) != 0)
 	{
-		response_func_(&response);
+		ErrorCaught(response.error_str, response_func_);
 	}
 	else
 	{
-		ErrorCaught(response.error_str, response_func_);
+		response_func_(&response);
 	}
 
 	//

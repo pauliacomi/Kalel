@@ -301,7 +301,7 @@ void CKalelView::OnTimer(UINT_PTR nIDEvent)
 		{
 			// We check to see if we need to delete some of the stored data
 			// in the case of no experiments running
-			if (!pApp->experimentRunning)
+			if (!pApp->experimentRunning && !dataCollection.empty())
 			{
 				auto check_delete = dataCollection.upper_bound(dataCollection.rbegin()->first - std::chrono::minutes(5));
 				if (check_delete != dataCollection.begin())
@@ -337,10 +337,11 @@ void CKalelView::OnTimer(UINT_PTR nIDEvent)
 			// We check to see if there are any requests from the experiment
 
 			// Write textbox values
-			DisplayTextboxValues(dataCollection.rbegin()->second, *experimentStatus);
+			if (!dataCollection.empty())
+				DisplayTextboxValues(dataCollection.rbegin()->second, experimentStatus);
 
 			// Write the current step
-			DisplayStepProgress(*experimentStatus);
+			DisplayStepProgress(experimentStatus);
 		}
 		//*****
 		// Refresh graph timer
@@ -644,7 +645,7 @@ LRESULT CKalelView::OnExchangeExperimentSettings(WPARAM wParam, LPARAM incomingE
 LRESULT CKalelView::OnExchangeExperimentStatus(WPARAM wParam, LPARAM incomingExperimentStatus)
 {	
 	// Get the incoming pointer
-	experimentStatus.reset(reinterpret_cast<ExperimentStatus*>(incomingExperimentStatus));
+	experimentStatus = *reinterpret_cast<ExperimentStatus*>(incomingExperimentStatus);
 	experimentStatusTime = timeh::NowTime();
 
 	// Update GUI

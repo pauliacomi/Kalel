@@ -22,6 +22,8 @@ public:
 	void Request(std::function<void(http_request*)> req, std::function<void(http_response*)> resp, std::string ip, std::string port = "http");
 
 protected:
+	std::vector<std::thread> threadPool;
+
 	unsigned Process(std::string ip, std::string port, std::function<void(http_request*)> request_func_, std::function<void(http_response*)> response_func_);
 	inline void ErrorCaught(std::string err_str, std::function<void(http_response*)> response_func_);
 

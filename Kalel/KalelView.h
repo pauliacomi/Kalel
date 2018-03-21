@@ -89,7 +89,7 @@ private:
 	
 	// Experiment Status related
 	std::chrono::system_clock::time_point												experimentStatusTime;	// Timepoint storing when the experiment status was generated
-	std::shared_ptr<ExperimentStatus>													experimentStatus;		// Local storage of experimentStatus
+	ExperimentStatus																	experimentStatus;		// Local storage of experimentStatus
 
 	// Data/Logs/Request collections
 	std::map<std::chrono::system_clock::time_point, std::wstring> 						logCollection;			// Log points for an experiment are stored here

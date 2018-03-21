@@ -259,18 +259,22 @@ inline void from_json(const nlohmann::json &j, ExperimentStatus &e) {
 	e.experimentRecording								.store(j[	"ER"	]);
 	e.experimentWaiting									.store(j[	"EW"	]);
 	e.experimentCommandsRequested						.store(j[	"ECR"	]);
+	
 	e.experimentStage									.store(j[	"ES"	]);
+	e.experimentPreviousStage							.store(j[	"EpS"	]);
 	e.verificationStep									.store(j[	"VS"	]);
 	e.experimentStepStatus								.store(j[	"SSs"	]);
 	e.experimentSubstepStage							.store(j[	"SSg"	]);
+	
 	e.experimentDose									.store(j[	"ED"	]);
-	e.experimentPreviousStage							.store(j[	"EpS"	]);
-	e.timeStart											.store(j[	"tS"	]);
-	e.timeToEquilibrate									.store(j[	"tEq"	]);
-	e.timeEquilibrationStart							.store(j[	"tEqS"	]);
 	e.injectionAttemptCounter							.store(j[	"CIa"	]);
 	e.adsorptionCounter									.store(j[	"CA"	]);
 	e.desorptionCounter									.store(j[	"CD"	]);
+
+	e.timeStart											.store(j[	"tS"	]);
+	e.timeToEquilibrate									.store(j[	"tEq"	]);
+	e.timeEquilibrationStart							.store(j[	"tEqS"	]);
+
 	e.pressureInitial									.store(j[	"PI"	]);
 	e.pressureFinal										.store(j[	"PF"	]);
 	e.pressureHighOld									.store(j[	"PHo"	]);

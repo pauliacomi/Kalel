@@ -366,7 +366,7 @@ unsigned CommHandler::GetMachineSettings_req(http_request* r, std::string fromTi
 	r->method = http::method::get;
 	r->accept = http::mimetype::appjson;
 	r->path = "/api/machinesettings";
-	r->params.emplace("time", fromTime);
+	r->params.emplace("t", fromTime);
 	return 0;
 }
 
@@ -456,7 +456,7 @@ unsigned CommHandler::GetExperimentSettings_req(http_request* r, std::string fro
 	r->method = http::method::get;
 	r->accept = http::mimetype::appjson;
 	r->path = "/api/experimentsettings";
-	r->params.emplace("time", fromTime);
+	r->params.emplace("t", fromTime);
 	return 0;
 }
 
@@ -545,7 +545,7 @@ unsigned CommHandler::GetExperimentStatus_req(http_request* r, std::string fromT
 	r->method = http::method::get;
 	r->accept = http::mimetype::appjson;
 	r->path = "/api/experimentstatus";
-	r->params.emplace("time", fromTime);
+	r->params.emplace("t", fromTime);
 	return 0;
 }
 
@@ -595,7 +595,7 @@ unsigned CommHandler::GetInstrumentState_req(http_request * r, std::string fromT
 	r->method = http::method::get;
 	r->accept = http::mimetype::appjson;
 	r->path = "/api/instrument";
-	r->params.emplace("time", fromTime);
+	r->params.emplace("t", fromTime);
 	return 0;
 }
 
@@ -696,7 +696,7 @@ unsigned CommHandler::GetData_req(http_request* r, std::string fromTime) {
 	r->method = http::method::get;
 	r->accept = http::mimetype::appjson;
 	r->path = "/api/experimentdata";
-	r->params.emplace("time", fromTime);
+	r->params.emplace("t", fromTime);
 	return 0;
 }
 
@@ -769,7 +769,7 @@ unsigned CommHandler::GetLogs_req(http_request * r, std::string fromTime)
 	r->method = http::method::get;
 	r->accept = http::mimetype::appjson;
 	r->path = "/api/experimentlogs";
-	r->params.emplace("time", fromTime);
+	r->params.emplace("t", fromTime);
 	return 0;
 }
 
@@ -838,7 +838,7 @@ unsigned CommHandler::GetRequest_req(http_request * r, std::string fromTime)
 	r->method = http::method::get;
 	r->accept = http::mimetype::appjson;
 	r->path = "/api/experimentrequests";
-	r->params.emplace("time", fromTime);
+	r->params.emplace("t", fromTime);
 	return 0;
 }
 
