@@ -15,15 +15,9 @@
 #include "DefineMenuMessages.h"
 #include "DefinePostMessages.h"
 
-#ifdef _DEBUG				
-
-
-#define _CRTDBG_MAP_ALLOC			// Look at memory leaks
-#include <stdlib.h>  
-#include <crtdbg.h>
+#ifdef _DEBUG
 #define new DEBUG_NEW
-
-#endif // DEBUG
+#endif
 
 
 // CKalelApp
@@ -163,10 +157,6 @@ BOOL CKalelApp::InitInstance()
 int CKalelApp::ExitInstance()
 {
 	AfxOleTerm(FALSE);
-
-#ifdef _DEBUG				
-	_CrtDumpMemoryLeaks();	// Memory leaks
-#endif
 
 	return CWinAppEx::ExitInstance();
 }

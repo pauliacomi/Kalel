@@ -11,17 +11,7 @@
 
 
 bool runnning = true;
-#ifdef _WIN32						// Windows specific
-
-#ifdef _DEBUG				
-
-
-#define _CRTDBG_MAP_ALLOC			// Look at memory leaks
-#include <stdlib.h>  
-#include <crtdbg.h>
-#define new DEBUG_NEW
-
-#endif // DEBUG
+#ifdef _WIN32
 
 BOOL WINAPI win32consoleHandler(DWORD signal) {
 
@@ -81,10 +71,6 @@ int main(int argc, char** argv) {
 		Sleep(500);
 	}
 	std::cout << "Stopped";
-
-#ifdef _DEBUG				
-	_CrtDumpMemoryLeaks();	// Memory leaks
-#endif
 
 	return 0;
 }
