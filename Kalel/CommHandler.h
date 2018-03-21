@@ -20,19 +20,19 @@ public:
 	void Connect(std::wstring address);
 	void SaveAddress(std::wstring address);
 
-	void GetMachineSettings(std::string fromTime = R"()");
+	void GetMachineSettings(const std::chrono::system_clock::time_point &fromTime);
 	void SetMachineSettings(const MachineSettings &ptr);
 	
-	void GetExperimentSettings(std::string fromTime = R"()");
+	void GetExperimentSettings(const std::chrono::system_clock::time_point &fromTime);
 	void SetExperimentSettings(const ExperimentSettings &ptr);
 	
-	void GetControlInstrumentState(std::string fromTime = R"()");
+	void GetControlInstrumentState(const std::chrono::system_clock::time_point &fromTime);
 	void ManualCommand(int instrumentType, int instrumentNumber, bool shouldBeActivated);
 	
-	void GetExperimentStatus(std::string fromTime = R"()");
-	void GetData(std::string fromTime = R"()");
-	void GetLog(std::string fromTime = R"()");
-	void GetRequests(std::string fromTime = R"()");
+	void GetExperimentStatus(const std::chrono::system_clock::time_point &fromTime);
+	void GetData(const std::chrono::system_clock::time_point &fromTime);
+	void GetLog(const std::chrono::system_clock::time_point &fromTime);
+	void GetRequests(const std::chrono::system_clock::time_point &fromTime);
 
 	void StartClient();
 	void ShutdownClient();
@@ -40,11 +40,14 @@ public:
 	void ResetClient();
 	void PauseClient();
 	void ResumeClient();
-	void SetUserChoice();
 
 	void FunctionSampleVacuum();
 	void FunctionBottleVacuum();
 	void FunctionChangeBottle();
+
+	void UserYes();
+	void UserNo();
+	void UserWait();
 
 private:
 	Client client;

@@ -26,8 +26,6 @@ void ApparatusParameters::PassSettings(MachineSettings* machineSettings)
 
 	m_bSecurite								= settings->SafetyOn;
 
-	m_fPressionSecuriteBassePression		= settings->PressionSecuriteBassePression;
-	m_fPressionSecuriteHautePression		= settings->PressionSecuriteHautePression;
 	m_fPressionLimiteVide					= settings->PressureLimitVacuum;
 
 	m_bTuyere								= settings->hasSonicNozzle;
@@ -150,8 +148,6 @@ void ApparatusParameters::OnBnClickedOk()
 		localSettings = std::make_shared<MachineSettings>(*settings);
 
 		localSettings->SafetyOn = m_bSecurite;
-		localSettings->PressionSecuriteBassePression = m_fPressionSecuriteBassePression;
-		localSettings->PressionSecuriteHautePression = m_fPressionSecuriteHautePression;
 		localSettings->PressureLimitVacuum = m_fPressionLimiteVide;
 		localSettings->hasSonicNozzle = m_bTuyere;
 		localSettings->VolumeRef = m_fVolumeRef;

@@ -94,7 +94,7 @@ private:
 	// Data/Logs/Request collections
 	std::map<std::chrono::system_clock::time_point, std::wstring> 						logCollection;			// Log points for an experiment are stored here
 	std::map<std::chrono::system_clock::time_point, std::wstring> 						requestCollection;		// Log points for an all errors or requests are stored here
-	ExperimentDataStorageArray															dataCollection;			// Measurement points for an experiment are stored here
+	std::map<std::chrono::system_clock::time_point, ExperimentData>						dataCollection;			// Measurement points for an experiment are stored here
 		
 
 	//*************************************************************************************************************************
@@ -184,8 +184,8 @@ private:
 private:
 
 	LRESULT AffichageMessages(WPARAM wParam, LPARAM lParam);
-	LRESULT DisplayTextboxValues(std::shared_ptr<ExperimentData> data, std::shared_ptr<ExperimentStatus> status);
-	LRESULT DisplayStepProgress(std::shared_ptr<ExperimentStatus> status);
+	LRESULT DisplayTextboxValues(const ExperimentData &data, const ExperimentStatus &status);
+	LRESULT DisplayStepProgress(const ExperimentStatus &status);
 	LRESULT MessageBoxAlert(WPARAM wParam, LPARAM lParam);
 	LRESULT MessageBoxConfirmation(WPARAM wParam, LPARAM);
 

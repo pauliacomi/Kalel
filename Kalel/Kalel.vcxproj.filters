@@ -228,9 +228,6 @@
     <ClInclude Include="..\Kalel Shared\Netcode\Netcode Resources.h">
       <Filter>Header Files\Commmon\Netcode</Filter>
     </ClInclude>
-    <ClInclude Include="..\Kalel Shared\Netcode\Server.h">
-      <Filter>Header Files\Commmon\Netcode</Filter>
-    </ClInclude>
     <ClInclude Include="..\Kalel Shared\Netcode\Socket.h">
       <Filter>Header Files\Commmon\Netcode</Filter>
     </ClInclude>
@@ -399,9 +396,6 @@
       <Filter>Source Files\GUI\Dialogs\Machine Parameters</Filter>
     </ClCompile>
     <ClCompile Include="..\Kalel Shared\Netcode\base64.cpp">
-      <Filter>Source Files\Commmon\Netcode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Kalel Shared\Netcode\Server.cpp">
       <Filter>Source Files\Commmon\Netcode</Filter>
     </ClCompile>
     <ClCompile Include="..\Kalel Shared\Netcode\Socket.cpp">

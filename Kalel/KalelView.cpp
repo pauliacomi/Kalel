@@ -294,62 +294,60 @@ void CKalelView::OnTimer(UINT_PTR nIDEvent)
 {
 	if (pApp->serverConnected) {
 
-		if (!dataCollection.empty())
-		{
 			//*****
 			// Refresh data timer
 			//*****
-			if (nIDEvent == dataTimer)
+		if (nIDEvent == dataTimer)
+		{
+			// We check to see if we need to delete some of the stored data
+			// in the case of no experiments running
+			if (!pApp->experimentRunning)
 			{
-				// We check to see if we need to delete some of the stored data
-				// in the case of no experiments running
-				if (!pApp->experimentRunning)
+				auto check_delete = dataCollection.upper_bound(dataCollection.rbegin()->first - std::chrono::minutes(5));
+				if (check_delete != dataCollection.begin())
 				{
-					auto check_delete = dataCollection.upper_bound(dataCollection.rbegin()->first - std::chrono::minutes(5));
-					if (check_delete != dataCollection.begin())
-					{
-						dataCollection.erase(dataCollection.begin(), check_delete);
-					}
+					dataCollection.erase(dataCollection.begin(), check_delete);
 				}
-
-				// Request ongoing sync
-				commHandler.Sync(false, 
-					timeh::TimePointToString(experimentSettingsTime), 
-					timeh::TimePointToString(machineSettingsTime), 
-					timeh::TimePointToString(machineStateTime),
-					timeh::TimePointToString(experimentStatusTime)
-				);
-
-				// Send the request for data
-				commHandler.GetData(timeh::TimePointToString(dataCollection.rbegin()->first));
-
-				// Send the request for logs
-				if (!logCollection.empty())
-					commHandler.GetLog(timeh::TimePointToString(logCollection.rbegin()->first));
-				else
-					commHandler.GetLog();
-
-				// Send the request for user input
-				if (!requestCollection.empty())
-					commHandler.GetRequests(timeh::TimePointToString(requestCollection.rbegin()->first));
-				else
-					commHandler.GetRequests();
-
-
-				// We check to see if there are any requests from the experiment
-
-				// Write textbox values
-				DisplayTextboxValues(dataCollection.rbegin()->second, experimentStatus);
-
-				// Write the current step
-				DisplayStepProgress(experimentStatus);
 			}
 
-			//*****
-			// Refresh graph timer
-			//*****
-			if (nIDEvent == graphTimer)
-			{
+			// Request ongoing sync
+			commHandler.GetExperimentSettings(experimentSettingsTime);
+			commHandler.GetExperimentStatus(experimentStatusTime);
+			commHandler.GetMachineSettings(machineSettingsTime);
+			commHandler.GetControlInstrumentState(machineStateTime);
+
+			if (!dataCollection.empty())
+				commHandler.GetData(dataCollection.rbegin()->first);
+			else
+				commHandler.GetLog(timeh::NowTime());
+
+			// Send the request for logs
+			if (!logCollection.empty())
+				commHandler.GetLog(logCollection.rbegin()->first);
+			else
+				commHandler.GetLog(timeh::NowTime());
+
+			// Send the request for user input
+			if (!requestCollection.empty())
+				commHandler.GetRequests(requestCollection.rbegin()->first);
+			else
+				commHandler.GetRequests(timeh::NowTime());
+
+
+			// We check to see if there are any requests from the experiment
+
+			// Write textbox values
+			DisplayTextboxValues(dataCollection.rbegin()->second, *experimentStatus);
+
+			// Write the current step
+			DisplayStepProgress(*experimentStatus);
+		}
+		//*****
+		// Refresh graph timer
+		//*****
+		if (nIDEvent == graphTimer)
+		{
+			if (!dataCollection.empty()) {
 				// Write graph
 				GetDocument()->UpdateAllViews(this);
 			}
@@ -383,7 +381,10 @@ LRESULT CKalelView::DisplayConnectDialog(WPARAM, LPARAM)
 
 LRESULT CKalelView::ManualSync(WPARAM, LPARAM)
 {
-	commHandler.Sync(true);
+	commHandler.GetExperimentSettings(experimentSettingsTime);
+	commHandler.GetExperimentStatus(experimentStatusTime);
+	commHandler.GetMachineSettings(machineSettingsTime);
+	commHandler.GetControlInstrumentState(machineStateTime);
 	return 0;
 }
 
@@ -398,7 +399,7 @@ LRESULT CKalelView::DisplayPortDialog(WPARAM, LPARAM)
 			if (m_connection_ports.Changed())
 			{
 				tempMchSettings = m_connection_ports.GetSettings();			// Save it separately to prevent extra communication
-				commHandler.SetMachineSettings(tempMchSettings);
+				commHandler.SetMachineSettings(*tempMchSettings);
 			}
 		}
 	}
@@ -420,7 +421,7 @@ LRESULT CKalelView::DisplayApparatusSettingsDialog(WPARAM, LPARAM)
 			if (apparatusParameters.Changed())
 			{
 				tempMchSettings = apparatusParameters.GetSettings();			// Save it separately to prevent extra communication
-				commHandler.SetMachineSettings(tempMchSettings);
+				commHandler.SetMachineSettings(*tempMchSettings);
 			}
 		}
 	}
@@ -574,7 +575,6 @@ LRESULT CKalelView::OnServerConnected(WPARAM, LPARAM)
 	pApp->serverConnected = true;
 	dataCollection.clear();
 	commHandler.SaveAddress(savedParams.GetServerAddress());
-	commHandler.Sync(true);
 	return 0;
 }
 
@@ -670,7 +670,7 @@ LRESULT CKalelView::OnSetExperimentSettings(WPARAM, LPARAM)
 LRESULT CKalelView::OnExchangeInstrumentState(WPARAM wParam, LPARAM incomingInstrumentState) {
 
 	// Cast the parameters object and take ownership
-	std::auto_ptr<ControlInstrumentState> maParam(reinterpret_cast<ControlInstrumentState*>(incomingInstrumentState));
+	std::unique_ptr<ControlInstrumentState> maParam(reinterpret_cast<ControlInstrumentState*>(incomingInstrumentState));
 	buttonStates.Update(*maParam);
 
 	// Set time
@@ -685,7 +685,7 @@ LRESULT CKalelView::OnExchangeInstrumentState(WPARAM wParam, LPARAM incomingInst
 LRESULT CKalelView::OnSetInstrumentState(WPARAM wParam, LPARAM incomingInstrumentState) {
 
 	// Cast the parameters object and take ownership
-	std::auto_ptr<ControlInstrumentStateData> maParam(reinterpret_cast<ControlInstrumentStateData*>(incomingInstrumentState));
+	std::unique_ptr<ControlInstrumentStateData> maParam(reinterpret_cast<ControlInstrumentStateData*>(incomingInstrumentState));
 
 	// Update buttons
 	buttonStates.EndCommand(*maParam);
@@ -699,8 +699,9 @@ LRESULT CKalelView::OnSetInstrumentState(WPARAM wParam, LPARAM incomingInstrumen
 LRESULT CKalelView::OnExchangeData(WPARAM, LPARAM incomingExperimentData)
 {
 	// Get the incoming vector and add it to the local data
-	auto newData = reinterpret_cast<ExperimentDataStorageArray*>(incomingExperimentData);
-	dataCollection.insert(newData->begin(), newData->end());
+	auto newData = reinterpret_cast<std::map<std::chrono::system_clock::time_point, ExperimentData> *>(incomingExperimentData);
+	dataCollection.insert(std::make_move_iterator(newData->begin()), 
+							std::make_move_iterator(newData->end()));
 
 	// Delete the useless vector now
 	delete newData;
@@ -777,18 +778,22 @@ LRESULT CKalelView::CancelBeforeStarting(WPARAM, LPARAM)
 LRESULT CKalelView::MessageBoxAlert(WPARAM wParam, LPARAM lParam)
 {
 	// Get the incoming pointer and cast it as a smart pointer
-	std::auto_ptr<CString> message(reinterpret_cast<CString*>(lParam));
-	std::auto_ptr<UINT> nType(reinterpret_cast<UINT*>(wParam));
+	std::unique_ptr<CString> message(reinterpret_cast<CString*>(lParam));
+	std::unique_ptr<UINT> nType(reinterpret_cast<UINT*>(wParam));
 	
-	return AfxMessageBox(*message, *nType);
+	int result = AfxMessageBox(*message, *nType);
+
+	commHandler.UserYes();
+
+	return result;
 }
 
 // TODO: make sure the confirmation is what is required
 LRESULT CKalelView::MessageBoxConfirmation(WPARAM wParam, LPARAM lParam)
 {
 	// Get the incoming pointer and cast it as a smart pointer
-	std::auto_ptr<CString> message(reinterpret_cast<CString*>(lParam));
-	std::auto_ptr<UINT> nType(reinterpret_cast<UINT*>(wParam));
+	std::unique_ptr<CString> message(reinterpret_cast<CString*>(lParam));
+	std::unique_ptr<UINT> nType(reinterpret_cast<UINT*>(wParam));
 
 	int result;
 	bool continuer = true;
@@ -803,12 +808,11 @@ LRESULT CKalelView::MessageBoxConfirmation(WPARAM wParam, LPARAM lParam)
 		}
 		else {
 			if (result == IDYES || result == IDOK) {
-				commHandler.ResumeClient();
+				commHandler.UserYes();
 				continuer = false;
 			}
 			if (result == IDNO) {
-				commHandler.ResumeClient();
-				commHandler.SetUserChoice();
+				commHandler.UserNo();
 				continuer = false;
 			}
 		}

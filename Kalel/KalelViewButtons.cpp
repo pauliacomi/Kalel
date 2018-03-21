@@ -38,7 +38,7 @@ void CKalelView::OnBnClickedLancer()
 				GetExperimentData(dialogExperimentProperties, *tempExpSettings, true);
 
 				// Send changed settings
-				commHandler.SetExperimentSettings(tempExpSettings);
+				commHandler.SetExperimentSettings(*tempExpSettings);
 			}
 			else
 			{
@@ -116,7 +116,7 @@ void CKalelView::OnBnClickedButtonParametresExperience()
 				if (GetExperimentData(dialogExperimentProperties, *tempExpSettings, false)) {
 					// IF MODIFIED
 					// Send changed settings
-					commHandler.SetExperimentSettings(tempExpSettings);
+					commHandler.SetExperimentSettings(*tempExpSettings);
 					return;
 				}
 			}

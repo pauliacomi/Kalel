@@ -49,7 +49,7 @@
 
 
 // Stage steps
-#define PAUSE				22005
+#define STAGE_PAUSE			22005
 #define INACTIVE			22000
 #define ACTIVE				22011
 #define STOP				22006

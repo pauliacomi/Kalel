@@ -1,13 +1,12 @@
-#ifndef GRAPHVIEW_H
-#define GRAPHVIEW_H
 #pragma once
 
 #include "afxwin.h"
 
 // Vue CGrapheView
 #include "../Kalel Shared/Com Classes/ExperimentData.h"								// Where data about the experimental parameters, results and current status is stored. REQUIRED FOR CARRAYMEASUREMENTS
+
 #include <map>
-#include <forward_list>
+#include <chrono>
 #include <vector>
 
 class CKalelDoc;
@@ -44,7 +43,7 @@ public:
 	int NbrIntervalles(double max);
 
 private:
-	ExperimentDataStorageArray * measurementArray;
+	std::map<std::chrono::system_clock::time_point, ExperimentData> * measurementArray;
 
 	double maxPressure = 0;
 	double minPressure = 0;
@@ -67,5 +66,3 @@ public:
 protected:
 	DECLARE_MESSAGE_MAP()
 };
-
-#endif

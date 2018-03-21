@@ -27,6 +27,7 @@ struct ExperimentData
 	///*******************
 	///		Recorded Data - but not atomic
 	///*******************
+	inline ExperimentData() {};
 
 	inline ExperimentData(const ExperimentAtomicData & atomicData) {
 		resultCalorimeter	= atomicData.resultCalorimeter;

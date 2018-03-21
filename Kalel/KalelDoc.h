@@ -3,6 +3,9 @@
 //
 #pragma once
 
+#include <map>
+#include <chrono>
+
 #include "../Kalel Shared/Com Classes/ExperimentData.h"				// Where data about the experimental parameters, results and current status is stored. REQUIRED FOR CARRAYMEASUREMENTS
 
 class CKalelDoc : public CDocument
@@ -13,7 +16,7 @@ protected: // create from serialization only
 
 // Attributes
 public:	
-	ExperimentDataStorageArray* pMeasurementArray = nullptr;
+	std::map<std::chrono::system_clock::time_point, ExperimentData>* pMeasurementArray = nullptr;
 
 // Operations
 public:
@@ -43,7 +46,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 public:
-	void GraphSetArray(ExperimentDataStorageArray & expData);
+	void GraphSetArray(std::map<std::chrono::system_clock::time_point, ExperimentData> & expData);
 	
 
 #ifdef SHARED_HANDLERS

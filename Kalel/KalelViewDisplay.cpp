@@ -8,6 +8,8 @@
 #include "KalelDoc.h"
 #include "KalelView.h"
 
+#include "../Kalel Shared/timeHelpers.h"
+
 
 // --------------- Displays -----------------------------
 
@@ -34,19 +36,18 @@ LRESULT CKalelView::AffichageMessages(WPARAM, LPARAM lParam)
 
 
 // Write the 
-LRESULT CKalelView::DisplayTextboxValues(std::shared_ptr<ExperimentData> data, std::shared_ptr<ExperimentStatus> status)
+LRESULT CKalelView::DisplayTextboxValues(const ExperimentData &data, const ExperimentStatus & status)
 {
-
 	// Convert to strings
-	m_StrCalo.Format(_T("%.9e"), data->GetresultCalorimeter());
-	m_StrBassePression.Format(_T("%.6f"), data->GetpressureLow());
-	m_StrHautePression.Format(_T("%.6f"), data->GetpressureHigh());
-	m_StrTemperatureCalo.Format(_T("%.2f"), data->GettemperatureCalo());
-	m_StrTemperatureCage.Format(_T("%.2f"), data->GettemperatureCage());
-	m_StrTemperaturePiece.Format(_T("%.2f"), data->GettemperatureRoom());
-	m_StrTemps.Format(_T("%.1f"), status->GettimeElapsedSec());
-	m_StrPressionInitiale.Format(_T("%.6f"), status->GetpressureInitial());
-	m_StrPressionFinale.Format(_T("%.6f"), status->GetpressureFinal());
+	m_StrCalo.Format(_T("%.9e"), data.resultCalorimeter);
+	m_StrBassePression.Format(_T("%.6f"), data.pressureLow);
+	m_StrHautePression.Format(_T("%.6f"), data.pressureHigh);
+	m_StrTemperatureCalo.Format(_T("%.2f"), data.temperatureCalo);
+	m_StrTemperatureCage.Format(_T("%.2f"), data.temperatureCage);
+	m_StrTemperaturePiece.Format(_T("%.2f"), data.temperatureRoom);
+	m_StrTemps.Format(_T("%.1f"), std::chrono::duration_cast<std::chrono::seconds>(timeh::NowTime() - timeh::ULLongToTimePoint(status.timeEquilibrationStart.load())));
+	m_StrPressionInitiale.Format(_T("%.6f"), status.pressureInitial.load());
+	m_StrPressionFinale.Format(_T("%.6f"), status.pressureFinal.load());
 
 	// Refresh textboxes
 	SetDlgItemText(IDC_CALO, m_StrCalo);
@@ -63,30 +64,32 @@ LRESULT CKalelView::DisplayTextboxValues(std::shared_ptr<ExperimentData> data, s
 }
 
 // Display the step
-LRESULT CKalelView::DisplayStepProgress(std::shared_ptr<ExperimentStatus> status)
+LRESULT CKalelView::DisplayStepProgress(const ExperimentStatus &status)
 {
 
 	CString temp;
 
-	temp.Format(status->experimentStage);
+	temp.Format(status.experimentStage);
 
 	m_StrEtape = temp;
 
-	if (status->verificationStep != STEP_VERIFICATIONS_UNDEF && status->verificationStep != STEP_VERIFICATIONS_COMPLETE)
+	if (status.verificationStep != STEP_VERIFICATIONS_UNDEF && status.verificationStep != STEP_VERIFICATIONS_COMPLETE)
 	{
-		temp.Format(status->verificationStep);
+		temp.Format(status.verificationStep);
 		m_StrEtape += _T(",   Substage: ") + temp;
 	}
 
-	if (status->experimentWaiting == true)
+	if (status.experimentWaiting == true)
 	{
-		if (status->timeToEquilibrate / 60 > 1)
+		auto timeToEquilibrateCurrent = std::chrono::duration_cast<std::chrono::seconds>(timeh::NowTime() - timeh::ULLongToTimePoint(status.timeEquilibrationStart.load())).count();
+
+		if (status.timeToEquilibrate / 60 > 1)
 		{
-			temp.Format(_T(" *** Waiting: %.0f min %.0f s /  %.0f min %.0f s"), floorf(status->timeToEquilibrateCurrent / 60.0f), fmodf(status->timeToEquilibrateCurrent, 60.0f), floorf(status->timeToEquilibrate / 60.0f), fmodf(status->timeToEquilibrate, 60.0f));
+			temp.Format(_T(" *** Waiting: %.0f min %.0f s /  %.0f min %.0f s"), floorf(timeToEquilibrateCurrent / 60.0f), fmodf(timeToEquilibrateCurrent, 60.0f), floorf(status.timeToEquilibrate.load() / 60.0f), fmodf(status.timeToEquilibrate.load(), 60.0f));
 		}
 		else
 		{
-			temp.Format(_T(" *** Waiting: %.0f s /  %.0f s"), status->GettimeToEquilibrateCurrent(), status->GettimeToEquilibrate());
+			temp.Format(_T(" *** Waiting: %.0f s /  %.0f s"), timeToEquilibrateCurrent, status.timeToEquilibrate.load());
 		}
 		m_StrEtape += temp;
 	}
