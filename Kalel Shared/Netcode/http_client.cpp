@@ -10,6 +10,7 @@
 #include "../log.h"	
 
 #include <sstream>
+#include <algorithm>
 
 
 Client::Client()
@@ -44,19 +45,20 @@ void Client::SetLogs(std::vector<std::string> & vct)
 
 void Client::Request(std::function<void(http_request*)> req, std::function<void(http_response*)> resp, std::string ip, std::string port)
 {
+	std::lock_guard<std::mutex> lock(threadMutex);
 	threadPool.emplace_back(&Client::Process, this, ip, port, req, resp);
-
-	auto it = threadPool.begin();											// We can also do thread cleanup here
-	while (it != threadPool.end()) {
-		if (it->joinable()) {
-			it->join();
-			it = threadPool.erase(it);
-			if (it == threadPool.end()) break;
-			else ++it;;
-		}
-	}
 }
 
+void Client::removeThread(std::thread::id id)
+{
+	std::lock_guard<std::mutex> lock(threadMutex);
+	auto iter = std::find_if(threadPool.begin(), threadPool.end(), [=](std::thread &t) { return (t.get_id() == id); });
+	if (iter != threadPool.end())
+	{
+		iter->detach();
+		threadPool.erase(iter);
+	}
+}
 
 unsigned Client::Process(std::string ip, std::string port, std::function<void(http_request*)> request_func_, std::function<void(http_response*)> response_func_){
 	
@@ -78,8 +80,7 @@ unsigned Client::Process(std::string ip, std::string port, std::function<void(ht
 	}
 	catch (const std::exception& e)
 	{
-		ErrorCaught(e.what(), response_func_);
-		return 1;
+		return ErrorCaught(e.what(), response_func_);
 	}
 
 	try {
@@ -87,8 +88,7 @@ unsigned Client::Process(std::string ip, std::string port, std::function<void(ht
 	}
 	catch (const std::exception& e)
 	{
-		ErrorCaught(e.what(), response_func_);
-		return 1;
+		return ErrorCaught(e.what(), response_func_);
 	}
 
 	//*************************************************************************************************************************
@@ -120,8 +120,7 @@ unsigned Client::Process(std::string ip, std::string port, std::function<void(ht
 	}
 	catch (const std::exception& e)
 	{
-		ErrorCaught(e.what(), response_func_);
-		return 1;
+		return ErrorCaught(e.what(), response_func_);
 	}
 
 	// Log request string
@@ -139,7 +138,7 @@ unsigned Client::Process(std::string ip, std::string port, std::function<void(ht
 
 	if (ReceiveResponse(l_sock, response) != 0)
 	{
-		ErrorCaught(response.error_str, response_func_);
+		return ErrorCaught(response.error_str, response_func_);
 	}
 	else
 	{
@@ -155,11 +154,12 @@ unsigned Client::Process(std::string ip, std::string port, std::function<void(ht
 	FILE_LOG(logDEBUG2) << "Exit thread";
 #endif // FILE_LOGGING
 
+	std::thread(&Client::removeThread, this, std::this_thread::get_id()).detach();
 	return 0;
 }
 
 
-inline void Client::ErrorCaught(std::string err_str, std::function<void(http_response*)> response_func_)
+inline unsigned Client::ErrorCaught(std::string err_str, std::function<void(http_response*)> response_func_)
 {
 	STREAM_LOG(logERROR) << err_str;
 #ifdef FILE_LOGGING
@@ -171,6 +171,10 @@ inline void Client::ErrorCaught(std::string err_str, std::function<void(http_res
 	response.error = true;
 	response.error_str = err_str;
 	response_func_(&response);
+
+	std::thread(&Client::removeThread, this, std::this_thread::get_id()).detach();
+
+	return 1;
 }
 
 

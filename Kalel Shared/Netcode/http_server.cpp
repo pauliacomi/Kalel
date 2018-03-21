@@ -9,7 +9,7 @@
 #include "../timeHelpers.h"
 #include "../log.h"	
 
-
+#include <algorithm>
 
 HTTPServer::HTTPServer(PCSTR port)
 	: accepting{ false }
@@ -71,15 +71,6 @@ unsigned HTTPServer::AcceptLoop()
 		{
 			theirIP = listeningSocket.Accept(s, tv);
 			if (theirIP.empty()) {
-				auto it = threadPool.begin();											// If we time out we can also do thread cleanup here
-				while (it != threadPool.end()) {
-					if (it->joinable()) {
-						it->join();
-						it = threadPool.erase(it);
-						if (it == threadPool.end()) break;
-						else ++it;;
-					}
-				}
 				continue;
 			}
 		}
@@ -105,6 +96,18 @@ unsigned HTTPServer::AcceptLoop()
 }
 
 
+void HTTPServer::removeThread(std::thread::id id)
+{
+	std::lock_guard<std::mutex> lock(threadMutex);
+	auto iter = std::find_if(threadPool.begin(), threadPool.end(), [=](std::thread &t) { return (t.get_id() == id); });
+	if (iter != threadPool.end())
+	{
+		iter->detach();
+		threadPool.erase(iter);
+	}
+}
+
+
 unsigned HTTPServer::Process(std::unique_ptr<Socket> sock)
 {
 
@@ -126,6 +129,7 @@ unsigned HTTPServer::Process(std::unique_ptr<Socket> sock)
 		LOG(logDEBUG1) << LOG_PROCESS_EXIT << sock->GetSocket();
 		FILE_LOG(logDEBUG1) << LOG_PROCESS_EXIT << sock->GetSocket();
 		
+		std::thread(&HTTPServer::removeThread, this, std::this_thread::get_id()).detach();
 		return 1;											
 	}
 
@@ -193,6 +197,7 @@ unsigned HTTPServer::Process(std::unique_ptr<Socket> sock)
 	LOG(logDEBUG3) << LOG_PROCESS_EXIT << sock->GetSocket();
 	FILE_LOG(logDEBUG3) << LOG_PROCESS_EXIT << sock->GetSocket();
 
+	std::thread(&HTTPServer::removeThread, this, std::this_thread::get_id()).detach();
 	return 0;
 }
 
