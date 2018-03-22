@@ -19,6 +19,7 @@ public:
 
 	void Connect(std::wstring address);
 	void SaveAddress(std::wstring address);
+	void SaveAuth(const std::wstring &username, const std::wstring &password);
 
 	void GetMachineSettings(const std::chrono::system_clock::time_point &fromTime);
 	void SetMachineSettings(const MachineSettings &ptr);

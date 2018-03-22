@@ -4,6 +4,7 @@
 #include "http_helpers.h"
 #include "URLHelper.h"
 #include "Netcode Resources.h"
+#include "base64.h"
 
 // Logging functionality
 #include "../stringHelpers.h"
@@ -35,6 +36,12 @@ HTTPClient::~HTTPClient()
 {
 }
 
+void HTTPClient::SetCredentials(const std::string & username, const std::string & password)
+{
+	this->username = username;
+	this->password = password;
+}
+
 
 void HTTPClient::Request(std::function<void(http_request*)> func_req, std::function<void(http_response*)> func_resp, std::string ip, std::string port)
 {
@@ -54,10 +61,10 @@ unsigned HTTPClient::Process(std::string ip, std::string port, std::function<voi
 	//*************************************************************************************************************************
 	
 	// Create socket
-	Socket l_sock;
+	Socket sock;
 
 	try{
-		l_sock.Connect(ip.c_str(), port.c_str());	// Try connecting
+		sock.Connect(ip.c_str(), port.c_str());	// Try connecting
 	}
 	catch (const std::exception& e)
 	{
@@ -65,7 +72,7 @@ unsigned HTTPClient::Process(std::string ip, std::string port, std::function<voi
 	}
 
 	try {
-		l_sock.SetNagle(false);						// Disable Nagle's algorithm, should lead to improved latency
+		sock.SetNagle(false);						// Disable Nagle's algorithm, should lead to improved latency
 	}
 	catch (const std::exception& e)
 	{
@@ -79,35 +86,17 @@ unsigned HTTPClient::Process(std::string ip, std::string port, std::function<voi
 	http_request request;														// Create request
 	func_req(&request);															// Populate request from function
 
-	std::string reqUrl;															// Build URL
-	URLHelper::BuildReq(reqUrl, request.path, request.params);
-
+	// Fill in remaining request fields
+	request.authentication_method = "Basic";
+	request.username = username;
+	request.password = password;
 	request.content_length = stringh::StringFrom(request.body.size());
 
-	// Build string request and send it
-	std::string requestString;
-
-	try	{
-		requestString += l_sock.SendLine(request.method + " " + reqUrl + " " + "HTTP/1.1");
-		requestString += l_sock.SendLine(http::header::accept + request.accept);
-		if (!request.body.empty()) {
-			requestString += l_sock.SendLine(http::header::content_length + request.content_length);
-			requestString += l_sock.SendLine(http::header::content_type + request.content_type);
-		}
-		requestString += l_sock.SendLine("");
-		if (!request.body.empty()) {
-			requestString += l_sock.Send(request.body);
-		}
+	// Finally send request
+	if (SendRequest(sock, request) != 0) {
+		return ErrorCaught("Error Sending", func_resp);
 	}
-	catch (const std::exception& e)
-	{
-		return ErrorCaught(e.what(), func_resp);
-	}
-
-	// Log request string
-#ifdef FILE_LOGGING
-	FILE_LOG(logDEBUG) << l_sock.GetSocket() << LOG_REQUEST << requestString;
-#endif // FILE_LOGGING
+	
 
 
 	//*************************************************************************************************************************
@@ -116,7 +105,7 @@ unsigned HTTPClient::Process(std::string ip, std::string port, std::function<voi
 
 	http_response response;
 
-	if (ReceiveResponse(l_sock, response) != 0)
+	if (ReceiveResponse(sock, response) != 0)
 	{
 		return ErrorCaught(response.error_str, func_resp);
 	}
@@ -152,10 +141,45 @@ inline unsigned HTTPClient::ErrorCaught(std::string err_str, std::function<void(
 	return 1;
 }
 
+unsigned HTTPClient::SendRequest(Socket & sock, http_request & request)
+{
+	// Build string request and send it
+	std::string requestString;
+	std::string reqUrl;
+	URLHelper::BuildReq(reqUrl, request.path, request.params);
+
+	try {
+		requestString += sock.SendLine(request.method + " " + reqUrl + " " + "HTTP/1.1");
+		requestString += sock.SendLine(http::header::accept + request.accept);
+		
+		// Auth
+		std::string auth = request.username + ":" + request.password;
+		requestString += sock.SendLine(http::header::authorization + request.authentication_method + " " + base64_encode((const unsigned char*)auth.c_str(), auth.length()));
+		
+		if (!request.body.empty()) {
+			requestString += sock.SendLine(http::header::content_length + request.content_length);
+			requestString += sock.SendLine(http::header::content_type + request.content_type);
+		}
+		requestString += sock.SendLine("");
+		if (!request.body.empty()) {
+			requestString += sock.Send(request.body);
+		}
+	}
+	catch (const std::exception& e)
+	{
+		return 1;
+	}
+
+	// Log request string
+#ifdef FILE_LOGGING
+	FILE_LOG(logDEBUG) << sock.GetSocket() << LOG_REQUEST << requestString;
+#endif // FILE_LOGGING
+
+	return 0;
+}
 
 unsigned HTTPClient::ReceiveResponse(Socket & sock, http_response & resp)
 {
-
 	std::string responseString;
 
 	try {

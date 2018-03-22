@@ -115,6 +115,7 @@ Kalel::Kalel()
 		std::bind(&Kalel::UserInput,				this, std::placeholders::_1, std::placeholders::_2),
 													"/api/functionality");
 
+	server.SetCredentials("user", "kalel");
 	server.Start();
 
 	//

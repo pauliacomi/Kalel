@@ -203,6 +203,7 @@ void CKalelView::OnInitialUpdate()
 	commHandler.SetHandle(GetSafeHwnd());
 
 	// Then connect to the server if the address exists
+	commHandler.SaveAuth(L"user", L"pass");																				// TODO change credentials
 	commHandler.Connect(savedParams.GetServerAddress());
 
 	// Set the timers for the window update

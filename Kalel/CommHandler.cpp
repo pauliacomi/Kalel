@@ -76,6 +76,12 @@ void CommHandler::SaveAddress(std::wstring address)
 	localAddress = stringh::ws2s(address.c_str());
 }
 
+void CommHandler::SaveAuth(const std::wstring &username, const std::wstring &password)
+{
+	client.SetCredentials(stringh::ws2s(username.c_str()), stringh::ws2s(password.c_str()));
+}
+
+
 /*********************************
 // MachineSettings
 *********************************/
