@@ -356,11 +356,17 @@ unsigned HTTPServer::SendResponse(Socket & sock, const http_response & resp)
 			return 0;
 		}
 
-		// Authenticated response
-		responseString += sock.SendLine(http::header::content_type + resp.content_type);
-		responseString += sock.SendLine(http::header::content_length + resp.content_length);
+		// Entity headers
+		if (!resp.body.empty()) {
+			responseString += sock.SendLine(http::header::content_type + resp.content_type);
+			responseString += sock.SendLine(http::header::content_length + resp.content_length);
+		}
+
+		// End response + add body if exists
 		responseString += sock.SendLine("");
-		responseString += sock.Send(resp.body);
+		if (!resp.body.empty()) {
+			responseString += sock.Send(resp.body);
+		}
 
 	}
 	catch (const std::exception& e)

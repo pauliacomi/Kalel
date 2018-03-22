@@ -149,17 +149,21 @@ unsigned HTTPClient::SendRequest(Socket & sock, http_request & request)
 	URLHelper::BuildReq(reqUrl, request.path, request.params);
 
 	try {
+		// Common response headers
 		requestString += sock.SendLine(request.method + " " + reqUrl + " " + "HTTP/1.1");
 		requestString += sock.SendLine(http::header::accept + request.accept);
 		
-		// Auth
+		// Authentication
 		std::string auth = request.username + ":" + request.password;
 		requestString += sock.SendLine(http::header::authorization + request.authentication_method + " " + base64_encode((const unsigned char*)auth.c_str(), auth.length()));
-		
+
+		// Entity headers
 		if (!request.body.empty()) {
 			requestString += sock.SendLine(http::header::content_length + request.content_length);
 			requestString += sock.SendLine(http::header::content_type + request.content_type);
 		}
+
+		// End request + add body if exists
 		requestString += sock.SendLine("");
 		if (!request.body.empty()) {
 			requestString += sock.Send(request.body);
