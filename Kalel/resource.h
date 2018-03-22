@@ -23,7 +23,9 @@
 #define IDC_FERMER3                     1005
 #define IDC_BUTTON1                     1005
 #define IDC_OUVRIR4                     1006
+#define IDC_EDIT2                       1006
 #define IDC_FERMER4                     1007
+#define IDC_EDIT3                       1007
 #define IDC_OUVRIR5                     1008
 #define IDC_FERMER5                     1009
 #define IDC_OUVRIR6                     1010

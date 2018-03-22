@@ -30,12 +30,17 @@ protected:
 	int radioChoice;
 	DWORD ipAddress;
 	CString webAddress;
+	CString username;
+	CString password;
 public:
 	afx_msg void OnIdcancel();
 	virtual BOOL OnInitDialog();
 	afx_msg void OnClickedConnect();
 
 	std::wstring GetAddress();
+	std::wstring GetUsername();
+	std::wstring GetPassword();
+	void SetCredentials(const std::wstring & username, const std::wstring & password);
 };
 
 #endif

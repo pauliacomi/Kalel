@@ -88,10 +88,34 @@ std::wstring Parameters::GetServerAddress()
 	return convertStr;
 }
 
-void Parameters::SetServerAddress(std::wstring address)
+void Parameters::SetServerAddress(const std::wstring &address)
 {
 	WritePrivateProfileString(_T("server"), _T("address"), address.c_str(), fileLocation);
 }
+
+std::wstring Parameters::GetUsername()
+{
+	TCHAR ch[nSizeString];
+	GetPrivateProfileString(__T("server"), _T("username"), _T(""), ch, nSizeString, fileLocation);
+	std::wstring convertStr(ch);
+	return convertStr;
+}
+
+std::wstring Parameters::GetPassword()
+{
+	TCHAR ch[nSizeString];
+	GetPrivateProfileString(__T("server"), _T("password"), _T(""), ch, nSizeString, fileLocation);
+	std::wstring convertStr(ch);
+	return convertStr;
+}
+
+
+void Parameters::SetCredentials(const std::wstring &username, const std::wstring &password)
+{
+	WritePrivateProfileString(_T("server"), _T("username"), username.c_str(), fileLocation);
+	WritePrivateProfileString(_T("server"), _T("password"), password.c_str(), fileLocation);
+}
+
 
 
 std::wstring Parameters::GetServerPort()
@@ -102,7 +126,7 @@ std::wstring Parameters::GetServerPort()
 	return convertStr;
 }
 
-void Parameters::SetServerPort(std::wstring port)
+void Parameters::SetServerPort(const std::wstring &port)
 {
 	WritePrivateProfileString(_T("server"), _T("port"), port.c_str(), fileLocation);
 }
@@ -141,7 +165,7 @@ int Parameters::GetRemoteFolderLocation()
 	return _ttoi(ch);
 }
 
-void Parameters::SetRemoteFolderLocation(std::wstring location)
+void Parameters::SetRemoteFolderLocation(const std::wstring &location)
 {
 	WritePrivateProfileString(_T("location"), _T("remotefolder"), location.c_str(), fileLocation);
 }

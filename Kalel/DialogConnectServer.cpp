@@ -30,6 +30,8 @@ void DialogConnectServer::DoDataExchange(CDataExchange* pDX)
 	DDX_Radio(pDX, IDC_RADIO_LOCAL, radioChoice);
 	DDX_IPAddress(pDX, IDC_IPADDRESS1, ipAddress);
 	DDX_Text(pDX, IDC_EDIT1, webAddress);
+	DDX_Text(pDX, IDC_EDIT2, username);
+	DDX_Text(pDX, IDC_EDIT3, password);
 }
 
 
@@ -91,7 +93,7 @@ void DialogConnectServer::OnClickedConnect()
 std::wstring DialogConnectServer::GetAddress()
 {
 	std::wstring address;
-	CString url;		// ugly, i know
+	CString url;
 
 	switch (radioChoice)
 	{
@@ -110,12 +112,31 @@ std::wstring DialogConnectServer::GetAddress()
 		a = (ipAddress >> 24) & 0xFF;
 
 		url.Format(_T("%u.%u.%u.%u"), a, b, c, d);
-
 		address = url.GetBuffer();
+
 		break;
 	default:
 		break;
 	}
 
 	return address;
+}
+
+
+std::wstring DialogConnectServer::GetUsername()
+{
+	return std::wstring(username);
+}
+
+
+std::wstring DialogConnectServer::GetPassword()
+{
+	return std::wstring(password);
+}
+
+
+void DialogConnectServer::SetCredentials(const std::wstring &username, const std::wstring & password)
+{
+	this->username = username.c_str();
+	this->password = password.c_str();
 }

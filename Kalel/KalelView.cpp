@@ -203,7 +203,7 @@ void CKalelView::OnInitialUpdate()
 	commHandler.SetHandle(GetSafeHwnd());
 
 	// Then connect to the server if the address exists
-	commHandler.SaveAuth(L"user", L"kalel");																				// TODO change credentials
+	commHandler.SaveAuth(savedParams.GetUsername(), savedParams.GetPassword());
 	commHandler.Connect(savedParams.GetServerAddress());
 
 	// Set the timers for the window update
@@ -367,15 +367,21 @@ void CKalelView::OnTimer(UINT_PTR nIDEvent)
 LRESULT CKalelView::DisplayConnectDialog(WPARAM, LPARAM)
 {
 	DialogConnectServer connectServer;
+	connectServer.SetCredentials(savedParams.GetUsername(), savedParams.GetPassword());
+
 	if (connectServer.DoModal() == IDOK)
 	{
 		std::wstring address{ connectServer.GetAddress() };
+		std::wstring username{ connectServer.GetUsername() };
+		std::wstring password{ connectServer.GetPassword() };
 		
-		// First save the address
+		// First save the address and user/password
 		savedParams.SetServerAddress(address);
+		savedParams.SetCredentials(username, password);
 
 		// Then connect to the server
 		commHandler.Connect(address);
+		commHandler.SaveAuth(username, password);
 	}
 
 	return 0;
