@@ -32,6 +32,12 @@ HTTPServer::~HTTPServer()
 	}
 }
 
+void HTTPServer::SetCredentials(const std::string & username, const std::string & password)
+{
+	this->username = username;
+	this->password = password;
+}
+
 
 void HTTPServer::AddMethod(std::function<void(http_request*, http_response*)> r, std::string url)
 {
@@ -84,9 +90,7 @@ unsigned HTTPServer::AcceptLoop()
 		LOG(logDEBUG3) << LOG_ACCEPTED_SOCK << theirIP;
 		FILE_LOG(logDEBUG3) << LOG_ACCEPTED_SOCK << theirIP;
 
-		std::unique_ptr<Socket> acceptedSocket = std::make_unique<Socket>(s);				// Create a client socket pointer from the accepted SOCKET
-		acceptedSocket->SetNagle(false);													// Disable Nagle's algorithm, should lead to improved latency
-		threadPool.emplace_back(&HTTPServer::Process, this, std::move(acceptedSocket));		// Start the request processing thread
+		disp_q.dispatch(std::bind(&HTTPServer::Process, this, s));					// Start the request processing
 	}
 
 	LOG(logDEBUG3) << LOG_ACCEPT_LEAVE;
@@ -95,24 +99,11 @@ unsigned HTTPServer::AcceptLoop()
 	return 0;
 }
 
-
-void HTTPServer::removeThread(std::thread::id id)
-{
-	std::lock_guard<std::mutex> lock(threadMutex);
-	auto iter = std::find_if(threadPool.begin(), threadPool.end(), [=](std::thread &t) { return (t.get_id() == id); });
-	if (iter != threadPool.end())
-	{
-		iter->detach();
-		threadPool.erase(iter);
-	}
-}
-
-
-unsigned HTTPServer::Process(std::unique_ptr<Socket> sock)
+unsigned HTTPServer::Process(Socket sock)
 {
 
-	LOG(logDEBUG3) << LOG_PROCESS_ENTER << sock->GetSocket();
-	FILE_LOG(logDEBUG3) << LOG_PROCESS_ENTER << sock->GetSocket();
+	LOG(logDEBUG3) << LOG_PROCESS_ENTER << sock.GetSocket();
+	FILE_LOG(logDEBUG3) << LOG_PROCESS_ENTER << sock.GetSocket();
 
 
 	//*************************************************************************************************************************
@@ -123,13 +114,12 @@ unsigned HTTPServer::Process(std::unique_ptr<Socket> sock)
 	http_request request;									// Create request
 	http_response response;									// Create response
 
-	if (ReceiveRequest(*sock, request, response) != 0)		// We try to receive
+	if (ReceiveRequest(sock, request, response) != 0)		// We try to receive
 	{														// But exit if an error
 		LOG(logDEBUG1) << ERR_HTTP_RECEIVE;
-		LOG(logDEBUG1) << LOG_PROCESS_EXIT << sock->GetSocket();
-		FILE_LOG(logDEBUG1) << LOG_PROCESS_EXIT << sock->GetSocket();
+		LOG(logDEBUG1) << LOG_PROCESS_EXIT << sock.GetSocket();
+		FILE_LOG(logDEBUG1) << LOG_PROCESS_EXIT << sock.GetSocket();
 		
-		std::thread(&HTTPServer::removeThread, this, std::this_thread::get_id()).detach();
 		return 1;											
 	}
 
@@ -144,7 +134,7 @@ unsigned HTTPServer::Process(std::unique_ptr<Socket> sock)
 			request.username = decodedAuth.substr(0, pos_colon);
 			request.password = decodedAuth.substr(pos_colon + 1);
 
-			if (request.username == "user" && request.password == "")				// TODO: need to set the values here
+			if (request.username == username && request.password == password)
 			{
 				response.authentication_given = true;
 			}
@@ -185,7 +175,7 @@ unsigned HTTPServer::Process(std::unique_ptr<Socket> sock)
 	response.content_length		= stringh::StringFrom<size_t>(response.body.size());
 
 	// Send it
-	SendResponse(*sock, response);
+	SendResponse(sock, response);
 
 	//
 	// Exit
@@ -194,10 +184,9 @@ unsigned HTTPServer::Process(std::unique_ptr<Socket> sock)
 	// Make sure all data will get sent before socket is closed
 	// sock->SetLinger(true);
 
-	LOG(logDEBUG3) << LOG_PROCESS_EXIT << sock->GetSocket();
-	FILE_LOG(logDEBUG3) << LOG_PROCESS_EXIT << sock->GetSocket();
+	LOG(logDEBUG3) << LOG_PROCESS_EXIT << sock.GetSocket();
+	FILE_LOG(logDEBUG3) << LOG_PROCESS_EXIT << sock.GetSocket();
 
-	std::thread(&HTTPServer::removeThread, this, std::this_thread::get_id()).detach();
 	return 0;
 }
 

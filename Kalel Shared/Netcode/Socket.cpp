@@ -35,8 +35,6 @@ void Socket::Start()
 
 Socket::Socket()
 	: sock{ INVALID_SOCKET }
-	, master{ nullptr }
-	, readfds{ nullptr }
 {
 	Start();
 }

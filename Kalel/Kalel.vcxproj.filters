@@ -447,7 +447,7 @@
       <Filter>Source Files\Commmon\Netcode</Filter>
     </ClCompile>
     <ClCompile Include="..\Kalel Shared\Netcode\dispatch_queue.cpp">
-      <Filter>Header Files\Commmon\Netcode</Filter>
+      <Filter>Source Files\Commmon\Netcode</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

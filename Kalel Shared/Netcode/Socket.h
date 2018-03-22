@@ -82,14 +82,14 @@ public:
 	std::string GetIP(const sockaddr_storage &address);
 
 protected:
-	SOCKET sock;						// Socket
-	stringexception stringex;			// Custom exception
+	SOCKET sock;								// Socket
+	stringexception stringex;					// Custom exception
 
 	// For select functionality
-	fd_set * master;					// master file descriptor list
-	fd_set * readfds;					// Set of listening sockets
+	fd_set * master = nullptr;					// master file descriptor list
+	fd_set * readfds = nullptr;					// Set of listening sockets
 
 private:
 	void Start();
-	static int  nofSockets;
+	static int nofSockets;
 };
