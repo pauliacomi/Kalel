@@ -13,7 +13,7 @@
 #include <algorithm>
 
 
-Client::Client()
+HTTPClient::HTTPClient()
 {
 
 #define FILE_LOGGING	"client.log"		// Comment this line to disable file logging
@@ -31,25 +31,25 @@ Client::Client()
 }
 
 
-Client::~Client()
+HTTPClient::~HTTPClient()
 {
 }
 
 
-void Client::SetLogs(std::vector<std::string> & vct)
+void HTTPClient::SetLogs(std::vector<std::string> & vct)
 {
 	StreamLog::ReportingLevel() = LOG_LEVEL;
 	Output2vector::Stream() = &vct;
 }
 
 
-void Client::Request(std::function<void(http_request*)> req, std::function<void(http_response*)> resp, std::string ip, std::string port)
+void HTTPClient::Request(std::function<void(http_request*)> req, std::function<void(http_response*)> resp, std::string ip, std::string port)
 {
 	std::lock_guard<std::mutex> lock(threadMutex);
-	threadPool.emplace_back(&Client::Process, this, ip, port, req, resp);
+	threadPool.emplace_back(&HTTPClient::Process, this, ip, port, req, resp);
 }
 
-void Client::removeThread(std::thread::id id)
+void HTTPClient::removeThread(std::thread::id id)
 {
 	std::lock_guard<std::mutex> lock(threadMutex);
 	auto iter = std::find_if(threadPool.begin(), threadPool.end(), [=](std::thread &t) { return (t.get_id() == id); });
@@ -60,7 +60,7 @@ void Client::removeThread(std::thread::id id)
 	}
 }
 
-unsigned Client::Process(std::string ip, std::string port, std::function<void(http_request*)> request_func_, std::function<void(http_response*)> response_func_){
+unsigned HTTPClient::Process(std::string ip, std::string port, std::function<void(http_request*)> request_func_, std::function<void(http_response*)> response_func_){
 	
 	STREAM_LOG(logDEBUG2) << "Enter thread ";
 #ifdef FILE_LOGGING
@@ -154,12 +154,12 @@ unsigned Client::Process(std::string ip, std::string port, std::function<void(ht
 	FILE_LOG(logDEBUG2) << "Exit thread";
 #endif // FILE_LOGGING
 
-	std::thread(&Client::removeThread, this, std::this_thread::get_id()).detach();
+	std::thread(&HTTPClient::removeThread, this, std::this_thread::get_id()).detach();
 	return 0;
 }
 
 
-inline unsigned Client::ErrorCaught(std::string err_str, std::function<void(http_response*)> response_func_)
+inline unsigned HTTPClient::ErrorCaught(std::string err_str, std::function<void(http_response*)> response_func_)
 {
 	STREAM_LOG(logERROR) << err_str;
 #ifdef FILE_LOGGING
@@ -172,13 +172,13 @@ inline unsigned Client::ErrorCaught(std::string err_str, std::function<void(http
 	response.error_str = err_str;
 	response_func_(&response);
 
-	std::thread(&Client::removeThread, this, std::this_thread::get_id()).detach();
+	std::thread(&HTTPClient::removeThread, this, std::this_thread::get_id()).detach();
 
 	return 1;
 }
 
 
-unsigned Client::ReceiveResponse(Socket & sock, http_response & resp)
+unsigned HTTPClient::ReceiveResponse(Socket & sock, http_response & resp)
 {
 
 	std::string responseString;

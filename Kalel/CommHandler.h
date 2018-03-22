@@ -50,7 +50,7 @@ public:
 	void UserWait();
 
 private:
-	Client client;
+	HTTPClient client;
 	MFCMessageHandler messageHandler;
 	
 	void ThreadCommand(int command);

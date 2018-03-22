@@ -11,11 +11,11 @@
 #include <functional>
 #include <mutex>
 
-class Client
+class HTTPClient
 {
 public:
-	Client();
-	~Client();
+	HTTPClient();
+	~HTTPClient();
 
 	void SetLogs(std::vector<std::string>& vct);
 
