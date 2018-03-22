@@ -203,7 +203,7 @@ void CKalelView::OnInitialUpdate()
 	commHandler.SetHandle(GetSafeHwnd());
 
 	// Then connect to the server if the address exists
-	commHandler.SaveAuth(L"user", L"pass");																				// TODO change credentials
+	commHandler.SaveAuth(L"user", L"kalel");																				// TODO change credentials
 	commHandler.Connect(savedParams.GetServerAddress());
 
 	// Set the timers for the window update
@@ -784,8 +784,6 @@ LRESULT CKalelView::MessageBoxAlert(WPARAM wParam, LPARAM lParam)
 	std::unique_ptr<UINT> nType(reinterpret_cast<UINT*>(wParam));
 	
 	int result = AfxMessageBox(*message, *nType);
-
-	commHandler.UserYes();
 
 	return result;
 }
