@@ -309,6 +309,9 @@
     <ClInclude Include="..\Kalel Shared\Netcode\http_client.h">
       <Filter>Header Files\Commmon\Netcode</Filter>
     </ClInclude>
+    <ClInclude Include="..\Kalel Shared\Netcode\dispatch_queue.h">
+      <Filter>Header Files\Commmon\Netcode</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainFrm.cpp">
@@ -442,6 +445,9 @@
     </ClCompile>
     <ClCompile Include="..\Kalel Shared\Netcode\http_client.cpp">
       <Filter>Source Files\Commmon\Netcode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Kalel Shared\Netcode\dispatch_queue.cpp">
+      <Filter>Header Files\Commmon\Netcode</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

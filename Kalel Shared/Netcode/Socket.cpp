@@ -110,6 +110,10 @@ void Socket::Listen(PCSTR port)
 			continue;
 		}
 
+		// Set socket option to timeout
+		int timeout = 500;																// 500 ms
+		setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, (char*)&timeout, sizeof(timeout));
+
 		break;	// if we got here we are connected
 	}
 
@@ -306,13 +310,13 @@ std::string Socket::ReceiveLine()
 
 	while (true) {
 		char r;
-
+		
 		received = recv(sock, &r, 1, 0);
 
 		switch (received) {
 		case 0: // not connected anymore;
 			return "";
-		case INVALID_SOCKET:
+		case SOCKET_ERROR:
 			if (errno == EAGAIN) {
 				return ret;
 			}

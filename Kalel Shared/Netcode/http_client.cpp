@@ -36,33 +36,14 @@ HTTPClient::~HTTPClient()
 }
 
 
-void HTTPClient::SetLogs(std::vector<std::string> & vct)
-{
-	StreamLog::ReportingLevel() = LOG_LEVEL;
-	Output2vector::Stream() = &vct;
-}
-
-
 void HTTPClient::Request(std::function<void(http_request*)> func_req, std::function<void(http_response*)> func_resp, std::string ip, std::string port)
 {
-	std::lock_guard<std::mutex> lock(threadMutex);
-	threadPool.emplace_back(&HTTPClient::Process, this, ip, port, func_req, func_resp);
+	disp_q.dispatch(std::bind(&HTTPClient::Process, this, ip, port, func_req, func_resp));
 }
 
-void HTTPClient::removeThread(std::thread::id id)
-{
-	std::lock_guard<std::mutex> lock(threadMutex);
-	auto iter = std::find_if(threadPool.begin(), threadPool.end(), [=](std::thread &t) { return (t.get_id() == id); });
-	if (iter != threadPool.end())
-	{
-		iter->detach();
-		threadPool.erase(iter);
-	}
-}
 
 unsigned HTTPClient::Process(std::string ip, std::string port, std::function<void(http_request*)> func_req, std::function<void(http_response*)> func_resp){
 	
-	STREAM_LOG(logDEBUG2) << "Enter thread ";
 #ifdef FILE_LOGGING
 	FILE_LOG(logDEBUG2) << "Enter thread";
 #endif // FILE_LOGGING
@@ -124,7 +105,6 @@ unsigned HTTPClient::Process(std::string ip, std::string port, std::function<voi
 	}
 
 	// Log request string
-	STREAM_LOG(logDEBUG) << l_sock.GetSocket() << LOG_REQUEST << requestString;
 #ifdef FILE_LOGGING
 	FILE_LOG(logDEBUG) << l_sock.GetSocket() << LOG_REQUEST << requestString;
 #endif // FILE_LOGGING
@@ -149,19 +129,16 @@ unsigned HTTPClient::Process(std::string ip, std::string port, std::function<voi
 	// Exit
 	//
 
-	STREAM_LOG(logDEBUG2) << "Exit thread";
 #ifdef FILE_LOGGING
 	FILE_LOG(logDEBUG2) << "Exit thread";
 #endif // FILE_LOGGING
 
-	std::thread(&HTTPClient::removeThread, this, std::this_thread::get_id()).detach();
 	return 0;
 }
 
 
 inline unsigned HTTPClient::ErrorCaught(std::string err_str, std::function<void(http_response*)> func_resp)
 {
-	STREAM_LOG(logERROR) << err_str;
 #ifdef FILE_LOGGING
 	FILE_LOG(logERROR) << err_str;
 #endif // FILE_LOGGING
@@ -171,8 +148,6 @@ inline unsigned HTTPClient::ErrorCaught(std::string err_str, std::function<void(
 	response.error = true;
 	response.error_str = err_str;
 	func_resp(&response);
-
-	std::thread(&HTTPClient::removeThread, this, std::this_thread::get_id()).detach();
 
 	return 1;
 }
@@ -283,7 +258,6 @@ unsigned HTTPClient::ReceiveResponse(Socket & sock, http_response & resp)
 
 	//*************** Response is now received
 
-	STREAM_LOG(logDEBUG) << sock.GetSocket() << LOG_RESPONSE << responseString;
 #ifdef FILE_LOGGING
 	FILE_LOG(logDEBUG) << sock.GetSocket() << LOG_RESPONSE << responseString;
 #endif // FILE_LOGGING

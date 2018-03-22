@@ -319,19 +319,19 @@ void CKalelView::OnTimer(UINT_PTR nIDEvent)
 			if (!dataCollection.empty())
 				commHandler.GetData(dataCollection.rbegin()->first);
 			else
-				commHandler.GetData(timeh::NowTime());
+				commHandler.GetData(noTime);
 
 			// Send the request for logs
 			if (!logCollection.empty())
 				commHandler.GetLog(logCollection.rbegin()->first);
 			else
-				commHandler.GetLog(timeh::NowTime());
+				commHandler.GetLog(noTime);
 
 			// Send the request for user input
 			if (!requestCollection.empty())
 				commHandler.GetRequests(requestCollection.rbegin()->first);
 			else
-				commHandler.GetRequests(timeh::NowTime());
+				commHandler.GetRequests(noTime);
 
 
 			// We check to see if there are any requests from the experiment

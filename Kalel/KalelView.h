@@ -73,6 +73,8 @@ private:
 	//						Storage classes
 	//*************************************************************************************************************************
 private:
+	std::chrono::system_clock::time_point												noTime;					// Timepoint storing when the experiment settings were generated
+
 	// Machine settings related
 	std::chrono::system_clock::time_point												machineSettingsTime;	// Timepoint storing when the machine settings were generated
 	std::shared_ptr<MachineSettings>													machineSettings;		// Pointer to a machineSettings object
