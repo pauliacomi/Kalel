@@ -43,10 +43,10 @@ void HTTPClient::SetLogs(std::vector<std::string> & vct)
 }
 
 
-void HTTPClient::Request(std::function<void(http_request*)> req, std::function<void(http_response*)> resp, std::string ip, std::string port)
+void HTTPClient::Request(std::function<void(http_request*)> func_req, std::function<void(http_response*)> func_resp, std::string ip, std::string port)
 {
 	std::lock_guard<std::mutex> lock(threadMutex);
-	threadPool.emplace_back(&HTTPClient::Process, this, ip, port, req, resp);
+	threadPool.emplace_back(&HTTPClient::Process, this, ip, port, func_req, func_resp);
 }
 
 void HTTPClient::removeThread(std::thread::id id)
@@ -60,7 +60,7 @@ void HTTPClient::removeThread(std::thread::id id)
 	}
 }
 
-unsigned HTTPClient::Process(std::string ip, std::string port, std::function<void(http_request*)> request_func_, std::function<void(http_response*)> response_func_){
+unsigned HTTPClient::Process(std::string ip, std::string port, std::function<void(http_request*)> func_req, std::function<void(http_response*)> func_resp){
 	
 	STREAM_LOG(logDEBUG2) << "Enter thread ";
 #ifdef FILE_LOGGING
@@ -80,7 +80,7 @@ unsigned HTTPClient::Process(std::string ip, std::string port, std::function<voi
 	}
 	catch (const std::exception& e)
 	{
-		return ErrorCaught(e.what(), response_func_);
+		return ErrorCaught(e.what(), func_resp);
 	}
 
 	try {
@@ -88,7 +88,7 @@ unsigned HTTPClient::Process(std::string ip, std::string port, std::function<voi
 	}
 	catch (const std::exception& e)
 	{
-		return ErrorCaught(e.what(), response_func_);
+		return ErrorCaught(e.what(), func_resp);
 	}
 
 	//*************************************************************************************************************************
@@ -96,7 +96,7 @@ unsigned HTTPClient::Process(std::string ip, std::string port, std::function<voi
 	//*************************************************************************************************************************
 
 	http_request request;														// Create request
-	request_func_(&request);													// Populate request from function
+	func_req(&request);															// Populate request from function
 
 	std::string reqUrl;															// Build URL
 	URLHelper::BuildReq(reqUrl, request.path, request.params);
@@ -120,7 +120,7 @@ unsigned HTTPClient::Process(std::string ip, std::string port, std::function<voi
 	}
 	catch (const std::exception& e)
 	{
-		return ErrorCaught(e.what(), response_func_);
+		return ErrorCaught(e.what(), func_resp);
 	}
 
 	// Log request string
@@ -138,11 +138,11 @@ unsigned HTTPClient::Process(std::string ip, std::string port, std::function<voi
 
 	if (ReceiveResponse(l_sock, response) != 0)
 	{
-		return ErrorCaught(response.error_str, response_func_);
+		return ErrorCaught(response.error_str, func_resp);
 	}
 	else
 	{
-		response_func_(&response);
+		func_resp(&response);
 	}
 
 	//
@@ -159,7 +159,7 @@ unsigned HTTPClient::Process(std::string ip, std::string port, std::function<voi
 }
 
 
-inline unsigned HTTPClient::ErrorCaught(std::string err_str, std::function<void(http_response*)> response_func_)
+inline unsigned HTTPClient::ErrorCaught(std::string err_str, std::function<void(http_response*)> func_resp)
 {
 	STREAM_LOG(logERROR) << err_str;
 #ifdef FILE_LOGGING
@@ -170,7 +170,7 @@ inline unsigned HTTPClient::ErrorCaught(std::string err_str, std::function<void(
 	response.disconnected = true;
 	response.error = true;
 	response.error_str = err_str;
-	response_func_(&response);
+	func_resp(&response);
 
 	std::thread(&HTTPClient::removeThread, this, std::this_thread::get_id()).detach();
 

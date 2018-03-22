@@ -319,7 +319,7 @@ void CKalelView::OnTimer(UINT_PTR nIDEvent)
 			if (!dataCollection.empty())
 				commHandler.GetData(dataCollection.rbegin()->first);
 			else
-				commHandler.GetLog(timeh::NowTime());
+				commHandler.GetData(timeh::NowTime());
 
 			// Send the request for logs
 			if (!logCollection.empty())
