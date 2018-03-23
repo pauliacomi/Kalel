@@ -259,8 +259,7 @@ void CKalelApp::OnUpdateServerConnect(CCmdUI *pCmdUI)
 
 void CKalelApp::OnUpdateManualSync(CCmdUI *pCmdUI)
 {
-	bool available = menuIsAvailable & serverConnected;
-	pCmdUI->Enable(available);
+	pCmdUI->Enable(serverConnected);
 }
 
 void CKalelApp::OnUpdateParamatresAppareil(CCmdUI *pCmdUI)

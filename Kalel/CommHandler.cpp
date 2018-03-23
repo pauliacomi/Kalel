@@ -23,17 +23,6 @@
 
 using json = nlohmann::json;
 
-#define START		1
-#define SHUTDOWN	2
-#define RESTART		3
-#define RESET		4
-#define PAUSE		5
-#define RESUME		6
-
-#define SAMPLEVACUUM		1
-#define BOTTLEVACUUM		2
-#define BOTTLECHANGE		3
-
 CommHandler::CommHandler()
 {
 }
@@ -259,19 +248,19 @@ void CommHandler::GetRequests(const std::chrono::system_clock::time_point &fromT
 /*********************************
 // Automation control
 *********************************/
-void CommHandler::StartClient() { ThreadCommand(START); }
+void CommHandler::StartClient() { ThreadCommand("start"); }
 
-void CommHandler::ShutdownClient() { ThreadCommand(SHUTDOWN); }
+void CommHandler::ShutdownClient() { ThreadCommand("shutdown"); }
 
-void CommHandler::RestartClient() {	ThreadCommand(RESTART); }
+void CommHandler::RestartClient() {	ThreadCommand("restart"); }
 
-void CommHandler::ResetClient() { ThreadCommand(RESET); }
+void CommHandler::ResetClient() { ThreadCommand("reset"); }
 
-void CommHandler::PauseClient() { ThreadCommand(PAUSE); }
+void CommHandler::PauseClient() { ThreadCommand("pause"); }
 
-void CommHandler::ResumeClient() { ThreadCommand(RESUME); }
+void CommHandler::ResumeClient() { ThreadCommand("resume"); }
 
-void CommHandler::ThreadCommand(int command)
+void CommHandler::ThreadCommand(std::string command)
 {
 	auto request = std::bind(&CommHandler::ThreadCommand_req, this, std::placeholders::_1, command);
 	auto callback = std::bind(&CommHandler::ThreadCommand_resp, this, std::placeholders::_1);
@@ -284,27 +273,6 @@ void CommHandler::ThreadCommand(int command)
 	}
 }
 
-/*********************************
-// Automation control
-*********************************/
-void CommHandler::FunctionSampleVacuum() { FunctionalityCommand(SAMPLEVACUUM); }
-
-void CommHandler::FunctionBottleVacuum() { FunctionalityCommand(BOTTLEVACUUM); }
-
-void CommHandler::FunctionChangeBottle() { FunctionalityCommand(BOTTLECHANGE); }
-
-void CommHandler::FunctionalityCommand(int functionality)
-{
-	auto request = std::bind(&CommHandler::FunctionalityCommand_req, this, std::placeholders::_1, functionality);
-	auto callback = std::bind(&CommHandler::FunctionalityCommand_resp, this, std::placeholders::_1);
-
-	try {
-		client.Request(request, callback, localAddress);
-	}
-	catch (const std::exception& e) {
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, stringh::s2ws(e.what()));
-	}
-}
 
 /*********************************
 // User choice
@@ -533,14 +501,15 @@ unsigned CommHandler::SetExperimentSettings_resp(http_response* r) {
 	if (r->status == http::responses::ok)
 	{
 		messageHandler.OnSetExperimentSettings();
+		return 0;
 	}
 	else if (r->status == http::responses::internal_err)
 	{
 		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server error, could not start a new experiment"));
-		return 1;
 	}
 
-	return 0;
+	messageHandler.ExperimentEnd();
+	return 1;
 }
 
 
@@ -906,37 +875,11 @@ unsigned CommHandler::GetRequest_resp(http_response * r)
 /*********************************
 // Thread Commands
 *********************************/
-unsigned CommHandler::ThreadCommand_req(http_request * r, int command)
+unsigned CommHandler::ThreadCommand_req(http_request * r, std::string command)
 {
 	r->method = http::method::post;
 	r->path = "/api/thread";
-
-	std::string action;
-	switch (command)
-	{
-	case START:
-		action = "start";
-		break;
-	case SHUTDOWN:
-		action = "shutdown";
-		break;
-	case RESTART:
-		action = "restart";
-		break;
-	case RESET:
-		action = "reset";
-		break;
-	case STAGE_PAUSE:
-		action = "pause";
-		break;
-	case RESUME:
-		action = "resume";
-		break;
-	default:
-		break;
-	}
-
-	r->params.emplace("action", action);
+	r->params.emplace("action", command);
 	return 0;
 }
 
@@ -962,52 +905,6 @@ unsigned CommHandler::ThreadCommand_resp(http_response * r)
 		return 1;
 	}
 	return 0;
-}
-
-/*********************************
-// Functionality Commands
-*********************************/
-unsigned CommHandler::FunctionalityCommand_req(http_request* r, int functionality)
-{
-	r->method = http::method::post;
-	r->path = "/api/functionality";
-
-	std::string action;
-	switch (functionality)
-	{
-	case SAMPLEVACUUM:
-		action = "cell_vacuum";
-		break;
-	case BOTTLEVACUUM:
-		action = "bottle_vacuum";
-		break;
-	case BOTTLECHANGE:
-		action = "bottle_change";
-		break;
-	default:
-		break;
-	}
-		
-	r->params.emplace("action", action);
-	return 0;
-}
-
-unsigned CommHandler::FunctionalityCommand_resp(http_response* r)
-{
-	if (r->status == http::responses::ok)
-	{
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Functionality requested"));
-		return 0;
-	}
-	else if (r->status == http::responses::conflict)
-	{
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server cannot process functionality"));
-	}
-	else if (r->status == http::responses::not_found) {
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server cannot find functionality"));
-	}
-	messageHandler.ExperimentEnd();
-	return 1;
 }
 
 

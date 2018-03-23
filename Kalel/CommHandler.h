@@ -54,8 +54,7 @@ private:
 	HTTPClient client;
 	MFCMessageHandler messageHandler;
 	
-	void ThreadCommand(int command);
-	void FunctionalityCommand(int functionality);
+	void ThreadCommand(std::string command);
 	void UserChoice(int choice);
 
 	/**********************************************************************************************************************************
@@ -123,12 +122,8 @@ private:
 	unsigned GetRequest_resp(http_response * r);
 	
 	// Automation/experiment commands
-	unsigned ThreadCommand_req(http_request * r, int command);
+	unsigned ThreadCommand_req(http_request * r, std::string command);
 	unsigned ThreadCommand_resp(http_response * r);
-	
-	// Functionality commands
-	unsigned FunctionalityCommand_req(http_request * r, int functionality);
-	unsigned FunctionalityCommand_resp(http_response * r);
 
 	// User choice commands
 	unsigned UserChoice_req(http_request * r, int choice);

@@ -388,10 +388,10 @@ LRESULT CKalelView::DisplayConnectDialog(WPARAM, LPARAM)
 
 LRESULT CKalelView::ManualSync(WPARAM, LPARAM)
 {
-	commHandler.GetExperimentSettings(experimentSettingsTime);
-	commHandler.GetExperimentStatus(experimentStatusTime);
-	commHandler.GetMachineSettings(machineSettingsTime);
-	commHandler.GetControlInstrumentState(machineStateTime);
+	commHandler.GetExperimentSettings(noTime);
+	commHandler.GetExperimentStatus(noTime);
+	commHandler.GetMachineSettings(noTime);
+	commHandler.GetControlInstrumentState(noTime);
 	return 0;
 }
 
@@ -497,8 +497,10 @@ LRESULT CKalelView::OnMsvAmpoule(WPARAM, LPARAM)
 				pApp->menuIsAvailable = false;
 				UpdateButtons();
 
-				// Give command
-				commHandler.FunctionSampleVacuum();
+				// Initialise temporary experiment settings
+				tempExpSettings = std::make_unique<ExperimentSettings>();
+				tempExpSettings->experimentType = EXPERIMENT_TYPE_SAMPLE_VACUUM;
+				commHandler.SetExperimentSettings(*tempExpSettings);
 			}
 		}
 	}
@@ -525,8 +527,10 @@ LRESULT CKalelView::OnMsvBouteille(WPARAM, LPARAM)
 				pApp->menuIsAvailable = false;
 				UpdateButtons();
 
-				// Raise the flag for data modified
-				commHandler.FunctionBottleVacuum();
+				// Initialise temporary experiment settings
+				tempExpSettings = std::make_unique<ExperimentSettings>();
+				tempExpSettings->experimentType = EXPERIMENT_TYPE_BOTTLE_VACUUM;
+				commHandler.SetExperimentSettings(*tempExpSettings);
 			}
 		}
 	}
@@ -553,8 +557,10 @@ LRESULT CKalelView::OnChangementBouteille(WPARAM, LPARAM)
 				pApp->menuIsAvailable = false;
 				UpdateButtons();
 
-				// Raise the flag for data modified
-				commHandler.FunctionChangeBottle();
+				// Initialise temporary experiment settings
+				tempExpSettings = std::make_unique<ExperimentSettings>();
+				tempExpSettings->experimentType = EXPERIMENT_TYPE_BOTTLE_CHANGE;
+				commHandler.SetExperimentSettings(*tempExpSettings);
 			}
 		}
 	}
@@ -644,21 +650,22 @@ LRESULT CKalelView::OnExchangeExperimentSettings(WPARAM wParam, LPARAM incomingE
 LRESULT CKalelView::OnExchangeExperimentStatus(WPARAM wParam, LPARAM incomingExperimentStatus)
 {	
 	// Get the incoming pointer
-	experimentStatus = *reinterpret_cast<ExperimentStatus*>(incomingExperimentStatus);
+	ExperimentStatus * tempStatus = reinterpret_cast<ExperimentStatus*>(incomingExperimentStatus);
+	experimentStatus = *tempStatus;
 	experimentStatusTime = timeh::NowTime();
 
 	// Update GUI
 	OnSync(NULL, NULL);
 
+	delete tempStatus;
 	return 0;
 }
 
 LRESULT CKalelView::OnSetExperimentSettings(WPARAM, LPARAM)
 {
 	// Make the temporary local version official
-	experimentSettings = tempExpSettings;
+	experimentSettings.reset(tempExpSettings.release());
 	experimentSettingsTime = timeh::NowTime();
-	tempExpSettings.reset();
 
 	// Update GUI
 	OnSync(NULL, NULL);

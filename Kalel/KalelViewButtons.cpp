@@ -24,7 +24,7 @@ void CKalelView::OnBnClickedLancer()
 		{
 			// Create temp settings and save user choice
 			if (!tempExpSettings || tempExpSettings->experimentType != dialogExperimentType.TypeExperience) {
-				tempExpSettings = std::make_shared<ExperimentSettings>(*experimentSettings);
+				tempExpSettings = std::make_unique<ExperimentSettings>(*experimentSettings);
 			}
 			tempExpSettings->experimentType = dialogExperimentType.TypeExperience;
 
@@ -90,7 +90,7 @@ void CKalelView::OnBnClickedButtonParametresExperience()
 		if (pApp->experimentRunning) {
 
 			// Initialise temporary experiment settings
-			tempExpSettings = std::make_shared<ExperimentSettings>(*experimentSettings);
+			tempExpSettings = std::make_unique<ExperimentSettings>(*experimentSettings);
 
 			// Create dialog
 			ExperimentPropertySheet dialogExperimentProperties(_T(""), machineSettings.get());

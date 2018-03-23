@@ -86,8 +86,8 @@ private:
 	
 	// Experiment Settings related
 	std::chrono::system_clock::time_point												experimentSettingsTime;	// Timepoint storing when the experiment settings were generated
-	std::shared_ptr<ExperimentSettings>													experimentSettings;		// Local storage of experimentSettings
-	std::shared_ptr<ExperimentSettings>													tempExpSettings;		// Temporary experimentSettings stored here between sending change request to server and server acknowledgement
+	std::unique_ptr<ExperimentSettings>													experimentSettings;		// Local storage of experimentSettings
+	std::unique_ptr<ExperimentSettings>													tempExpSettings;		// Temporary experimentSettings stored here between sending change request to server and server acknowledgement
 	
 	// Experiment Status related
 	std::chrono::system_clock::time_point												experimentStatusTime;	// Timepoint storing when the experiment status was generated

@@ -5,6 +5,10 @@
             <nom>Paul</nom>
             <surnom>Iacomi</surnom>
         </experimentateur>
+        <user>
+            <nom>asd</nom>
+            <surnom>asd</surnom>
+        </user>
     </experimentateurs>
     <gazs>
         <gaz>
@@ -124,6 +128,15 @@
             <temperature_ebullition>225.43</temperature_ebullition>
             <omega>0.61804</omega>
         </gaz>
+        <gas>
+            <nom>as</nom>
+            <symbole>ss</symbole>
+            <masse_moleculaire>1</masse_moleculaire>
+            <temperature_critique>30</temperature_critique>
+            <pression_critique>1</pression_critique>
+            <temperature_ebullition>30</temperature_ebullition>
+            <omega>1</omega>
+        </gas>
     </gazs>
     <cellules />
     <configs />
