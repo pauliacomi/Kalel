@@ -37,31 +37,27 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // Prise en charge de DDX/DDV
 	DECLARE_MESSAGE_MAP()
 
+	bool modified = false;
 	std::unique_ptr<MachineSettings> localSettings;
 
-	float m_fPressionSecuriteBassePression;
-	CSpinBtnCtrl m_SpinPressionSecuriteBassePression;
+	BOOL b_safety;
+	BOOL b_nozzle;
 
-	float m_fPressionSecuriteHautePression;
-	CSpinBtnCtrl m_SpinPressionSecuriteHautePression;
+	CString m_StrNomCalo{""};
+	CString m_StrEnteteFichier{""};
 
-	float m_fPressionLimiteVide;
-	CSpinBtnCtrl m_SpinPressionLimiteVide;
+	CSpinBtnCtrl m_SpinVacuumPump;
+	CSpinBtnCtrl m_SpinVacuumLimit;
 
-	float m_fVolumeRef;
 	CSpinBtnCtrl m_SpinVolumeRef;
-
-	float m_fVolumeP6;
 	CSpinBtnCtrl m_SpinVolumeP6;
+
+	CSpinBtnCtrl m_SpinInjection[3];
+
+	CSpinBtnCtrl m_SpinTime[9];
 
 	virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
 	void OnModified(UINT nID);
-	bool modified;
-	CString m_StrNomCalo;
-	CString m_StrEnteteFichier;
-	BOOL m_bSecurite;
-	BOOL m_bTuyere;
-
 
 public:
 	virtual BOOL Create(LPCTSTR lpszTemplateName, CWnd* pParentWnd = NULL);
