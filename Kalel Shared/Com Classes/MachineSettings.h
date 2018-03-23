@@ -53,7 +53,7 @@ public:
 	std::map<unsigned int, Controller>	controllers;		// The controllers which are available
 
 	// Functions to easily create instruments or readers
-	void AddInstrument(Instrument i, unsigned int position = 0);
-	void AddReader(Reader r, unsigned int position = 0);
-	void AddController(Controller r, unsigned int position = 0);
+	void AddInstrument(const Instrument &i, unsigned int position = 0);
+	void AddReader(const Reader &r, unsigned int position = 0);
+	void AddController(const Controller &r, unsigned int position = 0);
 };

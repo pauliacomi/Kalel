@@ -10,8 +10,9 @@
 #include <vector>
 #include <memory>
 
-#define NUMBER_OF_READERS 6
-#define NUMBER_OF_INSTRUMENTS 6
+#define NB_INSTRUMENTS 6
+#define NB_READERS 6
+#define NB_CONTROLLERS 11
 
 // Boîte de dialogue ConnectionPort
 
@@ -29,13 +30,13 @@ public:
 	enum { IDD = IDD_CONNECTION_PORT };
 
 	// Pass the settings to display and be checked against changes
-	void PassSettings(MachineSettings* machineSettings);
+	void PassSettings(const MachineSettings &machineSettings);
 
 	// Returns whether the user modified any data
 	bool Changed();
 
 	// Returns the new machine settings
-	std::shared_ptr<MachineSettings> GetSettings();
+	MachineSettings * GetSettings();
 
 
 
@@ -43,20 +44,7 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // Prise en charge de DDX/DDV
 	DECLARE_MESSAGE_MAP()
 
-
-	MachineSettings * settings;							// Local pointer to machine settings
-	std::shared_ptr<MachineSettings> localSettings;		// Settings being built right here
-
-	// --- Variables ---
-	BOOL readers[NUMBER_OF_READERS];
-	double sensitivities[NUMBER_OF_READERS];
-	int channels[NUMBER_OF_READERS];
-	int instrument_related[NUMBER_OF_READERS];
-
-	int instruments[NUMBER_OF_INSTRUMENTS];
-	int ports[NUMBER_OF_INSTRUMENTS];
-
-	int valvecontroller;
+	std::unique_ptr<MachineSettings> localSettings;		// Settings being built right here
 
 	BOOL bPbm;
 	BOOL bWarning;
@@ -64,65 +52,42 @@ protected:
 	BOOL bPbmHP;
 	BOOL bPbmBP;
 
-	CString StrPbmCalo; 
-	CString StrPbmBP; 
-	CString StrPbmHP; 
+	CString StrPbmCalo;
+	CString StrPbmBP;
+	CString StrPbmHP;
 	CString StrMessageErreur;
 	CString StrMessageWarning;
 
-	// --- Contrôles ---
+	// --- Variables ---
+	// These are here because windows does not let anything else but 
+	// int/BOOL etc to be bound to a control
 
-	// Buttons that represent the checkboxes
-	CButton m_CheckTemperature1;
-	CButton m_CheckTemperature2;
-	CButton m_CheckTemperature3;
-	CButton m_CheckPressure1;
-	CButton m_CheckPressure2;
-	CButton m_CheckCalorimeter1;
+	///////////////////////////////////
+	// Instrument
+	int i_type[NB_INSTRUMENTS];
+	int i_ports[NB_INSTRUMENTS];
 
+	///////////////////////////////////
+	// Reader
+	BOOL r_present[NB_READERS];
+	int r_instrument[NB_READERS];
+	int r_instrument_channel[NB_READERS];
+	double r_sensitivity[NB_READERS];
+	double r_safe_min[NB_READERS];
+	double r_safe_max[NB_READERS];
 
-	// Combo boxes for instrument channels
-	CComboBox m_CBChannelInstrumentT1;
-	CComboBox m_CBChannelInstrumentT2;
-	CComboBox m_CBChannelInstrumentT3;
-	CComboBox m_CBChannelInstrumentP1;
-	CComboBox m_CBChannelInstrumentP2;
-	CComboBox m_CBChannelInstrumentC1;
-
-	// Related instrument
-	CComboBox m_CBInstrumentT1;
-	CComboBox m_CBInstrumentT2;
-	CComboBox m_CBInstrumentT3;
-	CComboBox m_CBInstrumentP1;
-	CComboBox m_CBInstrumentP2;
-	CComboBox m_CBInstrumentC1;
-
-	/////////////////////////////////
-	// Combo boxes for instrument types
-	CComboBox m_CBTypeInstrument1;
-	CComboBox m_CBTypeInstrument2;
-	CComboBox m_CBTypeInstrument3;
-	CComboBox m_CBTypeInstrument4;
-	CComboBox m_CBTypeInstrument5;
-	CComboBox m_CBTypeInstrument6;
-
-	// Combo boxes for instrument ports
-	CComboBox m_CBPortInstrumentT1;
-	CComboBox m_CBPortInstrumentT2;
-	CComboBox m_CBPortInstrumentT3;
-	CComboBox m_CBPortInstrumentP1;
-	CComboBox m_CBPortInstrumentP2;
-	CComboBox m_CBPortInstrumentC1;
-
-
-	CComboBox m_CBPortValves;
-
+	///////////////////////////////////
+	// Controller
+	BOOL c_present[NB_CONTROLLERS];
+	int c_instrument[NB_CONTROLLERS];
+	int c_instrument_channel[NB_CONTROLLERS];
+	int c_instrument_subchannel[NB_CONTROLLERS];
 
 	// ---- Fonctions ---
 
 	// Connection_port
 protected:
-	bool modified;
+	bool modified = false;
 	void OnModified(UINT nID);
 
 public:

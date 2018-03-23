@@ -402,11 +402,11 @@ LRESULT CKalelView::DisplayPortDialog(WPARAM, LPARAM)
 	if (pApp->serverConnected)
 	{
 		ConnectionPort m_connection_ports;
-		m_connection_ports.PassSettings(machineSettings.get());
+		m_connection_ports.PassSettings(*machineSettings);
 		if (m_connection_ports.DoModal() == IDOK) {
 			if (m_connection_ports.Changed())
 			{
-				tempMchSettings = m_connection_ports.GetSettings();			// Save it separately to prevent extra communication
+				tempMchSettings.reset(m_connection_ports.GetSettings());			// Save it separately to prevent extra communication
 				commHandler.SetMachineSettings(*tempMchSettings);
 			}
 		}
@@ -424,11 +424,11 @@ LRESULT CKalelView::DisplayApparatusSettingsDialog(WPARAM, LPARAM)
 	if (pApp->serverConnected)
 	{
 		ApparatusParameters apparatusParameters;
-		apparatusParameters.PassSettings(machineSettings.get());
+		apparatusParameters.PassSettings(*machineSettings);
 		if (apparatusParameters.DoModal() == IDOK) {
 			if (apparatusParameters.Changed())
 			{
-				tempMchSettings = apparatusParameters.GetSettings();			// Save it separately to prevent extra communication
+				tempMchSettings.reset(apparatusParameters.GetSettings());			// Save it separately to prevent extra communication
 				commHandler.SetMachineSettings(*tempMchSettings);
 			}
 		}
@@ -627,7 +627,7 @@ LRESULT CKalelView::OnExchangeMachineSettings(WPARAM, LPARAM incomingMachineSett
 LRESULT CKalelView::OnSetMachineSettings(WPARAM, LPARAM)
 {
 	// Make the temporary local version official
-	machineSettings = tempMchSettings;
+	machineSettings.reset(tempMchSettings.release());
 	machineSettingsTime = timeh::NowTime();
 	tempMchSettings.reset();
 

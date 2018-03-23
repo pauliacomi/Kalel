@@ -57,7 +57,7 @@ MachineSettings & MachineSettings::operator=(const MachineSettings & p)
 }
 
 
-void MachineSettings::AddInstrument(Instrument i, unsigned int position /*=0*/)
+void MachineSettings::AddInstrument(const Instrument &i, unsigned int position /*=0*/)
 {
 	if (position == 0)
 	{
@@ -77,7 +77,7 @@ void MachineSettings::AddInstrument(Instrument i, unsigned int position /*=0*/)
 	}
 }
 
-void MachineSettings::AddReader(Reader r, unsigned int position)
+void MachineSettings::AddReader(const Reader &r, unsigned int position)
 {
 	if (position == 0)
 	{
@@ -98,7 +98,7 @@ void MachineSettings::AddReader(Reader r, unsigned int position)
 	}
 }
 
-void MachineSettings::AddController(Controller r, unsigned int position)
+void MachineSettings::AddController(const Controller &r, unsigned int position)
 {
 	if (position == 0)
 	{

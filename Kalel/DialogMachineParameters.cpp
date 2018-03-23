@@ -20,21 +20,21 @@ ApparatusParameters::ApparatusParameters(CWnd* pParent /*=NULL*/)
 }
 
 
-void ApparatusParameters::PassSettings(MachineSettings* machineSettings)
+void ApparatusParameters::PassSettings(const MachineSettings  &machineSettings)
 {
-	settings = machineSettings;
+	localSettings = std::make_unique<MachineSettings>(machineSettings);
 
-	m_bSecurite								= settings->SafetyOn;
+	m_bSecurite								= localSettings->SafetyOn;
 
-	m_fPressionLimiteVide					= settings->PressureLimitVacuum;
+	m_fPressionLimiteVide					= localSettings->PressureLimitVacuum;
 
-	m_bTuyere								= settings->hasSonicNozzle;
+	m_bTuyere								= localSettings->hasSonicNozzle;
 
-	m_fVolumeRef							= settings->VolumeRef;
-	m_fVolumeP6								= settings->VolumeP6;
+	m_fVolumeRef							= localSettings->VolumeRef;
+	m_fVolumeP6								= localSettings->VolumeP6;
 
-	m_StrNomCalo.Format(_T("%s"), settings->CaloName.c_str());
-	m_StrEnteteFichier.Format(_T("%s"), settings->CaloPrefix.c_str());
+	m_StrNomCalo.Format(_T("%s"), localSettings->CaloName.c_str());
+	m_StrEnteteFichier.Format(_T("%s"), localSettings->CaloPrefix.c_str());
 }
 
 ApparatusParameters::~ApparatusParameters()
@@ -46,9 +46,9 @@ bool ApparatusParameters::Changed()
 	return modified;
 }
 
-std::shared_ptr<MachineSettings> ApparatusParameters::GetSettings()
+MachineSettings *ApparatusParameters::GetSettings()
 {
-	return localSettings;
+	return localSettings.release();
 }
 
 BOOL ApparatusParameters::OnCommand(WPARAM wParam, LPARAM lParam)
@@ -145,7 +145,6 @@ void ApparatusParameters::OnBnClickedOk()
 	UpdateData(TRUE);
 	
 	if (modified) {
-		localSettings = std::make_shared<MachineSettings>(*settings);
 
 		localSettings->SafetyOn = m_bSecurite;
 		localSettings->PressureLimitVacuum = m_fPressionLimiteVide;

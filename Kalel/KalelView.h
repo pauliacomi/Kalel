@@ -77,8 +77,8 @@ private:
 
 	// Machine settings related
 	std::chrono::system_clock::time_point												machineSettingsTime;	// Timepoint storing when the machine settings were generated
-	std::shared_ptr<MachineSettings>													machineSettings;		// Pointer to a machineSettings object
-	std::shared_ptr<MachineSettings>													tempMchSettings;		// Temporary machineSettings stored here between sending change request to server and server acknowledgement
+	std::unique_ptr<MachineSettings>													machineSettings;		// Pointer to a machineSettings object
+	std::unique_ptr<MachineSettings>													tempMchSettings;		// Temporary machineSettings stored here between sending change request to server and server acknowledgement
 	
 	// Control state related
 	ListOfInstrumentButtons																buttonStates;			// The class which deals which keeps all the state of the buttons, for displaying them 

@@ -28,16 +28,16 @@
 
 // Controller identifiers
 
-#define VALVE_1						CONTROLLER_VALVE + 0
-#define VALVE_2						CONTROLLER_VALVE + 1
-#define VALVE_3						CONTROLLER_VALVE + 2
-#define VALVE_4						CONTROLLER_VALVE + 3
-#define VALVE_5						CONTROLLER_VALVE + 4
-#define VALVE_6						CONTROLLER_VALVE + 5
-#define VALVE_7						CONTROLLER_VALVE + 6
-#define VALVE_8						CONTROLLER_VALVE + 7
+#define VALVE_1						CONTROLLER_VALVE + 1
+#define VALVE_2						CONTROLLER_VALVE + 2
+#define VALVE_3						CONTROLLER_VALVE + 3
+#define VALVE_4						CONTROLLER_VALVE + 4
+#define VALVE_5						CONTROLLER_VALVE + 5
+#define VALVE_6						CONTROLLER_VALVE + 6
+#define VALVE_7						CONTROLLER_VALVE + 7
+#define VALVE_8						CONTROLLER_VALVE + 8
 
-#define EV_1						CONTROLLER_EV + 0
-#define EV_2						CONTROLLER_EV + 1
+#define EV_1						CONTROLLER_EV + 1
+#define EV_2						CONTROLLER_EV + 2
 
 #define PUMP						CONTROLLER_PUMP + 1

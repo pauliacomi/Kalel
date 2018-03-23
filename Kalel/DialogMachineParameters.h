@@ -25,20 +25,19 @@ public:
 	enum { IDD = IDD_PARAMETRES_APPAREIL };
 
 	// Pass the settings to display and be checked against changes
-	void PassSettings(MachineSettings* machineSettings);
+	void PassSettings(const MachineSettings &machineSettings);
 
 	// Returns whether the user modified any data
 	bool Changed();
 
 	// Returns the new machine settings
-	std::shared_ptr<MachineSettings> GetSettings();
+	MachineSettings * GetSettings();
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // Prise en charge de DDX/DDV
 	DECLARE_MESSAGE_MAP()
 
-	MachineSettings * settings;
-	std::shared_ptr<MachineSettings> localSettings;
+	std::unique_ptr<MachineSettings> localSettings;
 
 	float m_fPressionSecuriteBassePression;
 	CSpinBtnCtrl m_SpinPressionSecuriteBassePression;
