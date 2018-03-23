@@ -997,23 +997,17 @@ unsigned CommHandler::FunctionalityCommand_resp(http_response* r)
 	if (r->status == http::responses::ok)
 	{
 		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Functionality requested"));
-		return 1;
+		return 0;
 	}
 	else if (r->status == http::responses::conflict)
 	{
 		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server cannot process functionality"));
-		return 1;
-	}
-	else if (r->status == http::responses::bad_request)
-	{
-
-		return 1;
 	}
 	else if (r->status == http::responses::not_found) {
 		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server cannot find functionality"));
-		return 1;
 	}
-	return 0;
+	messageHandler.ExperimentEnd();
+	return 1;
 }
 
 
@@ -1032,21 +1026,14 @@ unsigned CommHandler::UserChoice_resp(http_response* r)
 {
 	if (r->status == http::responses::ok)
 	{
-		return 1;
+		return 0;
 	}
 	else if (r->status == http::responses::conflict)
 	{
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server cannot process functionality"));
-		return 1;
-	}
-	else if (r->status == http::responses::bad_request)
-	{
-
-		return 1;
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server does not recognise choice"));
 	}
 	else if (r->status == http::responses::not_found) {
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server cannot find functionality"));
-		return 1;
+		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server cannot find choice"));
 	}
-	return 0;
+	return 1;
 }

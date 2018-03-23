@@ -176,8 +176,7 @@ private:
 	LRESULT OnExchangeLogs(WPARAM, LPARAM incomingLogs);
 	LRESULT OnExchangeRequests(WPARAM, LPARAM incomingRequests);
 
-	LRESULT OnAutoExperimentFinished(WPARAM wParam, LPARAM);
-	LRESULT CancelBeforeStarting(WPARAM wParam, LPARAM lParam);
+	LRESULT OnExperimentFinished(WPARAM wParam, LPARAM);
 
 	//*************************************************************************************************************************
 	//						KalelView_Display

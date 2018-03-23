@@ -292,8 +292,6 @@ bool MFCMessageHandler::ExperimentStart()
 
 bool MFCMessageHandler::ExperimentEnd()
 {
-	::PostMessage(windowHandle, UWM_AUTOEXPFINISHED, NULL, NULL);
-	DisplayMessage(MESSAGE_FILLLINE);
-
+	::PostMessage(windowHandle, UWM_EXPFINISHED, NULL, NULL);
 	return true;
 }

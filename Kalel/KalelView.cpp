@@ -70,11 +70,10 @@ BEGIN_MESSAGE_MAP(CKalelView, CFormView)
 	ON_MESSAGE(UWM_EXCHANGEDATA,					&CKalelView::OnExchangeData)					// Callback to notify of incoming ExperimentData array
 	ON_MESSAGE(UWM_EXCHANGELOGS,					&CKalelView::OnExchangeLogs)					// Callback to notify of incoming log array
 	ON_MESSAGE(UWM_EXCHANGEREQUESTS,				&CKalelView::OnExchangeRequests)				// Callback to notify of incoming request array
-	ON_MESSAGE(UWM_AUTOEXPFINISHED,					&CKalelView::OnAutoExperimentFinished)			// Calls when an experiment ends
+	ON_MESSAGE(UWM_EXPFINISHED,						&CKalelView::OnExperimentFinished)				// Calls when an experiment ends
 	ON_MESSAGE(UWM_DISPLAYMESSAGE,					&CKalelView::AffichageMessages)					// Callback to display a message from the automation thread
 	ON_MESSAGE(UWM_DISPLAYMESSAGEBOX,				&CKalelView::MessageBoxAlert)					// Displays an messageBox to alert user of something
 	ON_MESSAGE(UWM_DISPLAYMESSAGEBOXCONF,			&CKalelView::MessageBoxConfirmation)			// Displays an messageBox to or ask user for confirmation
-	ON_MESSAGE(UWM_CANCELEXPERIMENT,				&CKalelView::CancelBeforeStarting)						
 																							
 	
 	//************************************
@@ -493,8 +492,6 @@ LRESULT CKalelView::OnMsvAmpoule(WPARAM, LPARAM)
 		else {
 			if (AfxMessageBox(PROMPT_VACUUM_SAMPLE, MB_YESNO | MB_ICONQUESTION) == IDYES)
 			{
-				experimentSettings->experimentType = EXPERIMENT_TYPE_SAMPLE_VACUUM;
-
 				// Block menu and set running flag
 				pApp->experimentRunning = true;
 				pApp->menuIsAvailable = false;
@@ -523,8 +520,6 @@ LRESULT CKalelView::OnMsvBouteille(WPARAM, LPARAM)
 		else {
 			if (AfxMessageBox(PROMPT_VACUUM_BOTTLE, MB_YESNO | MB_ICONQUESTION) == IDYES)
 			{
-				experimentSettings->experimentType = EXPERIMENT_TYPE_BOTTLE_VACUUM;
-
 				// Block menu and set running flag
 				pApp->experimentRunning = true;
 				pApp->menuIsAvailable = false;
@@ -553,9 +548,6 @@ LRESULT CKalelView::OnChangementBouteille(WPARAM, LPARAM)
 		else {
 			if (AfxMessageBox(PROMPT_CHANGE_BOTTLE, MB_YESNO | MB_ICONQUESTION) == IDYES)
 			{
-				ASSERT(0);
-				experimentSettings->experimentType = EXPERIMENT_TYPE_BOTTLE_VACUUM;
-
 				// Block menu and set running flag
 				pApp->experimentRunning = true;
 				pApp->menuIsAvailable = false;
@@ -755,26 +747,13 @@ LRESULT CKalelView::OnExchangeRequests(WPARAM, LPARAM incomingRequests)
 }
 
 // TODO: deprecated
-LRESULT CKalelView::OnAutoExperimentFinished(WPARAM, LPARAM) {
-
-	experimentSettings->ResetData();
+LRESULT CKalelView::OnExperimentFinished(WPARAM, LPARAM) {
 
 	// Signal that this is the experiment end
 	pApp->experimentRunning = false;
 	pApp->menuIsAvailable = true;
 	UpdateButtons();
 	
-	return 0;
-}
-
-// When the experiment is signalled as cancelled from the thread or it times out
-LRESULT CKalelView::CancelBeforeStarting(WPARAM, LPARAM)
-{
-	// Signal that this is the experiment end
-	pApp->experimentRunning = false;
-	pApp->menuIsAvailable = true;
-	UpdateButtons();
-
 	return 0;
 }
 
