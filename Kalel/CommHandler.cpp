@@ -260,6 +260,14 @@ void CommHandler::PauseClient() { ThreadCommand("pause"); }
 
 void CommHandler::ResumeClient() { ThreadCommand("resume"); }
 
+void CommHandler::NextCommand() { ThreadCommand("next_command"); }
+
+void CommHandler::NextStep() { ThreadCommand("next_step"); }
+
+void CommHandler::NextSubstep() { ThreadCommand("next_substep"); }
+
+void CommHandler::StopVacuum() { ThreadCommand("stop_vacuum"); }
+
 void CommHandler::ThreadCommand(std::string command)
 {
 	auto request = std::bind(&CommHandler::ThreadCommand_req, this, std::placeholders::_1, command);

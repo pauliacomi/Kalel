@@ -158,7 +158,7 @@ void CKalelView::OnBnClickedProchaineCommande()
 {
 	if (pApp->serverConnected)
 	{
-		//ProchaineCommandeThreads();
+		commHandler.NextCommand();
 	}
 	else
 	{
@@ -170,7 +170,7 @@ void CKalelView::OnBnClickedProchaineDose()
 {
 	if (pApp->serverConnected)
 	{
-		//ProchaineDoseThreads();
+		commHandler.NextStep();
 	}
 	else
 	{
@@ -182,7 +182,7 @@ void CKalelView::OnBnClickedProchaineEtape()
 {
 	if (pApp->serverConnected)
 	{
-		//ProchaineEtapeThreads();
+		commHandler.NextSubstep();
 	}
 	else
 	{
@@ -192,22 +192,29 @@ void CKalelView::OnBnClickedProchaineEtape()
 
 void CKalelView::OnBnClickedArretSousVide()
 {
-	/*if (experimentData->experimentInProgress) {
-		int result = AfxMessageBox(PROMPT_CANCELEXP, MB_ICONQUESTION | MB_YESNO);
-		switch (result)
-		{
-		case IDYES:
-			threadManager->ResetThread();
-			break;
+	if (pApp->serverConnected)
+	{
+		if (pApp->experimentRunning) {
+			int result = AfxMessageBox(PROMPT_CANCELEXP, MB_ICONQUESTION | MB_YESNO);
+			switch (result)
+			{
+			case IDYES:
+				commHandler.StopVacuum();
+				break;
 
-		case IDNO:
-			break;
+			case IDNO:
+				break;
 
-		default:
-			ASSERT(0);
-			break;
+			default:
+				ASSERT(0);
+				break;
+			}
 		}
-	}*/
+	}
+	else
+	{
+		AfxMessageBox(ERROR_CONNECTION_STATUS, MB_OK);
+	}
 }
 
 
@@ -248,7 +255,7 @@ bool CKalelView::GetExperimentData(ExperimentPropertySheet & pDialogExperimentPr
 		bool modified = false;
 
 		if (pDialogExperimentProperties.adsorptionTabs.size() != expS.dataAdsorption.size()
-			&& pDialogExperimentProperties.desorptionTabs.size() != expS.dataDesorption.size())
+			|| pDialogExperimentProperties.desorptionTabs.size() != expS.dataDesorption.size())
 		{
 			modified = true;
 		}

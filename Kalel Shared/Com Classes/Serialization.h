@@ -289,22 +289,16 @@ inline void to_json(nlohmann::json &j, const ExperimentSettings &e) {
 	j["experimentType"]						= e.experimentType;
 
 	// general data
-	to_json(j["general"], e.dataGeneral);
+	j["general"]							= e.dataGeneral;
 
 	// divers data
-	to_json(j["divers"], e.dataDivers);
+	j["divers"]								= e.dataDivers;
 
 	// adsorption data
-	for (size_t i = 0; i < e.dataAdsorption.size(); i++)
-	{
-		to_json(j["ads"][i], e.dataAdsorption[i]);
-	}
+	j["ads"]								= e.dataAdsorption;
 		
 	// desorption data
-	for (size_t i = 0; i < e.dataDesorption.size(); i++)
-	{
-		to_json(j["des"][i], e.dataDesorption[i]);
-	}
+	j["des"]								= e.dataDesorption;
 }
 
 inline void from_json(const nlohmann::json &j, ExperimentSettings &e) {
@@ -312,22 +306,16 @@ inline void from_json(const nlohmann::json &j, ExperimentSettings &e) {
 	e.experimentType						= j["experimentType"];
 
 	// general data
-	from_json(j["general"], e.dataGeneral);
+	e.dataGeneral							= j["general"];
 
 	// divers data
-	from_json(j["divers"], e.dataDivers);
+	e.dataDivers							= j["divers"];
 
 	// adsorption data
-	for (size_t i = 0; i < e.dataAdsorption.size(); i++)
-	{
-		from_json(j["ads"][i], e.dataAdsorption[i]);
-	}
-		
+	e.dataAdsorption						= j["ads"].get<std::vector<data_adsorption>>();
+
 	// desorption data
-	for (size_t i = 0; i < e.dataDesorption.size(); i++)
-	{
-		from_json(j["des"][i], e.dataDesorption[i]);
-	}
+	e.dataDesorption						= j["des"].get<std::vector<data_desorption>>();;
 }
 
 
@@ -336,8 +324,9 @@ inline void from_json(const nlohmann::json &j, ExperimentSettings &e) {
 //*************************************************************************************************************************
 inline void to_json(nlohmann::json &j, const data_general &m) {
 
-	to_json(j["user"]	, m.user	);
-	to_json(j["gas"]	, m.gas				);
+	
+	j["user"]								= m.user;
+	j["gas"]								= m.gas;
 
 	j["path"			]					= stringh::ws2s(m.chemin					);
 	j["comments"		]					= stringh::ws2s(m.commentaires				);
@@ -351,8 +340,8 @@ inline void to_json(nlohmann::json &j, const data_general &m) {
 
 void from_json(const nlohmann::json & j, data_general & m)
 {
-	from_json(j["user"]		,	m.user);
-	from_json( j["gas"]		,	m.gas);
+	m.user = j["user"];
+	m.gas = j["gas"];
 
 	m.chemin								= stringh::s2ws(j["path"					]);
 	m.commentaires							= stringh::s2ws(j["comments"				]);
@@ -361,26 +350,24 @@ void from_json(const nlohmann::json & j, data_general & m)
 	m.masse_echantillon						=				j["sampleMass"				];		 
 	m.nom_echantillon						= stringh::s2ws(j["sampleName"				]);
 	m.temperature_experience				=				j["temperature"				];	
-	m.temperature_range_initial_check				=	j["temperatureInitialCheck"	];	
+	m.temperature_range_initial_check		=				j["temperatureInitialCheck"	];	
 }																	
 
 
 
 inline void to_json(nlohmann::json &j, const data_other &m) {
 
-	to_json(j["cell"], m.cell);
-
+	j["cell"]								= m.cell							;
 	j["endUnderVacuum"]						= m.mise_sous_vide_fin_experience	;
-	j["baselineTime"]						= m.time_baseline				;
+	j["baselineTime"]						= m.time_baseline					;
 	j["vacuumTime"]							= m.temps_vide						;
 }
 
 inline void from_json(const nlohmann::json & j, data_other & m)
 {
-	from_json(j["cell"]			, m.cell);
-
+	m.cell									= j["cell"							];
 	m.mise_sous_vide_fin_experience			= j["endUnderVacuum"				];
-	m.time_baseline						= j["baselineTime"					];
+	m.time_baseline							= j["baselineTime"					];
 	m.temps_vide							= j["vacuumTime"					];
 }
 

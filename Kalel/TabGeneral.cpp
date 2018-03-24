@@ -163,16 +163,8 @@ BOOL TabGeneral::OnCommand(WPARAM wParam, LPARAM lParam)
 
 BOOL TabGeneral::OnApply()
 {
-	if (!PathIsDirectory(m_Path))
-	{
-		AfxMessageBox(ERROR_PATHUNDEF, MB_ICONERROR | MB_OK);
-		return 0;
-	}
-	else
-	{
-		WriteData();
-		return CMFCPropertyPage::OnApply();
-	}
+	WriteData();
+	return CMFCPropertyPage::OnApply();
 }
 
 void TabGeneral::OnCancel()

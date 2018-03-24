@@ -42,9 +42,10 @@ public:
 	void PauseClient();
 	void ResumeClient();
 
-	void FunctionSampleVacuum();
-	void FunctionBottleVacuum();
-	void FunctionChangeBottle();
+	void NextCommand();
+	void NextStep();
+	void NextSubstep();
+	void StopVacuum();
 
 	void UserYes();
 	void UserNo();
