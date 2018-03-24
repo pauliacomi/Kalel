@@ -51,13 +51,13 @@ void Security::SecurityHighPressureManual(const Storage & storage)
 	if (storage.currentData.pressureLow > maxPlow)
 	{
 		// If valve 6 is open and pressure is higher than specified, close valve 6
-		if (valveController.ValveIsOpen(VALVE_6))
+		if (valveController.ValveIsOpen(ID_VALVE_6))
 		{
 			// Set the flag
 			security_PressureHigh_flag = true;
 
 			LOG(logINFO) << MESSAGE_WARNING_PHIGH_V6 << storage.currentData.pressureLow << maxPlow;
-			valveController.ValveClose(VALVE_6, true);
+			valveController.ValveClose(ID_VALVE_6, true);
 
 			// Play a sound
 			soundh::beep::error();
@@ -67,9 +67,9 @@ void Security::SecurityHighPressureManual(const Storage & storage)
 	{
 		if (security_PressureHigh_flag)
 		{
-			if (!valveController.ValveIsOpen(VALVE_6))
+			if (!valveController.ValveIsOpen(ID_VALVE_6))
 			{
-				valveController.ValveOpen(VALVE_6, true);
+				valveController.ValveOpen(ID_VALVE_6, true);
 				LOG(logINFO) << MESSAGE_WARNING_PHNORMAL_V6;
 				soundh::beep::allgood();
 				security_PressureHigh_flag = false;
@@ -113,22 +113,22 @@ void Security::SecurityHighPressureAuto(const Storage & storage)
 		if (storage.currentData.pressureLow > maxPlow)
 		{
 			// If valve 6 is open and pressure is higher than specified, close valve 6
-			if (valveController.ValveIsOpen(VALVE_6))
+			if (valveController.ValveIsOpen(ID_VALVE_6))
 			{
 				// Set the flag
 				security_PressureHigh_flag = true;
 
 				LOG(logINFO) << MESSAGE_WARNING_PHIGH_V6 << storage.currentData.pressureLow << maxPlow;
-				valveController.ValveClose(VALVE_6, true);
+				valveController.ValveClose(ID_VALVE_6, true);
 			}
 		}
 		else
 		{
 			if (security_PressureHigh_flag)
 			{
-				if (!valveController.ValveIsOpen(VALVE_6))
+				if (!valveController.ValveIsOpen(ID_VALVE_6))
 				{
-					valveController.ValveOpen(VALVE_6, true);
+					valveController.ValveOpen(ID_VALVE_6, true);
 				}
 			}
 		}

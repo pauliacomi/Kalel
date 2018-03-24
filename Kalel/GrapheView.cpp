@@ -107,7 +107,7 @@ void CGrapheView::OnDraw(CDC* pDC)
 			auto pmin_floor = floor(1.1 * minPressure);
 
 			float timeMaximum = all_points.time_elapsed.back();
-			double displayedSeconds = RECENT_HOURS * 3600;
+			float displayedSeconds = RECENT_HOURS * 3600;
 			timeMinimum = timeMaximum - displayedSeconds;
 
 			// Les graphes

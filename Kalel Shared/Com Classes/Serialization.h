@@ -45,8 +45,6 @@ inline void from_json(const nlohmann::json &j, gas &m);
 inline void from_json(const nlohmann::json &j, cell &m);
 inline void from_json(const nlohmann::json &j, user &m);
 
-inline void to_json(nlohmann::json &j, const ControlInstrumentState &e);
-inline void from_json(const nlohmann::json &j, ControlInstrumentState &e);
 
 //*************************************************************************************************************************
 //						MachineSettings <> JSON
@@ -340,8 +338,8 @@ inline void to_json(nlohmann::json &j, const data_general &m) {
 
 void from_json(const nlohmann::json & j, data_general & m)
 {
-	m.user = j["user"];
-	m.gas = j["gas"];
+	m.user									= j["user"];
+	m.gas									= j["gas"];
 
 	m.chemin								= stringh::s2ws(j["path"					]);
 	m.commentaires							= stringh::s2ws(j["comments"				]);
@@ -458,49 +456,4 @@ inline void from_json(const nlohmann::json & j, cell & m)
 	m.numero								= stringh::s2ws(j["number"		]);
 	m.volume_calo							=					j["caloVolume"	];
 	m.volume_total							=					j["totalVolume"	];
-}
-
-
-
-//*************************************************************************************************************************
-//						ControlInstrumentState <> JSON
-//*************************************************************************************************************************
-
-
-
-inline void to_json(nlohmann::json & j, const ControlInstrumentState & e)
-{
-	for (size_t i = 0; i < e.valves.size(); i++)
-	{
-		j["valve"][i] = e.valves[i];
-	}
-	for (size_t i = 0; i < e.EVs.size(); i++)
-	{
-		j["ev"][i] = e.EVs[i];
-	}
-	for (size_t i = 0; i < e.pumps.size(); i++)
-	{
-		j["pump"][i] = e.pumps[i];
-	}
-}
-
-inline void from_json(const nlohmann::json & j, ControlInstrumentState & e)
-{
-	auto j1 = j["valve"].get<std::vector<bool>>();
-	for (auto i = 0; i < j1.size(); ++i)
-	{
-		e.valves[i]											=	j1[i]	;
-	}
-		
-	j1 = j["ev"].get<std::vector<bool>>();
-	for (auto i = 0; i < j1.size(); ++i)
-	{
-		e.EVs[i]											=	j1[i]	;
-	}
-
-	j1 = j["pump"].get<std::vector<bool>>();
-	for (auto i = 0; i < j1.size(); ++i)
-	{
-		e.pumps[i]											=	j1[i]	;
-	}
 }

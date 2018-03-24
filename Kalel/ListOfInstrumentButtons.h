@@ -6,6 +6,8 @@
 
 #include "../Kalel Shared/Com Classes/ControlInstrumentState.h"
 
+#include <vector>
+
 class CKalelView;
 
 class ListOfInstrumentButtons
@@ -36,10 +38,9 @@ private:
 
 public:
 
-	void StartCommand(int instrumentType, int instrumentNumber, bool shouldBeActivated);
+	void StartCommand(int instrumentID, bool shouldBeActivated);
 	void EndCommand(const ControlInstrumentStateData &data);
 	void Update(const ControlInstrumentState &state);
-	void Update(int instrumentType, int instrumentNumber, bool shouldBeActivated);
 };
 
 #endif // !LISTOFINTRUMENTS_H

@@ -59,17 +59,17 @@ void ConnectionPort::PassSettings(const MachineSettings &machineSettings)
 
 		switch (i.first)
 		{
-		case VALVE_1: num = 0; break;
-		case VALVE_2: num = 1; break;
-		case VALVE_3: num = 2; break;
-		case VALVE_4: num = 3; break;
-		case VALVE_5: num = 4; break;
-		case VALVE_6: num = 5; break;
-		case VALVE_7: num = 6; break;
-		case VALVE_8: num = 7; break;
-		case EV_1: num = 8; break;
-		case EV_2: num = 9; break;
-		case PUMP: num = 10; break;
+		case ID_VALVE_1: num = 0; break;
+		case ID_VALVE_2: num = 1; break;
+		case ID_VALVE_3: num = 2; break;
+		case ID_VALVE_4: num = 3; break;
+		case ID_VALVE_5: num = 4; break;
+		case ID_VALVE_6: num = 5; break;
+		case ID_VALVE_7: num = 6; break;
+		case ID_VALVE_8: num = 7; break;
+		case ID_EV_1: num = 8; break;
+		case ID_EV_2: num = 9; break;
+		case ID_PUMP: num = 10; break;
 		default: break;
 		}
 

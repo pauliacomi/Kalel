@@ -28,7 +28,7 @@ public:
 	void SetExperimentSettings(const ExperimentSettings &ptr);
 	
 	void GetControlInstrumentState(const std::chrono::system_clock::time_point &fromTime);
-	void ManualCommand(int instrumentType, int instrumentNumber, bool shouldBeActivated);
+	void ManualCommand(int instrumentID, bool shouldBeActivated);
 	
 	void GetExperimentStatus(const std::chrono::system_clock::time_point &fromTime);
 	void GetData(const std::chrono::system_clock::time_point &fromTime);
@@ -107,7 +107,7 @@ private:
 	unsigned GetInstrumentState_resp(http_response * r);
 
 	// Instrument state set
-	unsigned SetInstrumentState_req(http_request * r, int instrumentType, int instrumentNumber, int instrumentState);
+	unsigned SetInstrumentState_req(http_request * r, int instrumentID, bool instrumentState);
 	unsigned SetInstrumentState_resp(http_response * r);
 	
 	// Data sync

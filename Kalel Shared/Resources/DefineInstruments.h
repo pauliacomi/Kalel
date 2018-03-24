@@ -26,18 +26,30 @@
 #define CONTROLLER_EV				0b00100000
 #define CONTROLLER_PUMP				0b00110000
 
+#define VALVE_1		   1
+#define VALVE_2		   2
+#define VALVE_3		   3
+#define VALVE_4		   4
+#define VALVE_5		   5
+#define VALVE_6		   6
+#define VALVE_7		   7
+#define VALVE_8		   8
+#define EV_1		   1
+#define EV_2		   2
+#define PUMP		   1
+
 // Controller identifiers
 
-#define VALVE_1						CONTROLLER_VALVE + 1
-#define VALVE_2						CONTROLLER_VALVE + 2
-#define VALVE_3						CONTROLLER_VALVE + 3
-#define VALVE_4						CONTROLLER_VALVE + 4
-#define VALVE_5						CONTROLLER_VALVE + 5
-#define VALVE_6						CONTROLLER_VALVE + 6
-#define VALVE_7						CONTROLLER_VALVE + 7
-#define VALVE_8						CONTROLLER_VALVE + 8
+#define ID_VALVE_1						CONTROLLER_VALVE + VALVE_1
+#define ID_VALVE_2						CONTROLLER_VALVE + VALVE_2
+#define ID_VALVE_3						CONTROLLER_VALVE + VALVE_3
+#define ID_VALVE_4						CONTROLLER_VALVE + VALVE_4
+#define ID_VALVE_5						CONTROLLER_VALVE + VALVE_5
+#define ID_VALVE_6						CONTROLLER_VALVE + VALVE_6
+#define ID_VALVE_7						CONTROLLER_VALVE + VALVE_7
+#define ID_VALVE_8						CONTROLLER_VALVE + VALVE_8
 
-#define EV_1						CONTROLLER_EV + 1
-#define EV_2						CONTROLLER_EV + 2
+#define ID_EV_1							CONTROLLER_EV + EV_1
+#define ID_EV_2							CONTROLLER_EV + EV_2
 
-#define PUMP						CONTROLLER_PUMP + 1
+#define ID_PUMP							CONTROLLER_PUMP + PUMP

@@ -16,13 +16,13 @@ void CKalelView::AskThreadForManualCommand(int instrumentType, int instrumentNum
 	if (pApp->serverConnected)
 	{
 		// Update buttons
-		buttonStates.StartCommand(instrumentType, instrumentNumber, shouldBeActivated);
+		buttonStates.StartCommand(instrumentType + instrumentNumber, shouldBeActivated);
 
 		// lock the menu
 		pApp->menuIsAvailable = false;
 
 		// Create the storage object and then pass it to the threading function
-		commHandler.ManualCommand(instrumentType, instrumentNumber, shouldBeActivated);
+		commHandler.ManualCommand(instrumentType + instrumentNumber, shouldBeActivated);
 	}
 	else
 	{
@@ -36,71 +36,71 @@ void CKalelView::AskThreadForManualCommand(int instrumentType, int instrumentNum
 
 // Clicking on valve "open" type buttons
 void CKalelView::OnBnClickedOuvrir1()
-{	AskThreadForManualCommand(CONTROLLER_VALVE,1,true);	}
+{	AskThreadForManualCommand(CONTROLLER_VALVE,VALVE_1,true);	}
 
 void CKalelView::OnBnClickedOuvrir2()
-{	AskThreadForManualCommand(CONTROLLER_VALVE,2,true);	}
+{	AskThreadForManualCommand(CONTROLLER_VALVE,VALVE_2,true);	}
 
 void CKalelView::OnBnClickedOuvrir3()
-{	AskThreadForManualCommand(CONTROLLER_VALVE,3,true);	}
+{	AskThreadForManualCommand(CONTROLLER_VALVE,VALVE_3,true);	}
 
 void CKalelView::OnBnClickedOuvrir4()
-{	AskThreadForManualCommand(CONTROLLER_VALVE,4,true);	}
+{	AskThreadForManualCommand(CONTROLLER_VALVE,VALVE_4,true);	}
 
 void CKalelView::OnBnClickedOuvrir5()
-{	AskThreadForManualCommand(CONTROLLER_VALVE,5,true);	}
+{	AskThreadForManualCommand(CONTROLLER_VALVE, VALVE_5,true);	}
 
 void CKalelView::OnBnClickedOuvrir6()
-{	AskThreadForManualCommand(CONTROLLER_VALVE,6,true);	}
+{	AskThreadForManualCommand(CONTROLLER_VALVE, VALVE_6,true);	}
 
 void CKalelView::OnBnClickedOuvrir7()
-{	AskThreadForManualCommand(CONTROLLER_VALVE,7,true);	}
+{	AskThreadForManualCommand(CONTROLLER_VALVE, VALVE_7,true);	}
 
 void CKalelView::OnBnClickedOuvrir8()
-{	AskThreadForManualCommand(CONTROLLER_VALVE,8,true);	}
+{	AskThreadForManualCommand(CONTROLLER_VALVE, VALVE_8,true);	}
 
 
 // Clicking on valve "close" type buttons
 void CKalelView::OnBnClickedFermer1()
-{	AskThreadForManualCommand(CONTROLLER_VALVE, 1, false);	}
+{	AskThreadForManualCommand(CONTROLLER_VALVE, VALVE_1, false);	}
 
 void CKalelView::OnBnClickedFermer2()
-{	AskThreadForManualCommand(CONTROLLER_VALVE, 2, false);	}
+{	AskThreadForManualCommand(CONTROLLER_VALVE, VALVE_2, false);	}
 
 void CKalelView::OnBnClickedFermer3()
-{	AskThreadForManualCommand(CONTROLLER_VALVE, 3, false);	}
+{	AskThreadForManualCommand(CONTROLLER_VALVE, VALVE_3, false);	}
 
 void CKalelView::OnBnClickedFermer4()
-{	AskThreadForManualCommand(CONTROLLER_VALVE, 4, false);	}
+{	AskThreadForManualCommand(CONTROLLER_VALVE, VALVE_4, false);	}
 
 void CKalelView::OnBnClickedFermer5()
-{	AskThreadForManualCommand(CONTROLLER_VALVE, 5, false);	}
+{	AskThreadForManualCommand(CONTROLLER_VALVE, VALVE_5, false);	}
 
 void CKalelView::OnBnClickedFermer6()
-{	AskThreadForManualCommand(CONTROLLER_VALVE, 6, false);	}
+{	AskThreadForManualCommand(CONTROLLER_VALVE, VALVE_6, false);	}
 
 void CKalelView::OnBnClickedFermer7()
-{	AskThreadForManualCommand(CONTROLLER_VALVE, 7, false);	}
+{	AskThreadForManualCommand(CONTROLLER_VALVE, VALVE_7, false);	}
 
 void CKalelView::OnBnClickedFermer8()
-{	AskThreadForManualCommand(CONTROLLER_VALVE, 8, false);	}
+{	AskThreadForManualCommand(CONTROLLER_VALVE, VALVE_8, false);	}
 
 
 // The other buttons
 void CKalelView::OnBnClickedActiverEV1()
-{	AskThreadForManualCommand(CONTROLLER_EV, 1, true);	}
+{	AskThreadForManualCommand(CONTROLLER_EV, EV_1, true);	}
 
 void CKalelView::OnBnClickedDesactiverEV1()
-{	AskThreadForManualCommand(CONTROLLER_EV, 1, false);	}
+{	AskThreadForManualCommand(CONTROLLER_EV, EV_1, false);	}
 
 void CKalelView::OnBnClickedActiverEV2()
-{	AskThreadForManualCommand(CONTROLLER_EV, 2, true);;	}
+{	AskThreadForManualCommand(CONTROLLER_EV, EV_2, true);;	}
 
 void CKalelView::OnBnClickedDesactiverEV2()
-{	AskThreadForManualCommand(CONTROLLER_EV, 2, false);	}
+{	AskThreadForManualCommand(CONTROLLER_EV, EV_2, false);	}
 
 void CKalelView::OnBnClickedActiverPompe()
-{	AskThreadForManualCommand(CONTROLLER_PUMP, 1, true);;	}
+{	AskThreadForManualCommand(CONTROLLER_PUMP, PUMP, true);;	}
 
 void CKalelView::OnBnClickedDesactiverPompe()
-{	AskThreadForManualCommand(CONTROLLER_PUMP, 1, false);	}
+{	AskThreadForManualCommand(CONTROLLER_PUMP, PUMP, false);	}

@@ -20,6 +20,7 @@
 
 // STD
 #include <functional>
+#include <map>
 
 using json = nlohmann::json;
 
@@ -52,7 +53,7 @@ void CommHandler::Connect(std::wstring address)
 		auto callback = std::bind(&CommHandler::Handshake_resp, this, std::placeholders::_1);
 
 		try	{
-			client.Request(request, callback, stringh::ws2s(address.c_str()));
+			client.Request(request, callback, stringh::ws2s(address));
 		}
 		catch (const std::exception& e)	{
 			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK,false, stringh::s2ws(e.what()));
@@ -62,12 +63,12 @@ void CommHandler::Connect(std::wstring address)
 
 void CommHandler::SaveAddress(std::wstring address)
 {
-	localAddress = stringh::ws2s(address.c_str());
+	localAddress = stringh::ws2s(address);
 }
 
 void CommHandler::SaveAuth(const std::wstring &username, const std::wstring &password)
 {
-	client.SetCredentials(stringh::ws2s(username.c_str()), stringh::ws2s(password.c_str()));
+	client.SetCredentials(stringh::ws2s(username), stringh::ws2s(password));
 }
 
 
@@ -162,9 +163,9 @@ void CommHandler::GetControlInstrumentState(const std::chrono::system_clock::tim
 	}
 }
 
-void CommHandler::ManualCommand(int instrumentType, int instrumentNumber, bool instrumentState)
+void CommHandler::ManualCommand(int instrumentID, bool instrumentState)
 {
-	auto request = std::bind(&CommHandler::SetInstrumentState_req, this, std::placeholders::_1, instrumentType, instrumentNumber, instrumentState);
+	auto request = std::bind(&CommHandler::SetInstrumentState_req, this, std::placeholders::_1, instrumentID, instrumentState);
 	auto callback = std::bind(&CommHandler::SetInstrumentState_resp, this, std::placeholders::_1);
 
 	try {
@@ -364,7 +365,7 @@ unsigned CommHandler::GetMachineSettings_resp(http_response* r) {
 
 			try
 			{
-				receivedSettings = new MachineSettings(json::parse(r->body.c_str()));
+				receivedSettings = new MachineSettings(json::parse(r->body));
 			}
 			catch (const std::exception& e)
 			{
@@ -454,7 +455,7 @@ unsigned CommHandler::GetExperimentSettings_resp(http_response* r) {
 
 			try
 			{
-				receivedSettings = new ExperimentSettings(json::parse(r->body.c_str()));
+				receivedSettings = new ExperimentSettings(json::parse(r->body));
 			}
 			catch (const std::exception& e)
 			{
@@ -544,7 +545,7 @@ unsigned CommHandler::GetExperimentStatus_resp(http_response* r) {
 
 			try
 			{
-				receivedStatus = new ExperimentStatus(json::parse(r->body.c_str()));
+				receivedStatus = new ExperimentStatus(json::parse(r->body));
 			}
 			catch (const std::exception& e)
 			{
@@ -590,7 +591,12 @@ unsigned CommHandler::GetInstrumentState_resp(http_response * r)
 		ControlInstrumentState * instrumentState;
 		try
 		{
-			instrumentState = new ControlInstrumentState(json::parse(r->body.c_str()));
+			instrumentState = new ControlInstrumentState();
+			json j = json::parse(r->body);
+			for (json::iterator i = j.begin(); i != j.end(); ++i)
+			{
+				instrumentState->emplace(stringh::To<unsigned int>(i.key()), j[i.key()]);
+			}
 		}
 		catch (const std::exception& e)
 		{
@@ -611,36 +617,14 @@ unsigned CommHandler::GetInstrumentState_resp(http_response * r)
 /*********************************
 // Set machine Instrument State
 *********************************/
-unsigned CommHandler::SetInstrumentState_req(http_request * r, int instrumentType, int instrumentNumber, int instrumentState)
+unsigned CommHandler::SetInstrumentState_req(http_request * r, int instrumentID, bool instrumentState)
 {
 	r->method = http::method::post;
 	r->path = "/api/instrument";
+	r->params.emplace("ID", std::to_string(instrumentID));
+	r->params.emplace("state", instrumentState ? "true" : "false");
 
-	std::string localInstrumentType;
-
-	switch (instrumentType)
-	{
-	case CONTROLLER_VALVE:
-		localInstrumentType = "valve";
-		break;
-
-	case CONTROLLER_EV:
-		localInstrumentType = "ev";
-		break;
-
-	case CONTROLLER_PUMP:
-		localInstrumentType = "pump";
-		break;
-	default:
-		break;
-	}
-
-	r->params.emplace("type", localInstrumentType);
-	r->params.emplace("number", std::to_string(instrumentNumber));
-	r->params.emplace("active", std::to_string(instrumentState));
-
-	localInstrumentState.instrumentType = instrumentType;
-	localInstrumentState.instrumentNumber = instrumentNumber;
+	localInstrumentState.instrumentID = instrumentID;
 	localInstrumentState.instrumentState = instrumentState;
 
 	return 0;
@@ -696,7 +680,7 @@ unsigned CommHandler::GetData_resp(http_response* r) {
 			json j;
 			try
 			{
-				j = json::parse(r->body.c_str());
+				j = json::parse(r->body);
 			}
 			catch (const std::exception& e)
 			{
@@ -771,7 +755,7 @@ unsigned CommHandler::GetLogs_resp(http_response * r)
 			//////////////////////////////////////////////
 			try
 			{
-				j = json::parse(r->body.c_str());
+				j = json::parse(r->body);
 			}
 			catch (const std::exception& e)
 			{
@@ -839,7 +823,7 @@ unsigned CommHandler::GetRequest_resp(http_response * r)
 			//////////////////////////////////////////////
 			try
 			{
-				j = json::parse(r->body.c_str());
+				j = json::parse(r->body);
 			}
 			catch (const std::exception& e)
 			{

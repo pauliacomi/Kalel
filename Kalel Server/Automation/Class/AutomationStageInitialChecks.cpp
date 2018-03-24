@@ -148,7 +148,7 @@ bool Automation::VerificationResidualPressure()
 			LOG(logINFO) << MESSAGE_CHECK_OPENV6_POSSIB << storage.currentData.pressureHigh;
 
 			// Open valve 6
-			controls.valveControls.ValveOpen(VALVE_6, true);
+			controls.valveControls.ValveOpen(ID_VALVE_6, true);
 
 			// Set the time to wait
 			WaitSeconds(storage.machineSettings.TimeWaitValves, true);
@@ -162,7 +162,7 @@ bool Automation::VerificationResidualPressure()
 		&& storage.experimentStatus.experimentWaiting == false)							// If waiting is done
 	{
 		// Open valve 5
-		controls.valveControls.ValveOpen(VALVE_5, true);
+		controls.valveControls.ValveOpen(ID_VALVE_5, true);
 
 		// Set the time to wait
 		WaitSeconds(storage.machineSettings.TimeWaitValves, true);
