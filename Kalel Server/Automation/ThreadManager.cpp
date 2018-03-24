@@ -185,21 +185,21 @@ unsigned ThreadManager::ShutdownAutomation()
 //
 //--------------------------------------------------------------------------------------
 
-unsigned ThreadManager::ThreadManualAction(int instrumentType, int instrumentNumber, bool state)
+unsigned ThreadManager::ThreadManualAction(int instrumentID, bool state)
 {
 	//start thread
-	manualActionThread = std::thread(&ThreadManager::ManualAction, this, instrumentType, instrumentNumber, state);
+	manualActionThread = std::thread(&ThreadManager::ManualAction, this, instrumentID, state);
 	manualActionThread.detach();
 
 	return 0;
 }
 
 
-void ThreadManager::ManualAction(int instrumentType, int instrumentNumber, bool state)
+void ThreadManager::ManualAction(int instrumentID, bool state)
 {
 	bool actionSuccessful = false;
 
-	actionSuccessful = controls.instruments.ActuateController(instrumentType + instrumentNumber, state);
+	actionSuccessful = controls.instruments.ActuateController(instrumentID, state);
 
 	// return
 	if (actionSuccessful)
@@ -215,21 +215,7 @@ ControlInstrumentState ThreadManager::GetInstrumentStates()
 
 	for (auto i : controls.instruments.controllers)
 	{
-		switch (i.second.type)
-		{
-		case CONTROLLER_VALVE:
-			state.valves[i.second.identifier -1] = i.second.readerfunction();
-			break;
-		case CONTROLLER_EV:
-			state.EVs[i.second.identifier - 1] = i.second.readerfunction();
-			break;
-		case CONTROLLER_PUMP:
-			state.pumps[i.second.identifier - 1] = i.second.readerfunction();
-			break;
-		default:
-			break;
-		}
-	
+		state[i.first] = i.second.readerfunction();	
 	}
 	return state;
 }

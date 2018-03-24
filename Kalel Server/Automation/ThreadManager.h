@@ -41,7 +41,7 @@ public:
 	unsigned ShutdownAutomation();
 	unsigned SetUserChoice(unsigned int choice);
 
-	unsigned ThreadManualAction(int instrumentType, int instrumentNumber, bool state);		// When a manual command is issued
-	void ManualAction(int instrumentType, int instrumentNumber, bool state);
+	unsigned ThreadManualAction(int instrumentID, bool state);		// When a manual command is issued
+	void ManualAction(int instrumentID, bool state);
 	ControlInstrumentState GetInstrumentStates();
 };

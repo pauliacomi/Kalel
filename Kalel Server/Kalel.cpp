@@ -308,7 +308,13 @@ void Kalel::InstrumentStateSync(http_request* req, http_response* resp)
 	// GET
 	if (req->method == http::method::get)
 	{
-		json j = threadManager.GetInstrumentStates();
+		ControlInstrumentState s{ threadManager.GetInstrumentStates() };
+		json j;
+
+		for (auto i : s)
+		{
+			j[std::to_string(i.first)] = i.second;
+		}
 
 		resp->status = http::responses::ok;
 		resp->content_type = http::mimetype::appjson;
@@ -319,35 +325,16 @@ void Kalel::InstrumentStateSync(http_request* req, http_response* resp)
 	if (req->method == http::method::post)
 	{
 		if (!req->params.empty() ||
-			!req->params.at("type").empty() ||
-			!req->params.at("number").empty() ||
-			!req->params.at("active").empty())
+			!req->params.at("ID").empty() ||
+			!req->params.at("state").empty())
 		{
-			int instrumentType;
-			if (req->params.at("type") == "valve") {
-				instrumentType = CONTROLLER_VALVE;
-			}
-			else if (req->params.at("type") == "ev") {
-				instrumentType = CONTROLLER_EV;
-			}
-			else if (req->params.at("type") == "pump") {
-				instrumentType = CONTROLLER_PUMP;
-			}
-			else {
-				instrumentType = stringh::To<int>(req->params.at("type"));
-			}
+			auto instrumentID = stringh::To<int>(req->params.at("ID"));
+			auto instrumentState = stringh::To<bool>(req->params.at("state"));
 
-			auto instrumentNumber = stringh::To<int>(req->params.at("number"));
-			auto instrumentState = stringh::To<bool>(req->params.at("active"));
+			threadManager.ThreadManualAction(instrumentID, instrumentState);
+			storageVectors.controlStateChanged = timeh::NowTime();	
 
-
-			threadManager.ThreadManualAction(instrumentType, instrumentNumber, instrumentState);		// TODO: Should have a better way
-
-			json j = threadManager.GetInstrumentStates();
-			
 			resp->status = http::responses::ok;
-			resp->content_type = http::mimetype::appjson;
-			resp->body = j.dump();
 		}
 		else
 		{
