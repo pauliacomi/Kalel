@@ -44,17 +44,21 @@ void ListOfInstrumentButtons::Init()
 		case ID_PUMP: location = 10; break;
 		default: break;
 		}
-		if (i.second)
+		if (handle.GetDlgItem(idcOpen[location])->IsWindowEnabled() ||
+			handle.GetDlgItem(idcClose[location])->IsWindowEnabled())
 		{
-			texboxText.Format(TEXT_OPENED);
+			if (i.second)
+			{
+				texboxText.Format(TEXT_ACTIVATED);
+			}
+			else
+			{
+				texboxText.Format(TEXT_DEACTIVATED);
+			}
+			handle.GetDlgItem(idcOpen[location])->EnableWindow(!i.second);
+			handle.GetDlgItem(idcClose[location])->EnableWindow(i.second);
+			handle.SetDlgItemText(idcTextBox[location], texboxText);
 		}
-		else
-		{
-			texboxText.Format(TEXT_CLOSED);
-		}
-		handle.GetDlgItem(idcOpen[location])->EnableWindow(!i.second);
-		handle.GetDlgItem(idcClose[location])->EnableWindow(i.second);
-		handle.SetDlgItemText(idcTextBox[location], texboxText);
 	}
 }
 

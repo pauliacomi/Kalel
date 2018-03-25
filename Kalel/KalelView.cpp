@@ -597,12 +597,10 @@ LRESULT CKalelView::OnSync(WPARAM, LPARAM)
 	// Make sure buttons are updated
 	if (experimentSettings && experimentSettings->experimentType != EXPERIMENT_TYPE_UNDEF) {
 		pApp->experimentRunning = true;
-		pApp->menuIsAvailable = false;
 	}
 	else
 	{
 		pApp->experimentRunning = false;
-		pApp->menuIsAvailable = true;
 	}
 
 	UpdateButtons();
@@ -697,9 +695,6 @@ LRESULT CKalelView::OnSetInstrumentState(WPARAM wParam, LPARAM incomingInstrumen
 	// Update buttons
 	buttonStates.EndCommand(*maParam);
 
-	// unlock the menu
-	pApp->menuIsAvailable = true;
-
 	return 0;
 }
 
@@ -727,8 +722,7 @@ LRESULT CKalelView::OnExchangeLogs(WPARAM, LPARAM incomingLogs)
 	for (auto i = newLogs->begin(); i != newLogs->end(); ++i)
 	{
 		CString time(timeh::TimePointToString(i->first).c_str());
-		CString log(i->second.c_str());
-		temp->Append(time + " " + log + _T("\r\n"));
+		temp->Append(time + " " + i->second.c_str() + _T("\r\n"));
 	}
 	AffichageMessages(NULL, (LPARAM)temp);
 	

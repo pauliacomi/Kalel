@@ -76,6 +76,7 @@ bool Automation::VerificationSecurity()
 				return false;
 				break;
 			case CHOICE_YES:									// Signal that it's good
+				waitingUser = false;
 				return true;
 				break;
 			case CHOICE_NO:										// Stop experiment
@@ -117,11 +118,11 @@ bool Automation::VerificationValves()
 			return false;
 			break;
 		case CHOICE_YES:									// Signal that it's good
+			waitingUser = false;
 			return true;
 			break;
 
 		case CHOICE_NO:										// Stop experiment
-
 			shutdownReason = STOP_CANCEL;
 			eventShutdown = true;
 			storage.automationControl.notify_all();
@@ -195,6 +196,7 @@ bool Automation::VerificationResidualPressure()
 					return false;
 					break;
 				case CHOICE_YES:									// Signal that it's good
+					waitingUser = false;
 					return true;
 					break;
 				case CHOICE_NO:										// Stop experiment
@@ -248,6 +250,7 @@ bool Automation::VerificationTemperature()
 					return false;
 					break;
 				case CHOICE_YES:									// Signal that it's good
+					waitingUser = false;
 					return true;
 					break;
 				case CHOICE_WAIT:									// Go to wait step

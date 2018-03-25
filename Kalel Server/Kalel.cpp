@@ -111,11 +111,8 @@ Kalel::Kalel()
 	server.AddMethod(
 		std::bind(&Kalel::UserInput,				this, std::placeholders::_1, std::placeholders::_2),
 													"/api/input");
-	server.AddMethod(
-		std::bind(&Kalel::UserInput,				this, std::placeholders::_1, std::placeholders::_2),
-													"/api/functionality");
 
-	server.SetCredentials("user", "kalel");
+	server.SetCredentials("user", "kalel");																					// TODO get from machine settins
 	server.Start();
 
 	//
@@ -361,15 +358,13 @@ void Kalel::DataSync(http_request* req, http_response* resp)
 
 		std::map<std::chrono::system_clock::time_point, ExperimentData> localCollection;
 
-		if (req->params.empty() ||
-			req->params.at("time").empty() ||
-			req->params.at("time") == "start")
+		if (req->params.find("t") == req->params.end())
 		{
 			localCollection = storageVectors.dataCollection.get();
 		}
 		else
 		{
-			localCollection = storageVectors.dataCollection.get(timeh::StringToTimePoint(req->params.at("time")));
+			localCollection = storageVectors.dataCollection.get(timeh::StringToTimePoint(req->params.at("t")));
 		}
 
 		if (localCollection.size() != 0)						// If any exist
@@ -420,15 +415,13 @@ void Kalel::LogSync(http_request* req, http_response* resp)
 
 		TextStorage localCollection;
 
-		if (req->params.empty() ||									// If parameters don't exist, send all the logs
-			req->params.at("time").empty() ||
-			req->params.at("time") == "start")
+		if (req->params.find("t") == req->params.end())
 		{
 			localCollection = storageVectors.infoLogs.get();
 		}
 		else
 		{
-			localCollection = storageVectors.infoLogs.get(timeh::StringToTimePoint(req->params.at("time")));
+			localCollection = storageVectors.infoLogs.get(timeh::StringToTimePoint(req->params.at("t")));
 		}
 
 		if (localCollection.size() != 0)							// If any exist
@@ -474,15 +467,13 @@ void Kalel::RequestSync(http_request* req, http_response* resp)
 
 		TextStorage localCollection;
 
-		if (req->params.empty() ||									// If parameters don't exist, send all the logs
-			req->params.at("time").empty() ||
-			req->params.at("time") == "start")
+		if (req->params.find("t") == req->params.end())
 		{
 			localCollection = storageVectors.eventLogs.get();
 		}
 		else
 		{
-			localCollection = storageVectors.eventLogs.get(timeh::StringToTimePoint(req->params.at("time")));
+			localCollection = storageVectors.eventLogs.get(timeh::StringToTimePoint(req->params.at("t")));
 		}
 
 		if (localCollection.size() != 0)							// If any exist
@@ -528,15 +519,13 @@ void Kalel::DebugSync(http_request* req, http_response* resp)
 
 		TextStorage localCollection;
 
-		if (req->params.empty() ||									// If parameters don't exist, send all the logs
-			req->params.at("time").empty() ||
-			req->params.at("time") == "start")
+		if (req->params.find("t") == req->params.end())
 		{
 			localCollection = storageVectors.debugLogs.get();
 		}
 		else
 		{
-			localCollection = storageVectors.debugLogs.get(timeh::StringToTimePoint(req->params.at("time")));
+			localCollection = storageVectors.debugLogs.get(timeh::StringToTimePoint(req->params.at("t")));
 		}
 
 		if (localCollection.size() != 0)							// If any exist

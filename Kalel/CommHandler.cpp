@@ -622,7 +622,7 @@ unsigned CommHandler::SetInstrumentState_req(http_request * r, int instrumentID,
 	r->method = http::method::post;
 	r->path = "/api/instrument";
 	r->params.emplace("ID", std::to_string(instrumentID));
-	r->params.emplace("state", instrumentState ? "true" : "false");
+	r->params.emplace("state", std::to_string(instrumentState));
 
 	localInstrumentState.instrumentID = instrumentID;
 	localInstrumentState.instrumentState = instrumentState;
