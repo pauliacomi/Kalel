@@ -176,8 +176,6 @@ private:
 	LRESULT OnExchangeLogs(WPARAM, LPARAM incomingLogs);
 	LRESULT OnExchangeRequests(WPARAM, LPARAM incomingRequests);
 
-	LRESULT OnExperimentFinished(WPARAM wParam, LPARAM);
-
 	//*************************************************************************************************************************
 	//						KalelView_Display
 	//*************************************************************************************************************************
@@ -188,6 +186,7 @@ private:
 	LRESULT DisplayTextboxValues(const ExperimentData &data, const ExperimentStatus &status);
 	LRESULT DisplayStepProgress(const ExperimentStatus &status);
 	LRESULT MessageBoxAlert(WPARAM wParam, LPARAM lParam);
+	LRESULT MessageBoxAlertServer(WPARAM wParam, LPARAM lParam);
 	LRESULT MessageBoxConfirmation(WPARAM wParam, LPARAM);
 
 	//*************************************************************************************************************************

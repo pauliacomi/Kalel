@@ -33,6 +33,7 @@ public:
     static TLogLevel& ReportingLevel();
     static std::string ToString(TLogLevel level);
     static TLogLevel FromString(const std::string& level);
+	static TLogLevel FromString(const std::wstring& level);
 
 	// String stream
 protected:
@@ -136,26 +137,50 @@ std::string Log<T>::ToString(TLogLevel level)
 template <typename T>
 TLogLevel Log<T>::FromString(const std::string& level)
 {
-	if (level == "EVENT")
+	if (level == L"EVENT")
 		return logEVENT;
-    if (level == "DEBUG4")
+    if (level == L"DEBUG4")
         return logDEBUG4;
-    if (level == "DEBUG3")
+    if (level == L"DEBUG3")
         return logDEBUG3;
-    if (level == "DEBUG2")
+    if (level == L"DEBUG2")
         return logDEBUG2;
-    if (level == "DEBUG1")
+    if (level == L"DEBUG1")
         return logDEBUG1;
-    if (level == "DEBUG")
+    if (level == L"DEBUG")
         return logDEBUG;
-    if (level == "INFO")
+    if (level == L"INFO")
         return logINFO;
-    if (level == "WARNING")
+    if (level == L"WARNING")
         return logWARNING;
-    if (level == "ERROR")
+    if (level == L"ERROR")
         return logERROR;
     Log<T>().GetTimeStamped(logWARNING) << "Unknown logging level '" << level << "'. Using INFO level as default.";
     return logINFO;
+}
+
+template <typename T>
+TLogLevel Log<T>::FromString(const std::wstring& level)
+{
+	if (level == L"EVENT")
+		return logEVENT;
+	if (level == L"DEBUG4")
+		return logDEBUG4;
+	if (level == L"DEBUG3")
+		return logDEBUG3;
+	if (level == L"DEBUG2")
+		return logDEBUG2;
+	if (level == L"DEBUG1")
+		return logDEBUG1;
+	if (level == L"DEBUG")
+		return logDEBUG;
+	if (level == L"INFO")
+		return logINFO;
+	if (level == L"WARNING")
+		return logWARNING;
+	if (level == L"ERROR")
+		return logERROR;
+	return logINFO;
 }
 
 

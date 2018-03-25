@@ -162,90 +162,27 @@ bool MFCMessageHandler::ExchangeControlStateSpecific(const ControlInstrumentStat
 	return true;
 }
 
-bool MFCMessageHandler::DisplayMessage(int pParam, int pInt1, int pInt2, double pDouble)
-{
-	// Create a new pointer 
-	CString * message = new CString;
-	if (pDouble != default_val)
-	{
-		message->Format(pParam, pDouble);
-	}
-	else
-	{
-		if (pInt1 != default_val)
-		{
-			if (pInt1 != default_val)
-			{
-				message->Format(pParam, pInt1, pInt2);
-			}
-			else
-			{
-				message->Format(pParam, pInt1);
-			}
-		}
-		else
-		{
-			message->Format(pParam);
-		}
-	}
 
-	// Other thread is now responsible for deleting this object
-	if(::PostMessage(windowHandle, UWM_DISPLAYMESSAGE, NULL, (LPARAM)message) == 0) {
-		delete message;
-		return false;
-	}
-
-	return true;
-}
-
-bool MFCMessageHandler::DisplayMessage(int pParam, std::wstring m)
-{
-	// Create a new pointer 
-	CString * message = new CString;
-	message->Format(pParam, m.c_str());
-	
-	// Other thread is now responsible for deleting this object
-	if(::PostMessage(windowHandle, UWM_DISPLAYMESSAGE, NULL, (LPARAM)message) == 0) {
-		delete message;
-		return false;
-	}
-
-	return true;
-}
-
-bool MFCMessageHandler::DisplayMessageBox(int pParam, UINT nType, bool blocksProgram, double pDouble1, double pDouble2)
+bool MFCMessageHandler::DisplayMessageBoxServer(UINT nType, const std::wstring & pString, bool blocksProgram)
 {
 	// Create a new pointer 
 	UINT * type = new UINT(nType);
-	CString * message = new CString;
-
-	// Format the string. Yes I know it's not the best solution.
-	if (pDouble1 != default_val)
-	{
-		if (pDouble2 != default_val){
-			message->Format(pParam, pDouble1);
-		}
-		else {
-			message->Format(pParam, pDouble1, pDouble2);
-		}
-	}
-	else
-	{
-		message->Format(pParam);
-	}
+	CString * message = new CString(pString.c_str());
 
 	// Check if the message box is supposed to alert the user or ask for input
 	// Other thread is now responsible for deleting this object
 	if (blocksProgram)
 	{
-		if(::PostMessage(windowHandle, UWM_DISPLAYMESSAGEBOXCONF, (WPARAM)type, (LPARAM)message) == 0) {
+		if (::PostMessage(windowHandle, UWM_DISPLAYMESSAGEBOXCONF, (WPARAM)type, (LPARAM)message) == 0) {
+			delete type;
 			delete message;
 			return false;
 		}
 	}
 	else
 	{
-		if(::PostMessage(windowHandle, UWM_DISPLAYMESSAGEBOX, (WPARAM)type, (LPARAM)message) == 0) {
+		if (::PostMessage(windowHandle, UWM_DISPLAYMESSAGEBOXSERVER, (WPARAM)type, (LPARAM)message) == 0) {
+			delete type;
 			delete message;
 			return false;
 		}
@@ -254,44 +191,17 @@ bool MFCMessageHandler::DisplayMessageBox(int pParam, UINT nType, bool blocksPro
 	return true;
 }
 
-bool MFCMessageHandler::DisplayMessageBox(int pParam, UINT nType, bool blocksProgram, std::wstring pString)
+bool MFCMessageHandler::DisplayMessageBox(UINT nType, const std::wstring & pString)
 {
 	// Create a new pointer 
 	UINT * type = new UINT(nType);
-	CString * message = new CString;
-	message->Format(pParam, pString.c_str());
+	CString * message = new CString(pString.c_str());
 
-	// Check if the message box is supposed to alert the user or ask for input
-	// Other thread is now responsible for deleting this object
-	if (blocksProgram)
-	{
-		if(::PostMessage(windowHandle, UWM_DISPLAYMESSAGEBOXCONF, (WPARAM)type, (LPARAM)message) == 0) {
-			delete message;
-			return false;
-		}
-	}
-	else
-	{
-		if(::PostMessage(windowHandle, UWM_DISPLAYMESSAGEBOX, (WPARAM)type, (LPARAM)message) == 0) {
-			delete message;
-			return false;
-		}
+	if(::PostMessage(windowHandle, UWM_DISPLAYMESSAGEBOX, (WPARAM)type, (LPARAM)message) == 0) {
+		delete type;
+		delete message;
+		return false;
 	}
 
-	return true;
-}
-
-
-bool MFCMessageHandler::ExperimentStart()
-{
-	DisplayMessage(MESSAGE_FILLLINE);
-	DisplayMessage(MESSAGE_EXPSTART);
-
-	return true;
-}
-
-bool MFCMessageHandler::ExperimentEnd()
-{
-	::PostMessage(windowHandle, UWM_EXPFINISHED, NULL, NULL);
 	return true;
 }

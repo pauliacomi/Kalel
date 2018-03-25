@@ -51,9 +51,9 @@ public:
 	void UserNo();
 	void UserWait();
 
+	MFCMessageHandler messageHandler;
 private:
 	HTTPClient client;
-	MFCMessageHandler messageHandler;
 	
 	void ThreadCommand(std::string command);
 	void UserChoice(int choice);

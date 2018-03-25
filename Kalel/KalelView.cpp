@@ -23,6 +23,7 @@
 
 #include "ExperimentPropertySheet.h"								// The dialog asking the user to input the experiment parameters
 #include "../Kalel Shared/timeHelpers.h"
+#include "../Kalel Shared/log.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -70,9 +71,9 @@ BEGIN_MESSAGE_MAP(CKalelView, CFormView)
 	ON_MESSAGE(UWM_EXCHANGEDATA,					&CKalelView::OnExchangeData)					// Callback to notify of incoming ExperimentData array
 	ON_MESSAGE(UWM_EXCHANGELOGS,					&CKalelView::OnExchangeLogs)					// Callback to notify of incoming log array
 	ON_MESSAGE(UWM_EXCHANGEREQUESTS,				&CKalelView::OnExchangeRequests)				// Callback to notify of incoming request array
-	ON_MESSAGE(UWM_EXPFINISHED,						&CKalelView::OnExperimentFinished)				// Calls when an experiment ends
 	ON_MESSAGE(UWM_DISPLAYMESSAGE,					&CKalelView::AffichageMessages)					// Callback to display a message from the automation thread
 	ON_MESSAGE(UWM_DISPLAYMESSAGEBOX,				&CKalelView::MessageBoxAlert)					// Displays an messageBox to alert user of something
+	ON_MESSAGE(UWM_DISPLAYMESSAGEBOXSERVER,			&CKalelView::MessageBoxAlertServer)				// Displays an messageBox to alert user of something
 	ON_MESSAGE(UWM_DISPLAYMESSAGEBOXCONF,			&CKalelView::MessageBoxConfirmation)			// Displays an messageBox to or ask user for confirmation
 																							
 	
@@ -737,24 +738,46 @@ LRESULT CKalelView::OnExchangeRequests(WPARAM, LPARAM incomingRequests)
 {
 	// Get the incoming vector and add it to the local logs
 	auto newRequests = reinterpret_cast<std::map<std::chrono::system_clock::time_point, std::wstring>*>(incomingRequests);
+
+	size_t size_before = requestCollection.size();
 	requestCollection.insert(newRequests->begin(), newRequests->end());
 
 	// Display requests
+	if (size_before != requestCollection.size())
+	{
+		for (auto &i : requestCollection)
+		{
+			TLogLevel level = GeneralLog::FromString(i.second.substr(0, i.second.find(':')));
+			
+			switch (level)
+			{
+			case logEVENT:
+			{
+
+				commHandler.messageHandler.DisplayMessageBoxServer(MB_YESNO, i.second, true);
+				break;
+			}
+			case logERROR:
+			case logWARNING:
+			{
+				commHandler.messageHandler.DisplayMessageBoxServer(MB_ICONERROR | MB_OK, i.second, false);
+				break;
+			}
+			case logINFO:
+			case logDEBUG:
+			case logDEBUG1:
+			case logDEBUG2:
+			case logDEBUG3:
+			case logDEBUG4:
+			default:
+				break;
+			}
+		}
+	}
 
 	// Delete the useless vector now
 	delete newRequests;
 
-	return 0;
-}
-
-// TODO: deprecated
-LRESULT CKalelView::OnExperimentFinished(WPARAM, LPARAM) {
-
-	// Signal that this is the experiment end
-	pApp->experimentRunning = false;
-	pApp->menuIsAvailable = true;
-	UpdateButtons();
-	
 	return 0;
 }
 
@@ -774,7 +797,17 @@ LRESULT CKalelView::MessageBoxAlert(WPARAM wParam, LPARAM lParam)
 	return result;
 }
 
-// TODO: make sure the confirmation is what is required
+LRESULT CKalelView::MessageBoxAlertServer(WPARAM wParam, LPARAM lParam)
+{
+	// Get the incoming pointer and cast it as a smart pointer
+	std::unique_ptr<CString> message(reinterpret_cast<CString*>(lParam));
+	std::unique_ptr<UINT> nType(reinterpret_cast<UINT*>(wParam));
+
+	int result = AfxMessageBox(*message, *nType);
+
+	return result;
+}
+
 LRESULT CKalelView::MessageBoxConfirmation(WPARAM wParam, LPARAM lParam)
 {
 	// Get the incoming pointer and cast it as a smart pointer
@@ -799,6 +832,10 @@ LRESULT CKalelView::MessageBoxConfirmation(WPARAM wParam, LPARAM lParam)
 			}
 			if (result == IDNO) {
 				commHandler.UserNo();
+				continuer = false;
+			}
+			if (result == IDIGNORE) {
+				commHandler.UserWait();
 				continuer = false;
 			}
 		}

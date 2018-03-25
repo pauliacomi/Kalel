@@ -56,7 +56,7 @@ void CommHandler::Connect(std::wstring address)
 			client.Request(request, callback, stringh::ws2s(address));
 		}
 		catch (const std::exception& e)	{
-			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK,false, stringh::s2ws(e.what()));
+			messageHandler.DisplayMessageBox(MB_ICONERROR | MB_OK, stringh::s2ws(e.what()));
 		}
 	}
 }
@@ -84,7 +84,7 @@ void CommHandler::GetMachineSettings(const std::chrono::system_clock::time_point
 		client.Request(request, callback, localAddress);
 	}
 	catch (const std::exception& e)	{
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, stringh::s2ws(e.what()));
+		messageHandler.DisplayMessageBox(MB_ICONERROR | MB_OK, stringh::s2ws(e.what()));
 	}
 }
 
@@ -97,7 +97,7 @@ void CommHandler::SetMachineSettings(const MachineSettings &ptr)
 		client.Request(request, callback, localAddress);
 	}
 	catch (const std::exception& e) {
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, stringh::s2ws(e.what()));
+		messageHandler.DisplayMessageBox(MB_ICONERROR | MB_OK, stringh::s2ws(e.what()));
 	}
 }
 
@@ -114,7 +114,7 @@ void CommHandler::GetExperimentSettings(const std::chrono::system_clock::time_po
 		client.Request(request, callback, localAddress);
 	}
 	catch (const std::exception& e) {
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, stringh::s2ws(e.what()));
+		messageHandler.DisplayMessageBox(MB_ICONERROR | MB_OK, stringh::s2ws(e.what()));
 	}
 }
 
@@ -127,7 +127,7 @@ void CommHandler::SetExperimentSettings(const ExperimentSettings &ptr)
 		client.Request(request, callback, localAddress);
 	}
 	catch (const std::exception& e) {
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, stringh::s2ws(e.what()));
+		messageHandler.DisplayMessageBox(MB_ICONERROR | MB_OK, stringh::s2ws(e.what()));
 	}
 }
 
@@ -143,7 +143,7 @@ void CommHandler::GetExperimentStatus(const std::chrono::system_clock::time_poin
 		client.Request(request, callback, localAddress);
 	}
 	catch (const std::exception& e) {
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, stringh::s2ws(e.what()));
+		messageHandler.DisplayMessageBox(MB_ICONERROR | MB_OK, stringh::s2ws(e.what()));
 	}
 }
 
@@ -159,7 +159,7 @@ void CommHandler::GetControlInstrumentState(const std::chrono::system_clock::tim
 		client.Request(request, callback, localAddress);
 	}
 	catch (const std::exception& e) {
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, stringh::s2ws(e.what()));
+		messageHandler.DisplayMessageBox(MB_ICONERROR | MB_OK, stringh::s2ws(e.what()));
 	}
 }
 
@@ -172,7 +172,7 @@ void CommHandler::ManualCommand(int instrumentID, bool instrumentState)
 		client.Request(request, callback, localAddress);
 	}
 	catch (const std::exception& e) {
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, stringh::s2ws(e.what()));
+		messageHandler.DisplayMessageBox(MB_ICONERROR | MB_OK, stringh::s2ws(e.what()));
 	}
 }
 
@@ -193,7 +193,7 @@ void CommHandler::GetData(const std::chrono::system_clock::time_point &fromTime)
 			client.Request(request, callback, localAddress);
 		}
 		catch (const std::exception& e) {
-			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, stringh::s2ws(e.what()));
+			messageHandler.DisplayMessageBox(MB_ICONERROR | MB_OK, stringh::s2ws(e.what()));
 			flagExperimentRequest = false;
 		}
 	}
@@ -216,7 +216,7 @@ void CommHandler::GetLog(const std::chrono::system_clock::time_point &fromTime)
 			client.Request(request, callback, localAddress);
 		}
 		catch (const std::exception& e) {
-			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, stringh::s2ws(e.what()));
+			messageHandler.DisplayMessageBox(MB_ICONERROR | MB_OK, stringh::s2ws(e.what()));
 			flagLogsRequest = false;
 		}
 	}
@@ -239,7 +239,7 @@ void CommHandler::GetRequests(const std::chrono::system_clock::time_point &fromT
 			client.Request(request, callback, localAddress);
 		}
 		catch (const std::exception& e) {
-			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, stringh::s2ws(e.what()));
+			messageHandler.DisplayMessageBox(MB_ICONERROR | MB_OK, stringh::s2ws(e.what()));
 			flagReqRequest = false;
 		}
 	}
@@ -278,7 +278,7 @@ void CommHandler::ThreadCommand(std::string command)
 		client.Request(request, callback, localAddress);
 	}
 	catch (const std::exception& e) {
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, stringh::s2ws(e.what()));
+		messageHandler.DisplayMessageBox(MB_ICONERROR | MB_OK, stringh::s2ws(e.what()));
 	}
 }
 
@@ -299,7 +299,7 @@ void CommHandler::UserChoice(int choice)
 		client.Request(request, callback, localAddress);
 	}
 	catch (const std::exception& e) {
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_ICONERROR | MB_OK, false, stringh::s2ws(e.what()));
+		messageHandler.DisplayMessageBox(MB_ICONERROR | MB_OK, stringh::s2ws(e.what()));
 	}
 }
 
@@ -328,13 +328,13 @@ unsigned CommHandler::Handshake_resp(http_response* r) {
 	}
 	else if (r->status == http::responses::not_found)
 	{
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server not found"));
+		messageHandler.DisplayMessageBox(MB_OK, _T("Server not found"));
 		return 1;
 	}
 	else if(r->disconnected)
 	{
 		messageHandler.Disconnection();
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server disconnected"));
+		messageHandler.DisplayMessageBox(MB_OK, _T("Server disconnected"));
 		return 1;
 	}
 
@@ -369,7 +369,7 @@ unsigned CommHandler::GetMachineSettings_resp(http_response* r) {
 			}
 			catch (const std::exception& e)
 			{
-				messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, stringh::s2ws(e.what()));
+				messageHandler.DisplayMessageBox(MB_OK, stringh::s2ws(e.what()));
 				return 1;
 			}
 
@@ -377,13 +377,13 @@ unsigned CommHandler::GetMachineSettings_resp(http_response* r) {
 		}
 		else
 		{
-			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Corrupt response format"));
+			messageHandler.DisplayMessageBox(MB_OK, _T("Corrupt response format"));
 			return 1;
 		}
 	}
 	else if (r->status == http::responses::not_found)
 	{
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server does not support Machine Settings send"));
+		messageHandler.DisplayMessageBox(MB_OK, _T("Server does not support Machine Settings send"));
 		return 1;
 	}
 
@@ -407,7 +407,7 @@ unsigned CommHandler::SetMachineSettings_req(http_request* r, MachineSettings ms
 	}
 	catch (const std::exception& e)
 	{
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, stringh::s2ws(e.what()));
+		messageHandler.DisplayMessageBox(MB_OK, stringh::s2ws(e.what()));
 		return 1;
 	}
 
@@ -424,7 +424,7 @@ unsigned CommHandler::SetMachineSettings_resp(http_response* r) {
 	}
 	else if (r->status == http::responses::internal_err)
 	{
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server error, could not update settings"));
+		messageHandler.DisplayMessageBox(MB_OK, _T("Server error, could not update settings"));
 		return 1;
 	}
 
@@ -459,7 +459,7 @@ unsigned CommHandler::GetExperimentSettings_resp(http_response* r) {
 			}
 			catch (const std::exception& e)
 			{
-				messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, stringh::s2ws(e.what()));
+				messageHandler.DisplayMessageBox(MB_OK, stringh::s2ws(e.what()));
 				return 1;
 			}
 
@@ -467,13 +467,13 @@ unsigned CommHandler::GetExperimentSettings_resp(http_response* r) {
 		}
 		else
 		{
-			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Corrupt response format"));
+			messageHandler.DisplayMessageBox(MB_OK, _T("Corrupt response format"));
 			return 1;
 		}
 	}
 	else if (r->status == http::responses::not_found)
 	{
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server cannot get Experiment Settings"));
+		messageHandler.DisplayMessageBox(MB_OK, _T("Server cannot get Experiment Settings"));
 		return 1;
 	}
 
@@ -496,7 +496,7 @@ unsigned CommHandler::SetExperimentSettings_req(http_request* r, ExperimentSetti
 	}
 	catch (const std::exception& e)
 	{
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, stringh::s2ws(e.what()));
+		messageHandler.DisplayMessageBox(MB_OK, stringh::s2ws(e.what()));
 		return 1;
 	}
 
@@ -514,7 +514,7 @@ unsigned CommHandler::SetExperimentSettings_resp(http_response* r) {
 	}
 	else if (r->status == http::responses::internal_err)
 	{
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server error, could not start a new experiment"));
+		messageHandler.DisplayMessageBox(MB_OK, _T("Server error, could not start a new experiment"));
 	}
 
 	messageHandler.ExperimentEnd();
@@ -549,7 +549,7 @@ unsigned CommHandler::GetExperimentStatus_resp(http_response* r) {
 			}
 			catch (const std::exception& e)
 			{
-				messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, stringh::s2ws(e.what()));
+				messageHandler.DisplayMessageBox(MB_OK, stringh::s2ws(e.what()));
 				return 1;
 			}
 
@@ -557,13 +557,13 @@ unsigned CommHandler::GetExperimentStatus_resp(http_response* r) {
 		}
 		else
 		{
-			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Corrupt response format"));
+			messageHandler.DisplayMessageBox(MB_OK, _T("Corrupt response format"));
 			return 1;
 		}
 	}
 	else if (r->status == http::responses::not_found)
 	{
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server cannot get Experiment Status"));
+		messageHandler.DisplayMessageBox(MB_OK, _T("Server cannot get Experiment Status"));
 		return 1;
 	}
 
@@ -600,14 +600,14 @@ unsigned CommHandler::GetInstrumentState_resp(http_response * r)
 		}
 		catch (const std::exception& e)
 		{
-			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, stringh::s2ws(e.what()));
+			messageHandler.DisplayMessageBox(MB_OK, stringh::s2ws(e.what()));
 			return 1;
 		}
 		// Exchange
 		messageHandler.ExchangeControlState(instrumentState);
 	}
 	else if (r->status == http::responses::not_found) {
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server cannot get Instrument State"));
+		messageHandler.DisplayMessageBox(MB_OK, _T("Server cannot get Instrument State"));
 		return 1;
 	}
 	return 0;
@@ -640,16 +640,16 @@ unsigned CommHandler::SetInstrumentState_resp(http_response * r)
 	}
 	else if (r->status == http::responses::conflict)
 	{
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server cannot process thread command"));
+		messageHandler.DisplayMessageBox(MB_OK, _T("Server cannot process thread command"));
 		return 1;
 	}
 	else if (r->status == http::responses::bad_request)
 	{
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Bad request"));
+		messageHandler.DisplayMessageBox(MB_OK, _T("Bad request"));
 		return 1;
 	}
 	else if (r->status == http::responses::not_found) {
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server cannot set Instrument State"));
+		messageHandler.DisplayMessageBox(MB_OK, _T("Server cannot set Instrument State"));
 		return 1;
 	}
 	return 0;
@@ -684,7 +684,7 @@ unsigned CommHandler::GetData_resp(http_response* r) {
 			}
 			catch (const std::exception& e)
 			{
-				messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, stringh::s2ws(e.what()));
+				messageHandler.DisplayMessageBox(MB_OK, stringh::s2ws(e.what()));
 				return 1;
 			}
 
@@ -700,7 +700,7 @@ unsigned CommHandler::GetData_resp(http_response* r) {
 				}
 				catch (const std::exception& e)
 				{
-					messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, stringh::s2ws(e.what()));
+					messageHandler.DisplayMessageBox(MB_OK, stringh::s2ws(e.what()));
 					delete receivedDataArray;
 					return 1;
 				}
@@ -709,19 +709,19 @@ unsigned CommHandler::GetData_resp(http_response* r) {
 		}
 		else
 		{
-			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Corrupt response format"));
+			messageHandler.DisplayMessageBox(MB_OK, _T("Corrupt response format"));
 			return 1;
 		}
 	}
 	else if (r->status == http::responses::not_found)
 	{
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server cannot get Experiment Data"));
+		messageHandler.DisplayMessageBox(MB_OK, _T("Server cannot get Experiment Data"));
 		return 1;
 	}
 	else if (r->disconnected)
 	{
 		messageHandler.Disconnection();
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server disconnected"));
+		messageHandler.DisplayMessageBox(MB_OK, _T("Server disconnected"));
 	}
 
 	return 0;
@@ -759,7 +759,7 @@ unsigned CommHandler::GetLogs_resp(http_response * r)
 			}
 			catch (const std::exception& e)
 			{
-				messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, stringh::s2ws(e.what()));
+				messageHandler.DisplayMessageBox(MB_OK, stringh::s2ws(e.what()));
 				return 1;
 			}
 
@@ -774,7 +774,7 @@ unsigned CommHandler::GetLogs_resp(http_response * r)
 					receivedLogArray->emplace(timeh::StringToTimePoint(i.key()), stringh::s2ws(j[i.key()]));
 				}
 				catch (const std::exception& e)	{
-					messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, stringh::s2ws(e.what()));
+					messageHandler.DisplayMessageBox(MB_OK, stringh::s2ws(e.what()));
 					delete receivedLogArray;
 					return 1;
 				}
@@ -784,13 +784,13 @@ unsigned CommHandler::GetLogs_resp(http_response * r)
 		}
 		else
 		{
-			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Corrupt response format"));
+			messageHandler.DisplayMessageBox(MB_OK, _T("Corrupt response format"));
 			return 1;
 		}
 	}
 	else if (r->status == http::responses::not_found)
 	{
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server cannot get Experiment Log"));
+		messageHandler.DisplayMessageBox(MB_OK, _T("Server cannot get Experiment Log"));
 		return 1;
 	}
 
@@ -827,7 +827,7 @@ unsigned CommHandler::GetRequest_resp(http_response * r)
 			}
 			catch (const std::exception& e)
 			{
-				messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, stringh::s2ws(e.what()));
+				messageHandler.DisplayMessageBox(MB_OK, stringh::s2ws(e.what()));
 				return 1;
 			}
 
@@ -842,7 +842,7 @@ unsigned CommHandler::GetRequest_resp(http_response * r)
 					receivedReqArray->emplace(timeh::StringToTimePoint(i.key()), stringh::s2ws(j[i.key()]));
 				}
 				catch (const std::exception& e) {
-					messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, stringh::s2ws(e.what()));
+					messageHandler.DisplayMessageBox(MB_OK, stringh::s2ws(e.what()));
 					delete receivedReqArray;
 					return 1;
 				}
@@ -851,13 +851,13 @@ unsigned CommHandler::GetRequest_resp(http_response * r)
 		}
 		else
 		{
-			messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Corrupt response format"));
+			messageHandler.DisplayMessageBox(MB_OK, _T("Corrupt response format"));
 			return 1;
 		}
 	}
 	else if (r->status == http::responses::not_found)
 	{
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server cannot Get Experiment Request"));
+		messageHandler.DisplayMessageBox(MB_OK, _T("Server cannot Get Experiment Request"));
 		return 1;
 	}
 
@@ -879,12 +879,12 @@ unsigned CommHandler::ThreadCommand_resp(http_response * r)
 {
 	if (r->status == http::responses::ok)
 	{
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Command executed"));
+		messageHandler.DisplayMessageBox(MB_OK, _T("Command executed"));
 		return 1;
 	}
 	else if (r->status == http::responses::conflict)
 	{
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server cannot process thread command"));
+		messageHandler.DisplayMessageBox(MB_OK, _T("Server cannot process thread command"));
 		return 1;
 	}
 	else if (r->status == http::responses::bad_request)
@@ -893,7 +893,7 @@ unsigned CommHandler::ThreadCommand_resp(http_response * r)
 		return 1;
 	}
 	else if (r->status == http::responses::not_found) {
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server cannot find thread function"));
+		messageHandler.DisplayMessageBox(MB_OK, _T("Server cannot find thread function"));
 		return 1;
 	}
 	return 0;
@@ -919,10 +919,10 @@ unsigned CommHandler::UserChoice_resp(http_response* r)
 	}
 	else if (r->status == http::responses::conflict)
 	{
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server does not recognise choice"));
+		messageHandler.DisplayMessageBox(MB_OK, _T("Server does not recognise choice"));
 	}
 	else if (r->status == http::responses::not_found) {
-		messageHandler.DisplayMessageBox(GENERIC_STRING, MB_OK, false, _T("Server cannot find choice"));
+		messageHandler.DisplayMessageBox(MB_OK, _T("Server cannot find choice"));
 	}
 	return 1;
 }

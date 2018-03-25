@@ -45,8 +45,8 @@
 #define UWM_SYNCED									(WM_USER + 42)
 #define UWM_DISPLAYMESSAGE							(WM_USER + 11)
 #define UWM_DISPLAYMESSAGEBOX						(WM_USER + 17)
+#define UWM_DISPLAYMESSAGEBOXSERVER					(WM_USER + 7)
 #define UWM_DISPLAYMESSAGEBOXCONF					(WM_USER + 18)
-#define UWM_EXPFINISHED								(WM_USER + 7)
 
 
 #endif
