@@ -8,6 +8,7 @@ namespace filesystem = std::experimental::filesystem::v1;
 #include "../../Kalel Shared/Resources/DefineText.h"						// Definitions for the text in the messages
 #include "../../Kalel Shared/Resources/DefineStages.h"						// All stage, experiment type definitions are here
 
+#define CSV_DIV L","
 
 FileWriter::FileWriter()
 {
@@ -136,22 +137,22 @@ bool FileWriter::FileMeasurementCreate(const data_general &general)
 *		Reference to the experimentSettings which generates the entete
 *		bool valveOpen6: records if valve number 6 is open or not
 ***********************************************************************/
-bool FileWriter::RecordMeasurement(std::wstring time, const data_general &general, const ExperimentData &data, const ExperimentStatus &status, bool valveOpen6)
+bool FileWriter::RecordMeasurement(const std::wstring &time, const data_general &general, const ExperimentData &data, const ExperimentStatus &status, bool valveOpen6)
 {
 	std::wostringstream stream;
 	char char_resultat_calo[20];
 	sprintf_s(char_resultat_calo, "%.8E", data.resultCalorimeter);
 	
-	stream << time									<< ";";				// Experiment time
-	stream << status.experimentDose			<< ";";				// Experiment dose
-	stream << char_resultat_calo					<< ";";				// Calorimeter value
-	stream << data.pressureLow						<< ";";				// Pressure low range
-	stream << data.pressureHigh						<< ";";				// Pressure high range
-	stream << data.temperatureCalo					<< ";";				// Temperature calorimeter
-	stream << data.temperatureCage					<< ";";				// Temperature enclosure
-	stream << data.temperatureRoom					<< ";";				// Temperature room
-	stream << valveOpen6							<< ";";				// Valve open
-	stream << std::endl;												// Next line
+	stream << time									<< CSV_DIV;				// Experiment time
+	stream << status.experimentDose					<< CSV_DIV;				// Experiment dose
+	stream << char_resultat_calo					<< CSV_DIV;				// Calorimeter value
+	stream << data.pressureLow						<< CSV_DIV;				// Pressure low range
+	stream << data.pressureHigh						<< CSV_DIV;				// Pressure high range
+	stream << data.temperatureCalo					<< CSV_DIV;				// Temperature calorimeter
+	stream << data.temperatureCage					<< CSV_DIV;				// Temperature enclosure
+	stream << data.temperatureRoom					<< CSV_DIV;				// Temperature room
+	stream << valveOpen6							<< CSV_DIV;				// Valve open
+	stream << std::endl;													// Next line
 
 	bool ret = false;
 	bool ret2 = writeFile(FileWriter::BuildFileName(L"csv", general, false, ret), stream.str());
@@ -170,7 +171,7 @@ std::wstring FileWriter::EnteteBase(bool csv, int experimentType)
 {
 	std::wstring divider;
 	if (csv)
-		divider = L";";
+		divider = CSV_DIV;
 	else
 		divider = L" : ";
 
@@ -196,7 +197,7 @@ std::wstring FileWriter::EnteteGeneral(bool csv, const data_general &general, st
 {
 	std::wstring divider;
 	if (csv)
-		divider = L";";
+		divider = CSV_DIV;
 	else
 		divider = L" : ";
 
@@ -227,7 +228,7 @@ std::wstring FileWriter::EnteteDivers(bool csv, const data_other &divers)
 {
 	std::wstring divider;
 	if (csv)
-		divider = L";";
+		divider = CSV_DIV;
 	else
 		divider = L" : ";
 
@@ -256,7 +257,7 @@ std::wstring FileWriter::EnteteAdsorption(bool csv, const std::vector<data_adsor
 {
 	std::wstring divider;
 	if (csv)
-		divider = L";";
+		divider = CSV_DIV;
 	else
 		divider = L" : ";
 
@@ -288,7 +289,7 @@ std::wstring FileWriter::EnteteDesorption(bool csv, const std::vector<data_desor
 {
 	std::wstring divider;
 	if (csv)
-		divider = L";";
+		divider = CSV_DIV;
 	else
 		divider = L" : ";
 
@@ -322,7 +323,7 @@ void FileWriter::RecordDataChange(bool csv, const ExperimentSettings& newSetting
 	// Check if csv file is requested
 	std::wstring divider;
 	if (csv)
-		divider = L";";
+		divider = CSV_DIV;
 	else
 		divider = L" : ";
 

@@ -59,8 +59,26 @@ void Measurement::Execution()
 		*
 		*/
 
-		// Start threads and read the data
-		ThreadMeasurement();
+		// Create threads
+		measurementThreads.push_back(std::thread(&Measurement::ReadCalorimeter, this));
+		measurementThreads.push_back(std::thread(&Measurement::ReadPressure, this));
+		measurementThreads.push_back(std::thread(&Measurement::ReadTemperatures, this));
+
+		// Give the threads the start signal
+		std::unique_lock<std::mutex> lk(lockingMutex);
+		ready = true;											// Use bool to prevent accidental wake-up of threads
+		syncThreadStart.notify_all();
+		lk.unlock();
+
+		// Wait for all threads to complete
+		for (auto& th : measurementThreads)
+		{
+			th.join();
+		}
+
+		// Reset
+		measurementThreads.clear();
+		ready = false;
 		auto measurementTime = timeh::NowTime();
 
 		/*
@@ -80,7 +98,7 @@ void Measurement::Execution()
 		*/
 
 		// Write data
-		if (storage.experimentStatus.experimentRecording)													// If we started recording
+		if (storage.experimentStatus.experimentRecording)														// If we started recording
 		{
 			if (controls.timerMeasurement.TimeMilliseconds() > storage.machineSettings.TimeBetweenRecording)	// If enough time between measurements
 			{
@@ -89,7 +107,7 @@ void Measurement::Execution()
 					timeh::TimePointToWString(measurementTime),
 					storage.experimentSettings.dataGeneral,
 					storage.currentData, 
-					storage.experimentStatus, 
+					storage.experimentStatus,
 					controls.valveControls.ValveIsOpen(ID_VALVE_6));
 				if (err) {
 					LOG(logERROR) << MESSAGE_WARNING_FILE;
@@ -126,31 +144,6 @@ void Measurement::Execution()
 
 
 
-void Measurement::ThreadMeasurement()
-{
-	// Start the threads
-	measurementThreads.push_back(std::thread(&Measurement::ReadCalorimeter, this));
-	measurementThreads.push_back(std::thread(&Measurement::ReadPressure, this));
-	measurementThreads.push_back(std::thread(&Measurement::ReadTemperatures, this));
-
-	// Give the threads the start signal
-	std::unique_lock<std::mutex> lk(lockingMutex);
-	ready = true;											// Use bool to prevent accidental wake-up of threads
-	syncThreadStart.notify_all();
-	lk.unlock();
-
-	// Wait for all threads to complete
-	for (auto& th : measurementThreads)
-	{
-		th.join();
-	}
-
-	// Reset
-	measurementThreads.clear();
-	ready = false;
-}
-
-
 ///------------------- Thread corresponding functions
 
 void Measurement::ReadCalorimeter()
@@ -162,7 +155,6 @@ void Measurement::ReadCalorimeter()
 	// Read the value from the calorimeter
 	// Write it in the shared object - NO need for mutex
 	storage.currentData.resultCalorimeter = controls.instruments.MeasureReader(CALO);
-
 }
 
 void Measurement::ReadPressure()

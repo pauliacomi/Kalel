@@ -566,7 +566,8 @@ void Kalel::AutomationControl(http_request* req, http_response* resp)
 				threadManager.ShutdownAutomation();
 			}
 			else if (req->params.at("action") == "restart") {
-				//threadManager.ResetThread();
+				threadManager.ShutdownAutomation();
+				threadManager.StartAutomation();
 			}
 			else if (req->params.at("action") == "reset") {
 				threadManager.ResetAutomation();

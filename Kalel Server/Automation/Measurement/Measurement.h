@@ -45,7 +45,6 @@ public:
 
 	void Execution();
 
-	void ThreadMeasurement();
 	void ReadCalorimeter();
 	void ReadPressure();
 	void ReadTemperatures();
