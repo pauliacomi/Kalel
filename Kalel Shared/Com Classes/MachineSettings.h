@@ -26,7 +26,7 @@ public:
 	std::wstring CaloPrefix = L"Prefix";
 	std::wstring DefaultPath = L"C:";
 
-	bool hasSonicNozzle = false;							// Used for user information (no calculations)
+	bool hasSonicNozzle = false;
 	bool SafetyOn = true;									// Used for activating the automatic security
 	float VolumeRef = 1;									// Used for user information (no calculations)
 	float VolumeP6 = 1;										// Used for user information (no calculations)
