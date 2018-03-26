@@ -73,8 +73,7 @@ BEGIN_MESSAGE_MAP(CKalelView, CFormView)
 	ON_MESSAGE(UWM_EXCHANGEREQUESTS,				&CKalelView::OnExchangeRequests)				// Callback to notify of incoming request array
 	ON_MESSAGE(UWM_DISPLAYMESSAGE,					&CKalelView::AffichageMessages)					// Callback to display a message from the automation thread
 	ON_MESSAGE(UWM_DISPLAYMESSAGEBOX,				&CKalelView::MessageBoxAlert)					// Displays an messageBox to alert user of something
-	ON_MESSAGE(UWM_DISPLAYMESSAGEBOXSERVER,			&CKalelView::MessageBoxAlertServer)				// Displays an messageBox to alert user of something
-	ON_MESSAGE(UWM_DISPLAYMESSAGEBOXCONF,			&CKalelView::MessageBoxConfirmation)			// Displays an messageBox to or ask user for confirmation
+	ON_MESSAGE(UWM_DISPLAYMESSAGEBOXSERVER,			&CKalelView::MessageBoxAlertServer)				// Displays an messageBox to alert user of something from the server
 																							
 	
 	//************************************
@@ -741,39 +740,11 @@ LRESULT CKalelView::OnExchangeRequests(WPARAM, LPARAM incomingRequests)
 	// Get the incoming vector and add it to the local logs
 	auto newRequests = reinterpret_cast<std::map<std::chrono::system_clock::time_point, std::wstring>*>(incomingRequests);
 
-	size_t size_before = requestCollection.size();
-	requestCollection.insert(newRequests->begin(), newRequests->end());
-
-	// Display requests
-	if (size_before != requestCollection.size())
+	for (auto &i : *newRequests)
 	{
-		for (auto &i : requestCollection)
-		{
-			TLogLevel level = GeneralLog::FromString(i.second.substr(0, i.second.find(':')));
-			
-			switch (level)
-			{
-			case logEVENT:
-			{
-
-				commHandler.messageHandler.DisplayMessageBoxServer(MB_YESNO, i.second, true);
-				break;
-			}
-			case logERROR:
-			case logWARNING:
-			{
-				commHandler.messageHandler.DisplayMessageBoxServer(MB_ICONERROR | MB_OK, i.second, false);
-				break;
-			}
-			case logINFO:
-			case logDEBUG:
-			case logDEBUG1:
-			case logDEBUG2:
-			case logDEBUG3:
-			case logDEBUG4:
-			default:
-				break;
-			}
+		auto ret = requestCollection.insert(i);											// attempt to insert it into the map
+		if (ret.second) {																// if it was inserted
+			commHandler.messageHandler.DisplayMessageBoxServer(i.first, i.second);		// then process it
 		}
 	}
 
@@ -801,46 +772,87 @@ LRESULT CKalelView::MessageBoxAlert(WPARAM wParam, LPARAM lParam)
 
 LRESULT CKalelView::MessageBoxAlertServer(WPARAM wParam, LPARAM lParam)
 {
-	// Get the incoming pointer and cast it as a smart pointer
-	std::unique_ptr<CString> message(reinterpret_cast<CString*>(lParam));
-	std::unique_ptr<UINT> nType(reinterpret_cast<UINT*>(wParam));
+	// Get the incoming pointers and cast them as smart pointers
+	std::unique_ptr<std::chrono::system_clock::time_point> time(reinterpret_cast<std::chrono::system_clock::time_point*>(wParam));
+	std::unique_ptr<std::wstring> message(reinterpret_cast<std::wstring*>(lParam));
 
-	int result = AfxMessageBox(*message, *nType);
 
-	return result;
-}
-
-LRESULT CKalelView::MessageBoxConfirmation(WPARAM wParam, LPARAM lParam)
-{
-	// Get the incoming pointer and cast it as a smart pointer
-	std::unique_ptr<CString> message(reinterpret_cast<CString*>(lParam));
-	std::unique_ptr<UINT> nType(reinterpret_cast<UINT*>(wParam));
-
+	size_t delimiter = message->find(':');
+	TLogLevel level = GeneralLog::FromString(message->substr(0, delimiter));
 	int result;
-	bool continuer = true;
-	do {
-		result = AfxMessageBox(*message, *nType);
-		if (result == IDCANCEL)
+
+	switch (level)
+	{
+	case logEVENT:
+	{
+		TQuestionType qtype = GeneralLog::QtypeFromString(message->substr(delimiter + 1, 1));
+
+		UINT ntype;
+
+		switch (qtype)
 		{
-			if (AfxMessageBox(PROMPT_CANCELEXP, MB_YESNO | MB_ICONWARNING, 0) == IDYES) {
-				commHandler.ResetClient();
-				continuer = false;
-			}
+		case qOK: 
+			ntype = MB_OK; 
+			break;
+		case qYESNO: 
+			ntype = MB_YESNO;
+			break;
+		case qYESCANCEL: 
+			ntype = MB_OKCANCEL; 
+			break;
+		case qYESTRYCANCEL: 
+			ntype = MB_CANCELTRYCONTINUE; 
+			break;
+		default:
+			ntype = MB_OK;
+			break;
 		}
-		else {
-			if (result == IDYES || result == IDOK) {
-				commHandler.UserYes();
+
+		bool continuer = true;
+		do {
+			result = AfxMessageBox(message->substr(delimiter + 2 + message->substr(delimiter + 1).find(':')).c_str(), ntype);
+			switch (result)
+			{
+			case IDCONTINUE:
+			case IDYES:
+			case IDOK:
+				commHandler.UserYes(*time);
 				continuer = false;
-			}
-			if (result == IDNO) {
-				commHandler.UserNo();
+				break;
+			case IDNO:
+			case IDCANCEL:
+				commHandler.UserNo(*time);
 				continuer = false;
-			}
-			if (result == IDIGNORE) {
-				commHandler.UserWait();
+				break;
+			case IDTRYAGAIN:
+				commHandler.UserWait(*time);
 				continuer = false;
+				break;
+			default:
+				break;
 			}
+		} while (continuer);
+		break;
+	}
+	case logERROR:
+	case logWARNING:
+	{
+		result = AfxMessageBox(message->c_str(), MB_ICONERROR | MB_OK);
+		if (result)
+		{
+			commHandler.UserYes(*time);
 		}
-	} while (continuer);
+		break;
+	}
+	case logINFO:
+	case logDEBUG:
+	case logDEBUG1:
+	case logDEBUG2:
+	case logDEBUG3:
+	case logDEBUG4:
+	default:
+		break;
+	}
+
 	return result;
 }

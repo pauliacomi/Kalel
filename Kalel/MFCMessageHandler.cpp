@@ -163,29 +163,18 @@ bool MFCMessageHandler::ExchangeControlStateSpecific(const ControlInstrumentStat
 }
 
 
-bool MFCMessageHandler::DisplayMessageBoxServer(UINT nType, const std::wstring & pString, bool blocksProgram)
+bool MFCMessageHandler::DisplayMessageBoxServer(const std::chrono::system_clock::time_point & tp, const std::wstring & pString)
 {
-	// Create a new pointer 
-	UINT * type = new UINT(nType);
-	CString * message = new CString(pString.c_str());
+	// Create new pointers to send as a message
+	auto time = new std::chrono::system_clock::time_point(tp);
+	auto message = new std::wstring(pString);
 
 	// Check if the message box is supposed to alert the user or ask for input
 	// Other thread is now responsible for deleting this object
-	if (blocksProgram)
-	{
-		if (::PostMessage(windowHandle, UWM_DISPLAYMESSAGEBOXCONF, (WPARAM)type, (LPARAM)message) == 0) {
-			delete type;
-			delete message;
-			return false;
-		}
-	}
-	else
-	{
-		if (::PostMessage(windowHandle, UWM_DISPLAYMESSAGEBOXSERVER, (WPARAM)type, (LPARAM)message) == 0) {
-			delete type;
-			delete message;
-			return false;
-		}
+	if (::PostMessage(windowHandle, UWM_DISPLAYMESSAGEBOXSERVER, (WPARAM)time, (LPARAM)message) == 0) {
+		delete time;
+		delete message;
+		return false;
 	}
 
 	return true;

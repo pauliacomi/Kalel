@@ -60,7 +60,7 @@ bool Automation::VerificationSecurity()
 	{
 		if (!waitingUser) {
 			// Ask user if they want to continue
-			LOG(logEVENT) << MESSAGE_NOSECURITY;
+			LOG_EVENT(qYESNO) << MESSAGE_NOSECURITY;
 
 			waitingUser = true;
 			eventUserInput = true;
@@ -102,7 +102,7 @@ bool Automation::VerificationValves()
 	if (!waitingUser) {
 		// Ask user to check the valves
 		LOG(logINFO) << MESSAGE_CHECK_INITIAL_STATE;
-		LOG(logEVENT) << MESSAGE_CHECK_VALVES_OPEN;
+		LOG_EVENT(qOK) << MESSAGE_CHECK_VALVES_OPEN;
 
 		// Set wait
 		waitingUser = true;
@@ -120,13 +120,6 @@ bool Automation::VerificationValves()
 		case CHOICE_YES:									// Signal that it's good
 			waitingUser = false;
 			return true;
-			break;
-
-		case CHOICE_NO:										// Stop experiment
-			shutdownReason = STOP_CANCEL;
-			eventShutdown = true;
-			storage.automationControl.notify_all();
-			return false;
 			break;
 		default:
 			return false;
@@ -180,7 +173,7 @@ bool Automation::VerificationResidualPressure()
 		{
 			if (!waitingUser) {
 				// Ask user if they want to continue
-				LOG(logEVENT) << MESSAGE_WARNING_INITIAL_PRESSURE << storage.currentData.pressureHigh << storage.machineSettings.PressureLimitVacuum;
+				LOG_EVENT(qYESNO) << MESSAGE_WARNING_INITIAL_PRESSURE << storage.currentData.pressureHigh << storage.machineSettings.PressureLimitVacuum;
 
 				waitingUser = true;
 				eventUserInput = true;

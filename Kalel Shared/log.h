@@ -14,6 +14,7 @@
 **********************************************************************************************************************************/
 
 enum TLogLevel {logEVENT, logERROR, logWARNING, logINFO, logDEBUG, logDEBUG1, logDEBUG2, logDEBUG3, logDEBUG4};
+enum TQuestionType { qOK, qYESNO, qYESCANCEL, qYESTRYCANCEL };
 
 /*********************************
 // Class
@@ -24,16 +25,18 @@ class Log
 public:
     Log();
     virtual ~Log();
-	std::ostringstream& GetBase(TLogLevel level = logINFO);						// Get just the message sent
-    std::ostringstream& GetNoStamp(TLogLevel level = logINFO);					// Get a stringstream without timestamp
-	std::ostringstream& GetTimeStamped(TLogLevel level = logINFO);				// Get a stringstream with timestamp
-	std::ostringstream& GetTimeStamp();											// Get a stringstream only the timestamp
+	std::ostringstream& GetBase(TLogLevel level = logINFO);							// Get just the message sent
+    std::ostringstream& GetNoStamp(TLogLevel level = logINFO);						// Get a stringstream without timestamp
+	std::ostringstream& GetTimeStamped(TLogLevel level = logINFO);					// Get a stringstream with timestamp
+	std::ostringstream& GetTimeStamp();												// Get a stringstream only the timestamp
+	std::ostringstream& GetNoStampAndAppended(TLogLevel level, TQuestionType type);	// Get an extra appended digit signifying type
 
 public:
     static TLogLevel& ReportingLevel();
     static std::string ToString(TLogLevel level);
     static TLogLevel FromString(const std::string& level);
 	static TLogLevel FromString(const std::wstring& level);
+	static TQuestionType QtypeFromString(const std::wstring& level);
 
 	// String stream
 protected:
@@ -74,8 +77,19 @@ std::ostringstream& Log<T>::GetNoStamp(TLogLevel level)
 {
 	local_level = level;
 	os << ToString(level) << ": ";
-    os << std::string(level > logDEBUG ? level - logDEBUG : 0, '\t');			// Write only the logging level
+    os << std::string(level > logDEBUG ? level - logDEBUG : 0, '\t');			// Tab it out
     return os;
+}
+
+/*********************************
+// Get log and appended type
+*********************************/
+template <typename T>
+std::ostringstream& Log<T>::GetNoStampAndAppended(TLogLevel level, TQuestionType type)
+{
+	local_level = level;
+	os << ToString(level) << ":" << type << ": ";
+	return os;
 }
 
 /*********************************
@@ -181,6 +195,25 @@ TLogLevel Log<T>::FromString(const std::wstring& level)
 	if (level == L"ERROR")
 		return logERROR;
 	return logINFO;
+}
+
+
+/*********************************
+// Convert string to question
+*********************************/
+
+template <typename T>
+TQuestionType Log<T>::QtypeFromString(const std::wstring& qtype)
+{
+	if (qtype == L"0")
+		return qOK;
+	if (qtype == L"1")
+		return qYESNO;
+	if (qtype == L"2")
+		return qYESCANCEL;
+	if (qtype == L"3")
+		return qYESTRYCANCEL;
+	return qOK;
 }
 
 
@@ -349,6 +382,10 @@ class StreamLog : public Log<OutputGeneral> {};
     if (level > LOG_MAX_LEVEL) ;\
     else if (level > GeneralLog::ReportingLevel() || !OutputGeneral::Event() || !OutputGeneral::Info() || !OutputGeneral::Debug()) ; \
     else GeneralLog().GetNoStamp(level)
+
+#define LOG_EVENT(type) \
+    if (!OutputGeneral::Event()) ; \
+    else GeneralLog().GetNoStampAndAppended(logEVENT, type)
 
 #define FILE_LOG(level) \
     if (level > FILELOG_MAX_LEVEL) ;\

@@ -47,16 +47,16 @@ public:
 	void NextSubstep();
 	void StopVacuum();
 
-	void UserYes();
-	void UserNo();
-	void UserWait();
+	void UserYes(const std::chrono::system_clock::time_point & time);
+	void UserNo(const std::chrono::system_clock::time_point & time);
+	void UserWait(const std::chrono::system_clock::time_point & time);
 
 	MFCMessageHandler messageHandler;
 private:
 	HTTPClient client;
 	
 	void ThreadCommand(std::string command);
-	void UserChoice(int choice);
+	void UserChoice(const std::chrono::system_clock::time_point & time, int choice);
 
 	/**********************************************************************************************************************************
 	// Local variables: don't like these
@@ -127,6 +127,6 @@ private:
 	unsigned ThreadCommand_resp(http_response * r);
 
 	// User choice commands
-	unsigned UserChoice_req(http_request * r, int choice);
+	unsigned UserChoice_req(http_request * r, std::string time, int choice);
 	unsigned UserChoice_resp(http_response * r);
 };

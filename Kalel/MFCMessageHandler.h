@@ -52,5 +52,5 @@ public:
 
 	// Messageboxes
 	bool DisplayMessageBox(UINT nType, const std::wstring & pString);
-	bool DisplayMessageBoxServer(UINT nType, const std::wstring & pString, bool blocksProgram);
+	bool DisplayMessageBoxServer(const std::chrono::system_clock::time_point & tp, const std::wstring & pString);
 };

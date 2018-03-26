@@ -30,7 +30,7 @@ void Automation::BottleVacuum()
 		storage.experimentStatus.experimentStage = STAGE_VACUUM_BOTTLE;
 		storage.experimentStatus.experimentStepStatus = STEP_STATUS_START;
 		storage.experimentStatus.experimentInProgress = true;
-		LOG(logEVENT) << MESSAGE_VACUUM_BOTTLE_CLOSE;
+		LOG_EVENT(qOK) << MESSAGE_VACUUM_BOTTLE_CLOSE;
 		
 		// Pause
 		eventPause = true;

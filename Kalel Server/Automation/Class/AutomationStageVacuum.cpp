@@ -134,7 +134,7 @@ void Automation::StageVacuum(bool separateFunctionality)
 
 		if (separateFunctionality)
 		{
-			LOG(logEVENT) << MESSAGE_VACUUM_USER_CHOICE;
+			LOG_EVENT(qOK) << MESSAGE_VACUUM_USER_CHOICE;
 			eventPause = true;
 			storage.automationControl.notify_all();
 		}

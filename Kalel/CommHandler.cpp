@@ -286,13 +286,13 @@ void CommHandler::ThreadCommand(std::string command)
 /*********************************
 // User choice
 *********************************/
-void CommHandler::UserYes() { UserChoice(CHOICE_YES); }
-void CommHandler::UserNo() { UserChoice(CHOICE_NO); }
-void CommHandler::UserWait() { UserChoice(CHOICE_WAIT); }
+void CommHandler::UserYes(const std::chrono::system_clock::time_point & time) { UserChoice(time, CHOICE_YES); }
+void CommHandler::UserNo(const std::chrono::system_clock::time_point & time) { UserChoice(time, CHOICE_NO); }
+void CommHandler::UserWait(const std::chrono::system_clock::time_point & time) { UserChoice(time, CHOICE_WAIT); }
 
-void CommHandler::UserChoice(int choice)
+void CommHandler::UserChoice(const std::chrono::system_clock::time_point & time, int choice)
 {
-	auto request = std::bind(&CommHandler::UserChoice_req, this, std::placeholders::_1, choice);
+	auto request = std::bind(&CommHandler::UserChoice_req, this, std::placeholders::_1, timeh::TimePointToString(time), choice);
 	auto callback = std::bind(&CommHandler::UserChoice_resp, this, std::placeholders::_1);
 
 	try {
@@ -891,10 +891,11 @@ unsigned CommHandler::ThreadCommand_resp(http_response * r)
 /*********************************
 // User Choice
 *********************************/
-unsigned CommHandler::UserChoice_req(http_request* r, int choice)
+unsigned CommHandler::UserChoice_req(http_request* r, std::string time, int choice)
 {
 	r->method = http::method::post;
 	r->path = "/api/input";
+	r->params.emplace("t", time);
 	r->params.emplace("i", std::to_string(choice));
 	return 0;
 }

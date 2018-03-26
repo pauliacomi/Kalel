@@ -187,7 +187,6 @@ private:
 	LRESULT DisplayStepProgress(const ExperimentStatus &status);
 	LRESULT MessageBoxAlert(WPARAM wParam, LPARAM lParam);
 	LRESULT MessageBoxAlertServer(WPARAM wParam, LPARAM lParam);
-	LRESULT MessageBoxConfirmation(WPARAM wParam, LPARAM);
 
 	//*************************************************************************************************************************
 	//						KalelView_Boutons
