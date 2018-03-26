@@ -81,7 +81,7 @@
 #define MESSAGE_CHECK_INITIAL_PRESSURE		"Checking residual pressure"
 #define MESSAGE_CHECK_OPENV6_POSSIB			"Pressure recorded HPT : %f  Possibility to open valve 6"
 #define MESSAGE_CHECK_INITIAL_TEMPERATURE	"Checking temperatures"					
-#define MESSAGE_CHECK_TEMPERATURE_DIFF		"The temperature (= %f) is outside the bounds of the tepmerature limit (= %f) \t\nDo you want to wait for stabilisation (Yes),  continue anyway (No), or cancel the experiment (Cancel)?"
+#define MESSAGE_CHECK_TEMPERATURE_DIFF		"The temperature (= %f) is outside the bounds of the tepmerature limit (= %f) \t\nDo you want to wait until stabilisation (Retry), continue anyway, or cancel the experiment?"
 #define MESSAGE_WARNING_INITIAL_PRESSURE	"The PT high pressure (= %f) is higher than the set pressure limit (= %f) \t\nDo you want to continue anyway?"
 #define MESSAGE_WAIT_TEMP_EQUILIBRATION		"Waiting for temperature equilibration"
 #define MESSAGE_VERIFICATIONS_COMPLETE		"Verifications are now complete"

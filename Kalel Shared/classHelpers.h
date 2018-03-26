@@ -37,8 +37,11 @@ public:
 	// Deletes all data in storage
 	void del();
 
-	// Deletes all data older than a point tp
+	// Deletes datapoint with key tp
 	void del(const std::chrono::system_clock::time_point & tp);
+
+	// Deletes all data older than a point tp
+	void del_until(const std::chrono::system_clock::time_point & tp);
 
 	// Deletes first datapoint
 	void del_first();
@@ -81,6 +84,15 @@ void StampedSafeStorage<T>::del() {
 
 template <typename T>
 void StampedSafeStorage<T>::del(const std::chrono::system_clock::time_point & tp) {
+	std::unique_lock<std::mutex> lock(mutex);
+	if (storage.find(tp) != storage.end())
+	{
+		storage.erase(tp);
+	}
+}
+
+template <typename T>
+void StampedSafeStorage<T>::del_until(const std::chrono::system_clock::time_point & tp) {
 	std::unique_lock<std::mutex> lock(mutex);
 	storage.erase(storage.begin(), storage.lower_bound(tp));
 }

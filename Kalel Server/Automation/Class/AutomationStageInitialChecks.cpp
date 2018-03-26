@@ -228,7 +228,7 @@ bool Automation::VerificationTemperature()
 		{
 			if (!waitingUser) {
 
-				LOG(logWARNING) << MESSAGE_CHECK_TEMPERATURE_DIFF << storage.currentData.temperatureCalo << storage.experimentSettings.dataGeneral.temperature_experience - storage.experimentSettings.dataGeneral.temperature_range_initial_check;
+				LOG_EVENT(qYESTRYCANCEL) << MESSAGE_CHECK_TEMPERATURE_DIFF << storage.currentData.temperatureCalo << storage.experimentSettings.dataGeneral.temperature_experience - storage.experimentSettings.dataGeneral.temperature_range_initial_check;
 
 				waitingUser = true;
 				eventUserInput = true;

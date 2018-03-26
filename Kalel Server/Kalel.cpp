@@ -321,9 +321,8 @@ void Kalel::InstrumentStateSync(http_request* req, http_response* resp)
 	// SET
 	if (req->method == http::method::post)
 	{
-		if (!req->params.empty() ||
-			!req->params.at("ID").empty() ||
-			!req->params.at("state").empty())
+		if (req->params.find("ID") != req->params.end() ||
+			req->params.find("state") != req->params.end() )
 		{
 			auto instrumentID = stringh::To<int>(req->params.at("ID"));
 			auto instrumentState = stringh::To<bool>(req->params.at("state"));
@@ -558,8 +557,7 @@ void Kalel::AutomationControl(http_request* req, http_response* resp)
 {
 	if (req->method == http::method::post)
 	{
-		if (!req->params.empty() ||
-			!req->params.at("action").empty())
+		if (req->params.find("action") != req->params.end())
 		{
 			if (req->params.at("action") == "start") {
 				threadManager.StartAutomation();
@@ -605,8 +603,8 @@ void Kalel::UserInput(http_request * req, http_response * resp)
 	// SET
 	if (req->method == http::method::post)
 	{
-		if (!req->params.empty() ||
-			!req->params.at("i").empty())
+		if (req->params.find("t") != req->params.end() ||
+			req->params.find("i") != req->params.end())
 		{
 			int choice = stringh::To<int>(req->params.at("i"));
 			switch (choice)
@@ -616,6 +614,7 @@ void Kalel::UserInput(http_request * req, http_response * resp)
 			case CHOICE_NO:
 			case CHOICE_WAIT:
 				resp->status = http::responses::ok;
+				storageVectors.eventLogs.del(timeh::StringToTimePoint(req->params.at("t")));
 				threadManager.SetUserChoice(choice);
 				break;
 			default:
