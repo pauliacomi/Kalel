@@ -489,17 +489,7 @@ unsigned CommHandler::SetExperimentSettings_req(http_request* r, ExperimentSetti
 	r->content_type = http::mimetype::appjson;
 	r->path = "/api/experimentsettings";
 
-	json j;
-	try
-	{
-		j = es;
-	}
-	catch (const std::exception& e)
-	{
-		messageHandler.DisplayMessageBox(MB_OK, stringh::s2ws(e.what()));
-		return 1;
-	}
-
+	json j = es;
 	r->body = j.dump();
 
 	return 0;
@@ -516,8 +506,6 @@ unsigned CommHandler::SetExperimentSettings_resp(http_response* r) {
 	{
 		messageHandler.DisplayMessageBox(MB_OK, _T("Server error, could not start a new experiment"));
 	}
-
-	messageHandler.ExperimentEnd();
 	return 1;
 }
 

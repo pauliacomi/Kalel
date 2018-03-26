@@ -598,10 +598,12 @@ LRESULT CKalelView::OnSync(WPARAM, LPARAM)
 	// Make sure buttons are updated
 	if (experimentSettings && experimentSettings->experimentType != EXPERIMENT_TYPE_UNDEF) {
 		pApp->experimentRunning = true;
+		pApp->menuIsAvailable = false;
 	}
 	else
 	{
 		pApp->experimentRunning = false;
+		pApp->menuIsAvailable = true;
 	}
 
 	UpdateButtons();
