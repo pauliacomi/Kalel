@@ -26,7 +26,7 @@ namespace timeh {
 
 	unsigned long long TimePointToULLong(const std::chrono::system_clock::time_point & tp);
 
-	std::chrono::system_clock::time_point ULLongToTimePoint(unsigned long long tp);
+	std::chrono::system_clock::time_point ULLongToTimePoint(const unsigned long long &tp);
 
 
 	class timer

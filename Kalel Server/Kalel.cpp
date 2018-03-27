@@ -177,18 +177,26 @@ void Kalel::Ping(http_request* req, http_response* resp)
 *********************************/
 void Kalel::MachineSettingsSync(http_request* req, http_response* resp)
 {
-	timeh::timer t;
 	LOG(logDEBUG2) << "Machine Settings " << req->method;
+	timeh::timer t;
 	t.Start();
 
 	// GET
 	if (req->method == http::method::get)
 	{
-		json j = storageVectors.machineSettings;
-		
-		resp->status		= http::responses::ok;
-		resp->content_type = http::mimetype::appjson;
-		resp->body			= j.dump();
+		auto time = req->params.find("t");
+		if (time != req->params.end() && timeh::StringToTimePoint(time->second) < storageVectors.machineSettings.tp)
+		{
+			resp->status = http::responses::no_content;
+		}
+		else
+		{
+			json j = storageVectors.machineSettings;
+
+			resp->status = http::responses::ok;
+			resp->content_type = http::mimetype::appjson;
+			resp->body = j.dump();
+		}
 	}
 
 	// SET
@@ -224,8 +232,8 @@ void Kalel::MachineSettingsSync(http_request* req, http_response* resp)
 *********************************/
 void Kalel::ExperimentSettingsSync(http_request* req, http_response* resp)
 {
-	timeh::timer t;
 	LOG(logDEBUG2) << "ExpSettings" << req->method;
+	timeh::timer t;
 	t.Start();
 
 	// GET
@@ -275,18 +283,26 @@ void Kalel::ExperimentSettingsSync(http_request* req, http_response* resp)
 *********************************/
 void Kalel::ExperimentStatusSync(http_request* req, http_response* resp)
 {
-	timeh::timer t;
 	LOG(logDEBUG2) << "Experiment Status" << req->method;
+	timeh::timer t;
 	t.Start();
 
 	// GET
 	if (req->method == http::method::get)
 	{
-		json j = storageVectors.experimentStatus;
+		auto time = req->params.find("t");
+		if (time != req->params.end() && timeh::StringToTimePoint(time->second) < storageVectors.experimentStatus.tp)
+		{
+			resp->status = http::responses::no_content;
+		}
+		else
+		{
+			json j = storageVectors.experimentStatus;
 
-		resp->status = http::responses::ok;
-		resp->content_type = http::mimetype::appjson;
-		resp->body = j.dump();
+			resp->status = http::responses::ok;
+			resp->content_type = http::mimetype::appjson;
+			resp->body = j.dump();
+		}
 	}
 
 	LOG(logDEBUG2) << "Experiment Status took " << std::to_string(t.TimeMilliseconds());
@@ -298,8 +314,8 @@ void Kalel::ExperimentStatusSync(http_request* req, http_response* resp)
 *********************************/
 void Kalel::InstrumentStateSync(http_request* req, http_response* resp)
 {
-	timeh::timer t;
 	LOG(logDEBUG2) << "Instrument state" << req->method;
+	timeh::timer t;
 	t.Start();
 
 	// GET
@@ -347,8 +363,8 @@ void Kalel::InstrumentStateSync(http_request* req, http_response* resp)
 *********************************/
 void Kalel::DataSync(http_request* req, http_response* resp)
 {
-	timeh::timer t;
 	LOG(logDEBUG2) << "Data sync";
+	timeh::timer t;
 	t.Start();
 
 	if (req->method == http::method::get)
@@ -357,13 +373,14 @@ void Kalel::DataSync(http_request* req, http_response* resp)
 
 		std::map<std::chrono::system_clock::time_point, ExperimentData> localCollection;
 
-		if (req->params.find("t") == req->params.end())
+		auto time = req->params.find("t");
+		if (time == req->params.end())
 		{
 			localCollection = storageVectors.dataCollection.get();
 		}
 		else
 		{
-			localCollection = storageVectors.dataCollection.get(timeh::StringToTimePoint(req->params.at("t")));
+			localCollection = storageVectors.dataCollection.get(timeh::StringToTimePoint(time->second));
 		}
 
 		if (localCollection.size() != 0)						// If any exist
@@ -398,8 +415,8 @@ void Kalel::DataSync(http_request* req, http_response* resp)
 *********************************/
 void Kalel::LogSync(http_request* req, http_response* resp)
 {
-	timeh::timer t;
 	LOG(logDEBUG2) << "Log sync " << req->method;
+	timeh::timer t;
 	t.Start();
 
 	if (req->method == http::method::del)
@@ -414,13 +431,14 @@ void Kalel::LogSync(http_request* req, http_response* resp)
 
 		TextStorage localCollection;
 
-		if (req->params.find("t") == req->params.end())
+		auto time = req->params.find("t");
+		if (time == req->params.end())
 		{
 			localCollection = storageVectors.infoLogs.get();
 		}
 		else
 		{
-			localCollection = storageVectors.infoLogs.get(timeh::StringToTimePoint(req->params.at("t")));
+			localCollection = storageVectors.infoLogs.get(timeh::StringToTimePoint(time->second));
 		}
 
 		if (localCollection.size() != 0)							// If any exist
@@ -450,8 +468,8 @@ void Kalel::LogSync(http_request* req, http_response* resp)
 *********************************/
 void Kalel::RequestSync(http_request* req, http_response* resp)
 {
-	timeh::timer t;
 	LOG(logDEBUG2) << "Request sync " << req->method;
+	timeh::timer t;
 	t.Start();
 
 	if (req->method == http::method::del)
@@ -466,13 +484,14 @@ void Kalel::RequestSync(http_request* req, http_response* resp)
 
 		TextStorage localCollection;
 
-		if (req->params.find("t") == req->params.end())
+		auto time = req->params.find("t");
+		if (time == req->params.end())
 		{
 			localCollection = storageVectors.eventLogs.get();
 		}
 		else
 		{
-			localCollection = storageVectors.eventLogs.get(timeh::StringToTimePoint(req->params.at("t")));
+			localCollection = storageVectors.eventLogs.get(timeh::StringToTimePoint(time->second));
 		}
 
 		if (localCollection.size() != 0)							// If any exist
@@ -502,8 +521,8 @@ void Kalel::RequestSync(http_request* req, http_response* resp)
 *********************************/
 void Kalel::DebugSync(http_request* req, http_response* resp)
 {
-	timeh::timer t;
 	LOG(logDEBUG2) << "Debug sync " << req->method;
+	timeh::timer t;
 	t.Start();
 
 	if (req->method == http::method::del)
@@ -518,13 +537,14 @@ void Kalel::DebugSync(http_request* req, http_response* resp)
 
 		TextStorage localCollection;
 
-		if (req->params.find("t") == req->params.end())
+		auto time = req->params.find("t");
+		if (time == req->params.end())
 		{
 			localCollection = storageVectors.debugLogs.get();
 		}
 		else
 		{
-			localCollection = storageVectors.debugLogs.get(timeh::StringToTimePoint(req->params.at("t")));
+			localCollection = storageVectors.debugLogs.get(timeh::StringToTimePoint(time->second));
 		}
 
 		if (localCollection.size() != 0)							// If any exist

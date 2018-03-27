@@ -105,3 +105,107 @@ void StampedSafeStorage<T>::del_first() {
 
 
 typedef std::map<std::chrono::system_clock::time_point, std::string> TextStorage;
+
+
+//******************************************************************************************
+//
+//	time_point_mtx
+//	
+//	Template for a safe timepoint
+//
+//******************************************************************************************
+
+class time_point_mtx
+{
+private:
+	mutable std::mutex mtx;
+	std::chrono::system_clock::time_point tp;
+
+public:
+
+	time_point_mtx() {}
+
+	operator std::chrono::system_clock::time_point() {
+		return load();												// return requested value
+	}
+
+	std::chrono::system_clock::time_point load() const {
+		std::unique_lock<std::mutex> lock(mtx);						// lock mutex
+		return tp;													// return requested value
+	}
+
+	operator std::chrono::system_clock::time_point() const {
+		std::unique_lock<std::mutex> lock(mtx);						// lock mutex
+		return tp;													// return requested value
+	}
+
+	time_point_mtx & operator=(const std::chrono::system_clock::time_point& rhs) {
+		std::unique_lock<std::mutex> lock(mtx);						// lock
+		tp = rhs;													// store
+		return *this;												// return for operator chaining
+	}
+
+	friend bool operator<(const std::chrono::system_clock::time_point& l, const time_point_mtx& r)
+	{
+		std::unique_lock<std::mutex> lock(r.mtx);					// lock mutex
+		return l < r.tp;											// return the comparison
+	}
+};
+
+//******************************************************************************************
+//
+//	atomic_ts
+//	
+//	Template for an atomic parameter which timestamps a timepoint when set
+//
+//******************************************************************************************
+
+template<typename T>
+class atomic_ts
+{
+private:
+	T value;
+	mutable std::mutex mtx;
+	time_point_mtx& tp;
+
+public:
+	atomic_ts() = delete;
+	atomic_ts(time_point_mtx& t) : tp(t) {}
+
+	operator T() const {
+		return load();												// return requested value
+	}
+	T load() const {
+		std::unique_lock<std::mutex> lock(mtx);						// lock mutex
+		return value;												// return requested value
+	}
+	void store(const T& rhs) {
+		std::unique_lock<std::mutex> lock(mtx);						// lock mutex
+		value = rhs;												// save value
+		tp = std::chrono::system_clock::now();						// Reset timepoint
+	}
+	void store_nostamp(const T& rhs) {
+		std::unique_lock<std::mutex> lock(mtx);						// lock mutex
+		value = rhs;												// save value
+	}
+	atomic_ts& operator=(const T& rhs) {
+		store(rhs);													// Store
+		return *this;												// return for operator chaining
+	}
+	atomic_ts& operator++() {
+		std::unique_lock<std::mutex> lock(mtx);						// lock mutex
+		++value;													// actual increment takes place here
+		return *this;
+	}
+	bool operator==(const T& rhs) {
+		std::unique_lock<std::mutex> lock(mtx);						// lock mutex
+		return value == rhs;										// return equality
+	}
+	bool operator!=(const T& rhs) { return !(this->operator==(rhs)); }
+
+	friend std::wostream& operator<<(std::wostream& os, const atomic_ts& t) {
+		std::unique_lock<std::mutex> lock(t.mtx);					// lock mutex
+		os << t.value;												// write value
+		return os;													// return stream
+	}
+};

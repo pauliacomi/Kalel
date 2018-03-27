@@ -338,8 +338,8 @@ void FileWriter::RecordDataChange(bool csv, const ExperimentSettings& newSetting
 
 			text << std::endl << "-----------------------------------------------------"	<< std::endl;
 			text << "Settings changed"														<< std::endl;
-			text << "Step" << divider << status.adsorptionCounter						<< std::endl;
-			text << "Dose" << divider << status.experimentDose						<< std::endl;
+			text << "Step" << divider << status.adsorptionCounter							<< std::endl;
+			text << "Dose" << divider << status.experimentDose								<< std::endl;
 
 			if (oldSettings.dataAdsorption[i].delta_pression != newSettings.dataAdsorption[i].delta_pression)
 			{

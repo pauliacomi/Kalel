@@ -1,22 +1,6 @@
 #pragma once
 
-#include <atomic>
-#include <chrono>	// for timepoint
-
-
-template<typename T>
-struct atomic_ts : public std::atomic<T>
-{
-private:
-	std::chrono::system_clock::time_point& tp;
-public:
-	atomic_ts(std::chrono::system_clock::time_point& t) : tp(t) {};
-	atomic_ts& operator=(const T& a) {
-		std::atomic<T>::operator=(a);
-		return *this;
-	};
-	// using std::atomic<T>::operator=;
-};
+#include "../classHelpers.h"
 
 class ExperimentStatus
 {
@@ -37,7 +21,7 @@ public:
 	ExperimentStatus & ExperimentStatus::operator=(const ExperimentStatus & p);
 
 
-	std::chrono::system_clock::time_point tp;
+	time_point_mtx tp;
 	
 	///*******************
 	///		Global flags

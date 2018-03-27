@@ -1,12 +1,12 @@
 #pragma once
 
 #include <string>
-#include <vector>
 #include <map>
 #include <chrono>		// for timepoint
-#include <mutex>		// for mutex
 
 #include "ExperimentHelperClasses.h"
+
+#include "../classHelpers.h"
 
 class MachineSettings
 {
@@ -18,6 +18,9 @@ public:
 	MachineSettings & operator=(const MachineSettings & p);
 
 public:
+
+	time_point_mtx tp;
+
 	///*******************
 	///		Settings
 	///*******************

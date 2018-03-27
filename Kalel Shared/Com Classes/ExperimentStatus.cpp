@@ -7,12 +7,12 @@
 
 ExperimentStatus::ExperimentStatus()
 {
-	ResetData();
+	ResetData();							// Do initialisation of all variables
 }
 
 ExperimentStatus::ExperimentStatus(const ExperimentStatus & rhs)
 {
-	*this = rhs;
+	*this = rhs;							// Copy values from reference
 }
 
 ExperimentStatus::~ExperimentStatus(void)
@@ -22,29 +22,31 @@ ExperimentStatus::~ExperimentStatus(void)
 
 void ExperimentStatus::ResetData()
 {
-	experimentInProgress = false;
-	experimentRecording = false;
-	experimentWaiting = false;
-	experimentCommandsRequested = true;
+	experimentInProgress					.store_nostamp( false );
+	experimentRecording						.store_nostamp( false );
+	experimentWaiting						.store_nostamp( false );
+	experimentCommandsRequested				.store_nostamp( true );
 
-	experimentStage = STAGE_UNDEF;
-	experimentPreviousStage = STAGE_UNDEF;
-	experimentDose = 0;
-	experimentStepStatus = STEP_STATUS_UNDEF;
-	experimentSubstepStage = STEP_STATUS_START;
-	verificationStep = STEP_VERIFICATIONS_UNDEF;
+	experimentStage							.store_nostamp( STAGE_UNDEF );
+	experimentPreviousStage					.store_nostamp( STAGE_UNDEF );
+	experimentDose							.store_nostamp( 0 );
+	experimentStepStatus					.store_nostamp( STEP_STATUS_UNDEF );
+	experimentSubstepStage					.store_nostamp( STEP_STATUS_START );
+	verificationStep						.store_nostamp( STEP_VERIFICATIONS_UNDEF );
 
-	timeStart = 0;
-	timeEquilibrationStart = 0;
-	timeToEquilibrate = 0.f;
+	timeStart								.store_nostamp( 0 );
+	timeEquilibrationStart					.store_nostamp( 0 );
+	timeToEquilibrate						.store_nostamp( 0.f );
 
-	injectionAttemptCounter = 0;
-	adsorptionCounter = 0;
-	desorptionCounter = 0;
+	injectionAttemptCounter					.store_nostamp( 0 );
+	adsorptionCounter						.store_nostamp( 0 );
+	desorptionCounter						.store_nostamp( 0 );
 
-	pressureInitial = 0.f;
-	pressureFinal = 0.f;
-	pressureHighOld = 0.f;
+	pressureInitial							.store_nostamp( 0.f );
+	pressureFinal							.store_nostamp( 0.f );
+	pressureHighOld							.store_nostamp( 0.f );
+
+	tp = timeh::NowTime();
 }
 
 
@@ -52,37 +54,44 @@ ExperimentStatus & ExperimentStatus::operator=(const ExperimentStatus & p)
 {
 	if (this != &p) {  // make sure not same object
 		
+		// To be efficient, we won't generate a timestamp for each allocation
+		// Instead, we allocate without timestamping, then generate the new time 
+		// at the end
+
 		///*******************
 		///		Global flags
 		///*******************
 
-		experimentInProgress = p.experimentInProgress.load();
-		experimentRecording = p.experimentRecording.load();
-		experimentWaiting = p.experimentWaiting.load();
-		experimentCommandsRequested = p.experimentCommandsRequested.load();
+		experimentInProgress.store_nostamp(					p.experimentInProgress.load());
+		experimentRecording.store_nostamp(					p.experimentRecording.load());
+		experimentWaiting.store_nostamp(					p.experimentWaiting.load());
+		experimentCommandsRequested.store_nostamp(			p.experimentCommandsRequested.load());
 
 		///*******************
 		///		Parameters for storing where program has reached
 		///*******************
 
-		experimentStage = p.experimentStage.load();
-		experimentPreviousStage = p.experimentPreviousStage.load();
-		experimentDose = p.experimentDose.load();
-		experimentStepStatus = p.experimentStepStatus.load();
-		experimentSubstepStage = p.experimentSubstepStage.load();
-		verificationStep = p.verificationStep.load();
+		experimentStage.store_nostamp(						p.experimentStage.load());
+		experimentPreviousStage.store_nostamp(				p.experimentPreviousStage.load());
+		experimentDose.store_nostamp(						p.experimentDose.load());
+		experimentStepStatus.store_nostamp(					p.experimentStepStatus.load());
+		experimentSubstepStage.store_nostamp(				p.experimentSubstepStage.load());
+		verificationStep.store_nostamp(						p.verificationStep.load());
 
-		timeStart = p.timeStart.load();
-		timeEquilibrationStart = p.timeEquilibrationStart.load();
-		timeToEquilibrate = p.timeToEquilibrate.load();
+		timeStart.store_nostamp(							p.timeStart.load());
+		timeEquilibrationStart.store_nostamp(				p.timeEquilibrationStart.load());
+		timeToEquilibrate.store_nostamp(					p.timeToEquilibrate.load());
 
-		injectionAttemptCounter = p.injectionAttemptCounter.load();
-		adsorptionCounter = p.adsorptionCounter.load();
-		desorptionCounter = p.desorptionCounter.load();
+		injectionAttemptCounter.store_nostamp(				p.injectionAttemptCounter.load());
+		adsorptionCounter.store_nostamp(					p.adsorptionCounter.load());
+		desorptionCounter.store_nostamp(					p.desorptionCounter.load());
 
-		pressureInitial = p.pressureInitial.load();
-		pressureFinal = p.pressureFinal.load();
-		pressureHighOld = p.pressureHighOld.load();
+		pressureInitial.store_nostamp(						p.pressureInitial.load());
+		pressureFinal.store_nostamp(						p.pressureFinal.load());
+		pressureHighOld.store_nostamp(						p.pressureHighOld.load());
+	
+		// timestamp
+		tp = timeh::NowTime();
 	}
 	return *this;    // Return ref for multiple assignment
 }

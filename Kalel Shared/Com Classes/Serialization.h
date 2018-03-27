@@ -51,10 +51,12 @@ inline void from_json(const nlohmann::json &j, user &m);
 //*************************************************************************************************************************
 
 void to_json(nlohmann::json &j, const MachineSettings &m) {
-		
+
+	j["timestamp"] = timeh::TimePointToString(m.tp);
+
 	j["CaloName"							]	= stringh::ws2s(m.CaloName)					;
 	j["CaloPrefix"							]	= stringh::ws2s(m.CaloPrefix)				;
-	j["DefaultPath"				]	= stringh::ws2s(m.DefaultPath)		;
+	j["DefaultPath"							]	= stringh::ws2s(m.DefaultPath)		;
 	j["SafetyOn"							]	= m.SafetyOn								;
 
 	j["hasSonicNozzle"						]	= m.hasSonicNozzle							;
@@ -98,6 +100,8 @@ void to_json(nlohmann::json &j, const MachineSettings &m) {
 }
 
 inline void from_json(const nlohmann::json &j, MachineSettings &m) {
+
+	m.tp = timeh::StringToTimePoint(j["timestamp"]);
 
 	m.CaloName											= stringh::s2ws(j["CaloName"							]);
 	m.CaloPrefix										= stringh::s2ws(j["CaloPrefix"							]);
@@ -230,6 +234,8 @@ inline void from_json(const nlohmann::json &j, ExperimentData &e) {
 //*************************************************************************************************************************
 inline void to_json(nlohmann::json &j, const ExperimentStatus &e) {
 
+	j["timestamp"] = timeh::TimePointToString(e.tp);
+
 	j[	"EP"	]	= e.experimentInProgress				.load();
 	j[	"ER"	]	= e.experimentRecording					.load();
 	j[	"EW"	]	= e.experimentWaiting					.load();
@@ -252,6 +258,8 @@ inline void to_json(nlohmann::json &j, const ExperimentStatus &e) {
 }
 
 inline void from_json(const nlohmann::json &j, ExperimentStatus &e) {
+
+	e.tp = timeh::StringToTimePoint(j["timestamp"]);
 
 	e.experimentInProgress								.store(j[	"EP"	]);
 	e.experimentRecording								.store(j[	"ER"	]);
