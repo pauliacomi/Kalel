@@ -20,5 +20,5 @@ void Automation::WaitSeconds(int nbsecondes, bool verbose /*=false*/)
 	storage.experimentStatus.timeEquilibrationStart = timeh::TimePointToULLong(timeh::NowTime());		// Save the waiting start time
 	storage.experimentStatus.timeToEquilibrate = nbsecondes;
 	storage.experimentStatus.experimentWaiting = true;
-	controls.timerWaiting.Start();
+	storage.timerWaiting.Start();
 }

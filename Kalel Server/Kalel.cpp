@@ -63,17 +63,17 @@
 using json = nlohmann::json;
 
 Kalel::Kalel()
-	: controlMechanisms{ storageVectors }
-	, threadManager{ storageVectors, controlMechanisms}
+	: controlMechanisms{ storage.machineSettings }
+	, threadManager{ storage, controlMechanisms}
 {
 
 	//
 	// Configure logging
 
 	GeneralLog::ReportingLevel() = LOG_LEVEL;
-	OutputGeneral::Info() =	&storageVectors.infoLogs;
-	OutputGeneral::Event() = &storageVectors.eventLogs;
-	OutputGeneral::Debug() = &storageVectors.debugLogs;
+	OutputGeneral::Info() =	&storage.infoLogs;
+	OutputGeneral::Event() = &storage.eventLogs;
+	OutputGeneral::Debug() = &storage.debugLogs;
 
 	//
 	// Start server functionality
@@ -185,13 +185,13 @@ void Kalel::MachineSettingsSync(http_request* req, http_response* resp)
 	if (req->method == http::method::get)
 	{
 		auto time = req->params.find("t");
-		if (time != req->params.end() && timeh::StringToTimePoint(time->second) < storageVectors.machineSettings.tp)
+		if (time != req->params.end() && timeh::StringToTimePoint(time->second) < storage.machineSettings.tp)
 		{
 			resp->status = http::responses::no_content;
 		}
 		else
 		{
-			json j = storageVectors.machineSettings;
+			json j = GetMachineSettings();
 
 			resp->status = http::responses::ok;
 			resp->content_type = http::mimetype::appjson;
@@ -205,16 +205,7 @@ void Kalel::MachineSettingsSync(http_request* req, http_response* resp)
 		if (req->content_type == http::mimetype::appjson) {
 
 			// Parse the input
-			auto j = json::parse(req->body);
-			
-			// Create new settings
-			storageVectors.machineSettings = MachineSettings(j);
-
-			// Ensure all changes
-			controlMechanisms.on_setmachineSettings();
-
-			// Save to file
-			ParametersSet(storageVectors.machineSettings);
+			SetMachineSettings(json::parse(req->body));
 
 			resp->status = http::responses::ok;
 		}
@@ -239,7 +230,7 @@ void Kalel::ExperimentSettingsSync(http_request* req, http_response* resp)
 	// GET
 	if (req->method == http::method::get)
 	{
-		json j = storageVectors.experimentSettings;
+		json j = GetExperimentSettings();
 
 		resp->status = http::responses::ok;
 		resp->content_type = http::mimetype::appjson;
@@ -252,20 +243,7 @@ void Kalel::ExperimentSettingsSync(http_request* req, http_response* resp)
 		if (req->content_type == http::mimetype::appjson) {
 
 			// Parse the input
-			auto j = json::parse(req->body);
-			auto newSettings = ExperimentSettings(j);
-
-			// Create new experiment settings, logging change if experiment is running
-			if (storageVectors.experimentStatus.experimentInProgress == true) {
-				controlMechanisms.fileWriter.RecordDataChange(false, 
-					newSettings, storageVectors.experimentSettings,
-					storageVectors.experimentStatus, storageVectors.currentData);						// non-CSV
-				controlMechanisms.fileWriter.RecordDataChange(true,
-					newSettings, storageVectors.experimentSettings,
-					storageVectors.experimentStatus, storageVectors.currentData);						// CSV
-			}
-
-			storageVectors.setExperimentSettings(newSettings);
+			SetExperimentSettings(json::parse(req->body));
 
 			resp->status = http::responses::ok;
 		}
@@ -291,13 +269,13 @@ void Kalel::ExperimentStatusSync(http_request* req, http_response* resp)
 	if (req->method == http::method::get)
 	{
 		auto time = req->params.find("t");
-		if (time != req->params.end() && timeh::StringToTimePoint(time->second) < storageVectors.experimentStatus.tp)
+		if (time != req->params.end() && timeh::StringToTimePoint(time->second) < storage.experimentStatus.tp)
 		{
 			resp->status = http::responses::no_content;
 		}
 		else
 		{
-			json j = storageVectors.experimentStatus;
+			json j = storage.experimentStatus;
 
 			resp->status = http::responses::ok;
 			resp->content_type = http::mimetype::appjson;
@@ -344,7 +322,7 @@ void Kalel::InstrumentStateSync(http_request* req, http_response* resp)
 			auto instrumentState = stringh::To<bool>(req->params.at("state"));
 
 			threadManager.ThreadManualAction(instrumentID, instrumentState);
-			storageVectors.controlStateChanged = timeh::NowTime();	
+			storage.controlStateChanged = timeh::NowTime();	
 
 			resp->status = http::responses::ok;
 		}
@@ -376,11 +354,11 @@ void Kalel::DataSync(http_request* req, http_response* resp)
 		auto time = req->params.find("t");
 		if (time == req->params.end())
 		{
-			localCollection = storageVectors.dataCollection.get();
+			localCollection = storage.dataCollection.get();
 		}
 		else
 		{
-			localCollection = storageVectors.dataCollection.get(timeh::StringToTimePoint(time->second));
+			localCollection = storage.dataCollection.get(timeh::StringToTimePoint(time->second));
 		}
 
 		if (localCollection.size() != 0)						// If any exist
@@ -421,7 +399,7 @@ void Kalel::LogSync(http_request* req, http_response* resp)
 
 	if (req->method == http::method::del)
 	{
-		storageVectors.infoLogs.del();
+		storage.infoLogs.del();
 		resp->status = http::responses::ok;
 	}
 
@@ -434,11 +412,11 @@ void Kalel::LogSync(http_request* req, http_response* resp)
 		auto time = req->params.find("t");
 		if (time == req->params.end())
 		{
-			localCollection = storageVectors.infoLogs.get();
+			localCollection = storage.infoLogs.get();
 		}
 		else
 		{
-			localCollection = storageVectors.infoLogs.get(timeh::StringToTimePoint(time->second));
+			localCollection = storage.infoLogs.get(timeh::StringToTimePoint(time->second));
 		}
 
 		if (localCollection.size() != 0)							// If any exist
@@ -474,7 +452,7 @@ void Kalel::RequestSync(http_request* req, http_response* resp)
 
 	if (req->method == http::method::del)
 	{
-		storageVectors.eventLogs.del();
+		storage.eventLogs.del();
 		resp->status = http::responses::ok;
 	}
 
@@ -487,11 +465,11 @@ void Kalel::RequestSync(http_request* req, http_response* resp)
 		auto time = req->params.find("t");
 		if (time == req->params.end())
 		{
-			localCollection = storageVectors.eventLogs.get();
+			localCollection = storage.eventLogs.get();
 		}
 		else
 		{
-			localCollection = storageVectors.eventLogs.get(timeh::StringToTimePoint(time->second));
+			localCollection = storage.eventLogs.get(timeh::StringToTimePoint(time->second));
 		}
 
 		if (localCollection.size() != 0)							// If any exist
@@ -527,7 +505,7 @@ void Kalel::DebugSync(http_request* req, http_response* resp)
 
 	if (req->method == http::method::del)
 	{
-		storageVectors.debugLogs.del();
+		storage.debugLogs.del();
 		resp->status = http::responses::ok;
 	}
 
@@ -540,11 +518,11 @@ void Kalel::DebugSync(http_request* req, http_response* resp)
 		auto time = req->params.find("t");
 		if (time == req->params.end())
 		{
-			localCollection = storageVectors.debugLogs.get();
+			localCollection = storage.debugLogs.get();
 		}
 		else
 		{
-			localCollection = storageVectors.debugLogs.get(timeh::StringToTimePoint(time->second));
+			localCollection = storage.debugLogs.get(timeh::StringToTimePoint(time->second));
 		}
 
 		if (localCollection.size() != 0)							// If any exist
@@ -635,7 +613,7 @@ void Kalel::UserInput(http_request * req, http_response * resp)
 			case CHOICE_NO:
 			case CHOICE_WAIT:
 				resp->status = http::responses::ok;
-				storageVectors.eventLogs.del(timeh::StringToTimePoint(req->params.at("t")));
+				storage.eventLogs.del(timeh::StringToTimePoint(req->params.at("t")));
 				threadManager.SetUserChoice(choice);
 				break;
 			default:
@@ -644,4 +622,66 @@ void Kalel::UserInput(http_request * req, http_response * resp)
 			}
 		}
 	}
+}
+
+
+
+
+//
+//
+// Setting and getting of com classes
+//
+
+
+MachineSettings Kalel::GetMachineSettings()
+{
+	return storage.machineSettings;
+}
+
+unsigned Kalel::SetMachineSettings(const MachineSettings & ms)
+{
+	// Save to file
+	ParametersSet(ms);
+
+	// Check there are no experiments running
+	if (storage.experimentStatus.experimentInProgress) {
+		LOG(logERROR) << "Cannot change machine settings while an experiment is in progress"; 
+		return 1; 
+	}
+
+	// Shutdown threads
+	if (!threadManager.ShutdownMeasurement()) { return 2; };
+	if (!threadManager.ShutdownAutomation()) { return 2; };
+
+	// Reinitialise instruments
+	controlMechanisms.instruments.Reset(ms);
+	// Replace settings
+	storage.machineSettings = ms;
+
+	// Restart threads
+	if (!threadManager.StartMeasurement()) { return 3; };
+	if (!threadManager.StartAutomation()) { return 3; };
+
+	// Operation successful
+	return 0;
+}
+
+ExperimentSettings Kalel::GetExperimentSettings()
+{
+	return storage.experimentSettings;
+}
+
+void Kalel::SetExperimentSettings(const ExperimentSettings & es)
+{
+	// Create new experiment settings, logging change if experiment is running
+	if (storage.experimentStatus.experimentInProgress == true) {
+		controlMechanisms.fileWriter.RecordDataChange(false,
+			es, storage.experimentSettings,
+			storage.experimentStatus, storage.currentData);						// non-CSV
+		controlMechanisms.fileWriter.RecordDataChange(true,
+			es, storage.experimentSettings,
+			storage.experimentStatus, storage.currentData);						// CSV
+	}
+
+	storage.setExperimentSettings(es);
 }

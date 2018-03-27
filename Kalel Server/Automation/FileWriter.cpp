@@ -137,13 +137,13 @@ bool FileWriter::FileMeasurementCreate(const data_general &general)
 *		Reference to the experimentSettings which generates the entete
 *		bool valveOpen6: records if valve number 6 is open or not
 ***********************************************************************/
-bool FileWriter::RecordMeasurement(const std::wstring &time, const data_general &general, const ExperimentData &data, const ExperimentStatus &status, bool valveOpen6)
+bool FileWriter::RecordMeasurement(const data_general &general, const ExperimentAtomicData & data, const ExperimentStatus &status, bool valveOpen6)
 {
 	std::wostringstream stream;
 	char char_resultat_calo[20];
-	sprintf_s(char_resultat_calo, "%.8E", data.resultCalorimeter);
+	sprintf_s(char_resultat_calo, "%.8E", data.resultCalorimeter.load());
 	
-	stream << time									<< CSV_DIV;				// Experiment time
+	stream << timeh::TimePointToWString(data.tp)	<< CSV_DIV;				// Experiment time
 	stream << status.experimentDose					<< CSV_DIV;				// Experiment dose
 	stream << char_resultat_calo					<< CSV_DIV;				// Calorimeter value
 	stream << data.pressureLow						<< CSV_DIV;				// Pressure low range

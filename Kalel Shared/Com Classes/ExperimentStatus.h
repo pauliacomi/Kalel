@@ -21,7 +21,7 @@ public:
 	ExperimentStatus & ExperimentStatus::operator=(const ExperimentStatus & p);
 
 
-	time_point_mtx tp;
+	atomic_time_point tp;
 	
 	///*******************
 	///		Global flags

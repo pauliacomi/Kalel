@@ -8,7 +8,7 @@ Automation::Automation(Storage &s, Controls &c)
 	, controls{ c }
 {
 	// Time
-	controls.timerExperiment.Start();				// Start global experiment timer	
+	storage.timerExperiment.Start();				// Start global experiment timer	
 	storage.experimentStatus.timeStart = time(0);
 }
 
@@ -52,23 +52,23 @@ void Automation::Execution()
 		if (storage.experimentStatus.experimentCommandsRequested) {
 			switch (storage.experimentSettings.experimentType)		// We look at the type of experiment
 			{
-			case EXPERIMENT_TYPE_MANUAL:						// in case it is manual
-				ExecutionManual();								// run the manual loop
+			case EXPERIMENT_TYPE_MANUAL:							// in case it is manual
+				ExecutionManual();									// run the manual loop
 				break;
-			case EXPERIMENT_TYPE_AUTO:							// in case it is automatic
-				ExecutionAuto();								// run the automatic loop
+			case EXPERIMENT_TYPE_AUTO:								// in case it is automatic
+				ExecutionAuto();									// run the automatic loop
 				break;
-			case EXPERIMENT_TYPE_SAMPLE_VACUUM:					// in case we want to vacuum up to the sample
-				SampleVacuum();									// run the functionality
+			case EXPERIMENT_TYPE_SAMPLE_VACUUM:						// in case we want to vacuum up to the sample
+				SampleVacuum();										// run the functionality
 				break;
-			case EXPERIMENT_TYPE_BOTTLE_VACUUM:					// in case we want to vacuum up to the bottle
-				BottleVacuum();									// run the functionality
+			case EXPERIMENT_TYPE_BOTTLE_VACUUM:						// in case we want to vacuum up to the bottle
+				BottleVacuum();										// run the functionality
 				break;
-			case EXPERIMENT_TYPE_CONTINUOUS:					// in case it is continuous
-				//ExecutionContinuous();							// run the continuous loop
+			case EXPERIMENT_TYPE_CONTINUOUS:						// in case it is continuous
+				ExecutionContinuous();								// run the continuous loop
 				break;
-			case EXPERIMENT_TYPE_UNDEF:							// in case no experiment has been set yet
-				break;											// just continue
+			case EXPERIMENT_TYPE_UNDEF:								// in case no experiment has been set yet
+				break;												// just continue
 			default:
 				break;
 			}
@@ -82,15 +82,40 @@ void Automation::Execution()
 
 		// If waiting complete
 		if (storage.experimentStatus.experimentWaiting &&															// If the wait functionality is requested																					
-			controls.timerWaiting.TimeSeconds() > storage.experimentStatus.timeToEquilibrate) {					// and the time has been completed
+			storage.timerWaiting.TimeSeconds() > storage.experimentStatus.timeToEquilibrate) {					// and the time has been completed
 
 			// Stop the timer
-			controls.timerWaiting.Pause();
+			storage.timerWaiting.Pause();
 
 			// Reset the flag
 			storage.experimentStatus.experimentWaiting = false;
 		}
-		
+
+		/*
+		*
+		*		3. IF RECORDING save the data to the file, and restart timer between records
+		*
+		*/
+
+		// Write data
+		if (storage.experimentStatus.experimentRecording)														// If we started recording
+		{
+			if (storage.timerMeasurement.TimeMilliseconds() > storage.machineSettings.TimeBetweenRecording)	// If enough time between measurements
+			{
+				// Save the data to the file
+				bool err = controls.fileWriter.RecordMeasurement(
+					storage.experimentSettings.dataGeneral,
+					storage.currentData,
+					storage.experimentStatus,
+					controls.valveControls.ValveIsOpen(ID_VALVE_6));
+				if (err) {
+					LOG(logERROR) << MESSAGE_WARNING_FILE;
+				}
+
+				// Restart the timer to record time between measurements
+				storage.timerMeasurement.Start();
+			}
+		}
 		/*
 		*
 		*		3. Event-based wait. If any events are triggered in this time, the thread performs the requested action.
@@ -148,9 +173,6 @@ void Automation::Execution()
 		}
 	}
 }
-
-
-
 
 
 
@@ -243,7 +265,61 @@ void Automation::ExecutionAuto()
 	}
 }
 
+void Automation::ExecutionContinuous()
+{
+	// First time running command
+	if (storage.experimentStatus.experimentStepStatus == STEP_STATUS_UNDEF) {
 
+		// Send start message
+		LOG(logINFO) << MESSAGE_EXPSTART;
+
+		ResetAutomation();
+
+		// Create, open and write the columns in the file
+		bool err = controls.fileWriter.CreateFiles(storage.experimentSettings, storage.machineSettings);
+		if (err) {							// No point in starting experiment then																							
+			shutdownReason = STOP;
+			eventShutdown = true;
+			storage.automationControl.notify_all();
+			LOG(logERROR) << ERROR_PATHUNDEF;
+		}
+
+		// Write variables to starting position
+		storage.experimentStatus.experimentInProgress = true;
+		storage.experimentStatus.experimentStage = STAGE_VERIFICATIONS;
+		storage.experimentStatus.experimentStepStatus = STEP_STATUS_START;
+		storage.experimentStatus.experimentSubstepStage = SUBSTEP_STATUS_START;
+		storage.experimentStatus.verificationStep = STEP_VERIFICATIONS_SECURITY;
+	}
+
+	// Stages of automatic experiment
+	switch (storage.experimentStatus.experimentStage)
+	{
+	case STAGE_VERIFICATIONS:
+		Verifications();
+		break;
+	case STAGE_EQUILIBRATION:
+		StageEquilibration();
+		break;
+	case STAGE_ADSORPTION:
+		StageContinuous();
+		break;
+	case STAGE_VACUUM_SAMPLE:
+		StageVacuum();
+		break;
+	case STAGE_END_AUTOMATIC:
+
+		// If the experiment has finished
+		shutdownReason = STOP_NORMAL;				// set a normal shutdown
+		eventReset = true;							// end then set the event
+		storage.automationControl.notify_all();		// and notify
+
+		break;
+
+	default:
+		break;
+	}
+}
 
 void Automation::ResetAutomation()
 {
@@ -259,5 +335,5 @@ void Automation::ResetAutomation()
 
 	// Time
 	storage.experimentStatus.timeStart = time(0);
-	controls.timerExperiment.Start();	// Start global experiment timer
+	storage.timerExperiment.Start();	// Start global experiment timer
 }

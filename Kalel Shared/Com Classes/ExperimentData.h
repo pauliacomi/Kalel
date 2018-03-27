@@ -1,10 +1,13 @@
 #pragma once
 
 #include <atomic>
+#include "../classHelpers.h"
 
 
 struct ExperimentAtomicData
 {
+	atomic_time_point tp;
+
 	///*******************
 	///		Recorded Data
 	///*******************

@@ -12,7 +12,7 @@ public:
 	~Kalel();
 
 	HTTPServer server;								// Http server for REST
-	Storage storageVectors;						// Stores all settings, experiment data, logs etc
+	Storage storage;						// Stores all settings, experiment data, logs etc
 	Controls controlMechanisms;					// Controls all machines
 	ThreadManager threadManager;	
 
@@ -29,4 +29,9 @@ protected:
 	void DebugSync(http_request * req, http_response * resp);
 	void AutomationControl(http_request* req, http_response* resp);
 	void UserInput(http_request* req, http_response* resp);
+
+	MachineSettings GetMachineSettings();
+	unsigned SetMachineSettings(const MachineSettings & ms);
+	ExperimentSettings GetExperimentSettings();
+	void SetExperimentSettings(const ExperimentSettings & es);
 };

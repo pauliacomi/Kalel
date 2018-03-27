@@ -35,7 +35,7 @@ ThreadManager::~ThreadManager()
 //
 //---------------------------------------------------------------------------
 
-unsigned ThreadManager::StartMeasurement() 
+bool ThreadManager::StartMeasurement() 
 {
 	if (measurement == nullptr)
 	{
@@ -45,19 +45,24 @@ unsigned ThreadManager::StartMeasurement()
 		// Launch measurement
 		measurementThread = std::thread(&Measurement::Execution, measurement.get());
 
-		return 0;
+		return true;
 	}
-	return 1;
+	return false;
 }
 
 
-unsigned ThreadManager::ShutdownMeasurement()
+bool ThreadManager::ShutdownMeasurement()
 {
 	// Close the worker thread
 	if (measurement != nullptr)
 	{
 		// Signal the thread to exit
-		measurement->measuring = false;
+		std::unique_lock<std::mutex> lk(storage.measurementMutex);
+		measurement->eventShutdown = true;
+		storage.measurementControl.notify_all();
+
+		// Unlock to continue function
+		lk.unlock();
 
 		// Join thread
 		measurementThread.join();
@@ -65,9 +70,9 @@ unsigned ThreadManager::ShutdownMeasurement()
 		// Delete threads
 		measurement.reset(nullptr);
 
-		return 0;
+		return true;
 	}
-	return 1;
+	return false;
 }
 
 
@@ -78,7 +83,7 @@ unsigned ThreadManager::ShutdownMeasurement()
 //--------------------------------------------------------------------------------------
 
 
-unsigned ThreadManager::StartAutomation() 
+bool ThreadManager::StartAutomation()
 {
 	// Check existence of the worker thread
 	if (automation == nullptr)
@@ -89,26 +94,26 @@ unsigned ThreadManager::StartAutomation()
 		// Launch functionality
 		automationThread = std::thread(&Automation::Execution, automation.get());
 
-		return 0;
+		return true;
 	}
-	return 1;
+	return false;
 }
 
-unsigned ThreadManager::PauseAutomation()
+bool ThreadManager::PauseAutomation()
 {
 	if (automation != nullptr)
 	{
 		// Signal the thread to resume
-		std::unique_lock<std::mutex> lk(storage.automationMutex);	// mutex for thread notification
+		std::unique_lock<std::mutex> lk(storage.automationMutex);
 		automation->eventPause = true;
 		storage.automationControl.notify_all();
 
-		return 0;
+		return true;
 	}
-	return 1;
+	return false;
 }
 
-unsigned ThreadManager::ResumeAutomation() 
+bool ThreadManager::ResumeAutomation()
 {
 	if (automation != nullptr)
 	{
@@ -117,13 +122,13 @@ unsigned ThreadManager::ResumeAutomation()
 		automation->eventResume = true;
 		storage.automationControl.notify_all();
 
-		return 0;
+		return true;
 	}
-	return 1;
+	return false;
 }
 
 
-unsigned ThreadManager::ResetAutomation()
+bool ThreadManager::ResetAutomation()
 {
 	if (automation != nullptr)
 	{
@@ -132,13 +137,13 @@ unsigned ThreadManager::ResetAutomation()
 		automation->eventReset = true;
 		storage.automationControl.notify_all();
 
-		return 0;
+		return true;
 	}
-	return 1;
+	return false;
 }
 
 
-unsigned ThreadManager::SetUserChoice(unsigned int choice)
+bool ThreadManager::SetUserChoice(unsigned int choice)
 {
 	if (automation != nullptr)
 	{
@@ -148,13 +153,13 @@ unsigned ThreadManager::SetUserChoice(unsigned int choice)
 		automation->eventResume = true;								// then continue
 		storage.automationControl.notify_all();
 
-		return 0;
+		return true;
 	}
-	return 1;
+	return false;
 }
 
 // Shutdownfunction will check if thread is running and then send it the shutdown command
-unsigned ThreadManager::ShutdownAutomation()
+bool ThreadManager::ShutdownAutomation()
 {
 	// Close the worker thread
 	if (automation != nullptr)
@@ -173,9 +178,9 @@ unsigned ThreadManager::ShutdownAutomation()
 		// Delete thread
 		automation.reset(nullptr);
 
-		return 0;
+		return true;
 	}
-	return 1;
+	return false;
 }
 
 

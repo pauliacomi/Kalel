@@ -22,7 +22,7 @@ void Automation::StageEquilibration()
 		storage.experimentStatus.experimentRecording = true;
 
 		storage.experimentStatus.timeStart = time(0);																		// Record experiment start time
-		controls.timerExperiment.Start();																					// Start global experiment timer	
+		storage.timerExperiment.Start();																					// Start global experiment timer	
 
 		// Set the time to wait
 		WaitMinutes(storage.experimentSettings.dataDivers.time_baseline, true);

@@ -8,6 +8,7 @@
 
 MachineSettings::MachineSettings()
 {
+	tp = timeh::NowTime();
 }
 
 MachineSettings::MachineSettings(const MachineSettings & rhs)
@@ -22,6 +23,8 @@ MachineSettings::~MachineSettings()
 MachineSettings & MachineSettings::operator=(const MachineSettings & p)
 {
 	if (this != &p) {  // make sure not same object
+
+		tp = timeh::NowTime();
 
 		CaloName = p.CaloName;
 		CaloPrefix = p.CaloPrefix;
@@ -59,6 +62,8 @@ MachineSettings & MachineSettings::operator=(const MachineSettings & p)
 
 void MachineSettings::AddInstrument(const Instrument &i, unsigned int position /*=0*/)
 {
+	tp = timeh::NowTime();
+
 	if (position == 0)
 	{
 		unsigned int placer = instruments.size() + 1;
@@ -79,6 +84,8 @@ void MachineSettings::AddInstrument(const Instrument &i, unsigned int position /
 
 void MachineSettings::AddReader(const Reader &r, unsigned int position)
 {
+	tp = timeh::NowTime();
+
 	if (position == 0)
 	{
 		unsigned int placer = readers.size() + 1;
@@ -100,6 +107,8 @@ void MachineSettings::AddReader(const Reader &r, unsigned int position)
 
 void MachineSettings::AddController(const Controller &r, unsigned int position)
 {
+	tp = timeh::NowTime();
+
 	if (position == 0)
 	{
 		unsigned int placer = controllers.size() + 1;

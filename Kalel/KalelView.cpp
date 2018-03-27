@@ -131,6 +131,8 @@ CKalelView::CKalelView()
 	: CFormView(CKalelView::IDD)
 	, buttonStates(*this)
 {
+	machineSettings = std::make_unique<MachineSettings>();
+	experimentSettings = std::make_unique<ExperimentSettings>();
 }
 
 

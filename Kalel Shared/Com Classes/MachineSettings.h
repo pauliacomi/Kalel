@@ -19,7 +19,7 @@ public:
 
 public:
 
-	time_point_mtx tp;
+	std::chrono::system_clock::time_point tp;
 
 	///*******************
 	///		Settings

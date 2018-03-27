@@ -15,7 +15,7 @@
 
 class Storage {
 public:
-	Storage(void) {
+	Storage() {
 		if (!ParametersCheck())
 		{
 			ParametersSet(machineSettings);		// If not, create it
@@ -28,7 +28,7 @@ public:
 		// Set path
 		experimentSettings.dataGeneral.chemin = machineSettings.DefaultPath;
 	}
-	~Storage(void) {};
+	~Storage() {};
 
 
 	//******************************************************************************************
@@ -56,7 +56,7 @@ public:
 	//
 	// Represents all the settings specific to the experiment running.
 	//
-	// Access		- it is accessed both by the measurement and automation threads continuously 
+	// Access		- it is accessed by the automation thread continuously 
 	//
 	// Changes		- it can be changed by sending a full replacement from a client
 	//				- it is reset at the end of an experiment
@@ -83,6 +83,33 @@ public:
 	}
 
 	//******************************************************************************************
+	// Experiment Status
+	//
+	// Describes the status of the experiment in progress.
+	//
+	// Access		- The automation thread writes to this class
+	//				- The measurement thread reads from this class
+	//				- The client both reads and can request some writes to this class
+	//
+	// Warnings		- The class is accessed by multiple threads
+	//
+	// Solutions	- All variables inside are atomic
+	//
+	//******************************************************************************************
+public:
+	ExperimentStatus experimentStatus;
+
+	//******************************************************************************************
+	// Control State
+	//
+	// Describes the status of the control instruments (valves, pumps etc).
+	// Generated on the fly, whenever required therefore only time of change stored here.
+	//
+	//******************************************************************************************
+
+	std::chrono::system_clock::time_point controlStateChanged = timeh::NowTime();
+
+	//******************************************************************************************
 	// Data
 	//
 	// A collection of all the data recorded.
@@ -104,7 +131,6 @@ public:
 public:
 	ExperimentAtomicData currentData;
 	StampedSafeStorage<ExperimentData>  dataCollection;	
-
 
 	//******************************************************************************************
 	// Logs
@@ -133,31 +159,12 @@ public:
 
 
 	//******************************************************************************************
-	// Experiment Status
-	//
-	// Describes the status of the experiment in progress.
-	//
-	// Access		- The automation thread writes to this class
-	//				- The measurement thread reads from this class
-	//				- The client both reads and can request some writes to this class
-	//
-	// Warnings		- The class is accessed by multiple threads
-	//
-	// Solutions	- All variables inside are atomic
+	// Timers
 	//
 	//******************************************************************************************
-public:																		
-	ExperimentStatus experimentStatus;
-
-	//******************************************************************************************
-	// Control State
-	//
-	// Describes the status of the control instruments (valves, pumps etc).
-	// Generated on the fly, whenever required therefore only time of change stored here.
-	//
-	//******************************************************************************************
-
-	std::chrono::system_clock::time_point controlStateChanged = timeh::NowTime();
+	timeh::timer timerExperiment;											// Class for measuring the time from the experiment start
+	timeh::timer timerMeasurement;											// Class for measuring the time between each measurement
+	timeh::timer timerWaiting;												// Class for measuring the time to wait
 
 	//******************************************************************************************
 	// Automation control
@@ -168,4 +175,8 @@ public:
 
 	std::mutex automationMutex;
 	std::condition_variable automationControl;
+
+
+	std::mutex measurementMutex;
+	std::condition_variable measurementControl;
 };

@@ -350,6 +350,9 @@
     <ClCompile Include="..\Kalel Shared\Netcode\dispatch_queue.cpp">
       <Filter>Source Files\Common\Netcode</Filter>
     </ClCompile>
+    <ClCompile Include="Automation\Class\AutomationStageContinuous.cpp">
+      <Filter>Source Files\Automation\Class</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Library Include="Backend\USB\NIDAQmx.lib">

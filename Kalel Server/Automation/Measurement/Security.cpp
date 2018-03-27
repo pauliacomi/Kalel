@@ -27,18 +27,18 @@ Security::~Security()
 
 void Security::SecurityOverPressure(const Storage & storage)
 {
-	if (storage.experimentSettings.experimentType == EXPERIMENT_TYPE_MANUAL)
-		SecurityHighPressureManual(storage);
-	if (storage.experimentSettings.experimentType == EXPERIMENT_TYPE_AUTO)
+	if (storage.experimentStatus.experimentInProgress)
 		SecurityHighPressureAuto(storage);
+	else	
+		SecurityHighPressureManual(storage);
 }
 
 void Security::SecurityTemperatures(const Storage & storage)
 {
-	if (storage.experimentSettings.experimentType == EXPERIMENT_TYPE_MANUAL)
-		SecurityTemperaturesManual(storage);
-	if (storage.experimentSettings.experimentType == EXPERIMENT_TYPE_AUTO)
+	if (storage.experimentStatus.experimentInProgress)
 		SecuriteTemperaturesAuto(storage);
+	else
+		SecurityTemperaturesManual(storage);
 }
 
 

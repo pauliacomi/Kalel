@@ -141,7 +141,7 @@ namespace timeh {
 		str_frsec += L'Z';
 
 		// Return complete string
-		return str_time + str_frsec;
+		return (str_time + str_frsec);
 	}
 
 	std::chrono::system_clock::time_point StringToTimePoint(const std::string & str_time)
@@ -170,7 +170,6 @@ namespace timeh {
 		auto value = tp.time_since_epoch();
 		return value.count();
 	}
-
 
 	std::chrono::system_clock::time_point ULLongToTimePoint(unsigned long long tp)
 	{

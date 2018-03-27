@@ -60,7 +60,7 @@ int main(int argc, char** argv) {
 
 	while (runnning) {
 
-		std::map<std::chrono::system_clock::time_point, std::string> logs = mainBackend.storageVectors.debugLogs.get(tp);
+		std::map<std::chrono::system_clock::time_point, std::string> logs = mainBackend.storage.debugLogs.get(tp);
 
 		for (const auto &iter : logs) {
 			std::cout << timeh::TimePointToString(iter.first) << " " << iter.second;

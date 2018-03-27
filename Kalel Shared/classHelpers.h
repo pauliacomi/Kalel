@@ -26,7 +26,7 @@ public:
 	void push(const T&);
 
 	// Pushes a time pair in storage
-	void push(std::chrono::system_clock::time_point time, const T&);
+	void push(const std::chrono::system_clock::time_point &time, const T&);
 	
 	// Gets all data from storage
 	std::map<std::chrono::system_clock::time_point, T> get();
@@ -58,7 +58,7 @@ void StampedSafeStorage<T>::push(const T & value) {
 }
 
 template <typename T>
-void StampedSafeStorage<T>::push(std::chrono::system_clock::time_point time, const T & value) {
+void StampedSafeStorage<T>::push(const std::chrono::system_clock::time_point & time, const T & value) {
 	std::unique_lock<std::mutex> lock(mutex);
 	storage.insert(std::make_pair(time, value));
 }
@@ -109,13 +109,13 @@ typedef std::map<std::chrono::system_clock::time_point, std::string> TextStorage
 
 //******************************************************************************************
 //
-//	time_point_mtx
+//	atomic_time_point
 //	
 //	Template for a safe timepoint
 //
 //******************************************************************************************
 
-class time_point_mtx
+class atomic_time_point
 {
 private:
 	mutable std::mutex mtx;
@@ -123,7 +123,7 @@ private:
 
 public:
 
-	time_point_mtx() {}
+	atomic_time_point() {}
 
 	operator std::chrono::system_clock::time_point() {
 		return load();												// return requested value
@@ -139,13 +139,13 @@ public:
 		return tp;													// return requested value
 	}
 
-	time_point_mtx & operator=(const std::chrono::system_clock::time_point& rhs) {
+	atomic_time_point & operator=(const std::chrono::system_clock::time_point& rhs) {
 		std::unique_lock<std::mutex> lock(mtx);						// lock
 		tp = rhs;													// store
 		return *this;												// return for operator chaining
 	}
 
-	friend bool operator<(const std::chrono::system_clock::time_point& l, const time_point_mtx& r)
+	friend bool operator<(const std::chrono::system_clock::time_point& l, const atomic_time_point& r)
 	{
 		std::unique_lock<std::mutex> lock(r.mtx);					// lock mutex
 		return l < r.tp;											// return the comparison
@@ -166,11 +166,11 @@ class atomic_ts
 private:
 	T value;
 	mutable std::mutex mtx;
-	time_point_mtx& tp;
+	atomic_time_point& tp;
 
 public:
 	atomic_ts() = delete;
-	atomic_ts(time_point_mtx& t) : tp(t) {}
+	atomic_ts(atomic_time_point& t) : tp(t) {}
 
 	operator T() const {
 		return load();												// return requested value

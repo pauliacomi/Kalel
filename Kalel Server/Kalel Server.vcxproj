@@ -294,6 +294,7 @@
     <ClCompile Include="Automation\Class\Automation.cpp" />
     <ClCompile Include="Automation\Class\AutomationShutdown.cpp" />
     <ClCompile Include="Automation\Class\AutomationStageAdsoprtion.cpp" />
+    <ClCompile Include="Automation\Class\AutomationStageContinuous.cpp" />
     <ClCompile Include="Automation\Class\AutomationStageDesorption.cpp" />
     <ClCompile Include="Automation\Class\AutomationStageEquilibration.cpp" />
     <ClCompile Include="Automation\Class\AutomationStageInitialChecks.cpp" />

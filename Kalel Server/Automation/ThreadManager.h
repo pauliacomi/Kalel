@@ -31,15 +31,15 @@ private:
 
 	// Public interface methods
 public:
-	unsigned StartMeasurement();
-	unsigned ShutdownMeasurement();
+	bool StartMeasurement();
+	bool ShutdownMeasurement();
 
-	unsigned StartAutomation();
-	unsigned PauseAutomation();
-	unsigned ResumeAutomation();
-	unsigned ResetAutomation();
-	unsigned ShutdownAutomation();
-	unsigned SetUserChoice(unsigned int choice);
+	bool StartAutomation();
+	bool PauseAutomation();
+	bool ResumeAutomation();
+	bool ResetAutomation();
+	bool ShutdownAutomation();
+	bool SetUserChoice(unsigned int choice);
 
 	unsigned ThreadManualAction(int instrumentID, bool state);		// When a manual command is issued
 	void ManualAction(int instrumentID, bool state);

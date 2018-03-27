@@ -20,7 +20,7 @@ Measurement::Measurement(Storage &s, Controls &c)
 	: storage{ s }
 	, controls{ c }
 {
-	controls.timerMeasurement.Start();				// Start the timer to record time between measurements
+	storage.timerMeasurement.Start();				// Start the timer to record time between measurements
 }
 
 
@@ -51,7 +51,7 @@ Measurement::~Measurement()
 
 void Measurement::Execution()
 {
-	while (measuring)
+	while (true)
 	{
 		/*
 		*
@@ -75,11 +75,11 @@ void Measurement::Execution()
 		{
 			th.join();
 		}
+		storage.currentData.tp = timeh::NowTime();
 
 		// Reset
 		measurementThreads.clear();
 		ready = false;
-		auto measurementTime = timeh::NowTime();
 
 		/*
 		*
@@ -93,39 +93,12 @@ void Measurement::Execution()
 
 		/*
 		*
-		*		3. IF RECORDING save the data to the file, and restart timer between records
-		*
-		*/
-
-		// Write data
-		if (storage.experimentStatus.experimentRecording)														// If we started recording
-		{
-			if (controls.timerMeasurement.TimeMilliseconds() > storage.machineSettings.TimeBetweenRecording)	// If enough time between measurements
-			{
-				// Save the data to the file
-				bool err = controls.fileWriter.RecordMeasurement(
-					timeh::TimePointToWString(measurementTime),
-					storage.experimentSettings.dataGeneral,
-					storage.currentData, 
-					storage.experimentStatus,
-					controls.valveControls.ValveIsOpen(ID_VALVE_6));
-				if (err) {
-					LOG(logERROR) << MESSAGE_WARNING_FILE;
-				}
-
-				// Restart the timer to record time between measurements
-				controls.timerMeasurement.Start();
-			}
-		}
-
-		/*
-		*
 		*		4. Save data to list in memory
 		*
 		*/
 
 		// Send the data out
-		storage.dataCollection.push(measurementTime, ExperimentData(storage.currentData));
+		storage.dataCollection.push(storage.currentData.tp, ExperimentData(storage.currentData));
 
 		// If no experiment running do not keep too many points
 		if (!storage.experimentStatus.experimentInProgress && storage.dataCollection.size() > 500)
@@ -137,8 +110,15 @@ void Measurement::Execution()
 		*		5. Wait until next measurement
 		*
 		*/
+		// Aquire lock
+		std::unique_lock<std::mutex> lock(storage.measurementMutex);
+		// Wait for a notification, or continue
+		bool notified = storage.measurementControl.wait_for(lock, std::chrono::milliseconds(storage.machineSettings.TimeBetweenMeasurement), [&]()
+		{
+			return eventShutdown == true;
+		});
 
-		std::this_thread::sleep_for(std::chrono::milliseconds(storage.machineSettings.TimeBetweenMeasurement));
+		if (notified) { break;}
 	}
 }
 

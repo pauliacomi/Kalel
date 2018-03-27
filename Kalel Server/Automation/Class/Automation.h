@@ -45,7 +45,7 @@ protected:
 	// If the shutdown event is called externally, it will default to a cancel
 	// Otherwise the flag will be changed from inside the code
 	volatile int shutdownReason = STOP_CANCEL;
-	std::atomic_bool running = true;
+	bool running = true;
 	std::atomic_bool waitingUser = false;
 
 public:
@@ -71,6 +71,7 @@ protected:
 
 	void ExecutionManual();
 	void ExecutionAuto();
+	void ExecutionContinuous();
 
 	//------------------------------------------------------------
 	// Initialisation
@@ -121,6 +122,7 @@ protected:
 	void SubstepsAdsorption();
 	void StageDesorption();
 	void SubstepsDesorption();
+	void StageContinuous();
 	void StageVacuum(bool separateFunctionality = false);
 
 
@@ -130,6 +132,7 @@ protected:
 
 	void SampleVacuum();
 	void BottleVacuum();
+
 
 };
 

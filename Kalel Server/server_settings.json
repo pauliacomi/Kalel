@@ -1,186 +1,27 @@
 {
-    "timestamp": "2018-02-24T00:17:11.714Z",
-    "CaloName": "name",
-    "CaloPrefix": "entete",
+    "CaloName": "UnnamedCalo",
+    "CaloPrefix": "Prefix",
     "DefaultPath": "C:",
-    "InjectionAttemptNumber": 6,
-    "InjectionMargin": 0.019999999552965164,
-    "InjectionMultiplier": 1.25,
-    "PressureLimitVacuum": 0.10000000149011612,
+    "InjectionAttemptNumber": 3,
+    "InjectionMargin": 0.009999999776482582,
+    "InjectionMultiplier": 1.2000000476837158,
+    "PressureLimitVacuum": 0.009999999776482582,
     "PressurePumpVacuum": 0.5,
     "SafetyOn": true,
-    "TimeBetweenAutomation": 15,
-    "TimeBetweenMeasurement": 500,
-    "TimeBetweenRecording": 1000,
+    "TimeBetweenAutomation": 10,
+    "TimeBetweenMeasurement": 4000,
+    "TimeBetweenRecording": 500,
     "TimeVacuumBottle": 300,
     "TimeVacuumEmergency": 6000,
     "TimeVacuumEndDefault": 12000,
-    "TimeWaitPump": 15,
+    "TimeWaitPump": 10,
     "TimeWaitValves": 5,
     "TimeWaitValvesShort": 2,
-    "VolumeP6": 6.099999904632568,
-    "VolumeRef": 20,
-    "controllers": {
-        "17": {
-            "channel": 0,
-            "identifier": 1,
-            "instrument": 5,
-            "subchannel": 0,
-            "type": 16
-        },
-        "18": {
-            "channel": 0,
-            "identifier": 2,
-            "instrument": 5,
-            "subchannel": 1,
-            "type": 16
-        },
-        "19": {
-            "channel": 0,
-            "identifier": 3,
-            "instrument": 5,
-            "subchannel": 2,
-            "type": 16
-        },
-        "20": {
-            "channel": 0,
-            "identifier": 4,
-            "instrument": 5,
-            "subchannel": 3,
-            "type": 16
-        },
-        "21": {
-            "channel": 0,
-            "identifier": 5,
-            "instrument": 5,
-            "subchannel": 4,
-            "type": 16
-        },
-        "22": {
-            "channel": 0,
-            "identifier": 6,
-            "instrument": 5,
-            "subchannel": 5,
-            "type": 16
-        },
-        "23": {
-            "channel": 0,
-            "identifier": 7,
-            "instrument": 5,
-            "subchannel": 6,
-            "type": 16
-        },
-        "24": {
-            "channel": 0,
-            "identifier": 8,
-            "instrument": 5,
-            "subchannel": 7,
-            "type": 16
-        },
-        "33": {
-            "channel": 1,
-            "identifier": 1,
-            "instrument": 5,
-            "subchannel": 0,
-            "type": 32
-        },
-        "34": {
-            "channel": 1,
-            "identifier": 2,
-            "instrument": 5,
-            "subchannel": 1,
-            "type": 32
-        },
-        "49": {
-            "channel": 1,
-            "identifier": 1,
-            "instrument": 5,
-            "subchannel": 2,
-            "type": 48
-        }
-    },
+    "VolumeP6": 1.0,
+    "VolumeRef": 1.0,
+    "controllers": null,
     "hasSonicNozzle": false,
-    "instruments": {
-        "1": {
-            "port": 1,
-            "portType": "RS232",
-            "type": 1
-        },
-        "2": {
-            "port": 2,
-            "portType": "RS232",
-            "type": 2
-        },
-        "3": {
-            "port": 3,
-            "portType": "RS232",
-            "type": 2
-        },
-        "4": {
-            "port": 1,
-            "portType": "USB",
-            "type": 3
-        },
-        "5": {
-            "port": 2,
-            "portType": "USB",
-            "type": 4
-        }
-    },
-    "readers": {
-        "17": {
-            "channel": 1,
-            "identifier": 1,
-            "instrument": 2,
-            "safe_max": 1,
-            "safe_min": -1,
-            "sensitivity": 1,
-            "type": 16
-        },
-        "18": {
-            "channel": 1,
-            "identifier": 2,
-            "instrument": 3,
-            "safe_max": 5,
-            "safe_min": -1,
-            "sensitivity": 1,
-            "type": 16
-        },
-        "33": {
-            "channel": 1,
-            "identifier": 1,
-            "instrument": 4,
-            "safe_max": 10,
-            "safe_min": 10,
-            "sensitivity": 0.5,
-            "type": 32
-        },
-        "34": {
-            "channel": 1,
-            "identifier": 2,
-            "instrument": 4,
-            "safe_max": 5,
-            "safe_min": 5,
-            "sensitivity": 0.5,
-            "type": 32
-        },
-        "35": {
-            "channel": 1,
-            "identifier": 3,
-            "instrument": 4,
-            "safe_max": 5,
-            "safe_min": 5,
-            "sensitivity": 0.5,
-            "type": 32
-        },
-        "49": {
-            "channel": 1,
-            "identifier": 1,
-            "instrument": 1,
-            "safe_max": 10,
-            "safe_min": -10,
-            "sensitivity": 0.05,
-            "type": 48
-        }
-    }
+    "instruments": null,
+    "readers": null,
+    "timestamp": "2018-03-27T23:17:51.06Z"
 }

@@ -30,7 +30,7 @@ public:
 	// Syncronisation primitives and threads
 	//------------------------------------------------------------
 	
-	std::atomic_bool measuring = true;
+	std::atomic_bool eventShutdown = false;
 
 	std::vector<std::thread> measurementThreads;									// Threads for measurement
 	std::mutex lockingMutex;														// Thread sync mutex
