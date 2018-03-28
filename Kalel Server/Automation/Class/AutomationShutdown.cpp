@@ -15,7 +15,6 @@ void Automation::Shutdown()
 		LOG(logINFO) << MESSAGE_EXPCANCEL;
 
 		// Stop all timers 
-		storage.timerExperiment.Pause();
 		storage.timerMeasurement.Pause();
 		storage.timerWaiting.Pause();
 
@@ -31,7 +30,6 @@ void Automation::Shutdown()
 		LOG(logINFO) << MESSAGE_EXPFINISH;					// Experiment has been finished normally
 
 		// Stop all timers 
-		storage.timerExperiment.Pause();
 		storage.timerMeasurement.Pause();
 		storage.timerWaiting.Pause();
 
@@ -70,7 +68,6 @@ void Automation::Pause()
 		// Log the pause
 		LOG(logINFO) << MESSAGE_EXPPAUSE;
 	}
-	storage.timerExperiment.Pause();
 	storage.timerMeasurement.Pause();
 	storage.experimentStatus.experimentCommandsRequested = false;
 }
@@ -86,7 +83,6 @@ void Automation::Resume()
 		// Log the resume
 		LOG(logINFO) << MESSAGE_EXPRESUME;
 	}
-	storage.timerExperiment.Resume();
 	storage.timerMeasurement.Resume();
 	storage.experimentStatus.experimentCommandsRequested = true;
 }

@@ -85,7 +85,9 @@ LRESULT CKalelView::DisplayStepProgress(const ExperimentStatus &status)
 
 		if (status.timeToEquilibrate / 60 > 1)
 		{
-			temp.Format(_T(" *** Waiting: %.0f min %.0f s /  %.0f min %.0f s"), floorf(timeToEquilibrateCurrent / 60.0f), fmodf(timeToEquilibrateCurrent, 60.0f), floorf(status.timeToEquilibrate.load() / 60.0f), fmodf(status.timeToEquilibrate.load(), 60.0f));
+			temp.Format(_T(" *** Waiting: %.0f min %.0f s /  %.0f min %.0f s"), 
+				floorf(timeToEquilibrateCurrent / 60.0f), fmodf(timeToEquilibrateCurrent, 60.0f), 
+				floorf(status.timeToEquilibrate.load() / 60.0f), fmodf(status.timeToEquilibrate.load(), 60.0f));
 		}
 		else
 		{

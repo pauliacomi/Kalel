@@ -8,8 +8,6 @@ Automation::Automation(Storage &s, Controls &c)
 	, controls{ c }
 {
 	// Time
-	storage.timerExperiment.Start();				// Start global experiment timer	
-	storage.experimentStatus.timeStart = time(0);
 }
 
 
@@ -188,10 +186,6 @@ void Automation::ExecutionManual()
 		
 		ResetAutomation();
 
-		// Record start
-		storage.experimentStatus.experimentInProgress = true;
-		storage.experimentStatus.experimentRecording = true;
-
 		// Create open and write the columns in the file
 		bool err = controls.fileWriter.CreateFiles(storage.experimentSettings, storage.machineSettings);
 		if (err) {								// No point in starting experiment then																										
@@ -200,6 +194,13 @@ void Automation::ExecutionManual()
 			storage.automationControl.notify_all();
 			LOG(logERROR) << ERROR_PATHUNDEF;
 		}
+
+		// Record start
+		storage.experimentStatus.experimentInProgress = true;
+		storage.experimentStatus.experimentRecording = true;
+
+		// Write Time of start
+		storage.experimentStatus.timeStart = timeh::TimePointToMs(timeh::NowTime());
 
 		// Continue experiment
 		storage.experimentStatus.experimentStage = STAGE_MANUAL;
@@ -336,8 +337,4 @@ void Automation::ResetAutomation()
 
 	// Delete all current measurements
 	storage.dataCollection.del();
-
-	// Time
-	storage.experimentStatus.timeStart = time(0);
-	storage.timerExperiment.Start();	// Start global experiment timer
 }

@@ -21,8 +21,8 @@ void Automation::StageEquilibration()
 		// This is where we start recording
 		storage.experimentStatus.experimentRecording = true;
 
-		storage.experimentStatus.timeStart = time(0);																		// Record experiment start time
-		storage.timerExperiment.Start();																					// Start global experiment timer	
+		// Record experiment start time
+		storage.experimentStatus.timeStart = timeh::TimePointToMs(timeh::NowTime());
 
 		// Set the time to wait
 		WaitMinutes(storage.experimentSettings.dataDivers.time_baseline, true);
