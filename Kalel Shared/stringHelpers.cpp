@@ -28,44 +28,31 @@ namespace stringh {
 		return ret;
 	}
 
-	// std:toupper and std::tolower are overloaded. Well...
-	// http://gcc.gnu.org/ml/libstdc++/2002-11/msg00180.html
-	char toLower_(char c) { return std::tolower(c); }
-	char toUpper_(char c) { return std::toupper(c); }
-
 	void ToUpper(std::string& s) {
-		std::transform(s.begin(), s.end(), s.begin(), toUpper_);
+		std::transform(s.begin(), s.end(), s.begin(), std::toupper);
 	}
 
 	void ToLower(std::string& s) {
-		std::transform(s.begin(), s.end(), s.begin(), toLower_);
+		std::transform(s.begin(), s.end(), s.begin(), std::tolower);
 	}
 
 
+	using convert_type = std::codecvt_utf8_utf16<wchar_t>;
 
 	std::wstring s2ws(const std::string& str)
 	{
-		using convert_typeX = std::codecvt_utf8_utf16<wchar_t>;
-		std::wstring_convert<convert_typeX, wchar_t> converterX;
+		std::wstring_convert<convert_type, wchar_t> converter;
 
-		return converterX.from_bytes(str);
+		return converter.from_bytes(str);
 	}
 
 	std::string ws2s(const std::wstring& wstr)
 	{
-		using convert_typeX = std::codecvt_utf8_utf16<wchar_t>;
-		std::wstring_convert<convert_typeX, wchar_t> converterX;
+		std::wstring_convert<convert_type, wchar_t> converter;
 
-		return converterX.to_bytes(wstr);
+		return converter.to_bytes(wstr);
 	}
 
 
-	template<typename ... Args>
-	std::string string_format(const std::string& format, Args ... args)
-	{
-		size_t size = snprintf(nullptr, 0, format.c_str(), args ...) + 1; // Extra space for '\0'
-		std::unique_ptr<char[]> buf(new char[size]);
-		_snprintf(buf.get(), size, format.c_str(), args ...);
-		return std::string(buf.get(), buf.get() + size - 1); // We don't want the '\0' inside
-	}
+
 }

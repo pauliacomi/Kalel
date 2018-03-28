@@ -2,6 +2,7 @@
 
 // Utilities
 #include "../../../Kalel Shared/log.h"
+#include "../../../Kalel Shared/stringHelpers.h"
 
 /*
 *
@@ -38,7 +39,7 @@ void Automation::StageDesorption()
 	case STEP_STATUS_END:
 		storage.experimentStatus.experimentStepStatus = STEP_STATUS_START;														// Reset substep
 		
-		LOG(logINFO) << MESSAGE_DESORPTION_STAGE_END << storage.experimentStatus.desorptionCounter;						// Log the step change
+		LOG(logINFO) << stringh::string_format(MESSAGE_DESORPTION_STAGE_END, storage.experimentStatus.desorptionCounter.load());	// Log the step change
 
 		if (storage.experimentStatus.desorptionCounter < storage.experimentSettings.dataDesorption.size())
 		{
@@ -64,7 +65,8 @@ void Automation::SubstepsDesorption()
 		storage.experimentStatus.pressureInitial = storage.currentData.pressureHigh.load();																// Set the initial pressure
 		storage.experimentStatus.pressureHighOld = storage.currentData.pressureHigh.load();																// Save the injection pressure for later
 		
-		LOG(logINFO) << MESSAGE_DESORPTION_DOSE_START << storage.experimentStatus.desorptionCounter << storage.experimentStatus.experimentDose;			// Log about current dose
+		LOG(logINFO) << stringh::string_format(MESSAGE_DESORPTION_DOSE_START, 
+			storage.experimentStatus.desorptionCounter.load(), storage.experimentStatus.experimentDose.load());											// Log about current dose
 		
 		// Turn on pump
 		if (!controls.valveControls.PumpIsActive()) {
@@ -83,7 +85,7 @@ void Automation::SubstepsDesorption()
 	if (storage.experimentStatus.experimentSubstepStage == SUBSTEP_STATUS_REMOVAL &&
 		storage.experimentStatus.experimentWaiting == false)
 	{
-		LOG(logINFO) << MESSAGE_OUTGAS_ATTEMPT << storage.experimentStatus.injectionAttemptCounter;												// Tell GUI about current injection
+		LOG(logINFO) << stringh::string_format(MESSAGE_OUTGAS_ATTEMPT, storage.experimentStatus.injectionAttemptCounter.load());						// Tell GUI about current injection
 		
 		controls.valveControls.ValveOpen(ID_VALVE_8, true);
 		WaitSeconds(storage.machineSettings.TimeWaitValvesShort);
@@ -124,11 +126,11 @@ void Automation::SubstepsDesorption()
 		storage.experimentStatus.pressureFinal = storage.currentData.pressureHigh.load();
 
 		// Display
-		LOG(logINFO) << MESSAGE_PRESSURE_D_PI << storage.experimentStatus.pressureInitial;
-		LOG(logINFO) << MESSAGE_PRESSURE_D_PF << storage.experimentStatus.pressureFinal;
-		LOG(logINFO) << MESSAGE_PRESSURE_D_DP << storage.experimentStatus.pressureFinal - storage.experimentStatus.pressureInitial;
-		LOG(logINFO) << MESSAGE_PRESSURE_D_DPREQ << storage.experimentSettings.dataDesorption[storage.experimentStatus.desorptionCounter].delta_pression;
-		LOG(logINFO) << MESSAGE_OUTGAS_END << storage.experimentStatus.injectionAttemptCounter;
+		LOG(logINFO) << stringh::string_format(MESSAGE_PRESSURE_D_PI, storage.experimentStatus.pressureInitial.load());
+		LOG(logINFO) << stringh::string_format(MESSAGE_PRESSURE_D_PF, storage.experimentStatus.pressureFinal.load());
+		LOG(logINFO) << stringh::string_format(MESSAGE_PRESSURE_D_DP, storage.experimentStatus.pressureFinal - storage.experimentStatus.pressureInitial);
+		LOG(logINFO) << stringh::string_format(MESSAGE_PRESSURE_D_DPREQ, storage.experimentSettings.dataDesorption[storage.experimentStatus.desorptionCounter].delta_pression);
+		LOG(logINFO) << stringh::string_format(MESSAGE_OUTGAS_END, storage.experimentStatus.injectionAttemptCounter.load());
 
 		// Checks for removal succeess, else increment the counter and try again
 		if ((storage.experimentStatus.pressureHighOld - storage.machineSettings.InjectionMargin < storage.currentData.pressureHigh) &&
@@ -161,7 +163,7 @@ void Automation::SubstepsDesorption()
 				storage.machineSettings.InjectionMultiplier * (storage.experimentSettings.dataDesorption[storage.experimentStatus.desorptionCounter].delta_pression))
 			{
 				storage.experimentStatus.experimentSubstepStage = SUBSTEP_STATUS_ABORT;						// Add gas
-				LOG(logINFO) << (MESSAGE_INJECTION_ATTEMPT);
+				LOG(logINFO) << MESSAGE_INJECTION_ATTEMPT;
 			}
 			// If completeted successfully go to equilibration
 			else
@@ -193,7 +195,7 @@ void Automation::SubstepsDesorption()
 		}
 		else
 		{
-			LOG(logINFO) << (MESSAGE_INJECTION_END);
+			LOG(logINFO) << MESSAGE_INJECTION_END;
 			storage.experimentStatus.experimentSubstepStage = SUBSTEP_STATUS_REMOVAL;		// Go back to removal
 		}
 	}
@@ -245,7 +247,7 @@ void Automation::SubstepsDesorption()
 	if (storage.experimentStatus.experimentSubstepStage == SUBSTEP_STATUS_DESORPTION &&
 		storage.experimentStatus.experimentWaiting == false)
 	{
-		LOG(logINFO) << (MESSAGE_DESORPTION_OPENV);
+		LOG(logINFO) << MESSAGE_DESORPTION_OPENV;
 
 		// Open valve
 		controls.valveControls.ValveOpen(ID_VALVE_5, true);
@@ -267,7 +269,8 @@ void Automation::SubstepsDesorption()
 		controls.valveControls.ValveClose(ID_VALVE_5, true);
 
 		// Display message
-		LOG(logINFO) << MESSAGE_DESORPTION_DOSE_END << storage.experimentStatus.experimentDose;
+		LOG(logINFO) << stringh::string_format(MESSAGE_DESORPTION_DOSE_END, 
+			storage.experimentStatus.desorptionCounter.load(), storage.experimentStatus.experimentDose.load());
 
 		// Reset things
 		storage.experimentStatus.experimentSubstepStage = SUBSTEP_STATUS_START;

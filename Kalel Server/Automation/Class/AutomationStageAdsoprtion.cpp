@@ -2,6 +2,7 @@
 
 // Utilities
 #include "../../../Kalel Shared/log.h"
+#include "../../../Kalel Shared/stringHelpers.h"
 
 /*
 *
@@ -37,9 +38,9 @@ void Automation::StageAdsorption()
 		break;
 
 	case STEP_STATUS_END:
-		storage.experimentStatus.experimentStepStatus = STEP_STATUS_START;													// Reset substep
+		storage.experimentStatus.experimentStepStatus = STEP_STATUS_START;															// Reset substep
 
-		LOG(logINFO) << MESSAGE_ADSORPTION_STAGE_START << storage.experimentStatus.adsorptionCounter;					// Log the step change
+		LOG(logINFO) << stringh::string_format(MESSAGE_ADSORPTION_STAGE_START, storage.experimentStatus.adsorptionCounter.load());	// Log the step change
 
 		if (storage.experimentStatus.adsorptionCounter < storage.experimentSettings.dataAdsorption.size())
 		{
@@ -47,7 +48,7 @@ void Automation::StageAdsorption()
 		}
 		else
 		{
-			storage.experimentStatus.experimentStage = STAGE_DESORPTION;													// Set desorption if all adsorption stages have been finished
+			storage.experimentStatus.experimentStage = STAGE_DESORPTION;															// Set desorption if all adsorption stages have been finished
 		}
 		break;
 	}
@@ -63,7 +64,8 @@ void Automation::SubstepsAdsorption()
 		storage.experimentStatus.injectionAttemptCounter = 0;																								// Reset adsorption attempt counter
 		storage.experimentStatus.pressureInitial = storage.currentData.pressureHigh.load();																	// Set the initial pressure
 		storage.experimentStatus.pressureHighOld =  storage.currentData.pressureHigh.load();																// Save the injection pressure for later
-		LOG(logINFO) << MESSAGE_ADSORPTION_DOSE_START << storage.experimentStatus.adsorptionCounter << storage.experimentStatus.experimentDose;	// Log current dose
+		LOG(logINFO) << stringh::string_format(MESSAGE_ADSORPTION_DOSE_START, 
+			storage.experimentStatus.adsorptionCounter.load(), storage.experimentStatus.experimentDose.load());												// Log current dose
 		storage.experimentStatus.experimentSubstepStage = SUBSTEP_STATUS_INJECTION;																			// Move to injection
 	}
 	
@@ -71,7 +73,7 @@ void Automation::SubstepsAdsorption()
 	// Injection
 	if (storage.experimentStatus.experimentSubstepStage == SUBSTEP_STATUS_INJECTION)
 	{
-		LOG(logINFO) << MESSAGE_INJECTION_ATTEMPT << storage.experimentStatus.injectionAttemptCounter;												// Log current injection
+		LOG(logINFO) << stringh::string_format(MESSAGE_INJECTION_ATTEMPT, storage.experimentStatus.injectionAttemptCounter.load());							// Log current injection
 		controls.valveControls.ValveOpen(ID_VALVE_2, true);
 		WaitSeconds(storage.machineSettings.TimeWaitValvesShort);
 		storage.experimentStatus.experimentSubstepStage = SUBSTEP_STATUS_INJECTION + 1;										
@@ -127,11 +129,11 @@ void Automation::SubstepsAdsorption()
 		storage.experimentStatus.pressureFinal = storage.currentData.pressureHigh.load();
 
 		// Display
-		LOG(logINFO) << MESSAGE_PRESSURE_D_PI << storage.experimentStatus.pressureInitial;
-		LOG(logINFO) << MESSAGE_PRESSURE_D_PF << storage.experimentStatus.pressureFinal;
-		LOG(logINFO) << MESSAGE_PRESSURE_D_DP << storage.experimentStatus.pressureFinal - storage.experimentStatus.pressureInitial;
-		LOG(logINFO) << MESSAGE_PRESSURE_D_DPREQ << storage.experimentSettings.dataAdsorption[storage.experimentStatus.adsorptionCounter].delta_pression;
-		LOG(logINFO) << MESSAGE_INJECTION_END << storage.experimentStatus.injectionAttemptCounter;
+		LOG(logINFO) << stringh::string_format(MESSAGE_PRESSURE_D_PI, storage.experimentStatus.pressureInitial.load());
+		LOG(logINFO) << stringh::string_format(MESSAGE_PRESSURE_D_PF, storage.experimentStatus.pressureFinal.load());
+		LOG(logINFO) << stringh::string_format(MESSAGE_PRESSURE_D_DP, storage.experimentStatus.pressureFinal - storage.experimentStatus.pressureInitial);
+		LOG(logINFO) << stringh::string_format(MESSAGE_PRESSURE_D_DPREQ, storage.experimentSettings.dataAdsorption[storage.experimentStatus.adsorptionCounter].delta_pression);
+		LOG(logINFO) << stringh::string_format(MESSAGE_INJECTION_END, storage.experimentStatus.injectionAttemptCounter.load());
 
 		// Checks for injection succeess, else increment the injection counter and try again
 		if ((storage.experimentStatus.pressureHighOld - storage.machineSettings.InjectionMargin < storage.currentData.pressureHigh) &&
@@ -270,7 +272,7 @@ void Automation::SubstepsAdsorption()
 		controls.valveControls.ValveClose(ID_VALVE_5, true);
 
 		// Display message to show end of adsorption
-		LOG(logINFO) << MESSAGE_ADSORPTION_DOSE_END << storage.experimentStatus.experimentDose;
+		LOG(logINFO) << stringh::string_format(MESSAGE_ADSORPTION_DOSE_END, storage.experimentStatus.experimentDose.load());
 
 		// Reset things
 		storage.experimentStatus.experimentSubstepStage = SUBSTEP_STATUS_START;

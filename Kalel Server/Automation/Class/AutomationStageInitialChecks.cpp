@@ -2,6 +2,7 @@
 
 // Utilities
 #include "../../../Kalel Shared/log.h"
+#include "../../../Kalel Shared/stringHelpers.h"
 
 /*
 *
@@ -139,7 +140,7 @@ bool Automation::VerificationResidualPressure()
 		if (storage.currentData.pressureHigh < storage.machineSettings.readers.find(PRESSURE_LP)->second.safe_max)
 		{
 			// Tell GUI we are opening valve 6
-			LOG(logINFO) << MESSAGE_CHECK_OPENV6_POSSIB << storage.currentData.pressureHigh;
+			LOG(logINFO) << stringh::string_format(MESSAGE_CHECK_OPENV6_POSSIB, storage.currentData.pressureHigh.load());
 
 			// Open valve 6
 			controls.valveControls.ValveOpen(ID_VALVE_6, true);
@@ -173,7 +174,7 @@ bool Automation::VerificationResidualPressure()
 		{
 			if (!waitingUser) {
 				// Ask user if they want to continue
-				LOG_EVENT(qYESNO) << MESSAGE_WARNING_INITIAL_PRESSURE << storage.currentData.pressureHigh << storage.machineSettings.PressureLimitVacuum;
+				LOG_EVENT(qYESNO) << stringh::string_format(MESSAGE_WARNING_INITIAL_PRESSURE, storage.currentData.pressureHigh.load(), storage.machineSettings.PressureLimitVacuum);
 
 				waitingUser = true;
 				eventUserInput = true;
@@ -228,7 +229,8 @@ bool Automation::VerificationTemperature()
 		{
 			if (!waitingUser) {
 
-				LOG_EVENT(qYESTRYCANCEL) << MESSAGE_CHECK_TEMPERATURE_DIFF << storage.currentData.temperatureCalo << storage.experimentSettings.dataGeneral.temperature_experience - storage.experimentSettings.dataGeneral.temperature_range_initial_check;
+				LOG_EVENT(qYESTRYCANCEL) << stringh::string_format(MESSAGE_CHECK_TEMPERATURE_DIFF, storage.currentData.temperatureCalo.load(), 
+					storage.experimentSettings.dataGeneral.temperature_experience - storage.experimentSettings.dataGeneral.temperature_range_initial_check);
 
 				waitingUser = true;
 				eventUserInput = true;

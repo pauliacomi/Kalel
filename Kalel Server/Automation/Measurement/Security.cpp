@@ -10,6 +10,7 @@
 // Synchronization classes
 #include "../../../Kalel Shared/log.h"										// Logging
 #include "../../../Kalel Shared/soundHelpers.h"								// Sound handling for beeps
+#include "../../../Kalel Shared/stringHelpers.h"							
 
 // Measurement and manipulation classes
 #include "../../Backend/Wrapper Classes/ValveController.h"					// Controlling valves
@@ -60,7 +61,7 @@ void Security::SecurityHighPressureManual(const Storage & storage)
 				// Set the flag
 				security_PressureHigh_flag = true;
 
-				LOG(logINFO) << MESSAGE_WARNING_PHIGH_V6 << storage.currentData.pressureLow << maxPlow;
+				LOG(logINFO) << stringh::string_format(MESSAGE_WARNING_PHIGH_V6, storage.currentData.pressureLow.load(), maxPlow);
 				valveController.ValveClose(ID_VALVE_6, true);
 
 				// Play a sound
@@ -95,7 +96,7 @@ void Security::SecurityHighPressureManual(const Storage & storage)
 				security_PressureHigh_flag = true;
 
 				// Alert user
-				LOG(logWARNING) << MESSAGE_WARNING_PHIGH << storage.currentData.pressureHigh << maxPhigh;
+				LOG(logWARNING) << stringh::string_format(MESSAGE_WARNING_PHIGH, storage.currentData.pressureHigh.load(), maxPhigh);
 
 				// Play a sound
 				soundh::beep::error();
@@ -132,7 +133,7 @@ void Security::SecurityHighPressureAuto(const Storage & storage)
 					// Set the flag
 					security_PressureHigh_flag = true;
 
-					LOG(logINFO) << MESSAGE_WARNING_PHIGH_V6 << storage.currentData.pressureLow << maxPlow;
+					LOG(logINFO) << stringh::string_format(MESSAGE_WARNING_PHIGH_V6, storage.currentData.pressureLow.load(), maxPlow);
 					valveController.ValveClose(ID_VALVE_6, true);
 				}
 			}
@@ -178,7 +179,7 @@ void Security::SecurityTemperaturesManual(const Storage & storage)
 			security_TemperatureHigh_flag = true;
 
 			// Alert user
-			LOG(logWARNING) << MESSAGE_WARNING_CALOT_HIGH << maximumT;
+			LOG(logWARNING) << stringh::string_format(MESSAGE_WARNING_CALOT_HIGH, maximumT);
 
 			// Play a sound
 			soundh::beep::error();
@@ -200,7 +201,7 @@ void Security::SecurityTemperaturesManual(const Storage & storage)
 			security_TemperatureLow_flag = true;
 
 			// Alert user
-			LOG(logWARNING) << MESSAGE_WARNING_CALOT_LOW << minimumT;
+			LOG(logWARNING) << stringh::string_format(MESSAGE_WARNING_CALOT_LOW, minimumT);
 
 			// Play a sound
 			soundh::beep::error();
@@ -232,12 +233,12 @@ void Security::SecuriteTemperaturesAuto(const Storage & storage)
 
 		if (storage.currentData.temperatureCalo >= maximumT)
 		{
-			LOG(logINFO) << MESSAGE_WARNING_THIGH_STOP << maximumT;
+			LOG(logINFO) << stringh::string_format(MESSAGE_WARNING_THIGH_STOP, maximumT);
 			//g_flagState = ARRET_URGENCE_TCH;
 		}
 		if (storage.currentData.temperatureCalo <= minimumT)
 		{
-			LOG(logINFO) << MESSAGE_WARNING_TLOW_STOP << minimumT;
+			LOG(logINFO) << stringh::string_format(MESSAGE_WARNING_TLOW_STOP, minimumT);
 			//g_flagState = ARRET_URGENCE_TCB;
 		}
 	}

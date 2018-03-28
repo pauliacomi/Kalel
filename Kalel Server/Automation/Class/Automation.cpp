@@ -109,7 +109,7 @@ void Automation::Execution()
 					storage.experimentStatus,
 					controls.valveControls.ValveIsOpen(ID_VALVE_6));
 				if (err) {
-					LOG(logERROR) << MESSAGE_WARNING_FILE;
+					LOG(logERROR) << ERROR_FILE_WRITE;
 				}
 
 				// Restart the timer to record time between measurements

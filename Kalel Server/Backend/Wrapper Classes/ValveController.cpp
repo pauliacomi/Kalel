@@ -1,6 +1,7 @@
 #include "ValveController.h"
 
 #include "../../../Kalel Shared/log.h"										// Logging
+#include "../../../Kalel Shared/stringHelpers.h"
 #include "../../../Kalel Shared/Resources/DefineInstruments.h"
 #include "../../../Kalel Shared/Resources/DefineText.h"
  
@@ -21,7 +22,7 @@ bool ValveController::ValveOpen(int num, bool verbose)
 
 	// Log message
 	if (verbose) {
-		LOG(logINFO) << MESSAGE_VALVE_OPENED << num;
+		LOG(logINFO) << stringh::string_format(MESSAGE_VALVE_OPENED, num);
 	}
 
 	return success;
@@ -32,7 +33,7 @@ bool ValveController::ValveClose(int num, bool verbose)
 	bool success = instruments.ActuateController(CONTROLLER_VALVE + num - 1, false);
 
 	if (verbose) {
-		LOG(logINFO) << MESSAGE_VALVE_CLOSED << num;
+		LOG(logINFO) << stringh::string_format(MESSAGE_VALVE_CLOSED, num);
 	}
 
 	return success;
@@ -43,7 +44,7 @@ bool ValveController::EVActivate(int num, bool verbose)
 	bool success = instruments.ActuateController(CONTROLLER_EV + num - 1, true);
 
 	if (verbose) {
-		LOG(logINFO) << MESSAGE_EV_ACTIVATED << num;
+		LOG(logINFO) << stringh::string_format(MESSAGE_EV_ACTIVATED, num);
 	}
 
 	return success;
@@ -54,7 +55,7 @@ bool ValveController::EVDeactivate(int num, bool verbose)
 	bool success = instruments.ActuateController(CONTROLLER_EV + num - 1, false);
 	
 	if (verbose) {
-		LOG(logINFO) << MESSAGE_EV_DEACTIVATED << num;
+		LOG(logINFO) << stringh::string_format(MESSAGE_EV_DEACTIVATED, num);
 	}
 
 	return success;

@@ -2,6 +2,7 @@
 
 #include "../../Kalel Shared/Resources/DefineInstruments.h"
 #include "../../Kalel Shared/Resources/DefineText.h"
+#include "../../Kalel Shared/stringHelpers.h"
 #include "../../Kalel Shared/log.h"
 
 #include <algorithm> 
@@ -187,7 +188,7 @@ void Instruments::InitInstrument(Instrument & i)
 		}
 		catch (const std::exception& err)
 		{
-			LOG(logERROR) << MESSAGE_INSTRUMENT_INIT_FAIL << err.what();
+			LOG(logERROR) << stringh::string_format(ERROR_INSTRUMENT_INIT_FAIL, err.what());
 		}
 	}
 }
@@ -222,7 +223,7 @@ void Instruments::ChangePort(Instrument & i)
 	}
 	catch (const std::exception& err)
 	{
-		LOG(logERROR) << MESSAGE_INSTRUMENT_PORTCHANGE_FAIL << err.what();
+		LOG(logERROR) << ERROR_INSTRUMENT_PORTCHANGE_FAIL << err.what();
 	}
 }
 
@@ -256,7 +257,7 @@ void Instruments::DeleteInstrument(Instrument & i)
 	}
 	catch (const std::exception& err)
 	{
-		LOG(logERROR) << MESSAGE_INSTRUMENT_DESTROY_FAIL << err.what();
+		LOG(logERROR) << ERROR_INSTRUMENT_DESTROY_FAIL << err.what();
 	}
 
 }

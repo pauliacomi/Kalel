@@ -1,26 +1,13 @@
 #pragma once
 
-#define	TEXT_NEWFILETEXT					"Nouveau_fichier_%s"
-#define TEXT_SAMPLE							"Sample"
 
-#define ERROR_PATHUNDEF						"The path chosen does not exist"
-
-
-
-/***************************************************
-//
-//
-//			AUTOMATION MESSAGES
-//
-//
-****************************************************/
 /*
 //
 //	GENERAL EXPERIMENT MESSAGES
 //
 */
 
-#define MESSAGE_FILLLINE					"***************************************************************"
+
 #define MESSAGE_EXPSTART					"Experiment started"
 #define MESSAGE_EXPFINISH					"Experiment finished"
 #define MESSAGE_EXPCANCEL					"Experiment cancelled"
@@ -29,9 +16,18 @@
 #define MESSAGE_WAIT_TIME					"Waiting for %d seconds..."
 #define MESSAGE_THREAD_SHUTTINGDOWN			"Thread is shutting down"
 #define MESSAGE_THREAD_SHUTDOWN				"Thread shut down"
-#define MESSAGE_INSTRUMENT_INIT_FAIL		"Instrument initiation failed: \t\n%s"
-#define MESSAGE_INSTRUMENT_DESTROY_FAIL		"Instrument removal failed: \t\n%s"
-#define MESSAGE_INSTRUMENT_PORTCHANGE_FAIL	"Instrument port change failed: \t\n%s"
+
+/*
+//
+//	ERRORS
+//
+*/
+
+#define ERROR_PATHUNDEF						"The path chosen does not exist"
+#define ERROR_FILE_WRITE					"Cannot write to file!"
+#define ERROR_INSTRUMENT_INIT_FAIL			"Instrument initiation failed: \t\n%s"
+#define ERROR_INSTRUMENT_DESTROY_FAIL		"Instrument removal failed: \t\n%s"
+#define ERROR_INSTRUMENT_PORTCHANGE_FAIL	"Instrument port change failed: \t\n%s"
 
 /*
 //
@@ -45,7 +41,6 @@
 #define MESSAGE_EV_DEACTIVATED				"EV %d deactivated"
 #define MESSAGE_PUMP_ACTIVATED				"Pump activated"
 #define MESSAGE_PUMP_DEACTIVATED			"Pump deactivated"
-#define MESSAGE_VALVE_OPENCLOSE				"Opening and closing valve %d"
 #define MESSAGE_VALVE_CLOSEALL				"Closing all valves"
 #define MESSAGE_PUMP_VALVE_CLOSEALL			"Closing pump and valves"
 #define MESSAGE_CLOSEEVERYTHING				"Closing everything"
@@ -56,17 +51,16 @@
 //
 */
 
-#define MESSAGE_WARNING_FILE				"Cannot write to file!"
-#define MESSAGE_WARNING_PHIGH				"High range PT above pressure limit \t\n Veuillez la mettre en dessous de : %f bar \t\n"
+#define MESSAGE_WARNING_PHIGH				"OVERPRESSURE: High range PT pressure (%2.3f) is over the maximum (%2.3f)."
 #define MESSAGE_WARNING_PHNORMAL			"High range PT pressure back to normal."
-#define MESSAGE_WARNING_PHIGH_V6			"HAUTE PRESSION (%f) DEPASSANT LA SECURITE DE LA BASSE PRESSION (%f)\r\n PAR MESURE DE SECURITE, FERMETURE DE LA VANNE 6\r\n"
+#define MESSAGE_WARNING_PHIGH_V6			"OVERPRESSURE: Low range PT pressure (%2.3f) is over the maximum (%2.3f). For safety valve 6 is closed"
 #define MESSAGE_WARNING_PHNORMAL_V6			"Low range PT pressure back to normal."
 
-#define MESSAGE_WARNING_CALOT_HIGH			"Calorimeter temperature too high"
-#define MESSAGE_WARNING_CALOT_LOW			"Calorimeter temperature too low"
+#define MESSAGE_WARNING_CALOT_HIGH			"Calorimeter temperature too high (%2.3f)"
+#define MESSAGE_WARNING_CALOT_LOW			"Calorimeter temperature too low (%2.3f)"
 #define MESSAGE_WARNING_CALOT_NORMAL		"Calorimeter temperature returned to normal"
-#define MESSAGE_WARNING_THIGH_STOP			"Experiment stopping :Calorimeter temperature too high"
-#define MESSAGE_WARNING_TLOW_STOP			"Experiment stopping: Calorimeter temperature too low"
+#define MESSAGE_WARNING_THIGH_STOP			"Experiment stopping :Calorimeter temperature (%2.3f) too high"
+#define MESSAGE_WARNING_TLOW_STOP			"Experiment stopping: Calorimeter temperature (%2.3f) too low"
 
 /*
 //
@@ -75,14 +69,14 @@
 */
 
 // Initial checks messages
-#define MESSAGE_NOSECURITY					"ATTENTION The security settings have been deactivated !\t\nDo you want to continue anyway?"
+#define MESSAGE_NOSECURITY					"The security settings have been deactivated !\t\nDo you want to continue anyway?"
 #define MESSAGE_CHECK_VALVES_OPEN			"Check if all the valves are set to automatic and that the valve to the sample is open"
 #define MESSAGE_CHECK_INITIAL_STATE			"Initial experiment and machine verifications"
 #define MESSAGE_CHECK_INITIAL_PRESSURE		"Checking residual pressure"
-#define MESSAGE_CHECK_OPENV6_POSSIB			"Pressure recorded HPT : %f  Possibility to open valve 6"
+#define MESSAGE_CHECK_OPENV6_POSSIB			"Current pressure: %f  Proceeding to open valve 6"
 #define MESSAGE_CHECK_INITIAL_TEMPERATURE	"Checking temperatures"					
 #define MESSAGE_CHECK_TEMPERATURE_DIFF		"The temperature (= %f) is outside the bounds of the tepmerature limit (= %f) \t\nDo you want to wait until stabilisation (Retry), continue anyway, or cancel the experiment?"
-#define MESSAGE_WARNING_INITIAL_PRESSURE	"The PT high pressure (= %f) is higher than the set pressure limit (= %f) \t\nDo you want to continue anyway?"
+#define MESSAGE_WARNING_INITIAL_PRESSURE	"The pressure (= %f) is higher than the set pressure limit (= %f) \t\nDo you want to continue anyway?"
 #define MESSAGE_WAIT_TEMP_EQUILIBRATION		"Waiting for temperature equilibration"
 #define MESSAGE_VERIFICATIONS_COMPLETE		"Verifications are now complete"
 
@@ -113,7 +107,7 @@
 #define MESSAGE_INJECTION_END				"Injection step complete"
 
 // Outgassing messages
-#define MESSAGE_OUTGAS_ATTEMPT				"Starting gas removal from reference volume"
+#define MESSAGE_OUTGAS_ATTEMPT				"Starting gas removal from reference volume %d"
 #define MESSAGE_OUTGAS_PROBLEM				"Gas removal problem"
 #define MESSAGE_OUTGAS_PROBLEM_BOX			"ATTENTION !!! Gas problem !!!\t\n (gaz moteur ou gaz d'analyse)\t\n Expérience en pause !\r\n N'oubliez pas de 'reprendre' l'expérience !"
 #define MESSAGE_OUTGAS_END					"End of gas removal from reference volume"
