@@ -261,29 +261,29 @@ inline void from_json(const nlohmann::json &j, ExperimentStatus &e) {
 
 	e.tp = timeh::ISOStringToTimePoint(j["timestamp"]);
 
-	e.experimentInProgress								.store(j[	"EP"	]);
-	e.experimentRecording								.store(j[	"ER"	]);
-	e.experimentWaiting									.store(j[	"EW"	]);
-	e.experimentCommandsRequested						.store(j[	"ECR"	]);
+	e.experimentInProgress								.store_nostamp(j[	"EP"	]);
+	e.experimentRecording								.store_nostamp(j[	"ER"	]);
+	e.experimentWaiting									.store_nostamp(j[	"EW"	]);
+	e.experimentCommandsRequested						.store_nostamp(j[	"ECR"	]);
 	
-	e.experimentStage									.store(j[	"ES"	]);
-	e.experimentPreviousStage							.store(j[	"EpS"	]);
-	e.verificationStep									.store(j[	"VS"	]);
-	e.experimentStepStatus								.store(j[	"SSs"	]);
-	e.experimentSubstepStage							.store(j[	"SSg"	]);
+	e.experimentStage									.store_nostamp(j[	"ES"	]);
+	e.experimentPreviousStage							.store_nostamp(j[	"EpS"	]);
+	e.verificationStep									.store_nostamp(j[	"VS"	]);
+	e.experimentStepStatus								.store_nostamp(j[	"SSs"	]);
+	e.experimentSubstepStage							.store_nostamp(j[	"SSg"	]);
 	
-	e.experimentDose									.store(j[	"ED"	]);
-	e.injectionAttemptCounter							.store(j[	"CIa"	]);
-	e.adsorptionCounter									.store(j[	"CA"	]);
-	e.desorptionCounter									.store(j[	"CD"	]);
+	e.experimentDose									.store_nostamp(j[	"ED"	]);
+	e.injectionAttemptCounter							.store_nostamp(j[	"CIa"	]);
+	e.adsorptionCounter									.store_nostamp(j[	"CA"	]);
+	e.desorptionCounter									.store_nostamp(j[	"CD"	]);
 
-	e.timeStart											.store(j[	"tS"	]);
-	e.timeToEquilibrate									.store(j[	"tEq"	]);
-	e.timeEquilibrationStart							.store(j[	"tEqS"	]);
+	e.timeStart											.store_nostamp(j[	"tS"	]);
+	e.timeToEquilibrate									.store_nostamp(j[	"tEq"	]);
+	e.timeEquilibrationStart							.store_nostamp(j[	"tEqS"	]);
 
-	e.pressureInitial									.store(j[	"PI"	]);
-	e.pressureFinal										.store(j[	"PF"	]);
-	e.pressureHighOld									.store(j[	"PHo"	]);
+	e.pressureInitial									.store_nostamp(j[	"PI"	]);
+	e.pressureFinal										.store_nostamp(j[	"PF"	]);
+	e.pressureHighOld									.store_nostamp(j[	"PHo"	]);
 }
 
 

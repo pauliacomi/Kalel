@@ -156,6 +156,12 @@ public:
 		std::unique_lock<std::mutex> lock(r.mtx);					// lock mutex
 		return l > r.tp;											// return the comparison
 	}
+
+	friend bool operator>=(const std::chrono::system_clock::time_point& l, const atomic_time_point& r)
+	{
+		std::unique_lock<std::mutex> lock(r.mtx);					// lock mutex
+		return l >= r.tp;											// return the comparison
+	}
 };
 
 //******************************************************************************************
@@ -188,7 +194,7 @@ public:
 	void store(const T& rhs) {
 		std::unique_lock<std::mutex> lock(mtx);						// lock mutex
 		value = rhs;												// save value
-		tp = std::chrono::system_clock::now();						// Reset timepoint
+		tp = timeh::NowTime();										// Reset timepoint
 	}
 	void store_nostamp(const T& rhs) {
 		std::unique_lock<std::mutex> lock(mtx);						// lock mutex

@@ -186,7 +186,8 @@ void Kalel::MachineSettingsSync(http_request* req, http_response* resp)
 	if (req->method == http::method::get)
 	{
 		auto time = req->params.find("t");
-		if (time != req->params.end() && timeh::ISOStringToTimePoint(time->second) > storage.machineSettings.tp)
+
+		if (time != req->params.end() && timeh::ISOStringToTimePoint(time->second) >= storage.machineSettings.tp)
 		{
 			resp->status = http::responses::no_content;
 		}
@@ -232,7 +233,7 @@ void Kalel::ExperimentSettingsSync(http_request* req, http_response* resp)
 	if (req->method == http::method::get)
 	{
 		auto time = req->params.find("t");
-		if (time != req->params.end() && timeh::ISOStringToTimePoint(time->second) > storage.experimentSettings.tp)
+		if (time != req->params.end() && timeh::ISOStringToTimePoint(time->second) >= storage.experimentSettings.tp)
 		{
 			resp->status = http::responses::no_content;
 		}
@@ -278,7 +279,7 @@ void Kalel::ExperimentStatusSync(http_request* req, http_response* resp)
 	if (req->method == http::method::get)
 	{
 		auto time = req->params.find("t");
-		if (time != req->params.end() && timeh::ISOStringToTimePoint(time->second) > storage.experimentStatus.tp)
+		if (time != req->params.end() && timeh::ISOStringToTimePoint(time->second) >= storage.experimentStatus.tp)
 		{
 			resp->status = http::responses::no_content;
 		}
