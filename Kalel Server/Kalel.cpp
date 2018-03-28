@@ -232,7 +232,7 @@ void Kalel::ExperimentSettingsSync(http_request* req, http_response* resp)
 	if (req->method == http::method::get)
 	{
 		auto time = req->params.find("t");
-		if (time != req->params.end() && timeh::ISOStringToTimePoint(time->second) > storage.machineSettings.tp)
+		if (time != req->params.end() && timeh::ISOStringToTimePoint(time->second) > storage.experimentSettings.tp)
 		{
 			resp->status = http::responses::no_content;
 		}
@@ -656,7 +656,7 @@ unsigned Kalel::SetMachineSettings(const MachineSettings & ms)
 	// Reinitialise instruments
 	controlMechanisms.instruments.Reset(ms);
 	// Replace settings
-	storage.machineSettings = ms;
+	storage.machineSettings = ms;							// Timestamp change included
 
 	// Restart threads
 	if (!threadManager.StartMeasurement()) { return 3; };

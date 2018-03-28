@@ -206,11 +206,7 @@ void CKalelView::OnInitialUpdate()
 	// Then connect to the server if the address exists
 	commHandler.SaveAuth(savedParams.GetUsername(), savedParams.GetPassword());
 	commHandler.Connect(savedParams.GetServerAddress());
-
-	commHandler.GetExperimentSettings(noTime);
-	commHandler.GetExperimentStatus(noTime);
-	commHandler.GetMachineSettings(noTime);
-	commHandler.GetControlInstrumentState(noTime);
+	ManualSync(NULL, NULL);
 
 	// Set the timers for the window update
 	dataTimer = SetTimer(1, savedParams.GetDataRefreshInterval(), NULL);
@@ -299,7 +295,7 @@ CKalelView * CKalelView::GetView()
 
 void CKalelView::OnTimer(UINT_PTR nIDEvent)
 {
-	if (pApp->serverConnected) {
+	if (pApp->serverConnected && pApp->synced) {
 
 			//*****
 			// Refresh data timer
@@ -319,7 +315,7 @@ void CKalelView::OnTimer(UINT_PTR nIDEvent)
 
 			// Request ongoing sync
 			commHandler.GetExperimentSettings(experimentSettings->tp);
-			commHandler.GetExperimentStatus(experimentStatus.tp);
+			commHandler.GetExperimentStatus(experimentStatus->tp);
 			commHandler.GetMachineSettings(machineSettings->tp);
 			commHandler.GetControlInstrumentState(machineStateTime);
 
@@ -345,10 +341,10 @@ void CKalelView::OnTimer(UINT_PTR nIDEvent)
 
 			// Write textbox values
 			if (!dataCollection.empty())
-				DisplayTextboxValues(dataCollection.rbegin()->second, experimentStatus);
+				DisplayTextboxValues(dataCollection.rbegin()->second, *experimentStatus);
 
 			// Write the current step
-			DisplayStepProgress(experimentStatus);
+			DisplayStepProgress(*experimentStatus);
 		}
 		//*****
 		// Refresh graph timer
@@ -388,6 +384,7 @@ LRESULT CKalelView::DisplayConnectDialog(WPARAM, LPARAM)
 		// Then connect to the server
 		commHandler.Connect(address);
 		commHandler.SaveAuth(username, password);
+		ManualSync(NULL, NULL);
 	}
 
 	return 0;
@@ -601,6 +598,14 @@ LRESULT CKalelView::OnServerDisconnected(WPARAM, LPARAM)
 
 LRESULT CKalelView::OnSync(WPARAM, LPARAM)
 {
+	if (!pApp->synced) {
+
+		if (--pApp->synced_counter == 0)
+		{
+			pApp->synced = true;
+		}
+	}
+
 	// Make sure buttons are updated
 	if (experimentSettings && experimentSettings->experimentType != EXPERIMENT_TYPE_UNDEF) {
 		pApp->experimentRunning = true;
@@ -654,8 +659,7 @@ LRESULT CKalelView::OnExchangeExperimentSettings(WPARAM wParam, LPARAM incomingE
 LRESULT CKalelView::OnExchangeExperimentStatus(WPARAM wParam, LPARAM incomingExperimentStatus)
 {	
 	// Get the incoming pointer
-	std::unique_ptr<ExperimentStatus> tempStatus(reinterpret_cast<ExperimentStatus*>(incomingExperimentStatus));
-	experimentStatus = *tempStatus;
+	experimentStatus.reset(reinterpret_cast<ExperimentStatus*>(incomingExperimentStatus));
 
 	// Update GUI
 	OnSync(NULL, NULL);

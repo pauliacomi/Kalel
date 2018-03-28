@@ -7,27 +7,26 @@
 #include "../Resources/DefineText.h"
 
 ExperimentSettings::ExperimentSettings() 
-	: ExperimentSettings(0, 0)
-{	
+{
+	ResetData();							// Do initialisation of all variables
 }
 
-ExperimentSettings::ExperimentSettings(int initialAdsorptions, int initialDesorptions)
+ExperimentSettings::ExperimentSettings(const ExperimentSettings & rhs)
 {
-	// Data initialisation
-	ResetData(initialAdsorptions, initialDesorptions);
+	Replace(rhs);							// Copy values from reference
 }
 
+ExperimentSettings & ExperimentSettings::operator=(const ExperimentSettings & p) {
+	if (this != &p) {  // make sure not same object
 
-ExperimentSettings::~ExperimentSettings(void)
-{
+		Replace(p);
+
+		tp = timeh::NowTime();
+	}
+	return *this;    // Return ref for multiple assignment
 }
 
 void ExperimentSettings::ResetData()
-{
-	ResetData(0,0);
-}
-
-void ExperimentSettings::ResetData(int initialAdsorptions, int initialDesorptions)
 {
 	tp = timeh::NowTime();
 
@@ -39,14 +38,14 @@ void ExperimentSettings::ResetData(int initialAdsorptions, int initialDesorption
 	dataGeneral.date_experience = L"";
 	dataGeneral.user.nom = L"";
 	dataGeneral.user.surnom = L"";
-	dataGeneral.fichier =									L"";		//std::to_wstring(TEXT_NEWFILETEXT) + cF.getDateUnderline();
+	dataGeneral.fichier = L"";
 	dataGeneral.gas.symbole = L"";
 	dataGeneral.gas.masse_moleculaire = 0;
 	dataGeneral.gas.pression_critique = 0;
 	dataGeneral.gas.temperature_critique = 0;
 	dataGeneral.gas.temperature_ebullition = 0;
 	dataGeneral.masse_echantillon = 1.0f;
-	dataGeneral.nom_echantillon =							L"";		//TEXT_SAMPLE;
+	dataGeneral.nom_echantillon = L"Sample";
 	dataGeneral.temperature_experience = 30;
 
 	// Divers
@@ -57,43 +56,18 @@ void ExperimentSettings::ResetData(int initialAdsorptions, int initialDesorption
 	dataDivers.time_baseline = 15;
 	dataDivers.temps_vide = 90;
 
-	// Adsorption
-	for (int i = 0; i < initialAdsorptions; i++)
-	{
-		data_adsorption adsorptionStep;
-
-		adsorptionStep.delta_pression = 1.0f;
-		adsorptionStep.pression_finale = 5.0f;
-		adsorptionStep.temps_adsorption = 90;
-		adsorptionStep.temps_volume = 15;
-
-		dataAdsorption.push_back(adsorptionStep);
-	}
-
-	// Desorption
-	for (int i = 0; i < initialDesorptions; i++)
-	{
-		data_desorption desorptionStep;
-
-		desorptionStep.delta_pression = 1.0f;
-		desorptionStep.pression_finale = 5.0f;
-		desorptionStep.temps_desorption = 90;
-		desorptionStep.temps_volume = 15;
-
-		dataDesorption.push_back(desorptionStep);
-	}
 }
 
-ExperimentSettings & ExperimentSettings::operator=(const ExperimentSettings * p) {
-	if (this != p) {  // make sure not same object
 
-		experimentType = p->experimentType;
 
-		dataGeneral = p->dataGeneral;
-		dataDivers = p->dataDivers;
-		dataAdsorption = p->dataAdsorption;
-		dataDesorption = p->dataDesorption;
+void ExperimentSettings::Replace(const ExperimentSettings & rhs)
+{
+	tp = rhs.tp;
 
-	}
-	return *this;    // Return ref for multiple assignment
+	experimentType = rhs.experimentType;
+
+	dataGeneral = rhs.dataGeneral;
+	dataDivers = rhs.dataDivers;
+	dataAdsorption = rhs.dataAdsorption;
+	dataDesorption = rhs.dataDesorption;
 }

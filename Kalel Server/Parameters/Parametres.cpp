@@ -35,11 +35,9 @@ void ParametersGet(MachineSettings& settings)
 	filestr.assign((std::istreambuf_iterator<char>(fs)), std::istreambuf_iterator<char>());
 
 	fs.close();
-	json j;
 	try
 	{
-		j = json::parse(filestr.c_str());
-		settings = j;
+		settings = json::parse(filestr.c_str());
 	}
 	catch (const std::exception& e)
 	{

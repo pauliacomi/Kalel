@@ -157,7 +157,7 @@ void Automation::Execution()
 			if (eventChangeExpSett)						// Change experiment settings
 			{
 				if (storage.tExperimentSettings) {
-					storage.experimentSettings = *storage.tExperimentSettings;
+					storage.experimentSettings = *storage.tExperimentSettings;				// timestamp included
 					storage.tExperimentSettings.reset();
 				}
 				eventChangeExpSett = false;

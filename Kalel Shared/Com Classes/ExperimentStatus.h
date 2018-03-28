@@ -4,23 +4,22 @@
 
 class ExperimentStatus
 {
-
-	//
-	// Functions
-	//
-
 public:
 	ExperimentStatus();
-	ExperimentStatus(const ExperimentStatus & p);
-	~ExperimentStatus();
+	ExperimentStatus(const ExperimentStatus & p);										// Constructor does NOT change timestamp
+	~ExperimentStatus() = default;
+	ExperimentStatus & ExperimentStatus::operator=(const ExperimentStatus & p);			// Equality operator changes timestamp
 
 	void ResetData();
+	
+protected:
+	void Replace(const ExperimentStatus & p);
 
+	///*******************
+	///		Vars
+	///*******************
 
-	// Overload equals function
-	ExperimentStatus & ExperimentStatus::operator=(const ExperimentStatus & p);
-
-
+public:
 	atomic_time_point tp;
 	
 	///*******************

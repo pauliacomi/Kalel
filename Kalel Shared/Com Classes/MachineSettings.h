@@ -11,10 +11,18 @@ class MachineSettings
 {
 public:
 	MachineSettings();
-	MachineSettings(const MachineSettings&);
-	~MachineSettings();
+	MachineSettings(const MachineSettings&);												// Constructor does NOT change timestamp
+	~MachineSettings() = default;
+	MachineSettings & operator=(const MachineSettings & p);									// Equality operator changes timestamp
 
-	MachineSettings & operator=(const MachineSettings & p);
+	void ResetData();
+
+protected:
+	void Replace(const MachineSettings & p);
+
+	///*******************
+	///		Vars
+	///*******************
 
 public:
 
@@ -24,31 +32,31 @@ public:
 	///		Settings
 	///*******************
 
-	std::wstring CaloName = L"UnnamedCalo";
-	std::wstring CaloPrefix = L"Prefix";
-	std::wstring DefaultPath = L"C:";
+	std::wstring CaloName;
+	std::wstring CaloPrefix;
+	std::wstring DefaultPath;
 
-	bool hasSonicNozzle = false;
-	bool SafetyOn = true;									// Used for activating the automatic security
-	float VolumeRef = 1;									// Used for user information (no calculations)
-	float VolumeP6 = 1;										// Used for user information (no calculations)
+	bool hasSonicNozzle;
+	bool SafetyOn;											// Used for activating the automatic security
+	float VolumeRef;										// Used for user information (no calculations)
+	float VolumeP6;											// Used for user information (no calculations)
 
-	int InjectionAttemptNumber = 5;
-	float InjectionMargin = 0.01f;
-	float InjectionMultiplier = 1.2f;
+	int InjectionAttemptNumber;
+	float InjectionMargin;
+	float InjectionMultiplier;
 
-	int TimeBetweenMeasurement = 4000;						// milliseconds
-	int TimeBetweenRecording = 500;							// milliseconds
-	int TimeBetweenAutomation = 10;							// milliseconds
-	int TimeWaitValves = 5;									// seconds
-	int TimeWaitValvesShort = 2;							// seconds
-	int TimeWaitPump = 10;									// seconds
-	int TimeVacuumEmergency = 6000;							// seconds
-	int TimeVacuumBottle = 300;								// seconds
-	int TimeVacuumEndDefault = 12000;						// seconds
+	int TimeBetweenMeasurement;								// milliseconds
+	int TimeBetweenRecording;								// milliseconds
+	int TimeBetweenAutomation;								// milliseconds
+	int TimeWaitValves;										// seconds
+	int TimeWaitValvesShort;								// seconds
+	int TimeWaitPump;										// seconds
+	int TimeVacuumEmergency;								// seconds
+	int TimeVacuumBottle;									// seconds
+	int TimeVacuumEndDefault;								// seconds
 
-	float PressurePumpVacuum = 0.5f;
-	float PressureLimitVacuum = 0.01f;						// Used for determining the pressure considered "good vacuum"
+	float PressurePumpVacuum;
+	float PressureLimitVacuum;								// Used for determining the pressure considered "good vacuum"
 
 	std::map<unsigned int, Instrument> instruments;			// The instruments in the machine
 	std::map<unsigned int, Reader>	readers;				// The readers which are available

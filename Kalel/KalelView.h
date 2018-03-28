@@ -88,7 +88,7 @@ private:
 	std::unique_ptr<ExperimentSettings>													tempExpSettings;		// Temporary experimentSettings stored here between sending change request to server and server acknowledgement
 	
 	// Experiment Status related
-	ExperimentStatus																	experimentStatus;		// Local storage of experimentStatus
+	std::unique_ptr<ExperimentStatus>													experimentStatus;		// Local storage of experimentStatus
 
 	// Data/Logs/Request collections
 	std::map<std::chrono::system_clock::time_point, std::wstring> 						logCollection;			// Log points for an experiment are stored here

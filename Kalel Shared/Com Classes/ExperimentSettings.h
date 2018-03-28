@@ -7,24 +7,20 @@
 
 class ExperimentSettings
 {
-
-	//
-	// Functions
-	//
-
 public:
 	ExperimentSettings();
-	ExperimentSettings(int initialAdsorptions, int initialDesorptions);
-	~ExperimentSettings(void);
+	ExperimentSettings(const ExperimentSettings& );												// Constructor does NOT change timestamp
+	~ExperimentSettings() = default;
+	ExperimentSettings & ExperimentSettings::operator=(const ExperimentSettings & p);			// Equality operator changes timestamp
 
 	void ResetData();
-	void ResetData(int initialAdsorptions, int initialDesorptions);
 
-	ExperimentSettings & ExperimentSettings::operator=(const ExperimentSettings * p);
+protected:
+	void Replace(const ExperimentSettings & p);
 
-	//
-	// Variables
-	//
+	///*******************
+	///		Vars
+	///*******************
 public:
 	std::chrono::system_clock::time_point tp;				// Time when experiment settings changed
 

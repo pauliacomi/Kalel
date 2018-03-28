@@ -24,6 +24,8 @@ public:
 	// Global flags
 	bool menuIsAvailable = true;
 	bool experimentRunning = false;
+	bool synced = false;
+	int synced_counter = 4;
 	bool serverConnected = false;
 
 

@@ -395,7 +395,7 @@ unsigned CommHandler::GetMachineSettings_resp(http_response* r) {
 *********************************/
 unsigned CommHandler::SetMachineSettings_req(http_request* r, MachineSettings ms) {
 
-	r->method			= http::method::post;
+	r->method		= http::method::post;
 	r->content_type	= http::mimetype::appjson;
 	r->path			= "/api/machinesettings";
 
