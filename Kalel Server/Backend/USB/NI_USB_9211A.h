@@ -24,7 +24,7 @@ private:
 
     // Channel parameters
 	char        chan[25]		= { '\0' };
-    float64     min				= 0.0f;					// minimum expected value to measure
+    float64     min				= -200.0f;					// minimum expected value to measure
     float64     max				= 100.0f;				// maximum expected value to measure
 	int			analog_start	= 0;
 	int			analog_end		= 3;

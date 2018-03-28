@@ -53,7 +53,7 @@ Error:
 		LOG(logDEBUG) << errBuff;
 		for (size_t i = 0; i < bufferSize; i++)
 		{
-			data[i] = error;
+			data[i] = 0;
 		}
 	}
 
