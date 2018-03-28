@@ -17,7 +17,7 @@ void Automation::WaitSeconds(int nbsecondes, bool verbose /*=false*/)
 		LOG(logINFO) << MESSAGE_WAIT_TIME << nbsecondes;
 	}
 	// Record times
-	storage.experimentStatus.timeEquilibrationStart = timeh::TimePointToULLong(timeh::NowTime());		// Save the waiting start time
+	storage.experimentStatus.timeEquilibrationStart = timeh::TimePointToMs(timeh::NowTime());		// Save the waiting start time
 	storage.experimentStatus.timeToEquilibrate = nbsecondes;
 	storage.experimentStatus.experimentWaiting = true;
 	storage.timerWaiting.Start();

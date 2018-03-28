@@ -77,7 +77,7 @@ void CommHandler::SaveAuth(const std::wstring &username, const std::wstring &pas
 *********************************/
 void CommHandler::GetMachineSettings(const std::chrono::system_clock::time_point &fromTime)
 {
-	auto request = std::bind(&CommHandler::GetMachineSettings_req, this, std::placeholders::_1, timeh::TimePointToString(fromTime));
+	auto request = std::bind(&CommHandler::GetMachineSettings_req, this, std::placeholders::_1, timeh::TimePointToISOString(fromTime));
 	auto callback = std::bind(&CommHandler::GetMachineSettings_resp, this, std::placeholders::_1);
 
 	try	{
@@ -107,7 +107,7 @@ void CommHandler::SetMachineSettings(const MachineSettings &ptr)
 *********************************/
 void CommHandler::GetExperimentSettings(const std::chrono::system_clock::time_point &fromTime)
 {
-	auto request = std::bind(&CommHandler::GetExperimentSettings_req, this, std::placeholders::_1, timeh::TimePointToString(fromTime));
+	auto request = std::bind(&CommHandler::GetExperimentSettings_req, this, std::placeholders::_1, timeh::TimePointToISOString(fromTime));
 	auto callback = std::bind(&CommHandler::GetExperimentSettings_resp, this, std::placeholders::_1);
 
 	try {
@@ -136,7 +136,7 @@ void CommHandler::SetExperimentSettings(const ExperimentSettings &ptr)
 *********************************/
 void CommHandler::GetExperimentStatus(const std::chrono::system_clock::time_point &fromTime)
 {
-	auto request = std::bind(&CommHandler::GetExperimentStatus_req, this, std::placeholders::_1, timeh::TimePointToString(fromTime));
+	auto request = std::bind(&CommHandler::GetExperimentStatus_req, this, std::placeholders::_1, timeh::TimePointToISOString(fromTime));
 	auto callback = std::bind(&CommHandler::GetExperimentStatus_resp, this, std::placeholders::_1);
 
 	try {
@@ -152,7 +152,7 @@ void CommHandler::GetExperimentStatus(const std::chrono::system_clock::time_poin
 *********************************/
 void CommHandler::GetControlInstrumentState(const std::chrono::system_clock::time_point &fromTime)
 {
-	auto request = std::bind(&CommHandler::GetInstrumentState_req, this, std::placeholders::_1, timeh::TimePointToString(fromTime));
+	auto request = std::bind(&CommHandler::GetInstrumentState_req, this, std::placeholders::_1, timeh::TimePointToISOString(fromTime));
 	auto callback = std::bind(&CommHandler::GetInstrumentState_resp, this, std::placeholders::_1);
 
 	try {
@@ -186,7 +186,7 @@ void CommHandler::GetData(const std::chrono::system_clock::time_point &fromTime)
 	{
 		flagExperimentRequest = true;
 
-		auto request = std::bind(&CommHandler::GetData_req, this, std::placeholders::_1, timeh::TimePointToString(fromTime));
+		auto request = std::bind(&CommHandler::GetData_req, this, std::placeholders::_1, timeh::TimePointToISOString(fromTime));
 		auto callback = std::bind(&CommHandler::GetData_resp, this, std::placeholders::_1);
 
 		try {
@@ -209,7 +209,7 @@ void CommHandler::GetLog(const std::chrono::system_clock::time_point &fromTime)
 	{
 		flagLogsRequest = true;
 
-		auto request = std::bind(&CommHandler::GetLogs_req, this, std::placeholders::_1, timeh::TimePointToString(fromTime));
+		auto request = std::bind(&CommHandler::GetLogs_req, this, std::placeholders::_1, timeh::TimePointToISOString(fromTime));
 		auto callback = std::bind(&CommHandler::GetLogs_resp, this, std::placeholders::_1);
 
 		try {
@@ -232,7 +232,7 @@ void CommHandler::GetRequests(const std::chrono::system_clock::time_point &fromT
 	{
 		flagReqRequest = true;
 
-		auto request = std::bind(&CommHandler::GetRequest_req, this, std::placeholders::_1, timeh::TimePointToString(fromTime));
+		auto request = std::bind(&CommHandler::GetRequest_req, this, std::placeholders::_1, timeh::TimePointToISOString(fromTime));
 		auto callback = std::bind(&CommHandler::GetRequest_resp, this, std::placeholders::_1);
 
 		try {
@@ -292,7 +292,7 @@ void CommHandler::UserWait(const std::chrono::system_clock::time_point & time) {
 
 void CommHandler::UserChoice(const std::chrono::system_clock::time_point & time, int choice)
 {
-	auto request = std::bind(&CommHandler::UserChoice_req, this, std::placeholders::_1, timeh::TimePointToString(time), choice);
+	auto request = std::bind(&CommHandler::UserChoice_req, this, std::placeholders::_1, timeh::TimePointToISOString(time), choice);
 	auto callback = std::bind(&CommHandler::UserChoice_resp, this, std::placeholders::_1);
 
 	try {
@@ -684,7 +684,7 @@ unsigned CommHandler::GetData_resp(http_response* r) {
 			{
 				try
 				{
-					receivedDataArray->emplace(timeh::StringToTimePoint(i.key()), j[i.key()]);
+					receivedDataArray->emplace(timeh::ISOStringToTimePoint(i.key()), j[i.key()]);
 				}
 				catch (const std::exception& e)
 				{
@@ -759,7 +759,7 @@ unsigned CommHandler::GetLogs_resp(http_response * r)
 			{
 				try
 				{
-					receivedLogArray->emplace(timeh::StringToTimePoint(i.key()), stringh::s2ws(j[i.key()]));
+					receivedLogArray->emplace(timeh::ISOStringToTimePoint(i.key()), stringh::s2ws(j[i.key()]));
 				}
 				catch (const std::exception& e)	{
 					messageHandler.DisplayMessageBox(MB_OK, stringh::s2ws(e.what()));
@@ -827,7 +827,7 @@ unsigned CommHandler::GetRequest_resp(http_response * r)
 			{
 				try
 				{
-					receivedReqArray->emplace(timeh::StringToTimePoint(i.key()), stringh::s2ws(j[i.key()]));
+					receivedReqArray->emplace(timeh::ISOStringToTimePoint(i.key()), stringh::s2ws(j[i.key()]));
 				}
 				catch (const std::exception& e) {
 					messageHandler.DisplayMessageBox(MB_OK, stringh::s2ws(e.what()));

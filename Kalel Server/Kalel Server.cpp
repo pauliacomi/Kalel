@@ -63,7 +63,7 @@ int main(int argc, char** argv) {
 		std::map<std::chrono::system_clock::time_point, std::string> logs = mainBackend.storage.debugLogs.get(tp);
 
 		for (const auto &iter : logs) {
-			std::cout << timeh::TimePointToString(iter.first) << " " << iter.second;
+			std::cout << timeh::TimePointToISOString(iter.first) << " " << iter.second;
 		}
 
 		tp = std::chrono::system_clock::now();

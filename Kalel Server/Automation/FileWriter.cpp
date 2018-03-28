@@ -143,7 +143,7 @@ bool FileWriter::RecordMeasurement(const data_general &general, const Experiment
 	char char_resultat_calo[20];
 	sprintf_s(char_resultat_calo, "%.8E", data.resultCalorimeter.load());
 	
-	stream << timeh::TimePointToWString(data.tp)	<< CSV_DIV;				// Experiment time
+	stream << timeh::TimePointToISOWString(data.tp)	<< CSV_DIV;				// Experiment time
 	stream << status.experimentDose					<< CSV_DIV;				// Experiment dose
 	stream << char_resultat_calo					<< CSV_DIV;				// Calorimeter value
 	stream << data.pressureLow						<< CSV_DIV;				// Pressure low range

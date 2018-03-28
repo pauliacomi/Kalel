@@ -723,7 +723,7 @@ LRESULT CKalelView::OnExchangeLogs(WPARAM, LPARAM incomingLogs)
 	CString * temp = new CString();
 	for (auto i = newLogs->begin(); i != newLogs->end(); ++i)
 	{
-		CString time(timeh::TimePointToString(i->first).c_str());
+		CString time(timeh::TimePointToISOString(i->first).c_str());
 		temp->Append(time + " " + i->second.c_str() + _T("\r\n"));
 	}
 	AffichageMessages(NULL, (LPARAM)temp);

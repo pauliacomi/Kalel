@@ -186,7 +186,7 @@ void Kalel::MachineSettingsSync(http_request* req, http_response* resp)
 	if (req->method == http::method::get)
 	{
 		auto time = req->params.find("t");
-		if (time != req->params.end() && timeh::StringToTimePoint(time->second) > storage.machineSettings.tp)
+		if (time != req->params.end() && timeh::ISOStringToTimePoint(time->second) > storage.machineSettings.tp)
 		{
 			resp->status = http::responses::no_content;
 		}
@@ -232,7 +232,7 @@ void Kalel::ExperimentSettingsSync(http_request* req, http_response* resp)
 	if (req->method == http::method::get)
 	{
 		auto time = req->params.find("t");
-		if (time != req->params.end() && timeh::StringToTimePoint(time->second) > storage.machineSettings.tp)
+		if (time != req->params.end() && timeh::ISOStringToTimePoint(time->second) > storage.machineSettings.tp)
 		{
 			resp->status = http::responses::no_content;
 		}
@@ -278,7 +278,7 @@ void Kalel::ExperimentStatusSync(http_request* req, http_response* resp)
 	if (req->method == http::method::get)
 	{
 		auto time = req->params.find("t");
-		if (time != req->params.end() && timeh::StringToTimePoint(time->second) > storage.experimentStatus.tp)
+		if (time != req->params.end() && timeh::ISOStringToTimePoint(time->second) > storage.experimentStatus.tp)
 		{
 			resp->status = http::responses::no_content;
 		}
@@ -367,7 +367,7 @@ void Kalel::DataSync(http_request* req, http_response* resp)
 		}
 		else
 		{
-			localCollection = storage.dataCollection.get(timeh::StringToTimePoint(time->second));
+			localCollection = storage.dataCollection.get(timeh::ISOStringToTimePoint(time->second));
 		}
 
 		if (localCollection.size() != 0)						// If any exist
@@ -378,7 +378,7 @@ void Kalel::DataSync(http_request* req, http_response* resp)
 			t.Start();
 			
 			for (const auto& kv : localCollection) {
-				j.push_back(json::object_t::value_type({ timeh::TimePointToString(kv.first), kv.second }));
+				j.push_back(json::object_t::value_type({ timeh::TimePointToISOString(kv.first), kv.second }));
 			}
 
 			LOG(logDEBUG) << "Serialisation took " << std::to_string(t.TimeMilliseconds());
@@ -425,7 +425,7 @@ void Kalel::LogSync(http_request* req, http_response* resp)
 		}
 		else
 		{
-			localCollection = storage.infoLogs.get(timeh::StringToTimePoint(time->second));
+			localCollection = storage.infoLogs.get(timeh::ISOStringToTimePoint(time->second));
 		}
 
 		if (localCollection.size() != 0)							// If any exist
@@ -433,7 +433,7 @@ void Kalel::LogSync(http_request* req, http_response* resp)
 			json j;
 
 			for (const auto& kv : localCollection) {
-				j[timeh::TimePointToString(kv.first)] = kv.second;
+				j[timeh::TimePointToISOString(kv.first)] = kv.second;
 			}
 
 			resp->status = http::responses::ok;
@@ -478,7 +478,7 @@ void Kalel::RequestSync(http_request* req, http_response* resp)
 		}
 		else
 		{
-			localCollection = storage.eventLogs.get(timeh::StringToTimePoint(time->second));
+			localCollection = storage.eventLogs.get(timeh::ISOStringToTimePoint(time->second));
 		}
 
 		if (localCollection.size() != 0)							// If any exist
@@ -486,7 +486,7 @@ void Kalel::RequestSync(http_request* req, http_response* resp)
 			json j;
 
 			for (const auto& kv : localCollection) {
-				j[timeh::TimePointToString(kv.first)] = kv.second;
+				j[timeh::TimePointToISOString(kv.first)] = kv.second;
 			}
 
 			resp->status = http::responses::ok;
@@ -531,7 +531,7 @@ void Kalel::DebugSync(http_request* req, http_response* resp)
 		}
 		else
 		{
-			localCollection = storage.debugLogs.get(timeh::StringToTimePoint(time->second));
+			localCollection = storage.debugLogs.get(timeh::ISOStringToTimePoint(time->second));
 		}
 
 		if (localCollection.size() != 0)							// If any exist
@@ -539,7 +539,7 @@ void Kalel::DebugSync(http_request* req, http_response* resp)
 			json j;
 
 			for (const auto& kv : localCollection) {
-				j[timeh::TimePointToString(kv.first)] = kv.second;
+				j[timeh::TimePointToISOString(kv.first)] = kv.second;
 			}
 
 			resp->status = http::responses::ok;
@@ -619,7 +619,7 @@ void Kalel::UserInput(http_request * req, http_response * resp)
 			case CHOICE_NO:
 			case CHOICE_WAIT:
 				resp->status = http::responses::ok;
-				storage.eventLogs.del(timeh::StringToTimePoint(req->params.at("t")));
+				storage.eventLogs.del(timeh::ISOStringToTimePoint(req->params.at("t")));
 				threadManager.SetUserChoice(choice);
 				break;
 			default:

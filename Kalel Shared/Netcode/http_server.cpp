@@ -169,7 +169,7 @@ unsigned HTTPServer::Process(Socket sock)
 	// Fill remaining headers
 	response.http_version		= "HTTP/1.1";
 	response.server				= "Kalel Server";
-	response.date				= timeh::GMTtime(RFC_1123);
+	response.date				= timeh::GMTtimeRFC1123();
 	response.connection			= "close";
 	response.www_authentication = "Kalel";
 	response.content_length		= stringh::StringFrom<size_t>(response.body.size());

@@ -15,46 +15,50 @@ namespace timeh {
 	static const char *ISO_DATE_FORMAT = "%Y-%m-%dT%H:%M:%S";
 	static const wchar_t *W_ISO_DATE_FORMAT = L"%Y-%m-%dT%H:%M:%S";
 
+
 	std::chrono::system_clock::time_point NowTime()
 	{
 		return std::chrono::time_point_cast<std::chrono::milliseconds>(std::chrono::system_clock::now());
 	}
 
 
-	std::string GMTtime(int format)
+	std::string GMTtimeRFC1123()
 	{
-		time_t t = std::time(nullptr);
+		std::time_t t = std::time(nullptr);
 
-		if (format == RFC_1123)
-		{
-			auto RFC1123_TIME_LEN = 29;
-			struct tm tm;
-			char * buf = new char[RFC1123_TIME_LEN + 1];
+		int RFC1123_TIME_LEN = 30;
+		struct std::tm gmt;
+		char * buf = new char[RFC1123_TIME_LEN];
 
-			gmtime_s(&tm, &t);
+		gmtime_s(&gmt, &t);
 
-			strftime(buf, RFC1123_TIME_LEN + 1, "---, %d --- %Y %H:%M:%S GMT", &tm);
-			memcpy(buf, DAY_NAMES[tm.tm_wday], 3);
-			memcpy(buf + 8, MONTH_NAMES[tm.tm_mon], 3);
+		strftime(buf, RFC1123_TIME_LEN, "---, %d --- %Y %H:%M:%S GMT", &gmt);
+		memcpy(buf, DAY_NAMES[gmt.tm_wday], 3);
+		memcpy(buf + 8, MONTH_NAMES[gmt.tm_mon], 3);
 
-			std::string time(buf);
-			delete[] buf;
+		std::string time(buf);
+		delete[] buf;
 
-			return time;
-		}
-
-		if (format == ANSI)
-		{
-			return TimeTToStringGMT(t);
-		}
-		return std::string();
+		return time;
 	}
 
 
-
-	std::string TimeTToStringLocal(const time_t & t)
+	std::string GMTtimeANSI()
 	{
-		struct tm gmt;
+		std::time_t t = std::time(nullptr);
+		struct std::tm gmt;
+		gmtime_s(&gmt, &t);
+
+		std::stringstream time;
+		time << std::put_time(&gmt, "%c %Z");
+
+		return time.str();
+	}
+
+
+	std::string TimeTToISOString(const std::time_t & t)
+	{
+		struct std::tm gmt;
 		localtime_s(&gmt, &t);
 
 		std::string time;
@@ -65,120 +69,87 @@ namespace timeh {
 		return time;
 	}
 
-	std::wstring TimeTToWStringLocal(const time_t & t)
+	std::wstring TimeTToISOWString(const std::time_t & t)
 	{
-		struct tm gmt;
+		struct std::tm gmt;
 		localtime_s(&gmt, &t);
 
-		std::wstring time;
-		std::wstringstream str;
-		str << std::put_time(&gmt, W_ISO_DATE_FORMAT);
-		time = str.str();
+		std::wstringstream time;
+		time << std::put_time(&gmt, W_ISO_DATE_FORMAT);
 
-		return time;
+		return time.str();
 	}
 
 
-	std::string TimeTToStringGMT(const time_t & t)
-	{
-		struct tm gmt;
-		gmtime_s(&gmt, &t);
-
-		std::string time;
-		std::stringstream str;
-		str << std::put_time(&gmt, "%c %Z");
-		time = str.str();
-
-		return time;
-	}
-
-
-
-	std::string TimePointToString(const std::chrono::system_clock::time_point & tp)
+	std::string TimePointToISOString(const std::chrono::system_clock::time_point & tp)
 	{
 		// Build the main time string
-		auto tt = std::chrono::system_clock::to_time_t(tp);
-		auto str_time = TimeTToStringLocal(tt);
+		std::stringstream timestr;
+		timestr << TimeTToISOString(std::chrono::system_clock::to_time_t(tp));
 
 		// Build the milisecond string
-		auto epoch = tp.time_since_epoch();
-		auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(epoch);
-		auto fractional_seconds = ms.count() % 1000;
+		auto fractional_seconds = TimePointToMs(tp) % 1000;
 
-		std::string str_frsec = ".";
-		if (fractional_seconds < 100)
-		{
-			str_frsec += "0";
-		}
-		str_frsec += std::to_string(fractional_seconds);
-
-		// Add trailing character
-		str_frsec += 'Z';
+		timestr << ".";
+		timestr << std::setfill('0') << std::setw(3) << fractional_seconds;
+		timestr << 'Z';
 
 		// Return complete string
-		return str_time + str_frsec;
+		return timestr.str();
 	}
 
-	std::wstring TimePointToWString(const std::chrono::system_clock::time_point & tp)
+	std::wstring TimePointToISOWString(const std::chrono::system_clock::time_point & tp)
 	{
 		// Build the main time string
-		auto tt = std::chrono::system_clock::to_time_t(tp);
-		auto str_time = TimeTToWStringLocal(tt);
+		std::wstringstream timestr;
+		timestr << TimeTToISOWString(std::chrono::system_clock::to_time_t(tp));
 
 		// Build the milisecond string
-		auto epoch = tp.time_since_epoch();
-		auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(epoch);
-		auto fractional_seconds = ms.count() % 1000;
+		auto fractional_seconds = TimePointToMs(tp) % 1000;
 
-		std::wstring str_frsec = L".";
-		if (fractional_seconds < 100)
-		{
-			str_frsec += L"0";
-		}
-		str_frsec += std::to_wstring(fractional_seconds);
-
-		// Add trailing character
-		str_frsec += L'Z';
+		timestr << L".";
+		timestr << std::setfill(L'0') << std::setw(3) << fractional_seconds;
+		timestr << L'Z';
 
 		// Return complete string
-		return (str_time + str_frsec);
+		return timestr.str();
 	}
 
-	std::chrono::system_clock::time_point StringToTimePoint(const std::string & str_time)
+	std::chrono::system_clock::time_point ISOStringToTimePoint(const std::string & str_time)
 	{
-		// Cut the fractional seconds part
-		auto fractional_seconds = stringh::To<int>(str_time.substr(str_time.size() - 4, 3));
-		auto str_time_nofrac = str_time.substr(0, str_time.size() - 4);
-
 		// Generate the regular timepoint
 		struct std::tm tm_time;
-		std::stringstream ss(str_time_nofrac);
+		std::stringstream ss(str_time.substr(0, str_time.size() - 5));
 		ss >> std::get_time(&tm_time, ISO_DATE_FORMAT);
 		auto tp = std::chrono::system_clock::from_time_t(std::mktime(&tm_time));
 
-		// Add the remaining miliseconds
-		tp += std::chrono::milliseconds(fractional_seconds);
+		// Add the miliseconds
+		tp += std::chrono::milliseconds(stringh::To<int>(str_time.substr(str_time.size() - 4, 3)));
 
 		return tp;
 	}
 
+	//
+	//
+	//		C++11 timepoints <-> milliseconds (ullong)
+	//
+	//
 
-
-	unsigned long long TimePointToULLong(const std::chrono::system_clock::time_point & tp)
+	unsigned long long TimePointToMs(const std::chrono::system_clock::time_point & tp)
 	{
-		auto ms = std::chrono::time_point_cast<std::chrono::milliseconds>(tp);
-		auto value = tp.time_since_epoch();
-		return value.count();
+		return std::chrono::duration_cast<std::chrono::milliseconds>(tp.time_since_epoch()).count();
 	}
 
-	std::chrono::system_clock::time_point ULLongToTimePoint(unsigned long long tp)
+	std::chrono::system_clock::time_point MsToTimePoint(unsigned long long tp)
 	{
-		std::chrono::milliseconds dur(tp);
-		std::chrono::system_clock::time_point dt(dur);
-
-		return dt;
+		return std::chrono::system_clock::time_point(std::chrono::milliseconds(tp));
 	}
 
+	//
+	//
+	//		A simple timer class
+	//
+	//
 
 	timer::timer(void)
 	{
@@ -200,8 +171,7 @@ namespace timeh {
 	void timer::Pause()
 	{
 		running = false;
-		auto endTP = std::chrono::high_resolution_clock::now();
-		timeElapsedPrevious += GenerateTE();
+		timeElapsedPrevious += TimeElapsed();
 	}
 
 	// Resume timer
@@ -213,28 +183,26 @@ namespace timeh {
 
 	int timer::TimeMilliseconds()
 	{
-		auto totalTE = timeElapsedPrevious + GenerateTE();
+		auto totalTE = timeElapsedPrevious + TimeElapsed();
 		return totalTE.count();
 	}
 
 	int timer::TimeSeconds()
 	{
-		auto totalTE = timeElapsedPrevious + GenerateTE();
+		auto totalTE = timeElapsedPrevious + TimeElapsed();
 		return std::chrono::duration_cast<std::chrono::seconds>(totalTE).count();
 	}
 
 	int timer::TimeMinutes()
 	{
-		auto totalTE = timeElapsedPrevious + GenerateTE();
+		auto totalTE = timeElapsedPrevious + TimeElapsed();
 		return std::chrono::duration_cast<std::chrono::minutes>(totalTE).count();
 	}
 
-	std::chrono::milliseconds timer::GenerateTE()
+	std::chrono::milliseconds timer::TimeElapsed()
 	{
 		if (running) {
-			auto endTP = std::chrono::high_resolution_clock::now();
-			std::chrono::milliseconds timeElapsed = std::chrono::duration_cast<std::chrono::milliseconds>(endTP - startTP);
-			return timeElapsed;
+			return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - startTP);
 		}
 		else
 			return timeElapsedPrevious;

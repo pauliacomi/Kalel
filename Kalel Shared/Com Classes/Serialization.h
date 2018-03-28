@@ -52,7 +52,7 @@ inline void from_json(const nlohmann::json &j, user &m);
 
 void to_json(nlohmann::json &j, const MachineSettings &m) {
 
-	j["timestamp"] = timeh::TimePointToString(m.tp);
+	j["timestamp"] = timeh::TimePointToISOString(m.tp);
 
 	j["CaloName"							]	= stringh::ws2s(m.CaloName)					;
 	j["CaloPrefix"							]	= stringh::ws2s(m.CaloPrefix)				;
@@ -101,7 +101,7 @@ void to_json(nlohmann::json &j, const MachineSettings &m) {
 
 inline void from_json(const nlohmann::json &j, MachineSettings &m) {
 
-	m.tp = timeh::StringToTimePoint(j["timestamp"]);
+	m.tp = timeh::ISOStringToTimePoint(j["timestamp"]);
 
 	m.CaloName											= stringh::s2ws(j["CaloName"							]);
 	m.CaloPrefix										= stringh::s2ws(j["CaloPrefix"							]);
@@ -234,7 +234,7 @@ inline void from_json(const nlohmann::json &j, ExperimentData &e) {
 //*************************************************************************************************************************
 inline void to_json(nlohmann::json &j, const ExperimentStatus &e) {
 
-	j["timestamp"] = timeh::TimePointToString(e.tp);
+	j["timestamp"] = timeh::TimePointToISOString(e.tp);
 
 	j[	"EP"	]	= e.experimentInProgress				.load();
 	j[	"ER"	]	= e.experimentRecording					.load();
@@ -259,7 +259,7 @@ inline void to_json(nlohmann::json &j, const ExperimentStatus &e) {
 
 inline void from_json(const nlohmann::json &j, ExperimentStatus &e) {
 
-	e.tp = timeh::StringToTimePoint(j["timestamp"]);
+	e.tp = timeh::ISOStringToTimePoint(j["timestamp"]);
 
 	e.experimentInProgress								.store(j[	"EP"	]);
 	e.experimentRecording								.store(j[	"ER"	]);
@@ -292,7 +292,7 @@ inline void from_json(const nlohmann::json &j, ExperimentStatus &e) {
 //*************************************************************************************************************************
 inline void to_json(nlohmann::json &j, const ExperimentSettings &e) {
 
-	j["timestamp"] = timeh::TimePointToString(e.tp);
+	j["timestamp"] = timeh::TimePointToISOString(e.tp);
 
 	j["experimentType"]						= e.experimentType;
 
@@ -311,7 +311,7 @@ inline void to_json(nlohmann::json &j, const ExperimentSettings &e) {
 
 inline void from_json(const nlohmann::json &j, ExperimentSettings &e) {
 
-	e.tp = timeh::StringToTimePoint(j["timestamp"]);
+	e.tp = timeh::ISOStringToTimePoint(j["timestamp"]);
 
 	e.experimentType						= j["experimentType"];
 

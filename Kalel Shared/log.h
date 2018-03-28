@@ -99,7 +99,7 @@ template <typename T>
 std::ostringstream& Log<T>::GetTimeStamped(TLogLevel level)
 {
 	local_level = level;
-	os << "- " << timeh::TimePointToString(timestamp);
+	os << "- " << timeh::TimePointToISOString(timestamp);
 	os << " " << ToString(level) << ": ";
 	os << std::string(level > logDEBUG ? level - logDEBUG : 0, '\t');
 	return os;
@@ -111,7 +111,7 @@ std::ostringstream& Log<T>::GetTimeStamped(TLogLevel level)
 template <typename T>
 std::ostringstream& Log<T>::GetTimeStamp()
 {
-	os << timeh::TimePointToString(timestamp);
+	os << timeh::TimePointToISOString(timestamp);
 	return os;
 }
 
