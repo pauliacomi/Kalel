@@ -6,7 +6,7 @@
 
 #include "DefineDialogMessages.h"							// For custom message definitions
 #include "../Kalel Shared/Resources/DefineStages.h"			// For the types of experiments used
-#include "../Kalel Shared/Resources/StringTable.h"			// Error message strings
+#include "StringTable.h"									// Error message strings
 
 // Experiment settings class
 #include "../Kalel Shared/Com Classes/ExperimentSettings.h"

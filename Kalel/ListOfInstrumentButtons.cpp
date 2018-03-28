@@ -5,7 +5,7 @@
 
 #include "resource.h"											// For the MFC button id's
 #include "../Kalel Shared/Resources/DefineInstruments.h"		// For the instrument definitions
-#include "../Kalel Shared/Resources/StringTable.h"				// For the error message definitions
+#include "StringTable.h"										// Error message strings
 
 
 const int idcOpen[] = { IDC_OUVRIR1,IDC_OUVRIR2,IDC_OUVRIR3,IDC_OUVRIR4, IDC_OUVRIR5,IDC_OUVRIR6,IDC_OUVRIR7,IDC_OUVRIR8, IDC_ACTIVER_EV1, IDC_ACTIVER_EV2, IDC_ACTIVER_POMPE };

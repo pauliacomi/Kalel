@@ -3,7 +3,7 @@
 #include "afxwin.h"
 
 #include "../Kalel Shared/Resources/DefineStages.h"					// Stages/experiment type definitions
-#include "../Kalel Shared/Resources/StringTable.h"					// Error message strings
+#include "StringTable.h"											// Error message strings
 
 #include "Kalel.h"
 #include "KalelDoc.h"

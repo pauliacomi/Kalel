@@ -249,7 +249,6 @@
     <ClInclude Include="..\Kalel Shared\Resources\DefineInstruments.h" />
     <ClInclude Include="..\Kalel Shared\Resources\DefineStages.h" />
     <ClInclude Include="..\Kalel Shared\Resources\DefineText.h" />
-    <ClInclude Include="..\Kalel Shared\Resources\StringTable.h" />
     <ClInclude Include="..\Kalel Shared\soundHelpers.h" />
     <ClInclude Include="..\Kalel Shared\stringHelpers.h" />
     <ClInclude Include="..\Kalel Shared\timeHelpers.h" />

@@ -12,7 +12,7 @@
 #include "ParserXML.h"													// XML builder
 
 #include "../Kalel Shared/Com Classes/MachineSettings.h"				// Accessing the settings
-#include "../Kalel Shared/Resources/StringTable.h"						// Error message strings
+#include "StringTable.h"												// Error message strings
 
 // TabGeneral dialog
 

@@ -318,7 +318,6 @@
     <ClInclude Include="..\Kalel Shared\Resources\DefineAutomationSettings.h" />
     <ClInclude Include="..\Kalel Shared\Resources\DefineInstruments.h" />
     <ClInclude Include="..\Kalel Shared\Resources\DefineStages.h" />
-    <ClInclude Include="..\Kalel Shared\Resources\StringTable.h" />
     <ClInclude Include="..\Kalel Shared\stringHelpers.h" />
     <ClInclude Include="..\Kalel Shared\timeHelpers.h" />
     <ClInclude Include="..\Kalel Shared\timestamp.h" />
@@ -353,6 +352,7 @@
     <ClInclude Include="ResourceTypeExperience.h" />
     <ClInclude Include="SpinBtnCtrl.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="StringTable.h" />
     <ClInclude Include="TabContinuousAdsorption.h" />
     <ClInclude Include="TabDesorption.h" />
     <ClInclude Include="TabDivers.h" />
@@ -419,7 +419,6 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\Kalel Shared\Resources\Steps.rc" />
-    <ResourceCompile Include="..\Kalel Shared\Resources\StringTable.rc" />
     <ResourceCompile Include="DialogCell.rc" />
     <ResourceCompile Include="ConnectionPort.rc" />
     <ResourceCompile Include="DialogUser.rc" />
@@ -427,6 +426,7 @@
     <ResourceCompile Include="Kalel.rc" />
     <ResourceCompile Include="DialogExperimentSettings.rc" />
     <ResourceCompile Include="ParametresAppareil.rc" />
+    <ResourceCompile Include="StringTable.rc" />
     <ResourceCompile Include="TypeExperience.rc" />
   </ItemGroup>
   <ItemGroup>

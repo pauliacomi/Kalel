@@ -6,7 +6,6 @@
 #include "../Kalel Shared/Netcode/json.hpp"
 
 // Resources
-#include "../Kalel Shared/Resources/StringTable.h"
 #include "../Kalel Shared/Resources/DefineInstruments.h"
 #include "../Kalel Shared/Resources/DefineStages.h"
 

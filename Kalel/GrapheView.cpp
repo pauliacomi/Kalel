@@ -5,7 +5,7 @@
 #include "GrapheView.h"
 
 #include "KalelDoc.h"															// For the document pointer
-#include "../Kalel Shared/Resources/StringTable.h"								// Error message strings
+#include "StringTable.h"														// Error message strings
 #include <algorithm>
 #include <chrono>
 

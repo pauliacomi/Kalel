@@ -5,7 +5,7 @@
 #include "DialogConnectServer.h"
 
 #include "afxdialogex.h"
-#include "../Kalel Shared/Resources/StringTable.h"				// Error message strings
+#include "StringTable.h"						// Error message strings
 
 // DialogConnectServer dialog
 

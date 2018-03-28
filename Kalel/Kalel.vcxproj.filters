@@ -249,9 +249,6 @@
     <ClInclude Include="..\Kalel Shared\Resources\DefineStages.h">
       <Filter>Header Files\Commmon\Resources</Filter>
     </ClInclude>
-    <ClInclude Include="..\Kalel Shared\Resources\StringTable.h">
-      <Filter>Header Files\Commmon\Resources</Filter>
-    </ClInclude>
     <ClInclude Include="..\Kalel Shared\Forcelib.h">
       <Filter>Header Files\Commmon</Filter>
     </ClInclude>
@@ -311,6 +308,9 @@
     </ClInclude>
     <ClInclude Include="..\Kalel Shared\Netcode\dispatch_queue.h">
       <Filter>Header Files\Commmon\Netcode</Filter>
+    </ClInclude>
+    <ClInclude Include="StringTable.h">
+      <Filter>Header Files\Commmon\Resources</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -475,10 +475,10 @@
     <ResourceCompile Include="DialogExperimentSettings.rc">
       <Filter>Resource Files\DialogBoxes</Filter>
     </ResourceCompile>
-    <ResourceCompile Include="..\Kalel Shared\Resources\StringTable.rc">
+    <ResourceCompile Include="..\Kalel Shared\Resources\Steps.rc">
       <Filter>Resource Files\Common\Strings</Filter>
     </ResourceCompile>
-    <ResourceCompile Include="..\Kalel Shared\Resources\Steps.rc">
+    <ResourceCompile Include="StringTable.rc">
       <Filter>Resource Files\Common\Strings</Filter>
     </ResourceCompile>
   </ItemGroup>
