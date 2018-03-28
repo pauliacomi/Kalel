@@ -161,8 +161,8 @@ void Automation::StageVacuum(bool separateFunctionality)
 		if (separateFunctionality)
 		{
 			storage.experimentStatus.experimentStage = STAGE_UNDEF;
-			shutdownReason = STOP_NORMAL;								// set a normal shutdown
-			eventReset = true;										// end then set the event
+			shutdownReason = Stop::Normal;								// set a normal shutdown
+			eventShutdown = true;										// end then set the event
 			storage.automationControl.notify_all();									
 		}
 		else

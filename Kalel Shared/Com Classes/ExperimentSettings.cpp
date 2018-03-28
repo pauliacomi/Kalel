@@ -29,7 +29,7 @@ void ExperimentSettings::ResetData()
 
 void ExperimentSettings::ResetData(int initialAdsorptions, int initialDesorptions)
 {
-	timeChanged = timeh::NowTime();
+	tp = timeh::NowTime();
 
 	experimentType = EXPERIMENT_TYPE_UNDEF;
 

@@ -207,6 +207,11 @@ void CKalelView::OnInitialUpdate()
 	commHandler.SaveAuth(savedParams.GetUsername(), savedParams.GetPassword());
 	commHandler.Connect(savedParams.GetServerAddress());
 
+	commHandler.GetExperimentSettings(noTime);
+	commHandler.GetExperimentStatus(noTime);
+	commHandler.GetMachineSettings(noTime);
+	commHandler.GetControlInstrumentState(noTime);
+
 	// Set the timers for the window update
 	dataTimer = SetTimer(1, savedParams.GetDataRefreshInterval(), NULL);
 	graphTimer = SetTimer(1, savedParams.GetGraphRefreshInterval(), NULL);
@@ -313,9 +318,9 @@ void CKalelView::OnTimer(UINT_PTR nIDEvent)
 			}
 
 			// Request ongoing sync
-			commHandler.GetExperimentSettings(experimentSettingsTime);
-			commHandler.GetExperimentStatus(experimentStatusTime);
-			commHandler.GetMachineSettings(machineSettingsTime);
+			commHandler.GetExperimentSettings(experimentSettings->tp);
+			commHandler.GetExperimentStatus(experimentStatus.tp);
+			commHandler.GetMachineSettings(machineSettings->tp);
 			commHandler.GetControlInstrumentState(machineStateTime);
 
 			if (!dataCollection.empty())
@@ -616,7 +621,6 @@ LRESULT CKalelView::OnExchangeMachineSettings(WPARAM, LPARAM incomingMachineSett
 {
 	// Get the incoming pointer
 	machineSettings.reset(reinterpret_cast<MachineSettings*>(incomingMachineSettings));
-	machineSettingsTime = timeh::NowTime();
 
 	// Update GUI
 	OnSync(NULL, NULL);
@@ -628,7 +632,6 @@ LRESULT CKalelView::OnSetMachineSettings(WPARAM, LPARAM)
 {
 	// Make the temporary local version official
 	machineSettings.reset(tempMchSettings.release());
-	machineSettingsTime = timeh::NowTime();
 	tempMchSettings.reset();
 
 	// Update GUI
@@ -641,7 +644,6 @@ LRESULT CKalelView::OnExchangeExperimentSettings(WPARAM wParam, LPARAM incomingE
 {
 	// Get the incoming pointer
 	experimentSettings.reset(reinterpret_cast<ExperimentSettings*>(incomingExperimentSettings));
-	experimentSettingsTime = timeh::NowTime();
 
 	// Update GUI
 	OnSync(NULL, NULL);
@@ -652,14 +654,12 @@ LRESULT CKalelView::OnExchangeExperimentSettings(WPARAM wParam, LPARAM incomingE
 LRESULT CKalelView::OnExchangeExperimentStatus(WPARAM wParam, LPARAM incomingExperimentStatus)
 {	
 	// Get the incoming pointer
-	ExperimentStatus * tempStatus = reinterpret_cast<ExperimentStatus*>(incomingExperimentStatus);
+	std::unique_ptr<ExperimentStatus> tempStatus(reinterpret_cast<ExperimentStatus*>(incomingExperimentStatus));
 	experimentStatus = *tempStatus;
-	experimentStatusTime = timeh::NowTime();
 
 	// Update GUI
 	OnSync(NULL, NULL);
 
-	delete tempStatus;
 	return 0;
 }
 
@@ -667,7 +667,6 @@ LRESULT CKalelView::OnSetExperimentSettings(WPARAM, LPARAM)
 {
 	// Make the temporary local version official
 	experimentSettings.reset(tempExpSettings.release());
-	experimentSettingsTime = timeh::NowTime();
 
 	// Update GUI
 	OnSync(NULL, NULL);
@@ -705,12 +704,10 @@ LRESULT CKalelView::OnSetInstrumentState(WPARAM wParam, LPARAM incomingInstrumen
 LRESULT CKalelView::OnExchangeData(WPARAM, LPARAM incomingExperimentData)
 {
 	// Get the incoming vector and add it to the local data
-	auto newData = reinterpret_cast<std::map<std::chrono::system_clock::time_point, ExperimentData> *>(incomingExperimentData);
+	std::unique_ptr<std::map<std::chrono::system_clock::time_point, ExperimentData>> newData(
+		reinterpret_cast<std::map<std::chrono::system_clock::time_point, ExperimentData> *>(incomingExperimentData));
 	dataCollection.insert(std::make_move_iterator(newData->begin()), 
 							std::make_move_iterator(newData->end()));
-
-	// Delete the useless vector now
-	delete newData;
 
 	return 0;
 }
@@ -718,7 +715,8 @@ LRESULT CKalelView::OnExchangeData(WPARAM, LPARAM incomingExperimentData)
 LRESULT CKalelView::OnExchangeLogs(WPARAM, LPARAM incomingLogs)
 {
 	// Get the incoming vector and add it to the local logs
-	auto newLogs = reinterpret_cast<std::map<std::chrono::system_clock::time_point, std::wstring>*>(incomingLogs);
+	std::unique_ptr<std::map<std::chrono::system_clock::time_point, std::wstring>> newLogs(
+		reinterpret_cast<std::map<std::chrono::system_clock::time_point, std::wstring>*>(incomingLogs));
 	logCollection.insert(newLogs->begin(), newLogs->end());
 
 	// Display logs
@@ -730,9 +728,6 @@ LRESULT CKalelView::OnExchangeLogs(WPARAM, LPARAM incomingLogs)
 	}
 	AffichageMessages(NULL, (LPARAM)temp);
 	
-	// Delete the useless vector now
-	delete newLogs;
-
 	return 0;
 }
 
@@ -740,7 +735,8 @@ LRESULT CKalelView::OnExchangeLogs(WPARAM, LPARAM incomingLogs)
 LRESULT CKalelView::OnExchangeRequests(WPARAM, LPARAM incomingRequests)
 {
 	// Get the incoming vector and add it to the local logs
-	auto newRequests = reinterpret_cast<std::map<std::chrono::system_clock::time_point, std::wstring>*>(incomingRequests);
+	std::unique_ptr<std::map<std::chrono::system_clock::time_point, std::wstring>> newRequests(
+		reinterpret_cast<std::map<std::chrono::system_clock::time_point, std::wstring>*>(incomingRequests));
 
 	for (auto &i : *newRequests)
 	{
@@ -749,9 +745,6 @@ LRESULT CKalelView::OnExchangeRequests(WPARAM, LPARAM incomingRequests)
 			commHandler.messageHandler.DisplayMessageBoxServer(i.first, i.second);		// then process it
 		}
 	}
-
-	// Delete the useless vector now
-	delete newRequests;
 
 	return 0;
 }

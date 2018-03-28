@@ -1,7 +1,8 @@
 #pragma once
 
-#include <atomic>
 #include "../classHelpers.h"
+
+#include <atomic>
 
 
 struct ExperimentAtomicData

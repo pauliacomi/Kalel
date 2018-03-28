@@ -67,20 +67,9 @@ public:
 	// Solutions	- a mutex and two functions are provided for setting and resetting
 	//
 	//******************************************************************************************
-
-	std::mutex experimentSettingsMutex;								
-	ExperimentSettings experimentSettings;	
-
-public:
-	void setExperimentSettings(ExperimentSettings es) {
-		std::unique_lock<std::mutex> lock(experimentSettingsMutex);
-		experimentSettings = es;
-	}
-
-	void resetExperimentSettings() {
-		std::unique_lock<std::mutex> lock(experimentSettingsMutex);
-		experimentSettings.ResetData();
-	}
+					
+	ExperimentSettings experimentSettings;
+	std::unique_ptr<ExperimentSettings> tExperimentSettings = nullptr;
 
 	//******************************************************************************************
 	// Experiment Status

@@ -81,7 +81,7 @@ bool Automation::VerificationSecurity()
 				break;
 			case CHOICE_NO:										// Stop experiment
 
-				shutdownReason = STOP_CANCEL;
+				shutdownReason = Stop::Cancel;
 				eventShutdown = true;
 				storage.automationControl.notify_all();
 				return false;
@@ -194,7 +194,7 @@ bool Automation::VerificationResidualPressure()
 					break;
 				case CHOICE_NO:										// Stop experiment
 
-					shutdownReason = STOP_CANCEL;
+					shutdownReason = Stop::Cancel;
 					eventShutdown = true;
 					storage.automationControl.notify_all();
 					return false;
@@ -253,7 +253,7 @@ bool Automation::VerificationTemperature()
 					break;
 				case CHOICE_NO:										// Stop experiment
 
-					shutdownReason = STOP_CANCEL;
+					shutdownReason = Stop::Cancel;
 					eventShutdown = true;
 					storage.automationControl.notify_all();
 					return false;

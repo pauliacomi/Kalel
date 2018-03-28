@@ -76,7 +76,6 @@ private:
 	std::chrono::system_clock::time_point												noTime;					// Timepoint storing when the experiment settings were generated
 
 	// Machine settings related
-	std::chrono::system_clock::time_point												machineSettingsTime;	// Timepoint storing when the machine settings were generated
 	std::unique_ptr<MachineSettings>													machineSettings;		// Pointer to a machineSettings object
 	std::unique_ptr<MachineSettings>													tempMchSettings;		// Temporary machineSettings stored here between sending change request to server and server acknowledgement
 	
@@ -85,12 +84,10 @@ private:
 	std::chrono::system_clock::time_point												machineStateTime;		// Timepoint storing when the control state was generated
 	
 	// Experiment Settings related
-	std::chrono::system_clock::time_point												experimentSettingsTime;	// Timepoint storing when the experiment settings were generated
 	std::unique_ptr<ExperimentSettings>													experimentSettings;		// Local storage of experimentSettings
 	std::unique_ptr<ExperimentSettings>													tempExpSettings;		// Temporary experimentSettings stored here between sending change request to server and server acknowledgement
 	
 	// Experiment Status related
-	std::chrono::system_clock::time_point												experimentStatusTime;	// Timepoint storing when the experiment status was generated
 	ExperimentStatus																	experimentStatus;		// Local storage of experimentStatus
 
 	// Data/Logs/Request collections

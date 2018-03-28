@@ -150,6 +150,12 @@ public:
 		std::unique_lock<std::mutex> lock(r.mtx);					// lock mutex
 		return l < r.tp;											// return the comparison
 	}
+
+	friend bool operator>(const std::chrono::system_clock::time_point& l, const atomic_time_point& r)
+	{
+		std::unique_lock<std::mutex> lock(r.mtx);					// lock mutex
+		return l > r.tp;											// return the comparison
+	}
 };
 
 //******************************************************************************************

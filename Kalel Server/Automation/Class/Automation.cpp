@@ -128,19 +128,12 @@ void Automation::Execution()
 		// Wait until called or until timeout
 		bool notified = storage.automationControl.wait_for(lock, std::chrono::milliseconds(storage.machineSettings.TimeBetweenAutomation), [&] () 
 		{
-			return (eventShutdown || eventPause || eventResume || eventReset || eventUserInput);
+			return (eventShutdown || eventPause || eventResume || eventChangeExpSett || eventUserInput);
 		});
 
 		// Now run through the possible events
 		if (notified)									// If there was a notification, check what kind
 		{
-			if (eventShutdown)							// Complete stop of thread
-			{
-				shutdownReason = STOP_COMPLETE;
-				Shutdown();
-				eventShutdown = false;
-				continue;
-			}
 
 			if (eventPause)								// Pause thread
 			{
@@ -148,18 +141,28 @@ void Automation::Execution()
 				eventPause = false;
 				continue;
 			}
-			
+
 			if (eventResume)							// Resume thread
 			{
 				Resume();
 				eventResume = false;
 				continue;
-			}												
+			}
 
-			if (eventReset)								// Reset thread
+			if (eventShutdown)							// Complete stop of thread
 			{
 				Shutdown();
-				eventReset = false;
+				eventShutdown = false;
+				continue;
+			}
+
+			if (eventChangeExpSett)						// Change experiment settings
+			{
+				if (storage.tExperimentSettings) {
+					storage.experimentSettings = *storage.tExperimentSettings;
+					storage.tExperimentSettings.reset();
+				}
+				eventChangeExpSett = false;
 				continue;
 			}
 
@@ -192,7 +195,7 @@ void Automation::ExecutionManual()
 		// Create open and write the columns in the file
 		bool err = controls.fileWriter.CreateFiles(storage.experimentSettings, storage.machineSettings);
 		if (err) {								// No point in starting experiment then																										
-			shutdownReason = STOP;
+			shutdownReason = Stop::Error;
 			eventShutdown = true;
 			storage.automationControl.notify_all();
 			LOG(logERROR) << ERROR_PATHUNDEF;
@@ -219,7 +222,7 @@ void Automation::ExecutionAuto()
 		// Create, open and write the columns in the file
 		bool err = controls.fileWriter.CreateFiles(storage.experimentSettings, storage.machineSettings);
 		if (err) {							// No point in starting experiment then																							
-			shutdownReason = STOP;
+			shutdownReason = Stop::Error;
 			eventShutdown = true;
 			storage.automationControl.notify_all();
 			LOG(logERROR) << ERROR_PATHUNDEF;
@@ -254,8 +257,8 @@ void Automation::ExecutionAuto()
 	case STAGE_END_AUTOMATIC:
 
 		// If the experiment has finished
-		shutdownReason = STOP_NORMAL;				// set a normal shutdown
-		eventReset = true;							// end then set the event
+		shutdownReason = Stop::Normal;				// set a normal shutdown
+		eventShutdown = true;						// end then set the event
 		storage.automationControl.notify_all();		// and notify
 
 		break;
@@ -278,7 +281,7 @@ void Automation::ExecutionContinuous()
 		// Create, open and write the columns in the file
 		bool err = controls.fileWriter.CreateFiles(storage.experimentSettings, storage.machineSettings);
 		if (err) {							// No point in starting experiment then																							
-			shutdownReason = STOP;
+			shutdownReason = Stop::Error;
 			eventShutdown = true;
 			storage.automationControl.notify_all();
 			LOG(logERROR) << ERROR_PATHUNDEF;
@@ -310,8 +313,8 @@ void Automation::ExecutionContinuous()
 	case STAGE_END_AUTOMATIC:
 
 		// If the experiment has finished
-		shutdownReason = STOP_NORMAL;				// set a normal shutdown
-		eventReset = true;							// end then set the event
+		shutdownReason = Stop::Normal;				// set a normal shutdown
+		eventShutdown = true;						// end then set the event
 		storage.automationControl.notify_all();		// and notify
 
 		break;
@@ -325,10 +328,11 @@ void Automation::ResetAutomation()
 {
 	// Reset all data from the experiment
 	storage.experimentStatus.ResetData();
+	storage.experimentSettings.ResetData();
 
 	// If the shutdown event is called externally, it will default to a cancel
 	// Otherwise the flag will be changed from inside the code
-	shutdownReason = STOP_CANCEL;
+	shutdownReason = Stop::Normal;
 
 	// Delete all current measurements
 	storage.dataCollection.del();

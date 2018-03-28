@@ -20,21 +20,14 @@ public:
 	void ResetData();
 	void ResetData(int initialAdsorptions, int initialDesorptions);
 
-
-	// Overload equals function
 	ExperimentSettings & ExperimentSettings::operator=(const ExperimentSettings * p);
 
 	//
 	// Variables
 	//
-
-	///*******************
-	///		Sync tools
-	///*******************
-
-	std::chrono::system_clock::time_point timeChanged;				// Time when experiment settings changed
-
 public:
+	std::chrono::system_clock::time_point tp;				// Time when experiment settings changed
+
 	int experimentType;					// Experiment type
 
 	// Settings storage

@@ -37,25 +37,22 @@ protected:
 	Controls & controls;
 														
 	//------------------------------------------------------------
-	// Syncronisation primitives and threads
+	// Syncronisation primitives
 	//------------------------------------------------------------
 protected:
 
-	// Case switch int for the experiment states (running/paused/etc)
-	// If the shutdown event is called externally, it will default to a cancel
-	// Otherwise the flag will be changed from inside the code
-	volatile int shutdownReason = STOP_CANCEL;
 	bool running = true;
 	std::atomic_bool waitingUser = false;
 
 public:
+	std::atomic<Stop> shutdownReason = Stop::Cancel;
 	std::atomic_uint userChoice;							// Atomic uint for user choice
 
-	std::atomic_bool eventShutdown = false;					// Bool for shutting down the thread
-	std::atomic_bool eventResume = false;					// Bool for resuming the thread
 	std::atomic_bool eventPause = false;					// Bool for pausing the thread
-	std::atomic_bool eventReset = false;					// Bool for resetting the thread for a new experiment
+	std::atomic_bool eventResume = false;					// Bool for resuming the thread
+	std::atomic_bool eventShutdown = false;					// Bool for shutting down the thread
 	std::atomic_bool eventUserInput = false;				// Bool for waiting for the user to do something
+	std::atomic_bool eventChangeExpSett = false;			// Bool for changing experiment settings
 
 
 /**********************************************************************************************************************************

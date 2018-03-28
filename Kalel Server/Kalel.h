@@ -30,8 +30,6 @@ protected:
 	void AutomationControl(http_request* req, http_response* resp);
 	void UserInput(http_request* req, http_response* resp);
 
-	MachineSettings GetMachineSettings();
 	unsigned SetMachineSettings(const MachineSettings & ms);
-	ExperimentSettings GetExperimentSettings();
 	void SetExperimentSettings(const ExperimentSettings & es);
 };

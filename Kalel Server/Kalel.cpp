@@ -63,7 +63,8 @@
 using json = nlohmann::json;
 
 Kalel::Kalel()
-	: controlMechanisms{ storage.machineSettings }
+	: storage()
+	, controlMechanisms{ storage.machineSettings }
 	, threadManager{ storage, controlMechanisms}
 {
 
@@ -185,13 +186,13 @@ void Kalel::MachineSettingsSync(http_request* req, http_response* resp)
 	if (req->method == http::method::get)
 	{
 		auto time = req->params.find("t");
-		if (time != req->params.end() && timeh::StringToTimePoint(time->second) < storage.machineSettings.tp)
+		if (time != req->params.end() && timeh::StringToTimePoint(time->second) > storage.machineSettings.tp)
 		{
 			resp->status = http::responses::no_content;
 		}
 		else
 		{
-			json j = GetMachineSettings();
+			json j = storage.machineSettings;
 
 			resp->status = http::responses::ok;
 			resp->content_type = http::mimetype::appjson;
@@ -230,11 +231,19 @@ void Kalel::ExperimentSettingsSync(http_request* req, http_response* resp)
 	// GET
 	if (req->method == http::method::get)
 	{
-		json j = GetExperimentSettings();
+		auto time = req->params.find("t");
+		if (time != req->params.end() && timeh::StringToTimePoint(time->second) > storage.machineSettings.tp)
+		{
+			resp->status = http::responses::no_content;
+		}
+		else
+		{
+			json j = storage.experimentSettings;
 
-		resp->status = http::responses::ok;
-		resp->content_type = http::mimetype::appjson;
-		resp->body = j.dump();
+			resp->status = http::responses::ok;
+			resp->content_type = http::mimetype::appjson;
+			resp->body = j.dump();
+		}
 	}
 
 	// SET
@@ -269,7 +278,7 @@ void Kalel::ExperimentStatusSync(http_request* req, http_response* resp)
 	if (req->method == http::method::get)
 	{
 		auto time = req->params.find("t");
-		if (time != req->params.end() && timeh::StringToTimePoint(time->second) < storage.experimentStatus.tp)
+		if (time != req->params.end() && timeh::StringToTimePoint(time->second) > storage.experimentStatus.tp)
 		{
 			resp->status = http::responses::no_content;
 		}
@@ -567,9 +576,6 @@ void Kalel::AutomationControl(http_request* req, http_response* resp)
 				threadManager.ShutdownAutomation();
 				threadManager.StartAutomation();
 			}
-			else if (req->params.at("action") == "reset") {
-				threadManager.ResetAutomation();
-			}
 			else if (req->params.at("action") == "pause") {
 				threadManager.PauseAutomation();
 			}
@@ -632,12 +638,6 @@ void Kalel::UserInput(http_request * req, http_response * resp)
 // Setting and getting of com classes
 //
 
-
-MachineSettings Kalel::GetMachineSettings()
-{
-	return storage.machineSettings;
-}
-
 unsigned Kalel::SetMachineSettings(const MachineSettings & ms)
 {
 	// Save to file
@@ -666,11 +666,6 @@ unsigned Kalel::SetMachineSettings(const MachineSettings & ms)
 	return 0;
 }
 
-ExperimentSettings Kalel::GetExperimentSettings()
-{
-	return storage.experimentSettings;
-}
-
 void Kalel::SetExperimentSettings(const ExperimentSettings & es)
 {
 	// Create new experiment settings, logging change if experiment is running
@@ -683,5 +678,6 @@ void Kalel::SetExperimentSettings(const ExperimentSettings & es)
 			storage.experimentStatus, storage.currentData);						// CSV
 	}
 
-	storage.setExperimentSettings(es);
+	storage.tExperimentSettings = std::make_unique<ExperimentSettings>(std::move(es));
+	threadManager.ChangeExperimentSettings();
 }

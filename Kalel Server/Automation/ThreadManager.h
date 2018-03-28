@@ -37,9 +37,9 @@ public:
 	bool StartAutomation();
 	bool PauseAutomation();
 	bool ResumeAutomation();
-	bool ResetAutomation();
 	bool ShutdownAutomation();
 	bool SetUserChoice(unsigned int choice);
+	bool ChangeExperimentSettings();
 
 	unsigned ThreadManualAction(int instrumentID, bool state);		// When a manual command is issued
 	void ManualAction(int instrumentID, bool state);

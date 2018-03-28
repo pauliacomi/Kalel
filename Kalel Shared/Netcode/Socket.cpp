@@ -109,7 +109,7 @@ void Socket::Listen(PCSTR port)
 		}
 
 		// Set socket option to timeout
-		int timeout = 500;																// 500 ms
+		int timeout = 5000;																// 5 s
 		setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, (char*)&timeout, sizeof(timeout));
 
 		break;	// if we got here we are connected

@@ -1,12 +1,11 @@
 #pragma once
 
+#include "ExperimentHelperClasses.h"
+
 #include <string>
 #include <map>
 #include <chrono>		// for timepoint
 
-#include "ExperimentHelperClasses.h"
-
-#include "../classHelpers.h"
 
 class MachineSettings
 {

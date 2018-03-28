@@ -128,13 +128,13 @@ bool ThreadManager::ResumeAutomation()
 }
 
 
-bool ThreadManager::ResetAutomation()
+bool ThreadManager::ChangeExperimentSettings()
 {
 	if (automation != nullptr)
 	{
 		// Signal the thread to reset
 		std::unique_lock<std::mutex> lk(storage.automationMutex);	// mutex for thread notification
-		automation->eventReset = true;
+		automation->eventChangeExpSett = true;
 		storage.automationControl.notify_all();
 
 		return true;
@@ -166,6 +166,7 @@ bool ThreadManager::ShutdownAutomation()
 	{
 		// Signal the thread to exit
 		std::unique_lock<std::mutex> lk(storage.automationMutex);	// mutex for thread notification
+		automation->shutdownReason = Stop::Complete;
 		automation->eventShutdown = true;
 		storage.automationControl.notify_all();
 

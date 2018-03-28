@@ -9,7 +9,7 @@ void Automation::Shutdown()
 	switch (shutdownReason)
 	{
 
-	case STOP_CANCEL:		// This cancels an experiment in progress, GUI must ask check for experiment running
+	case Stop::Cancel:		// This cancels an experiment in progress
 		
 		//When thread finishes, let main window know to unlock menu and reset graph
 		LOG(logINFO) << MESSAGE_EXPCANCEL;
@@ -21,11 +21,10 @@ void Automation::Shutdown()
 
 		// Run reset funtion
 		ResetAutomation();
-		storage.resetExperimentSettings();
 
 		break;
 
-	case STOP_NORMAL:		// This option is used if the experiment finishes correctly
+	case Stop::Normal:		// This option is used if the experiment finishes correctly
 							// It then resets everything
 
 		//When thread finishes, let main window know to unlock menu
@@ -41,11 +40,10 @@ void Automation::Shutdown()
 
 		// Run reset funtion
 		ResetAutomation();
-		storage.resetExperimentSettings();
 
 		break;
 
-	case STOP_COMPLETE:		// This option is used if the automation thread is to be closed
+	case Stop::Complete:		// This option is used if the automation thread is to be closed
 
 		// When thread finishes, let main window know to unlock menu
 		LOG(logINFO) << MESSAGE_THREAD_SHUTDOWN;
