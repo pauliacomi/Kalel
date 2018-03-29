@@ -15,7 +15,11 @@
 #define MESSAGE_EXPRESUME					"Experiment resumed"
 #define MESSAGE_WAIT_TIME					"Waiting for %d seconds..."
 #define MESSAGE_THREAD_SHUTTINGDOWN			"Thread is shutting down"
-#define MESSAGE_THREAD_SHUTDOWN				"Thread shut down"
+#define MESSAGE_THREAD_SHUTDOWN_AUTO		"Automation thread shut down"
+#define MESSAGE_THREAD_SHUTDOWN_MEAS		"Measurement thread shut down"
+#define MESSAGE_THREAD_START_AUTO			"Automation thread started"
+#define MESSAGE_THREAD_START_MEAS			"Measurement thread started"
+
 
 /*
 //

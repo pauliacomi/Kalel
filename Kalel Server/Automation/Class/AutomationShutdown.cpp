@@ -44,7 +44,7 @@ void Automation::Shutdown()
 	case Stop::Complete:		// This option is used if the automation thread is to be closed
 
 		// When thread finishes, let main window know to unlock menu
-		LOG(logINFO) << MESSAGE_THREAD_SHUTDOWN;
+		LOG(logINFO) << MESSAGE_THREAD_SHUTDOWN_AUTO;
 
 		// Break loop
 		running = false;

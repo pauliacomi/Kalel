@@ -37,6 +37,8 @@ Automation::~Automation()
 ////////////////////////////////////////////////////////
 void Automation::Execution()
 {
+	LOG(logINFO) << MESSAGE_THREAD_START_AUTO;
+
 	// Infinite loop, it is broken from the inside
 	while (running)
 	{

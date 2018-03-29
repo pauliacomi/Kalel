@@ -51,6 +51,8 @@ Measurement::~Measurement()
 
 void Measurement::Execution()
 {
+	LOG(logINFO) << MESSAGE_THREAD_START_MEAS;
+
 	while (true)
 	{
 		/*
@@ -120,6 +122,8 @@ void Measurement::Execution()
 
 		if (notified) { break;}
 	}
+
+	LOG(logINFO) << MESSAGE_THREAD_SHUTDOWN_MEAS;
 }
 
 
