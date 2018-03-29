@@ -97,7 +97,7 @@ bool Keithley::InitKeithley()
 {
 	int nBytesWritten = 0;
 	int nbOctetsLus = 0;
-	char buffer[256];
+	char init_buf[256];
 	
 	// On met dans 'buffer' les instructions a donne au keithley pour qu'il puisse s'initialiser.
 	//
@@ -116,20 +116,19 @@ bool Keithley::InitKeithley()
 	// On fait les 2 dernieres instructions egalement pour le channel 2.
 	// Le caractere '\n' represente le saut de ligne et permet de signaler la fin d'une execution
 
-	sprintf_s(buffer, sizeof(buffer),
+	sprintf_s(init_buf, sizeof(init_buf),
 		"%s%s%s%s%s%s",		// six strings
-		"*RST\n",
-		"*CLS\n",
-		":SENS:VOLT:CHAN1:LPAS OFF\n",
-		":SENS:VOLT:CHAN1:DFIL:STAT OFF\n",
-		":SENS:VOLT:CHAN2:LPAS OFF\n",
-		":SENS:VOLT:CHAN2:DFIL:STAT OFF\n");
-
+		mens_rst,
+		mens_cls,
+		mens_chan1_lpas,
+		mens_chan1_dfil,
+		mens_chan2_lpas,
+		mens_chan2_dfil);
 
 	//On va ecrire dans le port COM pour initialiser le Keithley.
 	//Si on a pu ecrire au COM - WriteCOM retournant 'true' - l'initialisation a ete effectue,
 	//on retourne 'true', sinon, on retourne 'false'
-	bool success = WriteCOM(buffer, (int)strlen(buffer), &nBytesWritten);
+	bool success = WriteCOM(init_buf, (int)strlen(init_buf), &nBytesWritten);
 
 	if(success)
 	{
@@ -153,7 +152,7 @@ bool Keithley::ReadChan(int chanNo, double* result)
 {
 	int nBytesWritten = 0;
 	int nbOctetsLus = 0;
-	char buffer[256];
+	char read_buf[256];
 	bool success;
 
 	// The reading and writing has to be successive, otherwise a thread can ask for the read of one channel 
@@ -173,13 +172,13 @@ bool Keithley::ReadChan(int chanNo, double* result)
 	//	:SENS:CHAN1 => Select channel to measure; 0,1 or 2 (0=internal temperature sensor).
 	//				   EXPERIMENT_TYPE_MANUAL du Keithley 14-8
 
-	sprintf_s(buffer, sizeof(buffer),
+	sprintf_s(read_buf, sizeof(read_buf),
 		"%s%s%d%s%s",
-		"*CLS\n",
+		mens_cls,
 		":SENS:CHAN ", chanNo,"\n",
-		":READ?\n");
+		mens_read);
 
-	success = WriteCOM(buffer, (int)strlen(buffer), &nBytesWritten);
+	success = WriteCOM(read_buf, (int)strlen(read_buf), &nBytesWritten);
 	if (!success) {
 		lock.unlock();
 		return false;
@@ -208,22 +207,31 @@ bool Keithley::ReadChan(int chanNo, double* result)
 	//
 	// On pourra voir si on rajoute une fonction pour verifier que la valeur renvoyer est la bonne.
 
-	success = ReadCOM(buffer, 256);
+	char buffer[256] = { "\0" };
+
+	success = ReadCOM(buffer, sizeof(buffer));
 	if (!success) {
 		lock.unlock();
 		return false;
 	}
+	
 
 	// Can now leave the critical section 
 	lock.unlock();
 	
 	// On ne va garder de 'buffer' que les 15 premiers caracteres. On elimine le retour a la ligne
 	// On mettra cette chaine de caractere dans 'resultat'.
-	std::string temp = buffer;
-	temp = temp.substr(0,15);
-	*result = atof(temp.c_str());
+	if (buffer[0] == '\0') {
+		LOG(logDEBUG2) << "Keithley channel " + std::to_string(chanNo) + " read nothing";
 
-	LOG(logDEBUG2) << "Keithley channel " + std::to_string(chanNo) + " read";
+		*result = 0;
+	}
+	else {
+		LOG(logDEBUG2) << "Keithley channel " + std::to_string(chanNo) + " read: " << buffer;
+		*result = std::stod(std::string(buffer));
+	}
+
+	buffer[0] = 0;
 	return true;
 }
 

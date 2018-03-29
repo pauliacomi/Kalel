@@ -100,9 +100,8 @@ double Mensor::Read()
 	//le ? correspond à la recherche de la valeur
 	//le <cr> correspond au "carriage return", un retour à la ligne, le caractère 13
 	// dans le code ascii
-	sprintf_s(buffer,"#1?<cr>\n");
 	
-	success = WriteCOM(buffer, (int)strlen(buffer), &nBytesWritten);
+	success = WriteCOM(query_template, (int)strlen(query_template), &nBytesWritten);
 	if (!success)
 		return false;
 
@@ -117,14 +116,24 @@ double Mensor::Read()
 	//On ignore donc les 4 premiers caractères et on prend les nbOctetsLus-6
 	// suivants qui représentent la pression
 
-	success = ReadCOM(buffer, 256);
+	char buffer[256] = { "\0" };
+
+	success = ReadCOM(buffer, sizeof(buffer));
 	if (!success)
 		return false;
 
-	std::string resultat = buffer;
-	resultat = resultat.substr(4, nbOctetsLus - 6);
 
-	LOG(logDEBUG2) << "Mensor read";
+	double result;
+	if (buffer[0] == '\0') {
+		LOG(logDEBUG2) << "Mensor read nothing";
+		result = 0;
+	}
+	else {
+		LOG(logDEBUG2) << "Mensor read: " << buffer;
+		result = std::stod(std::string(buffer).substr(1, std::string::npos));
+	}
 
-	return atof(resultat.c_str()); //conversion du string en float;
+	buffer[0] = 0;
+
+	return result;
 }

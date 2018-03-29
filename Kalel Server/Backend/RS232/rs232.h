@@ -22,7 +22,7 @@ public:
 	bool ReadCOM(char* buffer, int nBytesToRead);
 
 	// Write to the COM port
-	bool WriteCOM(void* buffer, int nBytesToWrite, int* pBytesWritten);
+	bool WriteCOM(const char* buffer, int nBytesToWrite, int* pBytesWritten);
 
 	// Close the COM port, must always be called to make sure the handle is closed
 	bool CloseCOM();

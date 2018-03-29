@@ -14,7 +14,7 @@ public:
 private:
 	int portRS;										// RS232 port used
 
-	char buffer[256]	= { "\0" };
+	char query_template[10] = "#1?\n";
 	bool connectionOpen = false;
 	bool OpenCOM(int nId);
 	bool CloseCOM();

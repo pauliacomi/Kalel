@@ -59,7 +59,7 @@ RS232::~RS232()
 bool RS232::OpenCOM(int pnId)
 {
 	// Construct port specifier
-	std::wstring szCOM = L"\\\\.\\COM%d" + std::to_wstring(pnId);
+	std::wstring szCOM = L"\\\\.\\COM" + std::to_wstring(pnId);
 	
 	// Open COM port
     g_hCOM = CreateFile(
@@ -112,7 +112,7 @@ bool RS232::ReadCOM(char *buffer, int nBytesToRead)
 	// Now define required variables
 	DWORD dwRead;
 	DWORD dwRes;
-	BOOL fWaitingOnRead = FALSE;
+	bool fWaitingOnRead = false;
 	OVERLAPPED osReader = { 0 };
 	bool noErrors = true;
 	bool readingComplete = false;
@@ -144,7 +144,7 @@ bool RS232::ReadCOM(char *buffer, int nBytesToRead)
 				noErrors = false;
 			}
 			else
-				fWaitingOnRead = TRUE;
+				fWaitingOnRead = true;
 		}
 		else {
 			// read completed immediately
@@ -175,7 +175,7 @@ bool RS232::ReadCOM(char *buffer, int nBytesToRead)
 					readingComplete = true;
 
 				//  Reset flag so that another opertion can be issued.
-				fWaitingOnRead = FALSE;
+				fWaitingOnRead = false;
 				break;
 
 			case WAIT_TIMEOUT:
@@ -209,7 +209,7 @@ bool RS232::ReadCOM(char *buffer, int nBytesToRead)
 	return false;
 }
 
-bool RS232::WriteCOM(void* buffer, int nBytesToWrite, int* pBytesWritten)
+bool RS232::WriteCOM(const char* buffer, int nBytesToWrite, int* pBytesWritten)
 {
 	// Start by checking if port is open
 	if (!g_hCOM) {
