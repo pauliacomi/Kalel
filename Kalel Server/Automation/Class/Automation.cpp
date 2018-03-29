@@ -262,8 +262,7 @@ void Automation::ExecutionAuto()
 	case STAGE_END_AUTOMATIC:
 
 		// If the experiment has finished
-		shutdownReason = Stop::Normal;				// set a normal shutdown
-		eventShutdown = true;						// end then set the event
+		eventShutdown = true;						// set the event
 		storage.automationControl.notify_all();		// and notify
 
 		break;
