@@ -607,7 +607,7 @@ LRESULT CKalelView::OnSync(WPARAM, LPARAM)
 	}
 
 	// Make sure buttons are updated
-	if (experimentSettings && experimentSettings->experimentType != EXPERIMENT_TYPE_UNDEF) {
+	if (experimentStatus && experimentStatus->experimentInProgress) {
 		pApp->experimentRunning = true;
 		pApp->menuIsAvailable = false;
 	}

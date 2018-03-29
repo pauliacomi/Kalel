@@ -194,7 +194,7 @@ void Automation::ExecutionManual()
 			shutdownReason = Stop::Error;
 			eventShutdown = true;
 			storage.automationControl.notify_all();
-			LOG(logERROR) << ERROR_PATHUNDEF;
+			LOG(logERROR) << ERROR_FILE_WRITE;
 		}
 
 		// Record start
@@ -331,7 +331,6 @@ void Automation::ResetAutomation()
 {
 	// Reset all data from the experiment
 	storage.experimentStatus.ResetData();
-	storage.experimentSettings.ResetData();
 
 	// If the shutdown event is called externally, it will default to a cancel
 	// Otherwise the flag will be changed from inside the code

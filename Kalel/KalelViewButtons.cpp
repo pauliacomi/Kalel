@@ -63,7 +63,7 @@ void CKalelView::OnBnClickedArreter()
 			switch (result)
 			{
 			case IDYES:
-				commHandler.ResetClient();
+				commHandler.StopExperiment();
 				break;
 
 			case IDNO:
@@ -199,7 +199,7 @@ void CKalelView::OnBnClickedArretSousVide()
 			switch (result)
 			{
 			case IDYES:
-				commHandler.StopVacuum();
+				commHandler.StopExperiment();
 				break;
 
 			case IDNO:

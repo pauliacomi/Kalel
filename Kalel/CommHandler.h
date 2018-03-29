@@ -38,14 +38,13 @@ public:
 	void StartClient();
 	void ShutdownClient();
 	void RestartClient();
-	void ResetClient();
 	void PauseClient();
 	void ResumeClient();
 
 	void NextCommand();
 	void NextStep();
 	void NextSubstep();
-	void StopVacuum();
+	void StopExperiment();
 
 	void UserYes(const std::chrono::system_clock::time_point & time);
 	void UserNo(const std::chrono::system_clock::time_point & time);

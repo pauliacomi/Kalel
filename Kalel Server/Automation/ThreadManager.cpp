@@ -99,6 +99,32 @@ bool ThreadManager::StartAutomation()
 	return false;
 }
 
+// Shutdownfunction will check if thread is running and then send it the shutdown command
+bool ThreadManager::ShutdownAutomation()
+{
+	// Close the worker thread
+	if (automation != nullptr)
+	{
+		// Signal the thread to exit
+		std::unique_lock<std::mutex> lk(storage.automationMutex);	// mutex for thread notification
+		automation->shutdownReason = Stop::Complete;
+		automation->eventShutdown = true;
+		storage.automationControl.notify_all();
+
+		// Unlock to continue function
+		lk.unlock();
+
+		// Join thread
+		automationThread.join();
+
+		// Delete thread
+		automation.reset(nullptr);
+
+		return true;
+	}
+	return false;
+}
+
 bool ThreadManager::PauseAutomation()
 {
 	if (automation != nullptr)
@@ -128,6 +154,23 @@ bool ThreadManager::ResumeAutomation()
 }
 
 
+// Will set the flag to turn off the experiment as cancelled
+bool ThreadManager::StopExperiment()
+{
+	// Close the worker thread
+	if (automation != nullptr)
+	{
+		// Signal the thread to exit
+		std::unique_lock<std::mutex> lk(storage.automationMutex);	// mutex for thread notification
+		automation->shutdownReason = Stop::Cancel;
+		automation->eventShutdown = true;
+		storage.automationControl.notify_all();
+
+		return true;
+	}
+	return false;
+}
+
 bool ThreadManager::ChangeExperimentSettings()
 {
 	if (automation != nullptr)
@@ -152,32 +195,6 @@ bool ThreadManager::SetUserChoice(unsigned int choice)
 		automation->userChoice = choice;							// set choice
 		automation->eventResume = true;								// then continue
 		storage.automationControl.notify_all();
-
-		return true;
-	}
-	return false;
-}
-
-// Shutdownfunction will check if thread is running and then send it the shutdown command
-bool ThreadManager::ShutdownAutomation()
-{
-	// Close the worker thread
-	if (automation != nullptr)
-	{
-		// Signal the thread to exit
-		std::unique_lock<std::mutex> lk(storage.automationMutex);	// mutex for thread notification
-		automation->shutdownReason = Stop::Complete;
-		automation->eventShutdown = true;
-		storage.automationControl.notify_all();
-
-		// Unlock to continue function
-		lk.unlock();
-
-		// Join thread
-		automationThread.join();
-
-		// Delete thread
-		automation.reset(nullptr);
 
 		return true;
 	}

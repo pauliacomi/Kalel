@@ -136,7 +136,7 @@ public:
 	*        const ExperimentSettings& oldSettings:	ExperimentSettings newSettings: The old settings file to compare to
 	*        const ExperimentData& newSettings:		ExperimentSettings newSettings: The current experiment state
 	***********************************************************************/
-	void RecordDataChange(bool csv, const ExperimentSettings& newSettings, const ExperimentSettings& oldSettings, const ExperimentStatus &status, const ExperimentData& data);
+	bool RecordDataChange(bool csv, const ExperimentSettings& newSettings, const ExperimentSettings& oldSettings, const ExperimentStatus &status, const ExperimentData& data);
 
 
 	/**********************************************************************
@@ -147,6 +147,6 @@ public:
 	*       bool entete: specify true to get the entete string or false for the regular file
 	*       bool entete: error return value for undefined path
 	***********************************************************************/
-	std::wstring BuildFileName(std::wstring extension, const data_general &general, bool entete, bool error);
+	std::wstring BuildFileName(std::wstring extension, const data_general &general, bool entete);
 };
 

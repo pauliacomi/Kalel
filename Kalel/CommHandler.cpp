@@ -254,19 +254,18 @@ void CommHandler::ShutdownClient() { ThreadCommand("shutdown"); }
 
 void CommHandler::RestartClient() {	ThreadCommand("restart"); }
 
-void CommHandler::ResetClient() { ThreadCommand("reset"); }
-
 void CommHandler::PauseClient() { ThreadCommand("pause"); }
 
 void CommHandler::ResumeClient() { ThreadCommand("resume"); }
 
-void CommHandler::NextCommand() { ThreadCommand("next_command"); }
+void CommHandler::StopExperiment() { ThreadCommand("stop_experiment"); }
 
-void CommHandler::NextStep() { ThreadCommand("next_step"); }
+void CommHandler::NextCommand() { ThreadCommand("nextstage"); }
+
+void CommHandler::NextStep() { ThreadCommand("nextstep"); }
 
 void CommHandler::NextSubstep() { ThreadCommand("next_substep"); }
 
-void CommHandler::StopVacuum() { ThreadCommand("stop_vacuum"); }
 
 void CommHandler::ThreadCommand(std::string command)
 {

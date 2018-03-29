@@ -35,9 +35,10 @@ public:
 	bool ShutdownMeasurement();
 
 	bool StartAutomation();
+	bool ShutdownAutomation();
 	bool PauseAutomation();
 	bool ResumeAutomation();
-	bool ShutdownAutomation();
+	bool StopExperiment();
 	bool SetUserChoice(unsigned int choice);
 	bool ChangeExperimentSettings();
 

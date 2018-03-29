@@ -69,9 +69,7 @@ bool FileWriter::EnteteCreate(const ExperimentSettings &expSettings, const Machi
 		stream << EnteteDesorption(false, expSettings.dataDesorption);
 	}
 
-	bool ret = false;
-	bool ret2 = writeFile(FileWriter::BuildFileName(L"txt", expSettings.dataGeneral, true, ret), stream.str());
-	return ret || ret2;
+	return writeFile(FileWriter::BuildFileName(L"txt", expSettings.dataGeneral, true), stream.str());
 }
 
 
@@ -95,9 +93,7 @@ bool FileWriter::EnteteCSVCreate(const ExperimentSettings &expSettings, const Ma
 		stream << EnteteDesorption(true, expSettings.dataDesorption);
 	}
 
-	bool ret = false;
-	bool ret2 = writeFile(FileWriter::BuildFileName(L"csv", expSettings.dataGeneral, true, ret), stream.str());
-	return ret || ret2;
+	return writeFile(FileWriter::BuildFileName(L"csv", expSettings.dataGeneral, true), stream.str());
 }
 
 
@@ -124,9 +120,7 @@ bool FileWriter::FileMeasurementCreate(const data_general &general)
 	stream << "Vanne 6";												// Valve open
 	stream << std::endl;												// Next line
 
-	bool ret = false;
-	bool ret2 = writeFile(FileWriter::BuildFileName(L"csv", general, false, ret), stream.str());
-	return ret || ret2;
+	return writeFile(FileWriter::BuildFileName(L"csv", general, false), stream.str());
 }
 
 
@@ -154,9 +148,7 @@ bool FileWriter::RecordMeasurement(const data_general &general, const Experiment
 	stream << valveOpen6							<< CSV_DIV;				// Valve open
 	stream << std::endl;													// Next line
 
-	bool ret = false;
-	bool ret2 = writeFile(FileWriter::BuildFileName(L"csv", general, false, ret), stream.str());
-	return ret || ret2;
+	return  writeFile(FileWriter::BuildFileName(L"csv", general, false), stream.str());
 }
 
 
@@ -318,7 +310,7 @@ std::wstring FileWriter::EnteteDesorption(bool csv, const std::vector<data_desor
 *        const ExperimentSettings& oldSettings:	ExperimentSettings newSettings: The old settings file to compare to
 *        const ExperimentData& newSettings:		ExperimentSettings newSettings: The current experiment state
 ***********************************************************************/
-void FileWriter::RecordDataChange(bool csv, const ExperimentSettings& newSettings, const ExperimentSettings& oldSettings, const ExperimentStatus &status, const ExperimentData& data)
+bool FileWriter::RecordDataChange(bool csv, const ExperimentSettings& newSettings, const ExperimentSettings& oldSettings, const ExperimentStatus &status, const ExperimentData& data)
 {
 	// Check if csv file is requested
 	std::wstring divider;
@@ -370,8 +362,8 @@ void FileWriter::RecordDataChange(bool csv, const ExperimentSettings& newSetting
 		{
 			text << std::endl << "-----------------------------------------------------"	<< std::endl;
 			text << "Settings changed"														<< std::endl;
-			text << "Step" << divider << status.adsorptionCounter						<< std::endl;
-			text << "Dose" << divider << status.experimentDose						<< std::endl;
+			text << "Step" << divider << status.adsorptionCounter							<< std::endl;
+			text << "Dose" << divider << status.experimentDose								<< std::endl;
 
 			
 			if (oldSettings.dataDesorption[i].delta_pression != newSettings.dataDesorption[i].delta_pression)
@@ -400,12 +392,12 @@ void FileWriter::RecordDataChange(bool csv, const ExperimentSettings& newSetting
 	std::wstring title;
 	bool ret = false;
 	if (csv)
-		title = BuildFileName(L"csv", newSettings.dataGeneral, true, ret).c_str();
+		title = BuildFileName(L"csv", newSettings.dataGeneral, true).c_str();
 	else
-		title = BuildFileName(L"txt", newSettings.dataGeneral, true, ret).c_str();
+		title = BuildFileName(L"txt", newSettings.dataGeneral, true).c_str();
 
 	// Write to file
-	writeFile(title, text.str());
+	return writeFile(title, text.str());
 }
 
 
@@ -417,16 +409,14 @@ void FileWriter::RecordDataChange(bool csv, const ExperimentSettings& newSetting
 *		const data_general &general:		Reference to the general data to be checked
 *       bool entete: specify true to get the entete std::string or false for the regular file
 ***********************************************************************/
-std::wstring FileWriter::BuildFileName(std::wstring extension, const data_general &general, bool entete, bool error)
+std::wstring FileWriter::BuildFileName(std::wstring extension, const data_general &general, bool entete)
 {
 	// Create var
 	std::wstring directory = general.chemin;
 
 	// Check for validity, if not, put the file in the C: drive and return an error
-	error = false;
 	if (!filesystem::is_directory(directory))
 	{
-		error = true;
 		directory = filesystem::current_path();
 	}
 
