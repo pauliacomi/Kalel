@@ -151,7 +151,7 @@ public:
 	// Timers
 	//
 	//******************************************************************************************
-	timeh::timer timerMeasurement;											// Class for measuring the time between each measurement
+	timeh::timer timerRecording;											// Class for measuring the time between each measurement
 	timeh::timer timerWaiting;												// Class for measuring the time to wait
 
 	//******************************************************************************************

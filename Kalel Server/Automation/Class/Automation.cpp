@@ -7,7 +7,6 @@ Automation::Automation(Storage &s, Controls &c)
 	: storage{ s }
 	, controls{ c }
 {
-	// Time
 }
 
 
@@ -100,7 +99,7 @@ void Automation::Execution()
 		// Write data
 		if (storage.experimentStatus.experimentRecording)														// If we started recording
 		{
-			if (storage.timerMeasurement.TimeMilliseconds() > storage.machineSettings.TimeBetweenRecording)	// If enough time between measurements
+			if (storage.timerRecording.TimeMilliseconds() > storage.machineSettings.TimeBetweenRecording)		// If enough time between measurements
 			{
 				// Save the data to the file
 				bool err = controls.fileWriter.RecordMeasurement(
@@ -113,7 +112,7 @@ void Automation::Execution()
 				}
 
 				// Restart the timer to record time between measurements
-				storage.timerMeasurement.Start();
+				storage.timerRecording.Start();
 			}
 		}
 		/*
@@ -159,7 +158,7 @@ void Automation::Execution()
 			if (eventChangeExpSett)						// Change experiment settings
 			{
 				if (storage.tExperimentSettings) {
-					storage.experimentSettings = *storage.tExperimentSettings;				// timestamp included
+					storage.experimentSettings = *storage.tExperimentSettings;				// timestamp change included
 					storage.tExperimentSettings.reset();
 				}
 				eventChangeExpSett = false;
@@ -200,6 +199,9 @@ void Automation::ExecutionManual()
 		// Record start
 		storage.experimentStatus.experimentInProgress = true;
 		storage.experimentStatus.experimentRecording = true;
+
+		// Start the timer to record time between recording of measurements
+		storage.timerRecording.Start();	
 
 		// Write Time of start
 		storage.experimentStatus.timeStart = timeh::TimePointToMs(timeh::NowTime());
@@ -329,13 +331,12 @@ void Automation::ExecutionContinuous()
 
 void Automation::ResetAutomation()
 {
-	// Reset all data from the experiment
+	// Reset status from the experiment
 	storage.experimentStatus.ResetData();
-
-	// If the shutdown event is called externally, it will default to a cancel
-	// Otherwise the flag will be changed from inside the code
-	shutdownReason = Stop::Normal;
-
+	
 	// Delete all current measurements
 	storage.dataCollection.del();
+
+	// If the shutdown event not called externally, default to normal stop
+	shutdownReason = Stop::Normal;
 }

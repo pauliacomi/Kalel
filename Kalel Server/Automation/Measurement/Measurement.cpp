@@ -20,7 +20,6 @@ Measurement::Measurement(Storage &s, Controls &c)
 	: storage{ s }
 	, controls{ c }
 {
-	storage.timerMeasurement.Start();				// Start the timer to record time between measurements
 }
 
 

@@ -9,32 +9,26 @@ void Automation::Shutdown()
 	switch (shutdownReason)
 	{
 
-	case Stop::Cancel:		// This cancels an experiment in progress
+	case Stop::Cancel:			// This cancels an experiment in progress
 		
 		//When thread finishes, let main window know to unlock menu and reset graph
 		LOG(logINFO) << MESSAGE_EXPCANCEL;
 
-		// Stop all timers 
-		storage.timerMeasurement.Pause();
-		storage.timerWaiting.Pause();
+		// Reset all data from the experiment
+		storage.experimentSettings.ResetData();
 
 		// Run reset funtion
 		ResetAutomation();
 
 		break;
 
-	case Stop::Normal:		// This option is used if the experiment finishes correctly
-							// It then resets everything
+	case Stop::Normal:			// This option is used if the experiment finishes correctly
+								// It then resets everything
 
-		//When thread finishes, let main window know to unlock menu
-		LOG(logINFO) << MESSAGE_EXPFINISH;					// Experiment has been finished normally
-
-		// Stop all timers 
-		storage.timerMeasurement.Pause();
-		storage.timerWaiting.Pause();
+		LOG(logINFO) << MESSAGE_EXPFINISH;
 
 		// Reset all data from the experiment
-		storage.experimentStatus.ResetData();
+		storage.experimentSettings.ResetData();
 
 		// Run reset funtion
 		ResetAutomation();
@@ -68,7 +62,7 @@ void Automation::Pause()
 		// Log the pause
 		LOG(logINFO) << MESSAGE_EXPPAUSE;
 	}
-	storage.timerMeasurement.Pause();
+	storage.timerRecording.Pause();
 	storage.experimentStatus.experimentCommandsRequested = false;
 }
 
@@ -83,6 +77,6 @@ void Automation::Resume()
 		// Log the resume
 		LOG(logINFO) << MESSAGE_EXPRESUME;
 	}
-	storage.timerMeasurement.Resume();
+	storage.timerRecording.Resume();
 	storage.experimentStatus.experimentCommandsRequested = true;
 }
