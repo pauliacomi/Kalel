@@ -118,6 +118,7 @@ void Instruments::Reset(const MachineSettings & m)
 	{
 		if (m.instruments.find(i->first) == m.instruments.end())				// If it is not in the new settings
 		{
+			DeleteInstrument(i->second);
 			instruments.erase(i);												// Delete it
 		}
 	}
@@ -155,25 +156,25 @@ void Instruments::InitInstrument(Instrument & i)
 			case INSTRUMENT_KEITHLEY:
 				i.iNumber = keithleys.emplace(
 					std::piecewise_construct,
-					std::forward_as_tuple(i.iNumber),
+					std::forward_as_tuple(i.type + i.port),
 					std::forward_as_tuple(i.port)).first->first;
 				break;
 			case INSTRUMENT_MENSOR:
 				i.iNumber = mensors.emplace(
 					std::piecewise_construct,
-					std::forward_as_tuple(i.iNumber),
+					std::forward_as_tuple(i.type + i.port),
 					std::forward_as_tuple(i.port)).first->first;
 				break;
 			case INSTRUMENT_NI_USB_9211A:
 				i.iNumber = NI_USB_9211As.emplace(
 					std::piecewise_construct,
-					std::forward_as_tuple(i.iNumber),
+					std::forward_as_tuple(i.type + i.port),
 					std::forward_as_tuple(i.port)).first->first;
 				break;
 			case INSTRUMENT_NI_USB_6008:
 				i.iNumber = NI_USB_6008s.emplace(
 					std::piecewise_construct,
-					std::forward_as_tuple(i.iNumber),
+					std::forward_as_tuple(i.type + i.port),
 					std::forward_as_tuple(i.port)).first->first;
 				break;
 			case NONE:
