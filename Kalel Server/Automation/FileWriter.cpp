@@ -432,30 +432,26 @@ std::wstring FileWriter::BuildFileName(std::wstring extension, const data_genera
 
 	filesystem::path filePath = directory;
 
-	// Check if the user field is empty
+	// Check for the user field
 	if (general.user.surnom.empty())
 		filePath /= "New User";
 	else
-	{
 		filePath /= general.user.surnom;
 
-		if (!filesystem::is_directory(filePath)) {
-			filesystem::create_directory(filePath);
-		}
+	// Check if the full path exists, if not create it
+	if (!filesystem::is_directory(filePath)) {
+		filesystem::create_directory(filePath);
 	}
 
-	// Check if the sample exists, if not, create it
+	// Check if the sample field
 	if (general.nom_echantillon.empty())
 		filePath /= "New Sample";
 	else
-	{
-		// Check if the sample directory exists
 		filePath /= general.nom_echantillon;
 
-		// Check if the full path exists, if not create it
-		if (!filesystem::is_directory(filePath)) {
-			filesystem::create_directory(filePath);
-		}
+	// Check if the full path exists, if not create it
+	if (!filesystem::is_directory(filePath)) {
+		filesystem::create_directory(filePath);
 	}
 
 	// Finally store the entire path including the file name and return it

@@ -2,7 +2,7 @@
     "CaloName": "name",
     "CaloPrefix": "entete",
     "DefaultPath": "C:",
-    "InjectionAttemptNumber": 4,
+    "InjectionAttemptNumber": 3,
     "InjectionMargin": 0.009999999776482582,
     "InjectionMultiplier": 1.2000000476837158,
     "PressureLimitVacuum": 0.009999999776482582,
@@ -182,5 +182,5 @@
             "type": 48
         }
     },
-    "timestamp": "2018-03-28T14:02:54.425Z"
+    "timestamp": "2018-03-29T11:46:53.794Z"
 }
