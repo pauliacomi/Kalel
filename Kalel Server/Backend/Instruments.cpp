@@ -51,6 +51,11 @@ bool Instruments::Reset(const MachineSettings & m)
 	bool err = false;
 	for (auto i : m.readers)					// For each incoming reader
 	{
+		if (i.second.sensitivity == 0)			// check sensitivity values
+		{
+			LOG(logERROR) << "Sensitivity for instrument type " << i.second.type << " ID " << i.second.identifier << " is 0";
+			err = true;
+		}
 		if (m.instruments.find(i.second.instrument) == m.instruments.end())
 		{
 			LOG(logERROR) << "Reader " << i.first << " does not have a corresponding instrument";
