@@ -89,7 +89,7 @@ bool NI_USB_6008::ReadDigital(char * chan, uInt8 * w_data)
 	int32       pointsRead		= 0;					// Output points read
 	int32		bytesPerSamp	= 0;					// bytes per sample read
 
-	// Create Digital Output (DO) Task and Channel
+	// Create Digital Input (DI) Task and Channel
 	DAQmxErrChk (DAQmxCreateTask("ReadValves", &taskHandle));
 	DAQmxErrChk (DAQmxCreateDIChan(taskHandle, chan, "", DAQmx_Val_ChanForAllLines));
 
