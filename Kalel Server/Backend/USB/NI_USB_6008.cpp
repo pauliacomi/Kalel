@@ -40,12 +40,16 @@ bool NI_USB_6008::ReadPort(unsigned int port)
 	char        chan[50]		= { '\0' };
 	int			line_start		= 0;
 	int			line_end		= 7;
-	
+	if (port == 1)	{ line_end = 3;}				// port 1 only has 4 lines
+
 	// Write channel string
 	sprintf_s(chan,"Dev%d/port%d/line%d:%d",portUSB, port, line_start, line_end);
 
+	uInt8 read[8] = { 0 };
+
 	// Read state
-	if (ReadDigital(chan, portStates[port].data())) {
+	if (ReadDigital(chan, read)) {
+		//portStates[port].data();
 		return true;
 	}
 	return false;
@@ -54,15 +58,16 @@ bool NI_USB_6008::ReadPort(unsigned int port)
 bool NI_USB_6008::WritePort(unsigned int port)
 {
 	// Specific channel and line parameters
-	char        chan[50]		= { '\0' };
+	char        chan[50]		= { 0 };
 	int			line_start		= 0;
 	int			line_end		= 7;
+	if (port == 1) { line_end = 3; }				// port 1 only has 4 line
 
 	// Write channel string
 	sprintf_s(chan, "Dev%d/port%d/line%d:%d", portUSB, port, line_start, line_end);
 
 	// Write action
-	return WriteDigital(chan, portStates[port].data());
+	return WriteDigital(chan, portStates[port].to_ulong());
 }
 
 
@@ -135,7 +140,7 @@ Error:
 //*    5. Call the Clear Task function to clear the Task.
 //*    6. Display an error if any.
 
-bool NI_USB_6008::WriteDigital(char chan[], uInt8 w_data[])
+bool NI_USB_6008::WriteDigital(char chan[], const unsigned long w_data)
 {
 	// Task variables
 	TaskHandle  taskHandle		= nullptr;
@@ -154,7 +159,7 @@ bool NI_USB_6008::WriteDigital(char chan[], uInt8 w_data[])
 
 	//  Write 0x55 to port(s)
 	//  Only 1 sample per channel supported for static DIO
-	DAQmxErrChk(DAQmxWriteDigitalLines(taskHandle, samplesPerChannel, autostart, timeout, DAQmx_Val_GroupByChannel, w_data, &written, NULL));
+	DAQmxErrChk(DAQmxWriteDigitalU32(taskHandle, samplesPerChannel, autostart, timeout, DAQmx_Val_GroupByChannel, &w_data, &written, NULL));
 
 Error:
 	// In case of error

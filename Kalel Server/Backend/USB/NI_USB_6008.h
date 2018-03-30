@@ -10,7 +10,7 @@
 #include "NIDAQmx.h"
 #include "../Wrapper Classes/InstrumentInterface.h"
 #include <vector>
-#include <array>
+#include <bitset>
 #include <mutex>
 
 class NI_USB_6008 : InstrumentInterface
@@ -25,7 +25,7 @@ private:
 	// Parameters for writing
 	//*************************
 	int portUSB;													// USB port
-	std::vector<std::array<uInt8, 8>> portStates = { {0},{0} };
+	std::vector<std::bitset<8>> portStates = { {0},{0} };
 
 	// Read/Write parameters
 	static const uInt32 bufferSize	= 8;
@@ -37,7 +37,7 @@ private:
 	bool ReadPort(unsigned int port);
 	bool WritePort(unsigned int port);
 	bool ReadDigital(char chan[], uInt8 w_data[]);
-	bool WriteDigital(char chan[], uInt8 w_data[]);
+	bool WriteDigital(char chan[], const unsigned long w_data);
 
 private:
 	std::mutex mutex;									// locks to prevent clash of threads on writing
