@@ -193,7 +193,6 @@ private:
 	void OnBnClickedLancer();
 	void OnBnClickedArreter();
 	void OnBnClickedButtonParametresExperience();
-	void OnBnClickedArretSousVide();
 	void OnBnClickedPause();
 	void OnBnClickedProchaineCommande();
 	void OnBnClickedProchaineDose();

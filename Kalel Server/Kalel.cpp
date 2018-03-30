@@ -546,10 +546,13 @@ void Kalel::AutomationControl(http_request* req, http_response* resp)
 				threadManager.StopExperiment();
 			}
 			else if (req->params.at("action") == "nextstage") {
+				storage.experimentStatus.experimentStage++;
 			}
 			else if (req->params.at("action") == "nextstep") {
+				storage.experimentStatus.experimentSubstepStage++;
 			}
-			else if (req->params.at("action") == "nextdose") {
+			else if (req->params.at("action") == "nextsubstep") {
+				storage.experimentStatus.experimentDose++;
 			}
 
 			resp->status = http::responses::ok;

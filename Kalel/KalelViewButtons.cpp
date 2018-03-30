@@ -170,7 +170,7 @@ void CKalelView::OnBnClickedProchaineDose()
 {
 	if (pApp->serverConnected)
 	{
-		commHandler.NextStep();
+		commHandler.NextSubstep();
 	}
 	else
 	{
@@ -182,34 +182,7 @@ void CKalelView::OnBnClickedProchaineEtape()
 {
 	if (pApp->serverConnected)
 	{
-		commHandler.NextSubstep();
-	}
-	else
-	{
-		AfxMessageBox(ERROR_CONNECTION_STATUS, MB_OK);
-	}
-}
-
-void CKalelView::OnBnClickedArretSousVide()
-{
-	if (pApp->serverConnected)
-	{
-		if (pApp->experimentRunning) {
-			int result = AfxMessageBox(PROMPT_CANCELEXP, MB_ICONQUESTION | MB_YESNO);
-			switch (result)
-			{
-			case IDYES:
-				commHandler.StopExperiment();
-				break;
-
-			case IDNO:
-				break;
-
-			default:
-				ASSERT(0);
-				break;
-			}
-		}
+		commHandler.NextStep();
 	}
 	else
 	{
@@ -225,7 +198,6 @@ void CKalelView::UpdateButtons() {
 	GetDlgItem(IDC_PROCHAINE_COMMANDE)->EnableWindow(eRun);
 	GetDlgItem(IDC_PROCHAINE_DOSE)->EnableWindow(eRun);
 	GetDlgItem(IDC_PROCHAINE_ETAPE)->EnableWindow(eRun);
-	GetDlgItem(IDC_ARRET_SOUS_VIDE)->EnableWindow(eRun);
 	GetDlgItem(IDC_BUTTON_PARAMETRES_EXPERIENCE)->EnableWindow(eRun);
 	GetDlgItem(IDC_REPRISE)->EnableWindow(eRun);
 	GetDlgItem(IDC_PAUSE)->EnableWindow(eRun);

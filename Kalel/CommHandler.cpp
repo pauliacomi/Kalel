@@ -264,7 +264,7 @@ void CommHandler::NextCommand() { ThreadCommand("nextstage"); }
 
 void CommHandler::NextStep() { ThreadCommand("nextstep"); }
 
-void CommHandler::NextSubstep() { ThreadCommand("next_substep"); }
+void CommHandler::NextSubstep() { ThreadCommand("nextsubstep"); }
 
 
 void CommHandler::ThreadCommand(std::string command)
