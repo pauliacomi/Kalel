@@ -28,7 +28,7 @@ Instruments::~Instruments()
 // initiation functions
 //
 
-void Instruments::Reset(const MachineSettings & m)
+bool Instruments::Reset(const MachineSettings & m)
 {
 	// This loop goes through all the instruments in the Parameters file
 	// Depending on the type of instruments it will output parameters for
@@ -48,40 +48,55 @@ void Instruments::Reset(const MachineSettings & m)
 	//**********************************
 	// Checks
 	//**********************************
-	for (auto i = m.readers.begin(); i != m.readers.end(); i++)					// For each incoming reader
+	bool err = false;
+	for (auto i : m.readers)					// For each incoming reader
 	{
-		if (m.instruments.find(i->second.instrument) == m.instruments.end())
+		if (m.instruments.find(i.second.instrument) == m.instruments.end())
 		{
-			LOG(logERROR) << "Reader " << i->first << " does not have a corresponding instrument";
-			return;
+			LOG(logERROR) << "Reader " << i.first << " does not have a corresponding instrument";
+			err = true;
 		}
 	}
+	if (err) return false;
 
-	for (auto i = m.controllers.begin(); i != m.controllers.end(); i++)					// For each incoming controller
+	for (auto i : m.controllers)				// For each incoming controller
 	{
-		if (m.instruments.find(i->second.instrument) == m.instruments.end())
+		if (m.instruments.find(i.second.instrument) == m.instruments.end())
 		{
-			LOG(logERROR) << "Controller " << i->first << " does not have a corresponding instrument";
-			return;
+			LOG(logERROR) << "Controller " << i.first << " does not have a corresponding instrument";
+			err = true;
 		}
 	}
-	// TODO Add a check for duplicate ports?
+	if (err) return false;
 
 	//**********************************
 	// Instruments
 	//**********************************
 
-	for (auto i = m.instruments.begin(); i != m.instruments.end(); i++)			// For each incoming instrument
+	// Check if any existing instrument needs to be deleted
+	auto i = instruments.begin();
+	while (i != instruments.end())													// now for each existing instrument
+	{
+		if (m.instruments.find(i->first) == m.instruments.end())					// If it is not in the new settings
+		{
+			DeleteInstrument(i->second);
+			i = instruments.erase(i);												// Delete it
+			continue;
+		}
+		++i;
+	}
+
+	for (auto i : m.instruments)												// For each incoming instrument
 	{
 		bool existing = false;
-		for (auto t = instruments.begin(); t != instruments.end(); t++)			// Go through the existing instruments
+		for (auto t : instruments)												// Go through the existing instruments
 		{
-			if (i->second == t->second)											// If they are the same
+			if (i.second == t.second)											// If they are the same
 			{
-				if (i->first != t->first)										// but different ids
+				if (i.first != t.first)											// but different ids
 				{
-					LOG(logERROR) << "Instrument id" << i->first << " already exists as id " << t->first;
-					return;														// Then quit without doing anything
+					LOG(logERROR) << "Instrument id " << i.first << " already exists as id " << t.first;
+					return false;												// Then quit without doing anything
 				}
 				existing = true;												// Otherwise set the flag for already existing
 				break;															// And go to the next incoming instrument
@@ -93,61 +108,55 @@ void Instruments::Reset(const MachineSettings & m)
 		// correct id or through a false id
 		// Now let's look if the ports are different or the instrument does not exist at all
 
-		auto instrumentAtID = instruments.find(i->first);						// Get the instrument with the same id
+		auto instrumentAtID = instruments.find(i.first);						// Get the instrument with the same id
 
 		if (instrumentAtID != instruments.end()) {								// Check if it actually is a good id
 
-			if (i->second.type == instrumentAtID->second.type)					// If it's the same instrument type
+			if (i.second.type == instrumentAtID->second.type)					// If it's the same instrument type
 			{
-				if (i->second.port != instrumentAtID->second.port)				// But port is not the same
+				if (i.second.port != instrumentAtID->second.port)				// But port is not the same
 				{
-					instrumentAtID->second = i->second;							// We equate it to the new instrument
+					instrumentAtID->second = i.second;							// We equate it to the new instrument
 					ChangePort(instrumentAtID->second);							// And need to change the port
 				}
 				instrumentAtID->second.initialised = true;						// And say it's initialised
 			}
 			else
 			{
-				instrumentAtID->second = i->second;								// Otherwise,just equate it to the new instrument
+				instrumentAtID->second = i.second;								// Otherwise,just equate it to the new instrument
 				InitInstrument(instrumentAtID->second);							// And initialise it
 			}
 		}
 		else																	// if it is a new instrument
 		{
-			instruments.emplace(std::make_pair(i->first, i->second));			// then store it
-			InitInstrument(instruments[i->first]);								// and initialize it
+			instruments.emplace(std::make_pair(i.first, i.second));				// then store it
+			InitInstrument(instruments[i.first]);								// and initialize it
 		}
 	}
 
-	for (auto i = instruments.begin(); i != instruments.end(); i++)				// now for each existing instrument
-	{
-		if (m.instruments.find(i->first) == m.instruments.end())				// If it is not in the new settings
-		{
-			DeleteInstrument(i->second);
-			instruments.erase(i);												// Delete it
-		}
-	}
 
 	//**********************************
 	// Readers and controllers
 	//**********************************
-	readers.empty();															// empty existing readers
+	readers.clear();															// empty existing readers
 
-	for (auto i = m.readers.begin(); i != m.readers.end(); i++)					// now for each existing reader
+	for (auto i : m.readers)													// now for each existing reader
 	{
-		unsigned int key = i->second.type + i->second.identifier;				// generate the key
-		readers.emplace(key, i->second);										// construct the reader
+		unsigned int key = i.second.type + i.second.identifier;					// generate the key
+		readers.emplace(key, i.second);											// construct the reader
 		BindReader(readers[key]);												// bind the function
 	}
 
-	controllers.empty();
+	controllers.clear();
 
-	for (auto i = m.controllers.begin(); i != m.controllers.end(); i++)			// now for each existing controller
+	for (auto i : m.controllers)												// now for each existing controller
 	{
-		unsigned int key = i->second.type + i->second.identifier;				// generate the key
-		controllers.emplace(key, i->second);									// construct the controller
+		unsigned int key = i.second.type + i.second.identifier;					// generate the key
+		controllers.emplace(key, i.second);										// construct the controller
 		BindController(controllers[key]);										// bind the function
 	}
+
+	return true;
 }
 
 void Instruments::InitInstrument(Instrument & i)

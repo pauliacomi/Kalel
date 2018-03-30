@@ -25,40 +25,6 @@
 
 // Change the level of logging here
 
-#define LOG_LEVEL		logDEBUG3
-
-//
-//
-//eventLOGS : critical logging, that needs to be displayed to user
-//
-//		logEVENT
-//			- an event that requires a user input
-//		logERROR
-//			- a critical error which requires user attention
-//		logWARNING
-//			- a warning which could impact functionality
-//
-//infoLOGS : logging regarding operation and automation
-//
-//		logINFO
-//			- describes the status of the machine and the progress
-//			- of automation functionality
-//
-//debugLOGS : debug information which may be useful
-//		logDEBUG
-//			- Instruments log errors in reading and writing
-//		logDEBUG1
-//			- Instruments log errors in port and connections
-//			- HTTPServer logs errors in socket and http requests
-//		logDEBUG2
-//			- Instruments log connections and reading
-//			- HTTPServer logs request type and completion time
-//		logDEBUG3
-//			- HTTPServer logs connections
-//		logDEBUG4
-//			- HTTPServer logs all requests and responses
-//
-
 
 using json = nlohmann::json;
 
@@ -68,13 +34,6 @@ Kalel::Kalel()
 	, threadManager{ storage, controlMechanisms}
 {
 
-	//
-	// Configure logging
-
-	GeneralLog::ReportingLevel() = LOG_LEVEL;
-	OutputGeneral::Info() =	&storage.infoLogs;
-	OutputGeneral::Event() = &storage.eventLogs;
-	OutputGeneral::Debug() = &storage.debugLogs;
 
 	//
 	// Start server functionality
@@ -624,6 +583,7 @@ void Kalel::UserInput(http_request * req, http_response * resp)
 			case CHOICE_WAIT:
 				resp->status = http::responses::ok;
 				storage.eventLogs.del(timeh::ISOStringToTimePoint(req->params.at("t")));
+				LOG(logINFO) << "User input: " << choice;
 				threadManager.SetUserChoice(choice);
 				break;
 			default:
@@ -644,9 +604,6 @@ void Kalel::UserInput(http_request * req, http_response * resp)
 
 unsigned Kalel::SetMachineSettings(const MachineSettings & ms)
 {
-	// Save to file
-	ParametersSet(ms);
-
 	// Check there are no experiments running
 	if (storage.experimentStatus.experimentInProgress) {
 		LOG(logERROR) << "Cannot change machine settings while an experiment is in progress"; 
@@ -654,19 +611,25 @@ unsigned Kalel::SetMachineSettings(const MachineSettings & ms)
 	}
 
 	// Shutdown threads
-	if (!threadManager.ShutdownMeasurement()) { return 2; };
-	if (!threadManager.ShutdownAutomation()) { return 2; };
+	if (!threadManager.ShutdownMeasurement() || !threadManager.ShutdownAutomation()) { return 2; };
 
 	// Reinitialise instruments
-	controlMechanisms.instruments.Reset(ms);
-	// Replace settings
-	storage.machineSettings = ms;							// Timestamp change included
+	bool err = controlMechanisms.instruments.Reset(ms);
 
-	// Restart threads
-	if (!threadManager.StartMeasurement()) { return 3; };
-	if (!threadManager.StartAutomation()) { return 3; };
+	// Replace settings if reset went through
+	if (!err) {
+		storage.machineSettings = ms;							// Save to memory Timestamp change included
+		ParametersSet(ms);										// Save to file
+	}
 
-	// Operation successful
+	// Restart threads regardless
+	if (!threadManager.StartMeasurement() || !threadManager.StartAutomation()) { return 3; };
+
+
+	// return result
+	if (err){
+		return 1;
+	}
 	return 0;
 }
 

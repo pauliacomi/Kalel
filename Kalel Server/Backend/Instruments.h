@@ -33,7 +33,7 @@ public:
 	std::map<unsigned int, Reader>	readers;				// The readers which are available
 	std::map<unsigned int, Controller>	controllers;		// The controllers which are available
 
-	void Reset(const MachineSettings & m);
+	bool Reset(const MachineSettings & m);
 
 	double MeasureReader(unsigned int identifier);
 

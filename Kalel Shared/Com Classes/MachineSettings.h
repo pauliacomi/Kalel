@@ -61,9 +61,4 @@ public:
 	std::map<unsigned int, Instrument> instruments;			// The instruments in the machine
 	std::map<unsigned int, Reader>	readers;				// The readers which are available
 	std::map<unsigned int, Controller>	controllers;		// The controllers which are available
-
-	// Functions to easily create instruments or readers
-	void AddInstrument(const Instrument &i, unsigned int position = 0);
-	void AddReader(const Reader &r, unsigned int position = 0);
-	void AddController(const Controller &r, unsigned int position = 0);
 };

@@ -51,24 +51,30 @@ int main(int argc, char** argv) {
 	signal(SIGINT, unixcontrolHandler);
 #endif
 
+	std::chrono::system_clock::time_point tp = std::chrono::system_clock::now();
+
 	std::cout << "Starting server...\n";
 	std::cout << "Press [Ctrl+C] to exit\n";
 
 	Kalel mainBackend;
 
-	std::chrono::system_clock::time_point tp = std::chrono::system_clock::now();
+	Sleep(100);
 
 	while (runnning) {
 
 		std::cerr.sync_with_stdio(false);
 
-		std::map<std::chrono::system_clock::time_point, std::string> logs = mainBackend.storage.debugLogs.get(tp);
+		std::map<std::chrono::system_clock::time_point, std::string> elogs = mainBackend.storage.eventLogs.get(tp);
+		std::map<std::chrono::system_clock::time_point, std::string> ilogs = mainBackend.storage.infoLogs.get(tp);
+		tp = std::chrono::system_clock::now();
 
-		for (const auto &iter : logs) {
+		for (const auto &iter : ilogs) {
+			std::cerr << timeh::TimePointToISOString(iter.first) << " " << iter.second << std::flush;
+		}
+		for (const auto &iter : elogs) {
 			std::cerr << timeh::TimePointToISOString(iter.first) << " " << iter.second << std::flush;
 		}
 
-		tp = std::chrono::system_clock::now();
 
 		Sleep(500);
 	}

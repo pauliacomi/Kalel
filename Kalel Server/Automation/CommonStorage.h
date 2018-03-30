@@ -7,15 +7,60 @@
 #include "../../Kalel Shared/Com Classes/MachineSettings.h"
 #include "../../Kalel Shared/timeHelpers.h"
 #include "../../Kalel Shared/classHelpers.h"
+#include "../../Kalel Shared/log.h"
 #include "../Parameters/Parametres.h"
 
 #include <mutex>
 #include <memory>
 
 
+#define LOG_LEVEL		logDEBUG3
+
+//
+//
+//eventLOGS : critical logging, that needs to be displayed to user
+//
+//		logEVENT
+//			- an event that requires a user input
+//		logERROR
+//			- a critical error which requires user attention
+//		logWARNING
+//			- a warning which could impact functionality
+//
+//infoLOGS : logging regarding operation and automation
+//
+//		logINFO
+//			- describes the status of the machine and the progress
+//			- of automation functionality
+//
+//debugLOGS : debug information which may be useful
+//		logDEBUG
+//			- Instruments log errors in reading and writing
+//		logDEBUG1
+//			- Instruments log errors in port and connections
+//			- HTTPServer logs errors in socket and http requests
+//		logDEBUG2
+//			- Instruments log connections and reading
+//			- HTTPServer logs request type and completion time
+//		logDEBUG3
+//			- HTTPServer logs connections
+//		logDEBUG4
+//			- HTTPServer logs all requests and responses
+//
+
+
 class Storage {
 public:
 	Storage() {
+
+		//
+		// Configure logging
+
+		GeneralLog::ReportingLevel() = LOG_LEVEL;
+		OutputGeneral::Info() = &infoLogs;
+		OutputGeneral::Event() = &eventLogs;
+		OutputGeneral::Debug() = &debugLogs;
+
 		if (!ParametersCheck())
 		{
 			ParametersSet(machineSettings);		// If not, create it

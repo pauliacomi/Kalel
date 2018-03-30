@@ -325,118 +325,136 @@ void ConnectionPort::OnModified(UINT nID)
 
 void ConnectionPort::SaveModifications(MachineSettings& newSettings)
 {
-	// Save instrument
+	// Save instruments
+
+	newSettings.instruments.clear();
+
 	for (size_t key = 0; key < NB_INSTRUMENTS; key++)
 	{
 		Instrument i;
 		i.type = i_type[key];
 		i.port = i_ports[key];
-		newSettings.AddInstrument(i, key + 1);
+
+		if (i.type != 0)														// and type is not 0
+		{
+			newSettings.instruments.emplace(std::make_pair(key + 1, i));		// create it
+		}
 	}
 
-	// Save reader
+	// Save readers
+
+	newSettings.readers.clear();
+
 	for (size_t key = 0; key < NB_READERS; key++)
 	{
 		Reader r;
+		if (r_present[key]) {														
 
-		switch (key)
-		{
-		case 0:
-			r.type = READER_TEMPERATURE;
-			r.identifier = 1;
-			break;
-		case 1:
-			r.type = READER_TEMPERATURE;
-			r.identifier = 2;
-			break;
-		case 2:
-			r.type = READER_TEMPERATURE;
-			r.identifier = 3;
-			break;
-		case 3:
-			r.type = READER_PRESSURE;
-			r.identifier = 2;
-			break;
-		case 4:
-			r.type = READER_PRESSURE;
-			r.identifier = 1;
-			break;
-		case 5:
-			r.type = READER_CALO;
-			r.identifier = 1;
-			break;
-		default:
-			break;
+			switch (key)
+			{
+			case 0:
+				r.type = READER_TEMPERATURE;
+				r.identifier = 1;
+				break;
+			case 1:
+				r.type = READER_TEMPERATURE;
+				r.identifier = 2;
+				break;
+			case 2:
+				r.type = READER_TEMPERATURE;
+				r.identifier = 3;
+				break;
+			case 3:
+				r.type = READER_PRESSURE;
+				r.identifier = 2;
+				break;
+			case 4:
+				r.type = READER_PRESSURE;
+				r.identifier = 1;
+				break;
+			case 5:
+				r.type = READER_CALO;
+				r.identifier = 1;
+				break;
+			default:
+				break;
+			}
+			r.instrument = r_instrument[key];
+			r.channel = r_instrument_channel[key];
+			r.sensitivity = r_sensitivity[key];
+			r.safe_min = r_safe_min[key];
+			r.safe_max = r_safe_max[key];
+
+			newSettings.readers.emplace(std::make_pair((r.type + r.identifier), r));
 		}
-		r.instrument = r_instrument[key];
-		r.channel = r_instrument_channel[key];
-		r.sensitivity = r_sensitivity[key];
-		r.safe_min = r_safe_min[key];
-		r.safe_max = r_safe_max[key];
-		
-		newSettings.AddReader(r, (r.type + r.identifier));
 	}
 
 
 	// Save controllers
+
+	newSettings.controllers.clear();
+
 	for (size_t key = 0; key < NB_CONTROLLERS; key++)
 	{
 		Controller r;
-
-		switch (key)
+		if (c_present[key])
 		{
-		case 0:
-			r.type = CONTROLLER_VALVE;
-			r.identifier = 1;
-			break;
-		case 1:
-			r.type = CONTROLLER_VALVE;
-			r.identifier = 2;
-			break;
-		case 2:
-			r.type = CONTROLLER_VALVE;
-			r.identifier = 3;
-			break;
-		case 3:
-			r.type = CONTROLLER_VALVE;
-			r.identifier = 4;
-			break;
-		case 4:
-			r.type = CONTROLLER_VALVE;
-			r.identifier = 5;
-			break;
-		case 5:
-			r.type = CONTROLLER_VALVE;
-			r.identifier = 6;
-			break;
-		case 6:
-			r.type = CONTROLLER_VALVE;
-			r.identifier = 7;
-			break;
-		case 7:
-			r.type = CONTROLLER_VALVE;
-			r.identifier = 8;
-			break;
-		case 8:
-			r.type = CONTROLLER_EV;
-			r.identifier = 1;
-			break;
-		case 9:
-			r.type = CONTROLLER_EV;
-			r.identifier = 2;
-			break;
-		case 10:
-			r.type = CONTROLLER_PUMP;
-			r.identifier = 1;
-			break;
-		default:
-			break;
-		}
-		r.instrument = c_instrument[key];
-		r.channel = c_instrument_channel[key];
-		r.subchannel= c_instrument_subchannel[key];
 
-		newSettings.AddController(r, (r.type + r.identifier));
+			switch (key)
+			{
+			case 0:
+				r.type = CONTROLLER_VALVE;
+				r.identifier = 1;
+				break;
+			case 1:
+				r.type = CONTROLLER_VALVE;
+				r.identifier = 2;
+				break;
+			case 2:
+				r.type = CONTROLLER_VALVE;
+				r.identifier = 3;
+				break;
+			case 3:
+				r.type = CONTROLLER_VALVE;
+				r.identifier = 4;
+				break;
+			case 4:
+				r.type = CONTROLLER_VALVE;
+				r.identifier = 5;
+				break;
+			case 5:
+				r.type = CONTROLLER_VALVE;
+				r.identifier = 6;
+				break;
+			case 6:
+				r.type = CONTROLLER_VALVE;
+				r.identifier = 7;
+				break;
+			case 7:
+				r.type = CONTROLLER_VALVE;
+				r.identifier = 8;
+				break;
+			case 8:
+				r.type = CONTROLLER_EV;
+				r.identifier = 1;
+				break;
+			case 9:
+				r.type = CONTROLLER_EV;
+				r.identifier = 2;
+				break;
+			case 10:
+				r.type = CONTROLLER_PUMP;
+				r.identifier = 1;
+				break;
+			default:
+				break;
+			}
+			r.instrument = c_instrument[key];
+			r.channel = c_instrument_channel[key];
+			r.subchannel = c_instrument_subchannel[key];
+
+			newSettings.controllers.emplace(std::make_pair((r.type + r.identifier), r));
+		}
 	}
 }
 

@@ -11,8 +11,8 @@ public:
 	Kalel();
 	~Kalel();
 
-	HTTPServer server;								// Http server for REST
-	Storage storage;						// Stores all settings, experiment data, logs etc
+	HTTPServer server;							// Http server for REST
+	Storage storage;							// Stores all settings, experiment data, logs etc
 	Controls controlMechanisms;					// Controls all machines
 	ThreadManager threadManager;	
 
