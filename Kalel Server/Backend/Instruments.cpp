@@ -62,7 +62,7 @@ bool Instruments::Reset(const MachineSettings & m)
 			err = true;
 		}
 	}
-	if (err) return false;
+	if (err) return err;
 
 	for (auto i : m.controllers)				// For each incoming controller
 	{
@@ -72,7 +72,7 @@ bool Instruments::Reset(const MachineSettings & m)
 			err = true;
 		}
 	}
-	if (err) return false;
+	if (err) return err;
 
 	//**********************************
 	// Instruments
@@ -161,7 +161,7 @@ bool Instruments::Reset(const MachineSettings & m)
 		BindController(controllers[key]);										// bind the function
 	}
 
-	return true;
+	return err;
 }
 
 void Instruments::InitInstrument(Instrument & i)
