@@ -1,16 +1,15 @@
 #pragma once
 
-#include "RS232/Keithley.h"
-#include "RS232/Mensor.h"
-#include "USB/NI_USB_6008.h"
-#include "USB/NI_USB_9211A.h"
 #include "Wrapper Classes/InstrumentInterface.h"
 
 #include "../../Kalel Shared/Com Classes/MachineSettings.h"
 
-#include <string>
 #include <map>
 
+class Keithley;
+class Mensor;
+class NI_USB_9211A;
+class NI_USB_6008;
 
 class Instruments
 {

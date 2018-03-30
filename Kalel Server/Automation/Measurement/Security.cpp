@@ -212,7 +212,7 @@ void Security::SecurityTemperaturesManual(const Storage & storage)
 		{
 			LOG(logINFO) << MESSAGE_WARNING_CALOT_NORMAL;
 			soundh::beep::allgood();
-			security_TemperatureLow_flag = FALSE;
+			security_TemperatureLow_flag = false;
 		}
 }
 

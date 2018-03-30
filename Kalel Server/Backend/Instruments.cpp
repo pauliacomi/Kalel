@@ -1,5 +1,10 @@
 #include "Instruments.h"
 
+#include "RS232/Keithley.h"
+#include "RS232/Mensor.h"
+#include "USB/NI_USB_6008.h"
+#include "USB/NI_USB_9211A.h"
+
 #include "../../Kalel Shared/Resources/DefineInstruments.h"
 #include "../../Kalel Shared/Resources/DefineText.h"
 #include "../../Kalel Shared/stringHelpers.h"
@@ -273,7 +278,7 @@ double Instruments::MeasureReader(unsigned int identifier)
 		auto ret = readers.emplace(identifier, Reader());				// get the result of the insertion (pair)
 		reader = ret.first;												// and set the iterator the the newly created reader
 	}
-	return reader->second.readerfunction();
+	return reader->second.readerfunction() / reader->second.sensitivity;
 }
 
 bool Instruments::MeasureController(unsigned int identifier)

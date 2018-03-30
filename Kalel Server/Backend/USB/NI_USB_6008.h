@@ -31,7 +31,7 @@ private:
 	static const uInt32 bufferSize	= 8;
 	int32		samplesPerChannel	= 1;
 	bool32		autostart			= true;
-	float64     timeout				= 10.0f;
+	float64     timeout				= 2.0f;
 
 	// Read/write functions
 	bool ReadPort(unsigned int port);

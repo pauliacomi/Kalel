@@ -41,7 +41,7 @@ public:
 	// String stream
 protected:
     std::ostringstream os;
-	TLogLevel local_level = logINFO;
+	TLogLevel local_level;
 	std::chrono::system_clock::time_point timestamp;
 
 private:
@@ -55,8 +55,9 @@ private:
 *********************************/
 template <typename T>
 Log<T>::Log()
+	: local_level{logINFO}
+	, timestamp {timeh::NowTime()}
 {
-	timestamp = timeh::NowTime();						// Get time and store it
 }
 
 /*********************************
@@ -229,7 +230,7 @@ class Output2vector
 {
 public:
 	static std::vector<std::string>*& Stream();
-	static void Output(const std::string& msg, TLogLevel level, std::chrono::system_clock::time_point timestamp);
+	static void Output(const std::string& msg, TLogLevel level, const std::chrono::system_clock::time_point &timestamp);
 };
 
 inline std::vector<std::string>*& Output2vector::Stream()
@@ -238,7 +239,7 @@ inline std::vector<std::string>*& Output2vector::Stream()
 	return pStream;
 }
 
-inline void Output2vector::Output(const std::string& msg, TLogLevel level, std::chrono::system_clock::time_point timestamp)
+inline void Output2vector::Output(const std::string& msg, TLogLevel level, const std::chrono::system_clock::time_point &timestamp)
 {
 	std::vector<std::string>* pStream = Stream();
 	if (!pStream)
@@ -257,7 +258,7 @@ public:
 	static StampedSafeStorage<std::string>*& Event();
 	static StampedSafeStorage<std::string>*& Info();
 	static StampedSafeStorage<std::string>*& Debug();
-	static void Output(const std::string& msg, TLogLevel level, std::chrono::system_clock::time_point timestamp);
+	static void Output(const std::string& msg, TLogLevel level, const std::chrono::system_clock::time_point & timestamp);
 };
 
 
@@ -279,7 +280,7 @@ inline StampedSafeStorage<std::string>*& OutputGeneral::Debug()
 	return pStream;
 }
 
-inline void OutputGeneral::Output(const std::string& msg, TLogLevel level, std::chrono::system_clock::time_point timestamp)
+inline void OutputGeneral::Output(const std::string& msg, TLogLevel level, const std::chrono::system_clock::time_point & timestamp)
 {
 	StampedSafeStorage<std::string>* pStream = nullptr;
 	
@@ -319,7 +320,7 @@ class Output2FILE
 {
 public:
     static FILE*& Stream();
-    static void Output(const std::string& msg, TLogLevel level, std::chrono::system_clock::time_point timestamp);
+    static void Output(const std::string& msg, TLogLevel level, const std::chrono::system_clock::time_point & timestamp);
 };
 
 inline FILE*& Output2FILE::Stream()
@@ -328,7 +329,7 @@ inline FILE*& Output2FILE::Stream()
     return pStream;
 }
 
-inline void Output2FILE::Output(const std::string& msg, TLogLevel level, std::chrono::system_clock::time_point timestamp)
+inline void Output2FILE::Output(const std::string& msg, TLogLevel level, const std::chrono::system_clock::time_point & timestamp)
 {   
     FILE* pStream = Stream();
     if (!pStream)
