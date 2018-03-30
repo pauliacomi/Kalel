@@ -95,11 +95,9 @@ double Mensor::Read()
 
 	// Start by sending message to ask for the data
 	
-	//la commande "#1?<cr>\n" permet de récupérer la pression du mensor.
+	//la commande "#1?\n" permet de récupérer la pression du mensor.
 	//le 1 correspond à l'adresse appareil utilisé
 	//le ? correspond à la recherche de la valeur
-	//le <cr> correspond au "carriage return", un retour à la ligne, le caractère 13
-	// dans le code ascii
 	
 	success = WriteCOM(query_template, (int)strlen(query_template), &nBytesWritten);
 	if (!success)
@@ -113,8 +111,6 @@ double Mensor::Read()
 	//les 7 prochains nous retourne la valeur de la pression
 	//ex : 1   1.00631<cr><lf>
 	//Puis les 2 derniers sont le caractère 13 et 10
-	//On ignore donc les 4 premiers caractères et on prend les nbOctetsLus-6
-	// suivants qui représentent la pression
 
 	char buffer[256] = { "\0" };
 

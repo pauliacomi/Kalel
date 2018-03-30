@@ -20,27 +20,21 @@ private:
 	//*************************
 	// Parameters for reading
 	//*************************
-	int portUSB;										// USB port used
+	int portUSB;											// USB port used
 
     // Channel parameters
-	char        chan[25]		= { '\0' };
-    float64     min				= -200.0f;					// minimum expected value to measure
-    float64     max				= 100.0f;				// maximum expected value to measure
-	int			analog_start	= 0;
-	int			analog_end		= 3;
-
-    // Timing parameters
-    char        source[13]		= "OnboardClock";
-	uInt64      samplesPerChan	= 1;
-    float64     sampleRate		= 4.0f;
+    const float64 t_min				= -200.0f;				// minimum expected value to measure
+    const float64 t_max				= 100.0f;				// maximum expected value to measure
+	const int chan_min				= 0;					// minimum channel number
+	const int chan_max				= 7;					// maximum channel number
 
     // Data read parameters
-	static const uInt32 bufferSize	= 10;
-	int32       pointsToRead		= 1;
-    float64     timeout				= 10.0f;
+	const uInt64 samplesPerChan		= 1;					// datapoints to read per channel
+	static const uInt32 maxBufSize	= 8;					// max size of read buffer
+    const float64 timeout			= 2.0f;					// seconds until timeout
 
 	// Read function
-	bool ReadAll(float64 data[bufferSize]);				// Reads all data from device
+	bool ReadAnalog(char * chan, float64 * data);			// Generic read function
 
 	//*************************
 	// Public functions
@@ -50,7 +44,6 @@ public:
 	void SetComPort(int dev) override;		// Set USB port
 	int GetComPort() override;				// Get USB port
 	
-	bool ReadAllChannels(double* Valeur0,double* Valeur1,double* Valeur2,double* Valeur3);
-
 	double Read(unsigned int channel) override;
+	bool ReadAllChannels(double* readArray);
 };

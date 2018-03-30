@@ -28,16 +28,18 @@ private:
 	std::vector<std::bitset<8>> portStates = { {0},{0} };
 
 	// Read/Write parameters
-	static const uInt32 bufferSize	= 8;
+	static const uInt32 maxBufSize	= 8;
 	int32		samplesPerChannel	= 1;
 	bool32		autostart			= true;
 	float64     timeout				= 2.0f;
 
 	// Read/write functions
 	bool ReadPort(unsigned int port);
+	bool ReadPortLine(unsigned int port, unsigned int line);
 	bool WritePort(unsigned int port);
-	bool ReadDigital(char chan[], uInt8 w_data[]);
-	bool WriteDigital(char chan[], const unsigned long w_data);
+	bool WritePortLine(unsigned int port, unsigned int line);
+	bool ReadDigital(char* chan, uInt8 * w_data);
+	bool WriteDigital(char* chan, const unsigned long w_data);
 
 private:
 	std::mutex mutex;									// locks to prevent clash of threads on writing
@@ -50,7 +52,7 @@ public:
 	// Functions to open / close stuff
 
 	// Set the state in a custom way
-	bool SetChannelCustom(unsigned int chan, unsigned int customarray[8]);
+	bool SetChannelCustom(unsigned int chan, bool customarray[8]);
 	// Set the entire bits from a channel to a state
 	bool SetChannelAll(unsigned int chan, bool state) override;
 	// Set a particullar subchannel to a state

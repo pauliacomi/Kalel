@@ -25,36 +25,46 @@ void NI_USB_9211A::SetComPort(int dev)
 }
 
 
-bool NI_USB_9211A::ReadAll(float64 data[bufferSize])
-{	
-	// Task variables
-    TaskHandle  taskHandle		= nullptr;
-    int32       error			= 0;
-	char        errBuff[2048]	= { '\0' };				// C string for error
-	int32       pointsRead		= 0;
+double NI_USB_9211A::Read(unsigned int channel)
+{
+	char chanBuf[30] = { 0 };
 
 	// Write channel string
-	sprintf_s(chan, "Dev%d/ai%d:%d", portUSB, analog_start, analog_end);
+	sprintf_s(chanBuf, "Dev%d/ai%d", portUSB, channel);
+
+	float64     data[1] = { 0 };
+	if(ReadAnalog(chanBuf, data))
+		return data[0];
+	return 0;
+}
+
+bool NI_USB_9211A::ReadAnalog(char * chan, float64 * data)
+{	
+	// Task variables
+    TaskHandle  taskHandle		= nullptr;				// NiDAQ task
+    int32       error			= 0;					// Error number
+	
+	// Write variables
+	int32       pointsRead		= 0;					// Output points read
 
 	// Create thrermocouple Task and Channel
 	DAQmxErrChk (DAQmxCreateTask ("ReadThermocouple", &taskHandle));
-	DAQmxErrChk (DAQmxCreateAIThrmcplChan(taskHandle, chan, "", min, max, DAQmx_Val_DegC, DAQmx_Val_K_Type_TC, DAQmx_Val_BuiltIn, 0, ""));
+	DAQmxErrChk (DAQmxCreateAIThrmcplChan(taskHandle, chan, "", t_min, t_max, DAQmx_Val_DegC, DAQmx_Val_K_Type_TC, DAQmx_Val_BuiltIn, 0, ""));
 	
 	// Start Task (configure port)
 	DAQmxErrChk (DAQmxStartTask (taskHandle));
 	// Run task for single reading of value
-	DAQmxErrChk (DAQmxReadAnalogF64 (taskHandle, pointsToRead, timeout, 0, data, bufferSize, &pointsRead, NULL));
+	DAQmxErrChk (DAQmxReadAnalogF64 (taskHandle, samplesPerChan, timeout, 0, data, maxBufSize, &pointsRead, NULL));
 
 	// In case of error
 Error:
-    if (DAQmxFailed (error))
+    if (DAQmxFailed (error))	// Extended error string
 	{
-		DAQmxGetExtendedErrorInfo (errBuff, 2048);
+		unsigned int errorLength = DAQmxGetExtendedErrorInfo(0, 0);
+		char * errBuff = new char[errorLength];							
+		DAQmxGetExtendedErrorInfo(errBuff, errorLength);
 		LOG(logDEBUG) << errBuff;
-		for (size_t i = 0; i < bufferSize; i++)
-		{
-			data[i] = 0;
-		}
+		delete errBuff;
 	}
 
 	// Clear task to free memory
@@ -74,28 +84,25 @@ Error:
 //
 // Individual functions to read data
 
-bool NI_USB_9211A::ReadAllChannels(double* Valeur0,double* Valeur1,double* Valeur2,double* Valeur3)
+bool NI_USB_9211A::ReadAllChannels(double * readArray)
 {
-	float64     data[bufferSize];
-	bool result = ReadAll(data);
+	char chanBuf[30] = { 0 };
 
-	*Valeur0 = data[0];
-	*Valeur1 = data[1];
-	*Valeur2 = data[2];
-	*Valeur3 = data[3];
+	// Write channel string
+	sprintf_s(chanBuf, "Dev%d/ai%d:%d", portUSB, chan_min, chan_max);
 
-	if (result == true)
+	float64     data[maxBufSize];
+	bool result = ReadAnalog(chanBuf, data);
+
+	for (size_t i = 0; i < sizeof(readArray) / sizeof(readArray[0]); i++)
+	{
+		if (i > maxBufSize) { break; }
+		readArray[i] = data[i];
+	}
+
+	if (result)
 	{
 		return true;
 	}
 	return false;
-}
-
-
-double NI_USB_9211A::Read(unsigned int channel)
-{
-	float64     data[bufferSize];
-	bool result = ReadAll(data);
-
-	return data[channel];
 }

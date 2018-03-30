@@ -27,9 +27,6 @@ int NI_USB_6008::GetComPort()
 
 void NI_USB_6008::SetComPort(int dev)
 {
-	// Lock for the remainder of function
-	std::lock_guard<std::mutex> lk(mutex);
-
 	portUSB = dev;
 }
 
@@ -37,15 +34,16 @@ void NI_USB_6008::SetComPort(int dev)
 bool NI_USB_6008::ReadPort(unsigned int port)
 {
 	// Specific channel and line parameters
-	char        chan[50]		= { '\0' };
-	int			line_start		= 0;
-	int			line_end		= 7;
-	if (port == 1)	{ line_end = 3;}				// port 1 only has 4 lines
+	//int			line_start		= 0;
+	//int			line_end		= 7;
+	//if (port == 1)	{ line_end = 3;}				// port 1 only has 4 lines
+	//sprintf_s(chan,"Dev%d/port%d/line%d:%d",portUSB, port, line_start, line_end);
 
-	// Write channel string
-	sprintf_s(chan,"Dev%d/port%d/line%d:%d",portUSB, port, line_start, line_end);
+	char        chan[50]		= { 0 };
+	// Write channel string (read all the port lines)
+	sprintf_s(chan, "Dev%d/port%d", portUSB, port);
 
-	uInt8 read[8] = { 0 };
+	uInt8 read[8] = { "1111111" };
 
 	// Read state
 	if (ReadDigital(chan, read)) {
@@ -55,21 +53,19 @@ bool NI_USB_6008::ReadPort(unsigned int port)
 	return false;
 }
 
-bool NI_USB_6008::WritePort(unsigned int port)
+bool NI_USB_6008::ReadPortLine(unsigned int port, unsigned int line)
 {
-	// Specific channel and line parameters
-	char        chan[50]		= { 0 };
-	int			line_start		= 0;
-	int			line_end		= 7;
-	if (port == 1) { line_end = 3; }				// port 1 only has 4 line
+	char        chan[50] = { 0 };
+	// Write channel string (will read one line)
+	sprintf_s(chan, "Dev%d/port%d/line%d", portUSB, port, line);
 
-	// Write channel string
-	sprintf_s(chan, "Dev%d/port%d/line%d:%d", portUSB, port, line_start, line_end);
+	uInt8 read[1] = { 0 };
 
-	// Write action
-	return WriteDigital(chan, portStates[port].to_ulong());
+	if (ReadDigital(chan, read)) {
+		return true;
+	}
+	return false;
 }
-
 
 //******************************************************************
 //				Read
@@ -83,16 +79,15 @@ bool NI_USB_6008::WritePort(unsigned int port)
 //*		5. Call the Clear Task function to clear the Task.
 //*		6. Display an error if any.
 
-bool NI_USB_6008::ReadDigital(char chan[], uInt8 w_data[])
+bool NI_USB_6008::ReadDigital(char * chan, uInt8 * w_data)
 {
 	// Task variables
-	TaskHandle  taskHandle		= nullptr;
-	int32       error			= 0;
-	char        errBuff[2048]	= { '\0' };				// C string for error
+    TaskHandle  taskHandle		= nullptr;				// NiDAQ task
+    int32       error			= 0;					// Error number
 
 	// Write variables
-	int32       read			= 0;
-	int32		bytesPerSamp	= 0;
+	int32       pointsRead		= 0;					// Output points read
+	int32		bytesPerSamp	= 0;					// bytes per sample read
 
 	// Create Digital Output (DO) Task and Channel
 	DAQmxErrChk (DAQmxCreateTask("ReadValves", &taskHandle));
@@ -102,15 +97,22 @@ bool NI_USB_6008::ReadDigital(char chan[], uInt8 w_data[])
 	DAQmxErrChk (DAQmxStartTask (taskHandle));
 
 	//  Read from ports
-	//  Only 1 sample per channel supported for static DIO
-	DAQmxErrChk (DAQmxReadDigitalLines(taskHandle, samplesPerChannel, timeout, DAQmx_Val_GroupByChannel, w_data, bufferSize, &read, &bytesPerSamp, NULL))
+	DAQmxErrChk (DAQmxReadDigitalLines(taskHandle, samplesPerChannel, timeout, DAQmx_Val_GroupByChannel, w_data, maxBufSize, &pointsRead, &bytesPerSamp, NULL));
+
+	for (size_t i = 0; i < 8; i++)
+	{
+		auto a = *(w_data + i);
+	}
 
 Error:
 	// In case of error
 	if (DAQmxFailed(error))
 	{
-		DAQmxGetExtendedErrorInfo(errBuff, 2048);
+		unsigned int errorLength = DAQmxGetExtendedErrorInfo(0, 0);
+		char * errBuff = new char[errorLength];
+		DAQmxGetExtendedErrorInfo(errBuff, errorLength);
 		LOG(logDEBUG) << errBuff;
+		delete errBuff;
 	}
 
 	// Clear task to free memory
@@ -126,6 +128,26 @@ Error:
 	return false;
 }
 
+bool NI_USB_6008::WritePort(unsigned int port)
+{
+	char        chan[50] = { 0 };
+	// Write channel string (will write to all the port lines)
+	sprintf_s(chan, "Dev%d/port%d", portUSB, port);
+
+	// Write action
+	return WriteDigital(chan, portStates[port].to_ulong());
+}
+
+bool NI_USB_6008::WritePortLine(unsigned int port, unsigned int line)
+{
+	char        chan[50] = { 0 };
+	// Write channel string (will write to only one line)
+	sprintf_s(chan, "Dev%d/port%d/line%d", portUSB, port, line);
+
+	// Write action
+	return WriteDigital(chan, portStates[port][line]);
+}
+
 
 //******************************************************************
 //				Write
@@ -134,21 +156,20 @@ Error:
 //*    1. Create a task.
 //*    2. Create a Digital Output channel. Use one channel for all lines.
 //*    3. Call the Start function to start the task.
-//*    4. Write the digital Boolean array data. This write function
+//*    4. Write the array data. This write function
 //*       writes a single sample of digital data on demand, so no
 //*       timeout is necessary.
 //*    5. Call the Clear Task function to clear the Task.
 //*    6. Display an error if any.
 
-bool NI_USB_6008::WriteDigital(char chan[], const unsigned long w_data)
+bool NI_USB_6008::WriteDigital(char * chan, const unsigned long w_data)
 {
 	// Task variables
-	TaskHandle  taskHandle		= nullptr;
-	int32       error			= 0;
-	char        errBuff[2048]	= { '\0' };				// C string for error
+    TaskHandle  taskHandle		= nullptr;				// NiDAQ task
+    int32       error			= 0;					// Error number
 
 	// Write variables
-	int32       written			= 0;
+	int32       pointsWritten	= 0;					// Points actually wriiten
 
 	// Create Digital Output (DO) Task and Channel
 	DAQmxErrChk(DAQmxCreateTask("OperateValves", &taskHandle));
@@ -159,14 +180,17 @@ bool NI_USB_6008::WriteDigital(char chan[], const unsigned long w_data)
 
 	//  Write 0x55 to port(s)
 	//  Only 1 sample per channel supported for static DIO
-	DAQmxErrChk(DAQmxWriteDigitalU32(taskHandle, samplesPerChannel, autostart, timeout, DAQmx_Val_GroupByChannel, &w_data, &written, NULL));
+	DAQmxErrChk(DAQmxWriteDigitalU32(taskHandle, samplesPerChannel, autostart, timeout, DAQmx_Val_GroupByChannel, &w_data, &pointsWritten, NULL));
 
 Error:
 	// In case of error
 	if (DAQmxFailed(error))
 	{
-		DAQmxGetExtendedErrorInfo(errBuff, 2048);
+		unsigned int errorLength = DAQmxGetExtendedErrorInfo(0, 0);
+		char * errBuff = new char[errorLength];
+		DAQmxGetExtendedErrorInfo(errBuff, errorLength);
 		LOG(logDEBUG) << errBuff;
+		delete errBuff;
 	}
 
 	// Clear task to free memory
@@ -189,7 +213,7 @@ Error:
 
 //// Complete set
 
-bool NI_USB_6008::SetChannelCustom(unsigned int port, unsigned int customarray[8])
+bool NI_USB_6008::SetChannelCustom(unsigned int port, bool customarray[8])
 {
 	// Lock for the remainder of function
 	std::lock_guard<std::mutex> lk(mutex);
@@ -247,7 +271,7 @@ bool NI_USB_6008::SetSubchannel(unsigned int chan, unsigned int subchan, bool st
 	std::lock_guard<std::mutex> lk(mutex);
 
 	portStates[chan][subchan] = state;
-	if(WritePort(chan))
+	if(WritePortLine(chan, subchan))
 	{
 		return true;
 	}
