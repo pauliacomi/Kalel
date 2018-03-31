@@ -19,7 +19,7 @@
 x64/
 x86/
 Win32/
-build/
+[Bb]uild/
 bld/
 [Bb]in/
 [Oo]bj/
