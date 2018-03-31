@@ -28,7 +28,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{DA8012D6-5479-45D1-ABA7-F4564E6ABDB3}</ProjectGuid>
-    <RootNamespace>Kalel</RootNamespace>
+    <RootNamespace>KalelServer</RootNamespace>
     <Keyword>MFCProj</Keyword>
     <ProjectName>Kalel Client</ProjectName>
     <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
