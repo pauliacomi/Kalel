@@ -10,8 +10,10 @@
 NI_USB_6008::NI_USB_6008(int dev)
 {
 	portUSB = dev;
-	ReadPort(0);				// to generate initial states of valves
-	ReadPort(1);				// to generate initial states of valves
+	// Since the NI-6008 always powers on with the valves on we have to turn them
+	// off manually
+	WritePort(0);									// turn off all valves 
+	WritePort(1);									// turn off all valves
 }
 
 NI_USB_6008::~NI_USB_6008(void)
@@ -27,27 +29,33 @@ int NI_USB_6008::GetComPort()
 
 void NI_USB_6008::SetComPort(int dev)
 {
+	// Lock while change
+	mutex.lock();
 	portUSB = dev;
+	mutex.unlock();
+
+	// Since the NI-6008 always powers on with the valves on we have to turn them
+	// off manually
+	WritePort(0);									// turn off all valves 
+	WritePort(1);									// turn off all valves
 }
 
 
 bool NI_USB_6008::ReadPort(unsigned int port)
 {
-	// Specific channel and line parameters
-	//int			line_start		= 0;
-	//int			line_end		= 7;
-	//if (port == 1)	{ line_end = 3;}				// port 1 only has 4 lines
-	//sprintf_s(chan,"Dev%d/port%d/line%d:%d",portUSB, port, line_start, line_end);
-
 	char        chan[50]		= { 0 };
 	// Write channel string (read all the port lines)
 	sprintf_s(chan, "Dev%d/port%d", portUSB, port);
 
-	uInt8 read[8] = { "1111111" };
+	uInt8 read[8] = { 0 };
 
 	// Read state
 	if (ReadDigital(chan, read)) {
-		//portStates[port].data();
+
+		for (size_t i = 0; i < sizeof(read)/sizeof(uInt8); i++)
+		{
+			portStates[port][i] = *(read + i);
+		}
 		return true;
 	}
 	return false;
@@ -99,10 +107,6 @@ bool NI_USB_6008::ReadDigital(char * chan, uInt8 * w_data)
 	//  Read from ports
 	DAQmxErrChk (DAQmxReadDigitalLines(taskHandle, samplesPerChannel, timeout, DAQmx_Val_GroupByChannel, w_data, maxBufSize, &pointsRead, &bytesPerSamp, NULL));
 
-	for (size_t i = 0; i < 8; i++)
-	{
-		auto a = *(w_data + i);
-	}
 
 Error:
 	// In case of error
@@ -145,7 +149,7 @@ bool NI_USB_6008::WritePortLine(unsigned int port, unsigned int line)
 	sprintf_s(chan, "Dev%d/port%d/line%d", portUSB, port, line);
 
 	// Write action
-	return WriteDigital(chan, portStates[port][line]);
+	return WriteDigital(chan, portStates[port].to_ulong());
 }
 
 
@@ -173,7 +177,7 @@ bool NI_USB_6008::WriteDigital(char * chan, const unsigned long w_data)
 
 	// Create Digital Output (DO) Task and Channel
 	DAQmxErrChk(DAQmxCreateTask("OperateValves", &taskHandle));
-	DAQmxErrChk(DAQmxCreateDOChan(taskHandle, chan, "", DAQmx_Val_ChanForAllLines));
+	DAQmxErrChk(DAQmxCreateDOChan(taskHandle, chan, NULL, DAQmx_Val_ChanForAllLines));
 
 	// Start Task (configure port)
 	DAQmxErrChk(DAQmxStartTask(taskHandle));
