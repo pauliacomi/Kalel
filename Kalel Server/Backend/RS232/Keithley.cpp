@@ -222,12 +222,11 @@ bool Keithley::ReadChan(int chanNo, double* result)
 	// On ne va garder de 'buffer' que les 15 premiers caracteres. On elimine le retour a la ligne
 	// On mettra cette chaine de caractere dans 'resultat'.
 	if (buffer[0] == '\0') {
-		LOG(logDEBUG2) << "Keithley channel " + std::to_string(chanNo) + " read nothing";
-
+		LOG(logDEBUG2) << "Keithley channel " << chanNo << " read nothing";
 		*result = 0;
 	}
 	else {
-		LOG(logDEBUG2) << "Keithley channel " + std::to_string(chanNo) + " read: " << buffer;
+		LOG(logDEBUG2) << "Keithley channel " << chanNo << " read: " << buffer;
 		*result = std::stod(std::string(buffer));
 	}
 
