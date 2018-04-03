@@ -4,7 +4,7 @@
 #include "http_request.h"
 #include "http_response.h"
 #include "http_define.h"
-#include "dispatch_queue.h"
+#include "../dispatchQueue.h"
 
 #include <string>
 
@@ -23,7 +23,7 @@ protected:
 	std::string username = "";
 	std::string password = "";
 
-	dispatch_queue disp_q{ 10 };
+	dispatch_queue disp_q{ std::thread::hardware_concurrency() };
 
 	unsigned Process(std::string ip, std::string port, std::function<void(http_request*)> request_func_, std::function<void(http_response*)> response_func_);
 	inline unsigned ErrorCaught(std::string err_str, std::function<void(http_response*)> response_func_);

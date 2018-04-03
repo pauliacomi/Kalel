@@ -1,4 +1,4 @@
-#include "dispatch_queue.h"
+#include "dispatchQueue.h"
 
 dispatch_queue::dispatch_queue(size_t thread_cnt) : threads(thread_cnt)
 {
@@ -25,31 +25,50 @@ dispatch_queue::~dispatch_queue()
 	}
 }
 
+void dispatch_queue::activate_completion() {
+	completion_active = true;
+	completion_flag = false;
+	threadCount = 0;
+}
+
 void dispatch_queue::dispatch(const fp_t& op)
 {
-	std::unique_lock<std::mutex> lock(lock);
+	std::unique_lock<std::mutex> lock(queue_lock);
+
+	if (completion_active) {
+		threadCount++;
+		completion_flag = false;
+	}
+	
 	q.push(op);
 
 	// Manual unlocking is done before notifying, to avoid waking up
 	// the waiting thread only to block again (see notify_one for details)
 	lock.unlock();
-	cv.notify_all();
+	cv.notify_one();
 }
 
 void dispatch_queue::dispatch(fp_t&& op)
 {
-	std::unique_lock<std::mutex> lock(lock);
+	std::unique_lock<std::mutex> lock(queue_lock);
+
+	if (completion_active) {
+		threadCount++;
+		completion_flag = false;
+	}
+
 	q.push(std::move(op));
 
 	// Manual unlocking is done before notifying, to avoid waking up
 	// the waiting thread only to block again (see notify_one for details)
 	lock.unlock();
-	cv.notify_all();
+	cv.notify_one();
 }
+
 
 void dispatch_queue::dispatch_thread_handler(void)
 {
-	std::unique_lock<std::mutex> lock(lock);
+	std::unique_lock<std::mutex> lock(queue_lock);
 
 	do {
 		//Wait until we have data or a quit signal
@@ -69,6 +88,28 @@ void dispatch_queue::dispatch_thread_handler(void)
 			op();
 
 			lock.lock();
+
+			if (completion_active) {
+
+				if (--threadCount == 0) {
+
+					std::unique_lock<std::mutex> c_lock(completion_lock);
+					completion_flag = true;
+					c_lock.unlock();
+					completion_cv.notify_all();
+				}
+
+			}
 		}
 	} while (!quit);
+}
+
+void dispatch_queue::wait_complete()
+{
+	std::unique_lock<std::mutex> lock(completion_lock);
+	if (!completion_flag) {
+		completion_cv.wait(lock, [this] {
+			return (completion_flag.load());
+		});
+	}
 }

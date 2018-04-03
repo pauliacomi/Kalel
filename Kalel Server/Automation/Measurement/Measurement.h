@@ -1,7 +1,8 @@
 #pragma once
 
-#include "../CommonControls.h"
 #include "Security.h"
+#include "../CommonControls.h"
+#include "../../../Kalel Shared/dispatchQueue.h"
 
 // std::functionality
 #include <atomic>
@@ -32,10 +33,7 @@ public:
 	
 	std::atomic_bool eventShutdown = false;
 
-	std::vector<std::thread> measurementThreads;									// Threads for measurement
-	std::mutex lockingMutex;														// Thread sync mutex
-	std::condition_variable syncThreadStart;										// Thread sync condition var
-	bool ready = false;																// Thread sync bool
+	dispatch_queue measurementThreads{std::thread::hardware_concurrency()};			// Threads for measurement
 
 	/**********************************************************************************************************************************
 	*

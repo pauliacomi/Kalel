@@ -4,7 +4,7 @@
 #include "http_request.h"
 #include "http_response.h"
 #include "http_define.h"
-#include "dispatch_queue.h"
+#include "../dispatchQueue.h"
 
 #include <atomic>
 #include <thread>
@@ -29,7 +29,7 @@ protected:
 
 	Socket listeningSocket;
 	std::thread acceptThread;
-	dispatch_queue disp_q{ 10 };
+	dispatch_queue disp_q{ std::thread::hardware_concurrency() };
 
 	std::unordered_map<std::string, std::function<void(http_request*, http_response*)>> funcMap;	// Map of different assigned functions for custom request processing
 	

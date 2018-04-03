@@ -20,6 +20,7 @@ Measurement::Measurement(Storage &s, Controls &c)
 	: storage{ s }
 	, controls{ c }
 {
+	measurementThreads.activate_completion();					// we want to wait up for the queue
 }
 
 
@@ -61,26 +62,16 @@ void Measurement::Execution()
 		*/
 
 		// Create threads
-		measurementThreads.push_back(std::thread(&Measurement::ReadCalorimeter, this));
-		measurementThreads.push_back(std::thread(&Measurement::ReadPressure, this));
-		measurementThreads.push_back(std::thread(&Measurement::ReadTemperatures, this));
+		measurementThreads.dispatch(std::bind(&Measurement::ReadCalorimeter, this));
+		measurementThreads.dispatch(std::bind(&Measurement::ReadPressure, this));
+		measurementThreads.dispatch(std::bind(&Measurement::ReadTemperatures, this));
 
-		// Give the threads the start signal
-		std::unique_lock<std::mutex> lk(lockingMutex);
-		ready = true;											// Use bool to prevent accidental wake-up of threads
-		syncThreadStart.notify_all();
-		lk.unlock();
-
-		// Wait for all threads to complete
-		for (auto& th : measurementThreads)
-		{
-			th.join();
-		}
+		// Wait for threads to complete
+		measurementThreads.wait_complete();
+		
+		// Record time
 		storage.currentData.tp = timeh::NowTime();
 
-		// Reset
-		measurementThreads.clear();
-		ready = false;
 
 		/*
 		*
@@ -131,10 +122,6 @@ void Measurement::Execution()
 
 void Measurement::ReadCalorimeter()
 {
-	// Wait until called
-	std::unique_lock<std::mutex> lock(lockingMutex);
-	syncThreadStart.wait(lock, [this] {return ready; });
-
 	// Read the value from the calorimeter
 	// Write it in the shared object - NO need for mutex
 	storage.currentData.resultCalorimeter = controls.instruments.MeasureReader(CALO);
@@ -142,10 +129,6 @@ void Measurement::ReadCalorimeter()
 
 void Measurement::ReadPressure()
 {
-	// Wait until called
-	std::unique_lock<std::mutex> lock(lockingMutex);
-	syncThreadStart.wait(lock, [this] {return ready; });
-
 	// Read the value from the pressure transmitter
 	// Write it in the shared object - NO need for mutex
 	storage.currentData.pressureLow = controls.instruments.MeasureReader(PRESSURE_LP);
@@ -154,10 +137,6 @@ void Measurement::ReadPressure()
 
 void Measurement::ReadTemperatures()
 {
-	// Wait until called
-	std::unique_lock<std::mutex> lock(lockingMutex);
-	syncThreadStart.wait(lock, [this] {return ready; });
-
 	// Read the value from the temperatures
 	// Write it in the shared object - NO need for mutex
 	storage.currentData.temperatureCalo = controls.instruments.MeasureReader(TEMPERATURE_CALO);

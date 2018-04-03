@@ -225,8 +225,8 @@
     <ClInclude Include="..\Kalel Shared\Netcode\http_client.h">
       <Filter>Header Files\Common\Netcode</Filter>
     </ClInclude>
-    <ClInclude Include="..\Kalel Shared\Netcode\dispatch_queue.h">
-      <Filter>Header Files\Common\Netcode</Filter>
+    <ClInclude Include="..\Kalel Shared\dispatchQueue.h">
+      <Filter>Header Files\Common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -264,9 +264,6 @@
       <Filter>Source Files\Automation\Class</Filter>
     </ClCompile>
     <ClCompile Include="Automation\Class\AutomationStageDesorption.cpp">
-      <Filter>Source Files\Automation\Class</Filter>
-    </ClCompile>
-    <ClCompile Include="Automation\Class\AutomationStageEquilibration.cpp">
       <Filter>Source Files\Automation\Class</Filter>
     </ClCompile>
     <ClCompile Include="Automation\Class\AutomationStageInitialChecks.cpp">
@@ -344,11 +341,14 @@
     <ClCompile Include="..\Kalel Shared\Netcode\http_server.cpp">
       <Filter>Source Files\Common\Netcode</Filter>
     </ClCompile>
-    <ClCompile Include="..\Kalel Shared\Netcode\dispatch_queue.cpp">
-      <Filter>Source Files\Common\Netcode</Filter>
-    </ClCompile>
     <ClCompile Include="Automation\Class\AutomationStageContinuous.cpp">
       <Filter>Source Files\Automation\Class</Filter>
+    </ClCompile>
+    <ClCompile Include="Automation\Class\AutomationStageEquilibration.cpp">
+      <Filter>Source Files\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Kalel Shared\dispatchQueue.cpp">
+      <Filter>Source Files\Common</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
