@@ -347,8 +347,9 @@ void ConnectionPort::SaveModifications(MachineSettings& newSettings)
 
 	for (size_t key = 0; key < NB_READERS; key++)
 	{
-		Reader r;
-		if (r_present[key]) {														
+		if (r_present[key] && r_instrument[key] != 0) {
+			
+			Reader r;
 
 			switch (key)
 			{
@@ -396,9 +397,9 @@ void ConnectionPort::SaveModifications(MachineSettings& newSettings)
 
 	for (size_t key = 0; key < NB_CONTROLLERS; key++)
 	{
-		Controller r;
-		if (c_present[key])
-		{
+		if (c_instrument[key] != 0) {						// if something is selected
+			
+			Controller r;
 
 			switch (key)
 			{
