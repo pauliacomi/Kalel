@@ -344,11 +344,11 @@
     <ClCompile Include="Automation\Class\AutomationStageContinuous.cpp">
       <Filter>Source Files\Automation\Class</Filter>
     </ClCompile>
-    <ClCompile Include="Automation\Class\AutomationStageEquilibration.cpp">
-      <Filter>Source Files\Common</Filter>
-    </ClCompile>
     <ClCompile Include="..\Kalel Shared\dispatchQueue.cpp">
       <Filter>Source Files\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Automation\Class\AutomationStageEquilibration.cpp">
+      <Filter>Source Files\Automation\Class</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
