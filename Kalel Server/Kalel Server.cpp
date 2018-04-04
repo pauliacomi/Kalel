@@ -64,8 +64,8 @@ int main(int argc, char** argv) {
 
 		std::cerr.sync_with_stdio(false);
 
-		std::map<std::chrono::system_clock::time_point, std::string> elogs = mainBackend.storage.eventLogs.get(tp);
-		std::map<std::chrono::system_clock::time_point, std::string> ilogs = mainBackend.storage.infoLogs.get(tp);
+		auto elogs = mainBackend.storage.eventLogs.get(tp);
+		auto ilogs = mainBackend.storage.infoLogs.get(tp);
 		tp = std::chrono::system_clock::now();
 
 		for (const auto &iter : ilogs) {

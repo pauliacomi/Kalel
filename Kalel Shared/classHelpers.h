@@ -17,9 +17,13 @@
 
 template <typename T>
 class StampedSafeStorage {
-	std::mutex mutex;
-	std::map<std::chrono::system_clock::time_point, T> storage;
+public:
+	typedef std::multimap<std::chrono::system_clock::time_point, T> Base;
 
+private:
+	std::mutex mutex;
+	Base storage;
+	
 public:
 
 	// Pushes a class instance in the template
@@ -29,10 +33,10 @@ public:
 	void push(const std::chrono::system_clock::time_point &time, const T&);
 	
 	// Gets all data from storage
-	std::map<std::chrono::system_clock::time_point, T> get();
+	Base get();
 
 	// Gets all data from storage that's later than a point tp
-	std::map<std::chrono::system_clock::time_point, T> get(const std::chrono::system_clock::time_point & tp);
+	Base get(const std::chrono::system_clock::time_point & tp);
 
 	// Deletes all data in storage
 	void del();
@@ -65,15 +69,15 @@ void StampedSafeStorage<T>::push(const std::chrono::system_clock::time_point & t
 
 
 template <typename T>
-std::map<std::chrono::system_clock::time_point, T> StampedSafeStorage<T>::get() {
+typename StampedSafeStorage<T>::Base StampedSafeStorage<T>::get() {
 	std::unique_lock<std::mutex> lock(mutex);
-	return std::map<std::chrono::system_clock::time_point, T>(storage);
+	return Base(storage);
 }
 
 template <typename T>
-std::map<std::chrono::system_clock::time_point, T> StampedSafeStorage<T>::get(const std::chrono::system_clock::time_point & tp) {
+typename StampedSafeStorage<T>::Base StampedSafeStorage<T>::get(const std::chrono::system_clock::time_point & tp) {
 	std::unique_lock<std::mutex> lock(mutex);
-	return std::map<std::chrono::system_clock::time_point, T>(storage.upper_bound(tp), storage.end());
+	return Base(storage.upper_bound(tp), storage.end());
 }
 
 template <typename T>
@@ -104,7 +108,7 @@ void StampedSafeStorage<T>::del_first() {
 }
 
 
-typedef std::map<std::chrono::system_clock::time_point, std::string> TextStorage;
+typedef StampedSafeStorage<std::string>::Base TextStorage;
 
 
 //******************************************************************************************

@@ -318,7 +318,7 @@ void Kalel::DataSync(http_request* req, http_response* resp)
 	{
 		// Figure out which range of data to send by looking at the time requested
 
-		std::map<std::chrono::system_clock::time_point, ExperimentData> localCollection;
+		StampedSafeStorage<ExperimentData>::Base localCollection;
 
 		auto time = req->params.find("t");
 		if (time == req->params.end())
