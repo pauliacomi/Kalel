@@ -77,10 +77,10 @@
 #define MESSAGE_CHECK_VALVES_OPEN			"Check if all the valves are set to automatic and that the valve to the sample is open"
 #define MESSAGE_CHECK_INITIAL_STATE			"Initial experiment and machine verifications"
 #define MESSAGE_CHECK_INITIAL_PRESSURE		"Checking residual pressure"
-#define MESSAGE_CHECK_OPENV6_POSSIB			"Current pressure: %f  Proceeding to open valve 6"
+#define MESSAGE_CHECK_OPENV6_POSSIB			"Current pressure: (%2.4f)  Proceeding to open valve 6"
 #define MESSAGE_CHECK_INITIAL_TEMPERATURE	"Checking temperatures"					
-#define MESSAGE_CHECK_TEMPERATURE_DIFF		"The temperature (= %f) is outside the bounds of the tepmerature limit (= %f) \t\nDo you want to wait until stabilisation (Retry), continue anyway, or cancel the experiment?"
-#define MESSAGE_WARNING_INITIAL_PRESSURE	"The pressure (= %f) is higher than the set pressure limit (= %f) \t\nDo you want to continue anyway?"
+#define MESSAGE_CHECK_TEMPERATURE_DIFF		"The temperature (%2.3f) is outside the bounds of the tepmerature limit (%2.3f). Do you want to wait until stabilisation (Retry), continue anyway, or cancel the experiment?"
+#define MESSAGE_WARNING_INITIAL_PRESSURE	"The pressure (%2.4f) is higher than the set pressure limit (%2.4f). Do you want to continue anyway?"
 #define MESSAGE_WAIT_TEMP_EQUILIBRATION		"Waiting for temperature equilibration"
 #define MESSAGE_VERIFICATIONS_COMPLETE		"Verifications are now complete"
 
