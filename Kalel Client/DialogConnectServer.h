@@ -30,6 +30,7 @@ protected:
 	int radioChoice;
 	DWORD ipAddress;
 	CString webAddress;
+	CString port;
 	CString username;
 	CString password;
 public:
@@ -38,8 +39,10 @@ public:
 	afx_msg void OnClickedConnect();
 
 	std::wstring GetAddress();
+	std::wstring GetPort();
 	std::wstring GetUsername();
 	std::wstring GetPassword();
+	void SetConnection(const std::wstring & address, const std::wstring & port);
 	void SetCredentials(const std::wstring & username, const std::wstring & password);
 };
 

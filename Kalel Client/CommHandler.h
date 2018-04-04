@@ -17,8 +17,8 @@ public:
 
 	void SetHandle(HWND h);
 
-	void Connect(std::wstring address);
-	void SaveAddress(std::wstring address);
+	void Connect(const std::wstring & address, const std::wstring & port = L"http");
+	void SaveAddress(const std::wstring & address);
 	void SaveAuth(const std::wstring &username, const std::wstring &password);
 
 	void GetMachineSettings(const std::chrono::system_clock::time_point &fromTime);

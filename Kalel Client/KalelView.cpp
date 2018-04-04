@@ -204,7 +204,7 @@ void CKalelView::OnInitialUpdate()
 
 	// Then connect to the server if the address exists
 	commHandler.SaveAuth(savedParams.GetUsername(), savedParams.GetPassword());
-	commHandler.Connect(savedParams.GetServerAddress());
+	commHandler.Connect(savedParams.GetServerAddress(), savedParams.GetServerPort());
 	ManualSync(NULL, NULL);
 
 	// Set the timers for the window update
@@ -368,20 +368,26 @@ void CKalelView::OnTimer(UINT_PTR nIDEvent)
 LRESULT CKalelView::DisplayConnectDialog(WPARAM, LPARAM)
 {
 	DialogConnectServer connectServer;
+	connectServer.SetConnection(savedParams.GetServerAddress(), savedParams.GetServerPort());
 	connectServer.SetCredentials(savedParams.GetUsername(), savedParams.GetPassword());
 
 	if (connectServer.DoModal() == IDOK)
 	{
 		std::wstring address{ connectServer.GetAddress() };
+		std::wstring port{ connectServer.GetPort() };
 		std::wstring username{ connectServer.GetUsername() };
 		std::wstring password{ connectServer.GetPassword() };
 		
 		// First save the address and user/password
 		savedParams.SetServerAddress(address);
+		savedParams.SetServerPort(port);
 		savedParams.SetCredentials(username, password);
 
 		// Then connect to the server
-		commHandler.Connect(address);
+		if (!port.empty())
+			commHandler.Connect(address, port);
+		else
+			commHandler.Connect(address);
 		commHandler.SaveAuth(username, password);
 		ManualSync(NULL, NULL);
 	}

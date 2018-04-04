@@ -44,7 +44,7 @@ void CommHandler::SetHandle(HWND h){
 /*********************************
 // Ping
 *********************************/
-void CommHandler::Connect(std::wstring address)
+void CommHandler::Connect(const std::wstring & address, const std::wstring & port /*= L"http"*/)
 {
 	if (!address.empty())
 	{
@@ -52,7 +52,7 @@ void CommHandler::Connect(std::wstring address)
 		auto callback = std::bind(&CommHandler::Handshake_resp, this, std::placeholders::_1);
 
 		try	{
-			client.Request(request, callback, stringh::ws2s(address));
+			client.Request(request, callback, stringh::ws2s(address), stringh::ws2s(port));
 		}
 		catch (const std::exception& e)	{
 			messageHandler.DisplayMessageBox(MB_ICONERROR | MB_OK, stringh::s2ws(e.what()));
@@ -60,7 +60,7 @@ void CommHandler::Connect(std::wstring address)
 	}
 }
 
-void CommHandler::SaveAddress(std::wstring address)
+void CommHandler::SaveAddress(const std::wstring & address)
 {
 	localAddress = stringh::ws2s(address);
 }

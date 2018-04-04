@@ -7,6 +7,9 @@
 #include "afxdialogex.h"
 #include "StringTable.h"						// Error message strings
 
+#include <sstream>
+#include <algorithm>
+
 // DialogConnectServer dialog
 
 IMPLEMENT_DYNAMIC(DialogConnectServer, CDialog)
@@ -16,6 +19,7 @@ DialogConnectServer::DialogConnectServer(CWnd* pParent /*=NULL*/)
 	, radioChoice(0)
 	, ipAddress(0)
 	, webAddress(_T(""))
+	, port(_T("http"))
 {
 
 }
@@ -32,6 +36,7 @@ void DialogConnectServer::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT1, webAddress);
 	DDX_Text(pDX, IDC_EDIT2, username);
 	DDX_Text(pDX, IDC_EDIT3, password);
+	DDX_Text(pDX, IDC_EDIT4, port);
 }
 
 
@@ -122,6 +127,10 @@ std::wstring DialogConnectServer::GetAddress()
 	return address;
 }
 
+std::wstring DialogConnectServer::GetPort()
+{
+	return std::wstring(port);
+}
 
 std::wstring DialogConnectServer::GetUsername()
 {
@@ -134,8 +143,31 @@ std::wstring DialogConnectServer::GetPassword()
 	return std::wstring(password);
 }
 
+void DialogConnectServer::SetConnection(const std::wstring &address, const std::wstring &port)
+{
+	if (address == L"localhost")
+	{
+		radioChoice = 0;
+	}
+	else if (address.substr(0, 3) == L"www")
+	{
+		radioChoice = 1;
+		webAddress = address.c_str();
+	}
+	else if (std::count(address.begin(), address.end(), '.') == 3)
+	{
+		radioChoice = 2;
+		std::wstringstream str(address);
+		int a, b, c, d; //to store the 4 ints
+		wchar_t ch; //to temporarily store the '.'
+		str >> a >> ch >> b >> ch >> c >> ch >> d;
+		ipAddress = (a << 24) + (b << 16) + (c << 8) + d;
+	}
 
-void DialogConnectServer::SetCredentials(const std::wstring &username, const std::wstring & password)
+	this->port = port.c_str();
+}
+
+void DialogConnectServer::SetCredentials(const std::wstring &username, const std::wstring &password)
 {
 	this->username = username.c_str();
 	this->password = password.c_str();
