@@ -102,27 +102,27 @@
     "instruments": {
         "1": {
             "port": 1,
-            "portType": "RS232",
+            "portType": "",
             "type": 1
         },
         "2": {
             "port": 2,
-            "portType": "RS232",
+            "portType": "",
             "type": 2
         },
         "3": {
             "port": 3,
-            "portType": "RS232",
+            "portType": "",
             "type": 2
         },
         "4": {
             "port": 1,
-            "portType": "USB",
+            "portType": "",
             "type": 3
         },
         "5": {
             "port": 2,
-            "portType": "USB",
+            "portType": "",
             "type": 4
         }
     },
@@ -149,8 +149,8 @@
             "channel": 0,
             "identifier": 1,
             "instrument": 4,
-            "safe_max": 5.0,
-            "safe_min": 5.0,
+            "safe_max": 32.0,
+            "safe_min": -5.0,
             "sensitivity": 1.0,
             "type": 32
         },
@@ -158,8 +158,8 @@
             "channel": 1,
             "identifier": 2,
             "instrument": 4,
-            "safe_max": 5.0,
-            "safe_min": 5.0,
+            "safe_max": 35.0,
+            "safe_min": 25.0,
             "sensitivity": 1.0,
             "type": 32
         },
@@ -167,8 +167,8 @@
             "channel": 2,
             "identifier": 3,
             "instrument": 4,
-            "safe_max": 5.0,
-            "safe_min": 5.0,
+            "safe_max": 35.0,
+            "safe_min": 20.0,
             "sensitivity": 1.0,
             "type": 32
         },
@@ -182,5 +182,5 @@
             "type": 48
         }
     },
-    "timestamp": "2018-03-29T14:14:46.545Z"
+    "timestamp": "2018-04-04T17:13:50.738Z"
 }

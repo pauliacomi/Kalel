@@ -22,7 +22,7 @@ bool ValveController::ValveOpen(int num, bool verbose)
 
 	// Log message
 	if (verbose) {
-		LOG(logINFO) << stringh::string_format(MESSAGE_VALVE_OPENED, num - CONTROLLER_PUMP);
+		LOG(logINFO) << stringh::string_format(MESSAGE_VALVE_OPENED, num - CONTROLLER_VALVE);
 	}
 
 	return success;
@@ -33,7 +33,7 @@ bool ValveController::ValveClose(int num, bool verbose)
 	bool success = instruments.ActuateController(num, false);
 
 	if (verbose) {
-		LOG(logINFO) << stringh::string_format(MESSAGE_VALVE_CLOSED, num - CONTROLLER_PUMP);
+		LOG(logINFO) << stringh::string_format(MESSAGE_VALVE_CLOSED, num - CONTROLLER_VALVE);
 	}
 
 	return success;
