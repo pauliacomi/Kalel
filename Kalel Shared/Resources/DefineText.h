@@ -56,15 +56,15 @@
 */
 
 #define MESSAGE_WARNING_PHIGH				"OVERPRESSURE: High range PT pressure (%2.3f) is over the maximum (%2.3f)."
-#define MESSAGE_WARNING_PHNORMAL			"High range PT pressure back to normal."
+#define MESSAGE_WARNING_PHNORMAL			"High range PT pressure back to normal"
 #define MESSAGE_WARNING_PHIGH_V6			"OVERPRESSURE: Low range PT pressure (%2.3f) is over the maximum (%2.3f). For safety valve 6 is closed"
-#define MESSAGE_WARNING_PHNORMAL_V6			"Low range PT pressure back to normal."
+#define MESSAGE_WARNING_PHNORMAL_V6			"Low range PT pressure back to normal"
 
-#define MESSAGE_WARNING_CALOT_HIGH			"Calorimeter temperature too high (%2.3f)"
-#define MESSAGE_WARNING_CALOT_LOW			"Calorimeter temperature too low (%2.3f)"
+#define MESSAGE_WARNING_CALOT_HIGH			"Calorimeter temperature (%2.3f) higher than limit (%2.3f)"
+#define MESSAGE_WARNING_CALOT_LOW			"Calorimeter temperature (%2.3f) lower than limit (%2.3f)"
 #define MESSAGE_WARNING_CALOT_NORMAL		"Calorimeter temperature returned to normal"
-#define MESSAGE_WARNING_THIGH_STOP			"Experiment stopping :Calorimeter temperature (%2.3f) too high"
-#define MESSAGE_WARNING_TLOW_STOP			"Experiment stopping: Calorimeter temperature (%2.3f) too low"
+#define MESSAGE_WARNING_THIGH_STOP			"Experiment stopping :Calorimeter temperature (%2.3f) higher than limit (%2.3f)"
+#define MESSAGE_WARNING_TLOW_STOP			"Experiment stopping: Calorimeter temperature (%2.3f) lower than limit (%2.3f)"
 
 /*
 //

@@ -179,7 +179,7 @@ void Security::SecurityTemperaturesManual(const Storage & storage)
 			security_TemperatureHigh_flag = true;
 
 			// Alert user
-			LOG(logWARNING) << stringh::string_format(MESSAGE_WARNING_CALOT_HIGH, maximumT);
+			LOG(logWARNING) << stringh::string_format(MESSAGE_WARNING_CALOT_HIGH, storage.currentData.temperatureCalo.load(), maximumT);
 
 			// Play a sound
 			soundh::beep::error();
@@ -201,7 +201,7 @@ void Security::SecurityTemperaturesManual(const Storage & storage)
 			security_TemperatureLow_flag = true;
 
 			// Alert user
-			LOG(logWARNING) << stringh::string_format(MESSAGE_WARNING_CALOT_LOW, minimumT);
+			LOG(logWARNING) << stringh::string_format(MESSAGE_WARNING_CALOT_LOW, storage.currentData.temperatureCalo.load(), minimumT);
 
 			// Play a sound
 			soundh::beep::error();
@@ -233,12 +233,12 @@ void Security::SecuriteTemperaturesAuto(const Storage & storage)
 
 		if (storage.currentData.temperatureCalo >= maximumT)
 		{
-			LOG(logINFO) << stringh::string_format(MESSAGE_WARNING_THIGH_STOP, maximumT);
+			LOG(logINFO) << stringh::string_format(MESSAGE_WARNING_THIGH_STOP, storage.currentData.temperatureCalo.load(), maximumT);
 			//g_flagState = ARRET_URGENCE_TCH;
 		}
 		if (storage.currentData.temperatureCalo <= minimumT)
 		{
-			LOG(logINFO) << stringh::string_format(MESSAGE_WARNING_TLOW_STOP, minimumT);
+			LOG(logINFO) << stringh::string_format(MESSAGE_WARNING_TLOW_STOP, storage.currentData.temperatureCalo.load(), minimumT);
 			//g_flagState = ARRET_URGENCE_TCB;
 		}
 	}
