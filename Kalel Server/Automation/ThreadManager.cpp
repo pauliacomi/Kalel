@@ -1,14 +1,12 @@
 #include "ThreadManager.h"
 
 #include "../../Kalel Shared/Resources/DefineInstruments.h"
+#include "../../Kalel Shared/log.h"
 
 #include "Class/Automation.h"										// Backend for all the automation
 #include "Measurement/Measurement.h"								// Backend for measurements
 #include "CommonControls.h"
 #include "CommonStorage.h"
-
-// STD
-#include <atomic>
 
 // --------- Initialisation and destruction -------
 
@@ -223,6 +221,10 @@ void ThreadManager::ManualAction(int instrumentID, bool state)
 	bool actionSuccessful = false;
 
 	actionSuccessful = controls.instruments.ActuateController(instrumentID, state);
+	if (state)
+		LOG(logINFO) << "Manually activated instrument with ID " << instrumentID;
+	else	
+		LOG(logINFO) << "Manually deactivated instrument with ID " << instrumentID;
 
 	// return
 	if (actionSuccessful)
