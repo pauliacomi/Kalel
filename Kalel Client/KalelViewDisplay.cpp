@@ -91,7 +91,7 @@ LRESULT CKalelView::DisplayStepProgress(const ExperimentStatus &status)
 		}
 		else
 		{
-			temp.Format(_T(" *** Waiting: %.0f s /  %.0f s"), timeToEquilibrateCurrent, status.timeToEquilibrate.load());
+			temp.Format(_T(" *** Waiting: %.0f s /  %.0f s"), fmodf(timeToEquilibrateCurrent, 60.0f), status.timeToEquilibrate.load());
 		}
 		m_StrEtape += temp;
 	}
