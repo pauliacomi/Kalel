@@ -136,7 +136,21 @@ bool Automation::VerificationResidualPressure()
 	{
 		// Display initial message
 		LOG(logINFO) << MESSAGE_CHECK_INITIAL_PRESSURE;
+		
+		// Open valve 4
+		controls.valveControls.ValveOpen(ID_VALVE_4, true);
 
+		// Set the time to wait
+		WaitSeconds(storage.machineSettings.TimeWaitValves, true);
+		
+		// Continue to next step
+		storage.experimentStatus.stepStatus = STEP_STATUS_INPROGRESS;
+		return false;
+	}
+
+	if (storage.experimentStatus.stepStatus == STEP_STATUS_INPROGRESS
+		&& storage.experimentStatus.isWaiting == false)	
+	{
 		if (storage.currentData.pressureHigh < storage.machineSettings.readers.find(PRESSURE_LP)->second.safe_max)
 		{
 			// Tell GUI we are opening valve 6
@@ -149,12 +163,12 @@ bool Automation::VerificationResidualPressure()
 			WaitSeconds(storage.machineSettings.TimeWaitValves, true);
 		}
 		// Continue to next step
-		storage.experimentStatus.stepStatus = STEP_STATUS_INPROGRESS;
+		storage.experimentStatus.stepStatus = STEP_STATUS_INPROGRESS + 1;
 		return false;
 	}
 
-	if (storage.experimentStatus.stepStatus == STEP_STATUS_INPROGRESS
-		&& storage.experimentStatus.isWaiting == false)							// If waiting is done
+	if (storage.experimentStatus.stepStatus == STEP_STATUS_INPROGRESS + 1
+		&& storage.experimentStatus.isWaiting == false)	
 	{
 		// Open valve 5
 		controls.valveControls.ValveOpen(ID_VALVE_5, true);
@@ -207,6 +221,8 @@ bool Automation::VerificationResidualPressure()
 		}
 		else
 		{
+			controls.valveControls.CloseAllValves(true);			// Close valves
+			waitingUser = false;									// If somehow it got here with this true
 			return true;
 		}
 	}
@@ -265,8 +281,10 @@ bool Automation::VerificationTemperature()
 				}
 			}
 		}
-		else return true;
-	
+		else {
+			waitingUser = false;									// If somehow it got here with this true
+			return true;
+		}
 	}
 
 	if (storage.experimentStatus.stepStatus == STEP_STATUS_INPROGRESS)

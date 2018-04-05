@@ -31,10 +31,10 @@
 
 
 #define STEP_STATUS_UNDEF			0
-#define STEP_STATUS_START			1
-#define STEP_STATUS_INPROGRESS		2
-#define	STEP_STATUS_END				3
-#define STEP_STATUS_SUBSTEP			4
+#define STEP_STATUS_START			10			// Larger since some will be incremented
+#define STEP_STATUS_INPROGRESS		20			// Larger since some will be incremented
+#define	STEP_STATUS_END				30			// Larger since some will be incremented
+#define STEP_STATUS_SUBSTEP			40			// Larger since some will be incremented
 
 #define SUBSTEP_STATUS_START			100		// Larger since some will be incremented
 #define SUBSTEP_STATUS_INPROGRESS		200		// Larger since some will be incremented

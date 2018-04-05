@@ -175,7 +175,7 @@ void Automation::SubstepsDesorption()
 					controls.valveControls.PumpDeactivate(true);
 				}
 				storage.experimentStatus.substepStatus = SUBSTEP_STATUS_DESORPTION;														// Go to desorption
-				WaitSeconds(storage.experimentSettings.dataDesorption[storage.experimentStatus.desorptionCounter].temps_volume);					// Set the time to wait for equilibration in the reference volume
+				WaitMinutes(storage.experimentSettings.dataDesorption[storage.experimentStatus.desorptionCounter].temps_volume);					// Set the time to wait for equilibration in the reference volume
 			}
 		}
 	}
@@ -253,7 +253,7 @@ void Automation::SubstepsDesorption()
 		controls.valveControls.ValveOpen(ID_VALVE_5, true);
 
 		// Wait for desorption
-		WaitSeconds(storage.experimentSettings.dataAdsorption[storage.experimentStatus.adsorptionCounter].temps_adsorption);		// Set the time to wait
+		WaitMinutes(storage.experimentSettings.dataAdsorption[storage.experimentStatus.adsorptionCounter].temps_adsorption);		// Set the time to wait
 		storage.experimentStatus.substepStatus = SUBSTEP_STATUS_END;													// Go to next step
 	}
 

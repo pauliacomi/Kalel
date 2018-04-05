@@ -18,7 +18,7 @@ void Automation::StageAdsorption()
 	switch (storage.experimentStatus.stepStatus)
 	{
 	case STEP_STATUS_START:
-		storage.experimentStatus.stepStatus = STEP_STATUS_INPROGRESS;														// Set next step
+		storage.experimentStatus.stepStatus = STEP_STATUS_INPROGRESS;																// Set next step
 
 		LOG(logINFO) << stringh::string_format(MESSAGE_ADSORPTION_STAGE_START, storage.experimentStatus.adsorptionCounter.load());	// Log the step change
 
@@ -65,7 +65,7 @@ void Automation::SubstepsAdsorption()
 		storage.experimentStatus.pressureHighOld =  storage.currentData.pressureHigh.load();																// Save the injection pressure for later
 		LOG(logINFO) << stringh::string_format(MESSAGE_ADSORPTION_DOSE_START, 
 			storage.experimentStatus.adsorptionCounter.load(), storage.experimentStatus.injectionDose.load());												// Log current dose
-		storage.experimentStatus.substepStatus = SUBSTEP_STATUS_INJECTION;																			// Move to injection
+		storage.experimentStatus.substepStatus = SUBSTEP_STATUS_INJECTION;																					// Move to injection
 	}
 	
 
@@ -163,8 +163,8 @@ void Automation::SubstepsAdsorption()
 			else
 			{
 				controls.valveControls.ValveClose(ID_VALVE_4, true);																			// Close valve 4
-				WaitSeconds(storage.experimentSettings.dataAdsorption[storage.experimentStatus.adsorptionCounter].temps_volume);				// Set the time to wait for equilibration in the reference volume
-				storage.experimentStatus.substepStatus = SUBSTEP_STATUS_ADSORPTION;													// Go to adsorption
+				WaitMinutes(storage.experimentSettings.dataAdsorption[storage.experimentStatus.adsorptionCounter].temps_volume);				// Set the time to wait for equilibration in the reference volume
+				storage.experimentStatus.substepStatus = SUBSTEP_STATUS_ADSORPTION;																// Go to adsorption
 			}
 		}
 	}
@@ -248,8 +248,8 @@ void Automation::SubstepsAdsorption()
 		controls.valveControls.ValveOpen(ID_VALVE_5, true);
 
 		// Wait for adsorption
-		WaitSeconds(storage.experimentSettings.dataAdsorption[storage.experimentStatus.adsorptionCounter].temps_adsorption);		// Set the time to wait
-		storage.experimentStatus.substepStatus = SUBSTEP_STATUS_END;													// Go to next step
+		WaitMinutes(storage.experimentSettings.dataAdsorption[storage.experimentStatus.adsorptionCounter].temps_adsorption);		// Set the time to wait
+		storage.experimentStatus.substepStatus = SUBSTEP_STATUS_END;																// Go to next step
 	}
 
 
