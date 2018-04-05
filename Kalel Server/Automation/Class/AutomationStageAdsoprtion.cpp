@@ -18,11 +18,11 @@ void Automation::StageAdsorption()
 	switch (storage.experimentStatus.experimentStepStatus)
 	{
 	case STEP_STATUS_START:
-		storage.experimentStatus.experimentStepStatus = STEP_STATUS_INPROGRESS;											// Set next step
+		storage.experimentStatus.experimentStepStatus = STEP_STATUS_INPROGRESS;														// Set next step
 
-		LOG(logINFO) << MESSAGE_ADSORPTION_STAGE_START;																	// Log the step change
+		LOG(logINFO) << stringh::string_format(MESSAGE_ADSORPTION_STAGE_START, storage.experimentStatus.adsorptionCounter.load());	// Log the step change
 
-		controls.valveControls.CloseAll(true);																			// Close all valves
+		controls.valveControls.CloseAll(true);																						// Close all valves
 		break;
 
 	case STEP_STATUS_INPROGRESS:
@@ -40,7 +40,7 @@ void Automation::StageAdsorption()
 	case STEP_STATUS_END:
 		storage.experimentStatus.experimentStepStatus = STEP_STATUS_START;															// Reset substep
 
-		LOG(logINFO) << stringh::string_format(MESSAGE_ADSORPTION_STAGE_START, storage.experimentStatus.adsorptionCounter.load());	// Log the step change
+		LOG(logINFO) << stringh::string_format(MESSAGE_ADSORPTION_STAGE_END, storage.experimentStatus.adsorptionCounter.load());	// Log the step change
 
 		if (storage.experimentStatus.adsorptionCounter < storage.experimentSettings.dataAdsorption.size())
 		{

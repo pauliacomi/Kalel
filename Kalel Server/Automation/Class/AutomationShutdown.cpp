@@ -57,7 +57,6 @@ void Automation::Pause()
 	if (storage.experimentStatus.experimentInProgress)
 	{
 		storage.timerWaiting.Pause();
-		storage.experimentStatus.experimentRecording = false;
 
 		// Log the pause
 		LOG(logINFO) << MESSAGE_EXPPAUSE;
@@ -72,7 +71,6 @@ void Automation::Resume()
 	if (storage.experimentStatus.experimentInProgress)
 	{
 		storage.timerWaiting.Resume();
-		storage.experimentStatus.experimentRecording = true;
 
 		// Log the resume
 		LOG(logINFO) << MESSAGE_EXPRESUME;

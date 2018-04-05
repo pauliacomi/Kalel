@@ -36,15 +36,15 @@
 #define	STEP_STATUS_END				3
 #define STEP_STATUS_SUBSTEP			4
 
-#define SUBSTEP_STATUS_START			1
-#define SUBSTEP_STATUS_INPROGRESS		2
-#define SUBSTEP_STATUS_INJECTION		3
-#define SUBSTEP_STATUS_CHECK			4
-#define SUBSTEP_STATUS_ABORT			5
-#define SUBSTEP_STATUS_ADSORPTION		6
-#define	SUBSTEP_STATUS_END				7
-#define SUBSTEP_STATUS_REMOVAL			8
-#define SUBSTEP_STATUS_DESORPTION		9
+#define SUBSTEP_STATUS_START			100		// Larger since some will be incremented
+#define SUBSTEP_STATUS_INPROGRESS		200		// Larger since some will be incremented
+#define SUBSTEP_STATUS_INJECTION		300		// Larger since some will be incremented
+#define SUBSTEP_STATUS_CHECK			400		// Larger since some will be incremented
+#define SUBSTEP_STATUS_ABORT			500		// Larger since some will be incremented
+#define SUBSTEP_STATUS_ADSORPTION		600		// Larger since some will be incremented
+#define	SUBSTEP_STATUS_END				700		// Larger since some will be incremented
+#define SUBSTEP_STATUS_REMOVAL			800		// Larger since some will be incremented
+#define SUBSTEP_STATUS_DESORPTION		900		// Larger since some will be incremented
 
 
 // Stage steps

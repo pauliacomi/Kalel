@@ -40,6 +40,9 @@ public:
 	bool ResumeAutomation();
 	bool StopExperiment();
 	bool SetUserChoice(unsigned int choice);
+	bool NextStageAutomation();
+	bool NextStepAutomation();
+	bool NextDoseAutomation();
 	bool ChangeExperimentSettings();
 
 	unsigned ThreadManualAction(int instrumentID, bool state);		// When a manual command is issued

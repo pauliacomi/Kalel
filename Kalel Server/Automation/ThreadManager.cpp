@@ -199,6 +199,37 @@ bool ThreadManager::SetUserChoice(unsigned int choice)
 	return false;
 }
 
+bool ThreadManager::NextStageAutomation()
+{
+	if (automation != nullptr)
+	{
+		++storage.experimentStatus.experimentStage;											// Set next stage
+		storage.experimentStatus.experimentStepStatus = STEP_STATUS_START;					// Reset next step
+		return true;
+	}
+	return false;
+}
+
+bool ThreadManager::NextStepAutomation()
+{
+	if (automation != nullptr)
+	{
+		++storage.experimentStatus.experimentSubstepStage;
+		storage.experimentStatus.experimentSubstepStage = SUBSTEP_STATUS_START;
+		return true;
+	}
+	return false;
+}
+
+bool ThreadManager::NextDoseAutomation()
+{
+	if (automation != nullptr)
+	{
+		++storage.experimentStatus.experimentDose;
+		return true;
+	}
+	return false;
+}
 
 //--------------------------------------------------------------------------------------
 //
