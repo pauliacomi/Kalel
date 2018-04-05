@@ -239,7 +239,7 @@ inline void to_json(nlohmann::json &j, const ExperimentStatus &e) {
 	j[	"EP"	]	= e.inProgress					.load();
 	j[	"ER"	]	= e.isRecording					.load();
 	j[	"EW"	]	= e.isWaiting					.load();
-	j[	"EW"	]	= e.isWaitingUser				.load();
+	j[	"EWU"	]	= e.isWaitingUser				.load();
 	j[	"ECR"	]	= e.isRunningAutomation			.load();
 	j[	"ES"	]	= e.mainStage					.load();
 	j[	"VS"	]	= e.checksStage					.load();
