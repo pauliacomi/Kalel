@@ -265,6 +265,8 @@ void Automation::SubstepsAdsorption()
 
 		// Display message to show end of adsorption
 		LOG(logINFO) << stringh::string_format(MESSAGE_ADSORPTION_DOSE_END, storage.experimentStatus.experimentDose.load());
+		// Increment dose
+		++storage.experimentStatus.experimentDose;
 
 		// Reset things
 		storage.experimentStatus.experimentSubstepStage = SUBSTEP_STATUS_START;

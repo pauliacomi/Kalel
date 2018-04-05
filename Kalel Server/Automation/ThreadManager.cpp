@@ -214,8 +214,12 @@ bool ThreadManager::NextStepAutomation()
 {
 	if (automation != nullptr)
 	{
-		++storage.experimentStatus.experimentSubstepStage;
-		storage.experimentStatus.experimentSubstepStage = SUBSTEP_STATUS_START;
+		if (storage.experimentStatus.experimentStage == STAGE_ADSORPTION ||
+			storage.experimentStatus.experimentStage == STAGE_DESORPTION)
+		{
+			storage.experimentStatus.experimentStepStatus = STEP_STATUS_END;
+			storage.experimentStatus.experimentWaiting = false;
+		}
 		return true;
 	}
 	return false;
@@ -225,7 +229,12 @@ bool ThreadManager::NextDoseAutomation()
 {
 	if (automation != nullptr)
 	{
-		++storage.experimentStatus.experimentDose;
+		if (storage.experimentStatus.experimentStage == STAGE_ADSORPTION || 
+			storage.experimentStatus.experimentStage == STAGE_DESORPTION)
+		{
+			storage.experimentStatus.experimentSubstepStage = SUBSTEP_STATUS_END;
+			storage.experimentStatus.experimentWaiting = false;
+		}
 		return true;
 	}
 	return false;
