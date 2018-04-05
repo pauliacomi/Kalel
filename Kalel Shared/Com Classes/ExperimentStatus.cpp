@@ -37,6 +37,7 @@ void ExperimentStatus::ResetData()
 	inProgress						.store_nostamp( false );
 	isRecording						.store_nostamp( false );
 	isWaiting						.store_nostamp( false );
+	isWaitingUser					.store_nostamp( false );
 	isRunningAutomation				.store_nostamp( true );
 
 	mainStage						.store_nostamp( STAGE_UNDEF );
@@ -72,6 +73,7 @@ void ExperimentStatus::Replace(const ExperimentStatus & rhs)
 	inProgress				.store_nostamp(rhs.inProgress.load());
 	isRecording					.store_nostamp(rhs.isRecording.load());
 	isWaiting					.store_nostamp(rhs.isWaiting.load());
+	isWaitingUser				.store_nostamp(rhs.isWaiting.load());
 	isRunningAutomation			.store_nostamp(rhs.isRunningAutomation.load());
 
 	///*******************

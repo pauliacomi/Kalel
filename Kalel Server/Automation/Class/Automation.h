@@ -42,7 +42,6 @@ protected:
 protected:
 
 	bool running = true;
-	std::atomic_bool waitingUser = false;
 
 public:
 	std::atomic<Stop> shutdownReason = Stop::Cancel;

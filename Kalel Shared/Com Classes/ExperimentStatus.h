@@ -29,6 +29,7 @@ public:
 	atomic_ts<bool> inProgress{ tp };								// Boolean stating whether the experiment is started or not
 	atomic_ts<bool> isRecording{ tp };								// Boolean stating whether the data is being recorded at each measurement
 	atomic_ts<bool> isWaiting{ tp };								// Boolean stating the experiment is currently waiting
+	atomic_ts<bool> isWaitingUser{ tp };							// Boolean stating the experiment is currently waiting
 	atomic_ts<bool> isRunningAutomation{ tp };						// Boolean stating that any automation is requested (manual,automatic etc)
 
 	
