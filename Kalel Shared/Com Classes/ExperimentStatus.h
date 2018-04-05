@@ -26,22 +26,21 @@ public:
 	///		Global flags
 	///*******************
 
-	atomic_ts<bool> experimentInProgress{ tp };							// Boolean stating whether the experiment is started or not
-	atomic_ts<bool> experimentRecording{ tp };							// Boolean stating whether the data is being recorded at each measurement
-	atomic_ts<bool> experimentWaiting{ tp };							// Boolean stating the experiment is currently waiting
-	atomic_ts<bool> experimentCommandsRequested{ tp };					// Boolean stating that any automation is requested (manual,automatic etc)
+	atomic_ts<bool> inProgress{ tp };								// Boolean stating whether the experiment is started or not
+	atomic_ts<bool> isRecording{ tp };								// Boolean stating whether the data is being recorded at each measurement
+	atomic_ts<bool> isWaiting{ tp };								// Boolean stating the experiment is currently waiting
+	atomic_ts<bool> isRunningAutomation{ tp };						// Boolean stating that any automation is requested (manual,automatic etc)
 
 	
 	///*******************
 	///		Parameters for storing where program has reached
 	///*******************
 
-	atomic_ts<int> experimentStage{ tp };								// Current experiment stage, the main part of the program (verification, equilibration, adsorption, desorption etc.)
-	atomic_ts<int> verificationStep{ tp };								// The security check steps
-	atomic_ts<int> experimentStepStatus{ tp };							// Current step status, for each step this can be STARTING, ENDING or IN_PROGRESS
-	atomic_ts<int> experimentSubstepStage{ tp };						// Current dose substep, can be at injection, equilibration etc
-	atomic_ts<int> experimentDose{ tp };								// Current experiment dose that is currently underway (ex: 2nd dose of adsorption step 1)
-	atomic_ts<int> experimentPreviousStage{ tp };						// Previous experiment stage
+	atomic_ts<int> mainStage{ tp };									// Current experiment stage, the main part of the program (verification, equilibration, adsorption, desorption etc.)
+	atomic_ts<int> checksStage{ tp };								// The security check steps
+	atomic_ts<int> stepStatus{ tp };								// Current step status, for each step this can be STARTING, ENDING or IN_PROGRESS
+	atomic_ts<int> substepStatus{ tp };								// Current dose substep, can be at injection, equilibration etc
+	atomic_ts<int> injectionDose{ tp };								// Current experiment dose that is currently underway (ex: 2nd dose of adsorption step 1)
 
 	// Time
 	atomic_ts<unsigned long long> timeStart{ tp };						// When the experiment started

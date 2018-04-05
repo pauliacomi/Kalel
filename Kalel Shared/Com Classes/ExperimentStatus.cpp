@@ -34,29 +34,28 @@ void ExperimentStatus::ResetData()
 {
 	tp = timeh::NowTime();
 
-	experimentInProgress					.store_nostamp( false );
-	experimentRecording						.store_nostamp( false );
-	experimentWaiting						.store_nostamp( false );
-	experimentCommandsRequested				.store_nostamp( true );
+	inProgress						.store_nostamp( false );
+	isRecording						.store_nostamp( false );
+	isWaiting						.store_nostamp( false );
+	isRunningAutomation				.store_nostamp( true );
 
-	experimentStage							.store_nostamp( STAGE_UNDEF );
-	experimentPreviousStage					.store_nostamp( STAGE_UNDEF );
-	experimentDose							.store_nostamp( 0 );
-	experimentStepStatus					.store_nostamp( STEP_STATUS_UNDEF );
-	experimentSubstepStage					.store_nostamp( STEP_STATUS_START );
-	verificationStep						.store_nostamp( STEP_VERIFICATIONS_UNDEF );
+	mainStage						.store_nostamp( STAGE_UNDEF );
+	injectionDose					.store_nostamp( 0 );
+	stepStatus						.store_nostamp( STEP_STATUS_UNDEF );
+	substepStatus					.store_nostamp( STEP_STATUS_START );
+	checksStage						.store_nostamp( STEP_VERIFICATIONS_UNDEF );
 
-	timeStart								.store_nostamp( 0 );
-	timeEquilibrationStart					.store_nostamp( 0 );
-	timeToEquilibrate						.store_nostamp( 0.f );
+	timeStart						.store_nostamp( 0 );
+	timeEquilibrationStart			.store_nostamp( 0 );
+	timeToEquilibrate				.store_nostamp( 0.f );
 
-	injectionAttemptCounter					.store_nostamp( 0 );
-	adsorptionCounter						.store_nostamp( 0 );
-	desorptionCounter						.store_nostamp( 0 );
+	injectionAttemptCounter			.store_nostamp( 0 );
+	adsorptionCounter				.store_nostamp( 0 );
+	desorptionCounter				.store_nostamp( 0 );
 
-	pressureInitial							.store_nostamp( 0.f );
-	pressureFinal							.store_nostamp( 0.f );
-	pressureHighOld							.store_nostamp( 0.f );
+	pressureInitial					.store_nostamp( 0.f );
+	pressureFinal					.store_nostamp( 0.f );
+	pressureHighOld					.store_nostamp( 0.f );
 }
 
 
@@ -70,21 +69,20 @@ void ExperimentStatus::Replace(const ExperimentStatus & rhs)
 	///		Global flags
 	///*******************
 
-	experimentInProgress				.store_nostamp(rhs.experimentInProgress.load());
-	experimentRecording					.store_nostamp(rhs.experimentRecording.load());
-	experimentWaiting					.store_nostamp(rhs.experimentWaiting.load());
-	experimentCommandsRequested			.store_nostamp(rhs.experimentCommandsRequested.load());
+	inProgress				.store_nostamp(rhs.inProgress.load());
+	isRecording					.store_nostamp(rhs.isRecording.load());
+	isWaiting					.store_nostamp(rhs.isWaiting.load());
+	isRunningAutomation			.store_nostamp(rhs.isRunningAutomation.load());
 
 	///*******************
 	///		Parameters for storing where program has reached
 	///*******************
 
-	experimentStage						.store_nostamp(rhs.experimentStage.load());
-	experimentPreviousStage				.store_nostamp(rhs.experimentPreviousStage.load());
-	experimentDose						.store_nostamp(rhs.experimentDose.load());
-	experimentStepStatus				.store_nostamp(rhs.experimentStepStatus.load());
-	experimentSubstepStage				.store_nostamp(rhs.experimentSubstepStage.load());
-	verificationStep					.store_nostamp(rhs.verificationStep.load());
+	mainStage						.store_nostamp(rhs.mainStage.load());
+	injectionDose						.store_nostamp(rhs.injectionDose.load());
+	stepStatus				.store_nostamp(rhs.stepStatus.load());
+	substepStatus				.store_nostamp(rhs.substepStatus.load());
+	checksStage					.store_nostamp(rhs.checksStage.load());
 
 	timeStart							.store_nostamp(rhs.timeStart.load());
 	timeEquilibrationStart				.store_nostamp(rhs.timeEquilibrationStart.load());

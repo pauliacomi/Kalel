@@ -608,7 +608,7 @@ void Kalel::UserInput(http_request * req, http_response * resp)
 unsigned Kalel::SetMachineSettings(const MachineSettings & ms)
 {
 	// Check there are no experiments running
-	if (storage.experimentStatus.experimentInProgress) {
+	if (storage.experimentStatus.inProgress) {
 		LOG(logERROR) << "Cannot change machine settings while an experiment is in progress"; 
 		return 1; 
 	}
@@ -639,7 +639,7 @@ unsigned Kalel::SetMachineSettings(const MachineSettings & ms)
 void Kalel::SetExperimentSettings(const ExperimentSettings & es)
 {
 	// Create new experiment settings, logging change if experiment is running
-	if (storage.experimentStatus.experimentInProgress == true) {
+	if (storage.experimentStatus.inProgress == true) {
 		controlMechanisms.fileWriter.RecordDataChange(false,
 			es, storage.experimentSettings,
 			storage.experimentStatus, storage.currentData);						// non-CSV

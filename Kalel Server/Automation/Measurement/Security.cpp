@@ -28,7 +28,7 @@ Security::~Security()
 
 void Security::SecurityOverPressure(const Storage & storage)
 {
-	if (storage.experimentStatus.experimentInProgress)
+	if (storage.experimentStatus.inProgress)
 		SecurityHighPressureAuto(storage);
 	else	
 		SecurityHighPressureManual(storage);
@@ -36,7 +36,7 @@ void Security::SecurityOverPressure(const Storage & storage)
 
 void Security::SecurityTemperatures(const Storage & storage)
 {
-	if (storage.experimentStatus.experimentInProgress)
+	if (storage.experimentStatus.inProgress)
 		SecuriteTemperaturesAuto(storage);
 	else
 		SecurityTemperaturesManual(storage);

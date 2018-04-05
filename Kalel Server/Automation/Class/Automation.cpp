@@ -48,7 +48,7 @@ void Automation::Execution()
 		*/
 
 		// Go through any functionality
-		if (storage.experimentStatus.experimentCommandsRequested) {
+		if (storage.experimentStatus.isRunningAutomation) {
 			switch (storage.experimentSettings.experimentType)		// We look at the type of experiment
 			{
 			case EXPERIMENT_TYPE_MANUAL:							// in case it is manual
@@ -80,14 +80,14 @@ void Automation::Execution()
 		*/
 
 		// If waiting complete
-		if (storage.experimentStatus.experimentWaiting &&															// If the wait functionality is requested																					
+		if (storage.experimentStatus.isWaiting &&															// If the wait functionality is requested																					
 			storage.timerWaiting.TimeSeconds() > storage.experimentStatus.timeToEquilibrate) {					// and the time has been completed
 
 			// Stop the timer
 			storage.timerWaiting.Pause();
 
 			// Reset the flag
-			storage.experimentStatus.experimentWaiting = false;
+			storage.experimentStatus.isWaiting = false;
 		}
 
 		/*
@@ -97,7 +97,7 @@ void Automation::Execution()
 		*/
 
 		// Write data
-		if (storage.experimentStatus.experimentRecording)														// If we started recording
+		if (storage.experimentStatus.isRecording)														// If we started recording
 		{
 			if (storage.timerRecording.TimeMilliseconds() > storage.machineSettings.TimeBetweenRecording)		// If enough time between measurements
 			{
@@ -180,7 +180,7 @@ void Automation::Execution()
 
 void Automation::ExecutionManual()
 {
-	if (storage.experimentStatus.experimentStepStatus == STEP_STATUS_UNDEF) {
+	if (storage.experimentStatus.stepStatus == STEP_STATUS_UNDEF) {
 
 		// Send start message
 		LOG(logINFO) << MESSAGE_EXPSTART;
@@ -197,8 +197,8 @@ void Automation::ExecutionManual()
 		}
 
 		// Record start
-		storage.experimentStatus.experimentInProgress = true;
-		storage.experimentStatus.experimentRecording = true;
+		storage.experimentStatus.inProgress = true;
+		storage.experimentStatus.isRecording = true;
 
 		// Start the timer to record time between recording of measurements
 		storage.timerRecording.Start();	
@@ -207,8 +207,8 @@ void Automation::ExecutionManual()
 		storage.experimentStatus.timeStart = timeh::TimePointToMs(timeh::NowTime());
 
 		// Continue experiment
-		storage.experimentStatus.experimentStage = STAGE_MANUAL;
-		storage.experimentStatus.experimentStepStatus = STEP_STATUS_INPROGRESS;
+		storage.experimentStatus.mainStage = STAGE_MANUAL;
+		storage.experimentStatus.stepStatus = STEP_STATUS_INPROGRESS;
 	}
 }
 
@@ -217,7 +217,7 @@ void Automation::ExecutionManual()
 void Automation::ExecutionAuto()
 {
 	// First time running command
-	if (storage.experimentStatus.experimentStepStatus == STEP_STATUS_UNDEF){
+	if (storage.experimentStatus.stepStatus == STEP_STATUS_UNDEF){
 
 		// Send start message
 		LOG(logINFO) << MESSAGE_EXPSTART;
@@ -234,15 +234,15 @@ void Automation::ExecutionAuto()
 		}
 
 		// Write variables to starting position
-		storage.experimentStatus.experimentInProgress = true;
-		storage.experimentStatus.experimentStage = STAGE_VERIFICATIONS;
-		storage.experimentStatus.experimentStepStatus = STEP_STATUS_START;
-		storage.experimentStatus.experimentSubstepStage = SUBSTEP_STATUS_START;
-		storage.experimentStatus.verificationStep = STEP_VERIFICATIONS_SECURITY;
+		storage.experimentStatus.inProgress = true;
+		storage.experimentStatus.mainStage = STAGE_VERIFICATIONS;
+		storage.experimentStatus.stepStatus = STEP_STATUS_START;
+		storage.experimentStatus.substepStatus = SUBSTEP_STATUS_START;
+		storage.experimentStatus.checksStage = STEP_VERIFICATIONS_SECURITY;
 	}
 
 	// Stages of automatic experiment
-	switch (storage.experimentStatus.experimentStage)
+	switch (storage.experimentStatus.mainStage)
 	{
 	case STAGE_VERIFICATIONS:
 		Verifications();
@@ -275,7 +275,7 @@ void Automation::ExecutionAuto()
 void Automation::ExecutionContinuous()
 {
 	// First time running command
-	if (storage.experimentStatus.experimentStepStatus == STEP_STATUS_UNDEF) {
+	if (storage.experimentStatus.stepStatus == STEP_STATUS_UNDEF) {
 
 		// Send start message
 		LOG(logINFO) << MESSAGE_EXPSTART;
@@ -292,15 +292,15 @@ void Automation::ExecutionContinuous()
 		}
 
 		// Write variables to starting position
-		storage.experimentStatus.experimentInProgress = true;
-		storage.experimentStatus.experimentStage = STAGE_VERIFICATIONS;
-		storage.experimentStatus.experimentStepStatus = STEP_STATUS_START;
-		storage.experimentStatus.experimentSubstepStage = SUBSTEP_STATUS_START;
-		storage.experimentStatus.verificationStep = STEP_VERIFICATIONS_SECURITY;
+		storage.experimentStatus.inProgress = true;
+		storage.experimentStatus.mainStage = STAGE_VERIFICATIONS;
+		storage.experimentStatus.stepStatus = STEP_STATUS_START;
+		storage.experimentStatus.substepStatus = SUBSTEP_STATUS_START;
+		storage.experimentStatus.checksStage = STEP_VERIFICATIONS_SECURITY;
 	}
 
 	// Stages of automatic experiment
-	switch (storage.experimentStatus.experimentStage)
+	switch (storage.experimentStatus.mainStage)
 	{
 	case STAGE_VERIFICATIONS:
 		Verifications();

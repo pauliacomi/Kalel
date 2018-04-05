@@ -236,54 +236,52 @@ inline void to_json(nlohmann::json &j, const ExperimentStatus &e) {
 
 	j["timestamp"] = timeh::TimePointToISOString(e.tp);
 
-	j[	"EP"	]	= e.experimentInProgress				.load();
-	j[	"ER"	]	= e.experimentRecording					.load();
-	j[	"EW"	]	= e.experimentWaiting					.load();
-	j[	"ECR"	]	= e.experimentCommandsRequested			.load();
-	j[	"ES"	]	= e.experimentStage						.load();
-	j[	"VS"	]	= e.verificationStep					.load();
-	j[	"SSs"	]	= e.experimentStepStatus				.load();
-	j[	"SSg"	]	= e.experimentSubstepStage				.load();
-	j[	"ED"	]	= e.experimentDose						.load();
-	j[	"EpS"	]	= e.experimentPreviousStage				.load();
-	j[	"tS"	]	= e.timeStart							.load();
-	j[	"tEq"	]	= e.timeToEquilibrate					.load();
-	j[	"tEqS"	]	= e.timeEquilibrationStart				.load();
-	j[	"CIa"	]	= e.injectionAttemptCounter				.load();
-	j[	"CA"	]	= e.adsorptionCounter					.load();
-	j[	"CD"	]	= e.desorptionCounter					.load();
-	j[	"PI"	]	= e.pressureInitial						.load();
-	j[	"PF"	]	= e.pressureFinal						.load();
-	j[	"PHo"	]	= e.pressureHighOld						.load();
+	j[	"EP"	]	= e.inProgress					.load();
+	j[	"ER"	]	= e.isRecording					.load();
+	j[	"EW"	]	= e.isWaiting					.load();
+	j[	"ECR"	]	= e.isRunningAutomation			.load();
+	j[	"ES"	]	= e.mainStage					.load();
+	j[	"VS"	]	= e.checksStage					.load();
+	j[	"SSs"	]	= e.stepStatus					.load();
+	j[	"SSg"	]	= e.substepStatus				.load();
+	j[	"ED"	]	= e.injectionDose				.load();
+	j[	"tS"	]	= e.timeStart					.load();
+	j[	"tEq"	]	= e.timeToEquilibrate			.load();
+	j[	"tEqS"	]	= e.timeEquilibrationStart		.load();
+	j[	"CIa"	]	= e.injectionAttemptCounter		.load();
+	j[	"CA"	]	= e.adsorptionCounter			.load();
+	j[	"CD"	]	= e.desorptionCounter			.load();
+	j[	"PI"	]	= e.pressureInitial				.load();
+	j[	"PF"	]	= e.pressureFinal				.load();
+	j[	"PHo"	]	= e.pressureHighOld				.load();
 }
 
 inline void from_json(const nlohmann::json &j, ExperimentStatus &e) {
 
 	e.tp = timeh::ISOStringToTimePoint(j["timestamp"]);
 
-	e.experimentInProgress								.store_nostamp(j[	"EP"	]);
-	e.experimentRecording								.store_nostamp(j[	"ER"	]);
-	e.experimentWaiting									.store_nostamp(j[	"EW"	]);
-	e.experimentCommandsRequested						.store_nostamp(j[	"ECR"	]);
+	e.inProgress								.store_nostamp(j[	"EP"	]);
+	e.isRecording								.store_nostamp(j[	"ER"	]);
+	e.isWaiting									.store_nostamp(j[	"EW"	]);
+	e.isRunningAutomation						.store_nostamp(j[	"ECR"	]);
 	
-	e.experimentStage									.store_nostamp(j[	"ES"	]);
-	e.experimentPreviousStage							.store_nostamp(j[	"EpS"	]);
-	e.verificationStep									.store_nostamp(j[	"VS"	]);
-	e.experimentStepStatus								.store_nostamp(j[	"SSs"	]);
-	e.experimentSubstepStage							.store_nostamp(j[	"SSg"	]);
+	e.mainStage									.store_nostamp(j[	"ES"	]);
+	e.checksStage								.store_nostamp(j[	"VS"	]);
+	e.stepStatus								.store_nostamp(j[	"SSs"	]);
+	e.substepStatus								.store_nostamp(j[	"SSg"	]);
 	
-	e.experimentDose									.store_nostamp(j[	"ED"	]);
-	e.injectionAttemptCounter							.store_nostamp(j[	"CIa"	]);
-	e.adsorptionCounter									.store_nostamp(j[	"CA"	]);
-	e.desorptionCounter									.store_nostamp(j[	"CD"	]);
+	e.injectionDose								.store_nostamp(j[	"ED"	]);
+	e.injectionAttemptCounter					.store_nostamp(j[	"CIa"	]);
+	e.adsorptionCounter							.store_nostamp(j[	"CA"	]);
+	e.desorptionCounter							.store_nostamp(j[	"CD"	]);
 
-	e.timeStart											.store_nostamp(j[	"tS"	]);
-	e.timeToEquilibrate									.store_nostamp(j[	"tEq"	]);
-	e.timeEquilibrationStart							.store_nostamp(j[	"tEqS"	]);
+	e.timeStart									.store_nostamp(j[	"tS"	]);
+	e.timeToEquilibrate							.store_nostamp(j[	"tEq"	]);
+	e.timeEquilibrationStart					.store_nostamp(j[	"tEqS"	]);
 
-	e.pressureInitial									.store_nostamp(j[	"PI"	]);
-	e.pressureFinal										.store_nostamp(j[	"PF"	]);
-	e.pressureHighOld									.store_nostamp(j[	"PHo"	]);
+	e.pressureInitial							.store_nostamp(j[	"PI"	]);
+	e.pressureFinal								.store_nostamp(j[	"PF"	]);
+	e.pressureHighOld							.store_nostamp(j[	"PHo"	]);
 }
 
 

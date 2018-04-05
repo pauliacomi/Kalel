@@ -138,7 +138,7 @@ bool FileWriter::RecordMeasurement(const data_general &general, const Experiment
 	sprintf_s(char_resultat_calo, "%.8E", data.resultCalorimeter.load());
 	
 	stream << timeh::TimePointToISOWString(data.tp)	<< CSV_DIV;				// Experiment time
-	stream << status.experimentDose					<< CSV_DIV;				// Experiment dose
+	stream << status.injectionDose					<< CSV_DIV;				// Experiment dose
 	stream << char_resultat_calo					<< CSV_DIV;				// Calorimeter value
 	stream << data.pressureLow						<< CSV_DIV;				// Pressure low range
 	stream << data.pressureHigh						<< CSV_DIV;				// Pressure high range
@@ -331,7 +331,7 @@ bool FileWriter::RecordDataChange(bool csv, const ExperimentSettings& newSetting
 			text << std::endl << "-----------------------------------------------------"	<< std::endl;
 			text << "Settings changed"														<< std::endl;
 			text << "Step" << divider << status.adsorptionCounter							<< std::endl;
-			text << "Dose" << divider << status.experimentDose								<< std::endl;
+			text << "Dose" << divider << status.injectionDose								<< std::endl;
 
 			if (oldSettings.dataAdsorption[i].delta_pression != newSettings.dataAdsorption[i].delta_pression)
 			{
@@ -363,7 +363,7 @@ bool FileWriter::RecordDataChange(bool csv, const ExperimentSettings& newSetting
 			text << std::endl << "-----------------------------------------------------"	<< std::endl;
 			text << "Settings changed"														<< std::endl;
 			text << "Step" << divider << status.adsorptionCounter							<< std::endl;
-			text << "Dose" << divider << status.experimentDose								<< std::endl;
+			text << "Dose" << divider << status.injectionDose								<< std::endl;
 
 			
 			if (oldSettings.dataDesorption[i].delta_pression != newSettings.dataDesorption[i].delta_pression)

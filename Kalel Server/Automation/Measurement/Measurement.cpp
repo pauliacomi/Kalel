@@ -93,7 +93,7 @@ void Measurement::Execution()
 		storage.dataCollection.push(storage.currentData.tp, ExperimentData(storage.currentData));
 
 		// If no experiment running do not keep too many points
-		if (!storage.experimentStatus.experimentInProgress && storage.dataCollection.size() > 500)
+		if (!storage.experimentStatus.inProgress && storage.dataCollection.size() > 500)
 		{
 			storage.dataCollection.del_first();
 		}

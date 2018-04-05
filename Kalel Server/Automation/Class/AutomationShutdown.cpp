@@ -54,7 +54,7 @@ void Automation::Shutdown()
 
 void Automation::Pause()
 {
-	if (storage.experimentStatus.experimentInProgress)
+	if (storage.experimentStatus.inProgress)
 	{
 		storage.timerWaiting.Pause();
 
@@ -62,13 +62,13 @@ void Automation::Pause()
 		LOG(logINFO) << MESSAGE_EXPPAUSE;
 	}
 	storage.timerRecording.Pause();
-	storage.experimentStatus.experimentCommandsRequested = false;
+	storage.experimentStatus.isRunningAutomation = false;
 }
 
 
 void Automation::Resume()
 {
-	if (storage.experimentStatus.experimentInProgress)
+	if (storage.experimentStatus.inProgress)
 	{
 		storage.timerWaiting.Resume();
 
@@ -76,5 +76,5 @@ void Automation::Resume()
 		LOG(logINFO) << MESSAGE_EXPRESUME;
 	}
 	storage.timerRecording.Resume();
-	storage.experimentStatus.experimentCommandsRequested = true;
+	storage.experimentStatus.isRunningAutomation = true;
 }

@@ -20,6 +20,6 @@ void Automation::WaitSeconds(int seconds, bool verbose /*=false*/)
 	// Record times
 	storage.experimentStatus.timeEquilibrationStart = timeh::TimePointToMs(timeh::NowTime());		// Save the waiting start time
 	storage.experimentStatus.timeToEquilibrate = seconds;
-	storage.experimentStatus.experimentWaiting = true;
+	storage.experimentStatus.isWaiting = true;
 	storage.timerWaiting.Start();
 }
