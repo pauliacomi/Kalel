@@ -244,7 +244,7 @@ bool Automation::VerificationResidualPressure()
 					break;
 				case CHOICE_YES:									// Signal that it's good
 					storage.experimentStatus.isWaitingUser = false;
-					controls.valveControls.CloseAllValves(true);	// Close valves
+					controls.valveControls.CloseAll(true);			// Close valves
 					return true;
 					break;
 				case CHOICE_NO:										// Stop experiment
@@ -259,7 +259,7 @@ bool Automation::VerificationResidualPressure()
 		}
 		else
 		{
-			controls.valveControls.CloseAllValves(true);			// Close valves
+			controls.valveControls.CloseAll(true);						// Close valves
 			storage.experimentStatus.isWaitingUser = false;			// If somehow it got here with this true
 			return true;
 		}

@@ -103,8 +103,14 @@ bool ValveController::CloseAll(bool verbose)
 
 bool ValveController::CloseAllValves(bool verbose)
 {
-	//bool success = instruments.ActuateController(CONTROLLER_EV + num - 1, true);
-	bool success = true;
+	instruments.ActuateController(ID_VALVE_1, false);
+	instruments.ActuateController(ID_VALVE_2, false);
+	instruments.ActuateController(ID_VALVE_3, false);
+	instruments.ActuateController(ID_VALVE_4, false);
+	instruments.ActuateController(ID_VALVE_5, false);
+	instruments.ActuateController(ID_VALVE_6, false);
+	instruments.ActuateController(ID_VALVE_7, false);
+	instruments.ActuateController(ID_VALVE_8, false);
 
 	// Log message
 	if (verbose) {
@@ -112,13 +118,14 @@ bool ValveController::CloseAllValves(bool verbose)
 	}
 
 	// Return success
-	return success;
+	return true;
 }
 
 bool ValveController::CloseEVsAndPump(bool verbose)
 {
-	//bool success = instruments.ActuateController(, true);
-	bool success = true;
+	instruments.ActuateController(ID_EV_1, false);
+	instruments.ActuateController(ID_EV_2, false);
+	instruments.ActuateController(ID_PUMP, false);
 
 	// Log message
 	if (verbose) {
@@ -126,7 +133,7 @@ bool ValveController::CloseEVsAndPump(bool verbose)
 	}
 
 	// Return success
-	return success;
+	return true;
 }
 
 ///////////////////////////////////////////////////////
