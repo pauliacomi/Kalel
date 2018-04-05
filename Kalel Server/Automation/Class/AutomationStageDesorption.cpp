@@ -18,11 +18,11 @@ void Automation::StageDesorption()
 	switch (storage.experimentStatus.experimentStepStatus)
 	{
 	case STEP_STATUS_START:
-		storage.experimentStatus.experimentStepStatus = STEP_STATUS_INPROGRESS;										// Set next step
+		storage.experimentStatus.experimentStepStatus = STEP_STATUS_INPROGRESS;														// Set next step
 
-		LOG(logINFO) << MESSAGE_DESORPTION_STAGE_START;																	// Let GUI know the step change
+		LOG(logINFO) << stringh::string_format(MESSAGE_DESORPTION_STAGE_START, storage.experimentStatus.desorptionCounter.load());	// Log the step change
 
-		controls.valveControls.CloseAll(true);																			// Close all valves
+		controls.valveControls.CloseAll(true);																						// Close all valves
 		break;
 
 	case STEP_STATUS_INPROGRESS:
@@ -37,7 +37,7 @@ void Automation::StageDesorption()
 		break;
 
 	case STEP_STATUS_END:
-		storage.experimentStatus.experimentStepStatus = STEP_STATUS_START;														// Reset substep
+		storage.experimentStatus.experimentStepStatus = STEP_STATUS_START;															// Reset substep
 		
 		LOG(logINFO) << stringh::string_format(MESSAGE_DESORPTION_STAGE_END, storage.experimentStatus.desorptionCounter.load());	// Log the step change
 

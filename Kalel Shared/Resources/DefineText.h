@@ -107,8 +107,8 @@
 // Injection messages
 #define MESSAGE_INJECTION_ATTEMPT			"Starting injection attempt %d"
 #define MESSAGE_INJECTION_PROBLEM			"Injection problem"
-#define MESSAGE_INJECTION_PROBLEM_BOX		"ATTENTION !!! Gas problem !!!\t\n (gaz moteur ou gaz d'analyse)\t\n Expérience en pause !\r\n N'oubliez pas de 'reprendre' l'expérience !"
-#define MESSAGE_INJECTION_END				"Injection step %d complete"
+#define MESSAGE_INJECTION_PROBLEM_BOX		"Could not increase pressure to required limit through injection. Possible gas problem. Experiment paused - press resume to try again"
+#define MESSAGE_INJECTION_END				"Injection attempt %d complete"
 
 // Outgassing messages
 #define MESSAGE_OUTGAS_ATTEMPT				"Starting gas removal from reference volume %d"

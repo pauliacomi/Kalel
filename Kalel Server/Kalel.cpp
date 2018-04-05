@@ -391,9 +391,9 @@ void Kalel::LogSync(http_request* req, http_response* resp)
 		if (localCollection.size() != 0)							// If any exist
 		{
 			json j;
-
+			
 			for (const auto& kv : localCollection) {
-				j[timeh::TimePointToISOString(kv.first)] = kv.second;
+				j.emplace_back(json::object_t::value_type({ timeh::TimePointToISOString(kv.first), kv.second }));
 			}
 
 			resp->status = http::responses::ok;
@@ -446,7 +446,7 @@ void Kalel::RequestSync(http_request* req, http_response* resp)
 			json j;
 
 			for (const auto& kv : localCollection) {
-				j[timeh::TimePointToISOString(kv.first)] = kv.second;
+				j.emplace_back(json::object_t::value_type({ timeh::TimePointToISOString(kv.first), kv.second }));
 			}
 
 			resp->status = http::responses::ok;
@@ -499,7 +499,7 @@ void Kalel::DebugSync(http_request* req, http_response* resp)
 			json j;
 
 			for (const auto& kv : localCollection) {
-				j[timeh::TimePointToISOString(kv.first)] = kv.second;
+				j.emplace_back(json::object_t::value_type({ timeh::TimePointToISOString(kv.first), kv.second }));
 			}
 
 			resp->status = http::responses::ok;

@@ -757,7 +757,7 @@ unsigned CommHandler::GetLogs_resp(http_response * r)
 			{
 				try
 				{
-					receivedLogArray->emplace(timeh::ISOStringToTimePoint(i.key()), stringh::s2ws(j[i.key()]));
+					receivedLogArray->emplace(timeh::ISOStringToTimePoint(i->operator[](0)), stringh::s2ws(i->operator[](1)));
 				}
 				catch (const std::exception& e)	{
 					messageHandler.DisplayMessageBox(MB_OK, stringh::s2ws(e.what()));
@@ -825,7 +825,7 @@ unsigned CommHandler::GetRequest_resp(http_response * r)
 			{
 				try
 				{
-					receivedReqArray->emplace(timeh::ISOStringToTimePoint(i.key()), stringh::s2ws(j[i.key()]));
+					receivedReqArray->emplace(timeh::ISOStringToTimePoint(i->operator[](0)), stringh::s2ws(i->operator[](1)));
 				}
 				catch (const std::exception& e) {
 					messageHandler.DisplayMessageBox(MB_OK, stringh::s2ws(e.what()));

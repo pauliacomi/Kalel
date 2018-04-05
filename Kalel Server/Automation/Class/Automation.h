@@ -129,7 +129,5 @@ protected:
 
 	void SampleVacuum();
 	void BottleVacuum();
-
-
 };
 
