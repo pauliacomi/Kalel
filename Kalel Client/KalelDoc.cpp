@@ -137,6 +137,6 @@ CKalelDoc * CKalelDoc::GetDocument()
 
 //-------------------- CKalelDoc custom functions
 
-void CKalelDoc::GraphSetArray(std::map<std::chrono::system_clock::time_point, ExperimentData> &expData) {
+void CKalelDoc::GraphSetArray(StampedSafeStorage<ExperimentData>::Base &expData) {
 	pMeasurementArray = &expData;
 }

@@ -43,7 +43,7 @@ public:
 	int NbrIntervalles(double max);
 
 private:
-	std::map<std::chrono::system_clock::time_point, ExperimentData> * measurementArray;
+	StampedSafeStorage<ExperimentData>::Base * measurementArray;
 
 	double maxPressure = 0;
 	double minPressure = 0;

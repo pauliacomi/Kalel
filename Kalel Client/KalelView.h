@@ -91,9 +91,9 @@ private:
 	std::unique_ptr<ExperimentStatus>													experimentStatus;		// Local storage of experimentStatus
 
 	// Data/Logs/Request collections
-	std::map<std::chrono::system_clock::time_point, std::wstring> 						logCollection;			// Log points for an experiment are stored here
+	StampedSafeStorage<std::wstring>::Base 												logCollection;			// Log points for an experiment are stored here
 	std::map<std::chrono::system_clock::time_point, std::wstring> 						requestCollection;		// Log points for an all errors or requests are stored here
-	std::map<std::chrono::system_clock::time_point, ExperimentData>						dataCollection;			// Measurement points for an experiment are stored here
+	StampedSafeStorage<ExperimentData>::Base											dataCollection;			// Measurement points for an experiment are stored here
 		
 
 	//*************************************************************************************************************************
@@ -234,7 +234,6 @@ private:
 	void OnBnClickedDesactiverEV2();
 	void OnBnClickedActiverPompe();
 	void OnBnClickedDesactiverPompe();
-
 };
 
 

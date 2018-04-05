@@ -595,8 +595,10 @@ LRESULT CKalelView::OnServerConnected(WPARAM, LPARAM)
 
 LRESULT CKalelView::OnServerDisconnected(WPARAM, LPARAM)
 {
+	experimentStatus.reset();
 	pApp->serverConnected = false;
 	pApp->experimentRunning = false;
+	pApp->menuIsAvailable = true;
 	UpdateButtons();
 	return 0;
 }
@@ -713,8 +715,8 @@ LRESULT CKalelView::OnSetInstrumentState(WPARAM wParam, LPARAM incomingInstrumen
 LRESULT CKalelView::OnExchangeData(WPARAM, LPARAM incomingExperimentData)
 {
 	// Get the incoming vector and add it to the local data
-	std::unique_ptr<std::map<std::chrono::system_clock::time_point, ExperimentData>> newData(
-		reinterpret_cast<std::map<std::chrono::system_clock::time_point, ExperimentData> *>(incomingExperimentData));
+	std::unique_ptr<StampedSafeStorage<ExperimentData>::Base> newData(
+		reinterpret_cast<StampedSafeStorage<ExperimentData>::Base *>(incomingExperimentData));
 	dataCollection.insert(std::make_move_iterator(newData->begin()), 
 							std::make_move_iterator(newData->end()));
 
@@ -724,8 +726,8 @@ LRESULT CKalelView::OnExchangeData(WPARAM, LPARAM incomingExperimentData)
 LRESULT CKalelView::OnExchangeLogs(WPARAM, LPARAM incomingLogs)
 {
 	// Get the incoming vector and add it to the local logs
-	std::unique_ptr<std::map<std::chrono::system_clock::time_point, std::wstring>> newLogs(
-		reinterpret_cast<std::map<std::chrono::system_clock::time_point, std::wstring>*>(incomingLogs));
+	std::unique_ptr<StampedSafeStorage<std::wstring>::Base> newLogs(
+		reinterpret_cast<StampedSafeStorage<std::wstring>::Base*>(incomingLogs));
 	logCollection.insert(newLogs->begin(), newLogs->end());
 
 	// Display logs
@@ -744,8 +746,8 @@ LRESULT CKalelView::OnExchangeLogs(WPARAM, LPARAM incomingLogs)
 LRESULT CKalelView::OnExchangeRequests(WPARAM, LPARAM incomingRequests)
 {
 	// Get the incoming vector and add it to the local logs
-	std::unique_ptr<std::map<std::chrono::system_clock::time_point, std::wstring>> newRequests(
-		reinterpret_cast<std::map<std::chrono::system_clock::time_point, std::wstring>*>(incomingRequests));
+	std::unique_ptr<StampedSafeStorage<std::wstring>::Base> newRequests(
+		reinterpret_cast<StampedSafeStorage<std::wstring>::Base*>(incomingRequests));
 
 	for (auto &i : *newRequests)
 	{

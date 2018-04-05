@@ -3,7 +3,6 @@
 // used to sent PostMessage commends to the specified window
 
 #pragma once
-#include "stdafx.h"
 
 #define default_val -1	// This value is used as the default value for the optional parameters of the message display function. 
 						// Make sure that it is set to a value that the actual parameters can never take
@@ -43,9 +42,9 @@ public:
 	bool ExchangeExperimentSettings(ExperimentSettings *pParam);
 	bool ExchangeExperimentStatus(ExperimentStatus *pParam);
 
-	bool ExchangeData(std::map<std::chrono::system_clock::time_point, ExperimentData> * pParam);
-	bool ExchangeLogs(std::map<std::chrono::system_clock::time_point, std::wstring> * pParam);
-	bool ExchangeRequests(std::map<std::chrono::system_clock::time_point, std::wstring> * pParam);
+	bool ExchangeData(StampedSafeStorage<ExperimentData>::Base * pParam);
+	bool ExchangeLogs(StampedSafeStorage<std::wstring>::Base * pParam);
+	bool ExchangeRequests(StampedSafeStorage<std::wstring>::Base * pParam);
 
 	bool ExchangeControlState(ControlInstrumentState *pParam);
 	bool ExchangeControlStateSpecific(const ControlInstrumentStateData& pParam);

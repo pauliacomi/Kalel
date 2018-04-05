@@ -676,7 +676,7 @@ unsigned CommHandler::GetData_resp(http_response* r) {
 
 			// Deserialise Data
 			//////////////////////////////////////////////
-			auto receivedDataArray = new std::map<std::chrono::system_clock::time_point, ExperimentData>();
+			auto receivedDataArray = new StampedSafeStorage<ExperimentData>::Base();
 
 			for (json::iterator i = j.begin(); i != j.end(); ++i)
 			{
@@ -751,7 +751,7 @@ unsigned CommHandler::GetLogs_resp(http_response * r)
 
 			// Deserialise data
 			//////////////////////////////////////////////
-			auto receivedLogArray = new std::map<std::chrono::system_clock::time_point, std::wstring>();
+			auto receivedLogArray = new StampedSafeStorage<std::wstring>::Base();
 
 			for (json::iterator i = j.begin(); i != j.end(); ++i)
 			{
@@ -819,7 +819,7 @@ unsigned CommHandler::GetRequest_resp(http_response * r)
 
 			// Deserialise data
 			//////////////////////////////////////////////
-			auto receivedReqArray = new std::map<std::chrono::system_clock::time_point, std::wstring>();
+			auto receivedReqArray = new StampedSafeStorage<std::wstring>::Base();
 
 			for (json::iterator i = j.begin(); i != j.end(); ++i)
 			{

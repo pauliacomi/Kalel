@@ -1,4 +1,6 @@
 
+#include "stdafx.h"
+
 #include "MFCMessageHandler.h"
 
 // Message definitions
@@ -104,7 +106,7 @@ bool MFCMessageHandler::ExchangeExperimentStatus(ExperimentStatus * pParam)
 }
 
 
-bool MFCMessageHandler::ExchangeData(std::map<std::chrono::system_clock::time_point, ExperimentData> * pParam)
+bool MFCMessageHandler::ExchangeData(StampedSafeStorage<ExperimentData>::Base * pParam)
 {
 	// Post the required message, now the main thread is responsible for deleting the new class
 	if (::PostMessage(windowHandle, UWM_EXCHANGEDATA, NULL, (LPARAM)pParam) == 0 ) 
@@ -115,7 +117,7 @@ bool MFCMessageHandler::ExchangeData(std::map<std::chrono::system_clock::time_po
 	return true;
 }
 
-bool MFCMessageHandler::ExchangeLogs(std::map<std::chrono::system_clock::time_point, std::wstring>* pParam)
+bool MFCMessageHandler::ExchangeLogs(StampedSafeStorage<std::wstring>::Base * pParam)
 {
 	// Post the required message, now the main thread is responsible for deleting the new class
 	if (::PostMessage(windowHandle, UWM_EXCHANGELOGS, NULL, (LPARAM)pParam) == 0)
@@ -126,7 +128,7 @@ bool MFCMessageHandler::ExchangeLogs(std::map<std::chrono::system_clock::time_po
 	return true;
 }
 
-bool MFCMessageHandler::ExchangeRequests(std::map<std::chrono::system_clock::time_point, std::wstring>* pParam)
+bool MFCMessageHandler::ExchangeRequests(StampedSafeStorage<std::wstring>::Base * pParam)
 {
 	// Post the required message, now the main thread is responsible for deleting the new class
 	if (::PostMessage(windowHandle, UWM_EXCHANGEREQUESTS, NULL, (LPARAM)pParam) == 0)
