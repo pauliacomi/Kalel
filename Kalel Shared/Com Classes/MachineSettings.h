@@ -41,7 +41,7 @@ public:
 	float VolumeRef;										// Used for user information (no calculations)
 	float VolumeP6;											// Used for user information (no calculations)
 
-	int InjectionAttemptNumber;
+	int attemptNumber;
 	float InjectionMargin;
 	float InjectionMultiplier;
 

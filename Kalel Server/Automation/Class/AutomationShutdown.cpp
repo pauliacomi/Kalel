@@ -14,6 +14,9 @@ void Automation::Shutdown()
 		//When thread finishes, let main window know to unlock menu and reset graph
 		LOG(logINFO) << MESSAGE_EXPCANCEL;
 
+		// Close all valves
+		controls.valveControls.CloseAll(true);
+
 		// Reset all data from the experiment
 		storage.experimentSettings.ResetData();
 
@@ -27,6 +30,9 @@ void Automation::Shutdown()
 
 		LOG(logINFO) << MESSAGE_EXPFINISH;
 
+		// Close all valves
+		controls.valveControls.CloseAll(true);
+
 		// Reset all data from the experiment
 		storage.experimentSettings.ResetData();
 
@@ -39,6 +45,9 @@ void Automation::Shutdown()
 
 		// When thread finishes, let main window know to unlock menu
 		LOG(logINFO) << MESSAGE_THREAD_SHUTDOWN_AUTO;
+
+		// Close all valves
+		controls.valveControls.CloseAll(true);
 
 		// Break loop
 		running = false;

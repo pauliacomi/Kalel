@@ -204,7 +204,7 @@ bool ThreadManager::NextStageAutomation()
 	if (automation != nullptr)
 	{
 		++storage.experimentStatus.mainStage;											// Set next stage
-		storage.experimentStatus.stepStatus = STEP_STATUS_START;					// Reset next step
+		storage.experimentStatus.stepStatus = STEP_STATUS_UNDEF;						// Reset next step
 		return true;
 	}
 	return false;
@@ -214,8 +214,8 @@ bool ThreadManager::NextStepAutomation()
 {
 	if (automation != nullptr)
 	{
-		if (storage.experimentStatus.mainStage == STAGE_ADSORPTION ||
-			storage.experimentStatus.mainStage == STAGE_DESORPTION)
+		if (storage.experimentStatus.mainStage == STAGE_AUTO_ADSORPTION ||
+			storage.experimentStatus.mainStage == STAGE_AUTO_DESORPTION)
 		{
 			storage.experimentStatus.stepStatus = STEP_STATUS_END;
 			storage.experimentStatus.isWaiting = false;
@@ -229,13 +229,16 @@ bool ThreadManager::NextDoseAutomation()
 {
 	if (automation != nullptr)
 	{
-		if (storage.experimentStatus.mainStage == STAGE_ADSORPTION || 
-			storage.experimentStatus.mainStage == STAGE_DESORPTION)
+		if (storage.experimentStatus.mainStage == STAGE_AUTO_ADSORPTION || 
+			storage.experimentStatus.mainStage == STAGE_AUTO_DESORPTION)
 		{
-			storage.experimentStatus.substepStatus = SUBSTEP_STATUS_END;
-			storage.experimentStatus.isWaiting = false;
+			if (storage.experimentStatus.stepStatus == STEP_STATUS_INPROGRESS)
+			{
+				storage.experimentStatus.substepStatus = SUBSTEP_STATUS_END;
+				storage.experimentStatus.isWaiting = false;
+				return true;
+			}
 		}
-		return true;
 	}
 	return false;
 }

@@ -38,7 +38,6 @@ public:
 	///*******************
 
 	atomic_ts<int> mainStage{ tp };									// Current experiment stage, the main part of the program (verification, equilibration, adsorption, desorption etc.)
-	atomic_ts<int> checksStage{ tp };								// The security check steps
 	atomic_ts<int> stepStatus{ tp };								// Current step status, for each step this can be STARTING, ENDING or IN_PROGRESS
 	atomic_ts<int> substepStatus{ tp };								// Current dose substep, can be at injection, equilibration etc
 	atomic_ts<int> injectionDose{ tp };								// Current experiment dose that is currently underway (ex: 2nd dose of adsorption step 1)

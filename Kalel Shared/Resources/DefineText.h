@@ -46,7 +46,8 @@
 #define MESSAGE_PUMP_ACTIVATED				"Pump activated"
 #define MESSAGE_PUMP_DEACTIVATED			"Pump deactivated"
 #define MESSAGE_VALVE_CLOSEALL				"Closing all valves"
-#define MESSAGE_PUMP_VALVE_CLOSEALL			"Closing pump and valves"
+#define MESSAGE_PUMP_VALVE_OPENALL			"Closing pump and EVs"
+#define MESSAGE_PUMP_VALVE_CLOSEALL			"Closing pump and EVs"
 #define MESSAGE_CLOSEEVERYTHING				"Closing everything"
 
 /*
@@ -73,6 +74,7 @@
 */
 
 // Initial checks messages
+#define MESSAGE_VERIFICATIONS				"Starting initial verifications"
 #define MESSAGE_NOSECURITY					"The security settings have been deactivated !\t\nDo you want to continue anyway?"
 #define MESSAGE_CHECK_VALVES_OPEN			"Check if all the valves are set to automatic and that the valve to the sample is open"
 #define MESSAGE_CHECK_INITIAL_STATE			"Initial experiment and machine verifications"
@@ -89,18 +91,22 @@
 #define MESSAGE_EQUILIBRATION_COMPLETE		"Equilibration complete"
 
 // Adsorption messages
-#define MESSAGE_ADSORPTION_STAGE_START		"Start of adsorption stage %d"
-#define MESSAGE_ADSORPTION_STAGE_END		"End of adsorption stage %d"
-#define MESSAGE_ADSORPTION_DOSE_START		"Start of adsorption stage %d dose %d"
-#define MESSAGE_ADSORPTION_DOSE_END			"End of adsorption stage %d dose %d"
+#define MESSAGE_ADSORPTION_START			"Start of adsorption stage"
+#define MESSAGE_ADSORPTION_END				"End of adsorption stage"
+#define MESSAGE_ADSORPTION_STAGE_START		"Start of adsorption step %d"
+#define MESSAGE_ADSORPTION_STAGE_END		"End of adsorption step %d"
+#define MESSAGE_ADSORPTION_DOSE_START		"Start of adsorption step %d dose %d"
+#define MESSAGE_ADSORPTION_DOSE_END			"End of adsorption step %d dose %d"
 #define MESSAGE_ADSORPTION_OPENV			"Opening valve 5 for adsorption"
 #define MESSAGE_ADSORPTION_CLOSEV			"Isolating sample"
 
 // Desorption messages
-#define MESSAGE_DESORPTION_STAGE_START		"Start of desorption stage %d"
-#define MESSAGE_DESORPTION_STAGE_END		"End of desorption stage %d"
-#define MESSAGE_DESORPTION_DOSE_START		"Start of desorption stage %d dose %d"
-#define MESSAGE_DESORPTION_DOSE_END			"End of desorption stage %d dose %d"
+#define MESSAGE_DESORPTION_START			"Start of desorption stage"
+#define MESSAGE_DESORPTION_END				"End of desorption stage"
+#define MESSAGE_DESORPTION_STAGE_START		"Start of desorption step %d"
+#define MESSAGE_DESORPTION_STAGE_END		"End of desorption step %d"
+#define MESSAGE_DESORPTION_DOSE_START		"Start of desorption step %d dose %d"
+#define MESSAGE_DESORPTION_DOSE_END			"End of desorption step %d dose %d"
 #define MESSAGE_DESORPTION_OPENV			"Opening valve 5 for desorption"
 #define MESSAGE_DESORPTION_CLOSEV			"Isolating sample"
 
@@ -113,7 +119,7 @@
 // Outgassing messages
 #define MESSAGE_OUTGAS_ATTEMPT				"Starting gas removal from reference volume %d"
 #define MESSAGE_OUTGAS_PROBLEM				"Gas removal problem"
-#define MESSAGE_OUTGAS_PROBLEM_BOX			"ATTENTION !!! Gas problem !!!\t\n (gaz moteur ou gaz d'analyse)\t\n Expérience en pause !\r\n N'oubliez pas de 'reprendre' l'expérience !"
+#define MESSAGE_OUTGAS_PROBLEM_BOX			"Could not remove gas to required limit using pump. Possible pump problem. Experiment paused - press resume to try again"
 #define MESSAGE_OUTGAS_END					"End of gas removal from reference volume"
 
 // Pressure reporting messages
@@ -123,15 +129,15 @@
 #define MESSAGE_PRESSURE_D_DPREQ			"Delta pressure = %f"
 
 // Vaccumming messages
-#define MESSAGE_VACUUM_STAGE_START			"Starting final outgassing"
-#define MESSAGE_VACUUM_STAGE_END			"Completed final outgassing"
-#define MESSAGE_VACUUM_HIGHPRESSURE_START	"Starting final outgassing of high pressure range volume"
-#define MESSAGE_VACUUM_HIGHPRESSURE_END		"Completed final outgassing of high pressure range volume"
-#define MESSAGE_VACUUM_LOWPRESSURE_START	"Starting final outgassing of low pressure range volume"
-#define MESSAGE_VACUUM_LOWPRESSURE_END		"Completed final outgassing of low pressure range volume"
-#define MESSAGE_VACUUM_FINALOUTGAS_START	"Starting final outgassing vacuum"
-#define MESSAGE_VACUUM_FINALOUTGAS_END		"Completed final outgassing vacuum"
-#define MESSAGE_VACUUM_USER_CHOICE			"Finished vacuum up to sample cell \t\nPress OK to turn off valves and pump"
+#define MESSAGE_VACUUM_STAGE_START			"Starting outgassing"
+#define MESSAGE_VACUUM_STAGE_END			"Completed outgassing"
+#define MESSAGE_VACUUM_HIGHPRESSURE_START	"Starting outgassing of high pressure range volume"
+#define MESSAGE_VACUUM_HIGHPRESSURE_END		"Completed outgassing of high pressure range volume"
+#define MESSAGE_VACUUM_LOWPRESSURE_START	"Starting outgassing of low pressure range volume"
+#define MESSAGE_VACUUM_LOWPRESSURE_END		"Completed outgassing of low pressure range volume"
+#define MESSAGE_VACUUM_FINALOUTGAS_START	"Starting outgassing vacuum"
+#define MESSAGE_VACUUM_FINALOUTGAS_END		"Completed outgassing vacuum"
+#define MESSAGE_VACUUM_USER_CHOICE			"Finished vacuum up to sample cell. Press OK to turn off valves and pump"
 
 #define MESSAGE_VACUUM_BOTTLE_CLOSE			"Fermer la bouteille !\tPuis appuyer sur OK\n"
 #define MESSAGE_VACUUM_BOTTLE_START			"Mise sous vide jusqu'à la bouteille"

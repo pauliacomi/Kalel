@@ -41,10 +41,9 @@ void ExperimentStatus::ResetData()
 	isRunningAutomation				.store_nostamp( true );
 
 	mainStage						.store_nostamp( STAGE_UNDEF );
-	injectionDose					.store_nostamp( 0 );
 	stepStatus						.store_nostamp( STEP_STATUS_UNDEF );
-	substepStatus					.store_nostamp( STEP_STATUS_START );
-	checksStage						.store_nostamp( STEP_VERIFICATIONS_UNDEF );
+	substepStatus					.store_nostamp( SUBSTEP_STATUS_UNDEF );
+	injectionDose					.store_nostamp( 0 );
 
 	timeStart						.store_nostamp( 0 );
 	timeEquilibrationStart			.store_nostamp( 0 );
@@ -70,21 +69,20 @@ void ExperimentStatus::Replace(const ExperimentStatus & rhs)
 	///		Global flags
 	///*******************
 
-	inProgress				.store_nostamp(rhs.inProgress.load());
-	isRecording					.store_nostamp(rhs.isRecording.load());
-	isWaiting					.store_nostamp(rhs.isWaiting.load());
-	isWaitingUser				.store_nostamp(rhs.isWaiting.load());
-	isRunningAutomation			.store_nostamp(rhs.isRunningAutomation.load());
+	inProgress							.store_nostamp(rhs.inProgress.load());
+	isRecording							.store_nostamp(rhs.isRecording.load());
+	isWaiting							.store_nostamp(rhs.isWaiting.load());
+	isWaitingUser						.store_nostamp(rhs.isWaiting.load());
+	isRunningAutomation					.store_nostamp(rhs.isRunningAutomation.load());
 
 	///*******************
 	///		Parameters for storing where program has reached
 	///*******************
 
-	mainStage						.store_nostamp(rhs.mainStage.load());
+	mainStage							.store_nostamp(rhs.mainStage.load());
 	injectionDose						.store_nostamp(rhs.injectionDose.load());
-	stepStatus				.store_nostamp(rhs.stepStatus.load());
-	substepStatus				.store_nostamp(rhs.substepStatus.load());
-	checksStage					.store_nostamp(rhs.checksStage.load());
+	stepStatus							.store_nostamp(rhs.stepStatus.load());
+	substepStatus						.store_nostamp(rhs.substepStatus.load());
 
 	timeStart							.store_nostamp(rhs.timeStart.load());
 	timeEquilibrationStart				.store_nostamp(rhs.timeEquilibrationStart.load());

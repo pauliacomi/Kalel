@@ -13,26 +13,26 @@
 
 void Automation::StageVacuum(bool separateFunctionality)
 {
-	
-	if (storage.experimentStatus.stepStatus == STEP_STATUS_START
-		&& storage.experimentStatus.isWaiting == false)
+	switch (storage.experimentStatus.stepStatus)
 	{
-		storage.experimentStatus.stepStatus = STEP_STATUS_INPROGRESS;			// Set next step
+	case STEP_STATUS_UNDEF:
 		LOG(logINFO) << MESSAGE_VACUUM_STAGE_START;											// Let GUI know the step change
-		LOG(logINFO) << MESSAGE_VACUUM_HIGHPRESSURE_START;
+		storage.experimentStatus.stepStatus = STEP_STATUS_START;							// Set next step
+		break;
 
-		controls.valveControls.CloseAll(true);												// Close all valves
+	case STEP_STATUS_START:
+		LOG(logINFO) << MESSAGE_VACUUM_HIGHPRESSURE_START;
+		controls.valveControls.CloseAll(true);												// Close everything
 		controls.valveControls.PumpActivate(true);											// Activate the pump
 		controls.valveControls.ValveOpen(ID_VALVE_5, true);									// Open V5
 		WaitSeconds(storage.machineSettings.TimeWaitPump, true);
-	}
+		storage.experimentStatus.stepStatus = STEP_STATUS_INPROGRESS;						// Set next step
+		break;
 
+	case STEP_STATUS_INPROGRESS:
+		if (storage.experimentStatus.isWaiting) break;
 
-	if (storage.experimentStatus.stepStatus == STEP_STATUS_INPROGRESS
-		&& storage.experimentStatus.isWaiting == false)
-	{
 		if (storage.currentData.pressureHigh > storage.machineSettings.readers.find(PRESSURE_LP)->second.safe_max) {
-
 			// Open, then close v8 and v7
 			controls.valveControls.ValveOpen(ID_VALVE_8, true);
 			WaitSeconds(storage.machineSettings.TimeWaitValvesShort);
@@ -47,39 +47,31 @@ void Automation::StageVacuum(bool separateFunctionality)
 
 			storage.experimentStatus.stepStatus = STEP_STATUS_INPROGRESS + 4;
 		}
-	}
+		break;
 
-	if (storage.experimentStatus.substepStatus == STEP_STATUS_INPROGRESS + 1 &&
-		storage.experimentStatus.isWaiting == false)
-	{
+	case STEP_STATUS_INPROGRESS + 1:
+		if (storage.experimentStatus.isWaiting) break;
 		controls.valveControls.ValveClose(ID_VALVE_8, true);
 		WaitSeconds(storage.machineSettings.TimeWaitValvesShort);
-		storage.experimentStatus.substepStatus = STEP_STATUS_INPROGRESS + 2;
-	}
-
-	if (storage.experimentStatus.substepStatus == STEP_STATUS_INPROGRESS + 2 &&
-		storage.experimentStatus.isWaiting == false)
-	{
+		storage.experimentStatus.stepStatus = STEP_STATUS_INPROGRESS + 2;							// Set next step
+		break;
+	
+	case STEP_STATUS_INPROGRESS + 2:
+		if (storage.experimentStatus.isWaiting) break;
 		controls.valveControls.ValveOpen(ID_VALVE_7, true);
 		WaitSeconds(storage.machineSettings.TimeWaitValvesShort);
-		storage.experimentStatus.substepStatus = STEP_STATUS_INPROGRESS + 3;
-	}
-
-	if (storage.experimentStatus.substepStatus == STEP_STATUS_INPROGRESS + 3 &&
-		storage.experimentStatus.isWaiting == false)
-	{
+		storage.experimentStatus.stepStatus = STEP_STATUS_INPROGRESS + 3;							// Set next step
+		break;
+	
+	case STEP_STATUS_INPROGRESS + 3:
+		if (storage.experimentStatus.isWaiting) break;
 		controls.valveControls.ValveClose(ID_VALVE_7, true);
 		WaitSeconds(storage.machineSettings.TimeWaitValvesShort);
-		storage.experimentStatus.substepStatus = STEP_STATUS_INPROGRESS;					// Go back to the start
-	}
-
-
-
-
-
-	if (storage.experimentStatus.stepStatus == STEP_STATUS_INPROGRESS + 4
-		&& storage.experimentStatus.isWaiting == false)
-	{
+		storage.experimentStatus.stepStatus = STEP_STATUS_INPROGRESS;							// Go back to the start
+		break;
+	
+	case STEP_STATUS_INPROGRESS + 4:
+		if (storage.experimentStatus.isWaiting) break;
 		if (storage.currentData.pressureHigh > storage.machineSettings.PressurePumpVacuum) {
 
 			// Open, then close v8 and v7
@@ -97,39 +89,31 @@ void Automation::StageVacuum(bool separateFunctionality)
 
 			storage.experimentStatus.stepStatus = STEP_STATUS_INPROGRESS + 8;
 		}
-	}
+		break;
 
-	if (storage.experimentStatus.substepStatus == STEP_STATUS_INPROGRESS + 5 &&
-		storage.experimentStatus.isWaiting == false)
-	{
+	case STEP_STATUS_INPROGRESS + 5:
+		if (storage.experimentStatus.isWaiting) break;
 		controls.valveControls.ValveClose(ID_VALVE_8, true);
 		WaitSeconds(storage.machineSettings.TimeWaitValvesShort);
-		storage.experimentStatus.substepStatus = STEP_STATUS_INPROGRESS + 6;
-	}
+		storage.experimentStatus.stepStatus = STEP_STATUS_INPROGRESS + 6;
+		break;
 
-	if (storage.experimentStatus.substepStatus == STEP_STATUS_INPROGRESS + 6 &&
-		storage.experimentStatus.isWaiting == false)
-	{
+	case STEP_STATUS_INPROGRESS + 6:
+		if (storage.experimentStatus.isWaiting) break;
 		controls.valveControls.ValveOpen(ID_VALVE_7, true);
 		WaitSeconds(storage.machineSettings.TimeWaitValvesShort);
-		storage.experimentStatus.substepStatus = STEP_STATUS_INPROGRESS + 7;
-	}
+		storage.experimentStatus.stepStatus = STEP_STATUS_INPROGRESS + 7;
+		break;
 
-	if (storage.experimentStatus.substepStatus == STEP_STATUS_INPROGRESS + 7 &&
-		storage.experimentStatus.isWaiting == false)
-	{
+	case STEP_STATUS_INPROGRESS + 7:
+		if (storage.experimentStatus.isWaiting) break;
 		controls.valveControls.ValveClose(ID_VALVE_7, true);
 		WaitSeconds(storage.machineSettings.TimeWaitValvesShort);
-		storage.experimentStatus.substepStatus = STEP_STATUS_INPROGRESS + 4;					// Go back to the start
-	}
+		storage.experimentStatus.stepStatus = STEP_STATUS_INPROGRESS + 4;					// Go back to the start
+		break;
 
-
-
-
-
-	if (storage.experimentStatus.stepStatus == STEP_STATUS_INPROGRESS + 8
-		&& storage.experimentStatus.isWaiting == false)
-	{
+	case STEP_STATUS_INPROGRESS + 8:
+		if (storage.experimentStatus.isWaiting) break;
 		LOG(logINFO) << MESSAGE_VACUUM_FINALOUTGAS_START;
 
 		if (separateFunctionality)
@@ -146,12 +130,11 @@ void Automation::StageVacuum(bool separateFunctionality)
 				WaitMinutes(storage.machineSettings.TimeVacuumEndDefault);
 		}
 		storage.experimentStatus.stepStatus = STEP_STATUS_END;
-	}
+		break;
 
+	case STEP_STATUS_END:
+		if (storage.experimentStatus.isWaiting) break;
 
-	if (storage.experimentStatus.stepStatus == STEP_STATUS_END
-		&& storage.experimentStatus.isWaiting == false)
-	{
 		LOG(logINFO) << MESSAGE_VACUUM_FINALOUTGAS_END;
 
 		storage.experimentStatus.stepStatus = STEP_STATUS_START;													// Let GUI know the step change
@@ -163,13 +146,18 @@ void Automation::StageVacuum(bool separateFunctionality)
 			storage.experimentStatus.mainStage = STAGE_UNDEF;
 			shutdownReason = Stop::Normal;								// set a normal shutdown
 			eventShutdown = true;										// end then set the event
-			storage.automationControl.notify_all();									
+			storage.automationControl.notify_all();
 		}
 		else
 		{
 			LOG(logINFO) << MESSAGE_VACUUM_STAGE_END;
 
-			storage.experimentStatus.stepStatus = STAGE_END_AUTOMATIC;
+			storage.experimentStatus.stepStatus = STAGE_AUTO_END;
 		}
+		break;
+
+
+	default:
+		break;
 	}
 }

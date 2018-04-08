@@ -198,17 +198,16 @@ void ExperimentPropertySheet::SetProprietiesModif(int stage, int substage)
 
 	switch (experimentStage)
 	{
-	case STAGE_TEMP:
-	case STAGE_EQUILIBRATION:
-	case STAGE_CONTINUOUS_ADSORPTION:
+	case STAGE_AUTO_EQUILIBRATION:
+	case STAGE_CONT_ADSORPTION:
 		break;
-	case STAGE_ADSORPTION:
+	case STAGE_AUTO_ADSORPTION:
 		for (int i = 0; i < experimentSubStage; i++)
 		{
 			adsorptionTabs[i]->checkDoses = true;
 		}
 		break;
-	case STAGE_DESORPTION:
+	case STAGE_AUTO_DESORPTION:
 		for (int i = 0; i < numberOfAdsorptions; i++)
 		{
 			adsorptionTabs[i]->checkDoses = true;
@@ -416,7 +415,7 @@ LRESULT ExperimentPropertySheet::OnButtonRemoveAdsorption(WPARAM, LPARAM lParam)
 	int pageToRemove = static_cast<int>(lParam);
 
 	// Check to see if the experiment is running and forbid user to delete the current running step
-	if (modified && experimentStage == STAGE_ADSORPTION && experimentSubStage == (pageToRemove - 1))
+	if (modified && experimentStage == STAGE_AUTO_ADSORPTION && experimentSubStage == (pageToRemove - 1))
 	{
 		AfxMessageBox(ERROR_CANNOT_DELETE_RUNNING);
 	}
@@ -459,7 +458,7 @@ LRESULT ExperimentPropertySheet::OnButtonRemoveDesorption(WPARAM, LPARAM lParam)
 	int pageToRemove = static_cast<int>(lParam);
 
 	// Check to see if the experiment is running and forbid user to delete the current running step
-	if (modified && experimentStage == STAGE_DESORPTION && experimentSubStage == (pageToRemove - 1))
+	if (modified && experimentStage == STAGE_AUTO_DESORPTION && experimentSubStage == (pageToRemove - 1))
 	{
 		AfxMessageBox(ERROR_CANNOT_DELETE_RUNNING);
 	}

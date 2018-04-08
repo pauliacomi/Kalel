@@ -98,11 +98,11 @@ void CKalelView::OnBnClickedButtonParametresExperience()
 
 			// Set the dialog to only display the ongoing stages
 			int counter = 0;
-			if (experimentStatus->mainStage == STAGE_ADSORPTION)
+			if (experimentStatus->mainStage == STAGE_AUTO_ADSORPTION)
 			{
 				counter = experimentStatus->adsorptionCounter;
 			}
-			if (experimentStatus->mainStage == STAGE_DESORPTION)
+			if (experimentStatus->mainStage == STAGE_AUTO_DESORPTION)
 			{
 				counter = experimentStatus->desorptionCounter;
 			}

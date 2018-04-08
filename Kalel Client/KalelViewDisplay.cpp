@@ -72,13 +72,10 @@ LRESULT CKalelView::DisplayStepProgress(const ExperimentStatus &status)
 	temp.Format(status.mainStage);
 
 	m_StrEtape = temp;
+	temp.Format(status.substepStatus);
 
-	if (status.checksStage != STEP_VERIFICATIONS_UNDEF && status.checksStage != STEP_VERIFICATIONS_COMPLETE)
-	{
-		temp.Format(status.checksStage);
-		m_StrEtape += _T(",   Substage: ") + temp;
-	}
-
+	m_StrEtape += _T(",   Substage: ") + temp;
+	
 	if (status.isWaiting == true)
 	{
 		auto timeToEquilibrateCurrent = std::chrono::duration_cast<std::chrono::seconds>(timeh::NowTime() - timeh::MsToTimePoint(status.timeEquilibrationStart.load())).count();

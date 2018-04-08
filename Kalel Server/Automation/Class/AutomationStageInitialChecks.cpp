@@ -15,40 +15,45 @@
 
 void Automation::Verifications()
 {
-	switch (storage.experimentStatus.checksStage)
+	switch (storage.experimentStatus.substepStatus)
 	{
+	case STEP_STATUS_UNDEF:
+		LOG(logINFO) << MESSAGE_VERIFICATIONS;
+		storage.experimentStatus.stepStatus = STEP_VERIFICATIONS_VALVES;
+		break;
+
 	case STEP_VERIFICATIONS_SECURITY:
 		if (VerificationSecurity()) {
-			storage.experimentStatus.checksStage = STEP_VERIFICATIONS_VALVES;
-			storage.experimentStatus.stepStatus = STEP_STATUS_START;
+			storage.experimentStatus.stepStatus = STEP_VERIFICATIONS_VALVES;
+			storage.experimentStatus.substepStatus = STEP_STATUS_START;
 		}
 		break;
 
 	case STEP_VERIFICATIONS_VALVES:
 		if (VerificationValves()){
-			storage.experimentStatus.checksStage = STEP_VERIFICATIONS_PRESSURE;
-			storage.experimentStatus.stepStatus = STEP_STATUS_START;
+			storage.experimentStatus.stepStatus = STEP_VERIFICATIONS_PRESSURE;
+			storage.experimentStatus.substepStatus = STEP_STATUS_START;
 		}
 		break;
 
 	case STEP_VERIFICATIONS_PRESSURE:
 		if (VerificationResidualPressure()){
-			storage.experimentStatus.checksStage = STEP_VERIFICATIONS_TEMPERATURE;
-			storage.experimentStatus.stepStatus = STEP_STATUS_START;
+			storage.experimentStatus.stepStatus = STEP_VERIFICATIONS_TEMPERATURE;
+			storage.experimentStatus.substepStatus = STEP_STATUS_START;
 		}
 		break;
 
 	case STEP_VERIFICATIONS_TEMPERATURE:
 		if (VerificationTemperature()) {
-			storage.experimentStatus.checksStage = STEP_VERIFICATIONS_COMPLETE;
-			storage.experimentStatus.stepStatus = STEP_STATUS_START;
+			storage.experimentStatus.stepStatus = STEP_VERIFICATIONS_COMPLETE;
+			storage.experimentStatus.substepStatus = STEP_STATUS_START;
 		}
 		break;
 
 	case STEP_VERIFICATIONS_COMPLETE:
 		if (VerificationComplete()) {
-			storage.experimentStatus.mainStage = STAGE_EQUILIBRATION;
-			storage.experimentStatus.stepStatus = STEP_STATUS_START;
+			storage.experimentStatus.stepStatus = STEP_STATUS_UNDEF;
+			++storage.experimentStatus.mainStage;
 		}
 		break;
 	}

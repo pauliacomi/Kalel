@@ -16,10 +16,12 @@ void Automation::StageEquilibration()
 {
 	switch (storage.experimentStatus.stepStatus)
 	{
-	case STEP_STATUS_START:
-
+	case STEP_STATUS_UNDEF:
 		LOG(logINFO) << MESSAGE_EQUILIBRATION_STARTED;																		// Log the step change
+		storage.experimentStatus.stepStatus = STEP_STATUS_START;
+		break;
 
+	case STEP_STATUS_START:
 																															// This is where we start recording
 		storage.experimentStatus.isRecording = true;
 
@@ -37,8 +39,8 @@ void Automation::StageEquilibration()
 		if (storage.experimentStatus.isWaiting) break;
 
 		LOG(logINFO) << MESSAGE_EQUILIBRATION_COMPLETE;													// Log the step change
-		storage.experimentStatus.mainStage = STAGE_ADSORPTION;											// Set next stage
-		storage.experimentStatus.stepStatus = STEP_STATUS_START;										// Reset next step
+		++storage.experimentStatus.mainStage;															// Set next stage
+		storage.experimentStatus.stepStatus = STEP_STATUS_UNDEF;										// Reset next step
 		break;
 
 	default:

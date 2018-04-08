@@ -1,5 +1,9 @@
 #pragma once
 
+/****************
+EXPERIMENT TYPES
+****************/
+
 #define EXPERIMENT_TYPE_UNDEF			0
 #define EXPERIMENT_TYPE_AUTO			1
 #define EXPERIMENT_TYPE_MANUAL			2
@@ -9,42 +13,68 @@
 #define EXPERIMENT_TYPE_BOTTLE_CHANGE	6
 #define EXPERIMENT_TYPE_CONTINUOUS		7
 
+/****************
+STAGES
+****************/
+
 #define STAGE_UNDEF						0
-#define STAGE_TEMP						1										
-#define STAGE_EQUILIBRATION				2
-#define STAGE_ADSORPTION				3
-#define	STAGE_DESORPTION				4
-#define STAGE_CONTINUOUS_ADSORPTION		5
-#define STAGE_VERIFICATIONS				6
-#define	STAGE_END_AUTOMATIC				7
-#define STAGE_MANUAL					8
-#define STAGE_VACUUM_SAMPLE				9
-#define STAGE_VACUUM_BOTTLE				10
 
+#define STAGE_AUTO_VERIFICATIONS		1
+#define STAGE_AUTO_EQUILIBRATION		2
+#define STAGE_AUTO_ADSORPTION			3
+#define	STAGE_AUTO_DESORPTION			4
+#define STAGE_AUTO_VACUUM_SAMPLE		5
+#define	STAGE_AUTO_END					6
 
-#define STEP_VERIFICATIONS_SECURITY				11
-#define STEP_VERIFICATIONS_VALVES				12
-#define	STEP_VERIFICATIONS_PRESSURE				13
-#define STEP_VERIFICATIONS_TEMPERATURE			14
-#define STEP_VERIFICATIONS_COMPLETE				15
-#define STEP_VERIFICATIONS_UNDEF				16
+#define STAGE_CONT_VERIFICATIONS		1
+#define STAGE_CONT_FLOWRATE				2
+#define STAGE_CONT_REFVOL				3
+#define STAGE_CONT_EQUILIBRATION		4
+#define STAGE_CONT_ADSORPTION			5
+#define STAGE_CONT_VACUUM_SAMPLE		7
+#define	STAGE_CONT_END					8
 
+#define STAGE_MANUAL					1
+
+#define STAGE_VACUUM_SAMPLE				1
+
+#define STAGE_VACUUM_BOTTLE				1
+
+/****************
+STEP STATUS
+****************/
 
 #define STEP_STATUS_UNDEF			0
-#define STEP_STATUS_START			10			// Larger since some will be incremented
-#define STEP_STATUS_INPROGRESS		20			// Larger since some will be incremented
-#define	STEP_STATUS_END				30			// Larger since some will be incremented
-#define STEP_STATUS_SUBSTEP			40			// Larger since some will be incremented
+
+#define STEP_STATUS_START			1	 
+#define	STEP_STATUS_END				2
+#define STEP_STATUS_UNDEF_END		3
+
+#define STEP_VERIFICATIONS_SECURITY				1
+#define STEP_VERIFICATIONS_VALVES				2
+#define	STEP_VERIFICATIONS_PRESSURE				3
+#define STEP_VERIFICATIONS_TEMPERATURE			4
+#define STEP_VERIFICATIONS_COMPLETE				5
+
+#define STEP_STATUS_INPROGRESS		10			// Larger since some will be incremented
+#define STEP_STATUS_SUBSTEP			20			// Larger since some will be incremented
+
+/****************
+SUBSTEP STATUS
+****************/
+
+#define SUBSTEP_STATUS_UNDEF			0
 
 #define SUBSTEP_STATUS_START			100		// Larger since some will be incremented
 #define SUBSTEP_STATUS_INPROGRESS		200		// Larger since some will be incremented
 #define SUBSTEP_STATUS_INJECTION		300		// Larger since some will be incremented
 #define SUBSTEP_STATUS_CHECK			400		// Larger since some will be incremented
-#define SUBSTEP_STATUS_ABORT			500		// Larger since some will be incremented
 #define SUBSTEP_STATUS_ADSORPTION		600		// Larger since some will be incremented
 #define	SUBSTEP_STATUS_END				700		// Larger since some will be incremented
 #define SUBSTEP_STATUS_REMOVAL			800		// Larger since some will be incremented
 #define SUBSTEP_STATUS_DESORPTION		900		// Larger since some will be incremented
+
+#define SUBSTEP_STATUS_TO_PRESSURE		500		// Larger since some will be incremented
 
 
 // Stage steps

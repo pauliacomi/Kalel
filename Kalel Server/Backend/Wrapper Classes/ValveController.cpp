@@ -18,7 +18,10 @@ ValveController::~ValveController(void)
 
 bool ValveController::ValveOpen(int num, bool verbose)
 {
-	bool success = instruments.ActuateController(num, true);
+	bool success = true;
+	if (!instruments.MeasureController(num)) {
+		success = instruments.ActuateController(num, true);
+	}
 
 	// Log message
 	if (verbose) {
@@ -30,7 +33,10 @@ bool ValveController::ValveOpen(int num, bool verbose)
 
 bool ValveController::ValveClose(int num, bool verbose)
 {
-	bool success = instruments.ActuateController(num, false);
+	bool success = true;
+	if (instruments.MeasureController(num)) {
+		success = instruments.ActuateController(num, false);
+	}
 
 	if (verbose) {
 		LOG(logINFO) << stringh::string_format(MESSAGE_VALVE_CLOSED, num - CONTROLLER_VALVE);
@@ -115,6 +121,21 @@ bool ValveController::CloseAllValves(bool verbose)
 	// Log message
 	if (verbose) {
 		LOG(logINFO) << MESSAGE_VALVE_CLOSEALL;
+	}
+
+	// Return success
+	return true;
+}
+
+bool ValveController::OpenEVsAndPump(bool verbose)
+{
+	instruments.ActuateController(ID_EV_1, true);
+	instruments.ActuateController(ID_EV_2, true);
+	instruments.ActuateController(ID_PUMP, true);
+
+	// Log message
+	if (verbose) {
+		LOG(logINFO) << MESSAGE_PUMP_VALVE_CLOSEALL;
 	}
 
 	// Return success

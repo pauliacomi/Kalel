@@ -27,6 +27,7 @@ public:
 
 	bool CloseAll(bool verbose);				// Close everything
 	bool CloseAllValves(bool verbose);			// Close all the valves
+	bool OpenEVsAndPump(bool verbose);			// Open all the valves and EVs
 	bool CloseEVsAndPump(bool verbose);			// Close the Pump and EV's
 	bool CloseEverything(bool verbose);			// Close all things
 

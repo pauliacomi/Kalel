@@ -40,7 +40,7 @@ void MachineSettings::ResetData()
 	VolumeRef = 1;										// Used for user information (no calculations)
 	VolumeP6 = 1;										// Used for user information (no calculations)
 
-	InjectionAttemptNumber = 5;
+	attemptNumber = 5;
 	InjectionMargin = 0.01f;
 	InjectionMultiplier = 1.2f;
 
@@ -71,7 +71,7 @@ void MachineSettings::Replace(const MachineSettings & rhs) {
 	VolumeRef = rhs.VolumeRef;
 	VolumeP6 = rhs.VolumeP6;
 
-	InjectionAttemptNumber = rhs.InjectionAttemptNumber;
+	attemptNumber = rhs.attemptNumber;
 	InjectionMargin = rhs.InjectionMargin;
 	InjectionMultiplier = rhs.InjectionMultiplier;
 

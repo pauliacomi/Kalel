@@ -546,13 +546,19 @@ void Kalel::AutomationControl(http_request* req, http_response* resp)
 				threadManager.StopExperiment();
 			}
 			else if (req->params.at("action") == "nextstage") {
-				threadManager.NextStageAutomation();
+				if(threadManager.NextStageAutomation()) {
+					LOG(logINFO) << "Could not set next stage";
+				}
 			}
 			else if (req->params.at("action") == "nextstep") {
-				threadManager.NextStepAutomation();
+				if(threadManager.NextStepAutomation()) {
+					LOG(logINFO) << "Could not set next step";
+				}
 			}
 			else if (req->params.at("action") == "nextsubstep") {
-				threadManager.NextDoseAutomation();
+				if (!threadManager.NextDoseAutomation()) {
+					LOG(logINFO) << "Could not set next dose";
+				}
 			}
 
 			resp->status = http::responses::ok;

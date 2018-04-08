@@ -66,7 +66,7 @@ void to_json(nlohmann::json &j, const MachineSettings &m) {
 	j["PressurePumpVacuum"					]	= m.PressurePumpVacuum						;
 	j["PressureLimitVacuum"					]	= m.PressureLimitVacuum						;
 												 											
-	j["InjectionAttemptNumber"				]	= m.InjectionAttemptNumber					;
+	j["InjectionAttemptNumber"				]	= m.attemptNumber							;
 	j["InjectionMargin"						]	= m.InjectionMargin							;
 	j["InjectionMultiplier"					]	= m.InjectionMultiplier						;
 												
@@ -115,7 +115,7 @@ inline void from_json(const nlohmann::json &j, MachineSettings &m) {
 	m.PressurePumpVacuum								=				j["PressurePumpVacuum"					];
 	m.PressureLimitVacuum								=				j["PressureLimitVacuum"					];
 
-	m.InjectionAttemptNumber							=				j["InjectionAttemptNumber"				];
+	m.attemptNumber										=				j["InjectionAttemptNumber"				];
 	m.InjectionMargin									=				j["InjectionMargin"						];
 	m.InjectionMultiplier								=				j["InjectionMultiplier"					];
 
@@ -242,7 +242,6 @@ inline void to_json(nlohmann::json &j, const ExperimentStatus &e) {
 	j[	"EWU"	]	= e.isWaitingUser				.load();
 	j[	"ECR"	]	= e.isRunningAutomation			.load();
 	j[	"ES"	]	= e.mainStage					.load();
-	j[	"VS"	]	= e.checksStage					.load();
 	j[	"SSs"	]	= e.stepStatus					.load();
 	j[	"SSg"	]	= e.substepStatus				.load();
 	j[	"ED"	]	= e.injectionDose				.load();
@@ -268,7 +267,6 @@ inline void from_json(const nlohmann::json &j, ExperimentStatus &e) {
 	e.isRunningAutomation						.store_nostamp(j[	"ECR"	]);
 	
 	e.mainStage									.store_nostamp(j[	"ES"	]);
-	e.checksStage								.store_nostamp(j[	"VS"	]);
 	e.stepStatus								.store_nostamp(j[	"SSs"	]);
 	e.substepStatus								.store_nostamp(j[	"SSg"	]);
 	

@@ -80,7 +80,7 @@ void ApparatusParameters::DoDataExchange(CDataExchange* pDX)
 
 	// Injection
 
-	DDX_Text(pDX, IDC_EDIT_PRESSION_SECURITE_CAPTEUR_HAUTE_PRESSION2, localSettings->InjectionAttemptNumber);
+	DDX_Text(pDX, IDC_EDIT_PRESSION_SECURITE_CAPTEUR_HAUTE_PRESSION2, localSettings->attemptNumber);
 	DDX_Control(pDX, IDC_SPIN_PRESSION_SECURITE_CAPTEUR_HAUTE_PRESSION2, m_SpinInjection[0]);
 
 	DDX_Text(pDX, IDC_EDIT_PRESSION_SECURITE_CAPTEUR_HAUTE_PRESSION3, localSettings->InjectionMargin);
@@ -159,7 +159,7 @@ BOOL ApparatusParameters::OnInitDialog()
 	m_SpinVolumeP6.UpdateBuddy();
 
 	// Injections
-	m_SpinInjection[0].SetPos(localSettings->InjectionAttemptNumber);
+	m_SpinInjection[0].SetPos(localSettings->attemptNumber);
 	m_SpinInjection[0].SetPos(localSettings->InjectionMargin);
 	m_SpinInjection[0].SetPos(localSettings->InjectionMultiplier);
 	for (size_t i = 0; i < 3; i++)

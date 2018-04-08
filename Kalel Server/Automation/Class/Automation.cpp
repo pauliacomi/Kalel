@@ -180,11 +180,13 @@ void Automation::Execution()
 
 void Automation::ExecutionManual()
 {
-	if (storage.experimentStatus.stepStatus == STEP_STATUS_UNDEF) {
-
+	switch (storage.experimentStatus.mainStage)
+	{
+	case STAGE_UNDEF:
+	{
 		// Send start message
 		LOG(logINFO) << MESSAGE_EXPSTART;
-		
+
 		ResetAutomation();
 
 		// Create open and write the columns in the file
@@ -201,7 +203,7 @@ void Automation::ExecutionManual()
 		storage.experimentStatus.isRecording = true;
 
 		// Start the timer to record time between recording of measurements
-		storage.timerRecording.Start();	
+		storage.timerRecording.Start();
 
 		// Write Time of start
 		storage.experimentStatus.timeStart = timeh::TimePointToMs(timeh::NowTime());
@@ -209,16 +211,21 @@ void Automation::ExecutionManual()
 		// Continue experiment
 		storage.experimentStatus.mainStage = STAGE_MANUAL;
 		storage.experimentStatus.stepStatus = STEP_STATUS_INPROGRESS;
+		break;
+	}
+	default:
+		break;
 	}
 }
 
 
-
 void Automation::ExecutionAuto()
 {
-	// First time running command
-	if (storage.experimentStatus.stepStatus == STEP_STATUS_UNDEF){
-
+	// Stages of automatic experiment
+	switch (storage.experimentStatus.mainStage)
+	{
+	case STAGE_UNDEF:
+	{
 		// Send start message
 		LOG(logINFO) << MESSAGE_EXPSTART;
 
@@ -233,33 +240,29 @@ void Automation::ExecutionAuto()
 			LOG(logERROR) << ERROR_PATHUNDEF;
 		}
 
-		// Write variables to starting position
+		// Record start
 		storage.experimentStatus.inProgress = true;
-		storage.experimentStatus.mainStage = STAGE_VERIFICATIONS;
-		storage.experimentStatus.stepStatus = STEP_STATUS_START;
-		storage.experimentStatus.substepStatus = SUBSTEP_STATUS_START;
-		storage.experimentStatus.checksStage = STEP_VERIFICATIONS_SECURITY;
-	}
 
-	// Stages of automatic experiment
-	switch (storage.experimentStatus.mainStage)
-	{
-	case STAGE_VERIFICATIONS:
+		// Advance
+		storage.experimentStatus.mainStage = STAGE_AUTO_VERIFICATIONS;
+		break;
+	}
+	case STAGE_AUTO_VERIFICATIONS:
 		Verifications();
 		break;
-	case STAGE_EQUILIBRATION:
+	case STAGE_AUTO_EQUILIBRATION:
 		StageEquilibration();
 		break;
-	case STAGE_ADSORPTION:
+	case STAGE_AUTO_ADSORPTION:
 		StageAdsorption();
 		break;
-	case STAGE_DESORPTION:
+	case STAGE_AUTO_DESORPTION:
 		StageDesorption();
 		break;
-	case STAGE_VACUUM_SAMPLE:
+	case STAGE_AUTO_VACUUM_SAMPLE:
 		StageVacuum();
 		break;
-	case STAGE_END_AUTOMATIC:
+	case STAGE_AUTO_END:
 
 		// If the experiment has finished
 		eventShutdown = true;						// set the event
@@ -293,28 +296,27 @@ void Automation::ExecutionContinuous()
 
 		// Write variables to starting position
 		storage.experimentStatus.inProgress = true;
-		storage.experimentStatus.mainStage = STAGE_VERIFICATIONS;
+		storage.experimentStatus.mainStage = STAGE_AUTO_VERIFICATIONS;
 		storage.experimentStatus.stepStatus = STEP_STATUS_START;
 		storage.experimentStatus.substepStatus = SUBSTEP_STATUS_START;
-		storage.experimentStatus.checksStage = STEP_VERIFICATIONS_SECURITY;
 	}
 
 	// Stages of automatic experiment
 	switch (storage.experimentStatus.mainStage)
 	{
-	case STAGE_VERIFICATIONS:
+	case STAGE_CONT_VERIFICATIONS:
 		Verifications();
 		break;
-	case STAGE_EQUILIBRATION:
+	case STAGE_CONT_EQUILIBRATION:
 		StageEquilibration();
 		break;
-	case STAGE_ADSORPTION:
+	case STAGE_CONT_ADSORPTION:
 		StageContinuous();
 		break;
-	case STAGE_VACUUM_SAMPLE:
+	case STAGE_CONT_VACUUM_SAMPLE:
 		StageVacuum();
 		break;
-	case STAGE_END_AUTOMATIC:
+	case STAGE_AUTO_END:
 
 		// If the experiment has finished
 		shutdownReason = Stop::Normal;				// set a normal shutdown
