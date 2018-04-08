@@ -45,7 +45,7 @@ LRESULT CKalelView::DisplayTextboxValues(const ExperimentData &data, const Exper
 	m_StrTemperatureCalo.Format(_T("%.2f"), data.temperatureCalo);
 	m_StrTemperatureCage.Format(_T("%.2f"), data.temperatureCage);
 	m_StrTemperaturePiece.Format(_T("%.2f"), data.temperatureRoom);
-	m_StrTemps.Format(_T("%.1f"), std::chrono::duration_cast<std::chrono::seconds>(timeh::NowTime() - timeh::MsToTimePoint(status.timeEquilibrationStart.load())));
+	m_StrTemps.Format(_T("%.1f"), std::chrono::duration_cast<std::chrono::seconds>(timeh::NowTime() - timeh::MsToTimePoint(status.timeWaitStart.load())));
 	m_StrPressionInitiale.Format(_T("%.6f"), status.pressureInitial.load());
 	m_StrPressionFinale.Format(_T("%.6f"), status.pressureFinal.load());
 
@@ -78,17 +78,17 @@ LRESULT CKalelView::DisplayStepProgress(const ExperimentStatus &status)
 	
 	if (status.isWaiting == true)
 	{
-		auto timeToEquilibrateCurrent = std::chrono::duration_cast<std::chrono::seconds>(timeh::NowTime() - timeh::MsToTimePoint(status.timeEquilibrationStart.load())).count();
+		auto timeToEquilibrateCurrent = std::chrono::duration_cast<std::chrono::seconds>(timeh::NowTime() - timeh::MsToTimePoint(status.timeWaitStart.load())).count();
 
-		if (status.timeToEquilibrate / 60 > 1)
+		if (status.timeToWait / 60 > 1)
 		{
 			temp.Format(_T(" *** Waiting: %.0f min %.0f s /  %.0f min %.0f s"), 
 				floorf(timeToEquilibrateCurrent / 60.0f), fmodf(timeToEquilibrateCurrent, 60.0f), 
-				floorf(status.timeToEquilibrate.load() / 60.0f), fmodf(status.timeToEquilibrate.load(), 60.0f));
+				floorf(status.timeToWait.load() / 60.0f), fmodf(status.timeToWait.load(), 60.0f));
 		}
 		else
 		{
-			temp.Format(_T(" *** Waiting: %.0f s /  %.0f s"), fmodf(timeToEquilibrateCurrent, 60.0f), status.timeToEquilibrate.load());
+			temp.Format(_T(" *** Waiting: %.0f s /  %.0f s"), fmodf(timeToEquilibrateCurrent, 60.0f), status.timeToWait.load());
 		}
 		m_StrEtape += temp;
 	}

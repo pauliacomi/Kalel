@@ -56,8 +56,7 @@ STEP STATUS
 #define STEP_VERIFICATIONS_TEMPERATURE			4
 #define STEP_VERIFICATIONS_COMPLETE				5
 
-#define STEP_STATUS_INPROGRESS		10			// Larger since some will be incremented
-#define STEP_STATUS_SUBSTEP			20			// Larger since some will be incremented
+#define STEP_STATUS_INPROGRESS					10			// Larger since some will be incremented
 
 /****************
 SUBSTEP STATUS
@@ -65,7 +64,7 @@ SUBSTEP STATUS
 
 #define SUBSTEP_STATUS_UNDEF			0
 
-#define SUBSTEP_STATUS_START			100		// Larger since some will be incremented
+#define SUBSTEP_STATUS_START			1
 #define SUBSTEP_STATUS_INPROGRESS		200		// Larger since some will be incremented
 #define SUBSTEP_STATUS_INJECTION		300		// Larger since some will be incremented
 #define SUBSTEP_STATUS_CHECK			400		// Larger since some will be incremented

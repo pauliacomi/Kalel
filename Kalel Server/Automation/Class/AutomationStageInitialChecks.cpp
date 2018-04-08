@@ -15,38 +15,38 @@
 
 void Automation::Verifications()
 {
-	switch (storage.experimentStatus.substepStatus)
+	switch (storage.experimentStatus.stepStatus)
 	{
 	case STEP_STATUS_UNDEF:
 		LOG(logINFO) << MESSAGE_VERIFICATIONS;
-		storage.experimentStatus.stepStatus = STEP_VERIFICATIONS_VALVES;
+		storage.experimentStatus.stepStatus = STEP_VERIFICATIONS_SECURITY;
 		break;
 
 	case STEP_VERIFICATIONS_SECURITY:
 		if (VerificationSecurity()) {
 			storage.experimentStatus.stepStatus = STEP_VERIFICATIONS_VALVES;
-			storage.experimentStatus.substepStatus = STEP_STATUS_START;
+			storage.experimentStatus.substepStatus = SUBSTEP_STATUS_START;
 		}
 		break;
 
 	case STEP_VERIFICATIONS_VALVES:
 		if (VerificationValves()){
 			storage.experimentStatus.stepStatus = STEP_VERIFICATIONS_PRESSURE;
-			storage.experimentStatus.substepStatus = STEP_STATUS_START;
+			storage.experimentStatus.substepStatus = SUBSTEP_STATUS_START;
 		}
 		break;
 
 	case STEP_VERIFICATIONS_PRESSURE:
 		if (VerificationResidualPressure()){
 			storage.experimentStatus.stepStatus = STEP_VERIFICATIONS_TEMPERATURE;
-			storage.experimentStatus.substepStatus = STEP_STATUS_START;
+			storage.experimentStatus.substepStatus = SUBSTEP_STATUS_START;
 		}
 		break;
 
 	case STEP_VERIFICATIONS_TEMPERATURE:
 		if (VerificationTemperature()) {
 			storage.experimentStatus.stepStatus = STEP_VERIFICATIONS_COMPLETE;
-			storage.experimentStatus.substepStatus = STEP_STATUS_START;
+			storage.experimentStatus.substepStatus = SUBSTEP_STATUS_START;
 		}
 		break;
 
@@ -136,9 +136,9 @@ bool Automation::VerificationValves()
 
 bool Automation::VerificationResidualPressure()
 {
-	switch (storage.experimentStatus.stepStatus)
+	switch (storage.experimentStatus.substepStatus)
 	{
-	case STEP_STATUS_START:
+	case SUBSTEP_STATUS_START:
 		// Display initial message
 		LOG(logINFO) << MESSAGE_CHECK_INITIAL_PRESSURE;
 
@@ -149,12 +149,10 @@ bool Automation::VerificationResidualPressure()
 		WaitSeconds(storage.machineSettings.TimeWaitValves, true);
 
 		// Continue to next step
-		storage.experimentStatus.stepStatus = STEP_STATUS_INPROGRESS;
+		storage.experimentStatus.substepStatus = SUBSTEP_STATUS_INPROGRESS;
 		break;
 
-	case STEP_STATUS_INPROGRESS:
-		if (storage.experimentStatus.isWaiting) break;
-
+	case SUBSTEP_STATUS_INPROGRESS:
 		if (storage.currentData.pressureHigh < storage.machineSettings.readers.find(PRESSURE_LP)->second.safe_max)
 		{
 			// Tell GUI we are opening valve 6
@@ -167,11 +165,10 @@ bool Automation::VerificationResidualPressure()
 			WaitSeconds(storage.machineSettings.TimeWaitValves, true);
 		}
 		// Continue to next step
-		storage.experimentStatus.stepStatus = STEP_STATUS_INPROGRESS + 1;
+		storage.experimentStatus.substepStatus = SUBSTEP_STATUS_INPROGRESS + 1;
 		break;
 
-	case STEP_STATUS_INPROGRESS + 1:
-		if (storage.experimentStatus.isWaiting) break;
+	case SUBSTEP_STATUS_INPROGRESS + 1:
 
 		if (storage.currentData.pressureHigh >= storage.machineSettings.PressureLimitVacuum)
 		{
@@ -209,13 +206,12 @@ bool Automation::VerificationResidualPressure()
 		{
 			// Continue to next step
 			storage.experimentStatus.isWaitingUser = false;
-			storage.experimentStatus.stepStatus = STEP_STATUS_INPROGRESS + 2;
+			storage.experimentStatus.substepStatus = SUBSTEP_STATUS_INPROGRESS + 2;
 		}
 
 		break;
 
-	case STEP_STATUS_INPROGRESS + 2:
-		if (storage.experimentStatus.isWaiting) break;
+	case SUBSTEP_STATUS_INPROGRESS + 2:
 
 		// Open valve 5
 		controls.valveControls.ValveOpen(ID_VALVE_5, true);
@@ -224,11 +220,10 @@ bool Automation::VerificationResidualPressure()
 		WaitSeconds(storage.machineSettings.TimeWaitValves, true);
 
 		// Continue to next step
-		storage.experimentStatus.stepStatus = STEP_STATUS_END;
+		storage.experimentStatus.substepStatus = SUBSTEP_STATUS_END;
 		break;
 
-	case STEP_STATUS_END:
-		if (storage.experimentStatus.isWaiting) break;
+	case SUBSTEP_STATUS_END:
 
 		if (storage.currentData.pressureHigh >= storage.machineSettings.PressureLimitVacuum)
 		{
@@ -250,7 +245,6 @@ bool Automation::VerificationResidualPressure()
 				case CHOICE_YES:									// Signal that it's good
 					controls.valveControls.ValveClose(ID_VALVE_4, true);
 					controls.valveControls.ValveClose(ID_VALVE_5, true);
-					controls.valveControls.CloseAll(true);			// Close valves
 					return true;
 					break;
 				case CHOICE_NO:										// Stop experiment
@@ -281,9 +275,9 @@ bool Automation::VerificationResidualPressure()
 
 bool Automation::VerificationTemperature()
 {
-	switch (storage.experimentStatus.stepStatus)
+	switch (storage.experimentStatus.substepStatus)
 	{
-	case STEP_STATUS_START:
+	case SUBSTEP_STATUS_START:
 
 		// Display initial message
 		LOG(logINFO) << MESSAGE_CHECK_INITIAL_TEMPERATURE;
@@ -316,7 +310,7 @@ bool Automation::VerificationTemperature()
 					break;
 				case CHOICE_WAIT:									// Go to wait step
 					LOG(logINFO) << MESSAGE_WAIT_TEMP_EQUILIBRATION;
-					storage.experimentStatus.stepStatus = STEP_STATUS_INPROGRESS;
+					storage.experimentStatus.substepStatus = SUBSTEP_STATUS_INPROGRESS;
 					return false;
 					break;
 				case CHOICE_NO:										// Stop experiment
@@ -337,7 +331,7 @@ bool Automation::VerificationTemperature()
 		}
 		break;
 
-	case STEP_STATUS_INPROGRESS:
+	case SUBSTEP_STATUS_INPROGRESS:
 		// Loop until the temperature is stable
 		if ((storage.currentData.temperatureCalo < storage.experimentSettings.dataGeneral.temperature_experience - storage.experimentSettings.dataGeneral.temperature_range_initial_check) ||
 			(storage.currentData.temperatureCalo > storage.experimentSettings.dataGeneral.temperature_experience + storage.experimentSettings.dataGeneral.temperature_range_initial_check) ||

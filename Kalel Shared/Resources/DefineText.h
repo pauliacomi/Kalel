@@ -89,6 +89,7 @@
 // Equilibration messages
 #define MESSAGE_EQUILIBRATION_STARTED		"Equilibration started"
 #define MESSAGE_EQUILIBRATION_COMPLETE		"Equilibration complete"
+#define MESSAGE_EQUILIBRATION_REFVOL		"Waiting for equilibration in reference volume"
 
 // Adsorption messages
 #define MESSAGE_ADSORPTION_START			"Start of adsorption stage"

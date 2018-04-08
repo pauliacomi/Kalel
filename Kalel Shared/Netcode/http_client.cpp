@@ -17,7 +17,7 @@
 HTTPClient::HTTPClient()
 {
 
-#define FILE_LOGGING	"client.log"		// Comment this line to disable file logging
+//#define FILE_LOGGING	"client.log"		// Comment this line to disable file logging
 #define LOG_LEVEL		logDEBUG4			// Change the level of logging here
 
 #ifdef FILE_LOGGING
@@ -51,10 +51,7 @@ void HTTPClient::Request(std::function<void(http_request*)> func_req, std::funct
 
 unsigned HTTPClient::Process(std::string ip, std::string port, std::function<void(http_request*)> func_req, std::function<void(http_response*)> func_resp){
 	
-#ifdef FILE_LOGGING
 	FILE_LOG(logDEBUG2) << "Enter thread";
-#endif // FILE_LOGGING
-
 
 	//*************************************************************************************************************************
 	//						CONNECT TO SERVER
@@ -118,9 +115,7 @@ unsigned HTTPClient::Process(std::string ip, std::string port, std::function<voi
 	// Exit
 	//
 
-#ifdef FILE_LOGGING
 	FILE_LOG(logDEBUG2) << "Exit thread";
-#endif // FILE_LOGGING
 
 	return 0;
 }
@@ -128,9 +123,7 @@ unsigned HTTPClient::Process(std::string ip, std::string port, std::function<voi
 
 inline unsigned HTTPClient::ErrorCaught(std::string err_str, std::function<void(http_response*)> func_resp)
 {
-#ifdef FILE_LOGGING
 	FILE_LOG(logERROR) << err_str;
-#endif // FILE_LOGGING
 
 	http_response response;
 	response.disconnected = true;
@@ -175,9 +168,7 @@ unsigned HTTPClient::SendRequest(Socket & sock, http_request & request)
 	}
 
 	// Log request string
-#ifdef FILE_LOGGING
 	FILE_LOG(logDEBUG) << sock.GetSocket() << LOG_REQUEST << requestString;
-#endif // FILE_LOGGING
 
 	return 0;
 }
@@ -285,10 +276,7 @@ unsigned HTTPClient::ReceiveResponse(Socket & sock, http_response & resp)
 	}
 
 	//*************** Response is now received
-
-#ifdef FILE_LOGGING
 	FILE_LOG(logDEBUG) << sock.GetSocket() << LOG_RESPONSE << responseString;
-#endif // FILE_LOGGING
 
 	return 0;
 }

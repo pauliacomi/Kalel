@@ -143,7 +143,9 @@ void Security::SecurityHighPressureAuto(const Storage & storage)
 				{
 					if (!valveController.ValveIsOpen(ID_VALVE_6))
 					{
+						LOG(logINFO) << MESSAGE_WARNING_PHNORMAL_V6;
 						valveController.ValveOpen(ID_VALVE_6, true);
+						security_PressureHigh_flag = false;
 					}
 				}
 			}

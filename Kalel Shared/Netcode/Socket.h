@@ -20,25 +20,6 @@ typedef	SOCKET int;			/* To make sure the POSIX-int handle can be compared to th
 #endif
 
 #include <string>
-#include <exception>
-#include <atomic>
-
-class stringexception : public std::exception
-{
-protected:
-	std::string err;
-
-public:
-	void set(std::string l_err)
-	{
-		this->err = l_err;
-	}
-
-	virtual const char* what() const throw()
-	{
-		return err.c_str();
-	}
-};
 
 
 class Socket
@@ -83,7 +64,6 @@ public:
 
 protected:
 	SOCKET sock;								// Socket
-	stringexception stringex;					// Custom exception
 
 	// For select functionality
 	fd_set * master = nullptr;					// master file descriptor list

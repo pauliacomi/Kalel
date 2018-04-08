@@ -115,9 +115,9 @@ protected:
 
 	void StageEquilibration();
 	void StageAdsorption();
-	void SubstepsAdsorption();
+	bool SubstepsAdsorption();
 	void StageDesorption();
-	void SubstepsDesorption();
+	bool SubstepsDesorption();
 	void StageContinuous();
 	void StageVacuum(bool separateFunctionality = false);
 

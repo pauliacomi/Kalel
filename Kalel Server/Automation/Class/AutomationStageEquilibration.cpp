@@ -36,7 +36,6 @@ void Automation::StageEquilibration()
 		break;
 
 	case STEP_STATUS_END:
-		if (storage.experimentStatus.isWaiting) break;
 
 		LOG(logINFO) << MESSAGE_EQUILIBRATION_COMPLETE;													// Log the step change
 		++storage.experimentStatus.mainStage;															// Set next stage

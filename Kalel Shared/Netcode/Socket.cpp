@@ -3,6 +3,9 @@
 
 #include "Netcode Resources.h"
 
+#include <exception>
+#include <sstream>
+
 #define NO_OF_CONN		5      /* Passed to listen() */
 
 int Socket::nofSockets = 0;
@@ -20,12 +23,10 @@ void Socket::Start()
 		WSADATA wsaData;
 
 		if (WSAStartup(wVersion, &wsaData) != 0) {
-			stringex.set(ERR_WSASTARTUP);
-			throw stringex;
+			throw std::runtime_error(ERR_WSASTARTUP);
 		}
 		if (LOBYTE(wsaData.wVersion) < iReqWinsockVer) {
-			stringex.set(ERR_VERSION);
-			throw stringex;
+			throw std::runtime_error(ERR_VERSION);
 		}
 
 #endif
@@ -83,8 +84,7 @@ void Socket::Listen(PCSTR port)
 
 															// Resolve the local address and port to be used by the server
 	if (getaddrinfo(NULL, port, &hints, &result) != 0) {
-		stringex.set(ERR_GETADDRINFO);
-		throw stringex;
+		throw std::runtime_error(ERR_GETADDRINFO);
 	}
 
 	// Loop through all the results and bind to the first we can
@@ -117,8 +117,7 @@ void Socket::Listen(PCSTR port)
 
 	if (loopAddr == NULL) {
 		freeaddrinfo(result);
-		stringex.set(ERR_CREATEBIND);
-		throw stringex;
+		throw std::runtime_error(ERR_CREATEBIND);
 	}
 
 	// clears no longer needed address info
@@ -126,8 +125,7 @@ void Socket::Listen(PCSTR port)
 
 	// Listen to newly created socket
 	if (listen(sock, NO_OF_CONN) == SOCKET_ERROR) {
-		stringex.set(ERR_LISTENING);
-		throw stringex;
+		throw std::runtime_error(ERR_LISTENING);
 	}
 
 
@@ -152,8 +150,7 @@ std::string Socket::Accept(SOCKET &clientSocket, timeval tv)
 	SOCKET selectResult = select(sock + 1, &*readfds, NULL, NULL, &tv);
 
 	if ((selectResult < 0) && (errno != EINTR)) {			// Check to see if select returned correctly
-		stringex.set(ERR_ACCEPT);
-		throw stringex;
+		throw std::runtime_error(ERR_ACCEPT);
 	}
 
 	if (FD_ISSET(sock, &*readfds))							// Check if the socket is in the set
@@ -167,8 +164,7 @@ std::string Socket::Accept(SOCKET &clientSocket, timeval tv)
 		clientSocket = accept(sock, (struct sockaddr*)&theirAddr, &size);
 
 		if (clientSocket ==  INVALID_SOCKET) {	// Check for valid socket
-			stringex.set(ERR_ACCEPT);
-			throw stringex;
+			throw std::runtime_error(ERR_ACCEPT);
 		}
 		else {											// If valid, return the new socket
 			return GetIP(theirAddr);
@@ -193,8 +189,7 @@ unsigned Socket::Connect(PCSTR ip, PCSTR port)
 
 	// Resolve the local address and port to be used by the server
 	if (getaddrinfo(ip, port, &hints, &result) != 0) {
-		stringex.set(ERR_GETADDRINFO);
-		throw stringex;
+		throw std::runtime_error(ERR_GETADDRINFO);
 	}
 
 	// Loop through all the results and bind to the first we can
@@ -218,8 +213,7 @@ unsigned Socket::Connect(PCSTR ip, PCSTR port)
 	freeaddrinfo(result);
 
 	if (sock == INVALID_SOCKET) {
-		stringex.set(ERR_CONNECT);
-		throw stringex;
+		throw std::runtime_error(ERR_CONNECT);
 	}
 
 	return 0;
@@ -237,9 +231,7 @@ std::string Socket::Send(const std::string& sendbuf)
 	{
 		bytesSent = send(sock, sendbuf.c_str() + total, length, 0);
 		if (bytesSent == SOCKET_ERROR) {
-			std::string l = std::to_string(WSAGetLastError());
-			stringex.set(ERR_SEND + l);
-			throw stringex;
+			throw std::runtime_error(ERR_RECEIVE + std::to_string(WSAGetLastError()));
 		}
 		total += bytesSent;
 		length -= bytesSent;
@@ -262,8 +254,9 @@ std::string Socket::SendLine(const std::string& sendbuf)
 
 std::string Socket::Receive()
 {
-	std::string ret;
-	char buf[1024];
+	std::stringstream ret;
+	const unsigned int bufsize = 1024;
+	char buf[bufsize];
 	int received;
 
 	while(true){
@@ -273,8 +266,8 @@ std::string Socket::Receive()
 			break;
 		if (arg == 0)
 			break;
-		if (arg > 1024)
-			arg = 1024;
+		if (arg > bufsize)
+			arg = bufsize;
 
 		received = recv(sock, buf, arg, 0);
 
@@ -283,27 +276,25 @@ std::string Socket::Receive()
 			return "";
 		case INVALID_SOCKET:
 			if (errno == EAGAIN) {
-				return ret;
+				return ret.str();
 			}
 			else {
-				stringex.set(ERR_RECEIVE);
-				throw stringex;
-				//// not connected anymore
-				//return "";
+				throw std::runtime_error(ERR_RECEIVE + std::to_string(WSAGetLastError()));
 			}
+			break;
+		default:
+			buf[received] = { 0 };
+			ret << buf;
+			break;
 		}
-
-		std::string t;
-		t.assign(buf, received);
-		ret += t;
 	}
 
-	return ret;
+	return ret.str();
 }
 
 std::string Socket::ReceiveLine()
 {
-	std::string ret;
+	std::stringstream ret;
 	int received;
 
 	while (true) {
@@ -316,26 +307,27 @@ std::string Socket::ReceiveLine()
 			return "";
 		case SOCKET_ERROR:
 			if (errno == EAGAIN) {
-				return ret;
+				return ret.str();
 			}
 			else {
-				stringex.set(ERR_RECEIVE);
-				throw stringex;
-				//// not connected anymore
-				//return "";
+				throw std::runtime_error(ERR_RECEIVE + std::to_string(WSAGetLastError()));
 			}
+			break;
+		default:
+			ret << r;
+			if (r == '\n')
+				return ret.str();
+			break;
 		}
 
-		ret += r;
-		if (r == '\n')
-			return ret;
 	}
 }
 
 std::string Socket::ReceiveBytes(u_long bytes)
 {
-	std::string ret;
-	char buf[1024];
+	std::stringstream ret;
+	const unsigned int bufsize = 1024;
+	char buf[bufsize];
 	int received;
 	size_t total = 0;
 
@@ -344,7 +336,7 @@ std::string Socket::ReceiveBytes(u_long bytes)
 	while (true) {
 
 		if (total >= bytes) {
-			if (total = bytes){
+			if (total == bytes){
 				break;
 			}
 			overflow = true;
@@ -358,25 +350,25 @@ std::string Socket::ReceiveBytes(u_long bytes)
 			break;
 		case INVALID_SOCKET:	// error
 			if (errno == EAGAIN) {
-				return ret;
+				return ret.str();
 			}
 			else {
-				stringex.set(ERR_RECEIVE);
-				throw stringex;
+				throw std::runtime_error(ERR_RECEIVE + std::to_string(WSAGetLastError()));
 			}
+			break;
+		default:
+			total += received;
+			buf[received] = { 0 };
+			ret << buf;
+			break;
 		}
-
-		std::string t;
-		t.assign(buf, received);
-		ret += t;
-		total += received;
 	}
 
 	if (total < bytes || overflow)
 	{
 		ret.clear();
 	}
-	return ret;
+	return ret.str();
 }
 
 void Socket::SetLinger(bool lingerOn)
@@ -389,8 +381,7 @@ void Socket::SetLinger(bool lingerOn)
 		lingerOption.l_onoff = 0;
 
 	if (setsockopt(sock, SOL_SOCKET, SO_LINGER, (char *)&lingerOption, sizeof(struct linger)) == -1){
-		stringex.set(ERR_LINGER);
-		throw stringex;
+		throw std::runtime_error(ERR_LINGER);
 	}
 }
 
@@ -404,9 +395,7 @@ void Socket::SetNagle(bool nagleOn)
 		nagleOption = 1;
 
 	if (setsockopt(sock, IPPROTO_TCP, TCP_NODELAY, (char *)&nagleOption, sizeof(int)) == -1) {
-		std::string err = ERR_NAGLE + std::to_string(WSAGetLastError());
-		stringex.set(err);
-		throw stringex;
+		throw std::runtime_error(ERR_NAGLE + std::to_string(WSAGetLastError()));
 	}
 }
 
@@ -424,8 +413,7 @@ void Socket::Close()
 #endif
 		if (status == SOCKET_ERROR)
 		{
-			stringex.set(ERR_CLOSESOCKET);
-			throw stringex;
+			throw std::runtime_error(ERR_CLOSESOCKET);
 		}
 
 		sock = INVALID_SOCKET;

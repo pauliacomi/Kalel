@@ -47,48 +47,46 @@ void Automation::Execution()
 		*
 		*/
 
-		// Go through any functionality
 		if (storage.experimentStatus.isRunningAutomation) {
-			switch (storage.experimentSettings.experimentType)		// We look at the type of experiment
+			if (!storage.experimentStatus.isWaiting)
 			{
-			case EXPERIMENT_TYPE_MANUAL:							// in case it is manual
-				ExecutionManual();									// run the manual loop
-				break;
-			case EXPERIMENT_TYPE_AUTO:								// in case it is automatic
-				ExecutionAuto();									// run the automatic loop
-				break;
-			case EXPERIMENT_TYPE_SAMPLE_VACUUM:						// in case we want to vacuum up to the sample
-				SampleVacuum();										// run the functionality
-				break;
-			case EXPERIMENT_TYPE_BOTTLE_VACUUM:						// in case we want to vacuum up to the bottle
-				BottleVacuum();										// run the functionality
-				break;
-			case EXPERIMENT_TYPE_CONTINUOUS:						// in case it is continuous
-				ExecutionContinuous();								// run the continuous loop
-				break;
-			case EXPERIMENT_TYPE_UNDEF:								// in case no experiment has been set yet
-				break;												// just continue
-			default:
-				break;
+				// Go through any functionality
+				switch (storage.experimentSettings.experimentType)		// We look at the type of experiment
+				{
+				case EXPERIMENT_TYPE_MANUAL:							// in case it is manual
+					ExecutionManual();									// run the manual loop
+					break;
+				case EXPERIMENT_TYPE_AUTO:								// in case it is automatic
+					ExecutionAuto();									// run the automatic loop
+					break;
+				case EXPERIMENT_TYPE_SAMPLE_VACUUM:						// in case we want to vacuum up to the sample
+					SampleVacuum();										// run the functionality
+					break;
+				case EXPERIMENT_TYPE_BOTTLE_VACUUM:						// in case we want to vacuum up to the bottle
+					BottleVacuum();										// run the functionality
+					break;
+				case EXPERIMENT_TYPE_CONTINUOUS:						// in case it is continuous
+					ExecutionContinuous();								// run the continuous loop
+					break;
+				case EXPERIMENT_TYPE_UNDEF:								// in case no experiment has been set yet
+					break;												// just continue
+				default:
+					break;
+				}
 			}
-		}
 
 		/*
 		*
 		*		2. IF WAITING check whether the wait is complete and reset it
 		*
-		*/
+			*/
 
-		// If waiting complete
-		if (storage.experimentStatus.isWaiting &&															// If the wait functionality is requested																					
-			storage.timerWaiting.TimeSeconds() > storage.experimentStatus.timeToEquilibrate) {					// and the time has been completed
+			else																								// If the wait functionality is requested
+				if (storage.timerWaiting.TimeSeconds() > storage.experimentStatus.timeToWait) {					// and the time has been completed
 
-			// Stop the timer
-			storage.timerWaiting.Pause();
-
-			// Reset the flag
-			storage.experimentStatus.isWaiting = false;
-		}
+				// Reset the flag
+					storage.experimentStatus.isWaiting = false;
+				}
 
 		/*
 		*
@@ -96,23 +94,24 @@ void Automation::Execution()
 		*
 		*/
 
-		// Write data
-		if (storage.experimentStatus.isRecording)														// If we started recording
-		{
-			if (storage.timerRecording.TimeMilliseconds() > storage.machineSettings.TimeBetweenRecording)		// If enough time between measurements
+			// Write data
+			if (storage.experimentStatus.isRecording)														// If we started recording
 			{
-				// Save the data to the file
-				bool err = controls.fileWriter.RecordMeasurement(
-					storage.experimentSettings.dataGeneral,
-					storage.currentData,
-					storage.experimentStatus,
-					controls.valveControls.ValveIsOpen(ID_VALVE_6));
-				if (err) {
-					LOG(logERROR) << ERROR_FILE_WRITE;
-				}
+				if (storage.timerRecording.TimeMilliseconds() > storage.machineSettings.TimeBetweenRecording)		// If enough time between measurements
+				{
+					// Save the data to the file
+					bool err = controls.fileWriter.RecordMeasurement(
+						storage.experimentSettings.dataGeneral,
+						storage.currentData,
+						storage.experimentStatus,
+						controls.valveControls.ValveIsOpen(ID_VALVE_6));
+					if (err) {
+						LOG(logERROR) << ERROR_FILE_WRITE;
+					}
 
-				// Restart the timer to record time between measurements
-				storage.timerRecording.Start();
+					// Restart the timer to record time between measurements
+					storage.timerRecording.Start();
+				}
 			}
 		}
 		/*

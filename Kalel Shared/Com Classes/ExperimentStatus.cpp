@@ -46,8 +46,8 @@ void ExperimentStatus::ResetData()
 	injectionDose					.store_nostamp( 0 );
 
 	timeStart						.store_nostamp( 0 );
-	timeEquilibrationStart			.store_nostamp( 0 );
-	timeToEquilibrate				.store_nostamp( 0.f );
+	timeWaitStart			.store_nostamp( 0 );
+	timeToWait				.store_nostamp( 0.f );
 
 	injectionAttemptCounter			.store_nostamp( 0 );
 	adsorptionCounter				.store_nostamp( 0 );
@@ -85,8 +85,8 @@ void ExperimentStatus::Replace(const ExperimentStatus & rhs)
 	substepStatus						.store_nostamp(rhs.substepStatus.load());
 
 	timeStart							.store_nostamp(rhs.timeStart.load());
-	timeEquilibrationStart				.store_nostamp(rhs.timeEquilibrationStart.load());
-	timeToEquilibrate					.store_nostamp(rhs.timeToEquilibrate.load());
+	timeWaitStart				.store_nostamp(rhs.timeWaitStart.load());
+	timeToWait					.store_nostamp(rhs.timeToWait.load());
 
 	injectionAttemptCounter				.store_nostamp(rhs.injectionAttemptCounter.load());
 	adsorptionCounter					.store_nostamp(rhs.adsorptionCounter.load());

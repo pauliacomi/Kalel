@@ -239,6 +239,7 @@ unsigned HTTPServer::ReceiveRequest(Socket & sock, http_request & req, http_resp
 	bool messageToReceive = false;							// not expecting a message body
 
 	while (true) {
+
 		try
 		{
 			line = sock.ReceiveLine();						// not attempting to receive message body, regular line-based receive 
@@ -288,6 +289,8 @@ unsigned HTTPServer::ReceiveRequest(Socket & sock, http_request & req, http_resp
 			req.content_length = line.substr(http::header::content_length.size());
 			if (req.content_length != "0") { messageToReceive = true; }
 		}
+
+		line.clear();										// Empty string
 	}
 
 	//*************** Receive request body (if applicable)

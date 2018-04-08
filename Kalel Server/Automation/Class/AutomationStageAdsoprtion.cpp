@@ -30,6 +30,8 @@ void Automation::StageAdsorption()
 		controls.valveControls.ValveClose(ID_VALVE_7, false);
 		controls.valveControls.ValveClose(ID_VALVE_8, false);
 
+		storage.experimentStatus.pressureInitial = storage.currentData.pressureHigh.load();											// Set the initial pressure
+
 		storage.experimentStatus.stepStatus = STEP_STATUS_START;																	// Set next step
 		break;
 		
@@ -42,12 +44,21 @@ void Automation::StageAdsorption()
 
 	case STEP_STATUS_INPROGRESS:
 
-		// Go through the adsorption substeps
-		SubstepsAdsorption();
-
 		// Check if the pressure for this adsorption step has been reached
 		if (storage.experimentStatus.pressureFinal > storage.experimentSettings.dataAdsorption[storage.experimentStatus.adsorptionCounter].pression_finale) {
 			storage.experimentStatus.stepStatus = STEP_STATUS_END;
+		}
+		// If not, do another injection
+		else
+			storage.experimentStatus.stepStatus = STEP_STATUS_INPROGRESS + 1;
+
+		break;
+
+	case STEP_STATUS_INPROGRESS + 1:
+
+		// Go through the adsorption substeps
+		if (SubstepsAdsorption()) {
+			storage.experimentStatus.stepStatus = STEP_STATUS_INPROGRESS;
 		}
 		break;
 
@@ -80,7 +91,7 @@ void Automation::StageAdsorption()
 }
 
 
-void Automation::SubstepsAdsorption()
+bool Automation::SubstepsAdsorption()
 {
 	switch (storage.experimentStatus.substepStatus)
 	{
@@ -90,8 +101,7 @@ void Automation::SubstepsAdsorption()
 	****************/
 	case SUBSTEP_STATUS_START:
 		storage.experimentStatus.injectionAttemptCounter = 0;																						// Reset injection attempt counter
-		storage.experimentStatus.pressureInitial = storage.currentData.pressureHigh.load();															// Set the initial pressure
-		storage.experimentStatus.pressureHighOld = storage.currentData.pressureHigh.load();															// Save the injection pressure for later
+		storage.experimentStatus.pressureHighOld = storage.experimentStatus.pressureInitial.load();													// Save the "old" pressure
 
 		LOG(logINFO) << stringh::string_format(MESSAGE_ADSORPTION_DOSE_START,
 			storage.experimentStatus.adsorptionCounter.load(), storage.experimentStatus.injectionDose.load());										// Log current dose
@@ -103,7 +113,6 @@ void Automation::SubstepsAdsorption()
 	Injection
 	****************/
 	case SUBSTEP_STATUS_INJECTION:
-		if (storage.experimentStatus.isWaiting) break;
 		LOG(logINFO) << stringh::string_format(MESSAGE_INJECTION_ATTEMPT, storage.experimentStatus.injectionAttemptCounter.load());					// Log current injection
 		controls.valveControls.ValveOpen(ID_VALVE_4, true);
 		WaitSeconds(storage.machineSettings.TimeWaitValvesShort);
@@ -111,28 +120,24 @@ void Automation::SubstepsAdsorption()
 		break;
 
 	case SUBSTEP_STATUS_INJECTION + 1:
-		if (storage.experimentStatus.isWaiting) break;
 		controls.valveControls.ValveOpen(ID_VALVE_2, true);
 		WaitSeconds(storage.machineSettings.TimeWaitValvesShort);
 		storage.experimentStatus.substepStatus = SUBSTEP_STATUS_INJECTION + 2;
 		break;
 
 	case SUBSTEP_STATUS_INJECTION + 2:
-		if (storage.experimentStatus.isWaiting) break;
 		controls.valveControls.ValveClose(ID_VALVE_2, true);
 		WaitSeconds(storage.machineSettings.TimeWaitValvesShort);
 		storage.experimentStatus.substepStatus = SUBSTEP_STATUS_INJECTION + 3;
 		break;
 
 	case SUBSTEP_STATUS_INJECTION + 3:
-		if (storage.experimentStatus.isWaiting) break;
 		controls.valveControls.ValveOpen(ID_VALVE_3, true);
 		WaitSeconds(storage.machineSettings.TimeWaitValvesShort);
 		storage.experimentStatus.substepStatus = SUBSTEP_STATUS_INJECTION + 4;
 		break;
 
 	case SUBSTEP_STATUS_INJECTION + 4:
-		if (storage.experimentStatus.isWaiting) break;
 		controls.valveControls.ValveClose(ID_VALVE_3, true);
 		WaitSeconds(storage.machineSettings.TimeWaitValvesShort);
 		storage.experimentStatus.substepStatus = SUBSTEP_STATUS_CHECK;								// Move to injection check
@@ -142,7 +147,6 @@ void Automation::SubstepsAdsorption()
 	Check
 	****************/
 	case SUBSTEP_STATUS_CHECK:
-		if (storage.experimentStatus.isWaiting) break;
 
 		// Display
 		LOG(logINFO) << stringh::string_format(MESSAGE_PRESSURE_D_PI, storage.experimentStatus.pressureInitial.load());
@@ -152,7 +156,7 @@ void Automation::SubstepsAdsorption()
 		LOG(logINFO) << stringh::string_format(MESSAGE_INJECTION_END, storage.experimentStatus.injectionAttemptCounter.load());
 
 		// Checks for injection succeess, else increment the injection counter and try again
-		if (storage.experimentStatus.pressureHighOld + storage.machineSettings.InjectionMargin < storage.currentData.pressureHigh)
+		if (storage.experimentStatus.pressureHighOld + storage.machineSettings.InjectionMargin > storage.currentData.pressureHigh)
 		{
 			// If too many injections have been tried and failed
 			if (storage.experimentStatus.injectionAttemptCounter >= storage.machineSettings.attemptNumber)
@@ -193,11 +197,14 @@ void Automation::SubstepsAdsorption()
 			else if (storage.currentData.pressureHigh - storage.experimentStatus.pressureInitial >
 				storage.machineSettings.InjectionMultiplier * (storage.experimentSettings.dataAdsorption[storage.experimentStatus.adsorptionCounter].delta_pression))
 			{
+				// Reset counter
+				storage.experimentStatus.injectionAttemptCounter = 0;
 				storage.experimentStatus.substepStatus = SUBSTEP_STATUS_REMOVAL;																	// Remove gas
 			}
 			// If completeted successfully go to equilibration
 			else
 			{
+				LOG(logINFO) << MESSAGE_EQUILIBRATION_REFVOL;
 				controls.valveControls.ValveClose(ID_VALVE_4, true);																			// Close valve 4
 				WaitMinutes(storage.experimentSettings.dataAdsorption[storage.experimentStatus.adsorptionCounter].temps_volume);				// Set the time to wait for equilibration in the reference volume
 				storage.experimentStatus.isRecording = true;
@@ -210,7 +217,6 @@ void Automation::SubstepsAdsorption()
 	Remove gas
 	****************/
 	case SUBSTEP_STATUS_REMOVAL:
-		if (storage.experimentStatus.isWaiting) break;
 		LOG(logINFO) << stringh::string_format(MESSAGE_OUTGAS_ATTEMPT, storage.experimentStatus.injectionAttemptCounter.load());						// Log injection
 		// Turn on pump
 		if (!controls.valveControls.PumpIsActive()) {
@@ -225,29 +231,25 @@ void Automation::SubstepsAdsorption()
 		break;
 
 	case SUBSTEP_STATUS_REMOVAL + 1:
-		if (storage.experimentStatus.isWaiting) break;
-		controls.valveControls.ValveOpen(ID_VALVE_8, true);
+		controls.valveControls.ValveOpen(ID_VALVE_7, true);
 		WaitSeconds(storage.machineSettings.TimeWaitValvesShort);
 		storage.experimentStatus.substepStatus = SUBSTEP_STATUS_REMOVAL + 2;
 		break;
 
 	case SUBSTEP_STATUS_REMOVAL + 2:
-		if (storage.experimentStatus.isWaiting) break;
-		controls.valveControls.ValveClose(ID_VALVE_8, true);
+		controls.valveControls.ValveClose(ID_VALVE_7, true);
 		WaitSeconds(storage.machineSettings.TimeWaitValvesShort);
 		storage.experimentStatus.substepStatus = SUBSTEP_STATUS_REMOVAL + 3;
 		break;
 
 	case SUBSTEP_STATUS_REMOVAL + 3:
-		if (storage.experimentStatus.isWaiting) break;
-		controls.valveControls.ValveOpen(ID_VALVE_7, true);
+		controls.valveControls.ValveOpen(ID_VALVE_8, true);
 		WaitSeconds(storage.machineSettings.TimeWaitValvesShort);
 		storage.experimentStatus.substepStatus = SUBSTEP_STATUS_REMOVAL + 4;
 		break;
 
 	case SUBSTEP_STATUS_REMOVAL + 4:
-		if (storage.experimentStatus.isWaiting) break;
-		controls.valveControls.ValveClose(ID_VALVE_7, true);
+		controls.valveControls.ValveClose(ID_VALVE_8, true);
 		WaitSeconds(storage.machineSettings.TimeWaitValvesShort);
 		storage.experimentStatus.substepStatus = SUBSTEP_STATUS_CHECK;							// Go back to the start
 		break;
@@ -257,7 +259,6 @@ void Automation::SubstepsAdsorption()
 	Adsorption step
 	****************/
 	case SUBSTEP_STATUS_ADSORPTION:
-		if (storage.experimentStatus.isWaiting) break;
 		LOG(logINFO) << MESSAGE_ADSORPTION_OPENV;
 
 		// Open valve
@@ -272,7 +273,6 @@ void Automation::SubstepsAdsorption()
 	Final
 	****************/
 	case SUBSTEP_STATUS_END:
-		if (storage.experimentStatus.isWaiting) break;
 		// Display sample isolation message
 		LOG(logINFO) << MESSAGE_ADSORPTION_CLOSEV;
 
@@ -295,11 +295,13 @@ void Automation::SubstepsAdsorption()
 
 		// Reset things
 		storage.experimentStatus.substepStatus = SUBSTEP_STATUS_START;
+		return true;
 		break;
 
 	default:
 		break;
 	}
+	return false;
 }
 
 

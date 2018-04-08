@@ -18,8 +18,8 @@ void Automation::WaitSeconds(int seconds, bool verbose /*=false*/)
 		LOG(logINFO) << stringh::string_format(MESSAGE_WAIT_TIME, seconds);
 	}
 	// Record times
-	storage.experimentStatus.timeEquilibrationStart = timeh::TimePointToMs(timeh::NowTime());		// Save the waiting start time
-	storage.experimentStatus.timeToEquilibrate = seconds;
+	storage.experimentStatus.timeWaitStart = timeh::TimePointToMs(timeh::NowTime());		// Save the waiting start time
+	storage.experimentStatus.timeToWait = seconds;
 	storage.experimentStatus.isWaiting = true;
 	storage.timerWaiting.Start();
 }

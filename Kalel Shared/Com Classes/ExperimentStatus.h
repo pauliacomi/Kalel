@@ -44,8 +44,8 @@ public:
 
 	// Time
 	atomic_ts<unsigned long long> timeStart{ tp };						// When the experiment started
-	atomic_ts<unsigned long long> timeEquilibrationStart{ tp };			// Time equilibration started
-	atomic_ts<double> timeToEquilibrate{ tp };							// The amount of time that the waiting + recording functionality will run before returning to an active state
+	atomic_ts<unsigned long long> timeWaitStart{ tp };			// Time equilibration started
+	atomic_ts<double> timeToWait{ tp };							// The amount of time that the waiting + recording functionality will run before returning to an active state
 	
 	// Counters
 	atomic_ts<int> injectionAttemptCounter{ tp };						// Counter for the injections
