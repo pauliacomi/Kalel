@@ -59,7 +59,7 @@ void Security::SecurityHighPressureManual(const Storage & storage)
 			if (valveController.ValveIsOpen(ID_VALVE_6))
 			{
 				// Set the flag
-				security_PressureHigh_flag = true;
+				security_PressureLow_flag = true;
 
 				LOG(logINFO) << stringh::string_format(MESSAGE_WARNING_PHIGH_V6, storage.currentData.pressureLow.load(), maxPlow);
 				valveController.ValveClose(ID_VALVE_6, true);
@@ -70,14 +70,14 @@ void Security::SecurityHighPressureManual(const Storage & storage)
 		}
 		else
 		{
-			if (security_PressureHigh_flag)
+			if (security_PressureLow_flag)
 			{
 				if (!valveController.ValveIsOpen(ID_VALVE_6))
 				{
 					valveController.ValveOpen(ID_VALVE_6, true);
 					LOG(logINFO) << MESSAGE_WARNING_PHNORMAL_V6;
 					soundh::beep::allgood();
-					security_PressureHigh_flag = false;
+					security_PressureLow_flag = false;
 				}
 			}
 		}
@@ -131,7 +131,7 @@ void Security::SecurityHighPressureAuto(const Storage & storage)
 				if (valveController.ValveIsOpen(ID_VALVE_6))
 				{
 					// Set the flag
-					security_PressureHigh_flag = true;
+					security_PressureLow_flag = true;
 
 					LOG(logINFO) << stringh::string_format(MESSAGE_WARNING_PHIGH_V6, storage.currentData.pressureLow.load(), maxPlow);
 					valveController.ValveClose(ID_VALVE_6, true);
@@ -139,13 +139,13 @@ void Security::SecurityHighPressureAuto(const Storage & storage)
 			}
 			else
 			{
-				if (security_PressureHigh_flag)
+				if (security_PressureLow_flag)
 				{
 					if (!valveController.ValveIsOpen(ID_VALVE_6))
 					{
 						LOG(logINFO) << MESSAGE_WARNING_PHNORMAL_V6;
 						valveController.ValveOpen(ID_VALVE_6, true);
-						security_PressureHigh_flag = false;
+						security_PressureLow_flag = false;
 					}
 				}
 			}

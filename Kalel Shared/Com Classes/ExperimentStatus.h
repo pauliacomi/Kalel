@@ -49,8 +49,7 @@ public:
 	
 	// Counters
 	atomic_ts<int> injectionAttemptCounter{ tp };						// Counter for the injections
-	atomic_ts<int> adsorptionCounter{ tp };								// Counter for the number of adsorption settings (small, medium, large etc) inputted by the user, starts at 0
-	atomic_ts<int> desorptionCounter{ tp };								// Counter for the number of desorption settings (small, medium, large etc) inputted by the user, starts at 0
+	atomic_ts<int> stepCounter{ tp };									// Counter for the number of steps inputted by the user, starts at 0
 	
 	// Pressures used as benchmarks
 	atomic_ts<double> pressureInitial{ tp };							// Pressure set as an initial pressure in injections

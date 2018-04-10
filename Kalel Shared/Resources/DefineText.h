@@ -140,6 +140,10 @@
 #define MESSAGE_VACUUM_FINALOUTGAS_END		"Completed outgassing vacuum"
 #define MESSAGE_VACUUM_USER_CHOICE			"Finished vacuum up to sample cell. Press OK to turn off valves and pump"
 
-#define MESSAGE_VACUUM_BOTTLE_CLOSE			"Fermer la bouteille !\tPuis appuyer sur OK\n"
-#define MESSAGE_VACUUM_BOTTLE_START			"Mise sous vide jusqu'à la bouteille"
-#define MESSAGE_VACUUM_BOTTLE_END			"Mise sous vide jusqu'à la bouteille terminée\t\n"
+#define MESSAGE_VACUUM_CELL_CLOSE			"Open the cell, then press OK"
+#define MESSAGE_VACUUM_CELL_START			"Vacuuming up to cell"
+#define MESSAGE_VACUUM_CELL_END				"Vacuuming up to cell finished"
+
+#define MESSAGE_VACUUM_BOTTLE_CLOSE			"Close the bottle, then press OK"
+#define MESSAGE_VACUUM_BOTTLE_START			"Vacuuming up to bottle"
+#define MESSAGE_VACUUM_BOTTLE_END			"Vacuuming up to bottle finished"

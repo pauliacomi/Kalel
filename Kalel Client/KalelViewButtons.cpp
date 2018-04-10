@@ -97,17 +97,7 @@ void CKalelView::OnBnClickedButtonParametresExperience()
 			dialogExperimentProperties.Initiate(*tempExpSettings);
 
 			// Set the dialog to only display the ongoing stages
-			int counter = 0;
-			if (experimentStatus->mainStage == STAGE_AUTO_ADSORPTION)
-			{
-				counter = experimentStatus->adsorptionCounter;
-			}
-			if (experimentStatus->mainStage == STAGE_AUTO_DESORPTION)
-			{
-				counter = experimentStatus->desorptionCounter;
-			}
-
-			dialogExperimentProperties.SetProprietiesModif(experimentStatus->mainStage, counter);
+			dialogExperimentProperties.SetProprietiesModif(experimentStatus->mainStage, experimentStatus->stepCounter);
 
 			// If ok has been clicked
 			if (dialogExperimentProperties.DoModal() == IDOK)

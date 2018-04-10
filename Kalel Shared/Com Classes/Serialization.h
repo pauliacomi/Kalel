@@ -246,11 +246,10 @@ inline void to_json(nlohmann::json &j, const ExperimentStatus &e) {
 	j[	"SSg"	]	= e.substepStatus				.load();
 	j[	"ED"	]	= e.injectionDose				.load();
 	j[	"tS"	]	= e.timeStart					.load();
-	j[	"tEq"	]	= e.timeToWait			.load();
-	j[	"tEqS"	]	= e.timeWaitStart		.load();
+	j[	"tEq"	]	= e.timeToWait					.load();
+	j[	"tEqS"	]	= e.timeWaitStart				.load();
 	j[	"CIa"	]	= e.injectionAttemptCounter		.load();
-	j[	"CA"	]	= e.adsorptionCounter			.load();
-	j[	"CD"	]	= e.desorptionCounter			.load();
+	j[	"CA"	]	= e.stepCounter					.load();
 	j[	"PI"	]	= e.pressureInitial				.load();
 	j[	"PF"	]	= e.pressureFinal				.load();
 	j[	"PHo"	]	= e.pressureHighOld				.load();
@@ -272,12 +271,11 @@ inline void from_json(const nlohmann::json &j, ExperimentStatus &e) {
 	
 	e.injectionDose								.store_nostamp(j[	"ED"	]);
 	e.injectionAttemptCounter					.store_nostamp(j[	"CIa"	]);
-	e.adsorptionCounter							.store_nostamp(j[	"CA"	]);
-	e.desorptionCounter							.store_nostamp(j[	"CD"	]);
+	e.stepCounter								.store_nostamp(j[	"CA"	]);
 
 	e.timeStart									.store_nostamp(j[	"tS"	]);
-	e.timeToWait							.store_nostamp(j[	"tEq"	]);
-	e.timeWaitStart					.store_nostamp(j[	"tEqS"	]);
+	e.timeToWait								.store_nostamp(j[	"tEq"	]);
+	e.timeWaitStart								.store_nostamp(j[	"tEqS"	]);
 
 	e.pressureInitial							.store_nostamp(j[	"PI"	]);
 	e.pressureFinal								.store_nostamp(j[	"PF"	]);

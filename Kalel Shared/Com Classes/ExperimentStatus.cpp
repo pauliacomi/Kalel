@@ -46,12 +46,11 @@ void ExperimentStatus::ResetData()
 	injectionDose					.store_nostamp( 0 );
 
 	timeStart						.store_nostamp( 0 );
-	timeWaitStart			.store_nostamp( 0 );
-	timeToWait				.store_nostamp( 0.f );
+	timeWaitStart					.store_nostamp( 0 );
+	timeToWait						.store_nostamp( 0.f );
 
 	injectionAttemptCounter			.store_nostamp( 0 );
-	adsorptionCounter				.store_nostamp( 0 );
-	desorptionCounter				.store_nostamp( 0 );
+	stepCounter						.store_nostamp( 0 );
 
 	pressureInitial					.store_nostamp( 0.f );
 	pressureFinal					.store_nostamp( 0.f );
@@ -85,12 +84,11 @@ void ExperimentStatus::Replace(const ExperimentStatus & rhs)
 	substepStatus						.store_nostamp(rhs.substepStatus.load());
 
 	timeStart							.store_nostamp(rhs.timeStart.load());
-	timeWaitStart				.store_nostamp(rhs.timeWaitStart.load());
-	timeToWait					.store_nostamp(rhs.timeToWait.load());
+	timeWaitStart						.store_nostamp(rhs.timeWaitStart.load());
+	timeToWait							.store_nostamp(rhs.timeToWait.load());
 
 	injectionAttemptCounter				.store_nostamp(rhs.injectionAttemptCounter.load());
-	adsorptionCounter					.store_nostamp(rhs.adsorptionCounter.load());
-	desorptionCounter					.store_nostamp(rhs.desorptionCounter.load());
+	stepCounter							.store_nostamp(rhs.stepCounter.load());
 
 	pressureInitial						.store_nostamp(rhs.pressureInitial.load());
 	pressureFinal						.store_nostamp(rhs.pressureFinal.load());

@@ -96,7 +96,6 @@ protected:
 	bool VerificationValves();
 	bool VerificationResidualPressure();
 	bool VerificationTemperature();
-	bool VerificationComplete();
 
 	/**********************************************************************************************************************************
 	// Functions for shutdown checks
@@ -119,7 +118,7 @@ protected:
 	void StageDesorption();
 	bool SubstepsDesorption();
 	void StageContinuous();
-	void StageVacuum(bool separateFunctionality = false);
+	void StageVacuum();
 
 
 	/**********************************************************************************************************************************
@@ -128,5 +127,8 @@ protected:
 
 	void SampleVacuum();
 	void BottleVacuum();
+	bool SubstepsVacuumRef();
+	bool SubstepsVacuumLPvol();
+	bool SubstepsVacuumBottle();
 };
 

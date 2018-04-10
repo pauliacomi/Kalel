@@ -39,6 +39,7 @@ STAGES
 #define STAGE_VACUUM_SAMPLE				1
 
 #define STAGE_VACUUM_BOTTLE				1
+#define STAGE_VACUUM_END				2
 
 /****************
 STEP STATUS

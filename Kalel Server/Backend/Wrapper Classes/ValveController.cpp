@@ -129,9 +129,11 @@ bool ValveController::CloseAllValves(bool verbose)
 
 bool ValveController::OpenEVsAndPump(bool verbose)
 {
-	instruments.ActuateController(ID_EV_1, true);
-	instruments.ActuateController(ID_EV_2, true);
-	instruments.ActuateController(ID_PUMP, true);
+	if (!PumpIsActive()) {
+		instruments.ActuateController(ID_EV_1, true);
+		instruments.ActuateController(ID_EV_2, true);
+		instruments.ActuateController(ID_PUMP, true);
+	}
 
 	// Log message
 	if (verbose) {
@@ -144,9 +146,11 @@ bool ValveController::OpenEVsAndPump(bool verbose)
 
 bool ValveController::CloseEVsAndPump(bool verbose)
 {
-	instruments.ActuateController(ID_EV_1, false);
-	instruments.ActuateController(ID_EV_2, false);
-	instruments.ActuateController(ID_PUMP, false);
+	if (PumpIsActive()) {
+		instruments.ActuateController(ID_PUMP, false);
+		instruments.ActuateController(ID_EV_1, false);
+		instruments.ActuateController(ID_EV_2, false);
+	}
 
 	// Log message
 	if (verbose) {

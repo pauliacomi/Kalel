@@ -51,10 +51,9 @@ void Automation::Verifications()
 		break;
 
 	case STEP_VERIFICATIONS_COMPLETE:
-		if (VerificationComplete()) {
-			storage.experimentStatus.stepStatus = STEP_STATUS_UNDEF;
-			++storage.experimentStatus.mainStage;
-		}
+		LOG(logINFO) << MESSAGE_VERIFICATIONS_COMPLETE;
+		storage.experimentStatus.stepStatus = STEP_STATUS_UNDEF;
+		++storage.experimentStatus.mainStage;
 		break;
 	}
 }
@@ -347,12 +346,4 @@ bool Automation::VerificationTemperature()
 	}
 
 	return false;
-}
-
-bool Automation::VerificationComplete()
-{
-	// Log complete
-	LOG(logINFO) << MESSAGE_VERIFICATIONS_COMPLETE;
-
-	return true;
 }

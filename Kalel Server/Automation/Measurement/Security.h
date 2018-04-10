@@ -24,6 +24,7 @@ protected:
 
 	// Bool flags to keep track of security
 	bool security_PressureHigh_flag = false;
+	bool security_PressureLow_flag = false;
 	bool security_TemperatureHigh_flag = false;
 	bool security_TemperatureLow_flag = false;
 
