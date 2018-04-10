@@ -23,7 +23,6 @@ void Automation::StageVacuum()
 		break;
 
 	case STEP_STATUS_START:
-		LOG(logINFO) << MESSAGE_VACUUM_HIGHPRESSURE_START;
 		controls.valveControls.OpenEVsAndPump(true);											// Activate the pump
 		WaitSeconds(storage.machineSettings.TimeWaitPump, true);
 		storage.experimentStatus.stepStatus = STEP_STATUS_INPROGRESS;						// Set next step
@@ -37,7 +36,7 @@ void Automation::StageVacuum()
 		}
 		break;
 
-	case STEP_STATUS_INPROGRESS + 2:
+	case STEP_STATUS_INPROGRESS + 1:
 		if (SubstepsVacuumLPvol())
 		{
 			storage.experimentStatus.substepStatus = SUBSTEP_STATUS_START;
@@ -45,7 +44,7 @@ void Automation::StageVacuum()
 		}
 		break;
 
-	case STEP_STATUS_INPROGRESS + 3:
+	case STEP_STATUS_INPROGRESS + 2:
 
 		LOG(logINFO) << MESSAGE_VACUUM_FINALOUTGAS_START;
 

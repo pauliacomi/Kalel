@@ -546,12 +546,12 @@ void Kalel::AutomationControl(http_request* req, http_response* resp)
 				threadManager.StopExperiment();
 			}
 			else if (req->params.at("action") == "nextstage") {
-				if(threadManager.NextStageAutomation()) {
+				if(!threadManager.NextStageAutomation()) {
 					LOG(logINFO) << "Could not set next stage";
 				}
 			}
 			else if (req->params.at("action") == "nextstep") {
-				if(threadManager.NextStepAutomation()) {
+				if(!threadManager.NextStepAutomation()) {
 					LOG(logINFO) << "Could not set next step";
 				}
 			}
