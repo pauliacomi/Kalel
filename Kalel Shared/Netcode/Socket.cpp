@@ -283,8 +283,7 @@ std::string Socket::Receive()
 			}
 			break;
 		default:
-			buf[received] = { 0 };
-			ret << buf;
+			ret.write(buf, received);
 			break;
 		}
 	}
@@ -358,8 +357,7 @@ std::string Socket::ReceiveBytes(u_long bytes)
 			break;
 		default:
 			total += received;
-			buf[received] = { 0 };
-			ret << buf;
+			ret.write(buf, received);
 			break;
 		}
 	}
