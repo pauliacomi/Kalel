@@ -154,8 +154,8 @@ bool Automation::SubstepsDesorption()
 
 		// Display
 		LOG(logINFO) << stringh::string_format(MESSAGE_PRESSURE_D_PI, storage.experimentStatus.pressureInitial.load());
-		LOG(logINFO) << stringh::string_format(MESSAGE_PRESSURE_D_PF, storage.experimentStatus.pressureHigh.load());
-		LOG(logINFO) << stringh::string_format(MESSAGE_PRESSURE_D_DP, storage.experimentStatus.pressureHigh - storage.experimentStatus.pressureInitial);
+		LOG(logINFO) << stringh::string_format(MESSAGE_PRESSURE_D_PF, storage.currentData.pressureHigh.load());
+		LOG(logINFO) << stringh::string_format(MESSAGE_PRESSURE_D_DP, storage.currentData.pressureHigh - storage.experimentStatus.pressureInitial);
 		LOG(logINFO) << stringh::string_format(MESSAGE_PRESSURE_D_DPREQ, storage.experimentSettings.dataDesorption[storage.experimentStatus.stepCounter].delta_pression);
 		LOG(logINFO) << stringh::string_format(MESSAGE_OUTGAS_END, storage.experimentStatus.injectionAttemptCounter.load());
 
@@ -186,7 +186,7 @@ bool Automation::SubstepsDesorption()
 		// If the removal succeeded
 		else
 		{	// Check if removal has overshot
-			if (storage.experimentStatus.pressureInitial - storage.experimentStatus.pressureHigh >
+			if (storage.experimentStatus.pressureInitial - storage.currentData.pressureHigh >
 				storage.machineSettings.InjectionMultiplier * (storage.experimentSettings.dataDesorption[storage.experimentStatus.stepCounter].delta_pression))
 			{
 				// Reset counter
@@ -194,7 +194,7 @@ bool Automation::SubstepsDesorption()
 				storage.experimentStatus.substepStatus = SUBSTEP_STATUS_INJECTION;	
 			}
 			// Check if removal has undershot
-			else if (storage.experimentStatus.pressureInitial - storage.experimentStatus.pressureHigh >
+			else if (storage.experimentStatus.pressureInitial - storage.currentData.pressureHigh >
 				storage.machineSettings.InjectionMultiplier * (storage.experimentSettings.dataDesorption[storage.experimentStatus.stepCounter].delta_pression))
 			{
 				// Reset counter
