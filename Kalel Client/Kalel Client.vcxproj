@@ -424,7 +424,6 @@
     <ClCompile Include="XSBrowseFolder.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="..\Kalel Shared\Resources\Steps.rc" />
     <ResourceCompile Include="DialogCell.rc" />
     <ResourceCompile Include="ConnectionPort.rc" />
     <ResourceCompile Include="DialogUser.rc" />

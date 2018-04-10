@@ -96,7 +96,6 @@
 #define ID_MSV                          1156
 #define ID_MSV_BOUTEILLE                1157
 #define ID_CHANGEMENT_BOUTEILLE         1158
-#define ID_FONCTIONNALIT32788           32788
 #define ID_BACKGROUNDTHREAD_START       32789
 #define ID_BACKGROUNDTHREAD_STOP        32790
 #define ID_BACKGROUNDTHREAD_RESTART     32791

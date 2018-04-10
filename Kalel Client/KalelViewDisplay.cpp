@@ -66,31 +66,108 @@ LRESULT CKalelView::DisplayTextboxValues(const ExperimentData &data, const Exper
 // Display the step
 LRESULT CKalelView::DisplayStepProgress(const ExperimentStatus &status)
 {
+	CString substep;
 
-	CString temp;
+	switch (experimentSettings->experimentType)
+	{
+	case EXPERIMENT_TYPE_MANUAL:
+		m_StrEtape.Format(STR_STAGE_MANUAL);
+		break;
 
-	temp.Format(status.mainStage);
+	case EXPERIMENT_TYPE_AUTO:
+		m_StrEtape.Format(STR_STAGE_AUTO);
+		switch (status.mainStage)
+		{
+		case STAGE_UNDEF:
+			substep.Format(STR_STAGE_UNDEF);
+			break;
+		case STAGE_AUTO_VERIFICATIONS:
+			substep.Format(STR_STAGE_AUTO_VERIFICATIONS);
+			break;
+		case STAGE_AUTO_EQUILIBRATION:
+			substep.Format(STR_STAGE_AUTO_EQUILIBRATION);
+			break;
+		case STAGE_AUTO_ADSORPTION:
+			substep.Format(STR_STAGE_AUTO_ADSORPTION);
+			break;
+		case STAGE_AUTO_DESORPTION:
+			substep.Format(STR_STAGE_AUTO_DESORPTION);
+			break;
+		case STAGE_AUTO_VACUUM_SAMPLE:
+			substep.Format(STR_STAGE_VACUUM_SAMPLE);
+			break;
+		case STAGE_AUTO_END:
+			substep.Format(STR_STAGE_AUTO_END);
+			break;
+		default:
+			break;
+		}
+		break;
 
-	m_StrEtape = temp;
-	temp.Format(status.substepStatus);
+	case EXPERIMENT_TYPE_CONTINUOUS:
+		m_StrEtape.Format(STR_STAGE_CONT);
+		switch (status.mainStage)
+		{
+		case STAGE_UNDEF:
+			substep.Format(STR_STAGE_UNDEF);
+			break;
+		case STAGE_AUTO_VERIFICATIONS:
+			substep.Format(STR_STAGE_AUTO_VERIFICATIONS);
+			break;
+		case STAGE_CONT_FLOWRATE:
+			break;
+		case STAGE_CONT_REFVOL:
+			break;
+		case STAGE_CONT_EQUILIBRATION:
+			break;
+		case STAGE_CONT_ADSORPTION:
+			substep.Format(STR_STAGE_CONT_ADSORPTION);
+			break;
+		case STAGE_CONT_VACUUM_SAMPLE:
+			substep.Format(STR_STAGE_VACUUM_SAMPLE);
+			break;
+		case STAGE_CONT_END:
+			break;
 
-	m_StrEtape += _T(",   Substage: ") + temp;
+		default:
+			break;
+		}
+		break;
+	case EXPERIMENT_TYPE_BOTTLE_CHANGE:
+		m_StrEtape.Format(STR_STAGE_CHANGE_BOTTLE);
+		break;
+	case EXPERIMENT_TYPE_BOTTLE_VACUUM:
+		m_StrEtape.Format(STR_STAGE_VACUUM_BOTTLE);
+		break;
+	case EXPERIMENT_TYPE_SAMPLE_VACUUM:
+		m_StrEtape.Format(STR_STAGE_VACUUM_SAMPLE);
+		break;
+
+	default:
+		break;
+	}
+
+	if (substep != "")
+	{
+		m_StrEtape += _T(",   Substage: ") + substep;
+	}
+
 	
-	if (status.isWaiting == true)
+	if (status.isWaiting)
 	{
 		auto timeToEquilibrateCurrent = std::chrono::duration_cast<std::chrono::seconds>(timeh::NowTime() - timeh::MsToTimePoint(status.timeWaitStart.load())).count();
 
 		if (status.timeToWait / 60 > 1)
 		{
-			temp.Format(_T(" *** Waiting: %.0f min %.0f s /  %.0f min %.0f s"), 
+			substep.Format(_T("\n\tWaiting: %.0f min %.0f s /  %.0f min %.0f s"), 
 				floorf(timeToEquilibrateCurrent / 60.0f), fmodf(timeToEquilibrateCurrent, 60.0f), 
 				floorf(status.timeToWait.load() / 60.0f), fmodf(status.timeToWait.load(), 60.0f));
 		}
 		else
 		{
-			temp.Format(_T(" *** Waiting: %.0f s /  %.0f s"), fmodf(timeToEquilibrateCurrent, 60.0f), status.timeToWait.load());
+			substep.Format(_T("\n\tWaiting: %.0f s /  %.0f s"), fmodf(timeToEquilibrateCurrent, 60.0f), status.timeToWait.load());
 		}
-		m_StrEtape += temp;
+		m_StrEtape += substep;
 	}
 
 	SetDlgItemText(IDC_EDIT_ETAPE, m_StrEtape);

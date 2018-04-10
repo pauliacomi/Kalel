@@ -91,12 +91,6 @@
     <Filter Include="Source Files\Commmon\Com Classes">
       <UniqueIdentifier>{214ea547-88ef-4d88-9625-b115d845bda8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files\Common">
-      <UniqueIdentifier>{de8d4a27-4200-4436-bcfa-3f1f99185b8c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resource Files\Common\Strings">
-      <UniqueIdentifier>{a8ea875c-77f0-4b5b-b25f-67dbeb5ad1f1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Parameters File">
       <UniqueIdentifier>{ba35b971-af41-4399-bb4f-1cb6c646db06}</UniqueIdentifier>
     </Filter>
@@ -306,11 +300,11 @@
     <ClInclude Include="..\Kalel Shared\Netcode\http_client.h">
       <Filter>Header Files\Commmon\Netcode</Filter>
     </ClInclude>
-    <ClInclude Include="StringTable.h">
-      <Filter>Header Files\Commmon\Resources</Filter>
-    </ClInclude>
     <ClInclude Include="..\Kalel Shared\dispatchQueue.h">
       <Filter>Header Files\Commmon</Filter>
+    </ClInclude>
+    <ClInclude Include="StringTable.h">
+      <Filter>Header Files\Resources</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -475,11 +469,8 @@
     <ResourceCompile Include="DialogExperimentSettings.rc">
       <Filter>Resource Files\DialogBoxes</Filter>
     </ResourceCompile>
-    <ResourceCompile Include="..\Kalel Shared\Resources\Steps.rc">
-      <Filter>Resource Files\Common\Strings</Filter>
-    </ResourceCompile>
     <ResourceCompile Include="StringTable.rc">
-      <Filter>Resource Files\Common\Strings</Filter>
+      <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
