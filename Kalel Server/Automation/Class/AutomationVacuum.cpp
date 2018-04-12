@@ -29,6 +29,7 @@ void Automation::SampleVacuum()
 	case STAGE_VACUUM_SAMPLE:
 		switch (storage.experimentStatus.stepStatus)
 		{
+		case STEP_STATUS_UNDEF:
 			LOG_EVENT(qOK) << MESSAGE_VACUUM_CELL_CLOSE;
 			storage.experimentStatus.isWaitingUser = true;
 			eventUserInput = true;
@@ -61,6 +62,10 @@ void Automation::SampleVacuum()
 		case STEP_STATUS_INPROGRESS + 2:
 
 			LOG(logINFO) << MESSAGE_VACUUM_FINALOUTGAS_START;
+
+			controls.valveControls.OpenEVsAndPump(true);
+			controls.valveControls.ValveOpen(ID_VALVE_7, true);
+			controls.valveControls.ValveOpen(ID_VALVE_8, true);
 			WaitMinutes(storage.machineSettings.TimeVacuumBottle);
 			storage.experimentStatus.stepStatus = STEP_STATUS_END;
 			break;
@@ -145,6 +150,10 @@ void Automation::BottleVacuum()
 		case STEP_STATUS_INPROGRESS + 3:
 
 			LOG(logINFO) << MESSAGE_VACUUM_FINALOUTGAS_START;
+
+			controls.valveControls.OpenEVsAndPump(true);
+			controls.valveControls.ValveOpen(ID_VALVE_7, true);
+			controls.valveControls.ValveOpen(ID_VALVE_8, true);
 			WaitMinutes(storage.machineSettings.TimeVacuumBottle);
 			storage.experimentStatus.stepStatus = STEP_STATUS_END;
 			break;

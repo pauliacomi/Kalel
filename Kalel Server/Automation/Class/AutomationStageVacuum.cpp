@@ -48,6 +48,10 @@ void Automation::StageVacuum()
 
 		LOG(logINFO) << MESSAGE_VACUUM_FINALOUTGAS_START;
 
+		controls.valveControls.OpenEVsAndPump(true);
+		controls.valveControls.ValveOpen(ID_VALVE_7, true);
+		controls.valveControls.ValveOpen(ID_VALVE_8, true);
+
 		if (storage.experimentSettings.dataDivers.mise_sous_vide_fin_experience)
 			WaitMinutes(storage.experimentSettings.dataDivers.temps_vide);
 		else

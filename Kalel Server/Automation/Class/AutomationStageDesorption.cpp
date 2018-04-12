@@ -76,6 +76,7 @@ void Automation::StageDesorption()
 		controls.valveControls.ValveClose(ID_VALVE_8, false);
 		controls.valveControls.CloseEVsAndPump(false);
 
+
 		if (storage.experimentStatus.stepCounter < storage.experimentSettings.dataDesorption.size())
 		{
 			storage.experimentStatus.stepStatus = STEP_STATUS_START;																	// Reset substep
@@ -85,6 +86,7 @@ void Automation::StageDesorption()
 			LOG(logINFO) << MESSAGE_DESORPTION_END;																						// Log the step change
 			++storage.experimentStatus.mainStage;
 			storage.experimentStatus.stepStatus = STEP_STATUS_UNDEF;																	// Reset substep
+			storage.experimentStatus.substepStatus = SUBSTEP_STATUS_START;
 			storage.experimentStatus.stepCounter = 0; // Reset counter
 		}
 		break;

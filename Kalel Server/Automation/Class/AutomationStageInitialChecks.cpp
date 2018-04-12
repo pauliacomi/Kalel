@@ -45,12 +45,12 @@ void Automation::Verifications()
 
 	case STEP_VERIFICATIONS_TEMPERATURE:
 		if (VerificationTemperature()) {
-			storage.experimentStatus.stepStatus = STEP_VERIFICATIONS_COMPLETE;
+			storage.experimentStatus.stepStatus = STEP_STATUS_END;
 			storage.experimentStatus.substepStatus = SUBSTEP_STATUS_START;
 		}
 		break;
 
-	case STEP_VERIFICATIONS_COMPLETE:
+	case STEP_STATUS_END:
 		LOG(logINFO) << MESSAGE_VERIFICATIONS_COMPLETE;
 		storage.experimentStatus.stepStatus = STEP_STATUS_UNDEF;
 		++storage.experimentStatus.mainStage;

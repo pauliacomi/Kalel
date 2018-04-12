@@ -1,17 +1,13 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <experience>
     <experimentateurs>
-        <experimentateur>
-            <nom>Paul</nom>
-            <surnom>Iacomi</surnom>
-        </experimentateur>
         <user>
             <nom>asd</nom>
             <surnom>asd</surnom>
         </user>
     </experimentateurs>
     <gazs>
-        <gaz>
+        <gas>
             <nom>Azote</nom>
             <symbole>N2</symbole>
             <masse_moleculaire>28.0134</masse_moleculaire>
@@ -19,8 +15,8 @@
             <pression_critique>33.999</pression_critique>
             <temperature_ebullition>77.35</temperature_ebullition>
             <omega>0.612916</omega>
-        </gaz>
-        <gaz>
+        </gas>
+        <gas>
             <nom>Helium</nom>
             <symbole>He</symbole>
             <masse_moleculaire>4.0026</masse_moleculaire>
@@ -28,8 +24,8 @@
             <pression_critique>2.275</pression_critique>
             <temperature_ebullition>4.22</temperature_ebullition>
             <omega>0.811538</omega>
-        </gaz>
-        <gaz>
+        </gas>
+        <gas>
             <nom>Dioxyde de carbone</nom>
             <symbole>CO2</symbole>
             <masse_moleculaire>44.0099</masse_moleculaire>
@@ -37,8 +33,8 @@
             <pression_critique>73.825</pression_critique>
             <temperature_ebullition>194.5</temperature_ebullition>
             <omega>0.639803</omega>
-        </gaz>
-        <gaz>
+        </gas>
+        <gas>
             <nom>Méthane</nom>
             <symbole>CH4</symbole>
             <masse_moleculaire>16.043</masse_moleculaire>
@@ -46,8 +42,8 @@
             <pression_critique>45.96</pression_critique>
             <temperature_ebullition>111.4</temperature_ebullition>
             <omega>0.585391</omega>
-        </gaz>
-        <gaz>
+        </gas>
+        <gas>
             <nom>Monoxyde de carbone</nom>
             <symbole>CO</symbole>
             <masse_moleculaire>28.01</masse_moleculaire>
@@ -55,8 +51,8 @@
             <pression_critique>34.987</pression_critique>
             <temperature_ebullition>81.62</temperature_ebullition>
             <omega>0.6141</omega>
-        </gaz>
-        <gaz>
+        </gas>
+        <gas>
             <nom>Oxygène</nom>
             <symbole>O2</symbole>
             <masse_moleculaire>31.99</masse_moleculaire>
@@ -64,8 +60,8 @@
             <pression_critique>50.43</pression_critique>
             <temperature_ebullition>90.18</temperature_ebullition>
             <omega>0.583387</omega>
-        </gaz>
-        <gaz>
+        </gas>
+        <gas>
             <nom>Propyne</nom>
             <symbole>C3H4</symbole>
             <masse_moleculaire>40.065</masse_moleculaire>
@@ -73,8 +69,8 @@
             <pression_critique>56.28</pression_critique>
             <temperature_ebullition>249.94</temperature_ebullition>
             <omega>0.621139</omega>
-        </gaz>
-        <gaz>
+        </gas>
+        <gas>
             <nom>Ethane</nom>
             <symbole>C2H6</symbole>
             <masse_moleculaire>31.99</masse_moleculaire>
@@ -82,8 +78,8 @@
             <pression_critique>50.43</pression_critique>
             <temperature_ebullition>90.18</temperature_ebullition>
             <omega>0.583387</omega>
-        </gaz>
-        <gaz>
+        </gas>
+        <gas>
             <nom>Propane</nom>
             <symbole>C3H8</symbole>
             <masse_moleculaire>44.096</masse_moleculaire>
@@ -91,8 +87,8 @@
             <pression_critique>42.5</pression_critique>
             <temperature_ebullition>231.11</temperature_ebullition>
             <omega>0.624926</omega>
-        </gaz>
-        <gaz>
+        </gas>
+        <gas>
             <nom>Argon</nom>
             <symbole>Ar</symbole>
             <masse_moleculaire>39.948</masse_moleculaire>
@@ -100,8 +96,8 @@
             <pression_critique>48.98</pression_critique>
             <temperature_ebullition>87.29</temperature_ebullition>
             <omega>0.578616</omega>
-        </gaz>
-        <gaz>
+        </gas>
+        <gas>
             <nom>Hydrogène</nom>
             <symbole>H2</symbole>
             <masse_moleculaire>2.016</masse_moleculaire>
@@ -109,8 +105,8 @@
             <pression_critique>12.98</pression_critique>
             <temperature_ebullition>20.38</temperature_ebullition>
             <omega>0.613117</omega>
-        </gaz>
-        <gaz>
+        </gas>
+        <gas>
             <nom>Butane</nom>
             <symbole>C4H10</symbole>
             <masse_moleculaire>58.123</masse_moleculaire>
@@ -118,8 +114,8 @@
             <pression_critique>37.96</pression_critique>
             <temperature_ebullition>272.65</temperature_ebullition>
             <omega>0.641258</omega>
-        </gaz>
-        <gaz>
+        </gas>
+        <gas>
             <nom>Propylène</nom>
             <symbole>C3H6</symbole>
             <masse_moleculaire>42.08</masse_moleculaire>
@@ -127,15 +123,6 @@
             <pression_critique>46.1</pression_critique>
             <temperature_ebullition>225.43</temperature_ebullition>
             <omega>0.61804</omega>
-        </gaz>
-        <gas>
-            <nom>as</nom>
-            <symbole>ss</symbole>
-            <masse_moleculaire>1</masse_moleculaire>
-            <temperature_critique>30</temperature_critique>
-            <pression_critique>1</pression_critique>
-            <temperature_ebullition>30</temperature_ebullition>
-            <omega>1</omega>
         </gas>
     </gazs>
     <cellules />

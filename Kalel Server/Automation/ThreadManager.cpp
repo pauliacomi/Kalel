@@ -203,8 +203,7 @@ bool ThreadManager::NextStageAutomation()
 {
 	if (automation != nullptr)
 	{
-		++storage.experimentStatus.mainStage;											// Set next stage
-		storage.experimentStatus.stepStatus = STEP_STATUS_UNDEF;						// Reset next step
+		storage.experimentStatus.stepStatus = STEP_STATUS_END;						// Reset next step
 		storage.experimentStatus.isWaiting = false;
 		return true;
 	}

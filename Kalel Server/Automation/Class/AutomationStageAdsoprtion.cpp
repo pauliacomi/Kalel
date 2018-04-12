@@ -96,7 +96,8 @@ void Automation::StageAdsorption()
 		{
 			LOG(logINFO) << MESSAGE_ADSORPTION_END;																						// Log the step change
 			++storage.experimentStatus.mainStage;
-			storage.experimentStatus.stepStatus = STEP_STATUS_UNDEF;
+			storage.experimentStatus.stepStatus = STEP_STATUS_UNDEF;																	// Reset substep
+			storage.experimentStatus.substepStatus = SUBSTEP_STATUS_START;
 			storage.experimentStatus.stepCounter = 0; // Reset counter
 		}
 		break;

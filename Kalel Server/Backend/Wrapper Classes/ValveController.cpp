@@ -137,7 +137,7 @@ bool ValveController::OpenEVsAndPump(bool verbose)
 
 	// Log message
 	if (verbose) {
-		LOG(logINFO) << MESSAGE_PUMP_VALVE_CLOSEALL;
+		LOG(logINFO) << MESSAGE_PUMP_VALVE_OPENALL;
 	}
 
 	// Return success
