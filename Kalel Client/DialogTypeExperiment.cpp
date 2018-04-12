@@ -48,7 +48,7 @@ DialogTypeExperiment::~DialogTypeExperiment()
 void DialogTypeExperiment::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	DDX_Radio(pDX, IDC_RADIO_TYPE_EXPERIENCE_AUTO, m_bExperienceAuto);
+	DDX_Radio(pDX, IDC_RADIO_TYPE_EXPERIENCE_MANUAL, m_bExperience);
 }
 
 
@@ -63,18 +63,10 @@ BOOL DialogTypeExperiment::OnInitDialog()
 	CDialog::OnInitDialog();
 	
 	// Disable the buttons if there is no mention of available instruments in the parameters file
-	if(!instruments_exist)
-	{
-		GetDlgItem(IDC_RADIO_TYPE_EXPERIENCE_AUTO)->EnableWindow(FALSE);
-		GetDlgItem(IDC_RADIO_TYPE_EXPERIENCE_MANUAL)->EnableWindow(FALSE);
-		GetDlgItem(IDOK)->EnableWindow(FALSE);
-		return TRUE;
-	}
-
-	// Enable the buttons
-	GetDlgItem(IDC_RADIO_TYPE_EXPERIENCE_AUTO)->EnableWindow(TRUE);
-	GetDlgItem(IDC_RADIO_TYPE_EXPERIENCE_MANUAL)->EnableWindow(TRUE);
-	GetDlgItem(IDOK)->EnableWindow(TRUE);	
+	GetDlgItem(IDC_RADIO_TYPE_EXPERIENCE_MANUAL)->EnableWindow(instruments_exist);
+	GetDlgItem(IDC_RADIO_TYPE_EXPERIENCE_AUTOMATIC)->EnableWindow(instruments_exist);
+	GetDlgItem(IDC_RADIO_TYPE_EXPERIENCE_AUTO_CONT)->EnableWindow(instruments_exist);
+	GetDlgItem(IDOK)->EnableWindow(instruments_exist);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 }
@@ -82,10 +74,20 @@ BOOL DialogTypeExperiment::OnInitDialog()
 void DialogTypeExperiment::OnOK()
 {
 	UpdateData(TRUE);
-	if (m_bExperienceAuto == FALSE)
+	switch (m_bExperience)
+	{
+	case 0:
 		TypeExperience = EXPERIMENT_TYPE_MANUAL;
-	else
+		break;
+	case 1:
 		TypeExperience = EXPERIMENT_TYPE_AUTO;
+		break;
+	case 2:
+		TypeExperience = EXPERIMENT_TYPE_CONTINUOUS;
+		break;
+	default:
+		break;
+	}
 
 	CDialog::OnOK();
 }

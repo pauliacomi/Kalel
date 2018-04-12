@@ -13,13 +13,11 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// Français (France) resources
+// French (France) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_FRA)
-#ifdef _WIN32
 LANGUAGE LANG_FRENCH, SUBLANG_FRENCH
 #pragma code_page(1252)
-#endif //_WIN32
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -57,10 +55,11 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Type de l'expérience"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    CONTROL         "Manuelle",IDC_RADIO_TYPE_EXPERIENCE_AUTO,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,46,23,44,10
-    CONTROL         "Automatique", IDC_RADIO_TYPE_EXPERIENCE_MANUAL,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,46,52,57,10
-    DEFPUSHBUTTON   "OK",IDOK,37,77,50,14
-    PUSHBUTTON      "Annuler",IDCANCEL,104,77,50,14
+    CONTROL         "Manual",IDC_RADIO_TYPE_EXPERIENCE_MANUAL,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,46,23,39,10
+    CONTROL         "Automatic",IDC_RADIO_TYPE_EXPERIENCE_AUTOMATIC,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,46,39,48,10
+    CONTROL         "Automatic: continuous",IDC_RADIO_TYPE_EXPERIENCE_AUTO_CONT,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,46,55,87,10
+    DEFPUSHBUTTON   "OK",IDOK,19,77,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,96,77,50,14
 END
 
 
@@ -70,7 +69,7 @@ END
 //
 
 #ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO 
+GUIDELINES DESIGNINFO
 BEGIN
     IDD_TYPE_EXPERIENCE, DIALOG
     BEGIN
@@ -82,7 +81,18 @@ BEGIN
 END
 #endif    // APSTUDIO_INVOKED
 
-#endif    // Français (France) resources
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// AFX_DIALOG_LAYOUT
+//
+
+IDD_TYPE_EXPERIENCE AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+#endif    // French (France) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

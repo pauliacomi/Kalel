@@ -10,7 +10,12 @@
 
 // Experiment settings class
 #include "../Kalel Shared/Com Classes/ExperimentSettings.h"
+#include "../Kalel Shared/Com Classes/Serialization.h"
+#include "../Kalel Shared/Netcode/json.hpp"
 
+#include <fstream>
+
+using json = nlohmann::json;
 
 IMPLEMENT_DYNAMIC(ExperimentPropertySheet, CMFCPropertySheet)
 
@@ -38,15 +43,6 @@ ExperimentPropertySheet::ExperimentPropertySheet(LPCTSTR pszCaption, MachineSett
 
 ExperimentPropertySheet::~ExperimentPropertySheet()
 {
-	// Must delete all created tabs
-	for (size_t i = 0; i < adsorptionTabs.size(); i++)
-	{
-		delete adsorptionTabs[i];
-	}
-	for (size_t i = 0; i < desorptionTabs.size(); i++)
-	{
-		delete desorptionTabs[i];
-	}
 }
 
 void ExperimentPropertySheet::Initiate(const ExperimentSettings & experimentSettings)
@@ -65,26 +61,20 @@ void ExperimentPropertySheet::Initiate(const ExperimentSettings & experimentSett
 	// Adsorption
 	for (int i = 0; i < numberOfAdsorptions; i++)
 	{
-		TabDoses * tempTab = new TabDoses(i + 1);
+		auto tempTab = std::make_unique<TabDoses>(i + 1);
 		tempTab->allSettings = experimentSettings.dataAdsorption[i];
 
 		// Insert page
-		adsorptionTabs.push_back(tempTab);
-
-		// Null pointer
-		tempTab = NULL;
+		adsorptionTabs.push_back(std::move(tempTab));
 	}
 	// Desorption
 	for (int i = 0; i < numberOfDesorptions; i++)
 	{
-		TabDesorption * tempTab = new TabDesorption(i + 1);
+		auto tempTab = std::make_unique<TabDesorption>(i + 1);
 		tempTab->allSettings = experimentSettings.dataDesorption[i];
 
 		// Insert page
-		desorptionTabs.push_back(tempTab);
-
-		// Null pointer
-		tempTab = NULL;
+		desorptionTabs.push_back(std::move(tempTab));
 	}
 
 	// Resize the bool storage for tab availability
@@ -102,6 +92,9 @@ void ExperimentPropertySheet::Initiate(const ExperimentSettings & experimentSett
 		break;
 	case EXPERIMENT_TYPE_AUTO:
 		SetProprietiesAuto();
+		break;
+	case EXPERIMENT_TYPE_CONTINUOUS:
+		SetProprietiesAutoCont();
 		break;
 	default:
 		ASSERT(0);  // Should never be reached
@@ -133,6 +126,10 @@ BOOL ExperimentPropertySheet::OnInitDialog()
 	m_addAdsorption.SetFont(GetFont());
 	m_addDesorption.Create(_T("+DES"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, CRect(nLeft + nWidth + nOffset, nTop, nRight + nWidth, nBottom), this, IDC_PLUSDES);
 	m_addDesorption.SetFont(GetFont());
+	m_saveSettings.Create(_T("Save"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, CRect(nLeft + 2 * nWidth + nOffset, nTop, nRight + 2 * nWidth, nBottom), this, IDC_SAVE_SETT);
+	m_saveSettings.SetFont(GetFont());
+	m_loadSettings.Create(_T("Load"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, CRect(nLeft + 3 * nWidth + nOffset, nTop, nRight + 3 * nWidth, nBottom), this, IDC_LOAD_SETT);
+	m_loadSettings.SetFont(GetFont());
 
 	// Done adding buttons
 	//
@@ -145,40 +142,52 @@ BOOL ExperimentPropertySheet::OnInitDialog()
 // It allows only the general tab to be viewed
 void ExperimentPropertySheet::SetProprietiesManual(void)
 {
-	if (experimentType != EXPERIMENT_TYPE_MANUAL)
-	{
-		experimentType = EXPERIMENT_TYPE_MANUAL;
+	experimentType = EXPERIMENT_TYPE_MANUAL;
 
-		// Set the name of the title
-		CString title;
-		title.Format(TITLE_MANUALPARAM);
-		SetTitle(title);
+	// Set the name of the title
+	CString title;
+	title.Format(TITLE_MANUALPARAM);
+	SetTitle(title);
 
-		// Add the general tab
-		AddTab(&m_general, tab_general);
-	}
-
+	// Add the general tab
+	AddTab(&m_general, tab_general);
 }
 
 // Sets the experiment type as automatic
 // It allows all the tabs to be viewed
 void ExperimentPropertySheet::SetProprietiesAuto(void)
 {
-	if (experimentType != EXPERIMENT_TYPE_AUTO)
-	{
-		experimentType = EXPERIMENT_TYPE_AUTO;
+	experimentType = EXPERIMENT_TYPE_AUTO;
 
-		// Set the name of the title
-		CString title;
-		title.Format(TITLE_AUTOPARAM);
-		SetTitle(title);
+	// Set the name of the title
+	CString title;
+	title.Format(TITLE_AUTOPARAM);
+	SetTitle(title);
 
-		// Add all the tabs
-		AddTab(&m_general, tab_general);
-		AddTab(&m_divers, tab_divers);
-		AddStepTabs();
-	}
+	// Add all the tabs
+	AddTab(&m_general, tab_general);
+	AddTab(&m_divers, tab_divers);
+	AddStepTabs();
 }
+
+// Sets the experiment type as automatic
+// It allows all the tabs to be viewed
+void ExperimentPropertySheet::SetProprietiesAutoCont(void)
+{
+	experimentType = EXPERIMENT_TYPE_CONTINUOUS;
+
+	// Set the name of the title
+	CString title;
+	title.Format(TITLE_AUTOPARAM);
+	SetTitle(title);
+
+	// Add all the tabs
+	AddTab(&m_general, tab_general);
+	AddTab(&m_divers, tab_divers);
+	availableTabs.resize(nb_permanent_tabs + 1);
+	AddTab(&m_continuousAdsorption, tab_adsorption_continue);
+}
+
 
 // Sets the experiment type as modified
 // It allows only the tabs which have parameters that can be mofified to be showed
@@ -223,24 +232,12 @@ void ExperimentPropertySheet::SetProprietiesModif(int stage, int substage)
 }
 
 // Reinitialise the data in all the tabs - not usually needed
-void ExperimentPropertySheet::Reinitialisation(bool automatic)
+void ExperimentPropertySheet::Reinitialisation()
 {
 	m_general.Reinitialisation();
-
-	if (automatic)
+	m_divers.Reinitialisation();
+	if (experimentType == EXPERIMENT_TYPE_CONTINUOUS)
 	{
-		m_divers.Reinitialisation();
-
-		for (size_t i = 0; i < adsorptionTabs.size(); i++)
-		{
-			adsorptionTabs[i]->Reinitialisation();
-		}
-
-		for (size_t i = 0; i < desorptionTabs.size(); i++)
-		{
-			desorptionTabs[i]->Reinitialisation();
-		}
-
 		m_continuousAdsorption.Reinitialisation();
 	}
 }
@@ -249,11 +246,11 @@ void ExperimentPropertySheet::Reinitialisation(bool automatic)
 void ExperimentPropertySheet::AddStepTabs() {
 	for (size_t i = 0; i < adsorptionTabs.size(); i++)
 	{
-		AddTab(adsorptionTabs[i], nb_permanent_tabs + i);
+		AddTab(adsorptionTabs[i].get(), nb_permanent_tabs + i);
 	}
 	for (size_t i = 0; i < desorptionTabs.size(); i++)
 	{
-		AddTab(desorptionTabs[i], nb_permanent_tabs + numberOfAdsorptions + i);
+		AddTab(desorptionTabs[i].get(), nb_permanent_tabs + numberOfAdsorptions + i);
 	}
 }
 
@@ -262,11 +259,11 @@ void ExperimentPropertySheet::RemoveStepTabs()
 {
 	for (size_t i = 0; i < adsorptionTabs.size(); i++)
 	{
-		RemoveTab(adsorptionTabs[i], nb_permanent_tabs + i);
+		RemoveTab(adsorptionTabs[i].get(), nb_permanent_tabs + i);
 	}
 	for (size_t i = 0; i < desorptionTabs.size(); i++)
 	{
-		RemoveTab(desorptionTabs[i], nb_permanent_tabs + numberOfAdsorptions + i);
+		RemoveTab(desorptionTabs[i].get(), nb_permanent_tabs + numberOfAdsorptions + i);
 	}
 }
 
@@ -296,6 +293,8 @@ BEGIN_MESSAGE_MAP(ExperimentPropertySheet, CMFCPropertySheet)
 	//}}AFX_MSG_MAP
 	ON_BN_CLICKED(IDC_PLUSADS, OnButtonAddAdsorption)					// Clicking the add adsorption button
 	ON_BN_CLICKED(IDC_PLUSDES, OnButtonAddDesorption)					// Clicking the add desorption button
+	ON_BN_CLICKED(IDC_SAVE_SETT, OnButtonSaveSettings)
+	ON_BN_CLICKED(IDC_LOAD_SETT, OnButtonLoadSettings)
 	ON_MESSAGE(UWM_PP_ADSORPTION_DELETE, OnButtonRemoveAdsorption)		// Clicking the delete button, inside one of the property sheets
 	ON_MESSAGE(UWM_PP_DESORPTION_DELETE, OnButtonRemoveDesorption)		// Clicking the delete button, inside one of the property sheets
 END_MESSAGE_MAP()
@@ -305,7 +304,7 @@ END_MESSAGE_MAP()
 
 void ExperimentPropertySheet::OnButtonAddAdsorption()
 {
-	if (experimentType == EXPERIMENT_TYPE_MANUAL) {			// Check if the experiment type allows the addition of tabs
+	if (experimentType != EXPERIMENT_TYPE_AUTO) {			// Check if the experiment type allows the addition of tabs
 		AfxMessageBox(ERROR_NOT_APPLICABLE);
 	}
 	else {
@@ -330,15 +329,10 @@ void ExperimentPropertySheet::OnButtonAddAdsorption()
 			numberOfAdsorptions++;
 
 			// Set the position of an iterator where we want to insert the new element
-			std::vector<bool>::iterator pos = availableTabs.begin() + index;
-			availableTabs.insert(pos, false);
-
-			// Create the page
-			TabDoses * tempTab = new TabDoses(index - nb_permanent_tabs + 1);
+			availableTabs.insert((availableTabs.begin() + index), false);
 
 			// Insert page
-			std::vector<TabDoses*>::iterator pos2 = adsorptionTabs.begin() + (index - nb_permanent_tabs);
-			adsorptionTabs.insert(pos2, tempTab);
+			adsorptionTabs.push_back(std::make_unique<TabDoses>(index - nb_permanent_tabs + 1));
 
 			// Rename all remaining pages
 			for (int i = 0; i < numberOfAdsorptions; i++)
@@ -358,7 +352,7 @@ void ExperimentPropertySheet::OnButtonAddAdsorption()
 
 void ExperimentPropertySheet::OnButtonAddDesorption(void)
 {
-	if (experimentType == EXPERIMENT_TYPE_MANUAL) {
+	if (experimentType != EXPERIMENT_TYPE_AUTO) {
 		AfxMessageBox(ERROR_NOT_APPLICABLE);
 	}
 	else {
@@ -383,15 +377,10 @@ void ExperimentPropertySheet::OnButtonAddDesorption(void)
 			numberOfDesorptions++;
 
 			// Set the position of an iterator where we want to insert the new element
-			std::vector<bool>::iterator pos = availableTabs.begin() + index;
-			availableTabs.insert(pos, false);
-
-			// Create the page
-			TabDesorption * tempTab = new TabDesorption(index - numberOfAdsorptions - nb_permanent_tabs + 1);
+			availableTabs.insert((availableTabs.begin() + index), false);
 
 			// Insert page
-			std::vector<TabDesorption*>::iterator pos2 = desorptionTabs.begin() + (index - numberOfAdsorptions - nb_permanent_tabs);
-			desorptionTabs.insert(pos2, tempTab);
+			desorptionTabs.emplace_back(std::make_unique<TabDesorption>(index - numberOfAdsorptions - nb_permanent_tabs + 1));
 
 
 			// Rename all remaining pages
@@ -406,6 +395,80 @@ void ExperimentPropertySheet::OnButtonAddDesorption(void)
 
 			// Show new page
 			SetActivePage(index);
+		}
+	}
+}
+
+void ExperimentPropertySheet::OnButtonSaveSettings()
+{
+	PressButton(PSBTN_APPLYNOW);
+
+	// Create class
+	CFileDialog DialogBoxBrowse(TRUE);
+
+	// Display the dalog and check the return code
+	if (DialogBoxBrowse.DoModal() == IDOK) {
+		CString f = DialogBoxBrowse.GetPathName();
+		std::fstream fs;
+		fs.open(f, std::fstream::out | std::ofstream::trunc);
+		ExperimentSettings tempSettings;
+		ReplaceExperimentSettings(tempSettings, true);
+		tempSettings.experimentType = experimentType;
+		json j = tempSettings;
+		fs << j.dump(4);		// Pretty print
+		fs.close();
+	}
+}
+
+void ExperimentPropertySheet::OnButtonLoadSettings()
+{
+	// Create class
+	CFileDialog DialogBoxBrowse(TRUE);
+
+	// Display the dalog and check the return code
+	if (DialogBoxBrowse.DoModal() == IDOK) {
+	
+		CString f = DialogBoxBrowse.GetPathName();
+		std::fstream fs;
+		std::string filestr;
+
+		fs.open(f, std::fstream::in);
+
+		fs.seekg(0, std::ios::end);
+		filestr.reserve(fs.tellg());
+		fs.seekg(0, std::ios::beg);
+		filestr.assign((std::istreambuf_iterator<char>(fs)), std::istreambuf_iterator<char>());
+
+		fs.close();
+
+		ExperimentSettings tempSettings;
+
+		try
+		{
+			tempSettings = json::parse(filestr.c_str());
+		}
+		catch (const std::exception& e)
+		{
+			AfxMessageBox(TEXT_FOLDERNOTSELECTED, MB_ICONSTOP | MB_TOPMOST);
+		}
+
+		if (tempSettings.experimentType == experimentType)
+		{
+			TabDivers temp;
+			AddPage(&temp);
+
+			RemoveTab(&m_general, tab_general);
+			RemoveTab(&m_divers, tab_divers);
+			RemoveStepTabs();
+			adsorptionTabs.clear();
+			desorptionTabs.clear();
+			Initiate(tempSettings);
+			RemovePage(&temp);
+			modified = true;
+		}
+		else
+		{
+			AfxMessageBox(TEXT_TYPENOTSAME, MB_ICONSTOP | MB_TOPMOST);
 		}
 	}
 }
@@ -428,14 +491,11 @@ LRESULT ExperimentPropertySheet::OnButtonRemoveAdsorption(WPARAM, LPARAM lParam)
 		RemovePage(nb_permanent_tabs + pageToRemove - 1);							// Then remove from propertysheet list
 
 																					// Erase bool from available tabs
-		std::vector<bool>::iterator pos = availableTabs.begin() + (nb_permanent_tabs + pageToRemove - 1);
+		auto pos = availableTabs.begin() + (nb_permanent_tabs + pageToRemove - 1);
 		availableTabs.erase(pos);
 
-		// Delete page
-		delete adsorptionTabs[pageToRemove - 1];
-
 		// Erase the page itself from the list of pages
-		std::vector<TabDoses*>::iterator pos2 = adsorptionTabs.begin() + pageToRemove - 1;
+		auto pos2 = adsorptionTabs.begin() + pageToRemove - 1;
 		adsorptionTabs.erase(pos2);
 
 		numberOfAdsorptions--;														// Decrement the number of adsorption 
@@ -474,11 +534,8 @@ LRESULT ExperimentPropertySheet::OnButtonRemoveDesorption(WPARAM, LPARAM lParam)
 		std::vector<bool>::iterator pos = availableTabs.begin() + (nb_permanent_tabs + numberOfAdsorptions + pageToRemove - 1);
 		availableTabs.erase(pos);
 
-		// Delete page
-		delete desorptionTabs[pageToRemove - 1];
-
 		// Erase the page itself from the list of pages
-		std::vector<TabDesorption *>::iterator pos2 = desorptionTabs.begin() + pageToRemove - 1;
+		auto pos2 = desorptionTabs.begin() + pageToRemove - 1;
 		desorptionTabs.erase(pos2);
 
 		numberOfDesorptions--;														// Decrement the number of adsorption 
@@ -494,4 +551,85 @@ LRESULT ExperimentPropertySheet::OnButtonRemoveDesorption(WPARAM, LPARAM lParam)
 		AddStepTabs();
 	}
 	return 0;
+}
+
+// Copy all data from a property sheet dialog to the local object
+bool ExperimentPropertySheet::GetExperimentData(ExperimentSettings & expS, bool initialRequest) {
+
+	if (initialRequest)
+	{
+		// Copy data across
+		ReplaceExperimentSettings(expS);
+	}
+
+	else
+	{
+		// Must check if everything is the same
+
+		bool modified = false;
+
+		if (adsorptionTabs.size() != expS.dataAdsorption.size()
+			|| desorptionTabs.size() != expS.dataDesorption.size())
+		{
+			modified = true;
+		}
+		else
+		{
+			if (m_general.allSettings != expS.dataGeneral)
+			{
+				modified = true;
+			}
+
+			if (m_divers.allSettings != expS.dataDivers)
+			{
+				modified = true;
+			}
+
+			for (size_t i = 0; i < adsorptionTabs.size(); i++)
+			{
+				if (adsorptionTabs[i]->allSettings != expS.dataAdsorption[i])
+				{
+					modified = true;
+				}
+			}
+			for (size_t i = 0; i < desorptionTabs.size(); i++)
+			{
+				if (desorptionTabs[i]->allSettings != expS.dataDesorption[i])
+				{
+					modified = true;
+				}
+			}
+		}
+
+		if (modified)
+		{
+			// Copy data across
+			ReplaceExperimentSettings(expS);
+		}
+
+		return modified;
+	}
+
+	return true;
+}
+
+void ExperimentPropertySheet::ReplaceExperimentSettings(ExperimentSettings & expS, bool complete)
+{
+	expS.dataGeneral = m_general.allSettings;
+
+	if (expS.experimentType != EXPERIMENT_TYPE_MANUAL || complete)
+	{
+		expS.dataDivers = m_divers.allSettings;
+
+		expS.dataAdsorption.clear();
+		for (size_t i = 0; i < adsorptionTabs.size(); i++)
+		{
+			expS.dataAdsorption.push_back(std::move(adsorptionTabs[i]->allSettings));
+		}
+		expS.dataDesorption.clear();
+		for (size_t i = 0; i < desorptionTabs.size(); i++)
+		{
+			expS.dataDesorption.push_back(std::move(desorptionTabs[i]->allSettings));
+		}
+	}
 }

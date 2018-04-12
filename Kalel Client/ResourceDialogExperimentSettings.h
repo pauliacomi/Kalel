@@ -92,6 +92,8 @@
 #define IDC_PLUSDES                     5628
 #define IDC_MINUSADS                    5629
 #define IDC_MINUDES                     5630
+#define IDC_SAVE_SETT					5631
+#define IDC_LOAD_SETT					5632
 
 // Next default values for new objects
 // 

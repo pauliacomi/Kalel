@@ -22,8 +22,6 @@ void TabContinuousAdsorption::DoDataExchange(CDataExchange* pDX)
 {
 	CMFCPropertyPage::DoDataExchange(pDX);
 
-	DDX_Control(pDX, IDC_CHECK_ADSORPTION_CONTINUE, m_CheckAdsorptionContinue);
-	DDX_Check(pDX, IDC_CHECK_ADSORPTION_CONTINUE, m_bAdsorptionContinue);
 	DDX_Text(pDX, IDC_EDIT_TEMPS_ETALONNAGE_DEBIT, m_nTempsEtalonnageDebit);
 	DDX_Control(pDX, IDC_SPIN_TEMPS_ETALONNAGE_DEBIT, m_SpinTempsEtalonnageDebit);
 	DDX_Text(pDX, IDC_EDIT_TEMPS_ETALONNAGE_VOLUME_INTER, m_nTempsEtalonnageVolumeInter);
@@ -106,7 +104,6 @@ void TabContinuousAdsorption::OnOK()
 
 void TabContinuousAdsorption::Reinitialisation()
 {
-	m_bAdsorptionContinue = FALSE;
 	m_nTempsEtalonnageDebit = 45;
 	m_nTempsEtalonnageVolumeInter = 45;
 	m_nTempsEquilibreContinue = 15;
@@ -127,27 +124,6 @@ void TabContinuousAdsorption::WriteData()
 
 void TabContinuousAdsorption::EnableAdsorptionContinue(void)
 {
-	GetDlgItem(IDC_STATIC_AD_TED_TEXT)->EnableWindow(m_bAdsorptionContinue);
-	GetDlgItem(IDC_STATIC_AD_TED_MIN)->EnableWindow(m_bAdsorptionContinue);
-	GetDlgItem(IDC_STATIC_AD_TEVI_TEXT)->EnableWindow(m_bAdsorptionContinue);
-	GetDlgItem(IDC_STATIC_AD_TEVI_MIN)->EnableWindow(m_bAdsorptionContinue);
-	GetDlgItem(IDC_STATIC_AD_TEC_TEXT)->EnableWindow(m_bAdsorptionContinue);
-	GetDlgItem(IDC_STATIC_AD_TEC_MIN)->EnableWindow(m_bAdsorptionContinue);
-	GetDlgItem(IDC_STATIC_AD_TFE_TEXT)->EnableWindow(m_bAdsorptionContinue);
-	GetDlgItem(IDC_STATIC_AD_TFE_MIN)->EnableWindow(m_bAdsorptionContinue);
-	GetDlgItem(IDC_STATIC_AD_PF_TEXT)->EnableWindow(m_bAdsorptionContinue);
-	GetDlgItem(IDC_STATIC_AD_PF_BAR)->EnableWindow(m_bAdsorptionContinue);
-
-	GetDlgItem(IDC_EDIT_TEMPS_ETALONNAGE_DEBIT)->EnableWindow(m_bAdsorptionContinue);
-	GetDlgItem(IDC_SPIN_TEMPS_ETALONNAGE_DEBIT)->EnableWindow(m_bAdsorptionContinue);
-	GetDlgItem(IDC_EDIT_TEMPS_ETALONNAGE_VOLUME_INTER)->EnableWindow(m_bAdsorptionContinue);
-	GetDlgItem(IDC_SPIN_TEMPS_ETALONNAGE_VOLUME_INTER)->EnableWindow(m_bAdsorptionContinue);
-	GetDlgItem(IDC_EDIT_TEMPS_EQUILIBRE_CONTINUE)->EnableWindow(m_bAdsorptionContinue);
-	GetDlgItem(IDC_SPIN_TEMPS_EQUILIBRE_CONTINUE)->EnableWindow(m_bAdsorptionContinue);
-	GetDlgItem(IDC_EDIT_TEMPS_FINAL_EQUILIBRE)->EnableWindow(m_bAdsorptionContinue);
-	GetDlgItem(IDC_SPIN_TEMPS_FINAL_EQUILIBRE)->EnableWindow(m_bAdsorptionContinue);
-	GetDlgItem(IDC_EDIT_PRESSION_FINALE_ADSORPTION_CONTINUE)->EnableWindow(m_bAdsorptionContinue);
-	GetDlgItem(IDC_SPIN_PRESSION_FINALE_ADSORPTION_CONTINUE)->EnableWindow(m_bAdsorptionContinue);
 }
 
 

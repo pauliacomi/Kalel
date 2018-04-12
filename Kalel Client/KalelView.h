@@ -201,9 +201,6 @@ private:
 
 	void UpdateButtons();
 
-	bool GetExperimentData(ExperimentPropertySheet & pDialogExperimentProperties, ExperimentSettings & expS, bool initialRequest);
-	void ReplaceExperimentSettings(const ExperimentPropertySheet & pDialogExperimentProperties, ExperimentSettings & expS);
-
 	//*************************************************************************************************************************
 	//						KalelView_Boutons_Vannes
 	//*************************************************************************************************************************

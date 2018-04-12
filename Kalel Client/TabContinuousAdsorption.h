@@ -30,7 +30,6 @@ protected:
 
 	// Variables
 protected:
-	BOOL m_bAdsorptionContinue;
 
 	int m_nTempsEtalonnageDebit;
 	int m_nTempsEtalonnageVolumeInter;

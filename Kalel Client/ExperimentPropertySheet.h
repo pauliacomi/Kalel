@@ -21,10 +21,10 @@ class ExperimentSettings;
 /// Defines
 #define tab_general				0
 #define tab_divers				1
-#define tab_adsorption_continue	6
+#define tab_adsorption_continue	2
 
 #define nb_permanent_tabs		2
-#define nb_max_tabs				5
+#define nb_max_tabs				8
 
 class ExperimentPropertySheet : public CMFCPropertySheet
 {
@@ -47,13 +47,15 @@ public:
 	// PropertyPages declared
 	TabGeneral m_general;
 	TabDivers m_divers;
-	std::vector<TabDoses*> adsorptionTabs;
-	std::vector<TabDesorption*> desorptionTabs;
+	std::vector<std::unique_ptr<TabDoses>> adsorptionTabs;
+	std::vector<std::unique_ptr<TabDesorption>> desorptionTabs;
 	TabContinuousAdsorption m_continuousAdsorption;
 
 protected:
 	CMFCButton m_addAdsorption;
 	CMFCButton m_addDesorption;
+	CMFCButton m_saveSettings;
+	CMFCButton m_loadSettings;
 
 	// Number of tabs
 	int numberOfAdsorptions;
@@ -75,8 +77,12 @@ public:
 	void RemoveStepTabs();	// Asks all the tabs to be removed
 	void OnButtonAddAdsorption();
 	void OnButtonAddDesorption();
+	void OnButtonSaveSettings();
+	void OnButtonLoadSettings();
 	LRESULT OnButtonRemoveAdsorption(WPARAM wParam, LPARAM lParam);
 	LRESULT OnButtonRemoveDesorption(WPARAM wParam, LPARAM lParam);
+	bool GetExperimentData(ExperimentSettings & expS, bool initialRequest);
+	void ReplaceExperimentSettings(ExperimentSettings & expS, bool complete = false);
 	void AddTab(CPropertyPage * tab, int checkTab);			// Adds a tab, checking if it is available first
 	void RemoveTab(CPropertyPage * tab, int checkTab);		// Removes a tab, checking if it is available first
 
@@ -88,11 +94,13 @@ public:
 	// It allows all the tabs to be viewed
 	void SetProprietiesAuto(void);
 
+	void SetProprietiesAutoCont(void);
+
 	// Sets the experiment type as modified
 	// It allows only the tabs which have parameters that can be mofified to be showed
 	void SetProprietiesModif(int stage, int substage);
 
-	void Reinitialisation(bool automatic);		// Reinitialise the data in all the tabs
+	void Reinitialisation();		// Reinitialise the data in all the tabs
 
 };
 

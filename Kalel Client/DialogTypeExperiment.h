@@ -29,7 +29,7 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
-	BOOL m_bExperienceAuto = FALSE;
+	int m_bExperience = 0;
 	int TypeExperience;
 protected:
 	virtual void OnOK();
