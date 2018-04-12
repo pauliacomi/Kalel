@@ -53,9 +53,9 @@ void Automation::StageVacuum()
 		controls.valveControls.ValveOpen(ID_VALVE_8, true);
 
 		if (storage.experimentSettings.dataDivers.mise_sous_vide_fin_experience)
-			WaitMinutes(storage.experimentSettings.dataDivers.temps_vide);
+			WaitMinutes(storage.experimentSettings.dataDivers.temps_vide, true);
 		else
-			WaitMinutes(storage.machineSettings.TimeVacuumEndDefault);
+			WaitMinutes(storage.machineSettings.TimeVacuumEndDefault / 60, true);
 		storage.experimentStatus.stepStatus = STEP_STATUS_END;
 		break;
 

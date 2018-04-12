@@ -7,7 +7,11 @@
 // Wait a number of minutes
 void Automation::WaitMinutes(int nbminutes, bool verbose /*=false*/)
 {
-	WaitSeconds(nbminutes * 60, verbose);
+	if (verbose)
+	{
+		LOG(logINFO) << stringh::string_format(MESSAGE_WAIT_TIME_MIN, nbminutes);
+	}
+	WaitSeconds(nbminutes * 60);
 }
 
 // Wait a number of seconds

@@ -221,7 +221,7 @@ bool Automation::SubstepsAdsorption()
 				LOG(logINFO) << MESSAGE_EQUILIBRATION_REFVOL;
 				controls.valveControls.ValveClose(ID_VALVE_4, false);																			// Close valve 4
 				controls.valveControls.CloseEVsAndPump(false);																			// Close pump if needed
-				WaitMinutes(storage.experimentSettings.dataAdsorption[storage.experimentStatus.stepCounter].temps_volume);				// Set the time to wait for equilibration in the reference volume
+				WaitMinutes(storage.experimentSettings.dataAdsorption[storage.experimentStatus.stepCounter].temps_volume, true);				// Set the time to wait for equilibration in the reference volume
 				storage.experimentStatus.isRecording = true;
 				storage.experimentStatus.substepStatus = SUBSTEP_STATUS_ADSORPTION;																// Go to adsorption
 			}
@@ -273,7 +273,7 @@ bool Automation::SubstepsAdsorption()
 		controls.valveControls.ValveOpen(ID_VALVE_5, true);
 
 		// Wait for adsorption
-		WaitMinutes(storage.experimentSettings.dataAdsorption[storage.experimentStatus.stepCounter].temps_adsorption);		// Set the time to wait
+		WaitMinutes(storage.experimentSettings.dataAdsorption[storage.experimentStatus.stepCounter].temps_adsorption, true);		// Set the time to wait
 		storage.experimentStatus.substepStatus = SUBSTEP_STATUS_END;																// Go to next step
 		break;
 	

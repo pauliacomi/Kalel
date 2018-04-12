@@ -144,6 +144,7 @@ LRESULT CKalelView::DisplayStepProgress(const ExperimentStatus &status)
 		break;
 
 	default:
+		m_StrEtape.Format(STR_STAGE_UNDEF);
 		break;
 	}
 

@@ -14,6 +14,7 @@
 #define MESSAGE_EXPPAUSE					"Experiment paused"
 #define MESSAGE_EXPRESUME					"Experiment resumed"
 #define MESSAGE_WAIT_TIME					"Waiting for %d seconds..."
+#define MESSAGE_WAIT_TIME_MIN				"Waiting for %d minutes..."
 #define MESSAGE_THREAD_SHUTTINGDOWN			"Thread is shutting down"
 #define MESSAGE_THREAD_SHUTDOWN_AUTO		"Automation thread shut down"
 #define MESSAGE_THREAD_SHUTDOWN_MEAS		"Measurement thread shut down"
@@ -48,7 +49,7 @@
 #define MESSAGE_VALVE_CLOSEALL				"Closing all valves"
 #define MESSAGE_PUMP_VALVE_OPENALL			"Closing pump and EVs"
 #define MESSAGE_PUMP_VALVE_CLOSEALL			"Closing pump and EVs"
-#define MESSAGE_CLOSEEVERYTHING				"Closing everything"
+#define MESSAGE_CLOSEEVERYTHING				"Closing all controllers"
 
 /*
 //
@@ -136,6 +137,8 @@
 #define MESSAGE_VACUUM_HIGHPRESSURE_END		"Completed outgassing of high pressure range volume"
 #define MESSAGE_VACUUM_LOWPRESSURE_START	"Starting outgassing of low pressure range volume"
 #define MESSAGE_VACUUM_LOWPRESSURE_END		"Completed outgassing of low pressure range volume"
+#define MESSAGE_VACUUM_BOTTLECONN_START		"Starting outgassing of bottle connection"
+#define MESSAGE_VACUUM_BOTTLECONN_END		"Completed outgassing of bottle connection"
 #define MESSAGE_VACUUM_FINALOUTGAS_START	"Starting outgassing vacuum"
 #define MESSAGE_VACUUM_FINALOUTGAS_END		"Completed outgassing vacuum"
 #define MESSAGE_VACUUM_USER_CHOICE			"Finished vacuum up to sample cell. Press OK to turn off valves and pump"

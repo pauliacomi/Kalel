@@ -205,6 +205,13 @@ bool ThreadManager::NextStageAutomation()
 	{
 		storage.experimentStatus.stepStatus = STEP_STATUS_END;						// Reset next step
 		storage.experimentStatus.isWaiting = false;
+
+		if (storage.experimentStatus.mainStage == STAGE_AUTO_ADSORPTION ||
+			storage.experimentStatus.mainStage == STAGE_AUTO_DESORPTION)
+		{
+			storage.experimentStatus.stepCounter = 99;
+		}
+
 		return true;
 	}
 	return false;
@@ -217,10 +224,10 @@ bool ThreadManager::NextStepAutomation()
 		if (storage.experimentStatus.mainStage == STAGE_AUTO_ADSORPTION ||
 			storage.experimentStatus.mainStage == STAGE_AUTO_DESORPTION)
 		{
-			storage.experimentStatus.stepStatus = STEP_STATUS_END;
 			storage.experimentStatus.isWaiting = false;
+			storage.experimentStatus.stepStatus = STEP_STATUS_END;
+			return true;
 		}
-		return true;
 	}
 	return false;
 }
@@ -232,12 +239,9 @@ bool ThreadManager::NextDoseAutomation()
 		if (storage.experimentStatus.mainStage == STAGE_AUTO_ADSORPTION || 
 			storage.experimentStatus.mainStage == STAGE_AUTO_DESORPTION)
 		{
-			if (storage.experimentStatus.stepStatus == STEP_STATUS_INPROGRESS)
-			{
-				storage.experimentStatus.substepStatus = SUBSTEP_STATUS_END;
-				storage.experimentStatus.isWaiting = false;
-				return true;
-			}
+			storage.experimentStatus.substepStatus = SUBSTEP_STATUS_END;
+			storage.experimentStatus.isWaiting = false;
+			return true;
 		}
 	}
 	return false;

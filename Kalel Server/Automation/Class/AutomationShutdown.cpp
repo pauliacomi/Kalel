@@ -31,7 +31,7 @@ void Automation::Shutdown()
 		LOG(logINFO) << MESSAGE_EXPFINISH;
 
 		// Close all valves
-		controls.valveControls.CloseAll(true);
+		controls.valveControls.CloseAll(false);
 
 		// Reset all data from the experiment
 		storage.experimentSettings.ResetData();

@@ -44,7 +44,7 @@ protected:
 	bool running = true;
 
 public:
-	std::atomic<Stop> shutdownReason = Stop::Cancel;
+	std::atomic<Stop> shutdownReason = Stop::Normal;
 	std::atomic_uint userChoice;							// Atomic uint for user choice
 
 	std::atomic_bool eventPause = false;					// Bool for pausing the thread

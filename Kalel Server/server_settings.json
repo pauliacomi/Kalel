@@ -11,7 +11,7 @@
     "TimeBetweenAutomation": 10,
     "TimeBetweenMeasurement": 1000,
     "TimeBetweenRecording": 1000,
-    "TimeVacuumBottle": 300,
+    "TimeVacuumBottle": 60,
     "TimeVacuumEmergency": 6000,
     "TimeVacuumEndDefault": 12000,
     "TimeWaitPump": 10,
@@ -182,5 +182,5 @@
             "type": 48
         }
     },
-    "timestamp": "2018-04-04T17:13:50.738Z"
+    "timestamp": "2018-04-12T22:50:59.670Z"
 }
