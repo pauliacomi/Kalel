@@ -109,16 +109,15 @@ bool FileWriter::FileMeasurementCreate(const data_general &general)
 	std::wostringstream stream;
 
 	// Write column names
-	stream << "Temps(s);";												// Experiment time
-	stream << "Dose;";													// Experiment dose
-	stream << "Calorimètre(W);";										// Calorimeter value
-	stream << "Basse Pression(Bar);";									// Pressure low range
-	stream << "Haute Pression(Bar);";									// Pressure high range
-	stream << "T°C Calo;";												// Temperature calorimeter
-	stream << "T°C Cage;";												// Temperature enclosure
-	stream << "T°C pièce;";												// Temperature room
-	stream << "Vanne 6";												// Valve open
-	stream << std::endl;												// Next line
+	stream << "Temps(s)"			<< CSV_DIV			;				// Experiment time
+	stream << "Dose"				<< CSV_DIV			;				// Experiment dose
+	stream << "Calorimètre(W)"		<< CSV_DIV			;				// Calorimeter value
+	stream << "Basse Pression(Bar)"	<< CSV_DIV			;				// Pressure low range
+	stream << "Haute Pression(Bar)"	<< CSV_DIV			;				// Pressure high range
+	stream << "T°C Calo"			<< CSV_DIV			;				// Temperature calorimeter
+	stream << "T°C Cage"			<< CSV_DIV			;				// Temperature enclosure
+	stream << "T°C pièce"			<< CSV_DIV			;				// Temperature room
+	stream << "Vanne 6"				<< std::endl		;				// Valve open
 
 	return writeFile(FileWriter::BuildFileName(L"csv", general, false), stream.str());
 }
@@ -137,16 +136,16 @@ bool FileWriter::RecordMeasurement(const data_general &general, const Experiment
 	char char_resultat_calo[20];
 	sprintf_s(char_resultat_calo, "%.8E", data.resultCalorimeter.load());
 	
-	stream << timeh::TimePointToISOWString(data.tp)	<< CSV_DIV;				// Experiment time
-	stream << status.injectionDose					<< CSV_DIV;				// Experiment dose
-	stream << char_resultat_calo					<< CSV_DIV;				// Calorimeter value
-	stream << data.pressureLow						<< CSV_DIV;				// Pressure low range
-	stream << data.pressureHigh						<< CSV_DIV;				// Pressure high range
-	stream << data.temperatureCalo					<< CSV_DIV;				// Temperature calorimeter
-	stream << data.temperatureCage					<< CSV_DIV;				// Temperature enclosure
-	stream << data.temperatureRoom					<< CSV_DIV;				// Temperature room
-	stream << valveOpen6							<< CSV_DIV;				// Valve open
-	stream << std::endl;													// Next line
+	stream << timeh::TimePointToShortWString(data.tp)	<< CSV_DIV;				// Experiment time
+	stream << status.injectionDose						<< CSV_DIV;				// Experiment dose
+	stream << char_resultat_calo						<< CSV_DIV;				// Calorimeter value
+	stream << data.pressureLow							<< CSV_DIV;				// Pressure low range
+	stream << data.pressureHigh							<< CSV_DIV;				// Pressure high range
+	stream << data.temperatureCalo						<< CSV_DIV;				// Temperature calorimeter
+	stream << data.temperatureCage						<< CSV_DIV;				// Temperature enclosure
+	stream << data.temperatureRoom						<< CSV_DIV;				// Temperature room
+	stream << valveOpen6								<< CSV_DIV;				// Valve open
+	stream << std::endl;														// Next line
 
 	return  writeFile(FileWriter::BuildFileName(L"csv", general, false), stream.str());
 }

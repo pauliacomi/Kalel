@@ -16,6 +16,7 @@ namespace timeh {
 
 	std::string TimePointToISOString(const std::chrono::system_clock::time_point & tp);
 	std::wstring TimePointToISOWString(const std::chrono::system_clock::time_point & tp);
+	std::wstring TimePointToShortWString(const std::chrono::system_clock::time_point & tp);
 
 	std::chrono::system_clock::time_point ISOStringToTimePoint(const std::string & str_time);
 
