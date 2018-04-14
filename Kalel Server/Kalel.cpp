@@ -649,7 +649,32 @@ void Kalel::SetExperimentSettings(const ExperimentSettings & es)
 	// Create new experiment settings, logging change if experiment is running
 	if (storage.experimentStatus.inProgress == true) {
 
+		// Check to see if change is possible
+		if (storage.tExperimentSettings->experimentType != storage.experimentSettings.experimentType) {
+			LOG(logINFO) << "Cannot change experiment type while experiment running";
+			return;
+		}
+
+		if (storage.experimentStatus.mainStage == STAGE_AUTO_ADSORPTION &&
+			storage.tExperimentSettings->dataAdsorption.size() < storage.experimentStatus.stepCounter)
+		{
+			LOG(logINFO) << "Experiment too far into adsorption to change";
+			return;
+		}
+
+		if (storage.experimentStatus.mainStage == STAGE_AUTO_DESORPTION &&
+			storage.tExperimentSettings->dataDesorption.size() < storage.experimentStatus.stepCounter)
+		{
+			LOG(logINFO) << "Experiment too far into desorption to change";
+			return;
+		}
+
+		// Copy settings that should not change
+		storage.tExperimentSettings->dataGeneral.user = storage.experimentSettings.dataGeneral.user;
+		storage.tExperimentSettings->dataGeneral.gas = storage.experimentSettings.dataGeneral.gas;
 		storage.tExperimentSettings->dataGeneral.fichier = storage.experimentSettings.dataGeneral.fichier;
+		storage.tExperimentSettings->dataGeneral.chemin = storage.experimentSettings.dataGeneral.chemin;
+		storage.tExperimentSettings->dataGeneral.nom_echantillon = storage.experimentSettings.dataGeneral.nom_echantillon;
 
 		controlMechanisms.fileWriter.RecordDataChange(false,
 			*storage.tExperimentSettings, storage.experimentSettings,

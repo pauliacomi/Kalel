@@ -31,4 +31,5 @@ public:
 	data_other dataDivers;
 	std::vector<data_adsorption> dataAdsorption;
 	std::vector<data_desorption> dataDesorption;
+	data_continuous dataContinuous;
 };

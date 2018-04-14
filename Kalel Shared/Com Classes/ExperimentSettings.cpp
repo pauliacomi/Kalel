@@ -57,6 +57,11 @@ void ExperimentSettings::ResetData()
 	dataDivers.time_baseline = 15;
 	dataDivers.temps_vide = 90;
 
+	dataContinuous.pression_finale_adsorption_continue = 1;
+	dataContinuous.temps_etalonnage_debit = 30;
+	dataContinuous.temps_etalonnage_volume_inter = 30;
+	dataContinuous.temps_equilibre_continue = 30;
+	dataContinuous.temps_final_equilibre = 30;
 }
 
 
@@ -71,4 +76,5 @@ void ExperimentSettings::Replace(const ExperimentSettings & rhs)
 	dataDivers = rhs.dataDivers;
 	dataAdsorption = rhs.dataAdsorption;
 	dataDesorption = rhs.dataDesorption;
+	dataContinuous = rhs.dataContinuous;
 }
