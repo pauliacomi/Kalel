@@ -644,16 +644,22 @@ unsigned Kalel::SetMachineSettings(const MachineSettings & ms)
 
 void Kalel::SetExperimentSettings(const ExperimentSettings & es)
 {
+	storage.tExperimentSettings = std::make_unique<ExperimentSettings>(std::move(es));
+
 	// Create new experiment settings, logging change if experiment is running
 	if (storage.experimentStatus.inProgress == true) {
+
+		storage.tExperimentSettings->dataGeneral.fichier = storage.experimentSettings.dataGeneral.fichier;
+
 		controlMechanisms.fileWriter.RecordDataChange(false,
-			es, storage.experimentSettings,
+			*storage.tExperimentSettings, storage.experimentSettings,
 			storage.experimentStatus, storage.currentData);						// non-CSV
 		controlMechanisms.fileWriter.RecordDataChange(true,
-			es, storage.experimentSettings,
+			*storage.tExperimentSettings, storage.experimentSettings,
 			storage.experimentStatus, storage.currentData);						// CSV
+
+		LOG(logINFO) << "Experiment settings changed";
 	}
 
-	storage.tExperimentSettings = std::make_unique<ExperimentSettings>(std::move(es));
 	threadManager.ChangeExperimentSettings();
 }
