@@ -44,6 +44,8 @@ void TabGeneral::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_SPIN_MASSE_ECHANTILLON, m_SpinSampleMass);
 	DDX_Text(pDX, IDC_TEMPERATURE_EXPERIENCE, m_ExperimentTemperature);
 	DDX_Control(pDX, IDC_SPIN_TEMPERATURE_EXPERIENCE, m_SpinTemperatureExperiment);
+	DDX_Text(pDX, IDC_TEMPERATURE_EXPERIENCE2, m_ExperimentTemperatureMargin);
+	DDX_Control(pDX, IDC_SPIN_TEMPERATURE_EXPERIENCE2, m_SpinTemperatureMarginExperiment);
 	DDX_Text(pDX, IDC_COMMENTAIRES, m_Comments);
 
 	DDX_Control(pDX, IDC_COMBO_GAZ, m_CBGas);
@@ -69,6 +71,7 @@ BOOL TabGeneral::OnInitDialog()
 	m_SampleMass = allSettings.masse_echantillon;
 	m_SampleName = allSettings.nom_echantillon.c_str();
 	m_ExperimentTemperature = allSettings.temperature_experience;
+	m_ExperimentTemperatureMargin = allSettings.temperature_range_initial_check;
 	gasExp = allSettings.gas;
 	userExp = allSettings.user;
 
@@ -137,10 +140,15 @@ BOOL TabGeneral::OnInitDialog()
 	m_SpinSampleMass.SetFormat(_T("%1.4f"));
 	m_SpinSampleMass.UpdateBuddy();
 
-	m_SpinTemperatureExperiment.SetRange(0, 300);
+	m_SpinTemperatureExperiment.SetRange(-300, 300);
 	m_SpinTemperatureExperiment.SetInc(-1);
 	m_SpinTemperatureExperiment.SetFormat(_T("%1.f"));
 	m_SpinTemperatureExperiment.UpdateBuddy();
+
+	m_SpinTemperatureMarginExperiment.SetRange(-50, 50);
+	m_SpinTemperatureMarginExperiment.SetInc(-1);
+	m_SpinTemperatureMarginExperiment.SetFormat(_T("%1.f"));
+	m_SpinTemperatureMarginExperiment.UpdateBuddy();
 
 	ToggleGreyOut();
 
@@ -212,6 +220,7 @@ void TabGeneral::Reinitialisation(void)
 	m_SampleMass = allSettings.masse_echantillon;
 	m_SampleName = allSettings.nom_echantillon.c_str();
 	m_ExperimentTemperature = allSettings.temperature_experience;
+	m_ExperimentTemperatureMargin = allSettings.temperature_range_initial_check;
 
 	gasExp = allSettings.gas;
 	// remettre le bon index du gaz
@@ -257,6 +266,7 @@ void TabGeneral::WriteData()
 	allSettings.masse_echantillon = m_SampleMass;
 	allSettings.nom_echantillon = m_SampleName.GetBuffer();
 	allSettings.temperature_experience = m_ExperimentTemperature;
+	allSettings.temperature_range_initial_check = m_ExperimentTemperatureMargin;
 }
 
 

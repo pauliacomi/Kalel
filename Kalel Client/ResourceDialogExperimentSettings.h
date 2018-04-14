@@ -78,7 +78,9 @@
 #define IDC_TEMPERATURE_EXPERIENCE      5614
 #define IDC_SPIN_TEMPERATURE_EXPERIENCE 5615
 #define IDC_COMBO_CELLULE               5616
+#define IDC_TEMPERATURE_EXPERIENCE2     5646
 #define IDC_BUTTON_CELLULE              5617
+#define IDC_SPIN_TEMPERATURE_EXPERIENCE2 5647
 #define IDC_EDIT_VOLUME_TOTAL           5618
 #define IDC_EDIT_VOLUME_CALO            5619
 #define IDC_EDIT_TEMPS_LIGNE_BASE       5620
@@ -92,8 +94,8 @@
 #define IDC_PLUSDES                     5628
 #define IDC_MINUSADS                    5629
 #define IDC_MINUDES                     5630
-#define IDC_SAVE_SETT					5631
-#define IDC_LOAD_SETT					5632
+#define IDC_SAVE_SETT                   5631
+#define IDC_LOAD_SETT                   5632
 
 // Next default values for new objects
 // 

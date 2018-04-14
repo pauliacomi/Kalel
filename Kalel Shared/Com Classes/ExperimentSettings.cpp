@@ -47,6 +47,7 @@ void ExperimentSettings::ResetData()
 	dataGeneral.masse_echantillon = 1.0f;
 	dataGeneral.nom_echantillon = L"Sample";
 	dataGeneral.temperature_experience = 30;
+	dataGeneral.temperature_range_initial_check = 2;
 
 	// Divers
 	dataDivers.cell.numero = L"";

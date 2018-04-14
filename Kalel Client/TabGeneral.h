@@ -41,9 +41,11 @@ protected:
 	CString m_Comments;
 	float m_SampleMass;
 	float m_ExperimentTemperature;
+	float m_ExperimentTemperatureMargin;
 	CEdit m_EditComments;
 	CSpinBtnCtrl m_SpinSampleMass;
 	CSpinBtnCtrl m_SpinTemperatureExperiment;
+	CSpinBtnCtrl m_SpinTemperatureMarginExperiment;
 	CComboBox m_CBGas;
 	int m_GasIndex;
 	CComboBox m_CBUser;
