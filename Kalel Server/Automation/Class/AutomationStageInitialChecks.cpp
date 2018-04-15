@@ -51,6 +51,17 @@ void Automation::Verifications()
 		break;
 
 	case STEP_STATUS_END:
+
+		// Close valves
+		controls.valveControls.ValveClose(ID_VALVE_1, false);
+		controls.valveControls.ValveClose(ID_VALVE_2, false);
+		controls.valveControls.ValveClose(ID_VALVE_3, false);
+		controls.valveControls.ValveClose(ID_VALVE_4, false);
+		controls.valveControls.ValveClose(ID_VALVE_5, false);
+		controls.valveControls.ValveClose(ID_VALVE_7, false);
+		controls.valveControls.ValveClose(ID_VALVE_8, false);
+		controls.valveControls.CloseEVsAndPump(false);
+
 		LOG(logINFO) << MESSAGE_VERIFICATIONS_COMPLETE;
 		storage.experimentStatus.stepStatus = STEP_STATUS_UNDEF;
 		++storage.experimentStatus.mainStage;
