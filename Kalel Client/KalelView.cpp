@@ -734,7 +734,7 @@ LRESULT CKalelView::OnExchangeLogs(WPARAM, LPARAM incomingLogs)
 	CString * temp = new CString();
 	for (auto i = newLogs->begin(); i != newLogs->end(); ++i)
 	{
-		CString time(timeh::TimePointToISOString(i->first).c_str());
+		CString time(timeh::TimePointToShortString(i->first).c_str());
 		temp->Append(time + " " + i->second.c_str() + _T("\r\n"));
 	}
 	AffichageMessages(NULL, (LPARAM)temp);
@@ -816,7 +816,7 @@ LRESULT CKalelView::MessageBoxAlertServer(WPARAM wParam, LPARAM lParam)
 
 		bool continuer = true;
 		do {
-			result = AfxMessageBox(message->substr(delimiter + 2 + message->substr(delimiter + 1).find(':')).c_str(), ntype);
+			result = AfxMessageBox(message->substr(delimiter + 3 + message->substr(delimiter + 1).find(':')).c_str(), ntype);
 			switch (result)
 			{
 			case IDCONTINUE:

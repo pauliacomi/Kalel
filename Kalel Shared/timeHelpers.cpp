@@ -13,6 +13,7 @@ namespace timeh {
 
 	static const char *ISO_DATE_FORMAT = "%Y-%m-%dT%H:%M:%S";
 	static const wchar_t *W_ISO_DATE_FORMAT = L"%Y-%m-%dT%H:%M:%S";
+	static const char *SHORT_DATE_FORMAT = "%d-%m-%y %T";
 	static const wchar_t *W_SHORT_DATE_FORMAT = L"%d-%m-%y %T";
 
 
@@ -80,6 +81,17 @@ namespace timeh {
 		return time.str();
 	}
 
+	std::string TimeTToShortString(const std::time_t & t)
+	{
+		struct std::tm gmt;
+		localtime_s(&gmt, &t);
+
+		std::stringstream time;
+		time << std::put_time(&gmt, SHORT_DATE_FORMAT);
+
+		return time.str();
+	}
+
 	std::wstring TimeTToShortWString(const std::time_t & t)
 	{
 		struct std::tm gmt;
@@ -120,6 +132,22 @@ namespace timeh {
 		timestr << L".";
 		timestr << std::setfill(L'0') << std::setw(3) << fractional_seconds;
 		timestr << L'Z';
+
+		// Return complete string
+		return timestr.str();
+	}
+
+	std::string TimePointToShortString(const std::chrono::system_clock::time_point & tp)
+	{
+		// Build the main time string
+		std::stringstream timestr;
+		timestr << TimeTToShortString(std::chrono::system_clock::to_time_t(tp));
+
+		// Build the milisecond string
+		auto fractional_seconds = TimePointToMs(tp) % 1000;
+
+		timestr << ":";
+		timestr << std::setfill('0') << std::setw(3) << fractional_seconds;
 
 		// Return complete string
 		return timestr.str();

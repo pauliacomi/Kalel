@@ -69,10 +69,10 @@ int main(int argc, char** argv) {
 		tp = std::chrono::system_clock::now();
 
 		for (const auto &iter : ilogs) {
-			std::cerr << timeh::TimePointToISOString(iter.first) << " " << iter.second << std::flush;
+			std::cerr << timeh::TimePointToShortString(iter.first) << " " << iter.second << std::flush;
 		}
 		for (const auto &iter : elogs) {
-			std::cerr << timeh::TimePointToISOString(iter.first) << " " << iter.second << std::flush;
+			std::cerr << timeh::TimePointToShortString(iter.first) << " " << iter.second << std::flush;
 		}
 
 

@@ -16,7 +16,7 @@ static const int	NUMBER_OF_POINTS	= 2000;
 static const int	NONEXISTENT			= -255;
 static const int	HEIGHT_LIMIT		= 12 * BORDER_WIDTH + LEGEND_HEIGHT + 100;
 static const int	WIDTH_LIMIT			= 300;
-static const float	RECENT_HOURS		= 0.01f;
+static const float	RECENT_HOURS		= 0.1f;
 
 // CGrapheView
 
