@@ -13,7 +13,7 @@
 */
 
 
-void Automation::StageAdsorption()
+void Automation::StageDiscreteAdsorption()
 {
 	switch (storage.experimentStatus.stepStatus)
 	{
@@ -67,7 +67,7 @@ void Automation::StageAdsorption()
 	case STEP_STATUS_INPROGRESS + 1:
 
 		// Go through the adsorption substeps
-		if (SubstepsAdsorption()) {
+		if (SubstepsDiscreteAdsorption()) {
 			storage.experimentStatus.stepStatus = STEP_STATUS_INPROGRESS;
 		}
 		break;
@@ -105,7 +105,7 @@ void Automation::StageAdsorption()
 }
 
 
-bool Automation::SubstepsAdsorption()
+bool Automation::SubstepsDiscreteAdsorption()
 {
 	switch (storage.experimentStatus.substepStatus)
 	{

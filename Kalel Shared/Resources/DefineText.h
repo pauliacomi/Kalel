@@ -29,10 +29,10 @@
 */
 
 #define ERROR_PATHUNDEF						"The path chosen does not exist"
-#define ERROR_FILE_WRITE					"Cannot write to file!"
-#define ERROR_INSTRUMENT_INIT_FAIL			"Instrument initiation failed: \t\n%s"
-#define ERROR_INSTRUMENT_DESTROY_FAIL		"Instrument removal failed: \t\n%s"
-#define ERROR_INSTRUMENT_PORTCHANGE_FAIL	"Instrument port change failed: \t\n%s"
+#define ERROR_FILE_WRITE					"Cannot write to file! Currently paused"
+#define ERROR_INSTRUMENT_INIT_FAIL			"Instrument initiation failed: %s"
+#define ERROR_INSTRUMENT_DESTROY_FAIL		"Instrument removal failed: %s"
+#define ERROR_INSTRUMENT_PORTCHANGE_FAIL	"Instrument port change failed: %s"
 
 /*
 //
@@ -57,7 +57,7 @@
 //
 */
 
-#define MESSAGE_WARNING_PHIGH				"OVERPRESSURE: High range PT pressure (%2.3f) is over the maximum (%2.3f)."
+#define MESSAGE_WARNING_PHIGH				"OVERPRESSURE: High range PT pressure (%2.3f) is over the maximum (%2.3f)"
 #define MESSAGE_WARNING_PHNORMAL			"High range PT pressure back to normal"
 #define MESSAGE_WARNING_PHIGH_V6			"OVERPRESSURE: Low range PT pressure (%2.3f) is over the maximum (%2.3f). For safety valve 6 is closed"
 #define MESSAGE_WARNING_PHNORMAL_V6			"Low range PT pressure back to normal"
@@ -76,7 +76,7 @@
 
 // Initial checks messages
 #define MESSAGE_VERIFICATIONS				"Starting initial verifications"
-#define MESSAGE_NOSECURITY					"The security settings have been deactivated !\t\nDo you want to continue anyway?"
+#define MESSAGE_NOSECURITY					"The security settings have been deactivated! Do you want to continue anyway?"
 #define MESSAGE_CHECK_VALVES_OPEN			"Check if all the valves are set to automatic and that the valve to the sample is open"
 #define MESSAGE_CHECK_INITIAL_STATE			"Initial experiment and machine verifications"
 #define MESSAGE_CHECK_INITIAL_PRESSURE		"Checking residual pressure"
@@ -150,3 +150,14 @@
 #define MESSAGE_VACUUM_BOTTLE_CLOSE			"Close the bottle, then press OK"
 #define MESSAGE_VACUUM_BOTTLE_START			"Vacuuming up to bottle"
 #define MESSAGE_VACUUM_BOTTLE_END			"Vacuuming up to bottle finished"
+
+
+// Continuous adsorption messages
+
+#define MESSAGE_CONT_FLOWRATE				"Starting flowrate deterimination"
+#define MESSAGE_CONT_FLOWRATE_COMPLETE		"Flowrate deterimination complete"
+#define MESSAGE_CONT_DEADVOLUME				"Starting dead volume deterimination"
+#define MESSAGE_CONT_DEADVOLUME_COMPLETE	"Dead volume deterimination complete"
+#define MESSAGE_CONT_ADSORPTION				"Starting continuous adsorption"
+#define MESSAGE_CONT_ADSORPTION_START		"Open sample valve and press OK"
+#define MESSAGE_CONT_ADSORPTION_COMPLETE	"Continuous adsorption complete"

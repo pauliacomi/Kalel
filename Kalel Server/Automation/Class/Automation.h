@@ -112,12 +112,14 @@ protected:
 	// Steps
 	***********************************************************************************************************************************/
 
-	void StageEquilibration();
-	void StageAdsorption();
-	bool SubstepsAdsorption();
-	void StageDesorption();
-	bool SubstepsDesorption();
-	void StageContinuous();
+	void StageEquilibration(int time);
+	void StageDiscreteAdsorption();
+	bool SubstepsDiscreteAdsorption();
+	void StageDiscreteDesorption();
+	bool SubstepsDiscreteDesorption();
+	void StageContinuousAdsorption();
+	void StageContinuousFlowrate();
+	void StageContinuousDeadvolume();
 	void StageVacuum();
 
 

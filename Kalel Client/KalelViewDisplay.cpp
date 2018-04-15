@@ -116,7 +116,7 @@ LRESULT CKalelView::DisplayStepProgress(const ExperimentStatus &status)
 			break;
 		case STAGE_CONT_FLOWRATE:
 			break;
-		case STAGE_CONT_REFVOL:
+		case STAGE_CONT_DEADVOL:
 			break;
 		case STAGE_CONT_EQUILIBRATION:
 			break;

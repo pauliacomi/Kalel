@@ -32,7 +32,6 @@ void Automation::SampleVacuum()
 		{
 		case STEP_STATUS_UNDEF:
 			LOG_EVENT(qOK) << MESSAGE_VACUUM_CELL_CLOSE;
-			storage.experimentStatus.isWaitingUser = true;
 			eventUserInput = true;
 			storage.automationControl.notify_all();
 			storage.experimentStatus.stepStatus = STEP_STATUS_START;
@@ -114,7 +113,6 @@ void Automation::BottleVacuum()
 		{
 		case STEP_STATUS_UNDEF:
 			LOG_EVENT(qOK) << MESSAGE_VACUUM_BOTTLE_CLOSE;
-			storage.experimentStatus.isWaitingUser = true;
 			eventUserInput = true;
 			storage.automationControl.notify_all();
 			storage.experimentStatus.stepStatus = STEP_STATUS_START;

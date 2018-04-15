@@ -106,7 +106,9 @@ void Automation::Execution()
 						storage.experimentStatus,
 						controls.valveControls.ValveIsOpen(ID_VALVE_6));
 					if (err) {
-						LOG(logERROR) << ERROR_FILE_WRITE;
+						LOG_EVENT(qOK) << ERROR_FILE_WRITE;
+						eventUserInput = true;
+						storage.automationControl.notify_all();
 					}
 
 					// Restart the timer to record time between measurements
@@ -166,6 +168,7 @@ void Automation::Execution()
 
 			if (eventUserInput)							// Wait for user input
 			{
+				storage.experimentStatus.isWaitingUser = true;
 				userChoice = 0;							// make sure no choice selected
 				Pause();								// pause everything
 				eventUserInput = false;					// reset event
@@ -208,7 +211,7 @@ void Automation::ExecutionManual()
 		storage.experimentStatus.timeStart = timeh::TimePointToMs(timeh::NowTime());
 
 		// Continue experiment
-		storage.experimentStatus.mainStage = STAGE_MANUAL;
+		++storage.experimentStatus.mainStage;
 		storage.experimentStatus.stepStatus = STEP_STATUS_INPROGRESS;
 		break;
 	}
@@ -250,13 +253,13 @@ void Automation::ExecutionAuto()
 		Verifications();
 		break;
 	case STAGE_AUTO_EQUILIBRATION:
-		StageEquilibration();
+		StageEquilibration(storage.experimentSettings.dataDivers.time_baseline);
 		break;
 	case STAGE_AUTO_ADSORPTION:
-		StageAdsorption();
+		StageDiscreteAdsorption();
 		break;
 	case STAGE_AUTO_DESORPTION:
-		StageDesorption();
+		StageDiscreteDesorption();
 		break;
 	case STAGE_AUTO_VACUUM_SAMPLE:
 		StageVacuum();
@@ -276,9 +279,11 @@ void Automation::ExecutionAuto()
 
 void Automation::ExecutionContinuous()
 {
-	// First time running command
-	if (storage.experimentStatus.stepStatus == STEP_STATUS_UNDEF) {
-
+	// Stages of automatic continuous experiment
+	switch (storage.experimentStatus.mainStage)
+	{
+	case STAGE_UNDEF:
+	{
 		// Send start message
 		LOG(logINFO) << MESSAGE_EXPSTART;
 
@@ -293,24 +298,37 @@ void Automation::ExecutionContinuous()
 			LOG(logERROR) << ERROR_PATHUNDEF;
 		}
 
-		// Write variables to starting position
+		// Record start
 		storage.experimentStatus.inProgress = true;
-		storage.experimentStatus.mainStage = STAGE_AUTO_VERIFICATIONS;
-		storage.experimentStatus.stepStatus = STEP_STATUS_START;
-		storage.experimentStatus.substepStatus = SUBSTEP_STATUS_START;
-	}
+		storage.experimentStatus.isRecording = true;
+		
+		// Start the timer to record time between recording of measurements
+		storage.timerRecording.Start();
 
-	// Stages of automatic experiment
-	switch (storage.experimentStatus.mainStage)
-	{
+		// Record experiment start time
+		storage.experimentStatus.timeStart = timeh::TimePointToMs(timeh::NowTime());
+
+		// Advance
+		++storage.experimentStatus.mainStage;
+		break;
+	}
 	case STAGE_CONT_VERIFICATIONS:
 		Verifications();
 		break;
+	case STAGE_CONT_FLOWRATE:
+		StageContinuousFlowrate();
+		break;
+	case STAGE_CONT_DEADVOL:
+		StageContinuousDeadvolume();
+		break;
 	case STAGE_CONT_EQUILIBRATION:
-		StageEquilibration();
+		StageEquilibration(storage.experimentSettings.dataContinuous.temps_equilibre_continue);
 		break;
 	case STAGE_CONT_ADSORPTION:
-		StageContinuous();
+		StageContinuousAdsorption();
+		break;
+	case STAGE_CONT_END_EQUILIBRATION:
+		StageEquilibration(storage.experimentSettings.dataContinuous.temps_final_equilibre);
 		break;
 	case STAGE_CONT_VACUUM_SAMPLE:
 		StageVacuum();
@@ -318,8 +336,7 @@ void Automation::ExecutionContinuous()
 	case STAGE_AUTO_END:
 
 		// If the experiment has finished
-		shutdownReason = Stop::Normal;				// set a normal shutdown
-		eventShutdown = true;						// end then set the event
+		eventShutdown = true;						// set the event
 		storage.automationControl.notify_all();		// and notify
 
 		break;

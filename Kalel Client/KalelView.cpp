@@ -816,7 +816,7 @@ LRESULT CKalelView::MessageBoxAlertServer(WPARAM wParam, LPARAM lParam)
 
 		bool continuer = true;
 		do {
-			result = AfxMessageBox(message->substr(delimiter + 3 + message->substr(delimiter + 1).find(':')).c_str(), ntype);
+			result = AfxMessageBox(message->substr(delimiter + 2 + message->substr(delimiter + 1).find(':')).c_str(), ntype);
 			switch (result)
 			{
 			case IDCONTINUE:

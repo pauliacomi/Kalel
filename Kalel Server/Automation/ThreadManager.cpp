@@ -190,6 +190,7 @@ bool ThreadManager::SetUserChoice(unsigned int choice)
 	{
 		// Signal the atomic bool as modified
 		std::unique_lock<std::mutex> lk(storage.automationMutex);	// mutex for thread notification
+		storage.experimentStatus.isWaitingUser = false;
 		automation->userChoice = choice;							// set choice
 		automation->eventResume = true;								// then continue
 		storage.automationControl.notify_all();

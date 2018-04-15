@@ -12,7 +12,7 @@
 */
 
 
-void Automation::StageEquilibration()
+void Automation::StageEquilibration(int time)
 {
 	switch (storage.experimentStatus.stepStatus)
 	{
@@ -29,7 +29,7 @@ void Automation::StageEquilibration()
 		storage.experimentStatus.timeStart = timeh::TimePointToMs(timeh::NowTime());
 
 		// Set the time to wait
-		WaitMinutes(storage.experimentSettings.dataDivers.time_baseline, true);
+		WaitMinutes(time, true);
 
 		storage.experimentStatus.stepStatus = STEP_STATUS_END;												// Set next step
 

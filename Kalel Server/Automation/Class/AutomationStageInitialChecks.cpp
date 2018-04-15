@@ -74,73 +74,85 @@ bool Automation::VerificationSecurity()
 {
 	if (!storage.machineSettings.SafetyOn)
 	{
-		if (!storage.experimentStatus.isWaitingUser) {
+		switch (storage.experimentStatus.substepStatus)
+		{
+		case SUBSTEP_STATUS_START:
 			// Ask user if they want to continue
 			LOG_EVENT(qYESNO) << MESSAGE_NOSECURITY;
 
-			storage.experimentStatus.isWaitingUser = true;
 			eventUserInput = true;
 			storage.automationControl.notify_all();
+			storage.experimentStatus.substepStatus = SUBSTEP_STATUS_INPROGRESS;
+			break;
 
-			return false;
-		}
-		else
-		{
+		case SUBSTEP_STATUS_INPROGRESS:
 			switch (userChoice)
 			{
-			case CHOICE_NONE:									// Do nothing yet
-				return false;
-				break;
 			case CHOICE_YES:									// Signal that it's good
-				storage.experimentStatus.isWaitingUser = false;
-				return true;
+				storage.experimentStatus.substepStatus = SUBSTEP_STATUS_END;
 				break;
-			case CHOICE_NO:										// Stop experiment
 
+			case CHOICE_NO:										// Stop experiment
 				shutdownReason = Stop::Cancel;
 				eventShutdown = true;
 				storage.automationControl.notify_all();
-				return false;
 				break;
+
+			case CHOICE_NONE:									// Do nothing yet
 			default:
-				return false;
 				break;
 			}
-		}
-	}
+			break;
 
+		case SUBSTEP_STATUS_END:
+			return true;
+			break;
+
+		default:
+			break;
+		}
+		return false;
+	}
 	return true;
 }
 
 
 bool Automation::VerificationValves()
 {
-	if (!storage.experimentStatus.isWaitingUser) {
+	switch (storage.experimentStatus.substepStatus)
+	{
+	case SUBSTEP_STATUS_START:
 		// Ask user to check the valves
 		LOG(logINFO) << MESSAGE_CHECK_INITIAL_STATE;
 		LOG_EVENT(qOK) << MESSAGE_CHECK_VALVES_OPEN;
 
 		// Set wait
-		storage.experimentStatus.isWaitingUser = true;
 		eventUserInput = true;
 		storage.automationControl.notify_all();
+		storage.experimentStatus.substepStatus = SUBSTEP_STATUS_INPROGRESS;
+		break;
 
-		return false;
-	}
-	else {
+	case SUBSTEP_STATUS_INPROGRESS:
 		switch (userChoice)
 		{
-		case CHOICE_NONE:									// Do nothing yet
-			break;
 		case CHOICE_YES:									// Signal that it's good
-			storage.experimentStatus.isWaitingUser = false;
-			return true;
+			storage.experimentStatus.substepStatus = SUBSTEP_STATUS_END;
 			break;
+
+		case CHOICE_NONE:									// Do nothing yet
 		default:
 			break;
 		}
-		return false;
+		break;
+
+	case SUBSTEP_STATUS_END:
+		return true;
+		break;
+
+	default:
+		break;
 	}
+	return false;
 }
 
 
@@ -182,46 +194,43 @@ bool Automation::VerificationResidualPressure()
 
 		if (storage.currentData.pressureHigh >= storage.machineSettings.PressureLimitVacuum)
 		{
-			if (!storage.experimentStatus.isWaitingUser) {
+			// Ask user if they want to continue
+			LOG_EVENT(qYESNO) << stringh::string_format(MESSAGE_WARNING_INITIAL_PRESSURE,
+				storage.currentData.pressureHigh.load(), storage.machineSettings.PressureLimitVacuum);
 
-				// Ask user if they want to continue
-				LOG_EVENT(qYESNO) << stringh::string_format(MESSAGE_WARNING_INITIAL_PRESSURE,
-					storage.currentData.pressureHigh.load(), storage.machineSettings.PressureLimitVacuum);
-
-				storage.experimentStatus.isWaitingUser = true;
-				eventUserInput = true;
-				storage.automationControl.notify_all();
-			}
-			else
-			{
-				switch (userChoice)
-				{
-				case CHOICE_NONE:									// Do nothing yet
-					break;
-				case CHOICE_YES:									// Signal that it's good
-					storage.experimentStatus.isWaitingUser = false;
-					return true;
-					break;
-				case CHOICE_NO:										// Stop experiment
-					shutdownReason = Stop::Cancel;
-					eventShutdown = true;
-					storage.automationControl.notify_all();
-					break;
-				default:
-					break;
-				}
-			}
+			eventUserInput = true;
+			storage.automationControl.notify_all();
+			storage.experimentStatus.substepStatus = SUBSTEP_STATUS_INPROGRESS + 2;
 		}
 		else
 		{
 			// Continue to next step
-			storage.experimentStatus.isWaitingUser = false;
-			storage.experimentStatus.substepStatus = SUBSTEP_STATUS_INPROGRESS + 2;
+			storage.experimentStatus.substepStatus = SUBSTEP_STATUS_INPROGRESS + 3;
 		}
 
 		break;
 
 	case SUBSTEP_STATUS_INPROGRESS + 2:
+
+		switch (userChoice)
+		{
+		case CHOICE_YES:									// Signal that it's good
+			storage.experimentStatus.substepStatus = SUBSTEP_STATUS_INPROGRESS + 3;
+			break;
+
+		case CHOICE_NO:										// Stop experiment
+			shutdownReason = Stop::Cancel;
+			eventShutdown = true;
+			storage.automationControl.notify_all();
+			break;
+
+		case CHOICE_NONE:									// Do nothing yet
+		default:
+			break;
+		}
+		break;
+
+	case SUBSTEP_STATUS_INPROGRESS + 3:
 
 		// Open valve 5
 		controls.valveControls.ValveOpen(ID_VALVE_5, true);
@@ -230,50 +239,54 @@ bool Automation::VerificationResidualPressure()
 		WaitSeconds(storage.machineSettings.TimeWaitValves, true);
 
 		// Continue to next step
-		storage.experimentStatus.substepStatus = SUBSTEP_STATUS_END;
+		storage.experimentStatus.substepStatus = SUBSTEP_STATUS_INPROGRESS + 4;
 		break;
 
-	case SUBSTEP_STATUS_END:
 
+	case SUBSTEP_STATUS_INPROGRESS + 4:
 		if (storage.currentData.pressureHigh >= storage.machineSettings.PressureLimitVacuum)
 		{
-			if (!storage.experimentStatus.isWaitingUser) {
-				// Ask user if they want to continue
-				LOG_EVENT(qYESNO) << stringh::string_format(MESSAGE_WARNING_INITIAL_PRESSURE, 
-					storage.currentData.pressureHigh.load(), storage.machineSettings.PressureLimitVacuum);
+			// Ask user if they want to continue
+			LOG_EVENT(qYESNO) << stringh::string_format(MESSAGE_WARNING_INITIAL_PRESSURE,
+				storage.currentData.pressureHigh.load(), storage.machineSettings.PressureLimitVacuum);
 
-				storage.experimentStatus.isWaitingUser = true;
-				eventUserInput = true;
-				storage.automationControl.notify_all();
-			}
-			else
-			{
-				switch (userChoice)
-				{
-				case CHOICE_NONE:									// Do nothing yet
-					break;
-				case CHOICE_YES:									// Signal that it's good
-					controls.valveControls.ValveClose(ID_VALVE_4, true);
-					controls.valveControls.ValveClose(ID_VALVE_5, true);
-					return true;
-					break;
-				case CHOICE_NO:										// Stop experiment
-					shutdownReason = Stop::Cancel;
-					eventShutdown = true;
-					storage.automationControl.notify_all();
-					break;
-				default:
-					break;
-				}
-			}
+			eventUserInput = true;
+			storage.automationControl.notify_all();
+			storage.experimentStatus.substepStatus = SUBSTEP_STATUS_INPROGRESS + 5;
 		}
 		else
 		{
 			controls.valveControls.ValveClose(ID_VALVE_4, true);
 			controls.valveControls.ValveClose(ID_VALVE_5, true);
-			storage.experimentStatus.isWaitingUser = false;			// If somehow it got here with this true
-			return true;
+			storage.experimentStatus.substepStatus = SUBSTEP_STATUS_END;
 		}
+		break;
+
+
+	case SUBSTEP_STATUS_INPROGRESS + 5:
+
+		switch (userChoice)
+		{
+		case CHOICE_YES:									// Signal that it's good
+			controls.valveControls.ValveClose(ID_VALVE_4, true);
+			controls.valveControls.ValveClose(ID_VALVE_5, true);
+			storage.experimentStatus.substepStatus = SUBSTEP_STATUS_END;
+			break;
+
+		case CHOICE_NO:										// Stop experiment
+			shutdownReason = Stop::Cancel;
+			eventShutdown = true;
+			storage.automationControl.notify_all();
+			break;
+
+		case CHOICE_NONE:									// Do nothing yet
+		default:
+			break;
+		}
+		break;
+
+	case SUBSTEP_STATUS_END:
+		return true;
 		break;
 
 	default:
@@ -297,61 +310,59 @@ bool Automation::VerificationTemperature()
 			(storage.currentData.temperatureCage < storage.experimentSettings.dataGeneral.temperature_experience - storage.experimentSettings.dataGeneral.temperature_range_initial_check) ||
 			(storage.currentData.temperatureCage > storage.experimentSettings.dataGeneral.temperature_experience + storage.experimentSettings.dataGeneral.temperature_range_initial_check))
 		{
-			if (!storage.experimentStatus.isWaitingUser) {
+			LOG_EVENT(qYESTRYCANCEL) << stringh::string_format(MESSAGE_CHECK_TEMPERATURE_DIFF, storage.currentData.temperatureCalo.load(),
+				storage.experimentSettings.dataGeneral.temperature_experience - storage.experimentSettings.dataGeneral.temperature_range_initial_check);
 
-				LOG_EVENT(qYESTRYCANCEL) << stringh::string_format(MESSAGE_CHECK_TEMPERATURE_DIFF, storage.currentData.temperatureCalo.load(),
-					storage.experimentSettings.dataGeneral.temperature_experience - storage.experimentSettings.dataGeneral.temperature_range_initial_check);
-
-				storage.experimentStatus.isWaitingUser = true;
-				eventUserInput = true;
-				storage.automationControl.notify_all();
-
-				return false;
-			}
-			else {
-				switch (userChoice)
-				{
-				case CHOICE_NONE:									// Do nothing yet
-					return false;
-					break;
-				case CHOICE_YES:									// Signal that it's good
-					storage.experimentStatus.isWaitingUser = false;
-					return true;
-					break;
-				case CHOICE_WAIT:									// Go to wait step
-					LOG(logINFO) << MESSAGE_WAIT_TEMP_EQUILIBRATION;
-					storage.experimentStatus.substepStatus = SUBSTEP_STATUS_INPROGRESS;
-					return false;
-					break;
-				case CHOICE_NO:										// Stop experiment
-
-					shutdownReason = Stop::Cancel;
-					eventShutdown = true;
-					storage.automationControl.notify_all();
-					return false;
-					break;
-				default:
-					break;
-				}
-			}
+			eventUserInput = true;
+			storage.automationControl.notify_all();
+			storage.experimentStatus.substepStatus = SUBSTEP_STATUS_INPROGRESS;
 		}
 		else {
-			storage.experimentStatus.isWaitingUser = false;			// If somehow it got here with this true
-			return true;
+			storage.experimentStatus.substepStatus = SUBSTEP_STATUS_END;
 		}
 		break;
 
 	case SUBSTEP_STATUS_INPROGRESS:
+		switch (userChoice)
+		{
+		case CHOICE_YES:									// Signal that it's good
+			storage.experimentStatus.substepStatus = SUBSTEP_STATUS_END;
+			break;
+
+		case CHOICE_WAIT:									// Go to wait step
+			LOG(logINFO) << MESSAGE_WAIT_TEMP_EQUILIBRATION;
+			storage.experimentStatus.substepStatus = SUBSTEP_STATUS_INPROGRESS + 1;
+			break;
+
+		case CHOICE_NO:										// Stop experiment
+			shutdownReason = Stop::Cancel;
+			eventShutdown = true;
+			storage.automationControl.notify_all();
+			break;
+
+		case CHOICE_NONE:									// Do nothing yet
+		default:
+			break;
+		}
+		break;
+
+	case SUBSTEP_STATUS_INPROGRESS + 1:
 		// Loop until the temperature is stable
 		if ((storage.currentData.temperatureCalo < storage.experimentSettings.dataGeneral.temperature_experience - storage.experimentSettings.dataGeneral.temperature_range_initial_check) ||
 			(storage.currentData.temperatureCalo > storage.experimentSettings.dataGeneral.temperature_experience + storage.experimentSettings.dataGeneral.temperature_range_initial_check) ||
 			(storage.currentData.temperatureCage < storage.experimentSettings.dataGeneral.temperature_experience - storage.experimentSettings.dataGeneral.temperature_range_initial_check) ||
 			(storage.currentData.temperatureCage > storage.experimentSettings.dataGeneral.temperature_experience + storage.experimentSettings.dataGeneral.temperature_range_initial_check))
 		{
-			return false;
+			break;
 		}
-		else return true;
+		else
+			storage.experimentStatus.substepStatus = SUBSTEP_STATUS_END;;
 		break;
+
+	case SUBSTEP_STATUS_END:
+		return true;
+		break;
+
 	default:
 		break;
 	}
