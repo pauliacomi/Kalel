@@ -123,8 +123,8 @@ bool Automation::SubstepsDiscreteDesorption()
 	****************/
 	case SUBSTEP_STATUS_REMOVAL:
 		LOG(logINFO) << stringh::string_format(MESSAGE_OUTGAS_ATTEMPT, storage.experimentStatus.injectionAttemptCounter.load());						// Log injection
-		controls.valveControls.OpenEVsAndPump(true);
-		WaitSeconds(storage.machineSettings.TimeWaitPump);
+		if (controls.valveControls.OpenEVsAndPump(true))
+			WaitSeconds(storage.machineSettings.TimeWaitPump);
 		storage.experimentStatus.substepStatus = SUBSTEP_STATUS_REMOVAL + 1;
 		break;
 

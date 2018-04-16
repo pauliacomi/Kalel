@@ -129,10 +129,13 @@ bool ValveController::CloseAllValves(bool verbose)
 
 bool ValveController::OpenEVsAndPump(bool verbose)
 {
+	bool ret = false;
+
 	if (!PumpIsActive()) {
 		instruments.ActuateController(ID_EV_1, true);
 		instruments.ActuateController(ID_EV_2, true);
 		instruments.ActuateController(ID_PUMP, true);
+		ret = true;
 	}
 
 	// Log message
@@ -141,7 +144,7 @@ bool ValveController::OpenEVsAndPump(bool verbose)
 	}
 
 	// Return success
-	return true;
+	return ret;
 }
 
 bool ValveController::CloseEVsAndPump(bool verbose)
