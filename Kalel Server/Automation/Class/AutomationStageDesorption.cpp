@@ -129,25 +129,25 @@ bool Automation::SubstepsDiscreteDesorption()
 		break;
 
 	case SUBSTEP_STATUS_REMOVAL + 1:
-		controls.valveControls.ValveOpen(ID_VALVE_7, true);
+		controls.valveControls.ValveOpen(ID_VALVE_8, true);
 		WaitSeconds(storage.machineSettings.TimeWaitValvesShort);
 		storage.experimentStatus.substepStatus = SUBSTEP_STATUS_REMOVAL + 2;
 		break;
 
 	case SUBSTEP_STATUS_REMOVAL + 2:
-		controls.valveControls.ValveClose(ID_VALVE_7, true);
+		controls.valveControls.ValveClose(ID_VALVE_8, true);
 		WaitSeconds(storage.machineSettings.TimeWaitValvesShort);
 		storage.experimentStatus.substepStatus = SUBSTEP_STATUS_REMOVAL + 3;
 		break;
 
 	case SUBSTEP_STATUS_REMOVAL + 3:
-		controls.valveControls.ValveOpen(ID_VALVE_8, true);
+		controls.valveControls.ValveOpen(ID_VALVE_7, true);
 		WaitSeconds(storage.machineSettings.TimeWaitValvesShort);
 		storage.experimentStatus.substepStatus = SUBSTEP_STATUS_REMOVAL + 4;
 		break;
 
 	case SUBSTEP_STATUS_REMOVAL + 4:
-		controls.valveControls.ValveClose(ID_VALVE_8, true);
+		controls.valveControls.ValveClose(ID_VALVE_7, true);
 		WaitSeconds(storage.machineSettings.TimeWaitValvesShort);
 		storage.experimentStatus.substepStatus = SUBSTEP_STATUS_CHECK;					// Move to removal check
 		break;

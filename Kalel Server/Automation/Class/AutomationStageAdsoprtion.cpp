@@ -109,15 +109,9 @@ bool Automation::SubstepsDiscreteAdsorption()
 	case SUBSTEP_STATUS_START:
 	{
 		storage.experimentStatus.injectionAttemptCounter = 0;																						// Reset injection attempt counter
-		// Check for safety
-		auto p_lp = storage.machineSettings.readers.find(PRESSURE_LP);
-		if (p_lp != storage.machineSettings.readers.end())
-		{
-			if (storage.experimentStatus.pressureHighOld > 0.9 * p_lp->second.safe_max)
-			{
-				controls.valveControls.ValveClose(ID_VALVE_6, false);
-			}
-		}
+
+		controls.valveControls.ValveClose(ID_VALVE_6, true);
+
 		storage.experimentStatus.pressureHighOld = storage.experimentStatus.pressureInitial.load();													// Save the "old" pressure
 
 		LOG(logINFO) << stringh::string_format(MESSAGE_ADSORPTION_DOSE_START,
@@ -224,6 +218,16 @@ bool Automation::SubstepsDiscreteAdsorption()
 				LOG(logINFO) << MESSAGE_EQUILIBRATION_REFVOL;
 				controls.valveControls.ValveClose(ID_VALVE_4, false);																			// Close valve 4
 				controls.valveControls.CloseEVsAndPump(false);																					// Close pump if needed
+
+				// Open V6 if possible
+				auto p_lp = storage.machineSettings.readers.find(PRESSURE_LP);
+				if (p_lp != storage.machineSettings.readers.end())
+				{
+					if (storage.experimentStatus.pressureHighOld < 0.9 * p_lp->second.safe_max)
+					{
+						controls.valveControls.ValveOpen(ID_VALVE_6, true);
+					}
+				}
 				WaitMinutes(storage.experimentSettings.dataAdsorption[storage.experimentStatus.stepCounter].temps_volume, true);				// Set the time to wait for equilibration in the reference volume
 				storage.experimentStatus.isRecording = true;
 				storage.experimentStatus.substepStatus = SUBSTEP_STATUS_ADSORPTION;																// Go to adsorption
@@ -242,25 +246,25 @@ bool Automation::SubstepsDiscreteAdsorption()
 		break;
 
 	case SUBSTEP_STATUS_REMOVAL + 1:
-		controls.valveControls.ValveOpen(ID_VALVE_7, true);
+		controls.valveControls.ValveOpen(ID_VALVE_8, true);
 		WaitSeconds(storage.machineSettings.TimeWaitValvesShort);
 		storage.experimentStatus.substepStatus = SUBSTEP_STATUS_REMOVAL + 2;
 		break;
 
 	case SUBSTEP_STATUS_REMOVAL + 2:
-		controls.valveControls.ValveClose(ID_VALVE_7, true);
+		controls.valveControls.ValveClose(ID_VALVE_8, true);
 		WaitSeconds(storage.machineSettings.TimeWaitValvesShort);
 		storage.experimentStatus.substepStatus = SUBSTEP_STATUS_REMOVAL + 3;
 		break;
 
 	case SUBSTEP_STATUS_REMOVAL + 3:
-		controls.valveControls.ValveOpen(ID_VALVE_8, true);
+		controls.valveControls.ValveOpen(ID_VALVE_7, true);
 		WaitSeconds(storage.machineSettings.TimeWaitValvesShort);
 		storage.experimentStatus.substepStatus = SUBSTEP_STATUS_REMOVAL + 4;
 		break;
 
 	case SUBSTEP_STATUS_REMOVAL + 4:
-		controls.valveControls.ValveClose(ID_VALVE_8, true);
+		controls.valveControls.ValveClose(ID_VALVE_7, true);
 		WaitSeconds(storage.machineSettings.TimeWaitValvesShort);
 		storage.experimentStatus.substepStatus = SUBSTEP_STATUS_CHECK;							// Go back to the start
 		break;
