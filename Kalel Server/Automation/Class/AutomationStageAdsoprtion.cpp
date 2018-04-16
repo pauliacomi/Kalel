@@ -31,24 +31,14 @@ void Automation::StageDiscreteAdsorption()
 		controls.valveControls.ValveClose(ID_VALVE_8, false);
 
 		storage.experimentStatus.pressureInitial = storage.currentData.pressureHigh.load();											// Set the initial pressure
-
 		storage.experimentStatus.stepStatus = STEP_STATUS_START;																	// Set next step
 		break;
 		
 	case STEP_STATUS_START:
 	{
-		LOG(logINFO) << stringh::string_format(MESSAGE_ADSORPTION_STAGE_START, storage.experimentStatus.stepCounter.load());	// Log the step change
+		LOG(logINFO) << stringh::string_format(MESSAGE_ADSORPTION_STAGE_START, storage.experimentStatus.stepCounter.load());		// Log the step change
 		storage.experimentStatus.injectionDose = 0;
 
-		// Check for safety
-		auto p_lp = storage.machineSettings.readers.find(PRESSURE_LP);
-		if (p_lp != storage.machineSettings.readers.end())
-		{
-			if (storage.currentData.pressureLow > 0.9 * p_lp->second.safe_max)
-			{
-				controls.valveControls.ValveClose(ID_VALVE_6, false);
-			}
-		}
 		storage.experimentStatus.stepStatus = STEP_STATUS_INPROGRESS;																// Set next step
 		break;
 	}
@@ -117,15 +107,25 @@ bool Automation::SubstepsDiscreteAdsorption()
 	Initial
 	****************/
 	case SUBSTEP_STATUS_START:
+	{
 		storage.experimentStatus.injectionAttemptCounter = 0;																						// Reset injection attempt counter
+		// Check for safety
+		auto p_lp = storage.machineSettings.readers.find(PRESSURE_LP);
+		if (p_lp != storage.machineSettings.readers.end())
+		{
+			if (storage.experimentStatus.pressureHighOld > 0.9 * p_lp->second.safe_max)
+			{
+				controls.valveControls.ValveClose(ID_VALVE_6, false);
+			}
+		}
 		storage.experimentStatus.pressureHighOld = storage.experimentStatus.pressureInitial.load();													// Save the "old" pressure
 
 		LOG(logINFO) << stringh::string_format(MESSAGE_ADSORPTION_DOSE_START,
-			storage.experimentStatus.stepCounter.load(), storage.experimentStatus.injectionDose.load());										// Log current dose
+			storage.experimentStatus.stepCounter.load(), storage.experimentStatus.injectionDose.load());											// Log current dose
 		storage.experimentStatus.isRecording = false;
 		storage.experimentStatus.substepStatus = SUBSTEP_STATUS_INJECTION;																			// Move to injection
 		break;
-
+	}
 	/****************
 	Injection
 	****************/
@@ -223,7 +223,7 @@ bool Automation::SubstepsDiscreteAdsorption()
 			{
 				LOG(logINFO) << MESSAGE_EQUILIBRATION_REFVOL;
 				controls.valveControls.ValveClose(ID_VALVE_4, false);																			// Close valve 4
-				controls.valveControls.CloseEVsAndPump(false);																			// Close pump if needed
+				controls.valveControls.CloseEVsAndPump(false);																					// Close pump if needed
 				WaitMinutes(storage.experimentSettings.dataAdsorption[storage.experimentStatus.stepCounter].temps_volume, true);				// Set the time to wait for equilibration in the reference volume
 				storage.experimentStatus.isRecording = true;
 				storage.experimentStatus.substepStatus = SUBSTEP_STATUS_ADSORPTION;																// Go to adsorption
@@ -287,6 +287,8 @@ bool Automation::SubstepsDiscreteAdsorption()
 		// Display sample isolation message
 		LOG(logINFO) << MESSAGE_ADSORPTION_CLOSEV;
 
+		storage.experimentStatus.pressureFinal = storage.currentData.pressureHigh;														// Save final pressure
+
 		// Close valves
 		controls.valveControls.ValveClose(ID_VALVE_2, true);
 		controls.valveControls.ValveClose(ID_VALVE_3, true);
@@ -299,7 +301,7 @@ bool Automation::SubstepsDiscreteAdsorption()
 		LOG(logINFO) << stringh::string_format(MESSAGE_ADSORPTION_DOSE_END,
 			storage.experimentStatus.stepCounter.load(), storage.experimentStatus.injectionDose.load());						// Log current dose
 	
-		storage.experimentStatus.pressureFinal = storage.currentData.pressureHigh;
+		storage.experimentStatus.pressureInitial = storage.currentData.pressureHigh;
 
 		// Increment dose
 		++storage.experimentStatus.injectionDose;

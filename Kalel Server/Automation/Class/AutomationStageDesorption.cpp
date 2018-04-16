@@ -276,6 +276,8 @@ bool Automation::SubstepsDiscreteDesorption()
 		// Display sample isolation message
 		LOG(logINFO) << MESSAGE_DESORPTION_CLOSEV;
 
+		storage.experimentStatus.pressureFinal = storage.currentData.pressureHigh;														// Save final pressure
+
 		// Close valves
 		controls.valveControls.ValveClose(ID_VALVE_2, true);
 		controls.valveControls.ValveClose(ID_VALVE_3, true);
@@ -288,7 +290,7 @@ bool Automation::SubstepsDiscreteDesorption()
 		LOG(logINFO) << stringh::string_format(MESSAGE_DESORPTION_DOSE_END,
 			storage.experimentStatus.stepCounter.load(), storage.experimentStatus.injectionDose.load());
 
-		storage.experimentStatus.pressureFinal = storage.currentData.pressureHigh;
+		storage.experimentStatus.pressureInitial = storage.currentData.pressureHigh;
 
 		// Increment dose
 		++storage.experimentStatus.injectionDose;
