@@ -123,6 +123,7 @@ bool Automation::SubstepsDiscreteDesorption()
 	****************/
 	case SUBSTEP_STATUS_REMOVAL:
 		LOG(logINFO) << stringh::string_format(MESSAGE_OUTGAS_ATTEMPT, storage.experimentStatus.injectionAttemptCounter.load());						// Log injection
+		controls.valveControls.ValveClose(ID_VALVE_4, false);
 		if (controls.valveControls.OpenEVsAndPump(true))
 			WaitSeconds(storage.machineSettings.TimeWaitPump);
 		storage.experimentStatus.substepStatus = SUBSTEP_STATUS_REMOVAL + 1;
@@ -199,7 +200,7 @@ bool Automation::SubstepsDiscreteDesorption()
 				storage.experimentStatus.substepStatus = SUBSTEP_STATUS_INJECTION;	
 			}
 			// Check if removal has undershot
-			else if (storage.experimentStatus.pressureInitial - storage.currentData.pressureHigh >
+			else if (storage.experimentStatus.pressureInitial - storage.currentData.pressureHigh <
 				storage.machineSettings.InjectionMultiplier * (storage.experimentSettings.dataDesorption[storage.experimentStatus.stepCounter].delta_pression))
 			{
 				// Reset counter
