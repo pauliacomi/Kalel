@@ -61,9 +61,12 @@ void Automation::StageDiscreteDesorption()
 		break;
 
 	case STEP_STATUS_END:
-		
+
 		LOG(logINFO) << stringh::string_format(MESSAGE_DESORPTION_STAGE_END, storage.experimentStatus.stepCounter.load());		// Log the step change
-		
+				
+		// Make sure we don't skip recording
+		storage.experimentStatus.isRecording = true;
+
 		// Increment counter
 		++storage.experimentStatus.stepCounter;
 

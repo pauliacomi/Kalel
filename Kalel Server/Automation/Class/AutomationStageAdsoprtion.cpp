@@ -76,6 +76,9 @@ void Automation::StageDiscreteAdsorption()
 
 		LOG(logINFO) << stringh::string_format(MESSAGE_ADSORPTION_STAGE_END, storage.experimentStatus.stepCounter.load());		// Log the step change
 		
+		// Make sure we don't skip recording
+		storage.experimentStatus.isRecording = true;
+
 		// Increment counter
 		++storage.experimentStatus.stepCounter;
 

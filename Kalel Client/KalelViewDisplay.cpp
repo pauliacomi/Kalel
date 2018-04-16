@@ -111,20 +111,26 @@ LRESULT CKalelView::DisplayStepProgress(const ExperimentStatus &status)
 		case STAGE_UNDEF:
 			substep.Format(STR_STAGE_UNDEF);
 			break;
-		case STAGE_AUTO_VERIFICATIONS:
+		case STAGE_CONT_VERIFICATIONS:
 			substep.Format(STR_STAGE_AUTO_VERIFICATIONS);
 			break;
 		case STAGE_CONT_FLOWRATE:
+			substep.Format(STR_STAGE_CONT_FLOWRATE);
 			break;
 		case STAGE_CONT_DEADVOL:
+			substep.Format(STR_STAGE_CONT_DEADVOL);
 			break;
 		case STAGE_CONT_EQUILIBRATION:
+			substep.Format(STR_STAGE_AUTO_EQUILIBRATION);
 			break;
 		case STAGE_CONT_ADSORPTION:
 			substep.Format(STR_STAGE_CONT_ADSORPTION);
 			break;
-		case STAGE_CONT_VACUUM_SAMPLE:
-			substep.Format(STR_STAGE_VACUUM_SAMPLE);
+		case STAGE_CONT_VACUUM_BEFOREEX:
+			substep.Format(STR_STAGE_CONT_VACUUM);
+			break;
+		case STAGE_CONT_END_EQUILIBRATION:
+			substep.Format(STR_STAGE_AUTO_EQUILIBRATION);
 			break;
 		case STAGE_CONT_END:
 			break;

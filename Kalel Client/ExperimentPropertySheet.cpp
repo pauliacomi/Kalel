@@ -58,6 +58,8 @@ void ExperimentPropertySheet::Initiate(const ExperimentSettings & experimentSett
 	// General tabs
 	m_general.allSettings = experimentSettings.dataGeneral;
 	m_divers.allSettings = experimentSettings.dataDivers;
+	m_continuousAdsorption.allSettings = experimentSettings.dataContinuous;
+
 	// Adsorption
 	for (int i = 0; i < numberOfAdsorptions; i++)
 	{
@@ -205,29 +207,29 @@ void ExperimentPropertySheet::SetProprietiesModif(int stage, int substage)
 	// Grey out the tabs that should not be modified
 	m_general.checkGeneral = true;
 
-	switch (experimentStage)
+	if (experimentType == EXPERIMENT_TYPE_AUTO)
 	{
-	case STAGE_AUTO_EQUILIBRATION:
-	case STAGE_CONT_ADSORPTION:
-		break;
-	case STAGE_AUTO_ADSORPTION:
-		for (int i = 0; i < experimentSubStage; i++)
+		switch (experimentStage)
 		{
-			adsorptionTabs[i]->checkDoses = true;
+		case STAGE_AUTO_ADSORPTION:
+			for (int i = 0; i < experimentSubStage; i++)
+			{
+				adsorptionTabs[i]->checkDoses = true;
+			}
+			break;
+		case STAGE_AUTO_DESORPTION:
+			for (int i = 0; i < numberOfAdsorptions; i++)
+			{
+				adsorptionTabs[i]->checkDoses = true;
+			}
+			for (int i = 0; i < experimentSubStage; i++)
+			{
+				desorptionTabs[i]->checkDesorption = true;
+			}
+			break;
+		default:
+			break;
 		}
-		break;
-	case STAGE_AUTO_DESORPTION:
-		for (int i = 0; i < numberOfAdsorptions; i++)
-		{
-			adsorptionTabs[i]->checkDoses = true;
-		}
-		for (int i = 0; i < experimentSubStage; i++)
-		{
-			desorptionTabs[i]->checkDesorption = true;
-		}
-		break;
-	default:
-		break;
 	}
 }
 
@@ -456,12 +458,22 @@ void ExperimentPropertySheet::OnButtonLoadSettings()
 		{
 			TabDivers temp;
 			AddPage(&temp);
-
 			RemoveTab(&m_general, tab_general);
 			RemoveTab(&m_divers, tab_divers);
-			RemoveStepTabs();
-			adsorptionTabs.clear();
-			desorptionTabs.clear();
+
+			switch (experimentType)
+			{
+			case EXPERIMENT_TYPE_AUTO:
+				RemoveStepTabs();
+				adsorptionTabs.clear();
+				desorptionTabs.clear();
+				break;
+			case EXPERIMENT_TYPE_CONTINUOUS:
+				RemoveTab(&m_continuousAdsorption, tab_adsorption_continue);
+
+			default:
+				break;
+			}
 			Initiate(tempSettings);
 			RemovePage(&temp);
 			modified = true;
@@ -585,6 +597,11 @@ bool ExperimentPropertySheet::GetExperimentData(ExperimentSettings & expS, bool 
 				modified = true;
 			}
 
+			if (m_continuousAdsorption.allSettings != expS.dataContinuous)
+			{
+				modified = true;
+			}
+
 			for (size_t i = 0; i < adsorptionTabs.size(); i++)
 			{
 				if (adsorptionTabs[i]->allSettings != expS.dataAdsorption[i])
@@ -620,6 +637,7 @@ void ExperimentPropertySheet::ReplaceExperimentSettings(ExperimentSettings & exp
 	if (expS.experimentType != EXPERIMENT_TYPE_MANUAL || complete)
 	{
 		expS.dataDivers = m_divers.allSettings;
+		expS.dataContinuous = m_continuousAdsorption.allSettings;
 
 		expS.dataAdsorption.clear();
 		for (size_t i = 0; i < adsorptionTabs.size(); i++)

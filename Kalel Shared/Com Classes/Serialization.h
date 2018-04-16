@@ -31,11 +31,13 @@ inline void to_json(nlohmann::json &j, const data_general &m);
 inline void to_json(nlohmann::json &j, const data_other &m);
 inline void to_json(nlohmann::json &j, const data_adsorption &m);
 inline void to_json(nlohmann::json &j, const data_desorption &m);
+inline void to_json(nlohmann::json &j, const data_continuous &m);
 
 inline void from_json(const nlohmann::json &j, data_general &m);
 inline void from_json(const nlohmann::json &j, data_other &m);
 inline void from_json(const nlohmann::json &j, data_adsorption &m);
 inline void from_json(const nlohmann::json &j, data_desorption &m);
+inline void from_json(const nlohmann::json &j, data_continuous &m);
 
 inline void to_json(nlohmann::json &j, const gas &m);
 inline void to_json(nlohmann::json &j, const cell &m);
@@ -303,6 +305,9 @@ inline void to_json(nlohmann::json &j, const ExperimentSettings &e) {
 		
 	// desorption data
 	j["des"]								= e.dataDesorption;
+
+	// continuous ads data
+	j["ads_cont"]							= e.dataContinuous;
 }
 
 inline void from_json(const nlohmann::json &j, ExperimentSettings &e) {
@@ -322,6 +327,9 @@ inline void from_json(const nlohmann::json &j, ExperimentSettings &e) {
 
 	// desorption data
 	e.dataDesorption						= j["des"].get<std::vector<data_desorption>>();;
+	
+	// continuous ads data
+	e.dataContinuous						= j["ads_cont"];
 }
 
 
@@ -403,12 +411,30 @@ inline void to_json(nlohmann::json &j, const data_desorption &m) {
 	j["Tref"]								= m.temps_volume						;
 }
 
+inline void to_json(nlohmann::json & j, const data_continuous & m)
+{
+	j["Pfinal"					]			= m.pression_finale_adsorption_continue	;
+	j["teq"						]			= m.temps_equilibre_continue			;	
+	j["tflow"					]			= m.temps_etalonnage_debit				;
+	j["tdead"					]			= m.temps_etalonnage_volume_inter		;	
+	j["teqf"					]			= m.temps_final_equilibre				;	
+}
+
 inline void from_json(const nlohmann::json & j, data_desorption & m)
 {
 	m.delta_pression						= j["dP"								];
 	m.pression_finale						= j["Pfinal"							];
 	m.temps_desorption						= j["Tdes"								];
 	m.temps_volume							= j["Tref"								];
+}
+
+inline void from_json(const nlohmann::json & j, data_continuous & m)
+{
+	m.pression_finale_adsorption_continue			= j["Pfinal"					];
+	m.temps_equilibre_continue						= j["teq"						];
+	m.temps_etalonnage_debit						= j["tflow"						];
+	m.temps_etalonnage_volume_inter					= j["tdead"						];
+	m.temps_final_equilibre							= j["teqf"						];
 }
 
 

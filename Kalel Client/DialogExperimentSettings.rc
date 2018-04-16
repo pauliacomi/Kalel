@@ -152,7 +152,7 @@ BEGIN
     GROUPBOX        "Experiment end",IDC_STATIC,14,184,263,63
     CONTROL         "Custom vacuum time at experiment end",IDC_CHECK_MISE_SOUS_VIDE,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,28,199,186,14
-    LTEXT           "Vacuum time ate experiment end",IDC_STATIC_MISE_SOUS_VIDE,49,218,110,14,SS_CENTERIMAGE
+    LTEXT           "Vacuum time at experiment end",IDC_STATIC_MISE_SOUS_VIDE,49,218,110,14,SS_CENTERIMAGE
     EDITTEXT        IDC_EDIT_TEMPS_VIDE,168,218,40,14,ES_AUTOHSCROLL
     CONTROL         "",IDC_SPIN_TEMPS_VIDE,"msctls_updown32",UDS_ARROWKEYS,208,218,11,14
     LTEXT           "min",IDC_STATIC_MISE_SOUS_VIDE2,231,218,12,14,SS_CENTERIMAGE

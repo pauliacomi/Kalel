@@ -23,7 +23,7 @@ void Automation::StageVacuum()
 		break;
 
 	case STEP_STATUS_START:
-		controls.valveControls.OpenEVsAndPump(true);											// Activate the pump
+		controls.valveControls.OpenEVsAndPump(true);										// Activate the pump
 		WaitSeconds(storage.machineSettings.TimeWaitPump, true);
 		storage.experimentStatus.stepStatus = STEP_STATUS_INPROGRESS;						// Set next step
 		break;

@@ -120,6 +120,7 @@ protected:
 	void StageContinuousAdsorption();
 	void StageContinuousFlowrate();
 	void StageContinuousDeadvolume();
+	void StageContVacuum();
 	void StageVacuum();
 
 

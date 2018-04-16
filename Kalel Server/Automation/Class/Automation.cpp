@@ -255,6 +255,20 @@ void Automation::ExecutionAuto()
 	case STAGE_AUTO_EQUILIBRATION:
 		StageEquilibration(storage.experimentSettings.dataDivers.time_baseline);
 		break;
+	case STAGE_AUTO_RECORD:
+
+		// This is where we start recording
+		storage.experimentStatus.isRecording = true;
+
+		// Start the timer to record time between recording of measurements
+		storage.timerRecording.Start();
+
+		// Record experiment start time
+		storage.experimentStatus.timeStart = timeh::TimePointToMs(timeh::NowTime());
+
+		++storage.experimentStatus.mainStage;
+		break;
+
 	case STAGE_AUTO_ADSORPTION:
 		StageDiscreteAdsorption();
 		break;
@@ -321,6 +335,8 @@ void Automation::ExecutionContinuous()
 	case STAGE_CONT_DEADVOL:
 		StageContinuousDeadvolume();
 		break;
+	case STAGE_CONT_VACUUM_BEFOREEX:
+		StageContVacuum();
 	case STAGE_CONT_EQUILIBRATION:
 		StageEquilibration(storage.experimentSettings.dataContinuous.temps_equilibre_continue);
 		break;
@@ -330,10 +346,7 @@ void Automation::ExecutionContinuous()
 	case STAGE_CONT_END_EQUILIBRATION:
 		StageEquilibration(storage.experimentSettings.dataContinuous.temps_final_equilibre);
 		break;
-	case STAGE_CONT_VACUUM_SAMPLE:
-		StageVacuum();
-		break;
-	case STAGE_AUTO_END:
+	case STAGE_CONT_END:
 
 		// If the experiment has finished
 		eventShutdown = true;						// set the event

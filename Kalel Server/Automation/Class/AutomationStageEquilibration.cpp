@@ -22,11 +22,6 @@ void Automation::StageEquilibration(int time)
 		break;
 
 	case STEP_STATUS_START:
-																															// This is where we start recording
-		storage.experimentStatus.isRecording = true;
-
-		// Record experiment start time
-		storage.experimentStatus.timeStart = timeh::TimePointToMs(timeh::NowTime());
 
 		// Set the time to wait
 		WaitMinutes(time, true);

@@ -42,6 +42,12 @@ BOOL TabContinuousAdsorption::OnCommand(WPARAM wParam, LPARAM lParam)
 
 BOOL TabContinuousAdsorption::OnInitDialog()
 {
+	m_fPressionFinaleAdsorptionContinue = allSettings.pression_finale_adsorption_continue;
+	m_nTempsEtalonnageDebit = allSettings.temps_etalonnage_debit;
+	m_nTempsEtalonnageVolumeInter = allSettings.temps_etalonnage_volume_inter;
+	m_nTempsEquilibreContinue = allSettings.temps_equilibre_continue;
+	m_nTempsFinalEquilibre = allSettings.temps_final_equilibre;
+
 	CPropertyPage::OnInitDialog();
 
 	m_SpinTempsEtalonnageDebit.SetRange(0, 100000);
