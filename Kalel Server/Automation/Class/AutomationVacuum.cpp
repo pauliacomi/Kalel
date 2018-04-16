@@ -39,7 +39,8 @@ void Automation::SampleVacuum()
 
 		case STEP_STATUS_START:
 			LOG(logINFO) << MESSAGE_VACUUM_CELL_START;										// Let GUI know the step change
-			storage.experimentStatus.stepStatus = STEP_STATUS_INPROGRESS;				// Set next step
+			controls.valveControls.ValveOpen(ID_VALVE_5, true);
+			storage.experimentStatus.stepStatus = STEP_STATUS_INPROGRESS;					// Set next step
 			storage.experimentStatus.substepStatus = SUBSTEP_STATUS_START;
 			break;
 
