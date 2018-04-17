@@ -18,6 +18,7 @@ struct http_response {
 	
 	// Entity headers
 	std::string						   content_type;
+	std::string						   content_charset = "utf-8";
 	std::string						   content_length;
 	std::string						   content_encoding;
 

@@ -347,7 +347,7 @@ unsigned HTTPServer::SendResponse(Socket & sock, const http_response & resp)
 
 		// Entity headers
 		if (!resp.body.empty()) {
-			responseString += sock.SendLine(http::header::content_type + resp.content_type);
+			responseString += sock.SendLine(http::header::content_type + resp.content_type + "; charset=" + resp.content_charset);
 			responseString += sock.SendLine(http::header::content_length + resp.content_length);
 		}
 
