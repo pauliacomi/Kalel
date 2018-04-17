@@ -47,8 +47,8 @@
 #define MESSAGE_PUMP_ACTIVATED				"Pump activated"
 #define MESSAGE_PUMP_DEACTIVATED			"Pump deactivated"
 #define MESSAGE_VALVE_CLOSEALL				"Closing all valves"
-#define MESSAGE_PUMP_VALVE_OPENALL			"Closing pump and EVs"
-#define MESSAGE_PUMP_VALVE_CLOSEALL			"Closing pump and EVs"
+#define MESSAGE_PUMP_VALVE_OPENALL			"Activating pump and EVs"
+#define MESSAGE_PUMP_VALVE_CLOSEALL			"Deactivating pump and EVs"
 #define MESSAGE_CLOSEEVERYTHING				"Closing all controllers"
 
 /*

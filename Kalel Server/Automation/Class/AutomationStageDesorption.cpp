@@ -108,7 +108,6 @@ bool Automation::SubstepsDiscreteDesorption()
 	****************/
 	case SUBSTEP_STATUS_START:
 		storage.experimentStatus.injectionAttemptCounter = 0;																						// Reset desorption attempt counter
-		storage.experimentStatus.pressureInitial = storage.currentData.pressureHigh.load();															// Set the initial pressure
 		storage.experimentStatus.pressureHighOld = storage.experimentStatus.pressureInitial.load();													// Save the "old" pressure
 
 		LOG(logINFO) << stringh::string_format(MESSAGE_DESORPTION_DOSE_START,
@@ -150,6 +149,7 @@ bool Automation::SubstepsDiscreteDesorption()
 	case SUBSTEP_STATUS_REMOVAL + 4:
 		controls.valveControls.ValveClose(ID_VALVE_7, true);
 		WaitSeconds(storage.machineSettings.TimeWaitValvesShort);
+		LOG(logINFO) << stringh::string_format(MESSAGE_OUTGAS_END, storage.experimentStatus.injectionAttemptCounter.load());
 		storage.experimentStatus.substepStatus = SUBSTEP_STATUS_CHECK;					// Move to removal check
 		break;
 		
@@ -161,10 +161,9 @@ bool Automation::SubstepsDiscreteDesorption()
 		// Display
 		LOG(logINFO) << stringh::string_format(MESSAGE_PRESSURE_D_PI, storage.experimentStatus.pressureInitial.load());
 		LOG(logINFO) << stringh::string_format(MESSAGE_PRESSURE_D_PF, storage.currentData.pressureHigh.load());
-		LOG(logINFO) << stringh::string_format(MESSAGE_PRESSURE_D_DP, storage.currentData.pressureHigh - storage.experimentStatus.pressureInitial);
+		LOG(logINFO) << stringh::string_format(MESSAGE_PRESSURE_D_DP, storage.experimentStatus.pressureInitial - storage.currentData.pressureHigh);
 		LOG(logINFO) << stringh::string_format(MESSAGE_PRESSURE_D_DPREQ, storage.experimentSettings.dataDesorption[storage.experimentStatus.stepCounter].delta_pression);
-		LOG(logINFO) << stringh::string_format(MESSAGE_OUTGAS_END, storage.experimentStatus.injectionAttemptCounter.load());
-
+	
 		// Checks for removal succeess, else increment the counter and try again
 		if (storage.experimentStatus.pressureHighOld - storage.machineSettings.InjectionMargin < storage.currentData.pressureHigh)
 		{
@@ -191,17 +190,25 @@ bool Automation::SubstepsDiscreteDesorption()
 		}
 		// If the removal succeeded
 		else
-		{	// Check if removal has overshot
+		{	
+			float dp_required = storage.experimentSettings.dataDesorption[storage.experimentStatus.stepCounter].delta_pression;
+			if (storage.experimentStatus.pressureInitial - dp_required < storage.experimentSettings.dataDesorption[storage.experimentStatus.stepCounter].pression_finale)
+			{
+				dp_required = 0.9 * (storage.experimentStatus.pressureInitial - storage.experimentSettings.dataDesorption[storage.experimentStatus.stepCounter].pression_finale);
+			}
+
+			// Check if removal has overshot
 			if (storage.experimentStatus.pressureInitial - storage.currentData.pressureHigh >
-				storage.machineSettings.InjectionMultiplier * (storage.experimentSettings.dataDesorption[storage.experimentStatus.stepCounter].delta_pression))
+				(storage.machineSettings.InjectionMultiplier * dp_required))
 			{
 				// Reset counter
 				storage.experimentStatus.injectionAttemptCounter = 0;
+				storage.experimentStatus.pressureHighOld = storage.currentData.pressureHigh.load();
 				storage.experimentStatus.substepStatus = SUBSTEP_STATUS_INJECTION;	
 			}
 			// Check if removal has undershot
 			else if (storage.experimentStatus.pressureInitial - storage.currentData.pressureHigh <
-				storage.machineSettings.InjectionMultiplier * (storage.experimentSettings.dataDesorption[storage.experimentStatus.stepCounter].delta_pression))
+				(dp_required / storage.machineSettings.InjectionMultiplier))
 			{
 				// Reset counter
 				storage.experimentStatus.injectionAttemptCounter = 0;
@@ -253,6 +260,7 @@ bool Automation::SubstepsDiscreteDesorption()
 	case SUBSTEP_STATUS_INJECTION + 4:
 		controls.valveControls.ValveClose(ID_VALVE_3, true);
 		WaitSeconds(storage.machineSettings.TimeWaitValvesShort);
+		LOG(logINFO) << stringh::string_format(MESSAGE_INJECTION_END, storage.experimentStatus.injectionAttemptCounter.load());
 		storage.experimentStatus.substepStatus = SUBSTEP_STATUS_INJECTION;
 		break;
 		
