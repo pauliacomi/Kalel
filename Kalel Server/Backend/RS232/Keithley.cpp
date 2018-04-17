@@ -226,7 +226,7 @@ bool Keithley::ReadChan(int chanNo, double* result)
 		*result = 0;
 	}
 	else {
-		LOG(logDEBUG2) << "Keithley channel " << chanNo << " read: " << buffer;
+		LOG(logDEBUG3) << "Keithley channel " << chanNo << " read: " << buffer;
 		*result = std::stod(std::string(buffer));
 	}
 

@@ -125,7 +125,7 @@ double Mensor::Read()
 		result = 0;
 	}
 	else {
-		LOG(logDEBUG2) << "Mensor read: " << buffer;
+		LOG(logDEBUG3) << "Mensor read: " << buffer;
 		result = std::stod(std::string(buffer).substr(1, std::string::npos));
 	}
 

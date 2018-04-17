@@ -40,9 +40,10 @@
 //			- Instruments log errors in port and connections
 //			- HTTPServer logs errors in socket and http requests
 //		logDEBUG2
-//			- Instruments log connections and reading
+//			- Instruments log connections and read errors
 //			- HTTPServer logs request type and completion time
 //		logDEBUG3
+//			- Instruments log values read
 //			- HTTPServer logs connections
 //		logDEBUG4
 //			- HTTPServer logs all requests and responses
