@@ -29,7 +29,7 @@ protected:
 
 	Socket listeningSocket;
 	std::thread acceptThread;
-	dispatch_queue disp_q{ std::thread::hardware_concurrency() };
+	dispatch_queue disp_q{ 4 * std::thread::hardware_concurrency() };
 
 	std::unordered_map<std::string, std::function<void(http_request*, http_response*)>> funcMap;	// Map of different assigned functions for custom request processing
 	

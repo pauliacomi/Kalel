@@ -6,8 +6,12 @@
 #include "Kalel.h"
 #include "../Kalel Shared/log.h"
 
-#define LOG_LEVEL		logDEBUG4			// Change the level of logging here
-#define FILE_LOGGING	"server.log"		// Comment this line to disable file logging
+// Uncomment this line to enable file logging
+//#define FILE_LOGGING	"server.log"
+
+// Change the level of logging here
+//#define LOG_LEVEL		logDEBUG1			
+	
 
 
 bool runnning = true;

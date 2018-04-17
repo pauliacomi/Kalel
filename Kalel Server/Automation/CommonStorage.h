@@ -14,7 +14,7 @@
 #include <memory>
 
 
-#define LOG_LEVEL		logDEBUG3
+#define LOG_LEVEL		logDEBUG2
 
 //
 //

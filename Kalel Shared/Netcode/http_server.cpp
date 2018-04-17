@@ -18,7 +18,6 @@ HTTPServer::HTTPServer(PCSTR port)
 	listeningSocket.Listen(port);
 
 	LOG(logDEBUG3) << LOG_LISTENING << listeningSocket.GetSocket();
-	FILE_LOG(logDEBUG3) << LOG_LISTENING << listeningSocket.GetSocket();
 }
 
 
@@ -60,7 +59,6 @@ void HTTPServer::Start()
 unsigned HTTPServer::AcceptLoop()
 {
 	LOG(logDEBUG3) << LOG_ACCEPT_ENTER;
-	FILE_LOG(logDEBUG3) << LOG_ACCEPT_ENTER;
 
 	listeningSocket.Accept_PrimeSelect();
 	
@@ -83,18 +81,15 @@ unsigned HTTPServer::AcceptLoop()
 		catch (const std::exception& e)
 		{
 			LOG(logDEBUG1) << e.what();
-			FILE_LOG(logDEBUG1) << e.what();
 			return 1;
 		}
 
 		LOG(logDEBUG3) << LOG_ACCEPTED_SOCK << theirIP;
-		FILE_LOG(logDEBUG3) << LOG_ACCEPTED_SOCK << theirIP;
 
 		disp_q.dispatch(std::bind(&HTTPServer::Process, this, s));					// Start the request processing
 	}
 
 	LOG(logDEBUG3) << LOG_ACCEPT_LEAVE;
-	FILE_LOG(logDEBUG3) << LOG_ACCEPT_LEAVE;
 
 	return 0;
 }
@@ -103,7 +98,6 @@ unsigned HTTPServer::Process(Socket sock)
 {
 
 	LOG(logDEBUG3) << LOG_PROCESS_ENTER << sock.GetSocket();
-	FILE_LOG(logDEBUG3) << LOG_PROCESS_ENTER << sock.GetSocket();
 
 
 	//*************************************************************************************************************************
@@ -118,7 +112,6 @@ unsigned HTTPServer::Process(Socket sock)
 	{														// But exit if an error
 		LOG(logDEBUG1) << ERR_HTTP_RECEIVE;
 		LOG(logDEBUG1) << LOG_PROCESS_EXIT << sock.GetSocket();
-		FILE_LOG(logDEBUG1) << LOG_PROCESS_EXIT << sock.GetSocket();
 		
 		return 1;											
 	}
@@ -157,7 +150,6 @@ unsigned HTTPServer::Process(Socket sock)
 			response.status = http::responses::internal_err;
 
 			LOG(logDEBUG1) << e.what();
-			FILE_LOG(logDEBUG1) << e.what();
 		}
 
 		if (response.status.empty())								// If the response is not set, then there's an error in the function
@@ -185,7 +177,6 @@ unsigned HTTPServer::Process(Socket sock)
 	// sock->SetLinger(true);
 
 	LOG(logDEBUG3) << LOG_PROCESS_EXIT << sock.GetSocket();
-	FILE_LOG(logDEBUG3) << LOG_PROCESS_EXIT << sock.GetSocket();
 
 	return 0;
 }
@@ -209,7 +200,6 @@ unsigned HTTPServer::ReceiveRequest(Socket & sock, http_request & req, http_resp
 	}
 	catch (const std::exception& e) {
 		LOG(logDEBUG1) << e.what();
-		FILE_LOG(logDEBUG1) << e.what();
 		return 1;
 	}
 
@@ -221,7 +211,6 @@ unsigned HTTPServer::ReceiveRequest(Socket & sock, http_request & req, http_resp
 	if (req.method.empty()) {										// Method might not be implemented
 
 		LOG(logDEBUG1) << LOG_METHOD_UNKNOWN << sock.GetSocket();
-		FILE_LOG(logDEBUG1) << LOG_METHOD_UNKNOWN << sock.GetSocket();
 		
 		resp.error = true;
 		resp.status = http::responses::not_impl;
@@ -247,7 +236,6 @@ unsigned HTTPServer::ReceiveRequest(Socket & sock, http_request & req, http_resp
 		catch (const std::exception& e)
 		{
 			LOG(logDEBUG1) << e.what();
-			FILE_LOG(logDEBUG1) << e.what();
 		}
 
 		if (line.empty()) {									// if line is empty, there's an error
@@ -306,7 +294,6 @@ unsigned HTTPServer::ReceiveRequest(Socket & sock, http_request & req, http_resp
 		catch (const std::exception& e)								// If there's an error we exit
 		{
 			LOG(logDEBUG1) << e.what();
-			FILE_LOG(logDEBUG1) << e.what();
 			return 1;
 		}
 
@@ -317,7 +304,6 @@ unsigned HTTPServer::ReceiveRequest(Socket & sock, http_request & req, http_resp
 	//*************** Request is now received
 
 	LOG(logDEBUG4) << sock.GetSocket() << LOG_REQUEST << requestString;
-	FILE_LOG(logDEBUG4) << sock.GetSocket() << LOG_REQUEST << requestString;
 
 	return 0;
 }
@@ -375,14 +361,11 @@ unsigned HTTPServer::SendResponse(Socket & sock, const http_response & resp)
 	catch (const std::exception& e)
 	{
 		LOG(logDEBUG) << e.what();
-		FILE_LOG(logERROR) << e.what();
 
 		return 1;
 	}
 
 	LOG(logDEBUG4) << sock.GetSocket() << LOG_RESPONSE << responseString;
-	FILE_LOG(logDEBUG4) << sock.GetSocket() << LOG_RESPONSE << responseString;
-
 
 	return 0;
 }

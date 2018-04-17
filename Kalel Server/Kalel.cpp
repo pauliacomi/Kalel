@@ -23,8 +23,6 @@
 #include <vector>
 #include <string>
 
-// Change the level of logging here
-
 
 using json = nlohmann::json;
 
