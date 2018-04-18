@@ -96,7 +96,6 @@ int Keithley::GetComPort()
 bool Keithley::InitKeithley()
 {
 	int nBytesWritten = 0;
-	int nbOctetsLus = 0;
 	char init_buf[256];
 	
 	// On met dans 'buffer' les instructions a donne au keithley pour qu'il puisse s'initialiser.
@@ -151,16 +150,8 @@ bool Keithley::InitKeithley()
 bool Keithley::ReadChan(int chanNo, double* result)
 {
 	int nBytesWritten = 0;
-	int nbOctetsLus = 0;
-	char read_buf[256];
+	char write_buf[256] = { 0 };
 	bool success;
-
-	// The reading and writing has to be successive, otherwise a thread can ask for the read of one channel 
-	// and actually read the result of another channel read which was requested from another thread.
-	// Normally critical section SHOULD NOT be used with potentially blocking parts of code
-	// Due to the OVERLAPPED reading and writing of the serial port, we are guaranteed not to block the thread for more than MAX_READ + MAX_WRITE (about 500 ms) 
-	
-	std::unique_lock<std::mutex> lock(mutex_keithley);
 
 	// Start by sending message to ask for the data
 
@@ -172,15 +163,21 @@ bool Keithley::ReadChan(int chanNo, double* result)
 	//	:SENS:CHAN1 => Select channel to measure; 0,1 or 2 (0=internal temperature sensor).
 	//				   EXPERIMENT_TYPE_MANUAL du Keithley 14-8
 
-	sprintf_s(read_buf, sizeof(read_buf),
+	sprintf_s(write_buf, sizeof(write_buf),
 		"%s%s%d%s%s",
 		mens_cls,
 		":SENS:CHAN ", chanNo,"\n",
 		mens_read);
 
-	success = WriteCOM(read_buf, (int)strlen(read_buf), &nBytesWritten);
+	// The reading and writing has to be successive, otherwise a thread can ask for the read of one channel 
+	// and actually read the result of another channel read which was requested from another thread.
+	// Normally critical section SHOULD NOT be used with potentially blocking parts of code
+	// Due to the OVERLAPPED reading and writing of the serial port, we are guaranteed not to block the thread for more than MAX_READ + MAX_WRITE (about 500 ms) 
+
+	std::lock_guard<std::mutex> lock(mutex_keithley);
+
+	success = WriteCOM(write_buf, (int)strlen(write_buf), &nBytesWritten);
 	if (!success) {
-		lock.unlock();
 		return false;
 	}
 
@@ -207,30 +204,21 @@ bool Keithley::ReadChan(int chanNo, double* result)
 	//
 	// On pourra voir si on rajoute une fonction pour verifier que la valeur renvoyer est la bonne.
 
-	char buffer[256] = { "\0" };
+	char read_buf[256] = { 0 };
 
-	success = ReadCOM(buffer, sizeof(buffer));
+	success = ReadCOM(read_buf, sizeof(read_buf));
 	if (!success) {
-		lock.unlock();
 		return false;
 	}
 	
-
-	// Can now leave the critical section 
-	lock.unlock();
-	
-	// On ne va garder de 'buffer' que les 15 premiers caracteres. On elimine le retour a la ligne
-	// On mettra cette chaine de caractere dans 'resultat'.
-	if (buffer[0] == '\0') {
+	if (read_buf[0] == '\0') {
 		LOG(logDEBUG2) << "Keithley channel " << chanNo << " read nothing";
 		*result = 0;
 	}
 	else {
-		LOG(logDEBUG3) << "Keithley channel " << chanNo << " read: " << buffer;
-		*result = std::stod(std::string(buffer));
+		LOG(logDEBUG3) << "Keithley channel " << chanNo << " read: " << read_buf;
+		*result = std::stod(std::string(read_buf));
 	}
-
-	buffer[0] = 0;
 	return true;
 }
 

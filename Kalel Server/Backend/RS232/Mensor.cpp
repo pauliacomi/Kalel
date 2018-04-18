@@ -112,24 +112,22 @@ double Mensor::Read()
 	//ex : 1   1.00631<cr><lf>
 	//Puis les 2 derniers sont le caractère 13 et 10
 
-	char buffer[256] = { "\0" };
+	char read_buf[256] = { 0 };
 
-	success = ReadCOM(buffer, sizeof(buffer));
+	success = ReadCOM(read_buf, sizeof(read_buf));
 	if (!success)
 		return false;
 
 
 	double result;
-	if (buffer[0] == '\0') {
+	if (read_buf[0] == '\0') {
 		LOG(logDEBUG2) << "Mensor read nothing";
 		result = 0;
 	}
 	else {
-		LOG(logDEBUG3) << "Mensor read: " << buffer;
-		result = std::stod(std::string(buffer).substr(1, std::string::npos));
+		LOG(logDEBUG3) << "Mensor read: " << read_buf;
+		result = std::stod(std::string(read_buf).substr(1, std::string::npos));
 	}
-
-	buffer[0] = 0;
 
 	return result;
 }

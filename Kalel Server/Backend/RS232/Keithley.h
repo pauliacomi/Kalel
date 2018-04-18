@@ -29,7 +29,6 @@ private:
 	const char query_template[15] = ":SENS:CHAN %d\n";
 
 	bool connectionOpen			= false;
-	bool readingPort			= false;
 
 	bool OpenCOM(int nId);
 	bool CloseCOM();
