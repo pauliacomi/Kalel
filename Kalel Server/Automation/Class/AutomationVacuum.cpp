@@ -249,8 +249,8 @@ bool Automation::SubstepsVacuumLPvol()
 	case SUBSTEP_STATUS_START:
 		LOG(logINFO) << MESSAGE_VACUUM_LOWPRESSURE_START;
 		controls.valveControls.OpenEVsAndPump(true);
-		controls.valveControls.ValveOpen(ID_VALVE_7, false);								
-		controls.valveControls.ValveOpen(ID_VALVE_8, false);								
+		controls.valveControls.ValveClose(ID_VALVE_7, false);
+		controls.valveControls.ValveClose(ID_VALVE_8, false);
 		controls.valveControls.ValveOpen(ID_VALVE_6, true);
 		WaitSeconds(storage.machineSettings.TimeWaitPump, true);
 		storage.experimentStatus.substepStatus = SUBSTEP_STATUS_CHECK;						// Set next step
@@ -308,8 +308,8 @@ bool Automation::SubstepsVacuumBottle()
 	case SUBSTEP_STATUS_START:
 		LOG(logINFO) << MESSAGE_VACUUM_BOTTLECONN_START;
 		controls.valveControls.OpenEVsAndPump(true);
-		controls.valveControls.ValveOpen(ID_VALVE_7, true);
-		controls.valveControls.ValveOpen(ID_VALVE_8, true);
+		controls.valveControls.ValveClose(ID_VALVE_7, true);
+		controls.valveControls.ValveClose(ID_VALVE_8, true);
 		controls.valveControls.ValveOpen(ID_VALVE_4, true);								// Activate the pump
 		WaitSeconds(storage.machineSettings.TimeWaitPump, true);
 		storage.experimentStatus.substepStatus = SUBSTEP_STATUS_CHECK;						// Set next step
